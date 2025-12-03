@@ -3,6 +3,8 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { ClassCard } from "@/components/schedule/ClassCard";
 import { WorkshopCard } from "@/components/schedule/WorkshopCard";
 import { AppointmentCard } from "@/components/schedule/AppointmentCard";
+import { RetreatCard } from "@/components/schedule/RetreatCard";
+import { ClassDetailModal } from "@/components/schedule/ClassDetailModal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,9 +22,10 @@ import {
   Search,
   SlidersHorizontal,
   X,
+  Plane,
 } from "lucide-react";
 
-// Mock data
+// Mock data with enhanced class descriptions
 const mockClasses = [
   {
     id: "1",
@@ -30,10 +33,14 @@ const mockClasses = [
     style: "Vinyasa",
     level: "INTERMEDIATE" as const,
     isHeated: true,
-    teacher: { name: "Maya Johnson", avatar: "" },
+    description: "A dynamic, energizing practice that links breath with movement. Expect sun salutations, standing poses, and creative sequences that build heat and strength.",
+    benefits: ["Builds strength and flexibility", "Improves cardiovascular health", "Reduces stress"],
+    whatToBring: ["Yoga mat", "Water bottle", "Towel"],
+    teacher: { id: "t1", name: "Maya Johnson", avatar: "", bio: "E-RYT 500 with 15+ years experience", rating: 4.9 },
+    studio: { id: "s1", name: "Lotus Flow Studio", location: "Downtown, SF" },
     startTime: "Today, 6:00 PM",
     duration: 60,
-    location: "Main Studio",
+    location: "Lotus Flow Studio",
     spotsLeft: 4,
     capacity: 20,
   },
@@ -43,10 +50,14 @@ const mockClasses = [
     style: "Yin",
     level: "ALL" as const,
     isHeated: false,
-    teacher: { name: "David Park", avatar: "" },
+    description: "A slow-paced style of yoga with poses held for longer periods. Perfect for deep stretching and mindfulness practice.",
+    benefits: ["Deep tissue release", "Improved flexibility", "Calming for the nervous system"],
+    whatToBring: ["Yoga mat", "Blanket or bolster"],
+    teacher: { id: "t2", name: "David Park", avatar: "", bio: "Yin yoga specialist, trained in Thailand", rating: 4.8 },
+    studio: { id: "s1", name: "Lotus Flow Studio", location: "Downtown, SF" },
     startTime: "Today, 7:30 PM",
     duration: 75,
-    location: "Zen Room",
+    location: "Lotus Flow Studio",
     spotsLeft: 8,
     capacity: 15,
   },
@@ -56,10 +67,14 @@ const mockClasses = [
     style: "Vinyasa",
     level: "BEGINNER" as const,
     isHeated: false,
-    teacher: { name: "Sarah Lee", avatar: "" },
+    description: "Start your day with an accessible, uplifting flow. Perfect for beginners or anyone wanting a gentler morning practice.",
+    benefits: ["Gentle wake-up for the body", "Sets positive tone for the day"],
+    whatToBring: ["Yoga mat"],
+    teacher: { id: "t3", name: "Sarah Lee", avatar: "", bio: "Beginner-friendly specialist", rating: 4.7 },
+    studio: { id: "s2", name: "Hot Yoga Collective", location: "SoMa, SF" },
     startTime: "Tomorrow, 7:00 AM",
     duration: 60,
-    location: "Main Studio",
+    location: "Hot Yoga Collective",
     spotsLeft: 12,
     capacity: 20,
   },
@@ -69,10 +84,14 @@ const mockClasses = [
     style: "Power",
     level: "ADVANCED" as const,
     isHeated: true,
-    teacher: { name: "Alex Rivera", avatar: "" },
+    description: "An intense, athletic practice in a heated room. Expect challenging sequences, arm balances, and inversions.",
+    benefits: ["Maximum calorie burn", "Builds serious strength", "Detoxifying heat"],
+    whatToBring: ["Yoga mat", "Large towel", "Lots of water"],
+    teacher: { id: "t4", name: "Alex Rivera", avatar: "", bio: "Former athlete, power yoga specialist", rating: 4.9 },
+    studio: { id: "s2", name: "Hot Yoga Collective", location: "SoMa, SF" },
     startTime: "Tomorrow, 12:00 PM",
     duration: 75,
-    location: "Hot Room",
+    location: "Hot Yoga Collective",
     spotsLeft: 0,
     capacity: 18,
   },
@@ -82,10 +101,14 @@ const mockClasses = [
     style: "Hatha",
     level: "BEGINNER" as const,
     isHeated: false,
-    teacher: { name: "Emma Thompson", avatar: "" },
+    description: "A relaxing class focused on gentle stretches and relaxation. Perfect for stress relief and recovery days.",
+    benefits: ["Stress relief", "Gentle on joints", "Promotes relaxation"],
+    whatToBring: ["Yoga mat", "Blanket"],
+    teacher: { id: "t5", name: "Emma Thompson", avatar: "", bio: "Restorative yoga teacher", rating: 4.8 },
+    studio: { id: "s3", name: "Zen Garden Yoga", location: "Pacific Heights, SF" },
     startTime: "Tomorrow, 5:00 PM",
     duration: 60,
-    location: "Zen Room",
+    location: "Zen Garden Yoga",
     spotsLeft: 10,
     capacity: 15,
   },
@@ -99,7 +122,7 @@ const mockWorkshops = [
     teacher: { name: "Maya Johnson", avatar: "" },
     startTime: "Saturday, Dec 7, 2:00 PM",
     duration: 180,
-    location: "Main Studio",
+    location: "Lotus Flow Studio",
     price: 75,
     spotsLeft: 6,
     capacity: 15,
@@ -113,7 +136,7 @@ const mockWorkshops = [
     teacher: { name: "David Park", avatar: "" },
     startTime: "Starts Sunday, Dec 8, 10:00 AM",
     duration: 90,
-    location: "Zen Room",
+    location: "Zen Garden Yoga",
     price: 120,
     spotsLeft: 10,
     capacity: 20,
@@ -131,7 +154,7 @@ const mockAppointments = [
     teacher: { name: "Maya Johnson", avatar: "" },
     startTime: "Today, 4:00 PM",
     duration: 60,
-    location: "Private Room",
+    location: "Lotus Flow Studio",
     price: 120,
     isBooked: false,
   },
@@ -142,7 +165,7 @@ const mockAppointments = [
     teacher: { name: "David Park", avatar: "" },
     startTime: "Tomorrow, 2:00 PM",
     duration: 90,
-    location: "Healing Room",
+    location: "Zen Garden Yoga",
     price: 150,
     isBooked: false,
   },
@@ -153,16 +176,67 @@ const mockAppointments = [
     teacher: { name: "Emma Thompson", avatar: "" },
     startTime: "Friday, 11:00 AM",
     duration: 75,
-    location: "Private Room",
+    location: "Zen Garden Yoga",
     price: 95,
     isBooked: true,
+  },
+];
+
+const mockRetreats = [
+  {
+    id: "r1",
+    title: "7-Day Transformation Retreat",
+    description: "Immerse yourself in daily yoga, meditation, and wellness practices surrounded by Bali's natural beauty. Includes accommodation, meals, and excursions.",
+    imageUrl: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80",
+    destination: "Ubud",
+    country: "Bali, Indonesia",
+    startDate: "Mar 15",
+    endDate: "Mar 22",
+    duration: "7 nights",
+    price: 2499,
+    spotsLeft: 8,
+    capacity: 16,
+    teachers: [{ name: "Maya Johnson" }, { name: "David Park" }],
+    tags: ["Vinyasa", "Meditation", "Spa", "All-Inclusive"],
+  },
+  {
+    id: "r2",
+    title: "Jungle Wellness Escape",
+    description: "A transformative journey combining yoga, surf, and adventure in the Costa Rican rainforest. Daily practices, optional surf lessons, and jungle excursions.",
+    imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
+    destination: "Nosara",
+    country: "Costa Rica",
+    startDate: "Apr 5",
+    endDate: "Apr 12",
+    duration: "7 nights",
+    price: 1899,
+    spotsLeft: 4,
+    capacity: 12,
+    teachers: [{ name: "Alex Rivera" }],
+    tags: ["Vinyasa", "Surf", "Adventure", "Nature"],
+  },
+  {
+    id: "r3",
+    title: "Mediterranean Mindfulness",
+    description: "Combine ancient yoga traditions with Mediterranean culture. Practice overlooking the Aegean Sea, explore historic sites, and enjoy Greek cuisine.",
+    imageUrl: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&q=80",
+    destination: "Santorini",
+    country: "Greece",
+    startDate: "May 20",
+    endDate: "May 27",
+    duration: "7 nights",
+    price: 2799,
+    spotsLeft: 10,
+    capacity: 14,
+    teachers: [{ name: "Emma Thompson" }],
+    tags: ["Hatha", "Meditation", "Culture", "Wellness"],
   },
 ];
 
 const filters = {
   styles: ["All Styles", "Vinyasa", "Yin", "Hatha", "Power", "Restorative"],
   levels: ["All Levels", "Beginner", "Intermediate", "Advanced"],
-  locations: ["All Locations", "Main Studio", "Hot Room", "Zen Room"],
+  studios: ["All Studios", "Lotus Flow Studio", "Hot Yoga Collective", "Zen Garden Yoga"],
   teachers: ["All Teachers", "Maya Johnson", "David Park", "Sarah Lee", "Alex Rivera", "Emma Thompson"],
 };
 
@@ -171,10 +245,17 @@ const Schedule = () => {
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  const [showFilters, setShowFilters] = useState(false);
+  const [selectedClass, setSelectedClass] = useState<typeof mockClasses[0] | null>(null);
+  const [classDetailOpen, setClassDetailOpen] = useState(false);
 
   const handleBook = (id: string) => {
-    console.log("Booking:", id);
+    const classItem = mockClasses.find(c => c.id === id);
+    if (classItem) {
+      setSelectedClass(classItem);
+      setClassDetailOpen(true);
+    } else {
+      console.log("Booking:", id);
+    }
   };
 
   const clearFilter = (filter: string) => {
@@ -188,17 +269,21 @@ const Schedule = () => {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Schedule</h1>
           <p className="text-muted-foreground mt-1">
-            Browse and book classes, workshops, and appointments
+            Browse classes, workshops, appointments, and retreats across all studios
           </p>
         </div>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-            <TabsList className="grid w-full sm:w-auto grid-cols-3">
-              <TabsTrigger value="classes" className="px-6">Classes</TabsTrigger>
-              <TabsTrigger value="workshops" className="px-6">Workshops</TabsTrigger>
-              <TabsTrigger value="appointments" className="px-6">Appointments</TabsTrigger>
+            <TabsList className="grid w-full sm:w-auto grid-cols-4">
+              <TabsTrigger value="classes" className="px-4">Classes</TabsTrigger>
+              <TabsTrigger value="workshops" className="px-4">Workshops</TabsTrigger>
+              <TabsTrigger value="appointments" className="px-4">Appointments</TabsTrigger>
+              <TabsTrigger value="retreats" className="px-4 gap-1">
+                <Plane className="h-3.5 w-3.5" />
+                Retreats
+              </TabsTrigger>
             </TabsList>
 
             {/* View toggle */}
@@ -225,7 +310,7 @@ const Schedule = () => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search classes, teachers..."
+                placeholder="Search classes, teachers, studios..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9"
@@ -233,6 +318,19 @@ const Schedule = () => {
             </div>
 
             <div className="flex items-center gap-2">
+              <Select>
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder="Studio" />
+                </SelectTrigger>
+                <SelectContent>
+                  {filters.studios.map((studio) => (
+                    <SelectItem key={studio} value={studio.toLowerCase()}>
+                      {studio}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
               <Select>
                 <SelectTrigger className="w-[140px]">
                   <SelectValue placeholder="Style" />
@@ -259,11 +357,7 @@ const Schedule = () => {
                 </SelectContent>
               </Select>
 
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setShowFilters(!showFilters)}
-              >
+              <Button variant="outline" size="icon">
                 <SlidersHorizontal className="h-4 w-4" />
               </Button>
             </div>
@@ -327,8 +421,28 @@ const Schedule = () => {
               ))}
             </div>
           </TabsContent>
+
+          {/* Retreats Tab */}
+          <TabsContent value="retreats" className="mt-0">
+            <div className="grid md:grid-cols-2 gap-6">
+              {mockRetreats.map((retreat) => (
+                <RetreatCard key={retreat.id} {...retreat} onBook={handleBook} />
+              ))}
+            </div>
+          </TabsContent>
         </Tabs>
       </div>
+
+      {/* Class Detail Modal */}
+      <ClassDetailModal
+        open={classDetailOpen}
+        onOpenChange={setClassDetailOpen}
+        classData={selectedClass}
+        onBook={() => {
+          console.log("Booking class:", selectedClass?.id);
+          setClassDetailOpen(false);
+        }}
+      />
     </AppLayout>
   );
 };
