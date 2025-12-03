@@ -31,6 +31,8 @@ interface AppLayoutProps {
 const navigation = [
   { name: "Home", href: "/", icon: Home },
   { name: "Schedule", href: "/schedule", icon: Calendar },
+  { name: "Studios", href: "/studios", icon: LayoutDashboard },
+  { name: "Instructors", href: "/instructors", icon: User },
   { name: "My Schedule", href: "/my-schedule", icon: CalendarCheck },
   { name: "Community", href: "/community", icon: Users },
 ];

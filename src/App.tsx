@@ -8,6 +8,10 @@ import Schedule from "./pages/Schedule";
 import MySchedule from "./pages/MySchedule";
 import Community from "./pages/Community";
 import Account from "./pages/Account";
+import Studios from "./pages/Studios";
+import StudioDetail from "./pages/StudioDetail";
+import Instructors from "./pages/Instructors";
+import InstructorDetail from "./pages/InstructorDetail";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import NotFound from "./pages/NotFound";
@@ -26,6 +30,10 @@ const App = () => (
           <Route path="/my-schedule" element={<MySchedule />} />
           <Route path="/community" element={<Community />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/studios" element={<Studios />} />
+          <Route path="/studios/:id" element={<StudioDetail />} />
+          <Route path="/instructors" element={<Instructors />} />
+          <Route path="/instructors/:id" element={<InstructorDetail />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/register" element={<Register />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
