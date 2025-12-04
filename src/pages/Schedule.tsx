@@ -16,6 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Link } from "react-router-dom";
 import {
   Calendar,
   List,
@@ -23,6 +26,7 @@ import {
   SlidersHorizontal,
   X,
   Plane,
+  Play,
 } from "lucide-react";
 
 // Mock data with enhanced class descriptions
@@ -240,6 +244,32 @@ const filters = {
   teachers: ["All Teachers", "Maya Johnson", "David Park", "Sarah Lee", "Alex Rivera", "Emma Thompson"],
 };
 
+// Mock on-demand classes
+const mockOnDemandClasses = [
+  {
+    id: "od1",
+    title: "Morning Energy Flow (On-Demand)",
+    style: "Vinyasa",
+    level: "ALL" as const,
+    isHeated: false,
+    isOnDemand: true,
+    teacher: { id: "t1", name: "Maya Johnson", avatar: "" },
+    duration: 30,
+    thumbnailUrl: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400",
+  },
+  {
+    id: "od2",
+    title: "Deep Hip Opening (On-Demand)",
+    style: "Yin",
+    level: "BEGINNER" as const,
+    isHeated: false,
+    isOnDemand: true,
+    teacher: { id: "t2", name: "David Park", avatar: "" },
+    duration: 45,
+    thumbnailUrl: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400",
+  },
+];
+
 const Schedule = () => {
   const [activeTab, setActiveTab] = useState("classes");
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
@@ -247,6 +277,7 @@ const Schedule = () => {
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [selectedClass, setSelectedClass] = useState<typeof mockClasses[0] | null>(null);
   const [classDetailOpen, setClassDetailOpen] = useState(false);
+  const [showOnDemand, setShowOnDemand] = useState(false);
 
   const handleBook = (id: string) => {
     const classItem = mockClasses.find(c => c.id === id);
@@ -363,6 +394,35 @@ const Schedule = () => {
             </div>
           </div>
 
+          {/* On-Demand Toggle */}
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-lilac/20 border border-lilac/30 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-lilac flex items-center justify-center">
+                <Play className="h-5 w-5 text-foreground" />
+              </div>
+              <div>
+                <Label htmlFor="ondemand-toggle" className="font-semibold cursor-pointer">
+                  Include On-Demand Classes
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  Show recordings you can watch anytime
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Switch
+                id="ondemand-toggle"
+                checked={showOnDemand}
+                onCheckedChange={setShowOnDemand}
+              />
+              <Link to="/on-demand">
+                <Button variant="outline" size="sm">
+                  Browse Library
+                </Button>
+              </Link>
+            </div>
+          </div>
+
           {/* Active filters */}
           {activeFilters.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
@@ -395,6 +455,51 @@ const Schedule = () => {
                 {mockClasses.map((classItem) => (
                   <ClassCard key={classItem.id} {...classItem} onBook={handleBook} />
                 ))}
+                
+                {/* On-Demand Classes Section */}
+                {showOnDemand && (
+                  <>
+                    <div className="flex items-center gap-2 pt-4 pb-2">
+                      <Badge variant="lilac" className="gap-1">
+                        <Play className="h-3 w-3" />
+                        On-Demand
+                      </Badge>
+                      <span className="text-sm text-muted-foreground">
+                        Watch anytime, progress syncs across devices
+                      </span>
+                    </div>
+                    {mockOnDemandClasses.map((classItem) => (
+                      <Link
+                        key={classItem.id}
+                        to="/on-demand"
+                        className="block rounded-2xl border bg-card p-4 shadow-card transition-all hover:shadow-card-hover"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="relative w-24 h-16 rounded-xl overflow-hidden bg-muted flex-shrink-0">
+                            <img
+                              src={classItem.thumbnailUrl}
+                              alt={classItem.title}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-foreground/30 flex items-center justify-center">
+                              <Play className="h-6 w-6 text-background" />
+                            </div>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <Badge variant="lilac">On-Demand</Badge>
+                              <Badge variant="mint">{classItem.style}</Badge>
+                            </div>
+                            <h3 className="font-semibold truncate">{classItem.title}</h3>
+                            <p className="text-sm text-muted-foreground">
+                              {classItem.teacher.name} • {classItem.duration} min
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </>
+                )}
               </div>
             ) : (
               <div className="rounded-xl border bg-card p-8 text-center text-muted-foreground">

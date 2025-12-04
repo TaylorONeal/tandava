@@ -12,6 +12,7 @@ import Studios from "./pages/Studios";
 import StudioDetail from "./pages/StudioDetail";
 import Instructors from "./pages/Instructors";
 import InstructorDetail from "./pages/InstructorDetail";
+import OnDemand from "./pages/OnDemand";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import NotFound from "./pages/NotFound";
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/studios/:id" element={<StudioDetail />} />
           <Route path="/instructors" element={<Instructors />} />
           <Route path="/instructors/:id" element={<InstructorDetail />} />
+          <Route path="/on-demand" element={<OnDemand />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/register" element={<Register />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
