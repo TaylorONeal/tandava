@@ -43,16 +43,16 @@ export function WorkshopCard({
   const isFull = spotsLeft === 0;
 
   return (
-    <div className="group rounded-xl border bg-card overflow-hidden shadow-card transition-all duration-200 hover:shadow-card-hover">
-      {/* Top accent bar */}
-      <div className="h-1.5 bg-warning" />
+    <div className="group rounded-2xl border border-border bg-card overflow-hidden shadow-card transition-all duration-200 hover:shadow-card-hover hover:scale-[1.01]">
+      {/* Top gradient banner */}
+      <div className="h-2 gradient-primary" />
 
       <div className="p-5">
         {/* Badges row */}
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <Badge variant="workshop">Workshop</Badge>
           {isSeries && (
-            <Badge variant="secondary">{seriesParts}-Part Series</Badge>
+            <Badge variant="peach">{seriesParts}-Part Series</Badge>
           )}
           {tags?.slice(0, 2).map((tag) => (
             <Badge key={tag} variant="outline" className="text-xs">
@@ -67,9 +67,9 @@ export function WorkshopCard({
 
         {/* Teacher */}
         <div className="flex items-center gap-2 mb-4">
-          <Avatar className="h-8 w-8">
+          <Avatar className="h-9 w-9">
             <AvatarImage src={teacher.avatar} alt={teacher.name} />
-            <AvatarFallback className="text-xs bg-accent text-accent-foreground">
+            <AvatarFallback className="text-xs bg-accent-lilac text-foreground">
               {teacher.name.split(" ").map((n) => n[0]).join("")}
             </AvatarFallback>
           </Avatar>
@@ -91,12 +91,11 @@ export function WorkshopCard({
         </div>
 
         {/* Footer - price, spots, CTA */}
-        <div className="flex items-center justify-between pt-4 border-t">
+        <div className="flex items-center justify-between pt-4 border-t border-border">
           <div className="flex items-center gap-4">
             {/* Price */}
             <div className="flex items-center gap-1">
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-              <span className="text-lg font-semibold">{price}</span>
+              <span className="text-2xl font-bold">${price}</span>
             </div>
             {/* Spots */}
             <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -105,13 +104,13 @@ export function WorkshopCard({
                 "font-medium",
                 isFull ? "text-destructive" : spotsLeft <= 3 ? "text-warning" : ""
               )}>
-                {isFull ? "Full" : `${spotsLeft} spots left`}
+                {isFull ? "Full" : `${spotsLeft} spots`}
               </span>
             </div>
           </div>
 
           <Button
-            variant={isFull ? "outline" : "default"}
+            variant={isFull ? "secondary" : "default"}
             onClick={() => onBook(id)}
           >
             {isFull ? "Join Waitlist" : "Book Workshop"}

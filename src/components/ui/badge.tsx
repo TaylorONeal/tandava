@@ -4,31 +4,37 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium transition-colors border-transparent",
   {
     variants: {
       variant: {
-        default: "border-transparent bg-primary text-primary-foreground",
-        secondary: "border-transparent bg-secondary text-secondary-foreground",
-        destructive: "border-transparent bg-destructive text-destructive-foreground",
-        outline: "text-foreground border-border",
-        // Class type badges
-        class: "border-transparent bg-accent text-accent-foreground",
-        workshop: "border-transparent bg-warning/15 text-warning",
-        appointment: "border-transparent bg-info/15 text-info",
+        default: "bg-primary text-primary-foreground",
+        secondary: "bg-secondary text-secondary-foreground",
+        destructive: "bg-destructive text-destructive-foreground",
+        outline: "text-foreground border border-border bg-transparent",
+        // Pastel accent badges - Gen Z style
+        lilac: "bg-accent-lilac text-foreground",
+        mint: "bg-accent-mint text-foreground",
+        peach: "bg-accent-peach text-foreground",
+        yellow: "bg-primary/20 text-foreground",
+        // Type badges with colored backgrounds
+        class: "bg-primary text-primary-foreground",
+        workshop: "bg-accent-lilac text-foreground",
+        appointment: "bg-accent-mint text-foreground",
+        retreat: "bg-accent-peach text-foreground",
         // Status badges
-        booked: "border-transparent bg-success/15 text-success",
-        waitlisted: "border-transparent bg-warning/15 text-warning",
-        checkedIn: "border-transparent bg-success text-success-foreground",
-        canceled: "border-transparent bg-destructive/15 text-destructive",
-        noShow: "border-transparent bg-muted text-muted-foreground",
-        // Level badges
-        beginner: "border-transparent bg-success/15 text-success",
-        allLevels: "border-transparent bg-info/15 text-info",
-        intermediate: "border-transparent bg-warning/15 text-warning",
-        advanced: "border-transparent bg-destructive/15 text-destructive",
+        booked: "bg-success/15 text-success",
+        waitlisted: "bg-warning/15 text-warning",
+        checkedIn: "bg-success text-success-foreground",
+        canceled: "bg-destructive/15 text-destructive",
+        noShow: "bg-muted text-muted-foreground",
+        // Level badges with pastels
+        beginner: "bg-accent-mint text-foreground",
+        allLevels: "bg-accent-lilac text-foreground",
+        intermediate: "bg-primary/20 text-foreground",
+        advanced: "bg-accent-peach text-foreground",
         // Heated badge
-        heated: "border-transparent bg-destructive/10 text-destructive",
+        heated: "bg-destructive/15 text-destructive",
       },
     },
     defaultVariants: {

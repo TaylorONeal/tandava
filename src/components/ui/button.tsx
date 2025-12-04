@@ -5,31 +5,40 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-[0.98]",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-md active:scale-[0.98]",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-accent-foreground/20",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        // Primary - Starface yellow pill
+        default: "bg-primary text-primary-foreground rounded-full shadow-md hover:shadow-lg hover:bg-[hsl(45_90%_58%)]",
+        // Secondary - white with border
+        secondary: "bg-card text-foreground border border-border-strong rounded-full hover:bg-[hsl(45_100%_96%)] hover:shadow-md",
+        // Destructive
+        destructive: "bg-destructive text-destructive-foreground rounded-full shadow-md hover:bg-destructive/90",
+        // Outline
+        outline: "border border-border bg-background rounded-full hover:bg-accent hover:text-accent-foreground",
+        // Ghost - minimal
+        ghost: "text-muted-foreground hover:bg-muted hover:text-foreground rounded-full",
+        // Link style
         link: "text-primary underline-offset-4 hover:underline",
-        // Premium CTA variant for hero sections
-        hero: "bg-primary text-primary-foreground shadow-lg hover:shadow-xl hover:bg-primary/90 active:scale-[0.98] transition-all duration-300",
-        // Soft variant for secondary actions
-        soft: "bg-accent text-accent-foreground hover:bg-accent/80",
-        // Success variant for booking confirmations
-        success: "bg-success text-success-foreground hover:bg-success/90 shadow-sm",
+        // Hero CTA - gradient background
+        hero: "bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl hover:bg-[hsl(45_90%_58%)] transition-all duration-300",
+        // Soft pastel variants
+        soft: "bg-accent text-accent-foreground rounded-full hover:bg-accent/80",
+        "soft-mint": "bg-accent-mint text-foreground rounded-full hover:bg-accent-mint/80",
+        "soft-peach": "bg-accent-peach text-foreground rounded-full hover:bg-accent-peach/80",
+        "soft-lilac": "bg-accent-lilac text-foreground rounded-full hover:bg-accent-lilac/80",
+        // Success
+        success: "bg-success text-success-foreground rounded-full shadow-md hover:bg-success/90",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3 text-xs",
-        lg: "h-12 rounded-xl px-8 text-base",
-        xl: "h-14 rounded-xl px-10 text-lg",
-        icon: "h-10 w-10",
-        "icon-sm": "h-8 w-8",
-        "icon-lg": "h-12 w-12",
+        default: "h-10 px-5 py-2 text-sm",
+        sm: "h-9 px-4 text-xs",
+        lg: "h-12 px-6 text-base",
+        xl: "h-14 px-8 text-lg",
+        icon: "h-10 w-10 rounded-full",
+        "icon-sm": "h-8 w-8 rounded-full",
+        "icon-lg": "h-12 w-12 rounded-full",
       },
     },
     defaultVariants: {
