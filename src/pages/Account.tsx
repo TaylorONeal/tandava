@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -22,13 +23,15 @@ import {
   User,
   CreditCard,
   Bell,
-  Shield,
   Camera,
-  Calendar,
   Package,
   ChevronRight,
   Check,
+  Instagram,
+  GraduationCap,
+  Award,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // Mock user data
 const userData = {
@@ -42,6 +45,18 @@ const userData = {
   emergencyContactPhone: "(555) 987-6543",
   notes: "Lower back sensitivity - please remind me about modifications for forward folds.",
   avatar: "",
+  instagramHandle: "",
+  // Training data
+  workshopsAttended: "",
+  trainingsCompleted: "",
+  additionalTrainingsNote: "",
+  hasYttTraining: false,
+  ytt200Completed: false,
+  ytt300Completed: false,
+  ytt500Completed: false,
+  yttSchoolName: "",
+  yttTrainingLocation: "",
+  yttTrainingYear: "",
 };
 
 const membership = {
@@ -59,8 +74,9 @@ const Account = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState(userData);
   const [preferences, setPreferences] = useState({
-    emailReminders: true,
-    smsReminders: false,
+    emailClassReminders: true,
+    smsClassReminders: false,
+    newsletterEmail: true,
     marketingEmails: true,
     leaderboardVisibility: "FRIENDS" as "PUBLIC" | "FRIENDS" | "HIDDEN",
   });
@@ -78,6 +94,9 @@ const Account = () => {
       description: "Your notification preferences have been saved.",
     });
   };
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 30 }, (_, i) => currentYear - i);
 
   return (
     <AppLayout>
@@ -207,6 +226,27 @@ const Account = () => {
                   </div>
                 </div>
 
+                {/* Instagram */}
+                <div className="space-y-2">
+                  <Label htmlFor="instagram" className="flex items-center gap-2">
+                    <Instagram className="h-4 w-4" />
+                    Instagram
+                  </Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">@</span>
+                    <Input
+                      id="instagram"
+                      value={formData.instagramHandle}
+                      onChange={(e) => setFormData({ ...formData, instagramHandle: e.target.value })}
+                      placeholder="yourusername"
+                      className="pl-8"
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Connect with your yoga community on Instagram
+                  </p>
+                </div>
+
                 <Separator />
 
                 <div className="space-y-2">
@@ -243,6 +283,184 @@ const Account = () => {
                 <Button onClick={handleSaveProfile}>Save Changes</Button>
               </CardContent>
             </Card>
+
+            {/* Practice & Trainings */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-full bg-lilac flex items-center justify-center">
+                    <GraduationCap className="h-4 w-4 text-foreground" />
+                  </div>
+                  <div>
+                    <CardTitle>Practice & Trainings</CardTitle>
+                    <CardDescription>
+                      Share your yoga journey and certifications
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Workshops & Trainings Summary */}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="workshopsAttended">Workshops attended</Label>
+                    <Input
+                      id="workshopsAttended"
+                      type="number"
+                      min="0"
+                      value={formData.workshopsAttended}
+                      onChange={(e) => setFormData({ ...formData, workshopsAttended: e.target.value })}
+                      placeholder="Optional"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="trainingsCompleted">Trainings completed</Label>
+                    <Input
+                      id="trainingsCompleted"
+                      type="number"
+                      min="0"
+                      value={formData.trainingsCompleted}
+                      onChange={(e) => setFormData({ ...formData, trainingsCompleted: e.target.value })}
+                      placeholder="Optional"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="additionalTrainings">Other trainings or certifications</Label>
+                  <Textarea
+                    id="additionalTrainings"
+                    value={formData.additionalTrainingsNote}
+                    onChange={(e) => setFormData({ ...formData, additionalTrainingsNote: e.target.value })}
+                    placeholder="e.g., Aerial YTT, Restorative, Trauma-informed modules, Prenatal certification..."
+                    rows={2}
+                  />
+                </div>
+
+                <Separator />
+
+                {/* YTT Section */}
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <Checkbox
+                      id="hasYtt"
+                      checked={formData.hasYttTraining}
+                      onCheckedChange={(checked) =>
+                        setFormData({ ...formData, hasYttTraining: checked as boolean })
+                      }
+                    />
+                    <div className="space-y-1">
+                      <Label htmlFor="hasYtt" className="cursor-pointer font-medium">
+                        I have completed a Yoga Teacher Training (YTT)
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Share your Yoga Alliance certification levels and training details
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Collapsible YTT Panel */}
+                  <div
+                    className={cn(
+                      "overflow-hidden transition-all duration-300 ease-in-out",
+                      formData.hasYttTraining ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                    )}
+                  >
+                    <div className="mt-4 p-5 rounded-2xl border-2 border-lilac/50 bg-lilac/10 space-y-5">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Award className="h-5 w-5 text-foreground" />
+                        <span className="font-semibold">Yoga Alliance Levels</span>
+                      </div>
+
+                      {/* YTT Level Checkboxes */}
+                      <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            id="ytt200"
+                            checked={formData.ytt200Completed}
+                            onCheckedChange={(checked) =>
+                              setFormData({ ...formData, ytt200Completed: checked as boolean })
+                            }
+                          />
+                          <Label htmlFor="ytt200" className="cursor-pointer">
+                            <Badge variant="mint" className="text-sm">200-hour YTT</Badge>
+                          </Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            id="ytt300"
+                            checked={formData.ytt300Completed}
+                            onCheckedChange={(checked) =>
+                              setFormData({ ...formData, ytt300Completed: checked as boolean })
+                            }
+                          />
+                          <Label htmlFor="ytt300" className="cursor-pointer">
+                            <Badge variant="peach" className="text-sm">300-hour YTT</Badge>
+                          </Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            id="ytt500"
+                            checked={formData.ytt500Completed}
+                            onCheckedChange={(checked) =>
+                              setFormData({ ...formData, ytt500Completed: checked as boolean })
+                            }
+                          />
+                          <Label htmlFor="ytt500" className="cursor-pointer">
+                            <Badge variant="lilac" className="text-sm">500-hour YTT</Badge>
+                          </Label>
+                        </div>
+                      </div>
+
+                      {/* YTT Details */}
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="yttSchool">Primary YTT School / Program</Label>
+                          <Input
+                            id="yttSchool"
+                            value={formData.yttSchoolName}
+                            onChange={(e) => setFormData({ ...formData, yttSchoolName: e.target.value })}
+                            placeholder="e.g., Haute Yoga Queen Anne, The Practice Bali"
+                          />
+                        </div>
+
+                        <div className="grid sm:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="yttLocation">Training Location</Label>
+                            <Input
+                              id="yttLocation"
+                              value={formData.yttTrainingLocation}
+                              onChange={(e) => setFormData({ ...formData, yttTrainingLocation: e.target.value })}
+                              placeholder="City, Country (e.g., Seattle, WA, USA)"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="yttYear">Year Completed</Label>
+                            <Select
+                              value={formData.yttTrainingYear}
+                              onValueChange={(value) => setFormData({ ...formData, yttTrainingYear: value })}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select year" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {years.map((year) => (
+                                  <SelectItem key={year} value={year.toString()}>
+                                    {year}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <Button onClick={handleSaveProfile}>Save Trainings</Button>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Membership Tab */}
@@ -254,15 +472,15 @@ const Account = () => {
                 <CardDescription>Your active membership and benefits</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between p-4 rounded-lg bg-accent">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-mint/30">
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-lg bg-primary flex items-center justify-center">
+                    <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
                       <Check className="h-6 w-6 text-primary-foreground" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
                         <h3 className="font-semibold">{membership.type}</h3>
-                        <Badge variant="booked">Active</Badge>
+                        <Badge variant="mint">Active</Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">
                         Renews {membership.renewsAt} • ${membership.price}/month
@@ -284,11 +502,11 @@ const Account = () => {
                 {packs.map((pack, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between p-4 rounded-lg border"
+                    className="flex items-center justify-between p-4 rounded-2xl border"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="h-10 w-10 rounded-lg bg-accent flex items-center justify-center">
-                        <Package className="h-5 w-5 text-accent-foreground" />
+                      <div className="h-10 w-10 rounded-full bg-lilac/30 flex items-center justify-center">
+                        <Package className="h-5 w-5 text-foreground" />
                       </div>
                       <div>
                         <h4 className="font-medium">{pack.name}</h4>
@@ -316,9 +534,9 @@ const Account = () => {
                 <CardDescription>Manage your payment methods</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="flex items-center justify-between p-4 rounded-lg border">
+                <div className="flex items-center justify-between p-4 rounded-2xl border">
                   <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
                       <CreditCard className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <div>
@@ -364,10 +582,11 @@ const Account = () => {
 
           {/* Preferences Tab */}
           <TabsContent value="preferences" className="mt-6 space-y-6">
+            {/* Class Notifications */}
             <Card>
               <CardHeader>
-                <CardTitle>Notifications</CardTitle>
-                <CardDescription>Manage how you receive notifications</CardDescription>
+                <CardTitle>Class Notifications</CardTitle>
+                <CardDescription>Reminders for your booked classes</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-center justify-between">
@@ -378,9 +597,9 @@ const Account = () => {
                     </p>
                   </div>
                   <Switch
-                    checked={preferences.emailReminders}
+                    checked={preferences.emailClassReminders}
                     onCheckedChange={(checked) =>
-                      setPreferences({ ...preferences, emailReminders: checked })
+                      setPreferences({ ...preferences, emailClassReminders: checked })
                     }
                   />
                 </div>
@@ -395,9 +614,33 @@ const Account = () => {
                     </p>
                   </div>
                   <Switch
-                    checked={preferences.smsReminders}
+                    checked={preferences.smsClassReminders}
                     onCheckedChange={(checked) =>
-                      setPreferences({ ...preferences, smsReminders: checked })
+                      setPreferences({ ...preferences, smsClassReminders: checked })
+                    }
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Newsletter & Marketing */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Newsletter & Updates</CardTitle>
+                <CardDescription>Stay in the loop with studios and events</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">Newsletter</p>
+                    <p className="text-sm text-muted-foreground">
+                      Weekly digest with new studios, featured classes, and wellness tips
+                    </p>
+                  </div>
+                  <Switch
+                    checked={preferences.newsletterEmail}
+                    onCheckedChange={(checked) =>
+                      setPreferences({ ...preferences, newsletterEmail: checked })
                     }
                   />
                 </div>
@@ -408,7 +651,7 @@ const Account = () => {
                   <div>
                     <p className="font-medium">Marketing emails</p>
                     <p className="text-sm text-muted-foreground">
-                      News about workshops, events, and special offers
+                      Special offers, new workshops, and studio promotions
                     </p>
                   </div>
                   <Switch
@@ -421,6 +664,7 @@ const Account = () => {
               </CardContent>
             </Card>
 
+            {/* Privacy */}
             <Card>
               <CardHeader>
                 <CardTitle>Privacy</CardTitle>
