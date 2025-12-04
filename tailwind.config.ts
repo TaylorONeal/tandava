@@ -9,15 +9,16 @@ export default {
       center: true,
       padding: "1.5rem",
       screens: {
-        "2xl": "1400px",
+        "2xl": "1040px",
       },
     },
     extend: {
       fontFamily: {
-        sans: ["Outfit", "system-ui", "sans-serif"],
+        sans: ["DM Sans", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
+        "border-strong": "hsl(var(--border-strong))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
@@ -42,6 +43,11 @@ export default {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
+        // Gen Z pastel accents
+        "accent-lilac": "hsl(var(--accent-lilac))",
+        "accent-mint": "hsl(var(--accent-mint))",
+        "accent-peach": "hsl(var(--accent-peach))",
+        "accent-yellow": "hsl(var(--accent-yellow))",
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
@@ -77,8 +83,10 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        xl: "calc(var(--radius) + 4px)",
-        "2xl": "calc(var(--radius) + 8px)",
+        xl: "1rem",
+        "2xl": "1.25rem",
+        "3xl": "1.5rem",
+        full: "9999px",
       },
       boxShadow: {
         sm: "var(--shadow-sm)",
@@ -116,6 +124,11 @@ export default {
           from: { transform: "translateY(100%)", opacity: "0" },
           to: { transform: "translateY(0)", opacity: "1" },
         },
+        "pop": {
+          "0%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.02)" },
+          "100%": { transform: "scale(1)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -125,6 +138,14 @@ export default {
         "slide-in-right": "slide-in-right 0.3s ease-out forwards",
         "pulse-soft": "pulse-soft 2s ease-in-out infinite",
         "count-up": "count-up 0.5s ease-out forwards",
+        "pop": "pop 0.2s ease-out",
+      },
+      fontSize: {
+        "display": ["32px", { lineHeight: "1.2", fontWeight: "700" }],
+        "heading": ["24px", { lineHeight: "1.25", fontWeight: "700" }],
+        "subheading": ["20px", { lineHeight: "1.3", fontWeight: "600" }],
+        "body": ["16px", { lineHeight: "1.5", fontWeight: "400" }],
+        "caption": ["13px", { lineHeight: "1.4", fontWeight: "500" }],
       },
     },
   },

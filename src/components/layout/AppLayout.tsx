@@ -22,6 +22,8 @@ import {
   User,
   Bell,
   LayoutDashboard,
+  Building2,
+  Heart,
 } from "lucide-react";
 
 interface AppLayoutProps {
@@ -31,8 +33,8 @@ interface AppLayoutProps {
 const navigation = [
   { name: "Home", href: "/", icon: Home },
   { name: "Schedule", href: "/schedule", icon: Calendar },
-  { name: "Studios", href: "/studios", icon: LayoutDashboard },
-  { name: "Instructors", href: "/instructors", icon: User },
+  { name: "Studios", href: "/studios", icon: Building2 },
+  { name: "Instructors", href: "/instructors", icon: Heart },
   { name: "My Schedule", href: "/my-schedule", icon: CalendarCheck },
   { name: "Community", href: "/community", icon: Users },
 ];
@@ -62,27 +64,27 @@ export function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-card/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur-md">
         <div className="container flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+          <Link to="/" className="flex items-center gap-2.5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary shadow-md">
               <span className="text-lg font-bold text-primary-foreground">T</span>
             </div>
-            <span className="text-xl font-semibold tracking-tight">Tandava</span>
+            <span className="text-xl font-bold tracking-tight">tandava</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors",
+                  "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200",
                   isActive(item.href)
-                    ? "bg-accent text-accent-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                 )}
               >
                 <item.icon className="h-4 w-4" />
@@ -92,11 +94,11 @@ export function AppLayout({ children }: AppLayoutProps) {
           </nav>
 
           {/* Right side actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {/* Notifications */}
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
-              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-primary text-[10px] font-medium text-primary-foreground flex items-center justify-center">
+              <span className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-primary text-[10px] font-bold text-primary-foreground flex items-center justify-center shadow-sm">
                 3
               </span>
             </Button>
@@ -104,30 +106,30 @@ export function AppLayout({ children }: AppLayoutProps) {
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                  <Avatar className="h-9 w-9">
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                  <Avatar className="h-10 w-10 border-2 border-primary/20">
                     <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                    <AvatarFallback className="bg-accent-lilac text-foreground font-semibold">
                       {user.name.split(" ").map((n) => n[0]).join("")}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end">
-                <div className="flex items-center gap-3 p-2">
-                  <Avatar className="h-10 w-10">
+              <DropdownMenuContent className="w-56 rounded-2xl p-2" align="end">
+                <div className="flex items-center gap-3 p-2 mb-2">
+                  <Avatar className="h-11 w-11">
                     <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className="bg-primary text-primary-foreground">
+                    <AvatarFallback className="bg-accent-lilac text-foreground font-semibold">
                       {user.name.split(" ").map((n) => n[0]).join("")}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
-                    <p className="text-sm font-medium">{user.name}</p>
+                    <p className="text-sm font-semibold">{user.name}</p>
                     <p className="text-xs text-muted-foreground">{user.email}</p>
                   </div>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem asChild className="rounded-xl">
                   <Link to="/account" className="flex items-center gap-2 cursor-pointer">
                     <User className="h-4 w-4" />
                     Account
@@ -137,7 +139,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                   <>
                     <DropdownMenuSeparator />
                     {adminNavigation.map((item) => (
-                      <DropdownMenuItem key={item.name} asChild>
+                      <DropdownMenuItem key={item.name} asChild className="rounded-xl">
                         <Link to={item.href} className="flex items-center gap-2 cursor-pointer">
                           <item.icon className="h-4 w-4" />
                           {item.name}
@@ -147,7 +149,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                   </>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem asChild className="rounded-xl">
                   <Link to="/auth/login" className="flex items-center gap-2 cursor-pointer text-destructive">
                     <LogOut className="h-4 w-4" />
                     Sign out
@@ -160,7 +162,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="lg:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -170,7 +172,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t bg-card animate-fade-in">
+          <div className="lg:hidden border-t border-border bg-card animate-fade-in">
             <nav className="container py-4 space-y-1">
               {navigation.map((item) => (
                 <Link
@@ -178,10 +180,10 @@ export function AppLayout({ children }: AppLayoutProps) {
                   to={item.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors",
+                    "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-2xl transition-all duration-200",
                     isActive(item.href)
-                      ? "bg-accent text-accent-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   )}
                 >
                   <item.icon className="h-5 w-5" />
@@ -194,7 +196,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       </header>
 
       {/* Main Content */}
-      <main className="container py-6 md:py-8">{children}</main>
+      <main className="container py-8 md:py-10">{children}</main>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Calendar, MapPin, Users, DollarSign, Plane } from "lucide-react";
+import { Calendar, MapPin, Users, Plane } from "lucide-react";
 
 export interface RetreatCardProps {
   id: string;
@@ -41,7 +41,7 @@ export function RetreatCard({
   const isFull = spotsLeft === 0;
 
   return (
-    <div className="group rounded-xl border bg-card overflow-hidden shadow-card transition-all duration-200 hover:shadow-card-hover">
+    <div className="group rounded-2xl border border-border bg-card overflow-hidden shadow-card transition-all duration-200 hover:shadow-card-hover hover:scale-[1.01]">
       {/* Image */}
       <div className="relative aspect-[2/1] overflow-hidden bg-muted">
         <img
@@ -53,11 +53,11 @@ export function RetreatCard({
         
         {/* Overlay badges */}
         <div className="absolute top-3 left-3 flex gap-2">
-          <Badge className="bg-info text-info-foreground gap-1">
+          <Badge variant="retreat" className="gap-1">
             <Plane className="h-3 w-3" />
             Retreat
           </Badge>
-          <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm">
+          <Badge variant="lilac">
             {duration}
           </Badge>
         </div>
@@ -88,9 +88,9 @@ export function RetreatCard({
         <div className="flex items-center gap-2 mb-4">
           <div className="flex -space-x-2">
             {teachers.slice(0, 3).map((teacher, i) => (
-              <Avatar key={i} className="h-8 w-8 border-2 border-background">
+              <Avatar key={i} className="h-8 w-8 border-2 border-card">
                 <AvatarImage src={teacher.avatar} alt={teacher.name} />
-                <AvatarFallback className="text-xs bg-accent text-accent-foreground">
+                <AvatarFallback className="text-xs bg-accent-peach text-foreground">
                   {teacher.name.split(" ").map((n) => n[0]).join("")}
                 </AvatarFallback>
               </Avatar>
@@ -116,13 +116,13 @@ export function RetreatCard({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-4 border-t">
+        <div className="flex items-center justify-between pt-4 border-t border-border">
           <div>
             <p className="text-xs text-muted-foreground">Starting from</p>
             <p className="text-2xl font-bold">${price.toLocaleString()}</p>
           </div>
           <Button
-            variant={isFull ? "outline" : "default"}
+            variant={isFull ? "secondary" : "soft-peach"}
             size="lg"
             onClick={() => onBook(id)}
           >
