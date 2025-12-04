@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ClassCard } from "@/components/schedule/ClassCard";
 import { StudioCard } from "@/components/studio/StudioCard";
+import { IntroVideoPlayer } from "@/components/video/IntroVideoPlayer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -33,6 +34,9 @@ const instructorData = {
   classCount: 2340,
   studentCount: 1890,
   experience: "15+ years",
+  // Intro video fields
+  introVideoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+  introVideoThumbnail: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=80",
 };
 
 const instructorClasses = [
@@ -168,6 +172,16 @@ const InstructorDetail = () => {
             </div>
           </div>
         </div>
+
+        {/* Intro Video */}
+        {instructorData.introVideoUrl && (
+          <IntroVideoPlayer
+            videoUrl={instructorData.introVideoUrl}
+            thumbnailUrl={instructorData.introVideoThumbnail}
+            title={`Meet ${instructorData.name.split(" ")[0]} – 1 min intro`}
+            className="max-w-md"
+          />
+        )}
 
         {/* Main content */}
         <Tabs defaultValue="classes" className="w-full">
