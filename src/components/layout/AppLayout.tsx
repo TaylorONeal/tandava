@@ -24,6 +24,7 @@ import {
   LayoutDashboard,
   Building2,
   Heart,
+  Play,
 } from "lucide-react";
 
 interface AppLayoutProps {
@@ -33,6 +34,7 @@ interface AppLayoutProps {
 const navigation = [
   { name: "Home", href: "/", icon: Home },
   { name: "Schedule", href: "/schedule", icon: Calendar },
+  { name: "On-Demand", href: "/on-demand", icon: Play },
   { name: "Studios", href: "/studios", icon: Building2 },
   { name: "Instructors", href: "/instructors", icon: Heart },
   { name: "My Schedule", href: "/my-schedule", icon: CalendarCheck },
