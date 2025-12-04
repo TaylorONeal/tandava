@@ -5,6 +5,7 @@ import { WorkshopCard } from "@/components/schedule/WorkshopCard";
 import { AppointmentCard } from "@/components/schedule/AppointmentCard";
 import { RetreatCard } from "@/components/schedule/RetreatCard";
 import { ClassDetailModal } from "@/components/schedule/ClassDetailModal";
+import { BookingModal } from "@/components/booking/BookingModal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -277,6 +278,7 @@ const Schedule = () => {
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [selectedClass, setSelectedClass] = useState<typeof mockClasses[0] | null>(null);
   const [classDetailOpen, setClassDetailOpen] = useState(false);
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [showOnDemand, setShowOnDemand] = useState(false);
 
   const handleBook = (id: string) => {
@@ -287,6 +289,11 @@ const Schedule = () => {
     } else {
       console.log("Booking:", id);
     }
+  };
+
+  const handleOpenBookingModal = () => {
+    setClassDetailOpen(false);
+    setBookingModalOpen(true);
   };
 
   const clearFilter = (filter: string) => {
@@ -543,11 +550,30 @@ const Schedule = () => {
         open={classDetailOpen}
         onOpenChange={setClassDetailOpen}
         classData={selectedClass}
-        onBook={() => {
-          console.log("Booking class:", selectedClass?.id);
-          setClassDetailOpen(false);
-        }}
+        onBook={handleOpenBookingModal}
       />
+
+      {/* Booking Modal */}
+      {selectedClass && (
+        <BookingModal
+          open={bookingModalOpen}
+          onOpenChange={setBookingModalOpen}
+          booking={{
+            id: selectedClass.id,
+            type: "class",
+            title: selectedClass.title,
+            style: selectedClass.style,
+            teacher: selectedClass.teacher.name,
+            studio: selectedClass.studio.name,
+            location: selectedClass.studio.location,
+            dateTime: selectedClass.startTime,
+            duration: selectedClass.duration,
+            spotsLeft: selectedClass.spotsLeft,
+            dropInPriceCents: 2500, // $25 drop-in
+            cancellationMinutes: 120,
+          }}
+        />
+      )}
     </AppLayout>
   );
 };
