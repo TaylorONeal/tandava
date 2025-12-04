@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { PromoVisual } from "@/components/video/PromoVisual";
 import { Clock, MapPin, Users, Flame, Star, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -23,6 +24,8 @@ interface ClassDetailModalProps {
     description: string;
     benefits: string[];
     whatToBring: string[];
+    promoGifUrl?: string;
+    promoImageUrl?: string;
     teacher: {
       id: string;
       name: string;
@@ -86,6 +89,16 @@ export function ClassDetailModal({
           <DialogTitle className="text-xl">{classData.title}</DialogTitle>
           <p className="text-sm text-muted-foreground">{classData.style}</p>
         </DialogHeader>
+
+        {/* Promo Visual */}
+        {(classData.promoGifUrl || classData.promoImageUrl) && (
+          <PromoVisual
+            videoUrl={classData.promoGifUrl}
+            imageUrl={classData.promoImageUrl}
+            alt={classData.title}
+            className="aspect-video -mx-6 -mt-2"
+          />
+        )}
 
         {/* Description */}
         <div className="space-y-4">
