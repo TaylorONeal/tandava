@@ -15,6 +15,9 @@ export default {
     extend: {
       fontFamily: {
         sans: ["DM Sans", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+        display: ["Cormorant Garamond", "serif"],
+        sanskrit: ["Cinzel", "serif"],
+        body: ["DM Sans", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -43,11 +46,26 @@ export default {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
-        // Gen Z pastel accents
+        // Design system accent colors
         "accent-lilac": "hsl(var(--accent-lilac))",
         "accent-mint": "hsl(var(--accent-mint))",
         "accent-peach": "hsl(var(--accent-peach))",
         "accent-yellow": "hsl(var(--accent-yellow))",
+        // New mystical theme colors
+        "accent-teal": "var(--accent-teal)",
+        "accent-coral": "var(--accent-coral)",
+        "accent-gold": "var(--accent-gold)",
+        "accent-sage": "var(--accent-sage)",
+        // Background variants
+        "bg-primary": "var(--bg-primary)",
+        "bg-secondary": "var(--bg-secondary)",
+        "bg-card": "var(--bg-card)",
+        // Text variants
+        "text-primary": "var(--text-primary)",
+        "text-secondary": "var(--text-secondary)",
+        "text-muted": "var(--text-muted)",
+        // Glass effect
+        "glass-border": "var(--glass-border)",
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
@@ -94,6 +112,8 @@ export default {
         lg: "var(--shadow-lg)",
         card: "var(--shadow-card)",
         "card-hover": "var(--shadow-card-hover)",
+        "glow-teal": "var(--glow-teal)",
+        "glow-coral": "var(--glow-coral)",
       },
       keyframes: {
         "accordion-down": {
@@ -129,6 +149,18 @@ export default {
           "50%": { transform: "scale(1.02)" },
           "100%": { transform: "scale(1)" },
         },
+        "shimmer": {
+          "0%": { backgroundPosition: "-200% center" },
+          "100%": { backgroundPosition: "200% center" },
+        },
+        "pulse-glow": {
+          "0%, 100%": { boxShadow: "0 0 20px rgba(79, 209, 197, 0.2)" },
+          "50%": { boxShadow: "0 0 40px rgba(79, 209, 197, 0.4)" },
+        },
+        "progress-ring": {
+          from: { strokeDashoffset: "283" },
+          to: { strokeDashoffset: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -139,6 +171,9 @@ export default {
         "pulse-soft": "pulse-soft 2s ease-in-out infinite",
         "count-up": "count-up 0.5s ease-out forwards",
         "pop": "pop 0.2s ease-out",
+        "shimmer": "shimmer 2s infinite",
+        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "progress-ring": "progress-ring 1s ease-out forwards",
       },
       fontSize: {
         "display": ["32px", { lineHeight: "1.2", fontWeight: "700" }],
@@ -146,6 +181,9 @@ export default {
         "subheading": ["20px", { lineHeight: "1.3", fontWeight: "600" }],
         "body": ["16px", { lineHeight: "1.5", fontWeight: "400" }],
         "caption": ["13px", { lineHeight: "1.4", fontWeight: "500" }],
+      },
+      backdropBlur: {
+        glass: "20px",
       },
     },
   },

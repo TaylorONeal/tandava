@@ -1,0 +1,217 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "@fontsource/dm-sans/400.css";
+@import "@fontsource/dm-sans/500.css";
+@import "@fontsource/dm-sans/600.css";
+@import "@fontsource/dm-sans/700.css";
+
+/* Tandava - Gen Z Wellness Brand Design System (Starface/Martie inspired) */
+
+@layer base {
+  :root {
+    /* Background */
+    --background: 230 33% 99%;
+    --foreground: 220 30% 6%;
+
+    /* Cards & elevated surfaces */
+    --card: 0 0% 100%;
+    --card-foreground: 220 30% 6%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 30% 6%;
+
+    /* Primary - Warm Starface Yellow */
+    --primary: 45 100% 64%;
+    --primary-foreground: 220 30% 6%;
+
+    /* Secondary - Light neutral */
+    --secondary: 228 25% 96%;
+    --secondary-foreground: 220 30% 6%;
+
+    /* Muted */
+    --muted: 228 20% 94%;
+    --muted-foreground: 222 15% 45%;
+
+    /* Accent pastels */
+    --accent: 267 100% 88%;
+    --accent-foreground: 220 30% 6%;
+
+    /* Additional accent colors */
+    --accent-lilac: 267 100% 88%;
+    --accent-mint: 145 76% 88%;
+    --accent-peach: 14 100% 87%;
+    --accent-yellow: 45 100% 64%;
+
+    --destructive: 0 84% 68%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders */
+    --border: 228 20% 91%;
+    --border-strong: 225 14% 77%;
+    --input: 228 20% 91%;
+    --ring: 45 100% 64%;
+
+    --radius: 0.75rem;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 30% 6%;
+    --sidebar-primary: 45 100% 64%;
+    --sidebar-primary-foreground: 220 30% 6%;
+    --sidebar-accent: 267 100% 88%;
+    --sidebar-accent-foreground: 220 30% 6%;
+    --sidebar-border: 228 20% 91%;
+    --sidebar-ring: 45 100% 64%;
+
+    /* Semantic colors */
+    --success: 156 72% 50%;
+    --success-foreground: 0 0% 100%;
+    --warning: 36 100% 65%;
+    --warning-foreground: 220 30% 6%;
+    --info: 217 91% 65%;
+    --info-foreground: 0 0% 100%;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
+    --shadow-lg: 0 12px 30px rgba(15, 23, 42, 0.06);
+    --shadow-card: 0 12px 30px rgba(15, 23, 42, 0.06);
+    --shadow-card-hover: 0 18px 40px rgba(15, 23, 42, 0.09);
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(45 100% 64%) 0%, hsl(14 100% 87%) 50%, hsl(267 100% 88%) 100%);
+    --gradient-warm: linear-gradient(135deg, hsl(45 100% 64%) 0%, hsl(14 100% 87%) 100%);
+    --gradient-cool: linear-gradient(135deg, hsl(145 76% 88%) 0%, hsl(267 100% 88%) 100%);
+  }
+
+  .dark {
+    --background: 222 25% 8%;
+    --foreground: 230 25% 96%;
+
+    --card: 222 22% 11%;
+    --card-foreground: 230 25% 96%;
+
+    --popover: 222 22% 11%;
+    --popover-foreground: 230 25% 96%;
+
+    --primary: 45 100% 64%;
+    --primary-foreground: 220 30% 6%;
+
+    --secondary: 222 20% 16%;
+    --secondary-foreground: 230 25% 90%;
+
+    --muted: 222 18% 18%;
+    --muted-foreground: 228 15% 55%;
+
+    --accent: 267 60% 30%;
+    --accent-foreground: 267 100% 88%;
+
+    --accent-lilac: 267 60% 30%;
+    --accent-mint: 145 50% 25%;
+    --accent-peach: 14 60% 30%;
+    --accent-yellow: 45 80% 40%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 222 18% 18%;
+    --border-strong: 222 15% 28%;
+    --input: 222 18% 18%;
+    --ring: 45 100% 64%;
+
+    --sidebar-background: 222 22% 9%;
+    --sidebar-foreground: 230 25% 96%;
+    --sidebar-primary: 45 100% 64%;
+    --sidebar-primary-foreground: 220 30% 6%;
+    --sidebar-accent: 267 60% 30%;
+    --sidebar-accent-foreground: 267 100% 88%;
+    --sidebar-border: 222 18% 16%;
+    --sidebar-ring: 45 100% 64%;
+
+    --success: 156 65% 45%;
+    --warning: 36 90% 55%;
+    --info: 217 80% 55%;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.4);
+    --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.3);
+    --shadow-card-hover: 0 18px 40px rgba(0, 0, 0, 0.4);
+
+    --gradient-primary: linear-gradient(135deg, hsl(45 80% 40%) 0%, hsl(14 60% 30%) 50%, hsl(267 60% 30%) 100%);
+    --gradient-warm: linear-gradient(135deg, hsl(45 80% 40%) 0%, hsl(14 60% 30%) 100%);
+    --gradient-cool: linear-gradient(135deg, hsl(145 50% 25%) 0%, hsl(267 60% 30%) 100%);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer utilities {
+  .stat-value {
+    @apply text-[32px] font-bold tracking-tight;
+  }
+
+  .stat-label {
+    @apply text-[13px] font-medium text-muted-foreground uppercase tracking-wider;
+  }
+
+  .card-elevated {
+    @apply bg-card rounded-2xl border border-border shadow-[var(--shadow-card)] transition-all duration-200 hover:shadow-[var(--shadow-card-hover)] hover:scale-[1.01];
+  }
+
+  .badge-level {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-warm {
+    background: var(--gradient-warm);
+  }
+
+  .gradient-cool {
+    background: var(--gradient-cool);
+  }
+
+  .pill {
+    @apply rounded-full;
+  }
+
+  /* Color bar utilities for cards */
+  .color-bar-yellow {
+    @apply bg-primary;
+  }
+
+  .color-bar-lilac {
+    @apply bg-accent-lilac;
+  }
+
+  .color-bar-mint {
+    @apply bg-accent-mint;
+  }
+
+  .color-bar-peach {
+    @apply bg-accent-peach;
+  }
+}
