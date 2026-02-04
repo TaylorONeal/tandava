@@ -42,8 +42,8 @@ const navigation = [
 ];
 
 const adminNavigation = [
-  { name: "Staff Check-in", href: "/staff/checkin", icon: LayoutDashboard },
-  { name: "Admin", href: "/admin", icon: Settings },
+  { name: "Studio Management", href: "/manage", icon: LayoutDashboard },
+  { name: "Settings", href: "/manage/settings", icon: Settings },
 ];
 
 export function AppLayout({ children }: AppLayoutProps) {
@@ -53,9 +53,9 @@ export function AppLayout({ children }: AppLayoutProps) {
   // Mock user - in real app, this would come from auth context
   const user = {
     name: "Sarah Chen",
-    email: "sarah@example.com",
+    email: "sarah@tandava.yoga",
     avatar: "",
-    role: "STUDENT" as const,
+    role: "OWNER" as const,
   };
 
   const isActive = (href: string) => {
@@ -137,7 +137,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     Account
                   </Link>
                 </DropdownMenuItem>
-                {user.role !== "STUDENT" && (
+                {user.role !== "STUDENT_ONLY" && (
                   <>
                     <DropdownMenuSeparator />
                     {adminNavigation.map((item) => (
