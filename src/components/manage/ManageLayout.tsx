@@ -26,6 +26,9 @@ import {
   X,
   CreditCard,
   Tag,
+  CalendarHeart,
+  Globe,
+  Percent,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -36,10 +39,13 @@ interface ManageLayoutProps {
 const manageNavigation = [
   { name: "Dashboard", href: "/manage", icon: LayoutDashboard },
   { name: "Schedule", href: "/manage/schedule", icon: Calendar },
+  { name: "Events", href: "/manage/events", icon: CalendarHeart },
   { name: "Students", href: "/manage/students", icon: Users },
   { name: "Teachers", href: "/manage/teachers", icon: UserCheck },
   { name: "Offerings", href: "/manage/offerings", icon: Tag },
+  { name: "Promo Codes", href: "/manage/promo-codes", icon: Percent },
   { name: "Financials", href: "/manage/financials", icon: CreditCard },
+  { name: "Landing Pages", href: "/manage/landing-pages", icon: Globe },
   { name: "Reports", href: "/manage/reports", icon: BarChart3 },
   { name: "Import Data", href: "/manage/import", icon: Upload },
   { name: "Settings", href: "/manage/settings", icon: Settings },

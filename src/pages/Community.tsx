@@ -31,6 +31,8 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MilestoneCelebration, EngagementNudge } from "@/components/EngagementNudge";
+import { NewsletterSignup } from "@/components/NewsletterSignup";
 
 // Mock stats data
 const stats = {
@@ -126,6 +128,14 @@ const Community = () => {
             Track your progress, connect with friends, and see how you rank
           </p>
         </div>
+
+        {/* Milestone celebration — shown when user hits a milestone */}
+        <MilestoneCelebration
+          milestoneName="300 Classes!"
+          icon="🧘"
+          message="You've attended over 300 classes. That's real dedication to your practice."
+          reward="Unlock your Year in Review"
+        />
 
         {/* Tabs */}
         <Tabs defaultValue="stats" className="w-full">
@@ -382,6 +392,25 @@ const Community = () => {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Contextual nudge — friend activity */}
+        <EngagementNudge
+          type="friend_activity"
+          title="Your friends are practicing"
+          message="3 friends attended classes this week. Join them on the mat!"
+          actionLabel="Browse classes"
+          actionUrl="/schedule"
+          className="mt-6"
+        />
+
+        {/* Newsletter — community context */}
+        <NewsletterSignup
+          variant="inline"
+          source="community_page"
+          heading="Get community updates"
+          subheading="Events, challenges, and what's new at the studio."
+          className="mt-6"
+        />
       </div>
     </AppLayout>
   );

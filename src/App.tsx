@@ -30,6 +30,11 @@ import FinancialsManage from "./pages/manage/Financials";
 import ReportsManage from "./pages/manage/Reports";
 import ImportManage from "./pages/manage/Import";
 import SettingsManage from "./pages/manage/Settings";
+import OnboardingManage from "./pages/manage/Onboarding";
+import MemberDetailManage from "./pages/manage/MemberDetail";
+import PromoCodesManage from "./pages/manage/PromoCodes";
+import EventsManage from "./pages/manage/Events";
+import LandingPagesManage from "./pages/manage/LandingPages";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +70,11 @@ const App = () => (
             <Route path="/manage/reports" element={<ReportsManage />} />
             <Route path="/manage/import" element={<ImportManage />} />
             <Route path="/manage/settings" element={<SettingsManage />} />
+            <Route path="/manage/onboarding" element={<OnboardingManage />} />
+            <Route path="/manage/members/:id" element={<MemberDetailManage />} />
+            <Route path="/manage/promo-codes" element={<PromoCodesManage />} />
+            <Route path="/manage/events" element={<EventsManage />} />
+            <Route path="/manage/landing-pages" element={<LandingPagesManage />} />
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
