@@ -471,6 +471,280 @@ export interface ImportFieldMapping {
 }
 
 // ============================================================================
+// OPERATIONAL WORKFLOW TYPES (Migration 002)
+// ============================================================================
+
+// Enums
+export type PromoDiscountType = 'percentage' | 'fixed_amount' | 'free_classes';
+export type PromoStatus = 'active' | 'scheduled' | 'expired' | 'disabled';
+export type GiftCardStatus = 'active' | 'partially_used' | 'exhausted' | 'expired' | 'revoked';
+export type WaiverStatus = 'draft' | 'active' | 'archived';
+export type ReferralStatus = 'pending' | 'completed' | 'expired' | 'rewarded';
+export type MembershipPauseStatus = 'active' | 'ended' | 'cancelled';
+export type WebhookEventType =
+  | 'booking.created' | 'booking.cancelled' | 'booking.checked_in' | 'booking.waitlist_promoted'
+  | 'membership.created' | 'membership.renewed' | 'membership.paused' | 'membership.resumed'
+  | 'membership.cancelled' | 'membership.expired' | 'membership.payment_failed'
+  | 'student.registered' | 'student.first_class' | 'student.milestone'
+  | 'class.cancelled' | 'class.teacher_subbed' | 'class.spots_available'
+  | 'transaction.completed' | 'transaction.refunded'
+  | 'studio.onboarding_complete';
+export type IntegrationProvider =
+  | 'mailchimp' | 'convertkit' | 'sendgrid' | 'resend'
+  | 'hubspot' | 'salesforce'
+  | 'meta_ads' | 'google_ads'
+  | 'google_calendar' | 'apple_calendar'
+  | 'quickbooks' | 'xero'
+  | 'twilio' | 'slack'
+  | 'custom_webhook';
+export type OnboardingStep =
+  'studio_info' | 'location' | 'branding' | 'offerings' | 'schedule' |
+  'pricing' | 'staff' | 'waivers' | 'import' | 'stripe' | 'launch';
+
+// Promo Codes
+export interface PromoCode {
+  id: string;
+  studio_id: string;
+  code: string;
+  name: string;
+  description: string | null;
+  discount_type: PromoDiscountType;
+  discount_value: number;
+  applies_to: string[];
+  offering_ids: string[];
+  membership_type_ids: string[];
+  new_students_only: boolean;
+  min_purchase_cents: number | null;
+  max_discount_cents: number | null;
+  max_total_uses: number | null;
+  max_uses_per_student: number;
+  current_uses: number;
+  status: PromoStatus;
+  starts_at: string;
+  expires_at: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PromoRedemption {
+  id: string;
+  promo_code_id: string;
+  studio_id: string;
+  profile_id: string;
+  transaction_id: string | null;
+  discount_amount_cents: number;
+  original_amount_cents: number;
+  redeemed_at: string;
+}
+
+// Intro Offers
+export interface IntroOffer {
+  id: string;
+  studio_id: string;
+  name: string;
+  description: string | null;
+  offer_type: string;
+  free_class_count: number | null;
+  original_price_cents: number | null;
+  offer_price_cents: number | null;
+  trial_days: number | null;
+  new_students_only: boolean;
+  max_days_since_registration: number | null;
+  max_redemptions: number | null;
+  current_redemptions: number;
+  is_active: boolean;
+  starts_at: string;
+  expires_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Guest Passes
+export interface GuestPass {
+  id: string;
+  studio_id: string;
+  purchased_by_id: string;
+  transaction_id: string | null;
+  recipient_name: string | null;
+  recipient_email: string | null;
+  recipient_phone: string | null;
+  recipient_profile_id: string | null;
+  code: string;
+  offering_ids: string[];
+  classes_included: number;
+  classes_used: number;
+  expires_at: string;
+  is_redeemed: boolean;
+  redeemed_at: string | null;
+  personal_message: string | null;
+  created_at: string;
+}
+
+// Membership Pauses
+export interface MembershipPause {
+  id: string;
+  membership_id: string;
+  studio_id: string;
+  profile_id: string;
+  status: MembershipPauseStatus;
+  paused_at: string;
+  scheduled_resume_at: string | null;
+  actual_resumed_at: string | null;
+  reason: string | null;
+  initiated_by: string | null;
+  resumed_by: string | null;
+  created_at: string;
+}
+
+// Gift Cards
+export interface GiftCard {
+  id: string;
+  studio_id: string;
+  purchased_by_id: string | null;
+  transaction_id: string | null;
+  code: string;
+  original_amount_cents: number;
+  remaining_amount_cents: number;
+  status: GiftCardStatus;
+  recipient_name: string | null;
+  recipient_email: string | null;
+  recipient_profile_id: string | null;
+  personal_message: string | null;
+  expires_at: string | null;
+  redeemed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Waivers
+export interface WaiverTemplate {
+  id: string;
+  studio_id: string;
+  name: string;
+  content: string;
+  required_for_booking: boolean;
+  status: WaiverStatus;
+  version: number;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WaiverSignature {
+  id: string;
+  waiver_template_id: string;
+  studio_id: string;
+  profile_id: string;
+  waiver_version: number;
+  signed_at: string;
+  ip_address: string | null;
+  user_agent: string | null;
+  full_name_as_signed: string;
+}
+
+// Referrals
+export interface ReferralProgram {
+  id: string;
+  studio_id: string;
+  name: string;
+  description: string | null;
+  referrer_reward_type: string;
+  referrer_reward_value: number;
+  referee_reward_type: string;
+  referee_reward_value: number;
+  require_referee_purchase: boolean;
+  max_referrals_per_student: number | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Referral {
+  id: string;
+  referral_program_id: string;
+  studio_id: string;
+  referrer_id: string;
+  referee_email: string;
+  referee_id: string | null;
+  referral_code: string;
+  status: ReferralStatus;
+  referrer_rewarded_at: string | null;
+  referee_rewarded_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+}
+
+// Onboarding
+export interface StudioOnboarding {
+  id: string;
+  studio_id: string;
+  completed_steps: OnboardingStep[];
+  current_step: OnboardingStep;
+  has_location: boolean;
+  has_branding: boolean;
+  has_offerings: boolean;
+  has_schedule: boolean;
+  has_pricing: boolean;
+  has_staff: boolean;
+  has_waiver: boolean;
+  has_imported_data: boolean;
+  has_stripe: boolean;
+  is_launched: boolean;
+  started_at: string;
+  completed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Integrations
+export interface Integration {
+  id: string;
+  studio_id: string;
+  provider: IntegrationProvider;
+  name: string;
+  config: Record<string, unknown>;
+  subscribed_events: WebhookEventType[];
+  is_active: boolean;
+  last_synced_at: string | null;
+  last_error: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WebhookEndpoint {
+  id: string;
+  studio_id: string;
+  url: string;
+  description: string | null;
+  signing_secret: string;
+  subscribed_events: WebhookEventType[];
+  is_active: boolean;
+  total_deliveries: number;
+  total_failures: number;
+  last_delivered_at: string | null;
+  last_failure_at: string | null;
+  last_failure_reason: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EventLogEntry {
+  id: string;
+  studio_id: string;
+  event_type: WebhookEventType;
+  entity_type: string;
+  entity_id: string;
+  actor_id: string | null;
+  actor_role: UserRole | null;
+  payload: Record<string, unknown>;
+  webhook_delivered: boolean;
+  integration_processed: boolean;
+  occurred_at: string;
+}
+
+// ============================================================================
 // UTILITY TYPES
 // ============================================================================
 

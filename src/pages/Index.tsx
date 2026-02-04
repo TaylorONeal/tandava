@@ -4,6 +4,8 @@ import { StatCard } from "@/components/stats/StatCard";
 import { ClassCard } from "@/components/schedule/ClassCard";
 import { StudioCard } from "@/components/studio/StudioCard";
 import { InstructorCard } from "@/components/instructor/InstructorCard";
+import { EngagementNudge } from "@/components/EngagementNudge";
+import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -206,6 +208,16 @@ const Index = () => {
           <ClassCard {...upcomingClass} onBook={handleBook} />
         </section>
 
+        {/* Contextual engagement nudge — shown based on user behavior */}
+        <EngagementNudge
+          type="streak_at_risk"
+          title="Keep your streak alive!"
+          message="You haven't practiced in 2 days. A quick class today keeps the momentum going."
+          actionLabel="Find a class"
+          actionUrl="/schedule"
+          context={`${stats.currentStreak}-day streak`}
+        />
+
         {/* Featured Studios */}
         <section>
           <div className="flex items-center justify-between mb-4">
@@ -291,6 +303,14 @@ const Index = () => {
             ))}
           </div>
         </section>
+
+        {/* Newsletter — contextual, not pushy */}
+        <NewsletterSignup
+          variant="card"
+          source="home_page"
+          heading="Stay in the flow"
+          subheading="Weekly class picks, studio news, and wellness tips — no spam, unsubscribe anytime."
+        />
 
         {/* Personal Insights */}
         <section>
