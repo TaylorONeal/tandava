@@ -23,7 +23,7 @@ CREATE TYPE schedule_recurrence AS ENUM ('daily', 'weekly', 'biweekly', 'monthly
 CREATE TYPE override_type AS ENUM ('sub', 'cancellation', 'room_change', 'time_change', 'one_off');
 CREATE TYPE day_of_week AS ENUM ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
 CREATE TYPE import_status AS ENUM ('pending', 'processing', 'completed', 'failed', 'partial');
-CREATE TYPE import_source AS ENUM ('mindbody', 'walla', 'arketa', 'momoyoga', 'generic_csv');
+CREATE TYPE import_source AS ENUM ('mindbody', 'walla', 'arketa', 'momoyoga', 'generic_csv'); -- CSV format connector identifiers for data migration
 CREATE TYPE notification_channel AS ENUM ('email', 'sms', 'push', 'in_app');
 CREATE TYPE teacher_pay_type AS ENUM ('per_class', 'revenue_share', 'hourly', 'salary');
 CREATE TYPE credit_type AS ENUM ('earned', 'purchased', 'gifted', 'promotional');
@@ -585,7 +585,15 @@ CREATE INDEX idx_notifications_profile ON notifications(profile_id);
 CREATE INDEX idx_notifications_unread ON notifications(profile_id, is_read) WHERE NOT is_read;
 
 -- ============================================================================
--- IMPORTER INFRASTRUCTURE
+-- DATA MIGRATION CONNECTOR INFRASTRUCTURE
+--
+-- These tables support portable data import from CSV exports that studios
+-- own and export from their previous platform. Connector identifiers
+-- (e.g., 'mindbody', 'walla') refer to CSV column-format adapters only —
+-- they map commonly observed CSV column headers to our schema fields.
+-- No proprietary APIs, trade secrets, or copyrighted material is used.
+-- Studios have a legal right to export and migrate their own business data
+-- under standard data portability principles.
 -- ============================================================================
 
 CREATE TABLE import_jobs (
@@ -637,9 +645,12 @@ CREATE TABLE import_field_mappings (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Pre-populate MindBody field mappings
+-- Pre-populate CSV column-format migration connectors
+-- These map commonly observed CSV column headers from third-party exports
+-- to Tandava schema fields. Column names are based on publicly visible CSV
+-- headers that studios encounter when exporting their own data.
 INSERT INTO import_field_mappings (source, import_type, source_field, target_table, target_field, transform_function, is_required, description) VALUES
-  -- Client import mappings
+  -- MindBody-format CSV column mappings (client export)
   ('mindbody', 'clients', 'First Name', 'profiles', 'first_name', NULL, TRUE, 'Client first name'),
   ('mindbody', 'clients', 'Last Name', 'profiles', 'last_name', NULL, TRUE, 'Client last name'),
   ('mindbody', 'clients', 'Email', 'profiles', 'email', 'to_lowercase', TRUE, 'Client email address'),

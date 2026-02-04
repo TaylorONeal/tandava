@@ -40,11 +40,11 @@ interface ColumnMapping {
 }
 
 const sourceOptions: { value: ImportSource; label: string; description: string }[] = [
-  { value: "mindbody", label: "MindBody", description: "Import from MindBody CSV exports" },
-  { value: "walla", label: "Walla", description: "Import from Walla CSV exports" },
-  { value: "arketa", label: "Arketa", description: "Import from Arketa CSV exports" },
-  { value: "momoyoga", label: "Momoyoga", description: "Import from Momoyoga CSV exports" },
-  { value: "generic_csv", label: "Generic CSV", description: "Import from any CSV with column mapping" },
+  { value: "mindbody", label: "MindBody Format", description: "Migration connector for MindBody-format CSV exports" },
+  { value: "walla", label: "Walla Format", description: "Migration connector for Walla-format CSV exports" },
+  { value: "arketa", label: "Arketa Format", description: "Migration connector for Arketa-format CSV exports" },
+  { value: "momoyoga", label: "Momoyoga Format", description: "Migration connector for Momoyoga-format CSV exports" },
+  { value: "generic_csv", label: "Generic CSV", description: "Import from any CSV with manual column mapping" },
 ];
 
 const importTypes = [
@@ -53,7 +53,7 @@ const importTypes = [
   { value: "transactions", label: "Transaction History", icon: CreditCard, description: "Purchase history, payments, and refunds" },
 ];
 
-// Mock: simulates auto-detected column mappings from a MindBody client export
+// Mock: simulates auto-detected column mappings from a typical client export CSV
 const mockColumnMappings: ColumnMapping[] = [
   { sourceColumn: "First Name", targetField: "first_name", sampleValues: ["Emma", "Alex", "Mia"], isRequired: true, autoMatched: true },
   { sourceColumn: "Last Name", targetField: "last_name", sampleValues: ["Wilson", "Rivera", "Tanaka"], isRequired: true, autoMatched: true },
@@ -151,7 +151,7 @@ export default function ImportManage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Import Data</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Bring your data from MindBody, Walla, Arketa, or any CSV
+            Migrate your studio data from another platform or any CSV export
           </p>
         </div>
 
@@ -261,18 +261,10 @@ export default function ImportManage() {
             <CardHeader>
               <CardTitle>Upload CSV File</CardTitle>
               <CardDescription>
-                {selectedSource === "mindbody" && (
-                  <>Export your data from MindBody: Reports → Client Export → Download CSV</>
-                )}
-                {selectedSource === "walla" && (
-                  <>Export your data from Walla: Settings → Data Export → CSV</>
-                )}
-                {selectedSource === "generic_csv" && (
-                  <>Upload any CSV file with your data</>
-                )}
-                {!["mindbody", "walla", "generic_csv"].includes(selectedSource) && (
-                  <>Upload your exported CSV file</>
-                )}
+                {selectedSource === "generic_csv"
+                  ? "Upload any CSV file with your studio data"
+                  : "Upload the CSV file you exported from your previous platform. Check your old platform's documentation for CSV export instructions."
+                }
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -551,9 +543,9 @@ export default function ImportManage() {
             </CardHeader>
             <CardContent className="space-y-3">
               {[
-                { date: "Jan 15, 2025", source: "MindBody", type: "Clients", total: 347, status: "completed" },
-                { date: "Jan 15, 2025", source: "MindBody", type: "Attendance", total: 12430, status: "completed" },
-                { date: "Jan 14, 2025", source: "MindBody", type: "Transactions", total: 2841, status: "partial" },
+                { date: "Jan 15, 2025", source: "CSV Migration", type: "Clients", total: 347, status: "completed" },
+                { date: "Jan 15, 2025", source: "CSV Migration", type: "Attendance", total: 12430, status: "completed" },
+                { date: "Jan 14, 2025", source: "CSV Migration", type: "Transactions", total: 2841, status: "partial" },
               ].map((job, i) => (
                 <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-secondary/30">
                   <div className="flex items-center gap-3">
