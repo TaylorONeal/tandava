@@ -4,6 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { DemoProvider } from "@/contexts/DemoContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { DemoPanel } from "@/components/DemoPanel";
 
 // Student-facing pages
 import Index from "./pages/Index";
@@ -35,53 +38,68 @@ import MemberDetailManage from "./pages/manage/MemberDetail";
 import PromoCodesManage from "./pages/manage/PromoCodes";
 import EventsManage from "./pages/manage/Events";
 import LandingPagesManage from "./pages/manage/LandingPages";
+import AnalyticsHubManage from "./pages/manage/AnalyticsHub";
+import MemberAnalyticsManage from "./pages/manage/MemberAnalytics";
+import SalesAnalyticsManage from "./pages/manage/SalesAnalytics";
+import FinancialAnalyticsManage from "./pages/manage/FinancialAnalytics";
+import SiteAnalyticsManage from "./pages/manage/SiteAnalytics";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Student-facing routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/schedule" element={<Schedule />} />
-            <Route path="/my-schedule" element={<MySchedule />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/studios" element={<Studios />} />
-            <Route path="/studios/:id" element={<StudioDetail />} />
-            <Route path="/instructors" element={<Instructors />} />
-            <Route path="/instructors/:id" element={<InstructorDetail />} />
-            <Route path="/on-demand" element={<OnDemand />} />
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/register" element={<Register />} />
+    <DemoProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <DemoPanel />
+              <Routes>
+                {/* Student-facing routes */}
+                <Route path="/" element={<Index />} />
+                <Route path="/schedule" element={<Schedule />} />
+                <Route path="/my-schedule" element={<MySchedule />} />
+                <Route path="/community" element={<Community />} />
+                <Route path="/account" element={<Account />} />
+                <Route path="/studios" element={<Studios />} />
+                <Route path="/studios/:id" element={<StudioDetail />} />
+                <Route path="/instructors" element={<Instructors />} />
+                <Route path="/instructors/:id" element={<InstructorDetail />} />
+                <Route path="/on-demand" element={<OnDemand />} />
+                <Route path="/auth/login" element={<Login />} />
+                <Route path="/auth/register" element={<Register />} />
 
-            {/* Studio management routes */}
-            <Route path="/manage" element={<ManageDashboard />} />
-            <Route path="/manage/schedule" element={<ScheduleManage />} />
-            <Route path="/manage/students" element={<StudentsManage />} />
-            <Route path="/manage/teachers" element={<TeachersManage />} />
-            <Route path="/manage/offerings" element={<OfferingsManage />} />
-            <Route path="/manage/financials" element={<FinancialsManage />} />
-            <Route path="/manage/reports" element={<ReportsManage />} />
-            <Route path="/manage/import" element={<ImportManage />} />
-            <Route path="/manage/settings" element={<SettingsManage />} />
-            <Route path="/manage/onboarding" element={<OnboardingManage />} />
-            <Route path="/manage/members/:id" element={<MemberDetailManage />} />
-            <Route path="/manage/promo-codes" element={<PromoCodesManage />} />
-            <Route path="/manage/events" element={<EventsManage />} />
-            <Route path="/manage/landing-pages" element={<LandingPagesManage />} />
+                {/* Studio management routes */}
+                <Route path="/manage" element={<ManageDashboard />} />
+                <Route path="/manage/schedule" element={<ScheduleManage />} />
+                <Route path="/manage/students" element={<StudentsManage />} />
+                <Route path="/manage/teachers" element={<TeachersManage />} />
+                <Route path="/manage/offerings" element={<OfferingsManage />} />
+                <Route path="/manage/financials" element={<FinancialsManage />} />
+                <Route path="/manage/reports" element={<ReportsManage />} />
+                <Route path="/manage/import" element={<ImportManage />} />
+                <Route path="/manage/settings" element={<SettingsManage />} />
+                <Route path="/manage/onboarding" element={<OnboardingManage />} />
+                <Route path="/manage/members/:id" element={<MemberDetailManage />} />
+                <Route path="/manage/promo-codes" element={<PromoCodesManage />} />
+                <Route path="/manage/events" element={<EventsManage />} />
+                <Route path="/manage/landing-pages" element={<LandingPagesManage />} />
+                <Route path="/manage/analytics" element={<AnalyticsHubManage />} />
+                <Route path="/manage/analytics/members" element={<MemberAnalyticsManage />} />
+                <Route path="/manage/analytics/sales" element={<SalesAnalyticsManage />} />
+                <Route path="/manage/analytics/financials" element={<FinancialAnalyticsManage />} />
+                <Route path="/manage/analytics/site" element={<SiteAnalyticsManage />} />
 
-            {/* Catch-all */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+                {/* Catch-all */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </DemoProvider>
   </QueryClientProvider>
 );
 
