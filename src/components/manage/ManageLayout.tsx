@@ -29,6 +29,9 @@ import {
   CalendarHeart,
   Globe,
   Percent,
+  Package,
+  Warehouse,
+  ClipboardList,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -45,6 +48,9 @@ const manageNavigation = [
   { name: "Offerings", href: "/manage/offerings", icon: Tag },
   { name: "Promo Codes", href: "/manage/promo-codes", icon: Percent },
   { name: "Financials", href: "/manage/financials", icon: CreditCard },
+  { name: "Products", href: "/manage/products", icon: Package },
+  { name: "Inventory", href: "/manage/inventory", icon: Warehouse },
+  { name: "Purchase Orders", href: "/manage/purchase-orders", icon: ClipboardList },
   { name: "Landing Pages", href: "/manage/landing-pages", icon: Globe },
   { name: "Reports", href: "/manage/reports", icon: BarChart3 },
   { name: "Import Data", href: "/manage/import", icon: Upload },

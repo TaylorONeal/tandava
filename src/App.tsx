@@ -43,6 +43,16 @@ import MemberAnalyticsManage from "./pages/manage/MemberAnalytics";
 import SalesAnalyticsManage from "./pages/manage/SalesAnalytics";
 import FinancialAnalyticsManage from "./pages/manage/FinancialAnalytics";
 import SiteAnalyticsManage from "./pages/manage/SiteAnalytics";
+import DataConnectorsManage from "./pages/manage/DataConnectors";
+import ProductsManage from "./pages/manage/Products";
+import InventoryManage from "./pages/manage/Inventory";
+import PurchaseOrdersManage from "./pages/manage/PurchaseOrders";
+
+// Instructor portal pages
+import TeachDashboard from "./pages/teach/Dashboard";
+import TeachSchedule from "./pages/teach/Schedule";
+import TeachSubs from "./pages/teach/Subs";
+import TeachEarnings from "./pages/teach/Earnings";
 
 const queryClient = new QueryClient();
 
@@ -91,6 +101,16 @@ const App = () => (
                 <Route path="/manage/analytics/sales" element={<SalesAnalyticsManage />} />
                 <Route path="/manage/analytics/financials" element={<FinancialAnalyticsManage />} />
                 <Route path="/manage/analytics/site" element={<SiteAnalyticsManage />} />
+                <Route path="/manage/connectors" element={<DataConnectorsManage />} />
+                <Route path="/manage/products" element={<ProductsManage />} />
+                <Route path="/manage/inventory" element={<InventoryManage />} />
+                <Route path="/manage/purchase-orders" element={<PurchaseOrdersManage />} />
+
+                {/* Instructor portal routes */}
+                <Route path="/teach" element={<TeachDashboard />} />
+                <Route path="/teach/schedule" element={<TeachSchedule />} />
+                <Route path="/teach/subs" element={<TeachSubs />} />
+                <Route path="/teach/earnings" element={<TeachEarnings />} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />
