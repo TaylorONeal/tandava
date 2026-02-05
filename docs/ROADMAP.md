@@ -82,25 +82,35 @@ Tandava is an open-source (AGPL-3.0) studio management platform that provides fe
 ### Phase 4: Campaign & Advertising Hub
 **Goal:** Centralize marketing campaigns, ad tracking, and promotional tools
 
-| Feature | Priority | PRD |
-|---------|----------|-----|
-| Campaign Manager | P0 | [PRD-011](./prd/PRD-011-campaign-hub.md) |
-| Ad Platform Integration (Meta, Google) | P1 | [PRD-011](./prd/PRD-011-campaign-hub.md) |
-| Attribution Tracking | P1 | [PRD-011](./prd/PRD-011-campaign-hub.md) |
-| A/B Testing for Landing Pages | P2 | [PRD-011](./prd/PRD-011-campaign-hub.md) |
-| UTM Builder & Tracking | P1 | [PRD-011](./prd/PRD-011-campaign-hub.md) |
+| Feature | Priority | Status | PRD |
+|---------|----------|--------|-----|
+| Campaign Manager | P0 | ✅ Implemented | [PRD-011](./prd/PRD-011-campaign-hub.md) |
+| Audience Segments | P0 | ✅ Implemented | [PRD-011](./prd/PRD-011-campaign-hub.md) |
+| UTM Builder & Tracking | P1 | ✅ Implemented | [PRD-011](./prd/PRD-011-campaign-hub.md) |
+| A/B Testing for Campaigns | P1 | ✅ Implemented | [PRD-011](./prd/PRD-011-campaign-hub.md) |
+| Email Templates Library | P1 | ✅ Implemented | [PRD-011](./prd/PRD-011-campaign-hub.md) |
+| Landing Page A/B Testing | P2 | ✅ Schema ready | [PRD-011](./prd/PRD-011-campaign-hub.md) |
+| Ad Platform Integration (Meta, Google) | P1 | 🔮 Future | [PRD-011](./prd/PRD-011-campaign-hub.md) |
+| Attribution Tracking (External Pixels) | P1 | 🔮 Future | [PRD-011](./prd/PRD-011-campaign-hub.md) |
+| Real-time Ad Spend Sync | P2 | 🔮 Future | [PRD-011](./prd/PRD-011-campaign-hub.md) |
+| Conversion API Webhooks | P2 | 🔮 Future | [PRD-011](./prd/PRD-011-campaign-hub.md) |
 
 ---
 
 ### Phase 5: Staff Task Management
 **Goal:** Enable operational task assignment and tracking for staff
 
-| Feature | Priority | PRD |
-|---------|----------|-----|
-| Task Creation & Assignment | P0 | [PRD-012](./prd/PRD-012-task-management.md) |
-| Recurring Tasks | P1 | [PRD-012](./prd/PRD-012-task-management.md) |
-| Task Completion Tracking | P0 | [PRD-012](./prd/PRD-012-task-management.md) |
-| Staff Notifications | P1 | [PRD-012](./prd/PRD-012-task-management.md) |
+| Feature | Priority | Status | PRD |
+|---------|----------|--------|-----|
+| Task Creation & Assignment | P0 | ✅ Implemented | [PRD-012](./prd/PRD-012-task-management.md) |
+| Task Board (Kanban View) | P0 | ✅ Implemented | [PRD-012](./prd/PRD-012-task-management.md) |
+| Task List View | P0 | ✅ Implemented | [PRD-012](./prd/PRD-012-task-management.md) |
+| Recurring Tasks | P1 | ✅ Implemented | [PRD-012](./prd/PRD-012-task-management.md) |
+| Task Completion Tracking | P0 | ✅ Implemented | [PRD-012](./prd/PRD-012-task-management.md) |
+| Task Comments & Activity | P1 | ✅ Implemented | [PRD-012](./prd/PRD-012-task-management.md) |
+| Task Templates | P1 | ✅ Schema ready | [PRD-012](./prd/PRD-012-task-management.md) |
+| Checklist Builder | P1 | ✅ Implemented | [PRD-012](./prd/PRD-012-task-management.md) |
+| Staff Notifications (In-App) | P1 | ✅ Uses Phase 2 | [PRD-012](./prd/PRD-012-task-management.md) |
 
 ---
 
