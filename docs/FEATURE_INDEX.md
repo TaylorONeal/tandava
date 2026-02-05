@@ -35,10 +35,10 @@ Quick reference for all features, their status, and locations in the codebase.
 |---------|--------|-------------|--------|-----|
 | Class booking | UI Only | `/schedule` | `bookings` | - |
 | Waitlist | UI Only | `/schedule` | `bookings.status` | - |
-| Waitlist auto-promotion | Planned | - | - | PRD-009 |
+| Waitlist auto-promotion | Built | - | `waitlist_settings`, trigger | PRD-009 |
 | Check-in (staff) | UI Only | `/manage/students` | `bookings.checked_in_at` | - |
-| Self check-in kiosk | Planned | `/kiosk/:id` | - | PRD-008 |
-| QR code check-in | Planned | - | `member_qr_codes` | PRD-008 |
+| Self check-in kiosk | UI Only | `/kiosk/:id` | `kiosk_devices` | PRD-008 |
+| QR code check-in | UI Only | - | `member_check_in_codes` | PRD-008 |
 | Spot/asset selection | Planned | - | - | Phase 7 |
 | Recurring booking | Planned | - | - | Phase 7 |
 | Reserve with Google | Planned | - | - | Phase 7 |
@@ -109,13 +109,19 @@ Quick reference for all features, their status, and locations in the codebase.
 | Staff roster | UI Only | `/manage/teachers` | `studio_staff` | - |
 | Role-based access | Built | - | `studio_staff.role` | - |
 | Payroll tracking | UI Only | `/manage/teachers` | `payroll_entries` | - |
-| Staff portal | Planned | `/teach` | - | PRD-001 |
-| Instructor availability | Schema | `/teach/availability` | `instructor_availability` | PRD-001 |
-| Sub requests | Schema | `/teach/subs` | `sub_requests` | PRD-001 |
-| Shift trading | Schema | `/teach/trades` | `shift_trades` | PRD-001 |
+| Staff portal | UI Only | `/teach` | - | PRD-001 |
+| Instructor dashboard | UI Only | `/teach` | - | PRD-001 |
+| Instructor schedule | UI Only | `/teach/schedule` | - | PRD-001 |
+| Instructor availability | Schema | `/teach/schedule` | `instructor_availability` | PRD-001 |
+| Sub requests | UI Only | `/teach/subs` | `sub_requests` | PRD-001 |
+| Shift trading | Schema | `/teach/subs` | `shift_trades` | PRD-001 |
 | Tips | Schema | - | `tips` | PRD-002 |
-| Live commission view | Planned | `/teach/earnings` | - | PRD-002 |
-| Staff task management | Planned | - | - | PRD-012 |
+| Earnings dashboard | UI Only | `/teach/earnings` | - | PRD-002 |
+| Staff task management | UI Only | `/manage/tasks` | `staff_tasks` | PRD-012 |
+| Task board (Kanban) | UI Only | `/manage/tasks` | `staff_tasks` | PRD-012 |
+| Recurring tasks | Schema | - | `task_recurrence_rules` | PRD-012 |
+| Task templates | Schema | - | `task_templates` | PRD-012 |
+| Task comments | Schema | - | `task_comments` | PRD-012 |
 
 ---
 
@@ -145,21 +151,25 @@ Quick reference for all features, their status, and locations in the codebase.
 | Feature | Status | UI Location | Schema | PRD |
 |---------|--------|-------------|--------|-----|
 | Notification log | Schema | - | `notifications` | - |
-| Email templates | Planned | - | - | - |
-| SMS (outbound) | Planned | - | - | PRD-005 |
-| Two-way SMS | Planned | - | `sms_conversations` | PRD-005 |
-| Push notifications | Planned | - | `push_subscriptions` | PRD-005 |
+| Email templates | UI Only | `/manage/campaigns` | `email_templates` | PRD-011 |
+| SMS (outbound) | Schema | - | `sms_messages` | PRD-005 |
+| Two-way SMS | UI Only | `/manage/sms-inbox` | `sms_conversations` | PRD-005 |
+| Push notifications | Schema | - | `push_subscriptions` | PRD-005 |
+| Notification settings | UI Only | `/manage/notification-settings` | `notification_preferences` | PRD-005 |
+| Member notification prefs | UI Only | `/account/notifications` | `notification_preferences` | PRD-005 |
 
 ### Campaigns & Advertising
 
 | Feature | Status | UI Location | Schema | PRD |
 |---------|--------|-------------|--------|-----|
-| Campaign manager | Planned | `/manage/campaigns` | `marketing_campaigns` | PRD-011 |
-| UTM builder | Planned | - | `campaign_links` | PRD-011 |
-| Meta Ads integration | Planned | - | `ad_platform_connections` | PRD-011 |
-| Google Ads integration | Planned | - | `ad_platform_connections` | PRD-011 |
-| Attribution tracking | Planned | - | `conversion_attributions` | PRD-011 |
-| A/B testing | Planned | - | `ab_tests` | PRD-011 |
+| Campaign manager | UI Only | `/manage/campaigns` | `campaigns` | PRD-011 |
+| Audience segments | UI Only | `/manage/audience-segments` | `audience_segments` | PRD-011 |
+| UTM builder | UI Only | `/manage/utm-builder` | `utm_templates`, `link_clicks` | PRD-011 |
+| A/B testing | UI Only | `/manage/campaigns` | `campaign_messages` | PRD-011 |
+| Landing page A/B | Schema | - | `landing_page_variants` | PRD-011 |
+| Meta Ads integration | Future | - | - | PRD-011 |
+| Google Ads integration | Future | - | - | PRD-011 |
+| Attribution tracking | Future | - | - | PRD-011 |
 
 ### Engagement & Retention
 
@@ -323,7 +333,9 @@ supabase/
     ├── 00003_events_analytics_growth.sql
     ├── 00004_advanced_analytics.sql
     ├── 00005_connector_infrastructure.sql
-    └── 00006_phase1_staff_retail_membership.sql
+    ├── 00006_phase1_staff_retail_membership.sql
+    ├── 00007_phase2_3_notifications_checkin.sql
+    └── 00008_phase4_5_campaigns_tasks.sql
 
 docs/
 ├── ROADMAP.md                    # Development roadmap
@@ -347,8 +359,10 @@ docs/
 | 004 | 12+ | BI: MRR, forecasting, CLV, P&L, benchmarks |
 | 005 | 12+ | Connectors: import/export/sync infrastructure |
 | 006 | 20+ | Phase 1: staff portal, retail, membership enhancements |
+| 007 | 12+ | Phase 2-3: notifications, SMS, check-in, waitlist automation |
+| 008 | 18+ | Phase 4-5: campaigns, audience segments, UTM, task management |
 
-**Total Tables:** ~110+
+**Total Tables:** ~140+
 
 ---
 

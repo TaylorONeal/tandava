@@ -2240,6 +2240,325 @@ export interface SpotPosition {
 }
 
 // ============================================================================
+// PHASE 4: CAMPAIGN HUB TYPES
+// ============================================================================
+
+export type CampaignType = 'email' | 'sms' | 'push' | 'multi_channel';
+export type CampaignStatus = 'draft' | 'scheduled' | 'active' | 'paused' | 'completed' | 'cancelled';
+
+export interface Campaign {
+  id: string;
+  studio_id: string;
+  name: string;
+  description: string | null;
+  campaign_type: CampaignType;
+  status: CampaignStatus;
+  scheduled_at: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+  target_audience: TargetAudience;
+  estimated_recipients: number;
+  is_ab_test: boolean;
+  winning_variant_id: string | null;
+  ab_test_percentage: number;
+  ab_winner_criteria: string;
+  ab_winner_wait_hours: number;
+  total_sent: number;
+  total_delivered: number;
+  total_opened: number;
+  total_clicked: number;
+  total_converted: number;
+  total_unsubscribed: number;
+  total_bounced: number;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TargetAudience {
+  membership_types?: string[];
+  membership_status?: string[];
+  tags?: string[];
+  last_visit_days?: number;
+  total_visits?: { operator: string; value: number };
+  lifetime_value?: { operator: string; value: number };
+  segment_ids?: string[];
+}
+
+export interface CampaignMessage {
+  id: string;
+  campaign_id: string;
+  variant_name: string;
+  channel: CampaignType;
+  email_subject: string | null;
+  email_preview_text: string | null;
+  email_body_html: string | null;
+  email_body_text: string | null;
+  sms_body: string | null;
+  push_title: string | null;
+  push_body: string | null;
+  push_image_url: string | null;
+  push_action_url: string | null;
+  template_id: string | null;
+  sent_count: number;
+  delivered_count: number;
+  opened_count: number;
+  clicked_count: number;
+  converted_count: number;
+  created_at: string;
+}
+
+export interface CampaignSend {
+  id: string;
+  campaign_id: string;
+  message_id: string | null;
+  profile_id: string;
+  channel: CampaignType;
+  sent_at: string;
+  delivered_at: string | null;
+  opened_at: string | null;
+  clicked_at: string | null;
+  converted_at: string | null;
+  unsubscribed_at: string | null;
+  bounced_at: string | null;
+  bounce_reason: string | null;
+  external_message_id: string | null;
+  clicks: ClickEvent[];
+  created_at: string;
+}
+
+export interface ClickEvent {
+  url: string;
+  clicked_at: string;
+}
+
+export interface AudienceSegment {
+  id: string;
+  studio_id: string;
+  name: string;
+  description: string | null;
+  filters: SegmentFilters;
+  member_count: number;
+  last_calculated_at: string | null;
+  is_dynamic: boolean;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SegmentFilters {
+  membership_status?: string[];
+  membership_types?: string[];
+  tags?: string[];
+  last_visit?: { operator: string; days: number };
+  total_visits?: { operator: string; value: number };
+  lifetime_value?: { operator: string; value: number };
+}
+
+export interface UtmTemplate {
+  id: string;
+  studio_id: string;
+  name: string;
+  description: string | null;
+  utm_source: string;
+  utm_medium: string;
+  utm_campaign: string | null;
+  utm_term: string | null;
+  utm_content: string | null;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface LinkClick {
+  id: string;
+  studio_id: string;
+  campaign_id: string | null;
+  campaign_send_id: string | null;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  utm_term: string | null;
+  utm_content: string | null;
+  destination_url: string;
+  short_code: string | null;
+  profile_id: string | null;
+  session_id: string | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  referrer: string | null;
+  clicked_at: string;
+}
+
+export interface LandingPageVariant {
+  id: string;
+  landing_page_id: string;
+  variant_name: string;
+  content_overrides: Record<string, unknown>;
+  traffic_percentage: number;
+  views: number;
+  conversions: number;
+  conversion_rate: number;
+  is_control: boolean;
+  is_winner: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EmailTemplate {
+  id: string;
+  studio_id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  subject: string | null;
+  preview_text: string | null;
+  body_html: string | null;
+  body_text: string | null;
+  variables: string[];
+  times_used: number;
+  last_used_at: string | null;
+  is_system: boolean;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// ============================================================================
+// PHASE 5: TASK MANAGEMENT TYPES
+// ============================================================================
+
+export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
+export type TaskStatus = 'pending' | 'in_progress' | 'completed' | 'cancelled';
+
+export interface TaskCategory {
+  id: string;
+  studio_id: string;
+  name: string;
+  color: string;
+  icon: string | null;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface StaffTask {
+  id: string;
+  studio_id: string;
+  title: string;
+  description: string | null;
+  category_id: string | null;
+  priority: TaskPriority;
+  status: TaskStatus;
+  assigned_to: string | null;
+  assigned_by: string | null;
+  due_date: string | null;
+  due_time: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+  completed_by: string | null;
+  location_id: string | null;
+  room_id: string | null;
+  is_recurring: boolean;
+  recurrence_rule_id: string | null;
+  parent_task_id: string | null;
+  checklist: ChecklistItem[];
+  attachments_count: number;
+  notes: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ChecklistItem {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+
+export interface TaskRecurrenceRule {
+  id: string;
+  studio_id: string;
+  frequency: 'daily' | 'weekly' | 'monthly';
+  interval_value: number;
+  days_of_week: number[];
+  day_of_month: number | null;
+  week_of_month: number | null;
+  task_time: string | null;
+  starts_on: string;
+  ends_on: string | null;
+  max_occurrences: number | null;
+  occurrences_created: number;
+  task_template: TaskTemplateData;
+  assignee_rotation: string[];
+  current_rotation_index: number;
+  is_active: boolean;
+  last_generated_at: string | null;
+  next_occurrence_at: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TaskTemplateData {
+  title: string;
+  description?: string;
+  category_id?: string;
+  priority?: TaskPriority;
+  assigned_to?: string;
+  checklist?: ChecklistItem[];
+  estimated_minutes?: number;
+}
+
+export interface TaskAttachment {
+  id: string;
+  task_id: string;
+  file_name: string;
+  file_type: string | null;
+  file_size: number | null;
+  file_url: string;
+  is_completion_photo: boolean;
+  uploaded_by: string | null;
+  uploaded_at: string;
+}
+
+export interface TaskComment {
+  id: string;
+  task_id: string;
+  author_id: string;
+  content: string;
+  mentions: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TaskActivity {
+  id: string;
+  task_id: string;
+  actor_id: string | null;
+  action: string;
+  old_value: Record<string, unknown> | null;
+  new_value: Record<string, unknown> | null;
+  created_at: string;
+}
+
+export interface TaskTemplate {
+  id: string;
+  studio_id: string;
+  name: string;
+  description: string | null;
+  category_id: string | null;
+  default_title: string;
+  default_description: string | null;
+  default_priority: TaskPriority;
+  default_checklist: ChecklistItem[];
+  estimated_minutes: number | null;
+  times_used: number;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// ============================================================================
 // UTILITY TYPES
 // ============================================================================
 
