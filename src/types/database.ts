@@ -745,6 +745,623 @@ export interface EventLogEntry {
 }
 
 // ============================================================================
+// EVENTS, LANDING PAGES, ANALYTICS, ENGAGEMENT (Migration 003)
+// ============================================================================
+
+// Enums
+export type EventType = 'workshop' | 'training' | 'retreat' | 'series' | 'immersion';
+export type EventStatus = 'draft' | 'published' | 'cancelled' | 'completed' | 'sold_out';
+export type EventRegistrationStatus = 'registered' | 'waitlisted' | 'cancelled' | 'refunded' | 'attended';
+export type LandingPageStatus = 'draft' | 'published' | 'archived';
+export type ContentBlockType = 'hero' | 'text' | 'features' | 'testimonials' | 'cta' | 'faq' | 'gallery' | 'schedule' | 'pricing' | 'team';
+export type SeoSeverity = 'info' | 'warning' | 'critical';
+export type NewsletterStatus = 'pending' | 'confirmed' | 'unsubscribed' | 'bounced';
+export type DeviceType = 'mobile' | 'tablet' | 'desktop';
+export type ConversionType = 'booking' | 'signup' | 'purchase' | 'newsletter';
+export type RiskLevel = 'none' | 'low' | 'medium' | 'high' | 'churned';
+export type TimePreference = 'morning' | 'midday' | 'evening';
+export type NudgeType = 'booking_reminder' | 'streak_at_risk' | 'comeback' | 'milestone_approaching' | 'new_class_suggestion' | 'pack_running_low' | 'membership_expiring' | 'friend_activity' | 'event_recommendation' | 'review_request';
+export type NudgeChannel = 'in_app' | 'push' | 'email';
+export type EngagementEventName = 'app_open' | 'schedule_view' | 'class_detail_view' | 'booking_started' | 'booking_completed' | 'check_in' | 'review_submitted' | 'referral_sent' | 'event_viewed' | 'landing_page_viewed' | 'newsletter_signup' | 'promo_applied' | 'membership_page_viewed' | 'streak_shared';
+
+// Events / Workshops
+export interface StudioEvent {
+  id: string;
+  studio_id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  long_description: string | null;
+  event_type: EventType;
+  status: EventStatus;
+  image_url: string | null;
+  gallery_urls: string[];
+  location_id: string | null;
+  venue_name: string | null;
+  venue_address: string | null;
+  starts_at: string;
+  ends_at: string;
+  timezone: string;
+  total_capacity: number | null;
+  registered_count: number;
+  waitlist_count: number;
+  registration_opens_at: string | null;
+  registration_closes_at: string | null;
+  cancellation_policy: string | null;
+  refund_policy: string | null;
+  what_to_bring: string[];
+  prerequisites: string | null;
+  is_recurring: boolean;
+  series_id: string | null;
+  tags: string[];
+  discoverable: boolean;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EventSession {
+  id: string;
+  event_id: string;
+  studio_id: string;
+  title: string | null;
+  description: string | null;
+  starts_at: string;
+  ends_at: string;
+  room: string | null;
+  capacity_override: number | null;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface EventTeacher {
+  id: string;
+  event_id: string;
+  studio_id: string;
+  teacher_id: string;
+  role: string;
+  sort_order: number;
+  created_at: string;
+  // Joined
+  teacher?: Profile;
+}
+
+export interface EventPricingTier {
+  id: string;
+  event_id: string;
+  studio_id: string;
+  name: string;
+  description: string | null;
+  price_cents: number;
+  capacity: number | null;
+  sold_count: number;
+  early_bird_price_cents: number | null;
+  early_bird_ends_at: string | null;
+  member_price_cents: number | null;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface EventRegistration {
+  id: string;
+  event_id: string;
+  studio_id: string;
+  profile_id: string;
+  pricing_tier_id: string | null;
+  session_ids: string[];
+  status: EventRegistrationStatus;
+  amount_paid_cents: number;
+  transaction_id: string | null;
+  promo_code_id: string | null;
+  discount_cents: number;
+  waitlist_position: number | null;
+  notes: string | null;
+  registered_at: string;
+  cancelled_at: string | null;
+  attended_at: string | null;
+  created_at: string;
+  updated_at: string;
+  // Joined
+  profile?: Profile;
+  event?: StudioEvent;
+}
+
+// Landing Pages
+export interface LandingPage {
+  id: string;
+  studio_id: string;
+  title: string;
+  slug: string;
+  meta_description: string | null;
+  meta_keywords: string[];
+  og_image_url: string | null;
+  status: LandingPageStatus;
+  content_blocks: ContentBlock[];
+  custom_css: string | null;
+  header_script: string | null;
+  conversion_goal: ConversionType | null;
+  total_views: number;
+  unique_views: number;
+  total_conversions: number;
+  conversion_rate: number;
+  published_at: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ContentBlock {
+  type: ContentBlockType;
+  content: Record<string, unknown>;
+  sort_order: number;
+}
+
+export interface SeoRecommendation {
+  id: string;
+  landing_page_id: string;
+  studio_id: string;
+  category: string;
+  severity: SeoSeverity;
+  title: string;
+  description: string;
+  current_value: string | null;
+  recommended_value: string | null;
+  is_resolved: boolean;
+  resolved_at: string | null;
+  created_at: string;
+}
+
+// Newsletter
+export interface NewsletterSubscriber {
+  id: string;
+  studio_id: string;
+  email: string;
+  profile_id: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  status: NewsletterStatus;
+  source: string;
+  source_detail: string | null;
+  confirmed_at: string | null;
+  unsubscribed_at: string | null;
+  tags: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+// Analytics Sessions
+export interface AnalyticsSession {
+  id: string;
+  studio_id: string;
+  profile_id: string | null;
+  session_token: string;
+  referrer_url: string | null;
+  referrer_domain: string | null;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  utm_content: string | null;
+  utm_term: string | null;
+  landing_page_url: string | null;
+  landing_page_id: string | null;
+  device_type: DeviceType | null;
+  browser: string | null;
+  os: string | null;
+  city: string | null;
+  region: string | null;
+  country: string | null;
+  page_views: number;
+  duration_seconds: number;
+  converted: boolean;
+  conversion_type: ConversionType | null;
+  conversion_entity_id: string | null;
+  started_at: string;
+  ended_at: string | null;
+  created_at: string;
+}
+
+// Analytics Daily Aggregation
+export interface AnalyticsDaily {
+  id: string;
+  studio_id: string;
+  date: string;
+  total_sessions: number;
+  unique_visitors: number;
+  page_views: number;
+  total_bookings: number;
+  total_signups: number;
+  total_purchases: number;
+  total_newsletter_signups: number;
+  revenue_cents: number;
+  top_referrers: Record<string, number>[];
+  top_campaigns: Record<string, number>[];
+  top_landing_pages: Record<string, number>[];
+  total_check_ins: number;
+  avg_class_fill_rate: number;
+  returning_students: number;
+  new_students: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// Engagement Profiles
+export interface EngagementProfile {
+  id: string;
+  studio_id: string;
+  profile_id: string;
+  is_activated: boolean;
+  activation_date: string | null;
+  days_to_activate: number | null;
+  current_streak_weeks: number;
+  longest_streak_weeks: number;
+  avg_classes_per_week: number;
+  preferred_day: DayOfWeek | null;
+  preferred_time: TimePreference | null;
+  preferred_styles: string[];
+  preferred_teachers: string[];
+  days_since_last_class: number;
+  risk_level: RiskLevel;
+  risk_updated_at: string | null;
+  milestones_reached: string[];
+  next_milestone: string | null;
+  next_milestone_progress: number;
+  engagement_score: number;
+  computed_at: string;
+  created_at: string;
+  updated_at: string;
+  // Joined
+  profile?: Profile;
+}
+
+// Engagement Events
+export interface EngagementEvent {
+  id: string;
+  studio_id: string;
+  profile_id: string | null;
+  session_id: string | null;
+  event: EngagementEventName;
+  entity_type: string | null;
+  entity_id: string | null;
+  metadata: Record<string, unknown>;
+  occurred_at: string;
+}
+
+// Nudge Rules
+export interface NudgeRule {
+  id: string;
+  studio_id: string;
+  nudge_type: NudgeType;
+  is_active: boolean;
+  trigger_condition: Record<string, unknown>;
+  channel: NudgeChannel;
+  title_template: string;
+  body_template: string;
+  action_url: string | null;
+  max_per_week: number;
+  max_per_month: number;
+  cooldown_hours: number;
+  can_dismiss: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface NudgeLogEntry {
+  id: string;
+  nudge_rule_id: string;
+  studio_id: string;
+  profile_id: string;
+  channel: NudgeChannel;
+  title: string;
+  body: string;
+  action_url: string | null;
+  delivered_at: string;
+  seen_at: string | null;
+  clicked_at: string | null;
+  dismissed_at: string | null;
+  converted: boolean;
+  conversion_entity_id: string | null;
+}
+
+// Milestones
+export interface Milestone {
+  id: string;
+  studio_id: string | null;
+  key: string;
+  name: string;
+  description: string | null;
+  criteria: Record<string, unknown>;
+  reward_type: string | null;
+  reward_value: number | null;
+  icon: string | null;
+  badge_image_url: string | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface MilestoneAchievement {
+  id: string;
+  milestone_id: string;
+  studio_id: string;
+  profile_id: string;
+  achieved_at: string;
+  reward_granted: boolean;
+  reward_transaction_id: string | null;
+  shared: boolean;
+  created_at: string;
+  // Joined
+  milestone?: Milestone;
+  profile?: Profile;
+}
+
+// ============================================================================
+// ADVANCED ANALYTICS (Migration 004)
+// ============================================================================
+
+// MRR Snapshots
+export interface MrrSnapshot {
+  id: string;
+  studio_id: string;
+  snapshot_date: string;
+  total_mrr_cents: number;
+  new_mrr_cents: number;
+  expansion_mrr_cents: number;
+  contraction_mrr_cents: number;
+  churned_mrr_cents: number;
+  reactivation_mrr_cents: number;
+  paused_mrr_cents: number;
+  active_memberships: number;
+  new_memberships: number;
+  churned_memberships: number;
+  paused_memberships: number;
+  net_membership_change: number;
+  created_at: string;
+}
+
+// Revenue Forecast
+export interface RevenueForecastConfig {
+  id: string;
+  studio_id: string;
+  name: string;
+  assumptions: {
+    expected_churn_rate?: number;
+    expected_growth_rate?: number;
+    avg_new_students_per_month?: number;
+    avg_revenue_per_student_cents?: number;
+    seasonal_adjustments?: Record<string, number>;
+    pause_rate?: number;
+    app_store_cut_pct?: number;
+    payment_processing_fee_pct?: number;
+    expected_payroll_pct?: number;
+    rent_cents_monthly?: number;
+    other_fixed_costs_cents?: number;
+  };
+  is_default: boolean;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RevenueForecast {
+  id: string;
+  studio_id: string;
+  config_id: string;
+  forecast_month: string;
+  projected_mrr_cents: number;
+  projected_total_revenue_cents: number;
+  projected_membership_revenue_cents: number;
+  projected_pack_revenue_cents: number;
+  projected_dropin_revenue_cents: number;
+  projected_event_revenue_cents: number;
+  projected_expenses_cents: number;
+  projected_payroll_cents: number;
+  projected_platform_fees_cents: number;
+  projected_net_revenue_cents: number;
+  projected_active_members: number;
+  confidence_level: number;
+  computed_at: string;
+  created_at: string;
+}
+
+// Customer Lifetime Value
+export type AcquisitionSource = 'organic' | 'referral' | 'promo' | 'event' | 'landing_page' | 'walk_in' | 'import';
+
+export interface ClvCohort {
+  id: string;
+  studio_id: string;
+  cohort_month: string;
+  acquisition_source: AcquisitionSource;
+  total_students: number;
+  still_active: number;
+  avg_lifetime_days: number;
+  avg_total_revenue_cents: number;
+  avg_classes_attended: number;
+  median_total_revenue_cents: number;
+  retention_rate_30d: number;
+  retention_rate_90d: number;
+  retention_rate_180d: number;
+  retention_rate_365d: number;
+  projected_clv_cents: number;
+  computed_at: string;
+  created_at: string;
+}
+
+// P&L Summaries
+export interface PlMonthlySummary {
+  id: string;
+  studio_id: string;
+  month: string;
+  // Revenue
+  membership_revenue_cents: number;
+  pack_revenue_cents: number;
+  dropin_revenue_cents: number;
+  event_revenue_cents: number;
+  gift_card_revenue_cents: number;
+  other_revenue_cents: number;
+  total_gross_revenue_cents: number;
+  refunds_cents: number;
+  discounts_cents: number;
+  total_net_revenue_cents: number;
+  // Expenses
+  payroll_cents: number;
+  payment_processing_fees_cents: number;
+  platform_fees_cents: number;
+  rent_cents: number;
+  utilities_cents: number;
+  insurance_cents: number;
+  marketing_cents: number;
+  software_cents: number;
+  other_expenses_cents: number;
+  total_expenses_cents: number;
+  // Bottom line
+  net_operating_income_cents: number;
+  operating_margin_pct: number;
+  notes: string | null;
+  is_finalized: boolean;
+  finalized_by: string | null;
+  finalized_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Promo Performance
+export interface PromoPerformance {
+  id: string;
+  studio_id: string;
+  promo_code_id: string;
+  period_start: string;
+  period_end: string;
+  total_redemptions: number;
+  unique_students: number;
+  total_discount_cents: number;
+  total_revenue_from_promo_users_cents: number;
+  new_students_acquired: number;
+  returning_students: number;
+  subsequent_purchases: number;
+  subsequent_revenue_cents: number;
+  estimated_roi_pct: number;
+  computed_at: string;
+  created_at: string;
+}
+
+// Conversion Funnels
+export interface ConversionFunnel {
+  id: string;
+  studio_id: string;
+  period_start: string;
+  period_end: string;
+  funnel_type: string;
+  steps: FunnelStep[];
+  overall_conversion_rate: number;
+  top_drop_off_step: string | null;
+  computed_at: string;
+  created_at: string;
+}
+
+export interface FunnelStep {
+  step_name: string;
+  count: number;
+  drop_off_rate: number;
+  conversion_rate: number;
+}
+
+// Seasonality
+export interface SeasonalityPattern {
+  id: string;
+  studio_id: string;
+  year: number;
+  metric_type: string;
+  monthly_values: Record<string, number>;
+  monthly_indexes: Record<string, number>;
+  peak_month: number;
+  trough_month: number;
+  seasonal_variance: number;
+  computed_at: string;
+  created_at: string;
+}
+
+// Benchmarks
+export interface BenchmarkCategory {
+  id: string;
+  name: string;
+  display_name: string;
+  description: string | null;
+  studio_size: string;
+  created_at: string;
+}
+
+export interface BenchmarkMetric {
+  id: string;
+  category_id: string;
+  metric_name: string;
+  display_name: string;
+  description: string | null;
+  unit: string;
+  p25: number;
+  p50: number;
+  p75: number;
+  p90: number;
+  source: string;
+  sample_size: number | null;
+  last_updated: string | null;
+  created_at: string;
+}
+
+export interface StudioBenchmarkConfig {
+  id: string;
+  studio_id: string;
+  benchmark_category_id: string;
+  contribute_anonymous_metrics: boolean;
+  contributing_since: string | null;
+  last_contributed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Scheduled Reports
+export interface ScheduledReport {
+  id: string;
+  studio_id: string;
+  name: string;
+  report_type: string;
+  frequency: string;
+  delivery_day: number | null;
+  delivery_hour: number;
+  recipients: { profile_id: string; email: string }[];
+  filters: Record<string, unknown> | null;
+  format: string;
+  is_active: boolean;
+  last_sent_at: string | null;
+  next_send_at: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Expansion Analysis
+export interface ExpansionIndicator {
+  id: string;
+  studio_id: string;
+  analyzed_at: string;
+  avg_class_fill_rate: number;
+  peak_hour_fill_rate: number;
+  classes_at_capacity_pct: number;
+  waitlist_frequency: number;
+  new_student_growth_rate: number;
+  student_zip_code_distribution: Record<string, number>;
+  search_demand_notes: string | null;
+  current_monthly_net_income_cents: number;
+  revenue_growth_rate_3m: number;
+  revenue_growth_rate_12m: number;
+  operating_margin_pct: number;
+  expansion_score: number;
+  recommendation: string;
+  reasoning: { signal: string; value: number | string; interpretation: string }[];
+  created_at: string;
+}
+
+// ============================================================================
 // UTILITY TYPES
 // ============================================================================
 
