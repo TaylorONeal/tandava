@@ -47,12 +47,20 @@ import DataConnectorsManage from "./pages/manage/DataConnectors";
 import ProductsManage from "./pages/manage/Products";
 import InventoryManage from "./pages/manage/Inventory";
 import PurchaseOrdersManage from "./pages/manage/PurchaseOrders";
+import NotificationSettingsManage from "./pages/manage/NotificationSettings";
+import SmsInboxManage from "./pages/manage/SmsInbox";
+
+// Account pages
+import NotificationPreferences from "./pages/account/NotificationPreferences";
 
 // Instructor portal pages
 import TeachDashboard from "./pages/teach/Dashboard";
 import TeachSchedule from "./pages/teach/Schedule";
 import TeachSubs from "./pages/teach/Subs";
 import TeachEarnings from "./pages/teach/Earnings";
+
+// Kiosk page
+import Kiosk from "./pages/Kiosk";
 
 const queryClient = new QueryClient();
 
@@ -105,12 +113,20 @@ const App = () => (
                 <Route path="/manage/products" element={<ProductsManage />} />
                 <Route path="/manage/inventory" element={<InventoryManage />} />
                 <Route path="/manage/purchase-orders" element={<PurchaseOrdersManage />} />
+                <Route path="/manage/notification-settings" element={<NotificationSettingsManage />} />
+                <Route path="/manage/sms-inbox" element={<SmsInboxManage />} />
+
+                {/* Account routes */}
+                <Route path="/account/notifications" element={<NotificationPreferences />} />
 
                 {/* Instructor portal routes */}
                 <Route path="/teach" element={<TeachDashboard />} />
                 <Route path="/teach/schedule" element={<TeachSchedule />} />
                 <Route path="/teach/subs" element={<TeachSubs />} />
                 <Route path="/teach/earnings" element={<TeachEarnings />} />
+
+                {/* Kiosk mode - standalone full-screen check-in */}
+                <Route path="/kiosk/:studioId" element={<Kiosk />} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />

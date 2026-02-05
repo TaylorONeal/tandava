@@ -32,6 +32,7 @@ import {
   Package,
   Warehouse,
   ClipboardList,
+  MessageSquare,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -54,6 +55,8 @@ const manageNavigation = [
   { name: "Landing Pages", href: "/manage/landing-pages", icon: Globe },
   { name: "Reports", href: "/manage/reports", icon: BarChart3 },
   { name: "Import Data", href: "/manage/import", icon: Upload },
+  { name: "SMS Inbox", href: "/manage/sms-inbox", icon: MessageSquare },
+  { name: "Notifications", href: "/manage/notification-settings", icon: Bell },
   { name: "Settings", href: "/manage/settings", icon: Settings },
 ];
 
