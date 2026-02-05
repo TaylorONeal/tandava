@@ -1362,6 +1362,634 @@ export interface ExpansionIndicator {
 }
 
 // ============================================================================
+// CONNECTOR INFRASTRUCTURE (Migration 005)
+// ============================================================================
+
+// Connector Enums
+export type ConnectorType = 'import' | 'export' | 'sync_inbound' | 'sync_outbound' | 'sync_bidirectional';
+export type ConnectorCategory =
+  | 'migration'
+  | 'marketplace'
+  | 'calendar'
+  | 'crm'
+  | 'accounting'
+  | 'communication'
+  | 'payment'
+  | 'access_control'
+  | 'analytics'
+  | 'compliance'
+  | 'custom';
+export type ConnectorStatus = 'available' | 'configured' | 'active' | 'paused' | 'error' | 'deprecated';
+export type ImportJobStatus =
+  | 'pending'
+  | 'validating'
+  | 'dry_run'
+  | 'dry_run_complete'
+  | 'importing'
+  | 'processing'
+  | 'complete'
+  | 'partial'
+  | 'failed'
+  | 'cancelled';
+export type ExportJobStatus = 'pending' | 'generating' | 'complete' | 'failed' | 'expired';
+export type ExportFormat = 'csv' | 'xlsx' | 'json' | 'pdf' | 'quickbooks_iif' | 'xero_csv';
+export type SyncDirection = 'inbound' | 'outbound';
+export type GdprRequestType = 'access' | 'rectification' | 'erasure' | 'portability';
+export type GdprRequestStatus = 'pending' | 'processing' | 'awaiting_verification' | 'complete' | 'rejected';
+
+// Connector Definition (system-wide)
+export interface ConnectorDefinition {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  icon_url: string | null;
+  connector_type: ConnectorType;
+  category: ConnectorCategory;
+  supported_entities: string[];
+  supports_dry_run: boolean;
+  supports_incremental: boolean;
+  supports_scheduled: boolean;
+  known_versions: string[];
+  config_schema: Record<string, unknown>;
+  credentials_schema: Record<string, unknown>;
+  setup_guide_url: string | null;
+  export_instructions: string | null;
+  is_enabled: boolean;
+  requires_approval: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Studio Connector Instance
+export interface StudioConnector {
+  id: string;
+  studio_id: string;
+  connector_definition_id: string;
+  status: ConnectorStatus;
+  last_sync_at: string | null;
+  last_error: string | null;
+  error_count: number;
+  config: Record<string, unknown>;
+  credentials_encrypted: string | null;
+  sync_frequency_minutes: number | null;
+  sync_direction: 'push' | 'pull' | 'both' | null;
+  entity_filters: Record<string, unknown>;
+  field_mappings: Record<string, unknown>;
+  configured_by: string | null;
+  configured_at: string;
+  updated_at: string;
+}
+
+// Import Job (v2)
+export interface ImportJobV2 {
+  id: string;
+  studio_id: string;
+  connector_id: string | null;
+  source_type: string;
+  source_version: string | null;
+  entity_type: string;
+  original_filename: string | null;
+  file_storage_path: string | null;
+  file_size_bytes: number | null;
+  file_hash: string | null;
+  status: ImportJobStatus;
+  is_dry_run: boolean;
+  column_mappings: Record<string, string>;
+  transformation_rules: Record<string, unknown>;
+  total_rows: number | null;
+  processed_rows: number;
+  progress_percent: number;
+  imported_count: number;
+  updated_count: number;
+  skipped_count: number;
+  error_count: number;
+  warning_count: number;
+  started_at: string | null;
+  completed_at: string | null;
+  duration_seconds: number | null;
+  created_by: string | null;
+  created_at: string;
+}
+
+// Import Row Result
+export interface ImportRowResult {
+  id: string;
+  job_id: string;
+  row_number: number;
+  status: 'imported' | 'updated' | 'skipped' | 'error' | 'warning';
+  source_data: Record<string, unknown> | null;
+  target_entity_type: string | null;
+  target_entity_id: string | null;
+  error_message: string | null;
+  warning_messages: string[] | null;
+  duplicate_of_id: string | null;
+  duplicate_match_field: string | null;
+  created_at: string;
+}
+
+// Data Quality Report
+export interface ImportQualityReport {
+  id: string;
+  job_id: string;
+  overall_score: number | null;
+  completeness_score: number | null;
+  validity_score: number | null;
+  uniqueness_score: number | null;
+  consistency_score: number | null;
+  field_analysis: Record<string, FieldAnalysis>;
+  critical_issues: QualityIssue[];
+  warnings: QualityIssue[];
+  suggestions: QualityIssue[];
+  potential_duplicates: DuplicateMatch[];
+  existing_matches_count: number;
+  existing_matches_sample: ExistingMatch[];
+  created_at: string;
+}
+
+export interface FieldAnalysis {
+  filled_count: number;
+  empty_count: number;
+  valid_count?: number;
+  invalid_samples?: string[];
+  duplicate_count?: number;
+  formats_detected?: string[];
+}
+
+export interface QualityIssue {
+  field?: string;
+  type: string;
+  message: string;
+  affected_rows?: number[];
+  severity: 'critical' | 'warning' | 'suggestion';
+}
+
+export interface DuplicateMatch {
+  rows: number[];
+  match_field: string;
+  match_value: string;
+  recommendation: 'merge' | 'skip_later' | 'review';
+}
+
+export interface ExistingMatch {
+  import_row: number;
+  existing_id: string;
+  match_field: string;
+  match_value: string;
+  recommendation: 'update' | 'skip' | 'review';
+}
+
+// Export Job
+export interface ExportJob {
+  id: string;
+  studio_id: string;
+  connector_id: string | null;
+  export_type: string;
+  entity_filters: Record<string, unknown>;
+  format: ExportFormat;
+  include_headers: boolean;
+  date_range_start: string | null;
+  date_range_end: string | null;
+  include_deleted: boolean;
+  anonymize_pii: boolean;
+  status: ExportJobStatus;
+  file_storage_path: string | null;
+  file_size_bytes: number | null;
+  download_url: string | null;
+  download_expires_at: string | null;
+  download_count: number;
+  started_at: string | null;
+  completed_at: string | null;
+  requested_by: string | null;
+  request_reason: string | null;
+  created_at: string;
+}
+
+// Scheduled Export
+export interface ScheduledExport {
+  id: string;
+  studio_id: string;
+  name: string;
+  export_type: string;
+  entity_filters: Record<string, unknown>;
+  format: ExportFormat;
+  frequency: 'daily' | 'weekly' | 'monthly' | 'quarterly';
+  day_of_week: number | null;
+  day_of_month: number | null;
+  time_of_day: string;
+  timezone: string;
+  delivery_method: 'email' | 'sftp' | 'webhook' | 'storage';
+  delivery_config: DeliveryConfig;
+  is_active: boolean;
+  last_run_at: string | null;
+  last_run_status: string | null;
+  next_run_at: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DeliveryConfig {
+  email?: string;
+  cc?: string[];
+  sftp_host?: string;
+  sftp_path?: string;
+  webhook_url?: string;
+  storage_bucket?: string;
+}
+
+// Sync Operation
+export interface SyncOperation {
+  id: string;
+  studio_id: string;
+  connector_id: string;
+  direction: SyncDirection;
+  entity_type: string;
+  trigger_type: 'scheduled' | 'manual' | 'webhook' | 'realtime';
+  is_full_sync: boolean;
+  incremental_since: string | null;
+  status: 'running' | 'complete' | 'partial' | 'failed';
+  records_processed: number;
+  records_created: number;
+  records_updated: number;
+  records_deleted: number;
+  records_failed: number;
+  error_summary: Record<string, unknown>;
+  started_at: string;
+  completed_at: string | null;
+  duration_ms: number | null;
+  sync_cursor: string | null;
+}
+
+// Entity Sync Mapping
+export interface EntitySyncMapping {
+  id: string;
+  studio_id: string;
+  connector_id: string;
+  entity_type: string;
+  entity_id: string;
+  external_id: string;
+  external_data_hash: string | null;
+  last_synced_at: string | null;
+  sync_status: 'synced' | 'pending_push' | 'pending_pull' | 'conflict';
+  conflict_data: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// GDPR Request
+export interface GdprRequest {
+  id: string;
+  studio_id: string;
+  profile_id: string | null;
+  email: string;
+  verification_token: string | null;
+  verified_at: string | null;
+  request_type: GdprRequestType;
+  status: GdprRequestStatus;
+  processed_by: string | null;
+  processed_at: string | null;
+  rejection_reason: string | null;
+  export_job_id: string | null;
+  erasure_log: ErasureLog | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string;
+  completed_at: string | null;
+  must_retain_until: string | null;
+}
+
+export interface ErasureLog {
+  tables_affected: string[];
+  records_anonymized: number;
+  records_deleted: number;
+  retained_for_legal?: string[];
+}
+
+// ============================================================================
+// PHASE 1: STAFF PORTAL, RETAIL, MEMBERSHIP (Migration 006)
+// ============================================================================
+
+// Staff Portal Enums
+export type AvailabilityType = 'unavailable' | 'preferred' | 'available';
+export type SubRequestStatus = 'open' | 'claimed' | 'approved' | 'denied' | 'cancelled' | 'expired';
+export type ShiftTradeStatus = 'proposed' | 'accepted' | 'approved' | 'declined' | 'denied' | 'cancelled' | 'expired';
+export type TipStatus = 'pending' | 'paid' | 'cancelled';
+
+// Retail Enums
+export type ProductType = 'physical' | 'consumable' | 'rental' | 'digital';
+export type ProductStatus = 'active' | 'inactive' | 'out_of_stock' | 'discontinued';
+export type InventoryMovementType = 'sale' | 'return' | 'restock' | 'adjustment' | 'transfer' | 'damage' | 'rental_out' | 'rental_return';
+export type PurchaseOrderStatus = 'draft' | 'submitted' | 'confirmed' | 'partially_received' | 'received' | 'cancelled';
+
+// Instructor Availability
+export interface InstructorAvailability {
+  id: string;
+  profile_id: string;
+  studio_id: string;
+  availability_type: AvailabilityType;
+  start_date: string;
+  end_date: string | null;
+  start_time: string | null;
+  end_time: string | null;
+  is_recurring: boolean;
+  recurrence_pattern: 'weekly' | 'biweekly' | 'monthly' | null;
+  recurrence_days: number[] | null;
+  recurrence_end_date: string | null;
+  reason: string | null;
+  is_visible_to_others: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Sub Requests
+export interface SubRequest {
+  id: string;
+  studio_id: string;
+  class_occurrence_id: string;
+  requesting_teacher_id: string;
+  reason: string | null;
+  reason_visible_to_subs: boolean;
+  suggested_teacher_ids: string[] | null;
+  status: SubRequestStatus;
+  claimed_by_id: string | null;
+  claimed_at: string | null;
+  approved_by_id: string | null;
+  approved_at: string | null;
+  denial_reason: string | null;
+  sub_pay_cents: number | null;
+  is_urgent: boolean;
+  notification_sent_at: string | null;
+  reminder_sent_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Shift Trades
+export interface ShiftTrade {
+  id: string;
+  studio_id: string;
+  proposer_id: string;
+  proposer_class_id: string;
+  recipient_id: string;
+  recipient_class_id: string;
+  status: ShiftTradeStatus;
+  responded_at: string | null;
+  response_note: string | null;
+  approved_by_id: string | null;
+  approved_at: string | null;
+  denial_reason: string | null;
+  expires_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// Tips
+export interface Tip {
+  id: string;
+  studio_id: string;
+  teacher_id: string;
+  member_id: string | null;
+  is_anonymous: boolean;
+  class_occurrence_id: string | null;
+  transaction_id: string | null;
+  amount_cents: number;
+  currency: string;
+  stripe_payment_intent_id: string | null;
+  status: TipStatus;
+  included_in_payroll_id: string | null;
+  paid_out_at: string | null;
+  message: string | null;
+  created_at: string;
+}
+
+// Products
+export interface Product {
+  id: string;
+  studio_id: string;
+  name: string;
+  description: string | null;
+  sku: string | null;
+  barcode: string | null;
+  product_type: ProductType;
+  category: string | null;
+  tags: string[] | null;
+  price_cents: number;
+  cost_cents: number | null;
+  currency: string;
+  is_taxable: boolean;
+  tax_category: string | null;
+  image_urls: string[] | null;
+  status: ProductStatus;
+  track_inventory: boolean;
+  allow_backorder: boolean;
+  low_stock_threshold: number;
+  rental_duration_hours: number | null;
+  rental_deposit_cents: number | null;
+  digital_file_url: string | null;
+  download_limit: number | null;
+  vendor: string | null;
+  weight_grams: number | null;
+  dimensions_cm: { length: number; width: number; height: number } | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Inventory
+export interface InventoryLevel {
+  id: string;
+  product_id: string;
+  location_id: string;
+  quantity_on_hand: number;
+  quantity_reserved: number;
+  quantity_available: number;
+  reorder_point: number | null;
+  reorder_quantity: number | null;
+  last_counted_at: string | null;
+  last_restocked_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface InventoryMovement {
+  id: string;
+  product_id: string;
+  location_id: string;
+  movement_type: InventoryMovementType;
+  quantity: number;
+  quantity_before: number;
+  quantity_after: number;
+  transaction_id: string | null;
+  transfer_to_location_id: string | null;
+  notes: string | null;
+  performed_by: string | null;
+  created_at: string;
+}
+
+// Purchase Orders
+export interface PurchaseOrder {
+  id: string;
+  studio_id: string;
+  location_id: string;
+  vendor_name: string;
+  vendor_contact: string | null;
+  vendor_email: string | null;
+  status: PurchaseOrderStatus;
+  order_number: string | null;
+  ordered_at: string | null;
+  expected_at: string | null;
+  received_at: string | null;
+  subtotal_cents: number;
+  tax_cents: number;
+  shipping_cents: number;
+  total_cents: number;
+  notes: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PurchaseOrderItem {
+  id: string;
+  purchase_order_id: string;
+  product_id: string;
+  quantity_ordered: number;
+  quantity_received: number;
+  unit_cost_cents: number;
+  total_cents: number;
+  created_at: string;
+}
+
+// Households (Family Plans)
+export interface Household {
+  id: string;
+  studio_id: string;
+  name: string | null;
+  primary_member_id: string;
+  consolidated_billing: boolean;
+  billing_profile_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface HouseholdMember {
+  id: string;
+  household_id: string;
+  profile_id: string;
+  is_primary: boolean;
+  is_dependent: boolean;
+  relationship: string | null;
+  can_book_for_others: boolean;
+  can_view_others_schedule: boolean;
+  added_at: string;
+}
+
+// Corporate Accounts
+export interface CorporateAccount {
+  id: string;
+  studio_id: string;
+  company_name: string;
+  company_logo_url: string | null;
+  industry: string | null;
+  primary_contact_name: string | null;
+  primary_contact_email: string | null;
+  primary_contact_phone: string | null;
+  billing_email: string | null;
+  contract_start_date: string | null;
+  contract_end_date: string | null;
+  max_employees: number | null;
+  pricing_type: 'per_seat' | 'flat_rate' | 'usage_based' | null;
+  per_seat_cents: number | null;
+  flat_rate_cents: number | null;
+  discount_percent: number | null;
+  billing_cycle: 'monthly' | 'quarterly' | 'annual' | null;
+  payment_terms_days: number;
+  is_active: boolean;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CorporateEmployee {
+  id: string;
+  corporate_account_id: string;
+  profile_id: string;
+  employee_id: string | null;
+  department: string | null;
+  is_active: boolean;
+  activated_at: string;
+  deactivated_at: string | null;
+  classes_this_month: number;
+  classes_limit_per_month: number | null;
+  created_at: string;
+}
+
+// Pricing Rules (Dynamic Pricing)
+export interface PricingRule {
+  id: string;
+  studio_id: string;
+  name: string;
+  description: string | null;
+  applies_to: 'drop_in' | 'class_pack' | 'membership' | 'event' | 'product';
+  offering_ids: string[] | null;
+  membership_type_ids: string[] | null;
+  event_ids: string[] | null;
+  product_ids: string[] | null;
+  condition_type: 'time_of_day' | 'day_of_week' | 'capacity' | 'advance_booking' | 'last_minute' | 'member_tenure' | 'total_spend';
+  valid_days: number[] | null;
+  valid_start_time: string | null;
+  valid_end_time: string | null;
+  min_capacity_percent: number | null;
+  max_capacity_percent: number | null;
+  min_hours_before: number | null;
+  max_hours_before: number | null;
+  min_member_months: number | null;
+  min_total_spend_cents: number | null;
+  discount_type: 'percent' | 'fixed' | 'new_price';
+  discount_value: number;
+  max_uses_total: number | null;
+  max_uses_per_member: number | null;
+  current_uses: number;
+  is_active: boolean;
+  starts_at: string | null;
+  ends_at: string | null;
+  priority: number;
+  stackable: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Membership Add-ons
+export interface MembershipAddon {
+  id: string;
+  studio_id: string;
+  name: string;
+  description: string | null;
+  price_cents: number;
+  billing_frequency: 'one_time' | 'per_billing_cycle' | 'monthly' | null;
+  addon_type: 'guest_passes' | 'locker' | 'towel_service' | 'parking' | 'laundry' | 'retail_discount' | 'priority_booking' | 'unlimited_freezes' | 'custom';
+  quantity_per_cycle: number | null;
+  discount_percent: number | null;
+  hours_advance: number | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MembershipAddonSubscription {
+  id: string;
+  membership_id: string;
+  addon_id: string;
+  is_active: boolean;
+  started_at: string;
+  cancelled_at: string | null;
+  quantity_used_this_cycle: number;
+  cycle_reset_at: string | null;
+  stripe_subscription_item_id: string | null;
+  created_at: string;
+}
+
+// ============================================================================
 // UTILITY TYPES
 // ============================================================================
 

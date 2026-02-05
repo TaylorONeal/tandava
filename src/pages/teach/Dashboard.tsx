@@ -1,0 +1,462 @@
+import { TeachLayout } from "@/components/teach/TeachLayout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Calendar,
+  DollarSign,
+  Repeat2,
+  Clock,
+  ArrowRight,
+  Users,
+  Heart,
+  ChevronRight,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+
+// Mock data for instructor dashboard
+const upcomingClasses = [
+  {
+    id: "1",
+    name: "Morning Vinyasa",
+    date: "Today",
+    time: "7:00 AM",
+    room: "Main Studio",
+    booked: 22,
+    capacity: 25,
+    isToday: true,
+  },
+  {
+    id: "2",
+    name: "Evening Vinyasa",
+    date: "Today",
+    time: "6:00 PM",
+    room: "Main Studio",
+    booked: 18,
+    capacity: 25,
+    isToday: true,
+  },
+  {
+    id: "3",
+    name: "Morning Vinyasa",
+    date: "Wednesday",
+    time: "7:00 AM",
+    room: "Main Studio",
+    booked: 19,
+    capacity: 25,
+    isToday: false,
+  },
+  {
+    id: "4",
+    name: "Evening Vinyasa",
+    date: "Wednesday",
+    time: "6:00 PM",
+    room: "Main Studio",
+    booked: 15,
+    capacity: 25,
+    isToday: false,
+  },
+  {
+    id: "5",
+    name: "Community Flow",
+    date: "Saturday",
+    time: "11:00 AM",
+    room: "Main Studio",
+    booked: 20,
+    capacity: 25,
+    isToday: false,
+  },
+];
+
+const pendingSubRequests = [
+  {
+    id: "1",
+    className: "Morning Vinyasa",
+    date: "Feb 12",
+    time: "7:00 AM",
+    status: "pending",
+    requestedAt: "2 days ago",
+  },
+];
+
+const openSubOpportunities = [
+  {
+    id: "1",
+    className: "Gentle Flow",
+    teacher: "James Liu",
+    date: "Feb 10",
+    time: "9:30 AM",
+    pay: 75,
+  },
+  {
+    id: "2",
+    className: "Yin Restore",
+    teacher: "Ava Kim",
+    date: "Feb 14",
+    time: "4:30 PM",
+    pay: 65,
+  },
+];
+
+const recentTips = [
+  { id: "1", from: "Anonymous", amount: 20, className: "Morning Vinyasa", date: "Today" },
+  { id: "2", from: "Emma W.", amount: 15, className: "Evening Vinyasa", date: "Yesterday" },
+  { id: "3", from: "Alex R.", amount: 10, className: "Community Flow", date: "Jan 28" },
+];
+
+const earningsSummary = {
+  total: 1850,
+  basePay: 1650,
+  tips: 145,
+  subs: 55,
+  classesThisPeriod: 22,
+  periodStart: "Jan 16",
+  periodEnd: "Jan 31",
+};
+
+export default function TeachDashboard() {
+  return (
+    <TeachLayout>
+      <div className="space-y-6">
+        {/* Page Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              {new Date().toLocaleDateString("en-US", {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/teach/schedule">
+              <Calendar className="h-4 w-4 mr-2" />
+              View Schedule
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/teach/subs">
+              <Repeat2 className="h-4 w-4 mr-2" />
+              Request Sub
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/teach/earnings">
+              <DollarSign className="h-4 w-4 mr-2" />
+              View Earnings
+            </Link>
+          </Button>
+        </div>
+
+        {/* Key Metrics */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="pt-5 pb-4 px-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Classes This Week
+                  </p>
+                  <p className="text-2xl font-bold mt-1">5</p>
+                </div>
+                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Calendar className="h-5 w-5 text-primary" />
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                {upcomingClasses.filter((c) => c.isToday).length} today
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-5 pb-4 px-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Period Earnings
+                  </p>
+                  <p className="text-2xl font-bold mt-1">
+                    ${earningsSummary.total.toLocaleString()}
+                  </p>
+                </div>
+                <div className="h-10 w-10 rounded-xl bg-accent-sage/20 flex items-center justify-center">
+                  <DollarSign className="h-5 w-5 text-accent-sage" />
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                {earningsSummary.classesThisPeriod} classes
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-5 pb-4 px-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Open Sub Opps
+                  </p>
+                  <p className="text-2xl font-bold mt-1">
+                    {openSubOpportunities.length}
+                  </p>
+                </div>
+                <div className="h-10 w-10 rounded-xl bg-accent-gold/20 flex items-center justify-center">
+                  <Repeat2 className="h-5 w-5 text-accent-gold" />
+                </div>
+              </div>
+              <p className="text-xs text-accent-gold mt-2">Available to claim</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-5 pb-4 px-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Tips This Period
+                  </p>
+                  <p className="text-2xl font-bold mt-1">
+                    ${earningsSummary.tips}
+                  </p>
+                </div>
+                <div className="h-10 w-10 rounded-xl bg-accent-coral/20 flex items-center justify-center">
+                  <Heart className="h-5 w-5 text-accent-coral" />
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                {recentTips.length} tips received
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Upcoming Classes */}
+          <div className="lg:col-span-2 space-y-4">
+            <Card>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg">Upcoming Classes</CardTitle>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to="/teach/schedule" className="text-xs">
+                      View Full Schedule <ArrowRight className="h-3 w-3 ml-1" />
+                    </Link>
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {upcomingClasses.map((cls) => (
+                  <div
+                    key={cls.id}
+                    className={`flex items-center justify-between p-3 rounded-xl transition-colors ${
+                      cls.isToday
+                        ? "bg-accent-sage/10 border border-accent-sage/20"
+                        : "bg-secondary/50 hover:bg-secondary"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="text-center shrink-0 w-20">
+                        <p className="text-xs text-muted-foreground">{cls.date}</p>
+                        <p className="text-sm font-semibold">{cls.time}</p>
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{cls.name}</p>
+                        <p className="text-xs text-muted-foreground">{cls.room}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Users className="h-3 w-3" />
+                        <span>
+                          {cls.booked}/{cls.capacity}
+                        </span>
+                      </div>
+                      {cls.isToday && (
+                        <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage border-0">
+                          Today
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Recent Tips */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Heart className="h-4 w-4 text-accent-coral" />
+                  Recent Tips
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {recentTips.map((tip) => (
+                  <div
+                    key={tip.id}
+                    className="flex items-center justify-between p-3 rounded-xl bg-secondary/30"
+                  >
+                    <div>
+                      <p className="text-sm font-medium">{tip.from}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {tip.className} - {tip.date}
+                      </p>
+                    </div>
+                    <span className="text-sm font-semibold text-accent-sage">
+                      +${tip.amount}
+                    </span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-4">
+            {/* Pending Sub Requests */}
+            {pendingSubRequests.length > 0 && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-accent-gold" />
+                    Pending Sub Requests
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {pendingSubRequests.map((req) => (
+                    <div
+                      key={req.id}
+                      className="p-3 rounded-xl border border-accent-gold/30 bg-accent-gold/5"
+                    >
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium">{req.className}</p>
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] border-accent-gold/50 text-accent-gold"
+                        >
+                          Pending
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {req.date} at {req.time}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Requested {req.requestedAt}
+                      </p>
+                    </div>
+                  ))}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full mt-2"
+                    asChild
+                  >
+                    <Link to="/teach/subs">
+                      Manage Requests <ChevronRight className="h-3 w-3 ml-1" />
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Open Sub Opportunities */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Repeat2 className="h-4 w-4 text-primary" />
+                  Sub Opportunities
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {openSubOpportunities.map((opp) => (
+                  <div
+                    key={opp.id}
+                    className="p-3 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium">{opp.className}</p>
+                      <span className="text-xs font-semibold text-accent-sage">
+                        ${opp.pay}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      For {opp.teacher}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {opp.date} at {opp.time}
+                    </p>
+                  </div>
+                ))}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full mt-2"
+                  asChild
+                >
+                  <Link to="/teach/subs">
+                    View All <ChevronRight className="h-3 w-3 ml-1" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Earnings Summary */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Current Period</CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  {earningsSummary.periodStart} - {earningsSummary.periodEnd}
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Base Pay</span>
+                  <span className="text-sm font-medium">
+                    ${earningsSummary.basePay.toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Tips</span>
+                  <span className="text-sm font-medium">
+                    ${earningsSummary.tips}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Sub Classes</span>
+                  <span className="text-sm font-medium">
+                    ${earningsSummary.subs}
+                  </span>
+                </div>
+                <div className="pt-3 border-t border-border">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold">Total</span>
+                    <span className="text-lg font-bold">
+                      ${earningsSummary.total.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full mt-2"
+                  asChild
+                >
+                  <Link to="/teach/earnings">
+                    View Details <ChevronRight className="h-3 w-3 ml-1" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </TeachLayout>
+  );
+}
