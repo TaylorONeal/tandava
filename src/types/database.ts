@@ -1990,6 +1990,256 @@ export interface MembershipAddonSubscription {
 }
 
 // ============================================================================
+// PHASE 2-3: NOTIFICATIONS, CHECK-IN, WAITLIST (Migration 007)
+// ============================================================================
+
+// Notification Enums
+export type NotificationChannel = 'push' | 'sms' | 'email' | 'in_app';
+export type NotificationDeliveryStatus = 'pending' | 'sent' | 'delivered' | 'opened' | 'clicked' | 'failed' | 'bounced';
+export type SmsMessageStatus = 'queued' | 'sending' | 'sent' | 'delivered' | 'failed' | 'undelivered';
+export type ReviewRequestStatus = 'pending' | 'sent' | 'clicked' | 'reviewed' | 'skipped' | 'suppressed';
+export type WaitlistPromotionStatus = 'pending' | 'confirmed' | 'declined' | 'expired' | 'cancelled';
+export type CheckInMethod = 'qr_scan' | 'kiosk_search' | 'kiosk_list' | 'staff_manual' | 'auto';
+
+// Notification Preferences
+export interface NotificationPreferences {
+  id: string;
+  profile_id: string;
+  studio_id: string | null;
+  push_enabled: boolean;
+  sms_enabled: boolean;
+  email_enabled: boolean;
+  booking_confirmations: boolean;
+  class_reminders: boolean;
+  reminder_hours_before: number;
+  class_changes: boolean;
+  waitlist_updates: boolean;
+  payment_alerts: boolean;
+  marketing: boolean;
+  quiet_hours_enabled: boolean;
+  quiet_hours_start: string;
+  quiet_hours_end: string;
+  timezone: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// Push Subscription
+export interface PushSubscription {
+  id: string;
+  profile_id: string;
+  endpoint: string;
+  p256dh_key: string;
+  auth_key: string;
+  user_agent: string | null;
+  device_type: 'desktop' | 'mobile' | 'tablet' | null;
+  browser: string | null;
+  is_active: boolean;
+  last_used_at: string | null;
+  failed_count: number;
+  created_at: string;
+}
+
+// SMS Conversation
+export interface SmsConversation {
+  id: string;
+  studio_id: string;
+  profile_id: string | null;
+  phone_number: string;
+  status: 'active' | 'archived' | 'blocked';
+  last_message_at: string | null;
+  unread_count: number;
+  assigned_to: string | null;
+  assigned_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// SMS Message
+export interface SmsMessage {
+  id: string;
+  conversation_id: string;
+  direction: 'inbound' | 'outbound';
+  body: string;
+  media_urls: string[] | null;
+  provider_message_id: string | null;
+  status: SmsMessageStatus;
+  status_updated_at: string | null;
+  error_code: string | null;
+  error_message: string | null;
+  sent_by: string | null;
+  automation_rule_id: string | null;
+  template_id: string | null;
+  created_at: string;
+}
+
+// Notification Delivery
+export interface NotificationDelivery {
+  id: string;
+  studio_id: string | null;
+  profile_id: string | null;
+  notification_type: string;
+  channel: NotificationChannel;
+  subject: string | null;
+  body: string;
+  related_entity_type: string | null;
+  related_entity_id: string | null;
+  status: NotificationDeliveryStatus;
+  sent_at: string | null;
+  delivered_at: string | null;
+  opened_at: string | null;
+  clicked_at: string | null;
+  failed_at: string | null;
+  error_message: string | null;
+  provider: string | null;
+  provider_message_id: string | null;
+  created_at: string;
+}
+
+// Review Request Settings
+export interface ReviewRequestSettings {
+  id: string;
+  studio_id: string;
+  is_enabled: boolean;
+  send_after_hours: number;
+  send_only_days: string[];
+  send_time_start: string;
+  send_time_end: string;
+  min_classes_attended: number;
+  exclude_recent_days: number;
+  exclude_low_engagement: boolean;
+  google_place_id: string | null;
+  google_review_url: string | null;
+  yelp_business_id: string | null;
+  yelp_review_url: string | null;
+  facebook_page_id: string | null;
+  facebook_review_url: string | null;
+  sms_template: string;
+  email_subject: string;
+  email_template: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Review Request
+export interface ReviewRequest {
+  id: string;
+  studio_id: string;
+  profile_id: string;
+  booking_id: string | null;
+  status: ReviewRequestStatus;
+  channel: string | null;
+  platform: string | null;
+  review_url: string | null;
+  sent_at: string | null;
+  clicked_at: string | null;
+  reviewed_at: string | null;
+  skip_reason: string | null;
+  created_at: string;
+}
+
+// Member Check-In Code
+export interface MemberCheckInCode {
+  id: string;
+  profile_id: string;
+  studio_id: string;
+  code_token: string;
+  qr_data: string;
+  apple_wallet_pass_url: string | null;
+  google_wallet_pass_url: string | null;
+  generated_at: string;
+  expires_at: string;
+  is_active: boolean;
+  last_used_at: string | null;
+  use_count: number;
+}
+
+// Kiosk Device
+export interface KioskDevice {
+  id: string;
+  studio_id: string;
+  location_id: string | null;
+  name: string;
+  device_token: string;
+  settings: KioskSettings;
+  is_active: boolean;
+  last_heartbeat_at: string | null;
+  current_version: string | null;
+  ip_address: string | null;
+  pin_hash: string | null;
+  allowed_hours_start: string | null;
+  allowed_hours_end: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface KioskSettings {
+  auto_lock_minutes?: number;
+  allow_booking?: boolean;
+  allow_purchase?: boolean;
+  check_in_window_minutes?: number;
+  show_upcoming_classes?: boolean;
+  require_photo_verification?: boolean;
+  play_sound_on_scan?: boolean;
+}
+
+// Waitlist Settings
+export interface WaitlistSettings {
+  id: string;
+  studio_id: string;
+  auto_promote_enabled: boolean;
+  promotion_window_minutes: number;
+  notification_channels: string[];
+  response_deadline_minutes: number;
+  max_promotion_attempts: number;
+  prioritize_members: boolean;
+  prioritize_by_waitlist_time: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Waitlist Promotion
+export interface WaitlistPromotion {
+  id: string;
+  booking_id: string;
+  class_occurrence_id: string;
+  profile_id: string;
+  status: WaitlistPromotionStatus;
+  promoted_at: string;
+  notified_at: string | null;
+  responded_at: string | null;
+  deadline_at: string | null;
+  opened_by_cancellation_id: string | null;
+  notification_channels: string[] | null;
+  notification_ids: string[] | null;
+  response_method: string | null;
+  created_at: string;
+}
+
+// Room Configuration
+export interface RoomConfiguration {
+  id: string;
+  location_id: string;
+  room_name: string;
+  config_name: string;
+  capacity: number;
+  mat_spots: number | null;
+  equipment_spots: Record<string, number> | null;
+  layout_svg: string | null;
+  spot_positions: SpotPosition[] | null;
+  is_default: boolean;
+  created_at: string;
+}
+
+export interface SpotPosition {
+  id: string;
+  x: number;
+  y: number;
+  type: string;
+  label: string;
+}
+
+// ============================================================================
 // UTILITY TYPES
 // ============================================================================
 
