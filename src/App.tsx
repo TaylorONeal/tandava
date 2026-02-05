@@ -51,6 +51,7 @@ import NotificationSettingsManage from "./pages/manage/NotificationSettings";
 import SmsInboxManage from "./pages/manage/SmsInbox";
 import UtmBuilderManage from "./pages/manage/UtmBuilder";
 import CampaignsManage from "./pages/manage/Campaigns";
+import TasksManage from "./pages/manage/Tasks";
 
 // Account pages
 import NotificationPreferences from "./pages/account/NotificationPreferences";
@@ -119,6 +120,7 @@ const App = () => (
                 <Route path="/manage/sms-inbox" element={<SmsInboxManage />} />
                 <Route path="/manage/utm-builder" element={<UtmBuilderManage />} />
                 <Route path="/manage/campaigns" element={<CampaignsManage />} />
+                <Route path="/manage/tasks" element={<TasksManage />} />
 
                 {/* Account routes */}
                 <Route path="/account/notifications" element={<NotificationPreferences />} />
