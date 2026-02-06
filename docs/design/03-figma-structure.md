@@ -7,6 +7,55 @@ It is a **system of intent**.
 
 ---
 
+## Why This Structure is Specific and Necessary
+
+This structure exists to solve real problems that emerge in multi-surface products.
+
+### The Problem Without Structure
+
+Without explicit Figma organization, design teams naturally drift toward:
+
+| Drift Pattern | Consequence |
+|---------------|-------------|
+| One unified component library | Doesn't account for surface-specific variants (internal vs consumer) |
+| Inconsistent naming | `ClassCard` in Figma ≠ `SessionTile` in code ≠ `class-item` in CSS |
+| Mixed token organization | Brand-safe customization mixed with structural constants |
+| Screen-based organization | Loses component reusability and intent |
+
+### What This Structure Solves
+
+| Aspect | Why It Matters |
+|--------|----------------|
+| **Two-surface separation** | Prevents accidental bleed-through of consumer styling into admin UI |
+| **Shared primitives library** | Components that work on both surfaces stay synchronized |
+| **Token layer mapping** | Designers see which tokens are "safe to customize" vs "structural" |
+| **Naming conventions** | `ClassCard` in Figma = `ClassCard` in React = `ClassCard` in docs |
+| **Page/variant structure** | Consumer pages have layout variants; internal pages have density variants |
+
+### For External Designers and Agencies
+
+When a studio hires a designer to create custom landing pages, this document tells them:
+
+- **Which Figma file to work in** — Consumer Components, not Internal
+- **Which components to use vs. create** — Use primitives, create compositions
+- **Which tokens to pull from** — Brand tokens yes, core tokens no
+- **What naming to follow** — So dev handoff requires no translation
+
+The alternative is every designer reinventing structure, leading to inconsistent implementations and painful code integration.
+
+### Design-to-Code Alignment
+
+| Design (Figma) | Code (React) | Docs (Markdown) |
+|----------------|--------------|-----------------|
+| `ClassCard` component | `<ClassCard />` | "ClassCard component" |
+| `primary` color style | `var(--color-primary)` | `brand.color.primary` |
+| `sm` button variant | `size="sm"` prop | "Sizes: sm, md, lg" |
+| `Internal / DataTable` | `src/components/internal/DataTable.tsx` | "Internal Components > Data Display" |
+
+This alignment is intentional and must be maintained.
+
+---
+
 ## Structure Overview
 
 ```
@@ -297,6 +346,50 @@ Consistency reduces drift between design and code.
 - **Makes review fast** (clear organization)
 
 If something feels confusing, the structure should be clarified before visuals are changed.
+
+---
+
+## Communicating With External Designers
+
+When briefing an external designer or agency, share these key points:
+
+### The Brief
+
+> "Tandava has two design surfaces with different rules. Internal tools (admin, scheduling) are structurally fixed—we only customize colors and logo. Consumer-facing pages (website, booking, events) are fully customizable. Your work will focus on consumer-facing pages."
+
+### What to Share
+
+| Asset | Purpose |
+|-------|---------|
+| This document | Explains structure and boundaries |
+| `tokens/tokens.json` | Machine-readable brand tokens |
+| Brand assets | Logo files, color codes, fonts |
+| Consumer Components section | What's available to compose with |
+
+### Language to Use
+
+| Say This | Not This |
+|----------|----------|
+| "Consumer-facing pages only" | "Redesign our platform" |
+| "Compose with existing components" | "Design from scratch" |
+| "Follow the naming conventions" | "Name things however you like" |
+| "Use brand tokens" | "Pick colors that look good" |
+
+### Red Flags to Watch For
+
+- Mockups that change internal navigation
+- New component names that don't match the system
+- Hardcoded colors instead of token references
+- "Let's redesign the dashboard while we're at it"
+
+### Successful Collaboration Looks Like
+
+1. Designer receives this doc + brand assets
+2. Designer works in Consumer Components section
+3. Designer uses existing primitives for new compositions
+4. Designer follows naming conventions
+5. Handoff requires minimal translation
+6. Code implementation matches design intent
 
 ---
 
