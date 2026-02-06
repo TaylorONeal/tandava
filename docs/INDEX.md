@@ -4,6 +4,17 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 
 ---
 
+## Start Here
+
+| You are... | Start with |
+|------------|------------|
+| **Developer (first time)** | [QUICKSTART.md](../QUICKSTART.md) → [developer/README.md](developer/README.md) |
+| **Contributor** | [CONTRIBUTING.md](../CONTRIBUTING.md) → [developer/01-domain-model.md](developer/01-domain-model.md) |
+| **Studio owner** | [README.md](../README.md) → [FAQ.md](FAQ.md) |
+| **Understanding the system** | [architecture/DOMAIN_MODEL.md](architecture/DOMAIN_MODEL.md) |
+
+---
+
 ## Quick Links
 
 - [README](../README.md) — Project overview, architecture, and getting started
