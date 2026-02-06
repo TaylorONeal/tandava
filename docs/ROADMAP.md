@@ -131,8 +131,6 @@ Tandava is an open-source (AGPL-3.0) studio management platform that provides fe
 #### Phase 7: Booking Enhancements
 | Feature | Priority |
 |---------|----------|
-| Reserve with Google | P1 |
-| Facebook/Instagram Booking | P1 |
 | Spot Selection / Room Maps | P1 |
 | Equipment Reservation | P2 |
 | Recurring Booking ("book me every week") | P1 |
@@ -220,7 +218,6 @@ Tandava is an open-source (AGPL-3.0) studio management platform that provides fe
 - [ ] Spot selection / room maps
 - [ ] Equipment reservation
 - [ ] Recurring booking
-- [ ] Reserve with Google
 - [ ] Hybrid classes
 
 #### Members & Students
