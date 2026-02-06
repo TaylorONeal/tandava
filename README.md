@@ -396,6 +396,7 @@ We're working toward a standardized interchange format for studio management dat
 
 | Document | Description |
 |----------|-------------|
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute, propose changes, and development setup |
 | [DATA_INTEROPERABILITY.md](DATA_INTEROPERABILITY.md) | Data ownership, interoperability principles, and legal posture |
 | [docs/INDEX.md](docs/INDEX.md) | Documentation index and reading order |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Development roadmap by phase |
@@ -411,13 +412,18 @@ We're working toward a standardized interchange format for studio management dat
 
 Tandava is open-source under the [AGPL-3.0 license](LICENSE). We welcome contributions from studio owners, developers, designers, and anyone who cares about independent studio software.
 
-### How to Contribute
+**See [CONTRIBUTING.md](CONTRIBUTING.md) for the complete contribution guide**, including:
+- What types of contributions we welcome
+- How to propose changes
+- Legal and interoperability boundaries
+- Development setup
+
+### Quick Start
 
 1. **Report bugs** — Open an issue describing what happened and how to reproduce it
 2. **Suggest features** — Open a discussion describing the workflow you need
 3. **Submit code** — Fork, branch, implement, test, and open a PR
 4. **Improve docs** — Better documentation helps everyone
-5. **Share your experience** — Tell us what works and what doesn't from a studio operator's perspective
 
 ### Development Guidelines
 
