@@ -362,6 +362,8 @@ The build output goes to `dist/` and can be deployed to any static hosting provi
 
 One of Tandava's core principles is that **your data should never be held hostage**.
 
+See [DATA_INTEROPERABILITY.md](DATA_INTEROPERABILITY.md) for our complete statement on data ownership, neutral data structures, and our commitment to open interoperability.
+
 ### Importing Data
 
 The Import tool (`/manage/import`) supports CSV import with intelligent column mapping. It recognizes common column formats from various studio management systems and maps them automatically. You can also create custom mappings for any CSV structure.
@@ -394,6 +396,7 @@ We're working toward a standardized interchange format for studio management dat
 
 | Document | Description |
 |----------|-------------|
+| [DATA_INTEROPERABILITY.md](DATA_INTEROPERABILITY.md) | Data ownership, interoperability principles, and legal posture |
 | [docs/INDEX.md](docs/INDEX.md) | Documentation index and reading order |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Development roadmap by phase |
 | [docs/FEATURE_INDEX.md](docs/FEATURE_INDEX.md) | Complete feature status reference |
