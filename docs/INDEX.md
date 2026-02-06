@@ -37,6 +37,7 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 | [Training Path](guides/TRAINING_PATH.md) | Onboarding → Branding → Growth learning sequence |
 | [Branding Guide](guides/BRANDING_GUIDE.md) | How to customize your studio's brand |
 | [Compensation Guide](guides/COMPENSATION_GUIDE.md) | Teacher payment models and setup |
+| [Supabase Setup](guides/SUPABASE_SETUP.md) | Database, auth keys, and email templates |
 
 ---
 
