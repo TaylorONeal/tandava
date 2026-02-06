@@ -5,11 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signInWithEmail, signInWithGoogle } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,8 +24,17 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate login
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const { error } = await signInWithEmail(formData.email, formData.password);
+
+    if (error) {
+      toast({
+        title: "Sign in failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
 
     toast({
       title: "Welcome back!",
@@ -35,18 +47,21 @@ const Login = () => {
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
-    // Simulate OAuth
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast({
-      title: "Welcome back!",
-      description: "You have successfully logged in with Google.",
-    });
-    navigate("/");
-    setIsLoading(false);
+    const { error } = await signInWithGoogle();
+    if (error) {
+      toast({
+        title: "Sign in failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
+    // OAuth redirect handles navigation
   };
 
   return (
     <div className="min-h-screen flex">
+      <SEOHead title="Sign In" description="Sign in to your Tandava account to book classes, track your practice, and connect with your yoga community." canonical="/auth/login" noindex />
       {/* Left side - Form */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-8">
