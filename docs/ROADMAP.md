@@ -152,13 +152,18 @@ Tandava is an open-source (AGPL-3.0) studio management platform that provides fe
 | Tax Configuration | P1 | - |
 
 #### Phase 9: Video & On-Demand
-| Feature | Priority |
-|---------|----------|
-| Video Hosting / Library | P1 |
-| Live Streaming (Zoom) Integration | P1 |
-| Hybrid Classes (in-person + virtual) | P2 |
-| Course / Program Builder | P2 |
-| Digital Product Sales | P2 |
+| Feature | Priority | Status | PRD |
+|---------|----------|--------|-----|
+| Video Library & Self-Hosting | P0 | ✅ Schema | [PRD-015](./prd/PRD-015-on-demand-video.md) |
+| YouTube/Vimeo Embeds | P1 | ✅ Schema | [PRD-015](./prd/PRD-015-on-demand-video.md) |
+| Live Streaming (Zoom) | P1 | ✅ Schema | [PRD-015](./prd/PRD-015-on-demand-video.md) |
+| Auto-Record to Library | P1 | ✅ Schema | [PRD-015](./prd/PRD-015-on-demand-video.md) |
+| Video Series & Programs | P1 | ✅ Schema | [PRD-015](./prd/PRD-015-on-demand-video.md) |
+| Watch Progress & Resume | P1 | ✅ Schema | [PRD-015](./prd/PRD-015-on-demand-video.md) |
+| Collections & Playlists | P2 | ✅ Schema | [PRD-015](./prd/PRD-015-on-demand-video.md) |
+| Video Purchases & Rentals | P1 | ✅ Schema | [PRD-015](./prd/PRD-015-on-demand-video.md) |
+| On-Demand Subscription | P2 | ✅ Schema | [PRD-015](./prd/PRD-015-on-demand-video.md) |
+| Offline Download | P3 | Planned | [PRD-015](./prd/PRD-015-on-demand-video.md) |
 
 #### Phase 10: Marketplace Integrations
 | Feature | Priority |
@@ -191,6 +196,15 @@ Tandava is an open-source (AGPL-3.0) studio management platform that provides fe
 | Gamification Leaderboards | P2 |
 | Progress Photos/Measurements | P3 |
 | Door Access Control (Kisi) | P2 |
+
+#### Platform Infrastructure (Cross-cutting)
+| Feature | Priority | Status |
+|---------|----------|--------|
+| Feature Toggles | P0 | ✅ Implemented |
+| Audit Logging (Enterprise) | P0 | ✅ Implemented |
+| Notification Provider Abstraction | P0 | ✅ Implemented |
+| Import System with Provider Detection | P0 | ✅ Implemented |
+| Universal Payment Abstraction | P0 | ✅ Implemented |
 
 ---
 
