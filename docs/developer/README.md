@@ -25,6 +25,7 @@ They are **not** user-facing help documentation.
 | [03-key-flows.md](03-key-flows.md) | Sequence diagrams for core operations |
 | [04-integrations.md](04-integrations.md) | How external systems connect |
 | [05-scenarios.md](05-scenarios.md) | End-to-end walkthroughs with diagrams |
+| [06-authentication.md](06-authentication.md) | Auth providers, RBAC, security |
 
 ---
 
@@ -38,6 +39,10 @@ They are **not** user-facing help documentation.
 **Adding an integration?**
 1. Read [04-integrations.md](04-integrations.md)
 2. Review relevant flows in [03-key-flows.md](03-key-flows.md)
+
+**Setting up authentication?**
+1. Read [06-authentication.md](06-authentication.md)
+2. Review [02-architecture.md](02-architecture.md) for auth boundaries
 
 **Understanding a specific feature?**
 1. Find the scenario in [05-scenarios.md](05-scenarios.md)
