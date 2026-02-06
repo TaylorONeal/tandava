@@ -218,7 +218,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for complete guidelines.
 
 **Future:**
 - Custom report builder
-- Reserve with Google integration
 - Mobile apps
 - On-demand video
 
@@ -236,7 +235,6 @@ For studios running Tandava for their own use, there are no restrictions beyond 
 
 ## Links
 
-- [Try the Demo](/demo)
 - [Documentation](docs/INDEX.md)
-- [GitHub](https://github.com/TaylorONeal/tandava)
 - [Project Status](docs/STATUS.md)
+- [Contributing](CONTRIBUTING.md)
