@@ -22,6 +22,7 @@ import OnDemand from "./pages/OnDemand";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import NotFound from "./pages/NotFound";
+import Demo from "./pages/Demo";
 
 // Studio management pages
 import ManageDashboard from "./pages/manage/Dashboard";
@@ -81,6 +82,9 @@ const App = () => (
             <BrowserRouter>
               <DemoPanel />
               <Routes>
+                {/* Demo landing page */}
+                <Route path="/demo" element={<Demo />} />
+
                 {/* Student-facing routes */}
                 <Route path="/" element={<Index />} />
                 <Route path="/schedule" element={<Schedule />} />
