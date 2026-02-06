@@ -20,6 +20,7 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 ## Quick Links
 
 - [README](../README.md) — Project overview, architecture, and getting started
+- [STATUS](STATUS.md) — Current project status and known limitations
 - [ROADMAP](ROADMAP.md) — Development phases and feature status
 - [FEATURE_INDEX](FEATURE_INDEX.md) — Complete feature status reference
 - [DEMO_MODE](DEMO_MODE.md) — Demo mode setup and customization
