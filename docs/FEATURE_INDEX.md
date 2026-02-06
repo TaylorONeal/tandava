@@ -258,17 +258,32 @@ Quick reference for all features, their status, and locations in the codebase.
 | Scheduled exports | Schema | - | `scheduled_exports` | - |
 | GDPR compliance | Schema | - | `gdpr_requests` | - |
 
+### Business System Exports
+
+| Feature | Status | UI Location | Schema | PRD |
+|---------|--------|-------------|--------|-----|
+| QuickBooks daily sales | Planned | `/manage/reports/exports` | `export_configs` | PRD-016 |
+| Detailed transactions | Planned | `/manage/reports/exports` | `export_history` | PRD-016 |
+| Teacher payroll export | Planned | `/manage/reports/exports` | - | PRD-016 |
+| Stripe reconciliation | Planned | `/manage/reports/exports` | - | PRD-016 |
+| KPI summary export | Planned | `/manage/reports/exports` | - | PRD-016 |
+| Scheduled delivery | Planned | - | `export_schedules` | PRD-016 |
+| Account mappings | Planned | `/manage/settings` | `export_configs` | PRD-016 |
+
 ### External Integrations
 
 | Feature | Status | UI Location | Schema | PRD |
 |---------|--------|-------------|--------|-----|
-| Webhook infrastructure | Schema | - | `webhook_endpoints` | - |
+| Webhook configuration | Planned | `/manage/settings/webhooks` | `webhook_configs` | PRD-016 |
+| Webhook delivery log | Planned | `/manage/settings/webhooks` | `webhook_deliveries` | PRD-016 |
+| Zapier triggers | Planned | - | - | PRD-016 |
+| n8n/Make webhooks | Planned | - | - | PRD-016 |
 | Mailchimp sync | Planned | - | `integrations` | - |
-| QuickBooks sync | Planned | - | `integrations` | - |
+| QuickBooks direct sync | Planned | - | `integrations` | PRD-016 |
+| Gusto payroll | Planned | - | - | PRD-016 |
 | ClassPass | Planned | - | - | Phase 10 |
 | Gympass | Planned | - | - | Phase 10 |
 | Google Calendar | Planned | - | - | Phase 10 |
-| Zapier | Planned | - | `integrations` | - |
 
 ---
 
@@ -366,4 +381,4 @@ docs/
 
 ---
 
-*Last updated: 2025-02-05*
+*Last updated: 2026-02-06*
