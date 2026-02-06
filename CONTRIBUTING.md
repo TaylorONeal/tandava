@@ -51,6 +51,7 @@ We value contributions that:
 
 | Area | Key Documents |
 |------|---------------|
+| Domain model & concepts | [docs/architecture/DOMAIN_MODEL.md](docs/architecture/DOMAIN_MODEL.md) |
 | Business exports & connectors | [docs/ai-agents/BUSINESS_CONNECTORS.md](docs/ai-agents/BUSINESS_CONNECTORS.md), [docs/prd/PRD-016-accounting-exports.md](docs/prd/PRD-016-accounting-exports.md) |
 | Workflow automation | [docs/guides/WORKFLOW_AUTOMATION.md](docs/guides/WORKFLOW_AUTOMATION.md) |
 | Access control | [docs/architecture/ROLE_ACCESS_CONTROL.md](docs/architecture/ROLE_ACCESS_CONTROL.md) |
@@ -112,6 +113,27 @@ If you believe an existing pattern is flawed:
 - Explain why
 - Propose an alternative
 - Avoid changing unrelated code
+
+### 4. Model Reality, Not Software
+
+Tandava models **universal studio reality**—the way studios actually operate, independent of any software system.
+
+When adding features or entities, ask:
+- Does this correspond to something real in a studio's operation?
+- Would a studio owner recognize this concept without explanation?
+- Is this how the business works, or how some software implements it?
+
+**Do:**
+- Use universal business concepts (classes, bookings, members, transactions)
+- Keep operations and monetization as separate concerns
+- Design entities that exist independently of any integration
+
+**Don't:**
+- Mirror workflows from proprietary systems
+- Introduce vendor-specific assumptions
+- Collapse distinct concepts (e.g., booking ≠ payment)
+
+See [DOMAIN_MODEL.md](docs/architecture/DOMAIN_MODEL.md) for the conceptual foundations.
 
 ---
 
