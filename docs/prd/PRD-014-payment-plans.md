@@ -25,6 +25,13 @@ This enables:
 - **App Store / Google Play** for mobile app subscriptions
 - **Square** for in-person POS
 - **PayPal** for alternative payment methods
+- **Buy Now Pay Later (BNPL):**
+  - **Affirm** — US-focused, 0% financing options
+  - **Klarna** — Europe/US, pay in 4 or monthly
+  - **Afterpay** — Australia/US, pay in 4
+  - **Sezzle** — Pay in 4, no interest
+  - **Amazon Pay** — With Affirm integration
+  - **Zip** (formerly Quadpay) — Pay in 4
 - **Custom providers** for regional payment systems
 
 ---
@@ -133,6 +140,34 @@ This enables:
 - [ ] View payment history
 - [ ] Update card before expiration
 
+### US-14.7: Buy Now Pay Later (BNPL) Support
+**As a** studio owner,
+**I want** to offer BNPL options (Affirm, Klarna, Afterpay),
+**So that** students can pay in installments without me managing the risk.
+
+**Acceptance Criteria:**
+- [ ] Enable/disable BNPL providers per studio
+- [ ] Configure minimum purchase amount for BNPL
+- [ ] BNPL option shown at checkout for eligible purchases
+- [ ] Provider handles credit check and approval
+- [ ] Studio receives full payment immediately (minus fees)
+- [ ] Clear display of BNPL terms to student
+- [ ] Proper handling of BNPL-specific refunds
+
+**BNPL Provider Integration:**
+| Provider | Pay in 4 | Monthly Plans | Regions | Min Cart |
+|----------|----------|---------------|---------|----------|
+| Affirm | ✓ | 3-36 months | US, CA | $50 |
+| Klarna | ✓ | 6-36 months | US, EU, UK, AU | $35 |
+| Afterpay | ✓ | - | US, AU, UK, NZ | $35 |
+| Sezzle | ✓ | - | US, CA | $35 |
+| Zip | ✓ | - | US, AU, UK | $35 |
+
+**BNPL Benefits:**
+- **For Studios:** Get paid in full upfront, BNPL provider assumes risk
+- **For Students:** Split payments without affecting studio relationship
+- **Conversion lift:** 20-30% increase in high-ticket conversions
+
 ---
 
 ## Universal Payment Types
@@ -157,6 +192,17 @@ type PaymentProviderType =
   | 'apple_pay'
   | 'google_pay'
   | 'ach'
+  // BNPL Providers
+  | 'affirm'
+  | 'klarna'
+  | 'afterpay'
+  | 'sezzle'
+  | 'zip'
+  // App Store
+  | 'apple_iap'    // Apple In-App Purchase
+  | 'google_play'  // Google Play Billing
+  // Other
+  | 'amazon_pay'
   | 'manual'  // Cash, check, comp
   | 'custom';
 
@@ -197,6 +243,69 @@ interface UniversalPaymentMethod {
 
   // Provider reference (opaque to business logic)
   providerRef: string;      // Provider's ID for this method
+
+  // BNPL-specific (when type === 'bnpl')
+  bnplProvider?: BnplProviderType;
+  bnplPlan?: BnplPlanDetails;
+}
+
+/**
+ * BNPL Provider types
+ */
+type BnplProviderType =
+  | 'affirm'
+  | 'klarna'
+  | 'afterpay'
+  | 'sezzle'
+  | 'zip';
+
+/**
+ * BNPL Plan details (provided by BNPL provider)
+ */
+interface BnplPlanDetails {
+  planType: 'pay_in_4' | 'monthly';
+  installmentCount: number;
+  installmentAmountCents: number;
+  apr: number;              // 0 for pay-in-4, varies for monthly
+  totalAmountCents: number; // May include interest for monthly plans
+  firstPaymentCents: number;
+  firstPaymentDate: Date;
+  lastPaymentDate: Date;
+}
+
+/**
+ * BNPL checkout session (for initiating BNPL payment)
+ */
+interface BnplCheckoutSession {
+  id: string;
+  provider: BnplProviderType;
+
+  // What they're buying
+  orderAmountCents: number;
+  currency: string;
+  description: string;
+  items: BnplLineItem[];
+
+  // Where to redirect
+  redirectUrl: string;      // URL for BNPL provider's checkout
+  confirmUrl: string;       // Where to return on success
+  cancelUrl: string;        // Where to return on cancel
+
+  // Status
+  status: 'pending' | 'approved' | 'declined' | 'expired';
+  expiresAt: Date;
+
+  // Approved plan (set after customer chooses)
+  approvedPlan?: BnplPlanDetails;
+}
+
+interface BnplLineItem {
+  name: string;
+  sku?: string;
+  quantity: number;
+  unitPriceCents: number;
+  category?: string;        // Helps with approval rates
+  imageUrl?: string;
 }
 
 /**
