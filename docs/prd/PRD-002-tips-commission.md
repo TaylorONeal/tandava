@@ -419,23 +419,39 @@ CREATE TABLE commission_models (
 
   -- Base compensation
   pay_type TEXT NOT NULL CHECK (pay_type IN (
-    'per_class',        -- Flat rate per class
-    'hourly',           -- Hourly rate
+    'per_class',        -- Flat rate per class taught
+    'hourly',           -- Hourly rate × class duration
     'revenue_share',    -- Percentage of class revenue
-    'hybrid',           -- Base + revenue share
-    'tiered'            -- Rate varies by attendance
+    'hybrid',           -- Base pay + revenue share
+    'tiered',           -- Rate varies by attendance thresholds
+    'per_student',      -- Fixed amount per attending student
+    'per_student_base'  -- Base pay + per-student bonus
   )),
 
-  -- Rate details (in cents or percentage * 100)
-  base_rate_cents INTEGER,           -- For per_class, hourly, hybrid
+  -- Rate details (in cents or percentage × 100)
+  base_rate_cents INTEGER,           -- For per_class, hourly, hybrid, per_student_base
   revenue_share_bps INTEGER,         -- Basis points (100 = 1%)
 
-  -- Tiered rates
+  -- Per-student rates
+  per_student_cents INTEGER,         -- $ per student (per_student, per_student_base)
+
+  -- Tiered rates (attendance-based)
   tier_rates JSONB, -- [{ "min_attendance": 0, "rate_cents": 5000 }, ...]
 
   -- Hybrid details
   hybrid_base_cents INTEGER,
   hybrid_share_bps INTEGER,
+
+  -- Attendance bonuses
+  bonus_attendance_threshold INTEGER,      -- Bonus if attendance >= N
+  bonus_attendance_amount_cents INTEGER,
+  bonus_fill_rate_threshold INTEGER,       -- Bonus if fill rate >= N% (stored as 80 for 80%)
+  bonus_fill_rate_amount_cents INTEGER,
+
+  -- Setup/cleanup time (added to hourly calculation)
+  setup_time_minutes INTEGER DEFAULT 0,
+  cleanup_time_minutes INTEGER DEFAULT 0,
+  include_setup_in_hours BOOLEAN DEFAULT false,
 
   -- Minimums and maximums
   min_pay_cents INTEGER,
@@ -761,7 +777,91 @@ commission.snapshot    # Daily snapshot updated (for dashboard refresh)
 
 ---
 
+## Worker Classification
+
+### Contractor vs. Employee
+
+Most yoga studios classify teachers as **independent contractors (1099)**, not employees (W-2). This affects:
+
+| Aspect | Contractor (1099) | Employee (W-2) |
+|--------|-------------------|----------------|
+| Tax withholding | None - teacher handles | Studio withholds |
+| Benefits | Not eligible | May be eligible |
+| Overtime | Not applicable | Required >40hrs |
+| 1099 reporting | Required if >$600/year | W-2 instead |
+| Schedule control | Teacher has flexibility | Studio sets schedule |
+
+### Database Support
+
+```sql
+ALTER TABLE studio_staff ADD COLUMN
+  worker_classification TEXT DEFAULT 'contractor'
+  CHECK (worker_classification IN ('employee', 'contractor'));
+
+ALTER TABLE studio_staff ADD COLUMN
+  tax_id_encrypted BYTEA,          -- SSN/EIN (encrypted)
+  w9_received_at TIMESTAMPTZ;      -- W-9 on file date
+```
+
+### 1099 Year-End Export
+
+Studios must provide 1099-NEC forms for contractors paid >$600:
+
+```sql
+-- Generate 1099 report
+SELECT
+  p.full_name,
+  SUM(pe.calculated_amount_cents) / 100.0 as total_paid
+FROM payroll_entries pe
+JOIN studio_staff ss ON pe.teacher_id = ss.profile_id
+JOIN profiles p ON ss.profile_id = p.id
+WHERE ss.worker_classification = 'contractor'
+  AND EXTRACT(YEAR FROM pe.class_date) = 2025
+  AND pe.is_paid = true
+GROUP BY p.id
+HAVING SUM(pe.calculated_amount_cents) >= 60000;  -- $600+
+```
+
+---
+
+## Pay Model Selection Guide
+
+### By Studio Type
+
+| Studio Type | Recommended Models | Rationale |
+|-------------|-------------------|-----------|
+| **Boutique (1 location, <10 teachers)** | `per_class` or `hybrid` | Simple, predictable costs |
+| **Growing (2-3 locations)** | `hybrid` or `tiered` | Incentivize class growth |
+| **Established (high attendance)** | `revenue_share` or `tiered` | Align teacher/studio interests |
+| **Hot yoga / High volume** | `per_student` or `per_student_base` | Fair for varying class sizes |
+| **Specialty (workshops, trainings)** | `revenue_share` + bonus | Reward expertise and marketing |
+
+### By Teacher Experience
+
+| Teacher Level | Recommended Approach |
+|---------------|---------------------|
+| **New teachers** | `per_class` with modest rate, increase after 6 months |
+| **Experienced** | `hybrid` with base + small revenue share |
+| **Star teachers** | `revenue_share` or `tiered` with attendance bonuses |
+| **Guest/workshop** | `revenue_share` (40-60%) or flat workshop fee |
+
+### By Growth Stage
+
+| Stage | Model | Why |
+|-------|-------|-----|
+| **Startup (<1 year)** | `per_class` flat rate | Predictable costs while building |
+| **Growing (1-3 years)** | `hybrid` | Balance cost control with incentives |
+| **Established (3+ years)** | `tiered` or `per_student` | Optimize for class performance |
+| **Multi-location** | Location-specific models | Different markets, different economics |
+
+---
+
 ## Revision History
+
+| Date | Version | Author | Changes |
+|------|---------|--------|---------|
+| 2026-02-06 | 1.1 | Claude | Added per_student models, bonuses, setup time, worker classification, selection guide |
+| 2025-02-05 | 1.0 | Claude | Initial PRD |
 
 | Date | Version | Author | Changes |
 |------|---------|--------|---------|

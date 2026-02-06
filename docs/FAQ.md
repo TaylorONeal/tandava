@@ -48,7 +48,7 @@ Tandava uses a two-layer scheduling model: schedule rules define recurring patte
 
 ### How do I manage teachers and their pay?
 
-Add teachers as studio staff with their role, pay configuration, and availability. Tandava supports four pay types: per-class flat rate, revenue share (percentage of class revenue), hourly rate, and salary. Payroll entries are generated per class occurrence and include attendee count and class revenue for revenue-share calculations. For a detailed walkthrough, see [Teacher Management Workflow](workflows/teacher-management.md).
+Add teachers as studio staff with their role, pay configuration, and availability. Tandava supports multiple pay models: per-class flat rate, hourly rate, revenue share (percentage of class revenue), hybrid (base + share), tiered (rate varies by attendance), per-student, and combinations with bonuses. Payroll entries are generated per class occurrence and include attendee count and class revenue for calculations. For a detailed walkthrough, see [Teacher Management Workflow](workflows/teacher-management.md) and [Compensation Guide](guides/COMPENSATION_GUIDE.md).
 
 ### How do I track attendance?
 
@@ -57,6 +57,120 @@ Students check in to classes through the booking system. When a booking status c
 ### Can I manage multiple studios from one account?
 
 Tandava is built for multi-tenant operation. A single user profile can be associated with multiple studios in different roles (owner at one studio, teacher at another). Each studio has its own data, settings, and membership base, fully isolated by Row Level Security policies at the database level. You switch between studios from the management dashboard.
+
+---
+
+## Teacher Compensation and Payroll
+
+### What pay models does Tandava support?
+
+Tandava supports seven pay model types:
+
+| Model | Description | Best For |
+|-------|-------------|----------|
+| **Per Class** | Flat rate per class taught | Simple, predictable budgeting |
+| **Hourly** | Rate × class duration | Fair for varying class lengths |
+| **Revenue Share** | Percentage of class revenue | Align teacher and studio interests |
+| **Hybrid** | Base pay + revenue share | Balance security with incentives |
+| **Tiered** | Rate varies by attendance | Reward popular classes |
+| **Per Student** | Fixed $ per attending student | Fair for high-variability classes |
+| **Per Student + Base** | Base pay + per-student bonus | Security plus growth incentive |
+
+Additionally, any model can include attendance bonuses (extra pay when attendance hits a threshold) or fill-rate bonuses (extra pay when class reaches a capacity percentage).
+
+### Which pay model should I use for my studio?
+
+It depends on your studio's stage and style:
+
+**Startup studios (<1 year):** Start with **per-class flat rates**. This keeps costs predictable while you build your class schedule and student base. You can renegotiate as you grow.
+
+**Growing studios (1-3 years):** Move to **hybrid** models with a modest base plus a small revenue share (5-10%). This gives teachers skin in the game while limiting your downside.
+
+**Established studios with strong attendance:** Consider **tiered** or **per-student** models that reward teachers for filling classes. Your highest-attended classes should compensate teachers accordingly.
+
+**Hot yoga / high-volume studios:** **Per-student** often makes sense because class sizes vary dramatically (10 vs. 40 students). Paying per head ensures fairness.
+
+**Workshop and training leaders:** Use **revenue share** (40-60%) since these teachers often bring their own following and handle their own marketing.
+
+For detailed guidance, see the [Compensation Guide](guides/COMPENSATION_GUIDE.md).
+
+### How do I change a teacher's pay rate?
+
+Navigate to **Settings → Staff → [Teacher] → Compensation** and update their rate. You must specify an **effective date** for the new rate. Classes taught before that date use the old rate; classes on or after use the new rate. Historical payroll is never automatically recalculated—this protects both you and the teacher from surprises.
+
+If you need to backdate a change (rare), the system will warn you about affected classes and require confirmation. All rate changes are logged in the audit trail.
+
+### What happens if I change a pay model mid-pay-period?
+
+The system handles this gracefully:
+
+- Classes taught before the change date: paid at old rate/model
+- Classes taught on/after the change date: paid at new rate/model
+- Pay statement shows both with itemized breakdown
+
+Example: If you change Maya's rate from $50/class to $60/class effective Feb 10, and the pay period is Feb 1-15:
+- Feb 1-9 classes: $50 each
+- Feb 10-15 classes: $60 each
+- Statement shows both line items clearly
+
+### Are my teachers employees or contractors?
+
+**Most yoga teachers are independent contractors (1099)**, not employees (W-2). This is the industry norm and affects several things:
+
+| Aspect | Contractor (1099) | Employee (W-2) |
+|--------|-------------------|----------------|
+| Tax withholding | Teacher handles own taxes | Studio withholds |
+| Benefits | Not eligible | May be eligible |
+| 1099 reporting | Required if paid >$600/year | W-2 instead |
+| Overtime rules | Not applicable | Required >40hrs |
+| Schedule flexibility | Teacher has more control | Studio sets schedule |
+
+Tandava tracks worker classification per staff member. At year end, you can export 1099 data for contractors paid over $600. Consult your accountant or attorney for classification questions specific to your situation.
+
+### How do I pay front desk staff?
+
+Front desk and hourly staff work differently from teachers—they clock in/out rather than teach classes. Tandava offers three approaches:
+
+1. **External time tracking (recommended):** Use dedicated tools like Homebase, Deputy, or When I Work. They handle clock-in/out, overtime, breaks, and labor law compliance. Export payroll data to Gusto/ADP.
+
+2. **Shift-based scheduling:** Treat front desk shifts like "classes" with hourly pay. Schedule shifts, pay based on scheduled hours.
+
+3. **Basic time entries:** Tandava can track simple clock-in/out, but dedicated time-tracking tools are better for compliance.
+
+For most studios, option 1 is the right choice—time tracking is a solved problem with excellent specialized tools.
+
+### How do I handle teacher tips?
+
+Tips are tracked separately from base pay because they have different tax implications:
+
+- Students can tip after class or from booking history
+- Tips go directly to the teacher who taught (not the originally scheduled teacher if there was a sub)
+- Tips are shown separately on pay statements
+- Year-end tip totals are included in 1099 reporting
+
+You can configure tip distribution: 100% to teacher (default), pooled among all teachers, or a custom split. Some jurisdictions have rules about tip pooling—check your local regulations.
+
+### How do I export payroll for my bookkeeper?
+
+Navigate to **Reports → Payroll** and select your pay period. Export options include:
+
+- **Summary export:** One row per teacher with totals
+- **Detailed export:** One row per class with full breakdown
+- **Gusto/ADP format:** Formatted for direct import to payroll systems
+
+Exports include pay model used, base rate, attendance, revenue (for share calculations), bonuses, tips, and totals. Your bookkeeper can reconcile every line item.
+
+### Can teachers see their own earnings?
+
+Yes. Teachers access their earnings dashboard at **/teach/earnings**, which shows:
+
+- Current pay period accrual
+- Breakdown by class with attendance and calculated pay
+- Tips received (with optional student notes)
+- Historical pay statements
+- Year-to-date totals
+
+Teachers can also download their pay statements as PDFs.
 
 ---
 
