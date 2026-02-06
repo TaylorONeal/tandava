@@ -150,6 +150,7 @@ docs/design/
 ├── 03-figma-structure.md   # How Figma files are organized
 ├── 04-consumer-pages.md    # Consumer-facing page compositions
 ├── 05-components.md        # Component inventory
+├── 06-cross-platform.md    # iOS/Android token exports and native patterns
 └── tokens/
     └── tokens.json         # Machine-readable tokens
 ```
@@ -196,3 +197,4 @@ This system makes all of that easy.
 - [03-figma-structure.md](03-figma-structure.md) — Figma file organization
 - [04-consumer-pages.md](04-consumer-pages.md) — Page compositions
 - [05-components.md](05-components.md) — Component inventory
+- [06-cross-platform.md](06-cross-platform.md) — iOS/Android token exports
