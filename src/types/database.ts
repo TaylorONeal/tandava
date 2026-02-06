@@ -22,6 +22,7 @@ export type NotificationChannel = 'email' | 'sms' | 'push' | 'in_app';
 export type TeacherPayType = 'per_class' | 'revenue_share' | 'hourly' | 'salary';
 export type CreditType = 'earned' | 'purchased' | 'gifted' | 'promotional';
 export type CreditStatus = 'available' | 'used' | 'expired';
+export type DeliveryMode = 'in_person' | 'virtual' | 'hybrid';
 
 // ============================================================================
 // TABLE TYPES
@@ -199,6 +200,12 @@ export interface ClassOccurrence {
   booked_count: number;
   waitlist_count: number;
   checked_in_count: number;
+  // Virtual/Hybrid class support
+  delivery_mode: DeliveryMode;
+  virtual_link: string | null;
+  virtual_password: string | null;
+  is_recording_available: boolean;
+  recording_url: string | null;
   created_at: string;
   updated_at: string;
   // Joined fields
