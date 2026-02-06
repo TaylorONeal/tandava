@@ -23,7 +23,17 @@ import {
   Shield,
   MapPin,
   Save,
+  Search,
+  CheckCircle,
+  ExternalLink,
+  Copy,
+  RefreshCw,
+  AlertCircle,
+  Lightbulb,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
 export default function SettingsManage() {
@@ -45,6 +55,23 @@ export default function SettingsManage() {
   const [primaryColor, setPrimaryColor] = useState("#4fd1c5");
   const [secondaryColor, setSecondaryColor] = useState("#f687b3");
   const [discoverable, setDiscoverable] = useState(false);
+
+  // SEO Settings
+  const [metaDescription, setMetaDescription] = useState("Hot yoga, vinyasa, and meditation classes in San Francisco's SOMA neighborhood. New students get their first week free.");
+  const [googleVerification, setGoogleVerification] = useState("");
+  const [googleAnalyticsId, setGoogleAnalyticsId] = useState("");
+  const [facebookPixelId, setFacebookPixelId] = useState("");
+  const [googleBusinessProfileId, setGoogleBusinessProfileId] = useState("");
+  const [sitemapAutoGenerate, setSitemapAutoGenerate] = useState(true);
+
+  const seoScore = 78; // Would be calculated based on completeness
+  const seoChecks = [
+    { name: "Meta description set", pass: metaDescription.length >= 120 },
+    { name: "Google verification added", pass: googleVerification.length > 0 },
+    { name: "Sitemap configured", pass: sitemapAutoGenerate },
+    { name: "Google Business linked", pass: googleBusinessProfileId.length > 0 },
+    { name: "Analytics configured", pass: googleAnalyticsId.length > 0 },
+  ];
 
   const handleSave = () => {
     toast({
@@ -87,6 +114,10 @@ export default function SettingsManage() {
             <TabsTrigger value="notifications" className="text-xs">
               <Bell className="h-3.5 w-3.5 mr-1.5" />
               Notifications
+            </TabsTrigger>
+            <TabsTrigger value="seo" className="text-xs">
+              <Search className="h-3.5 w-3.5 mr-1.5" />
+              SEO
             </TabsTrigger>
           </TabsList>
 
@@ -397,6 +428,186 @@ export default function SettingsManage() {
                     <Save className="h-4 w-4 mr-2" />
                     Save Notifications
                   </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* SEO Settings */}
+          <TabsContent value="seo" className="space-y-6">
+            {/* SEO Score Card */}
+            <Card className="border-primary/20">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Search className="h-5 w-5" />
+                    SEO Health Score
+                  </CardTitle>
+                  <Badge className={seoScore >= 70 ? "bg-accent-sage/20 text-accent-sage" : seoScore >= 40 ? "bg-accent-gold/20 text-accent-gold" : "bg-accent-coral/20 text-accent-coral"}>
+                    {seoScore}/100
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Progress value={seoScore} className="h-2 mb-4" />
+                <div className="grid grid-cols-2 gap-2">
+                  {seoChecks.map((check, i) => (
+                    <div key={i} className="flex items-center gap-2 text-xs">
+                      {check.pass ? (
+                        <CheckCircle className="h-3 w-3 text-accent-sage" />
+                      ) : (
+                        <AlertCircle className="h-3 w-3 text-accent-coral" />
+                      )}
+                      <span className={check.pass ? "text-muted-foreground" : "text-foreground"}>
+                        {check.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Meta Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Search Engine Optimization</CardTitle>
+                <CardDescription>Help search engines and AI assistants understand your studio</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="metaDesc">Meta Description</Label>
+                  <Textarea
+                    id="metaDesc"
+                    value={metaDescription}
+                    onChange={(e) => setMetaDescription(e.target.value)}
+                    placeholder="Describe your studio in 150-160 characters..."
+                    rows={3}
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Appears in Google search results</span>
+                    <span className={metaDescription.length > 160 ? "text-accent-coral" : ""}>
+                      {metaDescription.length}/160
+                    </span>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Google Search Console */}
+                <div className="space-y-2">
+                  <Label htmlFor="googleVerify">Google Search Console Verification</Label>
+                  <Input
+                    id="googleVerify"
+                    value={googleVerification}
+                    onChange={(e) => setGoogleVerification(e.target.value)}
+                    placeholder="Paste verification meta tag content..."
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Get this from{" "}
+                    <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline inline-flex items-center gap-1">
+                      Google Search Console <ExternalLink className="h-2.5 w-2.5" />
+                    </a>
+                  </p>
+                </div>
+
+                <Separator />
+
+                {/* Sitemap */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">Auto-generate Sitemap</p>
+                      <p className="text-xs text-muted-foreground">Automatically update sitemap when content changes</p>
+                    </div>
+                    <Switch checked={sitemapAutoGenerate} onCheckedChange={setSitemapAutoGenerate} />
+                  </div>
+
+                  <div className="flex items-center gap-2 p-3 rounded-xl bg-secondary/30">
+                    <Globe className="h-4 w-4 text-muted-foreground" />
+                    <code className="text-xs flex-1">https://{studioSlug}.tandava.yoga/sitemap.xml</code>
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => {
+                      navigator.clipboard.writeText(`https://${studioSlug}.tandava.yoga/sitemap.xml`);
+                      toast({ title: "Copied to clipboard" });
+                    }}>
+                      <Copy className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <Button onClick={handleSave}>
+                    <Save className="h-4 w-4 mr-2" />
+                    Save SEO Settings
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Analytics & Tracking */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Analytics & Tracking</CardTitle>
+                <CardDescription>Connect tracking tools to measure your marketing performance</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="ga4">Google Analytics 4 ID</Label>
+                  <Input
+                    id="ga4"
+                    value={googleAnalyticsId}
+                    onChange={(e) => setGoogleAnalyticsId(e.target.value)}
+                    placeholder="G-XXXXXXXXXX"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="fbPixel">Facebook Pixel ID</Label>
+                  <Input
+                    id="fbPixel"
+                    value={facebookPixelId}
+                    onChange={(e) => setFacebookPixelId(e.target.value)}
+                    placeholder="1234567890"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="gbp">Google Business Profile ID</Label>
+                  <Input
+                    id="gbp"
+                    value={googleBusinessProfileId}
+                    onChange={(e) => setGoogleBusinessProfileId(e.target.value)}
+                    placeholder="accounts/123/locations/456"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Links your studio to Google Maps and local search
+                  </p>
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <Button onClick={handleSave}>
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Tracking
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* LLM GEO Info */}
+            <Card className="border-accent-gold/30 bg-accent-gold/5">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <Lightbulb className="h-5 w-5 text-accent-gold mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium">AI Assistant Discovery</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Tandava automatically optimizes your site for AI assistants like ChatGPT and Claude.
+                      Your class schedules, pricing, and studio information are structured so AI can
+                      answer questions about your studio accurately.
+                    </p>
+                    <a href="/docs/guides/llm-geo" className="text-xs text-primary hover:underline inline-flex items-center gap-1 mt-2">
+                      Learn more about LLM GEO <ExternalLink className="h-2.5 w-2.5" />
+                    </a>
+                  </div>
                 </div>
               </CardContent>
             </Card>
