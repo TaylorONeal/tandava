@@ -8,6 +8,9 @@
 // Demo studio data
 export * from './oxatl-yoga';
 
+// Demo bookings and transactions (2018 historical data)
+export * from './bookings-transactions';
+
 // Demo identity constants
 export const DEMO_STUDIO_SLUG = 'oxatl-yoga';
 export const DEMO_STUDIO_NAME = 'Oxatl Yoga';
