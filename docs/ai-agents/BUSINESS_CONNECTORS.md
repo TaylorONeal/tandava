@@ -6,11 +6,7 @@ You are the primary coding assistant for the **Business Systems Connector** subs
 
 ## 0. Project Context
 
-Tandava is an **open-source, all-in-one yoga studio management platform** that replaces:
-- Mindbody
-- Arketa
-- Momence
-- Walla
+Tandava is an **open-source, studio-owned management platform** that provides an alternative to proprietary systems. Studios choose Tandava for data sovereignty, transparency, and freedom from vendor lock-in.
 
 It handles:
 - Members (students) & memberships
