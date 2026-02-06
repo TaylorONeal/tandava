@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <!-- Gradient for depth -->
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E5B84A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#D4A72C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B8912A;stop-opacity:1" />
+    </linearGradient>
+    <!-- Subtle shadow filter -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background circle with warm cream/off-white -->
+  <circle cx="32" cy="32" r="30" fill="#FAF8F5"/>
+
+  <!-- Decorative arc - subtle yoga/breath inspired element -->
+  <path
+    d="M16 24 Q32 18 48 24"
+    fill="none"
+    stroke="url(#goldGradient)"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    opacity="0.4"
+  />
+
+  <!-- Main "T" letterform - elegant serif style -->
+  <g filter="url(#shadow)">
+    <!-- Horizontal bar of T with slight taper -->
+    <path
+      d="M14 20 L50 20 L49 24 L15 24 Z"
+      fill="url(#goldGradient)"
+    />
+    <!-- Decorative serifs on horizontal -->
+    <path
+      d="M12 18 L16 18 L15 24 L13 24 Z"
+      fill="url(#goldGradient)"
+    />
+    <path
+      d="M48 18 L52 18 L51 24 L49 24 Z"
+      fill="url(#goldGradient)"
+    />
+
+    <!-- Vertical stem with subtle taper and organic flow -->
+    <path
+      d="M28 24 L36 24 L35 50 Q32 52 29 50 Z"
+      fill="url(#goldGradient)"
+    />
+    <!-- Base serif with gentle curve -->
+    <path
+      d="M24 48 Q32 44 40 48 L40 52 Q32 50 24 52 Z"
+      fill="url(#goldGradient)"
+    />
+  </g>
+</svg>

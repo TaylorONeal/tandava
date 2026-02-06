@@ -4,11 +4,16 @@
   "description": "Book yoga classes, track your practice, and manage your studio",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f0a14",
-  "theme_color": "#4fd1c5",
+  "background_color": "#FAF8F5",
+  "theme_color": "#D4A72C",
   "orientation": "portrait-primary",
   "scope": "/",
   "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
     {
       "src": "/icons/icon-72x72.png",
       "sizes": "72x72",
