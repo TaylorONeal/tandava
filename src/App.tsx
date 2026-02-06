@@ -52,6 +52,9 @@ import SmsInboxManage from "./pages/manage/SmsInbox";
 import UtmBuilderManage from "./pages/manage/UtmBuilder";
 import CampaignsManage from "./pages/manage/Campaigns";
 import TasksManage from "./pages/manage/Tasks";
+import OnDemandManage from "./pages/manage/OnDemand";
+import FeatureSettingsManage from "./pages/manage/FeatureSettings";
+import AuditLogsManage from "./pages/manage/AuditLogs";
 
 // Account pages
 import NotificationPreferences from "./pages/account/NotificationPreferences";
@@ -121,6 +124,9 @@ const App = () => (
                 <Route path="/manage/utm-builder" element={<UtmBuilderManage />} />
                 <Route path="/manage/campaigns" element={<CampaignsManage />} />
                 <Route path="/manage/tasks" element={<TasksManage />} />
+                <Route path="/manage/on-demand" element={<OnDemandManage />} />
+                <Route path="/manage/feature-settings" element={<FeatureSettingsManage />} />
+                <Route path="/manage/audit-logs" element={<AuditLogsManage />} />
 
                 {/* Account routes */}
                 <Route path="/account/notifications" element={<NotificationPreferences />} />

@@ -16,6 +16,7 @@ import {
   FileSpreadsheet,
   CheckCircle2,
   AlertCircle,
+  AlertTriangle,
   ArrowRight,
   ChevronRight,
   Download,
@@ -25,9 +26,19 @@ import {
   Users,
   Calendar,
   CreditCard,
+  Info,
+  Sparkles,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { ImportSource } from "@/types/database";
+import {
+  CONNECTOR_PROVIDERS,
+  CONNECTOR_LEGAL_NOTICE,
+  CONNECTOR_SHORT_DISCLAIMER,
+  detectProviderFormat,
+  getProviderDisplayName,
+  type ConnectorProviderInfo,
+} from "@/lib/connectors";
 
 type ImportStep = "source" | "upload" | "mapping" | "preview" | "processing" | "complete";
 
@@ -39,13 +50,15 @@ interface ColumnMapping {
   autoMatched: boolean;
 }
 
-const sourceOptions: { value: ImportSource; label: string; description: string }[] = [
-  { value: "mindbody", label: "MindBody Format", description: "Migration connector for MindBody-format CSV exports" },
-  { value: "walla", label: "Walla Format", description: "Migration connector for Walla-format CSV exports" },
-  { value: "arketa", label: "Arketa Format", description: "Migration connector for Arketa-format CSV exports" },
-  { value: "momoyoga", label: "Momoyoga Format", description: "Migration connector for Momoyoga-format CSV exports" },
-  { value: "generic_csv", label: "Generic CSV", description: "Import from any CSV with manual column mapping" },
-];
+// Build source options from connector providers
+const sourceOptions = Object.entries(CONNECTOR_PROVIDERS).map(([id, info]) => ({
+  value: id as ImportSource,
+  label: info.name,
+  description: info.description,
+  disclaimer: info.disclaimer,
+  trademark: info.trademark,
+  exportInstructions: info.exportInstructions,
+}));
 
 const importTypes = [
   { value: "clients", label: "Clients / Students", icon: Users, description: "Names, emails, phone numbers, emergency contacts" },
@@ -192,10 +205,23 @@ export default function ImportManage() {
         {/* Step: Source Selection */}
         {step === "source" && (
           <div className="space-y-6">
+            {/* Legal Notice Banner */}
+            <Card className="border-amber-200 bg-amber-50/50">
+              <CardContent className="py-4">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+                  <div className="text-sm text-amber-800 space-y-2">
+                    <p className="font-semibold">Data Import Disclaimer</p>
+                    <p className="text-xs leading-relaxed whitespace-pre-line">{CONNECTOR_LEGAL_NOTICE}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle>Select Source Platform</CardTitle>
-                <CardDescription>Where is your data coming from?</CardDescription>
+                <CardDescription>Where is your data coming from? Tandava is not affiliated with any of these providers.</CardDescription>
               </CardHeader>
               <CardContent className="grid sm:grid-cols-2 gap-3">
                 {sourceOptions.map((source) => (
@@ -210,6 +236,11 @@ export default function ImportManage() {
                   >
                     <p className="text-sm font-semibold">{source.label}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">{source.description}</p>
+                    {source.value !== "generic_csv" && (
+                      <p className="text-[10px] text-muted-foreground/70 mt-2 italic">
+                        Not affiliated with this provider
+                      </p>
+                    )}
                   </button>
                 ))}
               </CardContent>
@@ -257,41 +288,73 @@ export default function ImportManage() {
 
         {/* Step: File Upload */}
         {step === "upload" && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Upload CSV File</CardTitle>
-              <CardDescription>
-                {selectedSource === "generic_csv"
-                  ? "Upload any CSV file with your studio data"
-                  : "Upload the CSV file you exported from your previous platform. Check your old platform's documentation for CSV export instructions."
-                }
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <label className="block border-2 border-dashed border-border rounded-xl p-12 text-center cursor-pointer hover:border-primary/30 transition-colors">
-                <Upload className="h-10 w-10 text-muted-foreground mx-auto" />
-                <p className="text-sm font-medium mt-3">Drop your CSV file here or click to browse</p>
-                <p className="text-xs text-muted-foreground mt-1">Maximum file size: 50MB</p>
-                <input
-                  type="file"
-                  accept=".csv"
-                  className="hidden"
-                  onChange={handleFileUpload}
-                />
-              </label>
+          <div className="space-y-6">
+            {/* Export Instructions */}
+            {selectedSource && selectedSource !== "generic_csv" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                    How to export from {sourceOptions.find(s => s.value === selectedSource)?.label.replace(' Import', '')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
+                    {sourceOptions.find(s => s.value === selectedSource)?.exportInstructions}
+                  </div>
+                  <p className="text-[10px] text-muted-foreground/70 mt-4 italic">
+                    {sourceOptions.find(s => s.value === selectedSource)?.disclaimer}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
 
-              <div className="flex justify-between mt-4">
-                <Button variant="outline" onClick={() => setStep("source")}>
-                  Back
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Upload CSV File</CardTitle>
+                <CardDescription>
+                  {selectedSource === "generic_csv"
+                    ? "Upload any CSV file with your studio data"
+                    : "Upload the CSV file you exported from your previous platform"
+                  }
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <label className="block border-2 border-dashed border-border rounded-xl p-12 text-center cursor-pointer hover:border-primary/30 transition-colors">
+                  <Upload className="h-10 w-10 text-muted-foreground mx-auto" />
+                  <p className="text-sm font-medium mt-3">Drop your CSV file here or click to browse</p>
+                  <p className="text-xs text-muted-foreground mt-1">Maximum file size: 50MB</p>
+                  <input
+                    type="file"
+                    accept=".csv"
+                    className="hidden"
+                    onChange={handleFileUpload}
+                  />
+                </label>
+
+                <div className="flex justify-between mt-4">
+                  <Button variant="outline" onClick={() => setStep("source")}>
+                    Back
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         )}
 
         {/* Step: Column Mapping */}
         {step === "mapping" && (
           <div className="space-y-6">
+            {/* Auto-detection banner */}
+            {selectedSource && selectedSource !== "generic_csv" && (
+              <div className="flex items-center gap-2 px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl text-sm">
+                <Sparkles className="h-4 w-4 text-blue-500" />
+                <span className="text-blue-800">
+                  Auto-detected format: <strong>{getProviderDisplayName(selectedSource)}</strong> — columns have been pre-mapped
+                </span>
+              </div>
+            )}
+
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">

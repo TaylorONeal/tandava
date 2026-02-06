@@ -32,7 +32,10 @@ import {
   TestTube,
   ExternalLink,
   AlertCircle,
+  Mail,
+  Shield,
 } from "lucide-react";
+import type { EmailProviderType, SmsProviderType, PushProviderType } from "@/lib/notifications/types";
 import { useToast } from "@/hooks/use-toast";
 
 // Mock review platform connections
@@ -165,11 +168,23 @@ export default function NotificationSettings() {
           </p>
         </div>
 
-        <Tabs defaultValue="reviews" className="space-y-6">
+        {/* Provider-agnostic info banner */}
+        <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 flex items-start gap-3">
+          <Shield className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
+          <div className="text-sm text-blue-800">
+            <p className="font-medium">Provider-Agnostic Notifications</p>
+            <p className="text-xs mt-0.5">
+              Tandava supports multiple notification providers. You can switch providers anytime
+              without changing your application code. All credentials are encrypted at rest.
+            </p>
+          </div>
+        </div>
+
+        <Tabs defaultValue="email" className="space-y-6">
           <TabsList className="w-full justify-start overflow-x-auto">
-            <TabsTrigger value="reviews" className="text-xs">
-              <Star className="h-3.5 w-3.5 mr-1.5" />
-              Reviews
+            <TabsTrigger value="email" className="text-xs">
+              <Mail className="h-3.5 w-3.5 mr-1.5" />
+              Email
             </TabsTrigger>
             <TabsTrigger value="sms" className="text-xs">
               <MessageSquare className="h-3.5 w-3.5 mr-1.5" />
@@ -179,11 +194,137 @@ export default function NotificationSettings() {
               <Bell className="h-3.5 w-3.5 mr-1.5" />
               Push
             </TabsTrigger>
+            <TabsTrigger value="reviews" className="text-xs">
+              <Star className="h-3.5 w-3.5 mr-1.5" />
+              Reviews
+            </TabsTrigger>
             <TabsTrigger value="timing" className="text-xs">
               <Clock className="h-3.5 w-3.5 mr-1.5" />
               Timing
             </TabsTrigger>
           </TabsList>
+
+          {/* Email Provider Tab */}
+          <TabsContent value="email" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Mail className="h-5 w-5" />
+                      Email Provider Configuration
+                    </CardTitle>
+                    <CardDescription>
+                      Configure your email provider for sending notifications and marketing emails
+                    </CardDescription>
+                  </div>
+                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                    <CheckCircle2 className="h-3 w-3 mr-1" />
+                    Connected
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Email Provider</Label>
+                  <Select defaultValue="sendgrid">
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sendgrid">SendGrid - High deliverability, analytics</SelectItem>
+                      <SelectItem value="resend">Resend - Modern email API</SelectItem>
+                      <SelectItem value="postmark">Postmark - Fast transactional email</SelectItem>
+                      <SelectItem value="ses">Amazon SES - Low cost, scalable</SelectItem>
+                      <SelectItem value="mailgun">Mailgun - Email validation, routing</SelectItem>
+                      <SelectItem value="smtp">Custom SMTP - Use your own server</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Separator />
+
+                <div className="p-4 rounded-xl bg-secondary/50 space-y-4">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <Key className="h-4 w-4" />
+                    SendGrid Credentials
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="emailApiKey">API Key</Label>
+                    <Input
+                      id="emailApiKey"
+                      type="password"
+                      placeholder="SG.xxxxxx"
+                      defaultValue="SG.****"
+                    />
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-4">
+                  <h4 className="font-medium">Sender Settings</h4>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>From Name</Label>
+                      <Input placeholder="Oxatl Yoga Studio" defaultValue="Oxatl Yoga Studio" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>From Email</Label>
+                      <Input placeholder="hello@oxatlyoga.com" defaultValue="hello@oxatlyoga.com" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Reply-To Email</Label>
+                      <Input placeholder="support@oxatlyoga.com" defaultValue="support@oxatlyoga.com" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-between pt-2">
+                  <Button variant="outline" onClick={() => handleTestNotification("email")}>
+                    <Send className="h-4 w-4 mr-2" />
+                    Send Test Email
+                  </Button>
+                  <Button onClick={() => handleSave("Email provider")}>
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Configuration
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Email Notification Types */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Email Notification Types</CardTitle>
+                <CardDescription>
+                  Configure which emails are sent automatically
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {[
+                  { label: "Booking Confirmation", desc: "When a class is booked", enabled: true },
+                  { label: "Class Reminder", desc: "24h and 1h before class", enabled: true },
+                  { label: "Cancellation Notice", desc: "When a class is cancelled", enabled: true },
+                  { label: "Waitlist Promotion", desc: "When moved off waitlist", enabled: true },
+                  { label: "Payment Receipt", desc: "After successful payment", enabled: true },
+                  { label: "Payment Failed", desc: "When payment fails", enabled: true },
+                  { label: "Membership Expiring", desc: "7 days before expiry", enabled: true },
+                  { label: "Membership Renewed", desc: "After auto-renewal", enabled: true },
+                  { label: "Welcome Email", desc: "When a new member signs up", enabled: true },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center justify-between py-2">
+                    <div>
+                      <p className="text-sm font-medium">{item.label}</p>
+                      <p className="text-xs text-muted-foreground">{item.desc}</p>
+                    </div>
+                    <Switch defaultChecked={item.enabled} />
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* Review Request Automation Tab */}
           <TabsContent value="reviews" className="space-y-6">
