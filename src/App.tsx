@@ -23,6 +23,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import NotFound from "./pages/NotFound";
 import Demo from "./pages/Demo";
+import OpenSource from "./pages/OpenSource";
 
 // Studio management pages
 import ManageDashboard from "./pages/manage/Dashboard";
@@ -84,8 +85,9 @@ const App = () => (
             <BrowserRouter>
               <DemoPanel />
               <Routes>
-                {/* Demo landing page */}
+                {/* Demo and open source landing pages */}
                 <Route path="/demo" element={<Demo />} />
+                <Route path="/open-source" element={<OpenSource />} />
 
                 {/* Student-facing routes */}
                 <Route path="/" element={<Index />} />
