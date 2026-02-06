@@ -58,11 +58,11 @@ Tandava is an open-source (AGPL-3.0) studio management platform that provides fe
 | Feature | Priority | PRD |
 |---------|----------|-----|
 | Push Notifications (web) | P0 | [PRD-005](./prd/PRD-005-notifications.md) |
-| Review Request Automation | P1 | [PRD-006](./prd/PRD-006-review-automation.md) |
+| Review Request Automation | P1 | [PRD-006](./prd/PRD-006-review-automation.md) ✅ |
 | Two-Way SMS Conversations | P1 | [PRD-005](./prd/PRD-005-notifications.md) |
-| Birthday/Anniversary Automation | P2 | [PRD-007](./prd/PRD-007-lifecycle-automation.md) |
-| Multi-Step Drip Campaigns | P2 | [PRD-007](./prd/PRD-007-lifecycle-automation.md) |
-| Lead Scoring | P2 | [PRD-007](./prd/PRD-007-lifecycle-automation.md) |
+| Birthday/Anniversary Automation | P2 | [PRD-007](./prd/PRD-007-lifecycle-automation.md) ✅ |
+| Multi-Step Drip Campaigns | P2 | [PRD-007](./prd/PRD-007-lifecycle-automation.md) ✅ |
+| Lead Scoring | P2 | [PRD-007](./prd/PRD-007-lifecycle-automation.md) ✅ |
 
 ---
 
@@ -74,8 +74,8 @@ Tandava is an open-source (AGPL-3.0) studio management platform that provides fe
 | Self Check-In Kiosk Mode | P0 | [PRD-008](./prd/PRD-008-check-in.md) |
 | QR Code Check-In | P0 | [PRD-008](./prd/PRD-008-check-in.md) |
 | Automated Waitlist Promotion | P0 | [PRD-009](./prd/PRD-009-waitlist-automation.md) |
-| Cleaning/Turnover Buffers | P1 | [PRD-010](./prd/PRD-010-schedule-automation.md) |
-| Smart Capacity Management | P2 | [PRD-010](./prd/PRD-010-schedule-automation.md) |
+| Cleaning/Turnover Buffers | P1 | [PRD-010](./prd/PRD-010-schedule-automation.md) ✅ |
+| Smart Capacity Management | P2 | [PRD-010](./prd/PRD-010-schedule-automation.md) ✅ |
 
 ---
 
@@ -139,16 +139,17 @@ Tandava is an open-source (AGPL-3.0) studio management platform that provides fe
 | Family/Group Booking (single transaction) | P1 |
 
 #### Phase 8: Payment Enhancements
-| Feature | Priority |
-|---------|----------|
-| Payment Plans / Installments | P0 |
-| Auto-Pay Retry Logic | P0 |
-| Partial Refunds | P1 |
-| ACH / Direct Debit | P1 |
-| In-Person POS / Terminal | P1 |
-| Cash/Check Tracking | P2 |
-| Invoice Generation | P1 |
-| Tax Configuration | P1 |
+| Feature | Priority | PRD |
+|---------|----------|-----|
+| Payment Plans / Installments | P0 | [PRD-014](./prd/PRD-014-payment-plans.md) ✅ |
+| Auto-Pay Retry Logic | P0 | [PRD-014](./prd/PRD-014-payment-plans.md) ✅ |
+| Universal Payment Abstraction | P0 | [PRD-014](./prd/PRD-014-payment-plans.md) ✅ |
+| ACH / Direct Debit | P1 | [PRD-014](./prd/PRD-014-payment-plans.md) ✅ |
+| Partial Refunds | P1 | - |
+| In-Person POS / Terminal | P1 | - |
+| Cash/Check Tracking | P2 | - |
+| Invoice Generation | P1 | - |
+| Tax Configuration | P1 | - |
 
 #### Phase 9: Video & On-Demand
 | Feature | Priority |
