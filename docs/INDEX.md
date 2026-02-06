@@ -10,7 +10,9 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 |------------|------------|
 | **Developer (first time)** | [QUICKSTART.md](../QUICKSTART.md) → [developer/README.md](developer/README.md) |
 | **Contributor** | [CONTRIBUTING.md](../CONTRIBUTING.md) → [developer/01-domain-model.md](developer/01-domain-model.md) |
-| **Studio owner** | [README.md](../README.md) → [FAQ.md](FAQ.md) |
+| **Studio owner** | [guides/TRAINING_PATH.md](guides/TRAINING_PATH.md) → [guides/BRANDING_GUIDE.md](guides/BRANDING_GUIDE.md) |
+| **Designer** | [design/README.md](design/README.md) → [design/03-figma-structure.md](design/03-figma-structure.md) |
+| **Mobile developer** | [architecture/MOBILE_ARCHITECTURE.md](architecture/MOBILE_ARCHITECTURE.md) |
 | **Understanding the system** | [architecture/DOMAIN_MODEL.md](architecture/DOMAIN_MODEL.md) |
 
 ---
@@ -24,6 +26,28 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 - [NEXT_STEPS](NEXT_STEPS.md) — Prioritized task list for development
 - [General FAQ](FAQ.md) — Common questions answered quickly
 - [Detailed FAQ](FAQ-detailed.md) — In-depth answers for complex scenarios
+
+---
+
+## Studio Guides
+
+| Guide | Purpose |
+|-------|---------|
+| [Training Path](guides/TRAINING_PATH.md) | Onboarding → Branding → Growth learning sequence |
+| [Branding Guide](guides/BRANDING_GUIDE.md) | How to customize your studio's brand |
+| [Compensation Guide](guides/COMPENSATION_GUIDE.md) | Teacher payment models and setup |
+
+---
+
+## Architecture & Technical Docs
+
+| Document | Purpose |
+|----------|---------|
+| [Domain Model](architecture/DOMAIN_MODEL.md) | Core concepts and entity relationships |
+| [Mobile Architecture](architecture/MOBILE_ARCHITECTURE.md) | iOS/Android app technical design |
+| [App Store Compliance](architecture/APP_STORE_COMPLIANCE.md) | Store submission requirements |
+| [Design System](design/README.md) | Design tokens, Figma structure, components |
+| [Cross-Platform Design](design/06-cross-platform.md) | Token exports for Web/iOS/Android |
 
 ---
 
