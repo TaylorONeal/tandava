@@ -11,11 +11,29 @@ import {
   Users,
   Heart,
   ChevronRight,
+  ClipboardCheck,
+  Video,
+  Wifi,
 } from "lucide-react";
+import type { DeliveryMode } from "@/types/database";
 import { Link } from "react-router-dom";
 
 // Mock data for instructor dashboard
-const upcomingClasses = [
+interface UpcomingClass {
+  id: string;
+  name: string;
+  date: string;
+  time: string;
+  room: string;
+  booked: number;
+  capacity: number;
+  isToday: boolean;
+  deliveryMode?: DeliveryMode;
+  isStartingSoon?: boolean;
+  checkedIn?: number;
+}
+
+const upcomingClasses: UpcomingClass[] = [
   {
     id: "1",
     name: "Morning Vinyasa",
@@ -25,6 +43,9 @@ const upcomingClasses = [
     booked: 22,
     capacity: 25,
     isToday: true,
+    deliveryMode: "hybrid",
+    isStartingSoon: true,
+    checkedIn: 18,
   },
   {
     id: "2",
@@ -45,16 +66,18 @@ const upcomingClasses = [
     booked: 19,
     capacity: 25,
     isToday: false,
+    deliveryMode: "hybrid",
   },
   {
     id: "4",
-    name: "Evening Vinyasa",
+    name: "Virtual Flow",
     date: "Wednesday",
     time: "6:00 PM",
-    room: "Main Studio",
-    booked: 15,
-    capacity: 25,
+    room: "Online",
+    booked: 35,
+    capacity: 50,
     isToday: false,
+    deliveryMode: "virtual",
   },
   {
     id: "5",
@@ -132,8 +155,71 @@ export default function TeachDashboard() {
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="flex flex-wrap gap-2">
+        {/* Today's Classes - Prominent on mobile for check-in */}
+        {upcomingClasses.filter(c => c.isToday).length > 0 && (
+          <Card className="border-accent-sage/30 bg-accent-sage/5">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <ClipboardCheck className="h-5 w-5 text-accent-sage" />
+                Today's Classes
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {upcomingClasses.filter(c => c.isToday).map((cls) => (
+                <div
+                  key={cls.id}
+                  className={`p-4 rounded-xl bg-white border ${
+                    cls.isStartingSoon ? 'border-accent-sage shadow-sm' : 'border-border'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg font-bold">{cls.time}</span>
+                      {cls.isStartingSoon && (
+                        <Badge className="bg-accent-sage text-white text-[10px] animate-pulse">
+                          Starting Soon
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <Users className="h-4 w-4" />
+                      <span>{cls.checkedIn ?? 0}/{cls.booked} checked in</span>
+                    </div>
+                  </div>
+                  <p className="font-medium">{cls.name}</p>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                    <span>{cls.room}</span>
+                    {cls.deliveryMode === 'hybrid' && (
+                      <span className="flex items-center gap-1 text-violet-600">
+                        <Wifi className="h-3 w-3" /> + Online
+                      </span>
+                    )}
+                    {cls.deliveryMode === 'virtual' && (
+                      <span className="flex items-center gap-1 text-blue-600">
+                        <Video className="h-3 w-3" /> Virtual
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex gap-2 mt-3">
+                    <Button size="sm" className="flex-1">
+                      <ClipboardCheck className="h-4 w-4 mr-2" />
+                      Check-in Students
+                    </Button>
+                    {(cls.deliveryMode === 'virtual' || cls.deliveryMode === 'hybrid') && (
+                      <Button size="sm" variant="outline">
+                        <Video className="h-4 w-4 mr-2" />
+                        Start Stream
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Quick Actions - Desktop */}
+        <div className="hidden sm:flex flex-wrap gap-2">
           <Button variant="outline" size="sm" asChild>
             <Link to="/teach/schedule">
               <Calendar className="h-4 w-4 mr-2" />
@@ -152,6 +238,31 @@ export default function TeachDashboard() {
               View Earnings
             </Link>
           </Button>
+        </div>
+
+        {/* Mobile Quick Actions */}
+        <div className="grid grid-cols-3 gap-2 sm:hidden">
+          <Link
+            to="/teach/schedule"
+            className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-primary/10 hover:bg-primary/20 transition-colors"
+          >
+            <Calendar className="h-5 w-5 text-primary" />
+            <span className="text-[10px] font-medium">Schedule</span>
+          </Link>
+          <Link
+            to="/teach/subs"
+            className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-accent-gold/10 hover:bg-accent-gold/20 transition-colors"
+          >
+            <Repeat2 className="h-5 w-5 text-accent-gold" />
+            <span className="text-[10px] font-medium">Subs</span>
+          </Link>
+          <Link
+            to="/teach/earnings"
+            className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-accent-sage/10 hover:bg-accent-sage/20 transition-colors"
+          >
+            <DollarSign className="h-5 w-5 text-accent-sage" />
+            <span className="text-[10px] font-medium">Earnings</span>
+          </Link>
         </div>
 
         {/* Key Metrics */}
