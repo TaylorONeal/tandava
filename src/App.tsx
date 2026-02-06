@@ -56,6 +56,8 @@ import TasksManage from "./pages/manage/Tasks";
 import OnDemandManage from "./pages/manage/OnDemand";
 import FeatureSettingsManage from "./pages/manage/FeatureSettings";
 import AuditLogsManage from "./pages/manage/AuditLogs";
+import DataDictionaryManage from "./pages/manage/DataDictionary";
+import DefinitionsManage from "./pages/manage/Definitions";
 
 // Account pages
 import NotificationPreferences from "./pages/account/NotificationPreferences";
@@ -131,6 +133,8 @@ const App = () => (
                 <Route path="/manage/on-demand" element={<OnDemandManage />} />
                 <Route path="/manage/feature-settings" element={<FeatureSettingsManage />} />
                 <Route path="/manage/audit-logs" element={<AuditLogsManage />} />
+                <Route path="/manage/data-dictionary" element={<DataDictionaryManage />} />
+                <Route path="/manage/definitions" element={<DefinitionsManage />} />
 
                 {/* Account routes */}
                 <Route path="/account/notifications" element={<NotificationPreferences />} />
