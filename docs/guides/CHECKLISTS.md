@@ -52,6 +52,53 @@ Lightweight self-assessment tools for each training phase.
 
 ---
 
+## Go-Live Readiness
+
+**The moment that matters most: "Am I ready to accept real bookings?"**
+
+### Checklist: "Ready to Open the Doors"
+
+#### Schedule
+- [ ] At least 7 days of sessions scheduled
+- [ ] Instructors assigned to all scheduled sessions
+- [ ] Class times and locations are accurate
+
+#### Pricing
+- [ ] At least one pricing option exists (membership, class pack, or drop-in)
+- [ ] Prices are set correctly
+- [ ] Payment processing connected and tested
+
+#### Booking Flow
+- [ ] Test booking completed successfully (book as if you were a member)
+- [ ] Confirmation email received
+- [ ] Booking appears on roster
+
+#### Staff Readiness
+- [ ] Front desk knows how to check in members
+- [ ] Instructors can view their rosters
+- [ ] Someone knows how to handle booking issues
+
+### Go-Live Signal
+
+When all items above are checked, you're ready:
+
+> ✓ **Ready to accept bookings**
+
+This doesn't mean everything is perfect. It means the essential path works: members can find classes, book them, and show up.
+
+### What Can Wait
+
+These are fine to figure out after go-live:
+- Branding and visual customization
+- Advanced reports
+- Integrations
+- Promotional campaigns
+- Perfect class descriptions
+
+Get the basics running first. Polish later.
+
+---
+
 ## Phase 2: Branding
 
 **Goal: Ownership & Confidence**
@@ -143,6 +190,12 @@ This prevents cascading mistakes.
 ✓ Staff have access
 ✓ Booking works
 ✓ Roster visible
+
+### Go-Live: Ready to Accept Bookings?
+✓ 7+ days scheduled
+✓ Pricing configured
+✓ Test booking works
+✓ Staff know the basics
 
 ### Phase 2: Does This Feel Like Us?
 ✓ Logo and colors applied
