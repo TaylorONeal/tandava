@@ -51,11 +51,53 @@ Whether you run a yoga shala, a pilates reformer studio, a barre studio, a marti
 | **Referral Programs** | Configurable rewards for referrer and referred |
 | **Intro Offers** | First-class-free, trial packs, and welcome discounts |
 | **Financials** | Membership types, class packs, transaction history |
-| **Landing Pages** | SEO-optimized pages with content blocks, conversion tracking, and editorial guidance for studio owners |
+| **Landing Pages** | SEO-optimized pages with content blocks, conversion tracking, and editorial guidance |
 | **Reports** | Attendance, revenue, teacher performance, payroll summaries |
 | **Data Import** | CSV import with column mapping — bring your data from any system |
+| **Data Connectors** | Import, sync, and export hub with provider detection (MindBody, Walla, Momence, etc.) |
 | **Onboarding Wizard** | Guided setup for new studios: info, location, offerings, schedule, payments |
 | **Settings** | Studio info, policies, branding, notification preferences |
+
+### Analytics & Business Intelligence
+
+| Feature | Description |
+|---------|-------------|
+| **Analytics Hub** | Unified dashboard with member, sales, financial, and site analytics |
+| **Member Analytics** | Retention cohorts, churn prediction, engagement scoring |
+| **Sales Analytics** | Revenue trends, pack/membership performance, promo effectiveness |
+| **Financial Analytics** | MRR tracking, revenue forecasting, P&L summaries |
+| **Site Analytics** | Traffic sources, conversion funnels, UTM attribution |
+| **Benchmark Data** | Industry comparisons for key metrics |
+
+### Campaign & Marketing Hub (Phase 4)
+
+| Feature | Description |
+|---------|-------------|
+| **Campaign Manager** | Create, schedule, and track email/SMS campaigns |
+| **Audience Segments** | Build dynamic segments based on member behavior |
+| **UTM Builder** | Create trackable links with campaign parameters |
+| **A/B Testing** | Test subject lines, content, and send times |
+| **Email Templates** | Reusable templates with personalization |
+| **Link Click Tracking** | Monitor engagement and conversions |
+
+### Task Management (Phase 5)
+
+| Feature | Description |
+|---------|-------------|
+| **Task Board** | Kanban view for visual task management |
+| **Task List** | Sortable, filterable list view |
+| **Task Assignment** | Assign to staff with due dates and priorities |
+| **Recurring Tasks** | Daily, weekly, monthly task automation |
+| **Checklists** | Multi-step task breakdown |
+| **Task Categories** | Organize by type (opening, closing, cleaning, etc.) |
+
+### Check-In & Operations (Phase 3)
+
+| Feature | Description |
+|---------|-------------|
+| **Self Check-In Kiosk** | Tablet mode for member self-service |
+| **QR Code Check-In** | Members scan personal QR codes |
+| **Waitlist Automation** | Automatic promotion when spots open |
 
 ### For Students
 
@@ -69,6 +111,15 @@ Whether you run a yoga shala, a pilates reformer studio, a barre studio, a marti
 | **Instructor Profiles** | Teacher bios, specialties, and reviews |
 | **Community** | Practice stats, streaks, leaderboards, friend connections |
 | **Progress Tracking** | Classes attended, minutes practiced, style preferences |
+
+### For Teachers
+
+| Feature | Description |
+|---------|-------------|
+| **Teach Dashboard** | Personal schedule overview, upcoming classes |
+| **My Schedule** | View assigned classes and availability |
+| **Sub Requests** | Request and accept substitutions |
+| **Earnings** | Track payroll, tips, and commissions |
 
 ### Growth & Engagement (Non-Obtrusive)
 
@@ -100,6 +151,33 @@ This means you can connect Mailchimp, ConvertKit, HubSpot, Google Ads, or whatev
 
 ---
 
+## Demo Mode
+
+Tandava includes a comprehensive demo mode for exploring the platform without a database connection.
+
+### Demo Studio: Oxatl Yoga
+
+A fully-realized fictional yoga studio in Austin, Texas:
+
+- **3 locations:** Domain, South Congress, East Austin
+- **18 teachers** with realistic profiles and specialties
+- **500 members** with varied membership types and activity levels
+- **Historical data:** Full 2018 calendar with bookings and transactions
+- **Workshop templates:** Myofascial Release, Breathwork, Sound Bath, and more
+
+### Enabling Demo Mode
+
+```bash
+# In .env or .env.local
+VITE_DEMO_MODE=true
+```
+
+The demo panel allows switching between personas (Owner, Front Desk, Teacher, Student) to experience different role-based views.
+
+See [docs/DEMO_MODE.md](docs/DEMO_MODE.md) for complete documentation on customizing demo data.
+
+---
+
 ## Architecture
 
 ```
@@ -109,24 +187,51 @@ tandava/
 │   ├── components/             # Reusable UI components
 │   │   ├── layout/             # AppLayout (student), ManageLayout (admin)
 │   │   ├── manage/             # Management-specific components
+│   │   ├── teach/              # Teacher portal components
 │   │   ├── booking/            # Booking flow components
 │   │   ├── schedule/           # Class, workshop, retreat cards
 │   │   ├── studio/             # Studio cards and details
 │   │   ├── instructor/         # Instructor cards and profiles
 │   │   ├── stats/              # Stat cards and visualizations
+│   │   ├── DemoPanel.tsx       # Demo mode persona switcher
 │   │   └── ui/                 # shadcn/ui base components
-│   ├── contexts/               # React contexts (Auth, etc.)
+│   ├── contexts/               # React contexts
+│   │   ├── AuthContext.tsx     # Authentication state
+│   │   ├── DemoContext.tsx     # Demo mode state and personas
+│   │   └── ThemeContext.tsx    # Studio theming
+│   ├── data/
+│   │   └── demo/               # Demo data (Oxatl Yoga studio)
+│   │       ├── index.ts        # Central exports
+│   │       ├── oxatl-yoga.ts   # Studio, teachers, members, schedule
+│   │       └── bookings-transactions.ts  # 2018 historical data
 │   ├── hooks/                  # Custom React hooks
-│   ├── lib/                    # Utility functions, Supabase client
+│   ├── lib/                    # Utility functions
+│   │   ├── supabase.ts         # Supabase client
+│   │   ├── reference-data.ts   # Canonical lists (class styles, workshop types)
+│   │   └── validation.ts       # Form validation utilities
 │   ├── pages/                  # Route-level page components
 │   │   ├── auth/               # Login, Register
-│   │   └── manage/             # All studio management pages
+│   │   ├── manage/             # All studio management pages
+│   │   │   ├── Analytics*.tsx  # Analytics dashboards
+│   │   │   ├── Campaigns.tsx   # Campaign manager
+│   │   │   ├── AudienceSegments.tsx
+│   │   │   ├── UtmBuilder.tsx
+│   │   │   ├── Tasks.tsx       # Task management
+│   │   │   ├── DataConnectors.tsx
+│   │   │   └── ...
+│   │   └── teach/              # Teacher portal pages
 │   └── types/                  # TypeScript type definitions
 ├── supabase/
-│   └── migrations/             # PostgreSQL migration files
-│       ├── 00001_initial_schema.sql      # Core data model
-│       ├── 00002_operational_workflows.sql # Promos, waivers, referrals, integrations
-│       └── 00003_workshops_landing_growth.sql # Events, landing pages, analytics, engagement
+│   └── migrations/             # PostgreSQL migration files (8 migrations)
+├── docs/
+│   ├── INDEX.md                # Documentation index
+│   ├── ROADMAP.md              # Development roadmap
+│   ├── FEATURE_INDEX.md        # Feature status reference
+│   ├── DEMO_MODE.md            # Demo mode guide
+│   ├── FAQ.md                  # Quick FAQ
+│   ├── FAQ-detailed.md         # Detailed FAQ
+│   ├── workflows/              # Workflow documentation
+│   └── prd/                    # Product requirements (PRD-001 through PRD-013)
 └── package.json
 ```
 
@@ -146,15 +251,35 @@ tandava/
 
 The database is designed for **multi-tenant studio management** with Row Level Security (RLS) policies ensuring complete data isolation between studios.
 
-**Core entities:** Studios, Locations, Profiles, Staff, Members, Offerings, Schedule Rules, Class Occurrences, Bookings, Memberships, Class Packs, Transactions
+| Migration | Focus | Tables |
+|-----------|-------|--------|
+| 001 | Core | Studios, profiles, bookings, memberships, payments |
+| 002 | Operations | Promos, waivers, referrals, webhooks |
+| 003 | Growth | Events, landing pages, analytics, engagement |
+| 004 | BI | MRR, forecasting, CLV, P&L, benchmarks |
+| 005 | Connectors | Import/export/sync infrastructure |
+| 006 | Phase 1 | Staff portal, retail, membership enhancements |
+| 007 | Phase 2-3 | Notifications, SMS, check-in, waitlist automation |
+| 008 | Phase 4-5 | Campaigns, audience segments, UTM, task management |
 
-**Operational entities:** Promo Codes, Intro Offers, Guest Passes, Gift Cards, Waivers, Referral Programs, Membership Pauses
+**Total: 140+ tables** covering every aspect of studio operations.
 
-**Growth entities:** Events (workshops, trainings, retreats), Landing Pages, Newsletter Subscribers, Analytics Sessions, Engagement Profiles, Nudge Rules, Milestones
+---
 
-**Integration entities:** Event Log, Integrations, Webhook Endpoints
+## Reference Data
 
-Every table includes `created_at` and `updated_at` timestamps. Most include `studio_id` for multi-tenant scoping. All are governed by RLS policies.
+Tandava includes canonical reference lists for consistent data entry and validation:
+
+### Class Styles (50 options)
+Vinyasa, Power Vinyasa, Yoga Sculpt, Slow Flow, Yin, Restorative, Hot Yoga, Ashtanga, Kundalini, Pilates, and more.
+
+### Workshop Types (30 options)
+Intro to Yoga, Breathwork Workshop, Inversions, Handstand Workshop, Sound Bath, Full Moon Ceremony, and more.
+
+### Booking Provider Detection
+Automatic detection for MindBody, Walla, Momence, WellnessLiving, Arketa, Vagaro, Acuity, and others.
+
+See `src/lib/reference-data.ts` for complete lists.
 
 ---
 
@@ -181,7 +306,17 @@ npm install
 npm run dev
 ```
 
-The app will open at `http://localhost:8080`. The frontend runs with mock data by default — no backend required to browse the UI.
+The app will open at `http://localhost:8080`. The frontend runs with demo data by default — no backend required to browse the UI.
+
+### Enabling Demo Mode
+
+```bash
+# Create .env.local with demo mode enabled
+echo "VITE_DEMO_MODE=true" > .env.local
+
+# Restart the dev server
+npm run dev
+```
 
 ### Connecting Supabase (Full Stack)
 
@@ -238,6 +373,13 @@ Supported import categories:
 - Memberships and subscriptions
 - Transaction history
 
+### Data Connectors
+
+The Data Connectors hub (`/manage/connectors`) provides:
+- **Import connectors** for MindBody, Walla, Momence, WellnessLiving, and generic CSV
+- **Sync connectors** for ongoing data synchronization
+- **Export options** for backups and migrations
+
 ### Exporting Data
 
 Every data table supports CSV export. The export format uses standardized column names designed for maximum interoperability — whether you're moving to another platform, building a custom integration, or just want a backup.
@@ -245,6 +387,20 @@ Every data table supports CSV export. The export format uses standardized column
 ### The Standard Format Promise
 
 We're working toward a standardized interchange format for studio management data. The goal: if you ever want to leave Tandava, your data exports seamlessly. And if you're coming from another system, your import is painless. This isn't just a feature — it's a commitment to the studio community.
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [docs/INDEX.md](docs/INDEX.md) | Documentation index and reading order |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | Development roadmap by phase |
+| [docs/FEATURE_INDEX.md](docs/FEATURE_INDEX.md) | Complete feature status reference |
+| [docs/DEMO_MODE.md](docs/DEMO_MODE.md) | Demo mode customization guide |
+| [docs/FAQ.md](docs/FAQ.md) | Quick answers to common questions |
+| [docs/workflows/](docs/workflows/) | Step-by-step operational guides |
+| [docs/prd/](docs/prd/) | Product requirements documents |
 
 ---
 
@@ -272,34 +428,45 @@ Tandava is open-source under the [AGPL-3.0 license](LICENSE). We welcome contrib
 
 ## Roadmap
 
-### Now (V1 Alpha)
-- Frontend UI with mock data for all core workflows
-- Database schema covering scheduling, memberships, payments, events, growth
-- PWA support for mobile-native experience
-- Data import/export infrastructure
+### Completed
 
-### Next (V1 Beta)
-- Supabase backend wiring (auth, real-time data, RLS enforcement)
-- Stripe Connect integration for payments
-- Schedule rule engine (recurring rules generate class occurrences)
-- Email transactional notifications (booking confirmations, reminders)
-- Docker Compose for one-command local deployment
+- Multi-tenant architecture with Row Level Security
+- Core scheduling with recurring rules and substitutions
+- Booking system with waitlist management
+- Membership types and active subscriptions
+- Class pack purchase and consumption
+- Stripe Connect payment integration (schema)
+- Teacher payroll calculation
+- Multi-location support
+- Waivers with digital signatures
+- Import infrastructure for data migration
+- Comprehensive analytics dashboards
+- Demo mode with role switching
+- Studio theming system (3 starter themes)
+- Data connector hub (import/sync/export)
+- Campaign Hub (manager, segments, UTM, A/B testing)
+- Task Management (Kanban, list view, recurring, checklists)
+- Check-in system (self-service kiosk, QR codes)
+- Waitlist automation
 
-### Later (V1 Stable)
-- Self-serve studio registration and onboarding
-- Webhook delivery engine with retry logic
-- CSV/API data export endpoints
-- Performance optimization and code splitting
-- Automated testing suite
-- Documentation site
+### In Development
 
-### Future
-- Multi-language support (i18n)
-- Native mobile apps (React Native or Capacitor)
-- Marketplace for community-built integrations
-- Teacher-side app for managing availability and subs
-- Student self-service portal for membership management
-- Open API for third-party developers
+- Real data connections (replacing mock data)
+- Edge Functions for background processing
+- Notification delivery (email, SMS, push)
+
+### Future Phases
+
+- **Phase 6:** Custom Report Builder
+- **Phase 7:** Booking Enhancements (Reserve with Google, spot selection)
+- **Phase 8:** Payment Enhancements (payment plans, POS terminal)
+- **Phase 9:** Video & On-Demand
+- **Phase 10:** Marketplace Integrations (ClassPass, Gympass)
+- **Phase 11:** Franchise/Multi-Studio
+- **Phase 12:** Mobile Apps
+- **Phase 13:** Advanced AI Features
+
+See [docs/ROADMAP.md](docs/ROADMAP.md) for the complete roadmap with PRD links.
 
 ---
 
@@ -330,4 +497,4 @@ We're not building this to compete with anyone. We're building it because the st
 
 *"The body is your temple. Keep it pure and clean for the soul to reside in."* — B.K.S. Iyengar
 
-*Tandava is built with care for the studio community. Namaste.* 🙏
+*Tandava is built with care for the studio community. Namaste.*
