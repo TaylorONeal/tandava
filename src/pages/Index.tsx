@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { SEOHead } from "@/components/seo/SEOHead";
+import { organizationSchema, websiteSchema } from "@/lib/structured-data";
 import { StatCard } from "@/components/stats/StatCard";
 import { ClassCard } from "@/components/schedule/ClassCard";
 import { StudioCard } from "@/components/studio/StudioCard";
@@ -141,6 +143,10 @@ const Index = () => {
 
   return (
     <AppLayout>
+      <SEOHead
+        canonical="/"
+        structuredData={[organizationSchema(), websiteSchema()]}
+      />
       <div className="space-y-10">
         {/* Hero / Search Section */}
         <div className="relative rounded-2xl bg-gradient-to-br from-primary/10 via-accent to-primary/5 p-8 md:p-12">

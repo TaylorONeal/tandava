@@ -6,11 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signUpWithEmail, signInWithGoogle } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -36,12 +39,25 @@ const Register = () => {
 
     setIsLoading(true);
 
-    // Simulate registration
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const { error } = await signUpWithEmail(formData.email, formData.password, {
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      marketing_consent: formData.marketingConsent,
+    });
+
+    if (error) {
+      toast({
+        title: "Registration failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
 
     toast({
       title: "Welcome to Tandava!",
-      description: "Your account has been created successfully.",
+      description: "Your account has been created. Check your email to verify.",
     });
 
     navigate("/");
@@ -50,17 +66,21 @@ const Register = () => {
 
   const handleGoogleSignup = async () => {
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast({
-      title: "Welcome to Tandava!",
-      description: "Your account has been created with Google.",
-    });
-    navigate("/");
-    setIsLoading(false);
+    const { error } = await signInWithGoogle();
+    if (error) {
+      toast({
+        title: "Registration failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
+    // OAuth redirect handles navigation
   };
 
   return (
     <div className="min-h-screen flex">
+      <SEOHead title="Create Account" description="Create your Tandava account to book yoga classes, track your practice, and join our wellness community." canonical="/auth/register" noindex />
       {/* Left side - Image/Branding */}
       <div className="hidden lg:flex flex-1 items-center justify-center bg-gradient-to-br from-primary/10 via-accent to-primary/5 p-12">
         <div className="max-w-md text-center">

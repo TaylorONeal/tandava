@@ -1,6 +1,8 @@
 import { ReactNode, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { hasPermission } from "@/types/roles";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -25,6 +27,8 @@ import {
   Building2,
   Heart,
   Play,
+  Store,
+  ClipboardCheck,
 } from "lucide-react";
 
 interface AppLayoutProps {
@@ -41,22 +45,27 @@ const navigation = [
   { name: "Community", href: "/community", icon: Users },
 ];
 
-const adminNavigation = [
-  { name: "Staff Check-in", href: "/staff/checkin", icon: LayoutDashboard },
-  { name: "Admin", href: "/admin", icon: Settings },
-];
-
 export function AppLayout({ children }: AppLayoutProps) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { profile, permissions, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Mock user - in real app, this would come from auth context
-  const user = {
-    name: "Sarah Chen",
-    email: "sarah@example.com",
-    avatar: "",
-    role: "STUDENT" as const,
-  };
+  const user = profile
+    ? {
+        name: `${profile.first_name} ${profile.last_name}`,
+        email: profile.email,
+        avatar: profile.avatar_url || "",
+      }
+    : {
+        name: "Guest",
+        email: "",
+        avatar: "",
+      };
+
+  const showManageLink = hasPermission(permissions, "studio.manage_settings");
+  const showStaffLink = hasPermission(permissions, "studio.checkin");
+  const showAdminLink = hasPermission(permissions, "platform.admin");
 
   const isActive = (href: string) => {
     if (href === "/") return location.pathname === "/";
@@ -137,25 +146,45 @@ export function AppLayout({ children }: AppLayoutProps) {
                     Account
                   </Link>
                 </DropdownMenuItem>
-                {user.role !== "STUDENT" && (
+                {(showManageLink || showStaffLink || showAdminLink) && (
                   <>
                     <DropdownMenuSeparator />
-                    {adminNavigation.map((item) => (
-                      <DropdownMenuItem key={item.name} asChild className="rounded-xl">
-                        <Link to={item.href} className="flex items-center gap-2 cursor-pointer">
-                          <item.icon className="h-4 w-4" />
-                          {item.name}
+                    {showManageLink && (
+                      <DropdownMenuItem asChild className="rounded-xl">
+                        <Link to="/manage" className="flex items-center gap-2 cursor-pointer">
+                          <Store className="h-4 w-4" />
+                          Studio Manager
                         </Link>
                       </DropdownMenuItem>
-                    ))}
+                    )}
+                    {showStaffLink && (
+                      <DropdownMenuItem asChild className="rounded-xl">
+                        <Link to="/staff/checkin" className="flex items-center gap-2 cursor-pointer">
+                          <ClipboardCheck className="h-4 w-4" />
+                          Front Desk
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    {showAdminLink && (
+                      <DropdownMenuItem asChild className="rounded-xl">
+                        <Link to="/admin" className="flex items-center gap-2 cursor-pointer">
+                          <Settings className="h-4 w-4" />
+                          Platform Admin
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                   </>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild className="rounded-xl">
-                  <Link to="/auth/login" className="flex items-center gap-2 cursor-pointer text-destructive">
-                    <LogOut className="h-4 w-4" />
-                    Sign out
-                  </Link>
+                <DropdownMenuItem
+                  className="rounded-xl cursor-pointer text-destructive"
+                  onClick={async () => {
+                    await signOut();
+                    navigate("/auth/login");
+                  }}
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

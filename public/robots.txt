@@ -12,3 +12,13 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Authenticated routes — no value for crawlers
+Disallow: /my-schedule
+Disallow: /account
+Disallow: /admin
+Disallow: /manage
+Disallow: /staff
+Disallow: /auth
+
+Sitemap: https://tandava.yoga/sitemap.xml
