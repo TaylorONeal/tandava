@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
-import type { Session, User, AuthError } from "@supabase/supabase-js";
-import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { auth, data, isBackendConfigured } from "@/lib/backend";
+import type { AuthUser, AuthError } from "@/lib/backend";
 import type { Profile } from "@/types/database";
 import type { Permission } from "@/types/roles";
 import { getPermissionsForUserRole } from "@/types/roles";
@@ -9,8 +9,7 @@ import { getPermissionsForUserRole } from "@/types/roles";
 // Types
 // ---------------------------------------------------------------------------
 interface AuthState {
-  session: Session | null;
-  user: User | null;
+  user: AuthUser | null;
   profile: Profile | null;
   permissions: Permission[];
   isLoading: boolean;
@@ -31,7 +30,7 @@ interface AuthContextValue extends AuthState {
 }
 
 // ---------------------------------------------------------------------------
-// Demo mode fallback (when Supabase is not configured)
+// Demo mode fallback (when backend is not configured)
 // ---------------------------------------------------------------------------
 const DEMO_PROFILE: Profile = {
   id: "demo-user-id",
@@ -56,10 +55,9 @@ const DEMO_PROFILE: Profile = {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const isDemoMode = !isSupabaseConfigured();
+  const isDemoMode = !isBackendConfigured();
 
   const [state, setState] = useState<AuthState>({
-    session: null,
     user: null,
     profile: isDemoMode ? DEMO_PROFILE : null,
     permissions: isDemoMode ? getPermissionsForUserRole(DEMO_PROFILE.role) : [],
@@ -68,22 +66,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   });
 
   // -----------------------------------------------------------------------
-  // Fetch user profile from Supabase
+  // Fetch user profile
   // -----------------------------------------------------------------------
   const fetchProfile = useCallback(async (userId: string): Promise<Profile | null> => {
     if (isDemoMode) return DEMO_PROFILE;
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
+    const { data: profile, error } = await data.getProfile(userId);
 
     if (error) {
       console.error("Failed to fetch profile:", error.message);
       return null;
     }
-    return data;
+    return profile;
   }, [isDemoMode]);
 
   const refreshProfile = useCallback(async () => {
@@ -106,10 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isDemoMode) return;
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const user = session?.user ?? null;
+    const unsubscribe = auth.onAuthStateChange(async (user) => {
       let profile: Profile | null = null;
       let permissions: Permission[] = [];
 
@@ -121,7 +112,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       setState({
-        session,
         user,
         profile,
         permissions,
@@ -131,8 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     // Initial session check
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      const user = session?.user ?? null;
+    auth.getSession().then(async ({ user }) => {
       let profile: Profile | null = null;
       let permissions: Permission[] = [];
 
@@ -144,7 +133,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       setState({
-        session,
         user,
         profile,
         permissions,
@@ -153,7 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
     });
 
-    return () => subscription.unsubscribe();
+    return unsubscribe;
   }, [isDemoMode, fetchProfile]);
 
   // -----------------------------------------------------------------------
@@ -164,7 +152,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setState((prev) => ({ ...prev, profile: DEMO_PROFILE, permissions: getPermissionsForUserRole(DEMO_PROFILE.role) }));
       return { error: null };
     }
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await auth.signInWithEmail(email, password);
     return { error };
   };
 
@@ -174,11 +162,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     metadata: { first_name: string; last_name: string; marketing_consent?: boolean }
   ) => {
     if (isDemoMode) return { error: null };
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: metadata },
-    });
+    const { error } = await auth.signUpWithEmail(email, password, metadata);
     return { error };
   };
 
@@ -187,26 +171,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setState((prev) => ({ ...prev, profile: DEMO_PROFILE, permissions: getPermissionsForUserRole(DEMO_PROFILE.role) }));
       return { error: null };
     }
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
-    });
+    const { error } = await auth.signInWithOAuth("google");
     return { error };
   };
 
   const signOut = async () => {
     if (isDemoMode) {
-      setState((prev) => ({ ...prev, profile: null, permissions: [], user: null, session: null }));
+      setState((prev) => ({ ...prev, profile: null, permissions: [], user: null }));
       return;
     }
-    await supabase.auth.signOut();
+    await auth.signOut();
   };
 
   const resetPassword = async (email: string) => {
     if (isDemoMode) return { error: null };
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-confirm`,
-    });
+    const { error } = await auth.resetPassword(email);
     return { error };
   };
 

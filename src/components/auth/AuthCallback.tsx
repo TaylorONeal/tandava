@@ -1,18 +1,18 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
+import { auth } from "@/lib/backend";
 
 /**
  * Handles the OAuth redirect callback.
- * Supabase appends auth tokens as URL hash fragments after OAuth flows.
- * This component picks up the session and redirects to the intended page.
+ * The auth provider picks up tokens from URL fragments after OAuth flows.
+ * This component checks for a session and redirects to the intended page.
  */
 export function AuthCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
+    auth.getSession().then(({ user }) => {
+      if (user) {
         navigate("/", { replace: true });
       } else {
         navigate("/auth/login", { replace: true });

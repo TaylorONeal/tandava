@@ -6,7 +6,7 @@
  *
  * Architecture:
  *   - Frontend: @stripe/stripe-js (this file) — redirects to Stripe Checkout
- *   - Backend:  Supabase Edge Functions — creates sessions, handles webhooks
+ *   - Backend:  Backend API provider — creates sessions, handles webhooks
  *   - Connect:  Stripe Connect (Standard) — each studio links their own account
  *
  * See docs/developer/stripe-setup.md for full configuration guide.
@@ -45,14 +45,15 @@ export function isStripeConfigured(): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// Checkout helpers (call Supabase Edge Functions)
+// Checkout helpers (call backend API functions)
 // ---------------------------------------------------------------------------
-import { supabase } from "./supabase";
+import { api } from "@/lib/backend";
 
 /** Redirect to Stripe Checkout for a class drop-in */
 export async function checkoutDropIn(classId: string): Promise<{ error?: string }> {
-  const { data, error } = await supabase.functions.invoke("stripe-checkout", {
-    body: { type: "drop_in", classId },
+  const { data, error } = await api.invoke<{ url: string }>("stripe-checkout", {
+    type: "drop_in",
+    classId,
   });
 
   if (error) return { error: error.message };
@@ -70,8 +71,10 @@ export async function checkoutMembership(
   studioId: string,
   planId: string
 ): Promise<{ error?: string }> {
-  const { data, error } = await supabase.functions.invoke("stripe-checkout", {
-    body: { type: "membership", studioId, planId },
+  const { data, error } = await api.invoke<{ url: string }>("stripe-checkout", {
+    type: "membership",
+    studioId,
+    planId,
   });
 
   if (error) return { error: error.message };
@@ -89,8 +92,10 @@ export async function checkoutClassPack(
   studioId: string,
   packSize: number
 ): Promise<{ error?: string }> {
-  const { data, error } = await supabase.functions.invoke("stripe-checkout", {
-    body: { type: "class_pack", studioId, packSize },
+  const { data, error } = await api.invoke<{ url: string }>("stripe-checkout", {
+    type: "class_pack",
+    studioId,
+    packSize,
   });
 
   if (error) return { error: error.message };
@@ -105,8 +110,8 @@ export async function checkoutClassPack(
 
 /** Open the Stripe Customer Portal for self-service billing management */
 export async function openCustomerPortal(studioId: string): Promise<{ error?: string }> {
-  const { data, error } = await supabase.functions.invoke("stripe-portal", {
-    body: { studioId },
+  const { data, error } = await api.invoke<{ url: string }>("stripe-portal", {
+    studioId,
   });
 
   if (error) return { error: error.message };

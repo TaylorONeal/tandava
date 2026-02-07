@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { data, isBackendConfigured } from "@/lib/backend";
 import type { FeedbackType } from "@/types/database";
 import { Send } from "lucide-react";
 
@@ -63,7 +63,7 @@ export function ContactForm({
 
     setIsSubmitting(true);
 
-    if (!isSupabaseConfigured()) {
+    if (!isBackendConfigured()) {
       // Demo mode — just show success
       await new Promise((r) => setTimeout(r, 500));
       toast({ title: "Message sent!", description: "Thank you for reaching out. (Demo mode)" });
@@ -73,7 +73,7 @@ export function ContactForm({
       return;
     }
 
-    const { error } = await supabase.from("messages").insert({
+    const { error } = await data.createMessage({
       type,
       studio_id: studioId || null,
       class_id: classId || null,
