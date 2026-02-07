@@ -29,6 +29,7 @@ import {
   Plane,
   Play,
 } from "lucide-react";
+import { EngagementNudge } from "@/components/EngagementNudge";
 
 // Mock data with enhanced class descriptions
 const mockClasses = [
@@ -429,6 +430,17 @@ const Schedule = () => {
               </Link>
             </div>
           </div>
+
+          {/* Contextual nudge — pack running low */}
+          <EngagementNudge
+            type="pack_running_low"
+            title="2 classes left on your pack"
+            message="Renew or upgrade to unlimited so you never miss a class."
+            actionLabel="View options"
+            actionUrl="/account"
+            context="10-Class Pack"
+            className="mb-4"
+          />
 
           {/* Active filters */}
           {activeFilters.length > 0 && (

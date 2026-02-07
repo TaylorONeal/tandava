@@ -1,215 +1,240 @@
 # Tandava
 
-An open-source yoga studio booking and management platform. Tandava gives studio owners a complete system for scheduling classes, managing memberships, processing payments, and communicating with students — all self-hosted and under your control.
+**Open-source studio management for yoga, pilates, and movement studios.**
 
-## What Is This?
+Scheduling. Memberships. Payments. Check-in. Analytics. All in one place, all under your control.
 
-Tandava is a **deploy-your-own-instance** application. A studio operator clones this repo, configures their environment, and deploys to any static hosting provider. There is no central SaaS — you own your data, your branding, and your deployment.
+*Tandava* is the cosmic dance in Hindu tradition, representing the rhythm of creation, preservation, and transformation. We chose this name because running a studio should feel like a practice: purposeful, flowing, and yours to shape.
 
-**For members**, Tandava provides class browsing, booking, on-demand video access, and self-service billing.
+---
 
-**For studio owners**, it provides a full management panel with scheduling, member directory, instructor management, messaging inbox, and revenue tracking.
+## What Tandava Is
 
-**For developers**, it provides a modern React + TypeScript codebase with a provider-agnostic backend layer, making it straightforward to extend or swap components.
+Tandava is studio management software you can self-host. It handles the operational reality of running a movement studio: scheduling classes, tracking memberships, processing payments, managing teachers, and understanding your business through analytics.
 
-## Features
+It's designed for studios with 1-3 locations where the owner is often also the lead teacher, the person handling check-ins, and the one reconciling the books at month-end.
 
-- **Class booking** — browse schedule, book drop-ins, join waitlists, get confirmation emails
-- **Memberships & class packs** — recurring subscriptions and pre-paid bundles via Stripe
-- **Three-tier admin model** — platform admin, studio manager, and front desk each get their own panel with appropriate permissions
-- **Payment processing** — Stripe Connect (Standard) so each studio receives payments directly
-- **Messaging system** — unified inbox for member messages, visitor inquiries, and class feedback with honeypot anti-spam
-- **Provider-agnostic email** — swap between Resend, SendGrid, SMTP, or console with a single environment variable
-- **SEO** — per-page meta tags, Open Graph, Twitter Cards, JSON-LD structured data, and build-time sitemap generation
-- **Error monitoring** — optional Sentry integration (zero overhead when unconfigured)
-- **Demo mode** — runs entirely without a backend using mock data, so designers and developers can work on the UI immediately
-- **Backend flexibility** — abstraction layer lets you swap Supabase for raw PostgreSQL or any other backend without changing frontend code
+**What you get:**
+- Full scheduling with recurring classes, subs, and cancellations
+- Membership and class pack management with purchase and consumption tracking
+- Student profiles with visit history and waiver tracking
+- Teacher profiles with pay rates and availability
+- Check-in system with kiosk mode and QR codes
+- Analytics dashboards for attendance, revenue, and retention
+- Event and workshop management
+- Data import from MindBody, Momence, Walla, and others
+
+**What you don't get:**
+- Vendor lock-in
+- Per-member pricing that scales against you
+- Data you can't export
+- Features hidden behind enterprise tiers
+
+---
+
+## Why Open Source
+
+Most studio software traps you. Your member data lives on someone else's servers. Switching providers means starting over. Customization requires paying for higher tiers or begging for features.
+
+Tandava takes the opposite approach:
+
+**Your data stays yours.** Run it on your own infrastructure or use managed hosting. Export everything, anytime, in standard formats.
+
+**The code is open.** Every line is auditable. If something doesn't work for your studio, you can change it or hire someone to change it.
+
+**No lock-in by design.** We're building toward a standardized data interchange format so moving to or from Tandava is straightforward.
+
+---
+
+## Current Status
+
+Tandava is in active development. The demo shows complete UI and workflows, but some features need backend integration for production use.
+
+**Working now:**
+- Full UI for scheduling, bookings, roster management
+- Role-based access (Owner, Front Desk, Teacher, Student)
+- Analytics dashboards
+- Demo mode with sample studio data
+
+**Needs integration:**
+- Payment processing (Stripe Connect ready, not connected)
+- Real authentication (currently mock)
+- Email/SMS notifications
+- Data persistence (Supabase schema ready)
+
+See [docs/STATUS.md](docs/STATUS.md) for complete details.
+
+---
+
+## Quick Start
+
+```bash
+# Clone and install
+git clone https://github.com/TaylorONeal/tandava.git
+cd tandava
+npm install
+
+# Run in demo mode
+echo "VITE_DEMO_MODE=true" > .env.local
+npm run dev
+```
+
+Opens at `http://localhost:8080` with sample data from a fictional studio (Oxatl Yoga, Austin TX).
+
+---
+
+## Demo Mode
+
+Demo mode lets you explore the platform without a database. It includes:
+
+- **Oxatl Yoga**: A fictional Austin studio with 3 locations
+- **18 teachers** with realistic profiles
+- **500 members** with varied membership types
+- **Full schedule** with historical booking data
+
+Switch between roles (Owner, Front Desk, Teacher, Student) using the demo panel to see different views.
+
+---
 
 ## Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
-| **Frontend** | React 18, TypeScript, Vite 5 |
-| **Styling** | Tailwind CSS 3, shadcn/ui (60+ Radix components) |
-| **Routing** | React Router v6 |
-| **Server State** | TanStack Query (React Query) |
-| **Backend** | Supabase (PostgreSQL + Auth + Edge Functions + RLS) |
-| **Payments** | Stripe Connect (Standard) |
-| **Email** | Resend / SendGrid / SMTP / Console (provider-agnostic) |
-| **SEO** | react-helmet-async, JSON-LD, build-time sitemap |
-| **Error Monitoring** | Sentry (optional) |
+|-------|------------|
+| Frontend | React 18 + TypeScript + Vite |
+| UI | shadcn/ui + Tailwind CSS |
+| Backend | Supabase (PostgreSQL + Auth + Storage) |
+| Payments | Stripe Connect (planned) |
+| Hosting | Any static host (Vercel, Netlify, self-hosted) |
 
-## Quick Start
+---
 
-### Prerequisites
+## Features
 
-- Node.js 18+ and npm
-- A [Supabase](https://supabase.com) account (free tier works)
-- (Optional) [Stripe](https://stripe.com) account for payments
-- (Optional) [Sentry](https://sentry.io) account for error monitoring
+### For Studio Owners
 
-### Setup
+| Feature | Description |
+|---------|-------------|
+| Dashboard | Today's schedule, metrics, alerts |
+| Schedule Management | Recurring rules, substitutions, cancellations |
+| Student Management | Profiles, memberships, visit history, waivers |
+| Teacher Management | Profiles, pay rates, availability |
+| Offerings | Class types with descriptions, levels, capacity |
+| Events and Workshops | Multi-session support, tiered pricing |
+| Financials | Memberships, class packs, transactions |
+| Reports | Attendance, revenue, teacher performance |
+| Data Import | CSV import with column mapping |
+| Settings | Studio info, policies, branding |
 
-```bash
-# Clone the repo
-git clone https://github.com/TaylorONeal/tandava.git
-cd tandava
+### For Teachers
 
-# Install dependencies
-npm install
+| Feature | Description |
+|---------|-------------|
+| Personal Dashboard | Upcoming classes, schedule overview |
+| Sub Requests | Request and accept substitutions |
+| Earnings | Track pay, tips, commissions |
 
-# Configure environment
-cp .env.example .env
-# Edit .env with your Supabase project URL and anon key
+### For Students
 
-# Set up the database
-npx supabase login
-npx supabase link --project-ref <your-project-ref>
-npx supabase db push
+| Feature | Description |
+|---------|-------------|
+| Class Browsing | Search by studio, style, teacher, time |
+| Booking | Class packs, memberships, drop-in, waitlist |
+| My Schedule | Upcoming and past bookings |
+| Progress | Classes attended, practice stats |
 
-# Start development server
-npm run dev
-```
+### Analytics
 
-The app will be available at `http://localhost:8080`.
+| Feature | Description |
+|---------|-------------|
+| Member Analytics | Retention, churn prediction, engagement |
+| Sales Analytics | Revenue trends, pack performance |
+| Financial Analytics | MRR tracking, forecasting |
+| Site Analytics | Traffic sources, conversion funnels |
 
-### Running Without a Backend (Demo Mode)
+---
 
-If you skip the Supabase setup, the app runs in **demo mode** with mock data. This is useful for exploring the UI, making design changes, or onboarding new contributors.
-
-```bash
-npm install
-npm run dev
-# No .env configuration needed — demo mode activates automatically
-```
-
-## Project Structure
+## Architecture
 
 ```
 tandava/
 ├── src/
-│   ├── main.tsx                     # Entry point (Sentry init)
-│   ├── App.tsx                      # Routes + providers
-│   ├── contexts/
-│   │   └── AuthContext.tsx           # Auth state + role/permissions
-│   ├── components/
-│   │   ├── auth/                    # ProtectedRoute, AuthCallback
-│   │   ├── contact/                 # ContactForm (unified messaging)
-│   │   ├── layout/                  # AppLayout, AdminLayout, ManageLayout, StaffLayout
-│   │   ├── seo/                     # SEOHead (react-helmet-async wrapper)
-│   │   └── ui/                      # shadcn/ui components (60+)
-│   ├── lib/
-│   │   ├── backend/                 # Backend abstraction layer
-│   │   │   ├── types.ts             # Provider interfaces
-│   │   │   ├── supabase.ts          # Supabase implementation
-│   │   │   └── index.ts             # Active provider export
-│   │   ├── stripe.ts                # Stripe.js + checkout helpers
-│   │   ├── sentry.ts                # Optional Sentry initialization
-│   │   ├── structured-data.ts       # JSON-LD schema generators
-│   │   └── utils.ts                 # Tailwind cn() utility
-│   ├── types/
-│   │   ├── database.ts              # Database table types
-│   │   └── roles.ts                 # Role + permission system
-│   └── pages/
-│       ├── admin/                   # Platform admin (6 pages)
-│       ├── manage/                  # Studio management (5 pages)
-│       └── staff/                   # Front desk (2 pages)
+│   ├── components/     # React components
+│   ├── contexts/       # Auth, Demo, Theme contexts
+│   ├── data/demo/      # Demo mode data
+│   ├── hooks/          # Custom hooks
+│   ├── lib/            # Utilities
+│   ├── pages/          # Route components
+│   └── types/          # TypeScript types
 ├── supabase/
-│   ├── migrations/
-│   │   └── 001_initial_schema.sql   # Full schema with RLS policies
-│   └── functions/
-│       ├── email/                   # Email provider + templates
-│       └── stripe-webhook/          # Stripe event handler
-├── scripts/
-│   └── generate-sitemap.ts          # Build-time sitemap generation
-├── docs/
-│   ├── prd/                         # Product requirements
-│   ├── developer/                   # Developer documentation
-│   └── studio-manager/              # Studio owner guides
-└── public/
-    └── robots.txt
+│   └── migrations/     # Database migrations
+└── docs/               # Documentation
 ```
 
-## Three-Tier Admin Model
+The database uses Row Level Security (RLS) for multi-tenant isolation. Each studio's data is completely separate.
 
-Tandava separates administrative access into three tiers, each with its own routes, layout, and permission set:
-
-| Tier | Who | Routes | Purpose |
-|------|-----|--------|---------|
-| **Platform Admin** | Developer or operator who deployed the instance | `/admin/*` | Instance health, studio management, user management, billing configuration |
-| **Studio Manager** | The person who runs the yoga studio | `/manage/*` | Class schedule, member directory, instructor management, messaging inbox, studio settings |
-| **Staff (Front Desk)** | Day-of operations | `/staff/*` | Class check-in, waitlist management |
-
-Permissions are defined in `src/types/roles.ts` and enforced at the route level via `<ProtectedRoute>`.
-
-## Backend Flexibility
-
-All application code interacts with the backend through a provider abstraction layer at `src/lib/backend/`. The default implementation uses Supabase, but you can swap in raw PostgreSQL, Firebase, or any custom backend by implementing three interfaces:
-
-- **AuthProvider** — sign in, sign up, OAuth, session management
-- **DataProvider** — database reads and writes
-- **ApiProvider** — serverless function / API endpoint calls
-
-To swap backends, implement the `Backend` interface and change one import in `src/lib/backend/index.ts`. See [docs/developer/backend-flexibility.md](docs/developer/backend-flexibility.md) for a detailed guide with tradeoffs and a worked example.
+---
 
 ## Documentation
 
-### For Developers
+| Document | Description |
+|----------|-------------|
+| [docs/INDEX.md](docs/INDEX.md) | Documentation index |
+| [docs/STATUS.md](docs/STATUS.md) | Current project status |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | Development roadmap |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute |
+| [DATA_INTEROPERABILITY.md](DATA_INTEROPERABILITY.md) | Data ownership principles |
 
-- [Developer Setup Guide](docs/developer/setup.md) — environment, database, project structure
-- [Backend Flexibility](docs/developer/backend-flexibility.md) — Supabase vs raw Postgres, swapping providers
-- [Stripe Setup](docs/developer/stripe-setup.md) — Connect configuration, webhooks, testing
-- [Email System](docs/developer/email-system.md) — provider architecture, templates, adding providers
-- [SEO Guide](docs/developer/seo-guide.md) — meta tags, structured data, sitemap, prerendering
-
-### For Studio Managers
-
-- [Getting Started](docs/studio-manager/getting-started.md) — studio setup, scheduling, team roles
-- [Billing & Payments](docs/studio-manager/billing-guide.md) — Stripe, pricing options, refunds, payouts
-
-### Product Requirements
-
-- [Platform Overview PRD](docs/prd/platform-overview.md) — architecture, roles, feature matrix, database schema
-
-## Build & Deploy
-
-```bash
-# Production build (includes sitemap generation)
-npm run build
-
-# Preview production build locally
-npm run preview
-```
-
-The `dist/` directory is a static site. Deploy to any hosting provider:
-
-- Cloudflare Pages
-- Vercel (static mode)
-- Netlify
-- GitHub Pages
-- Any nginx or Apache server
-
-No Node.js server runtime is needed in production.
-
-## Design System
-
-Tandava uses a "Mystical Night" theme built on Tailwind CSS with shadcn/ui components:
-
-- **Background:** Deep dark (#0f0a14)
-- **Accents:** Teal, coral, gold, sage
-- **Typography:** Cormorant Garamond (display), DM Sans (body), Cinzel (Sanskrit terms)
-- **Effects:** Glass morphism, gradient borders, subtle glow animations
+---
 
 ## Contributing
 
-Contributions are welcome. Before starting significant work, please open an issue to discuss the approach.
+We welcome contributions from studio owners, developers, and anyone who cares about independent studio software.
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/your-feature`)
-3. Make your changes
-4. Ensure the build passes (`npm run build`)
-5. Submit a pull request
+**Quick ways to help:**
+- Report bugs with reproduction steps
+- Suggest features that would help your studio
+- Submit code (fork, branch, PR)
+- Improve documentation
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for complete guidelines.
+
+---
+
+## Roadmap
+
+**Completed:**
+- Multi-tenant architecture with RLS
+- Core scheduling with recurring rules
+- Booking system with waitlist
+- Membership and class pack management
+- Analytics dashboards
+- Demo mode
+- Data connector hub
+
+**In Development:**
+- Real data connections
+- Notification delivery
+- Payment integration
+
+**Future:**
+- Custom report builder
+- Mobile apps
+- On-demand video
+
+See [docs/ROADMAP.md](docs/ROADMAP.md) for the full roadmap.
+
+---
 
 ## License
 
-This project is open source. See the repository for license details.
+Tandava is open source. License type is being finalized. See [LICENSE](LICENSE) for current status.
+
+For studios running Tandava for their own use, there are no restrictions beyond standard open-source norms. You own your data and control your deployment.
+
+---
+
+## Links
+
+- [Documentation](docs/INDEX.md)
+- [Project Status](docs/STATUS.md)
+- [Contributing](CONTRIBUTING.md)
