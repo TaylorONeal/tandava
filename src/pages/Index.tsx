@@ -24,6 +24,7 @@ import {
   Phone,
   Sparkles,
 } from "lucide-react";
+import { EngagementNudge, MilestoneCelebration } from "@/components/EngagementNudge";
 
 // Build today's schedule from demo data
 const DAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const;
@@ -60,6 +61,30 @@ const Index = () => {
         structuredData={[organizationSchema(), websiteSchema()]}
       />
       <div className="space-y-16">
+        {/* ---- Engagement Nudges ---- */}
+        <div className="space-y-2">
+          <MilestoneCelebration
+            milestoneName="10 Classes This Month!"
+            message="You're building a strong practice. Your consistency is paying off."
+            reward="Unlock: Free mat rental for the rest of the month"
+          />
+          <EngagementNudge
+            type="streak_at_risk"
+            title="Your 8-class streak is at risk"
+            message="Book a class today to keep your streak alive. You last practiced 3 days ago."
+            actionLabel="Browse Classes"
+            actionUrl="/schedule"
+          />
+          <EngagementNudge
+            type="new_class_suggestion"
+            title="New: Yin & Restore with Devika"
+            message="Based on your Vinyasa practice, this restorative class could complement your routine."
+            actionLabel="View Class"
+            actionUrl="/schedule"
+            context="Wednesdays & Fridays at 5:30 PM"
+          />
+        </div>
+
         {/* ---- Hero ---- */}
         <section className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 via-accent/10 to-background p-8 md:p-14">
           <div className="max-w-2xl relative z-10">

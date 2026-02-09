@@ -5,6 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   DollarSign,
   CreditCard,
   Package,
@@ -13,6 +29,9 @@ import {
   TrendingUp,
   Download,
   MoreHorizontal,
+  FileSpreadsheet,
+  FileText,
+  Calculator,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -21,6 +40,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { EngagementNudge } from "@/components/EngagementNudge";
 
 const mockMembershipTypes = [
   { id: "1", name: "Unlimited Monthly", price: 14900, billing: "monthly", activeCount: 89, isActive: true },
@@ -46,22 +66,182 @@ const mockRecentTransactions = [
   { id: "7", student: "Liam Park", type: "Drop-in", amount: 2500, date: "Jan 27, 5:45 PM", status: "refunded" },
 ];
 
+// ============================================================================
+// CSV EXPORT — Generate and download transaction data
+// ============================================================================
+
+type ExportFormat = "csv" | "quickbooks" | "xero";
+
+function generateCSV(transactions: typeof mockRecentTransactions, format: ExportFormat): string {
+  if (format === "quickbooks") {
+    // QuickBooks IIF format (simplified)
+    const lines = [
+      "!TRNS\tTRNSTYPE\tDATE\tACCNT\tNAME\tAMOUNT\tMEMO",
+      "!SPL\tTRNSTYPE\tDATE\tACCNT\tNAME\tAMOUNT\tMEMO",
+      "!ENDTRNS",
+    ];
+    transactions.forEach((tx) => {
+      lines.push(`TRNS\tDEPOSIT\t${tx.date}\tUndeposited Funds\t${tx.student}\t${(tx.amount / 100).toFixed(2)}\t${tx.type}`);
+      lines.push(`SPL\tDEPOSIT\t${tx.date}\tClass Revenue\t${tx.student}\t-${(tx.amount / 100).toFixed(2)}\t${tx.type}`);
+      lines.push("ENDTRNS");
+    });
+    return lines.join("\n");
+  }
+
+  if (format === "xero") {
+    // Xero CSV format
+    const headers = ["*ContactName", "*InvoiceNumber", "*InvoiceDate", "*DueDate", "Description", "*Quantity", "*UnitAmount", "*AccountCode", "TaxType"];
+    const rows = transactions.map((tx, i) => [
+      tx.student,
+      `TDV-${String(i + 1).padStart(4, "0")}`,
+      tx.date,
+      tx.date,
+      tx.type,
+      "1",
+      (tx.amount / 100).toFixed(2),
+      "200",
+      "Tax Exempt",
+    ]);
+    return [headers, ...rows].map((r) => r.join(",")).join("\n");
+  }
+
+  // Standard CSV
+  const headers = ["Date", "Student", "Type", "Amount", "Status", "Payment Method"];
+  const rows = transactions.map((tx) => [
+    tx.date,
+    tx.student,
+    tx.type,
+    `$${(tx.amount / 100).toFixed(2)}`,
+    tx.status,
+    "Card",
+  ]);
+  return [headers, ...rows].map((r) => r.join(",")).join("\n");
+}
+
+function downloadFile(content: string, filename: string) {
+  const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+// ============================================================================
+// COMPONENT
+// ============================================================================
+
 export default function FinancialsManage() {
   const { toast } = useToast();
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exportFormat, setExportFormat] = useState<ExportFormat>("csv");
+  const [exportDateFrom, setExportDateFrom] = useState("");
+  const [exportDateTo, setExportDateTo] = useState("");
+
+  const handleExport = () => {
+    const csv = generateCSV(mockRecentTransactions, exportFormat);
+    const extensions: Record<ExportFormat, string> = { csv: "csv", quickbooks: "iif", xero: "csv" };
+    const prefixes: Record<ExportFormat, string> = { csv: "transactions", quickbooks: "quickbooks-export", xero: "xero-import" };
+    downloadFile(csv, `${prefixes[exportFormat]}-${new Date().toISOString().split("T")[0]}.${extensions[exportFormat]}`);
+    setExportOpen(false);
+    toast({
+      title: "Export downloaded",
+      description: `${mockRecentTransactions.length} transactions exported as ${exportFormat === "quickbooks" ? "QuickBooks IIF" : exportFormat === "xero" ? "Xero CSV" : "CSV"}.`,
+    });
+  };
+
   return (
     <ManageLayout>
       <div className="space-y-6">
+        {/* Nudge */}
+        <EngagementNudge
+          type="pack_running_low"
+          title="2 failed membership renewals"
+          message="Alex Rivera and 1 other member have failed payment attempts. Follow up to prevent churn."
+          actionLabel="View Failed Payments"
+          context="$268 at risk"
+        />
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Financials</h1>
             <p className="text-sm text-muted-foreground mt-1">Memberships, class packs, and transactions</p>
           </div>
-          <Button variant="outline" size="sm" onClick={() => toast({ title: "Exported", description: "Transaction data exported to CSV." })}>
+          <Button variant="outline" size="sm" onClick={() => setExportOpen(true)}>
             <Download className="h-4 w-4 mr-2" />
-            Export Transactions
+            Export
           </Button>
         </div>
+
+        {/* Export Dialog */}
+        <Dialog open={exportOpen} onOpenChange={setExportOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Export Transaction Data</DialogTitle>
+              <DialogDescription>
+                Download your transaction data for accounting or analysis
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-2">
+              <div className="space-y-2">
+                <Label>Export Format</Label>
+                <Select value={exportFormat} onValueChange={(v) => setExportFormat(v as ExportFormat)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="csv">
+                      <div className="flex items-center gap-2">
+                        <FileSpreadsheet className="h-4 w-4" />
+                        CSV (Excel, Google Sheets)
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="quickbooks">
+                      <div className="flex items-center gap-2">
+                        <Calculator className="h-4 w-4" />
+                        QuickBooks IIF
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="xero">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4" />
+                        Xero CSV
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label>From</Label>
+                  <Input type="date" value={exportDateFrom} onChange={(e) => setExportDateFrom(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label>To</Label>
+                  <Input type="date" value={exportDateTo} onChange={(e) => setExportDateTo(e.target.value)} />
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {exportFormat === "quickbooks"
+                  ? "Exports in IIF format compatible with QuickBooks Desktop and Online."
+                  : exportFormat === "xero"
+                  ? "Exports as Xero-compatible CSV with invoice mapping."
+                  : "Standard CSV with all transaction fields."}
+              </p>
+              <div className="flex justify-end gap-2 pt-2">
+                <Button variant="outline" size="sm" onClick={() => setExportOpen(false)}>Cancel</Button>
+                <Button size="sm" onClick={handleExport}>
+                  <Download className="h-4 w-4 mr-1.5" />
+                  Download {mockRecentTransactions.length} Transactions
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList>

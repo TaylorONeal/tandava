@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { DeliveryMode } from "@/types/database";
+import { EngagementNudge } from "@/components/EngagementNudge";
 
 // Mock data for the dashboard
 const todayClasses: {
@@ -59,6 +60,25 @@ export default function ManageDashboard() {
   return (
     <ManageLayout>
       <div className="space-y-6">
+        {/* Contextual Nudges */}
+        <div className="space-y-2">
+          <EngagementNudge
+            type="pack_running_low"
+            title="12 class packs expiring this week"
+            message="Send a reminder email to encourage renewal before they lose remaining classes."
+            actionLabel="View Expiring Packs"
+            actionUrl="/manage/financials"
+            context="$2,640 in potential renewal revenue"
+          />
+          <EngagementNudge
+            type="milestone_approaching"
+            title="Attendance up 18% this month"
+            message="Your 6 PM classes are consistently filling to capacity. Consider adding a second evening session."
+            actionLabel="View Schedule"
+            actionUrl="/manage/schedule"
+          />
+        </div>
+
         {/* Page Header */}
         <div className="flex items-center justify-between">
           <div>

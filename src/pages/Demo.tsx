@@ -161,7 +161,7 @@ const FAQ_ITEMS: FAQItem[] = [
   },
   {
     question: "What does my studio get?",
-    answer: "Full scheduling with recurring classes and substitutions. Membership and class pack management. Student profiles with visit history. Teacher management with pay rates. Check-in with kiosk mode and QR codes. Analytics dashboards for attendance, revenue, and retention. Event and workshop management. Data import from MindBody, Momence, Walla, and others.",
+    answer: "Full scheduling with recurring classes and substitutions. Membership and class pack management. Student profiles with visit history. Teacher management with pay rates. Check-in with kiosk mode and QR codes. Analytics dashboards for attendance, revenue, and retention. Event and workshop management. Data import from MindBody, Momence, Walla, Arketa, and WellnessLiving with auto-detection. Accounting exports to QuickBooks and Xero. 21 integrations including ClassPass, Google Calendar, Mailchimp, and Zapier.",
     audience: 'studio',
   },
   {
@@ -203,7 +203,7 @@ const PLATFORM_FEATURES = [
   { icon: Shield, label: "Multi-tenant", description: "Row-Level Security isolation" },
   { icon: Database, label: "Your Data", description: "Self-hosted, export everything" },
   { icon: Code2, label: "Open Source", description: "AGPL-3.0, fully auditable" },
-  { icon: Globe, label: "Import", description: "MindBody, Momence, Walla, CSV" },
+  { icon: Upload, label: "Migration", description: "MindBody, Momence, Walla, 6 more" },
 ];
 
 // ============================================================================
@@ -247,12 +247,21 @@ const FEATURE_CATEGORIES = [
     ],
   },
   {
-    title: "Operations & Marketing",
+    title: "Data & Integrations",
+    features: [
+      { icon: Upload, name: "Platform Migration", description: "Import from MindBody, Momence, Walla, Arketa, WellnessLiving with auto-detection and column mapping", demoRoute: "/manage/import", demoRole: "owner" as UserRole },
+      { icon: FileBarChart, name: "Accounting Exports", description: "Export to QuickBooks IIF, Xero CSV, or standard CSV. Date range filtering, scheduled delivery", demoRoute: "/manage/financials", demoRole: "owner" as UserRole },
+      { icon: Database, name: "21 Connectors", description: "ClassPass, Gympass, Google Calendar, Mailchimp, Zapier, webhooks, and more", demoRoute: "/manage/connectors", demoRole: "owner" as UserRole },
+      { icon: Lock, name: "Data Portability", description: "Your data is always yours. Export everything, anytime, in standard formats", demoRoute: "/manage/connectors", demoRole: "owner" as UserRole },
+    ],
+  },
+  {
+    title: "Marketing & Operations",
     features: [
       { icon: Megaphone, name: "Campaign Hub", description: "Email/SMS campaigns with audience segmentation and tracking", demoRoute: "/manage/campaigns", demoRole: "owner" as UserRole },
-      { icon: Upload, name: "Data Import", description: "Migrate from MindBody, Momence, Walla, or CSV with smart mapping", demoRoute: "/manage/import", demoRole: "owner" as UserRole },
       { icon: Globe, name: "SEO Landing Pages", description: "Create optimized pages for local search and promotions", demoRoute: "/manage/landing-pages", demoRole: "owner" as UserRole },
       { icon: Shield, name: "Role-Based Access", description: "Owner, teacher, front desk, student — each sees exactly what they need", demoRoute: "/manage/settings", demoRole: "owner" as UserRole },
+      { icon: CheckCircle2, name: "Task Management", description: "Assign and track operational to-dos for your team", demoRoute: "/manage/tasks", demoRole: "owner" as UserRole },
     ],
   },
 ];
