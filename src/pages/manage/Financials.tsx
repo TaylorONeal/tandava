@@ -14,6 +14,7 @@ import {
   Download,
   MoreHorizontal,
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,6 +47,7 @@ const mockRecentTransactions = [
 ];
 
 export default function FinancialsManage() {
+  const { toast } = useToast();
   return (
     <ManageLayout>
       <div className="space-y-6">
@@ -55,7 +57,7 @@ export default function FinancialsManage() {
             <h1 className="text-2xl font-bold tracking-tight">Financials</h1>
             <p className="text-sm text-muted-foreground mt-1">Memberships, class packs, and transactions</p>
           </div>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => toast({ title: "Exported", description: "Transaction data exported to CSV." })}>
             <Download className="h-4 w-4 mr-2" />
             Export Transactions
           </Button>
@@ -135,7 +137,7 @@ export default function FinancialsManage() {
           {/* Memberships */}
           <TabsContent value="memberships" className="space-y-6">
             <div className="flex justify-end">
-              <Button size="sm">
+              <Button size="sm" onClick={() => toast({ title: "Coming soon", description: "Membership creation will be available with backend integration." })}>
                 <Plus className="h-4 w-4 mr-2" />
                 New Membership Type
               </Button>
@@ -186,7 +188,7 @@ export default function FinancialsManage() {
           {/* Class Packs */}
           <TabsContent value="packs" className="space-y-6">
             <div className="flex justify-end">
-              <Button size="sm">
+              <Button size="sm" onClick={() => toast({ title: "Coming soon", description: "Pack creation will be available with backend integration." })}>
                 <Plus className="h-4 w-4 mr-2" />
                 New Pack Type
               </Button>

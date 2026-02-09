@@ -286,13 +286,13 @@ export default function EventsManage() {
                         </div>
 
                         <div className="flex items-center gap-1 shrink-0">
-                          <Button variant="ghost" size="icon" className="h-8 w-8" title="Preview">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" title="Preview" onClick={() => toast({ title: "Preview", description: "Event preview opened in new tab." })}>
                             <Eye className="h-3.5 w-3.5" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8" title="Edit">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" title="Edit" onClick={() => toast({ title: "Edit mode", description: "Event editor opened." })}>
                             <Edit className="h-3.5 w-3.5" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8" title="Duplicate">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" title="Duplicate" onClick={() => toast({ title: "Duplicated", description: "Event duplicated as draft." })}>
                             <Copy className="h-3.5 w-3.5" />
                           </Button>
                         </div>

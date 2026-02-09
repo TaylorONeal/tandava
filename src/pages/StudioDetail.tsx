@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { useToast } from "@/hooks/use-toast";
 import { ClassCard } from "@/components/schedule/ClassCard";
 import { InstructorCard } from "@/components/instructor/InstructorCard";
 import { Button } from "@/components/ui/button";
@@ -105,8 +106,9 @@ const StudioDetail = () => {
   const { id } = useParams();
   const [isFavorite, setIsFavorite] = useState(false);
 
+  const { toast } = useToast();
   const handleBook = (classId: string) => {
-    console.log("Booking class:", classId);
+    toast({ title: "Class selected", description: "Opening booking details..." });
   };
 
   return (

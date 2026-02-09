@@ -58,7 +58,7 @@ const ROLE_DESTINATIONS: Record<UserRole, string> = {
   owner: "/manage",
   admin: "/manage",
   teacher: "/teach",
-  front_desk: "/manage",
+  front_desk: "/staff/checkin",
   student: "/home",
   platform_admin: "/admin",
 };
@@ -246,6 +246,17 @@ const PAGE_CONTEXT: Record<string, { title: string; description: string; techNot
     title: "Teacher Profile",
     description: "Edit your public teacher profile — bio, specialties, certifications, and photo.",
     techNote: "Teacher profile data visible on the public Instructors page.",
+  },
+  // ---------- Front Desk (Staff) ----------
+  "/staff/checkin": {
+    title: "Front Desk Check-in",
+    description: "Check in members for today's classes. Search by name, view class rosters, and track attendance.",
+    techNote: "Front desk staff see a simplified layout focused on daily operations.",
+  },
+  "/staff/waitlist": {
+    title: "Waitlist Management",
+    description: "View and manage class waitlists. Promote members when spots open up.",
+    techNote: "Waitlist auto-promotion can be enabled in Feature Settings.",
   },
   // ---------- Platform Admin ----------
   "/admin": {

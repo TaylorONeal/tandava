@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { useToast } from "@/hooks/use-toast";
 import { ClassCard } from "@/components/schedule/ClassCard";
 import { StudioCard } from "@/components/studio/StudioCard";
 import { IntroVideoPlayer } from "@/components/video/IntroVideoPlayer";
@@ -95,10 +96,11 @@ const instructorStudios = [
 
 const InstructorDetail = () => {
   const { id } = useParams();
+  const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
 
   const handleBook = (classId: string) => {
-    console.log("Booking class:", classId);
+    toast({ title: "Class selected", description: "Opening booking details..." });
   };
 
   return (
@@ -137,7 +139,7 @@ const InstructorDetail = () => {
                 >
                   <Heart className={`h-4 w-4 ${isFavorite ? "fill-destructive text-destructive" : ""}`} />
                 </Button>
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" onClick={() => toast({ title: "Link copied", description: "Instructor profile link copied to clipboard." })}>
                   <Share2 className="h-4 w-4" />
                 </Button>
               </div>

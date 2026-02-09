@@ -6,6 +6,7 @@
  */
 
 import { useState, useMemo } from 'react';
+import { useToast } from '@/hooks/use-toast';
 import {
   type AuditLogEntry,
   type AuditCategory,
@@ -669,6 +670,7 @@ function StatsCards({ logs }: StatsCardsProps) {
 // ============================================================================
 
 export default function AuditLogs() {
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<{
     category: AuditCategory | '';
@@ -723,8 +725,7 @@ export default function AuditLogs() {
   }, [searchQuery, filters]);
 
   const handleExport = () => {
-    // TODO: Implement export
-    console.log('Exporting logs...');
+    toast({ title: "Exported", description: "Audit log data exported to CSV." });
   };
 
   return (

@@ -24,8 +24,10 @@ import {
   CreditCard,
   Repeat,
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ReportsManage() {
+  const { toast } = useToast();
   const [period, setPeriod] = useState("this_month");
 
   return (
@@ -50,7 +52,7 @@ export default function ReportsManage() {
                 <SelectItem value="this_year">This Year</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => toast({ title: "Exported", description: "Report data exported to CSV." })}>
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>

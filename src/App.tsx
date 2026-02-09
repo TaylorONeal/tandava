@@ -71,6 +71,12 @@ import TeachDashboard from "./pages/teach/Dashboard";
 import TeachSchedule from "./pages/teach/Schedule";
 import TeachSubs from "./pages/teach/Subs";
 import TeachEarnings from "./pages/teach/Earnings";
+import TeachAvailability from "./pages/teach/Availability";
+import TeachProfile from "./pages/teach/Profile";
+
+// Staff (front desk) pages
+import StaffCheckin from "./pages/staff/StaffCheckin";
+import StaffWaitlist from "./pages/staff/StaffWaitlist";
 
 // Kiosk page
 import Kiosk from "./pages/Kiosk";
@@ -168,8 +174,14 @@ const App = () => (
                   {/* ---- Instructor portal routes (/teach) ---- */}
                   <Route path="/teach" element={<TeachDashboard />} />
                   <Route path="/teach/schedule" element={<TeachSchedule />} />
+                  <Route path="/teach/availability" element={<TeachAvailability />} />
                   <Route path="/teach/subs" element={<TeachSubs />} />
                   <Route path="/teach/earnings" element={<TeachEarnings />} />
+                  <Route path="/teach/profile" element={<TeachProfile />} />
+
+                  {/* ---- Staff (front desk) routes ---- */}
+                  <Route path="/staff/checkin" element={<StaffCheckin />} />
+                  <Route path="/staff/waitlist" element={<StaffWaitlist />} />
 
                   {/* ---- Kiosk mode ---- */}
                   <Route path="/kiosk/:studioId" element={<Kiosk />} />

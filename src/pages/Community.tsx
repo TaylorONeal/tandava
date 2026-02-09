@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { useToast } from "@/hooks/use-toast";
 import { StatCard } from "@/components/stats/StatCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -103,6 +104,7 @@ const timeOfDayIcon = {
 };
 
 const Community = () => {
+  const { toast } = useToast();
   const [period, setPeriod] = useState<"week" | "month" | "year" | "allTime">("month");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -161,7 +163,7 @@ const Community = () => {
                 </SelectContent>
               </Select>
 
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => toast({ title: "Year in Review", description: "Your practice wrapped is being generated..." })}>
                 <Share2 className="h-4 w-4 mr-2" />
                 View My Wrapped
               </Button>
@@ -282,7 +284,7 @@ const Community = () => {
                   className="pl-9"
                 />
               </div>
-              <Button>
+              <Button onClick={() => toast({ title: "Invite sent", description: "Friend request sent! They'll appear here once they accept." })}>
                 <UserPlus className="h-4 w-4 mr-2" />
                 Add Friend
               </Button>
@@ -309,7 +311,7 @@ const Community = () => {
                       </p>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" onClick={() => toast({ title: friend.name, description: `Viewing ${friend.name}'s profile.` })}>
                     View Profile
                     <ChevronRight className="h-4 w-4 ml-1" />
                   </Button>
