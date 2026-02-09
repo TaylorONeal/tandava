@@ -1,12 +1,10 @@
 /**
- * Demo Landing — Oxatl Yoga
+ * Demo Landing Page — Tandava Open Source Studio Management
  *
- * The FIRST thing visitors see. This IS the landing page.
- * Built around the demo studio Oxatl Yoga with prominent role switching
- * so studio owners can explore the platform from every perspective.
+ * The FIRST thing visitors see. Explains what the project is, who it's for,
+ * shows features, then invites visitors to explore the platform by choosing a role.
  *
- * Includes: demo indicator, role picker, today's schedule, class types,
- * locations, teachers, open source project info, FAQ, about section.
+ * Flow: Project intro → Who it's for → Feature showcase → Role picker → FAQ → About
  */
 
 import { useState } from 'react';
@@ -18,11 +16,9 @@ import {
   OXATL_LOCATIONS,
   OXATL_TEACHERS,
   OXATL_CLASS_TYPES,
-  OXATL_SCHEDULE,
 } from '@/data/demo';
 import {
   Calendar,
-  Clock,
   MapPin,
   Users,
   LayoutDashboard,
@@ -31,7 +27,6 @@ import {
   Sparkles,
   ArrowRight,
   Github,
-  Monitor,
   ChevronDown,
   ChevronUp,
   Code2,
@@ -57,33 +52,10 @@ import {
   Megaphone,
   Upload,
   CheckCircle2,
+  GitFork,
+  Terminal,
+  Layers,
 } from 'lucide-react';
-
-// ============================================================================
-// TODAY'S SCHEDULE (derived from Oxatl demo data)
-// ============================================================================
-
-const DAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const;
-const today = DAYS[new Date().getDay()];
-
-const todaysClasses = OXATL_SCHEDULE
-  .filter((slot) => slot.day === today)
-  .sort((a, b) => a.time.localeCompare(b.time))
-  .slice(0, 5)
-  .map((slot) => {
-    const classType = OXATL_CLASS_TYPES.find((c) => c.id === slot.class_type_id);
-    const teacher = OXATL_TEACHERS.find((t) => t.profile.id === slot.teacher_id);
-    const location = OXATL_LOCATIONS.find((l) => l.id === slot.location_id);
-    return { ...slot, classType, teacher, location };
-  });
-
-function formatTime(time: string) {
-  const [h, m] = time.split(":");
-  const hour = parseInt(h);
-  const ampm = hour >= 12 ? "PM" : "AM";
-  const h12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-  return `${h12}:${m} ${ampm}`;
-}
 
 // ============================================================================
 // ROLE CARDS
@@ -97,44 +69,49 @@ interface RoleConfig {
   destination: string;
   accent: string;
   bg: string;
+  features: string[];
 }
 
 const ROLES: RoleConfig[] = [
   {
     role: 'owner',
     title: 'Studio Owner',
-    description: 'Dashboard, schedule, members, payments, analytics, marketing',
+    description: 'Run your entire studio from one dashboard',
     icon: LayoutDashboard,
     destination: '/manage',
     accent: 'text-amber-400',
     bg: 'from-amber-500/20 to-amber-600/5 hover:from-amber-500/30 hover:to-amber-600/10 border-amber-500/20 hover:border-amber-400/40',
+    features: ['Schedule management', 'Revenue & analytics', 'Member CRM', 'Teacher management'],
   },
   {
     role: 'teacher',
     title: 'Instructor',
-    description: 'Teaching schedule, sub requests, earnings, availability',
+    description: 'Focus on teaching, not admin',
     icon: GraduationCap,
     destination: '/teach',
     accent: 'text-blue-400',
     bg: 'from-blue-500/20 to-blue-600/5 hover:from-blue-500/30 hover:to-blue-600/10 border-blue-500/20 hover:border-blue-400/40',
+    features: ['Check-in students', 'Earnings tracking', 'Sub requests', 'Availability'],
   },
   {
     role: 'front_desk',
     title: 'Front Desk',
-    description: 'Check-in members, manage waitlists, daily roster',
+    description: 'Streamlined daily operations',
     icon: ClipboardCheck,
     destination: '/staff/checkin',
     accent: 'text-violet-400',
     bg: 'from-violet-500/20 to-violet-600/5 hover:from-violet-500/30 hover:to-violet-600/10 border-violet-500/20 hover:border-violet-400/40',
+    features: ['Quick check-in', 'Waitlist management', 'Member lookup', 'Class rosters'],
   },
   {
     role: 'student',
     title: 'Member',
-    description: 'Browse classes, book sessions, track practice, community',
+    description: 'Book classes, track your practice',
     icon: Sparkles,
     destination: '/home',
     accent: 'text-teal-400',
     bg: 'from-teal-500/20 to-teal-600/5 hover:from-teal-500/30 hover:to-teal-600/10 border-teal-500/20 hover:border-teal-400/40',
+    features: ['Browse & filter classes', 'Memberships & packs', 'Practice streaks', 'Community'],
   },
 ];
 
@@ -145,49 +122,32 @@ const ROLES: RoleConfig[] = [
 interface FAQItem {
   question: string;
   answer: string;
-  audience: 'studio' | 'developer' | 'both';
 }
 
 const FAQ_ITEMS: FAQItem[] = [
   {
-    question: "What is Tandava?",
-    answer: "Tandava is open-source studio management software for yoga, pilates, and movement studios. It handles scheduling, memberships, payments, check-in, analytics, and operations — all self-hosted and under your control. No vendor lock-in, no per-member pricing, no data you can't export.",
-    audience: 'both',
+    question: "Who is Tandava for?",
+    answer: "Studios with an internal engineering team, technical founder, or trusted dev partner. Developer-led collectives building studio software together. If you don't have someone who can deploy and maintain a web app, this is not ready for you yet — but we're working on making it more accessible over time.",
   },
   {
     question: "Is this actually free?",
-    answer: "Yes. Tandava is licensed under AGPL-3.0. You can self-host it for free, forever. The code is fully open — every line is auditable. If you modify the source and make it available over a network, you share your modifications under the same license.",
-    audience: 'both',
-  },
-  {
-    question: "What does my studio get?",
-    answer: "Full scheduling with recurring classes and substitutions. Membership and class pack management. Student profiles with visit history. Teacher management with pay rates. Check-in with kiosk mode and QR codes. Analytics dashboards for attendance, revenue, and retention. Event and workshop management. Data import from MindBody, Momence, Walla, Arketa, and WellnessLiving with auto-detection. Accounting exports to QuickBooks and Xero. 21 integrations including ClassPass, Google Calendar, Mailchimp, and Zapier.",
-    audience: 'studio',
+    answer: "Yes. Tandava is licensed under AGPL-3.0. You can self-host it forever at no cost. The code is fully open — every line is auditable. If you modify the source and make it available over a network, you share your modifications under the same license.",
   },
   {
     question: "How is this different from MindBody or Momence?",
-    answer: "Your data stays yours — run it on your own infrastructure or use managed hosting. Export everything, anytime, in standard formats. No per-member pricing that scales against you. No features hidden behind enterprise tiers. And the code is open, so if something doesn't work for your studio, you can change it.",
-    audience: 'studio',
+    answer: "Your data stays yours — run it on your own infrastructure. No per-member pricing that scales against you. No features hidden behind enterprise tiers. Export everything, anytime, in standard formats. And the code is open, so if something doesn't work for your studio, you change it.",
   },
   {
     question: "What's the tech stack?",
-    answer: "React 18 + TypeScript + Vite on the frontend with shadcn/ui + Tailwind CSS. Supabase (PostgreSQL + Auth + Storage) on the backend. Stripe Connect for payments. Row-Level Security for multi-tenant isolation. The entire app runs as a static SPA that you can deploy on Vercel, Netlify, or any static host.",
-    audience: 'developer',
-  },
-  {
-    question: "Can I contribute?",
-    answer: "Absolutely. We welcome bug fixes, performance improvements, new export formats, connector improvements, tests, refactors, and documentation. The project values contributions that solve real problems studios face, reduce complexity, and improve correctness. Start with an issue or discussion for anything beyond a small fix.",
-    audience: 'developer',
-  },
-  {
-    question: "What about data portability?",
-    answer: "Tandava is built on a foundational principle: business records generated by a studio's operations are owned and controlled by the studio. We're building toward a standardized data interchange format so moving to or from Tandava is straightforward. All data structures are vendor-agnostic and model universal business concepts.",
-    audience: 'both',
+    answer: "React 18 + TypeScript + Vite on the frontend with shadcn/ui + Tailwind CSS. Supabase (PostgreSQL + Auth + Storage + Edge Functions) on the backend. Stripe Connect (Standard) for payments. Row-Level Security for multi-tenant isolation. Static SPA — deploy on Vercel, Netlify, or any host.",
   },
   {
     question: "What's the current status?",
-    answer: "The UI and workflows are complete — scheduling, bookings, roster management, role-based access, analytics, and demo mode all work. Payment processing (Stripe Connect), real authentication, email/SMS notifications, and full data persistence are in integration phase. This demo shows everything the platform can do.",
-    audience: 'both',
+    answer: "The UI and workflows are complete and interactive. Payment processing (Stripe Connect), authentication (Supabase Auth), and email/SMS notifications are architecturally ready but need configuration for your deployment. This demo shows everything the platform does.",
+  },
+  {
+    question: "Can I contribute?",
+    answer: "Yes. We welcome bug fixes, documentation improvements, new export formats, and connector improvements. Read CONTRIBUTING.md first — it explains the project's core bias toward deployability and what kinds of contributions are prioritized.",
   },
 ];
 
@@ -195,79 +155,58 @@ const FAQ_ITEMS: FAQItem[] = [
 // PLATFORM FEATURES
 // ============================================================================
 
-const PLATFORM_FEATURES = [
-  { icon: Calendar, label: "Scheduling", description: "Recurring classes, subs, cancellations" },
-  { icon: Users, label: "Members", description: "Profiles, visit history, waivers" },
-  { icon: CreditCard, label: "Payments", description: "Stripe Connect, memberships, packs" },
-  { icon: BarChart3, label: "Analytics", description: "Attendance, revenue, retention" },
-  { icon: Shield, label: "Multi-tenant", description: "Row-Level Security isolation" },
-  { icon: Database, label: "Your Data", description: "Self-hosted, export everything" },
-  { icon: Code2, label: "Open Source", description: "AGPL-3.0, fully auditable" },
-  { icon: Upload, label: "Migration", description: "MindBody, Momence, Walla, 6 more" },
+const FEATURE_HIGHLIGHTS = [
+  { icon: Calendar, label: "Smart Scheduling", description: "Recurring classes, one-off changes, subs, and multi-location" },
+  { icon: Users, label: "Member Management", description: "Profiles, visit history, engagement scores, lifecycle tracking" },
+  { icon: CreditCard, label: "Payments", description: "Stripe Connect — memberships, class packs, drop-ins, workshops" },
+  { icon: BarChart3, label: "Analytics", description: "Revenue, attendance, retention, teacher performance, churn prediction" },
+  { icon: QrCode, label: "Check-In", description: "Kiosk mode, QR codes, front desk manual, teacher-led" },
+  { icon: Upload, label: "Data Migration", description: "Import from MindBody, Momence, Walla, Arketa, WellnessLiving" },
+  { icon: Shield, label: "Multi-Tenant", description: "Row-Level Security — each studio's data is completely isolated" },
+  { icon: Database, label: "Data Portability", description: "Export everything, anytime. QuickBooks, Xero, CSV" },
 ];
-
-// ============================================================================
-// FULL FEATURE LIST — For landing page feature showcase
-// ============================================================================
-
-interface FeatureItem {
-  icon: typeof Calendar;
-  name: string;
-  description: string;
-  demoRoute: string;
-  demoRole: UserRole;
-}
 
 const FEATURE_CATEGORIES = [
   {
     title: "Scheduling & Classes",
     features: [
-      { icon: Calendar, name: "Class Scheduling", description: "Recurring rules, one-off changes, and multi-location management", demoRoute: "/manage/schedule", demoRole: "owner" as UserRole },
-      { icon: RotateCcw, name: "Sub Management", description: "Teachers request subs, qualified instructors get notified", demoRoute: "/teach/subs", demoRole: "teacher" as UserRole },
-      { icon: ListChecks, name: "Waitlist Automation", description: "Auto-promote when spots open, configurable deadlines", demoRoute: "/staff/waitlist", demoRole: "front_desk" as UserRole },
-      { icon: Video, name: "On-Demand Library", description: "Recorded classes with streaming, categories, and progress tracking", demoRoute: "/on-demand", demoRole: "student" as UserRole },
+      { icon: Calendar, name: "Class Scheduling", description: "Recurring rules, one-off changes, multi-location", demoRoute: "/manage/schedule", demoRole: "owner" as UserRole },
+      { icon: RotateCcw, name: "Sub Management", description: "Teachers request subs, qualified instructors notified", demoRoute: "/teach/subs", demoRole: "teacher" as UserRole },
+      { icon: ListChecks, name: "Waitlist Automation", description: "Auto-promote when spots open", demoRoute: "/staff/waitlist", demoRole: "front_desk" as UserRole },
+      { icon: Video, name: "On-Demand Library", description: "Recorded classes with streaming and progress", demoRoute: "/on-demand", demoRole: "student" as UserRole },
     ],
   },
   {
     title: "Members & Check-In",
     features: [
-      { icon: UserCheck, name: "Member Profiles", description: "Visit history, waivers, engagement scores, and lifecycle tracking", demoRoute: "/manage/students", demoRole: "owner" as UserRole },
-      { icon: QrCode, name: "Self Check-In", description: "Kiosk mode, QR code, and front desk manual check-in", demoRoute: "/staff/checkin", demoRole: "front_desk" as UserRole },
-      { icon: Users, name: "Community & Streaks", description: "Practice tracking, leaderboards, friend connections, milestones", demoRoute: "/community", demoRole: "student" as UserRole },
-      { icon: Bell, name: "Notifications", description: "Email, SMS, and push — class reminders, waitlist, and marketing", demoRoute: "/manage/notification-settings", demoRole: "owner" as UserRole },
+      { icon: UserCheck, name: "Member Profiles", description: "Visit history, waivers, engagement", demoRoute: "/manage/students", demoRole: "owner" as UserRole },
+      { icon: QrCode, name: "Self Check-In", description: "Kiosk, QR code, front desk manual", demoRoute: "/staff/checkin", demoRole: "front_desk" as UserRole },
+      { icon: Users, name: "Community & Streaks", description: "Practice tracking, leaderboards, milestones", demoRoute: "/community", demoRole: "student" as UserRole },
+      { icon: Bell, name: "Notifications", description: "Email, SMS, push — reminders and marketing", demoRoute: "/manage/notification-settings", demoRole: "owner" as UserRole },
     ],
   },
   {
     title: "Payments & Revenue",
     features: [
-      { icon: CreditCard, name: "Stripe Connect", description: "Memberships, class packs, drop-ins, workshops — all through Stripe", demoRoute: "/manage/financials", demoRole: "owner" as UserRole },
-      { icon: Receipt, name: "Memberships & Packs", description: "Monthly/annual memberships, class packs, family plans, promo codes", demoRoute: "/manage/financials", demoRole: "owner" as UserRole },
-      { icon: BarChart3, name: "Revenue Analytics", description: "MRR, churn, LTV cohorts, teacher performance, attendance trends", demoRoute: "/manage/analytics", demoRole: "owner" as UserRole },
-      { icon: FileBarChart, name: "Custom Reports", description: "Build reports with date ranges, filters, and export to CSV", demoRoute: "/manage/reports", demoRole: "owner" as UserRole },
+      { icon: CreditCard, name: "Stripe Connect", description: "Memberships, packs, drop-ins, workshops", demoRoute: "/manage/financials", demoRole: "owner" as UserRole },
+      { icon: Receipt, name: "Memberships & Packs", description: "Monthly/annual, class packs, family, promos", demoRoute: "/manage/financials", demoRole: "owner" as UserRole },
+      { icon: BarChart3, name: "Revenue Analytics", description: "MRR, churn, LTV, teacher performance", demoRoute: "/manage/analytics", demoRole: "owner" as UserRole },
+      { icon: FileBarChart, name: "Custom Reports", description: "Date ranges, filters, CSV export", demoRoute: "/manage/reports", demoRole: "owner" as UserRole },
     ],
   },
   {
-    title: "Data & Integrations",
+    title: "Data & Marketing",
     features: [
-      { icon: Upload, name: "Platform Migration", description: "Import from MindBody, Momence, Walla, Arketa, WellnessLiving with auto-detection and column mapping", demoRoute: "/manage/import", demoRole: "owner" as UserRole },
-      { icon: FileBarChart, name: "Accounting Exports", description: "Export to QuickBooks IIF, Xero CSV, or standard CSV. Date range filtering, scheduled delivery", demoRoute: "/manage/financials", demoRole: "owner" as UserRole },
-      { icon: Database, name: "21 Connectors", description: "ClassPass, Gympass, Google Calendar, Mailchimp, Zapier, webhooks, and more", demoRoute: "/manage/connectors", demoRole: "owner" as UserRole },
-      { icon: Lock, name: "Data Portability", description: "Your data is always yours. Export everything, anytime, in standard formats", demoRoute: "/manage/connectors", demoRole: "owner" as UserRole },
-    ],
-  },
-  {
-    title: "Marketing & Operations",
-    features: [
-      { icon: Megaphone, name: "Campaign Hub", description: "Email/SMS campaigns with audience segmentation and tracking", demoRoute: "/manage/campaigns", demoRole: "owner" as UserRole },
-      { icon: Globe, name: "SEO Landing Pages", description: "Create optimized pages for local search and promotions", demoRoute: "/manage/landing-pages", demoRole: "owner" as UserRole },
-      { icon: Shield, name: "Role-Based Access", description: "Owner, teacher, front desk, student — each sees exactly what they need", demoRoute: "/manage/settings", demoRole: "owner" as UserRole },
-      { icon: CheckCircle2, name: "Task Management", description: "Assign and track operational to-dos for your team", demoRoute: "/manage/tasks", demoRole: "owner" as UserRole },
+      { icon: Upload, name: "Platform Migration", description: "Import from 6 platforms with auto-detection", demoRoute: "/manage/import", demoRole: "owner" as UserRole },
+      { icon: FileBarChart, name: "Accounting Exports", description: "QuickBooks IIF, Xero CSV, standard CSV", demoRoute: "/manage/financials", demoRole: "owner" as UserRole },
+      { icon: Megaphone, name: "Campaign Hub", description: "Email/SMS campaigns with segmentation", demoRoute: "/manage/campaigns", demoRole: "owner" as UserRole },
+      { icon: Lock, name: "Data Portability", description: "Your data is always yours. Export everything.", demoRoute: "/manage/connectors", demoRole: "owner" as UserRole },
     ],
   },
 ];
 
 // ============================================================================
-// FAQ ACCORDION COMPONENT
+// FAQ ACCORDION
 // ============================================================================
 
 function FAQAccordion({ item }: { item: FAQItem }) {
@@ -279,11 +218,7 @@ function FAQAccordion({ item }: { item: FAQItem }) {
         className="w-full flex items-center justify-between p-4 text-left hover:bg-card/50 transition-colors"
       >
         <span className="font-medium text-sm pr-4">{item.question}</span>
-        {open ? (
-          <ChevronUp className="w-4 h-4 shrink-0 text-muted-foreground" />
-        ) : (
-          <ChevronDown className="w-4 h-4 shrink-0 text-muted-foreground" />
-        )}
+        {open ? <ChevronUp className="w-4 h-4 shrink-0 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 shrink-0 text-muted-foreground" />}
       </button>
       {open && (
         <div className="px-4 pb-4 text-sm text-muted-foreground leading-relaxed">
@@ -301,117 +236,200 @@ function FAQAccordion({ item }: { item: FAQItem }) {
 export default function Demo() {
   const navigate = useNavigate();
   const { switchPersona } = useDemo();
-  const [faqFilter, setFaqFilter] = useState<'all' | 'studio' | 'developer'>('all');
 
   const handleRoleSelect = (config: RoleConfig) => {
     switchPersona(config.role);
     navigate(config.destination);
   };
 
-  const filteredFAQ = FAQ_ITEMS.filter(
-    (item) => faqFilter === 'all' || item.audience === faqFilter || item.audience === 'both'
-  );
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* ================================================================ */}
-      {/* DEMO INDICATOR BANNER                                            */}
+      {/* TOP BAR — Tandava Open Source Demo                               */}
       {/* ================================================================ */}
-      <div className="sticky top-0 z-50 bg-primary/95 backdrop-blur-sm text-primary-foreground">
+      <div className="sticky top-0 z-50 bg-[#0a0712]/95 backdrop-blur-md border-b border-white/10">
         <div className="max-w-6xl mx-auto px-6 py-2.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5">
               <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-foreground/60 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary-foreground" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400/60 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-400" />
               </span>
-              <span className="text-sm font-semibold">Interactive Demo</span>
+              <span className="text-sm font-semibold text-white/90">Tandava Open Source Studio Demo</span>
             </div>
-            <span className="hidden sm:inline text-xs opacity-80">
-              Exploring Tandava with sample data from Oxatl Yoga (Austin, TX)
-            </span>
           </div>
           <div className="flex items-center gap-2">
             <a
               href="https://github.com/TaylorONeal/tandava"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs font-medium hover:opacity-80 transition-opacity bg-primary-foreground/15 rounded-full px-3 py-1"
+              className="flex items-center gap-1.5 text-xs font-medium text-white/70 hover:text-white transition-colors bg-white/10 rounded-full px-3 py-1"
             >
               <Github className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">View Source</span>
+              <span className="hidden sm:inline">GitHub</span>
             </a>
             <a
-              href="#features"
-              className="hidden sm:inline text-xs font-medium hover:opacity-80 transition-opacity bg-primary-foreground/15 rounded-full px-3 py-1"
+              href="#explore"
+              className="flex items-center gap-1.5 text-xs font-medium text-white/70 hover:text-white transition-colors bg-white/10 rounded-full px-3 py-1"
             >
-              Features
-            </a>
-            <a
-              href="#about-tandava"
-              className="text-xs font-medium hover:opacity-80 transition-opacity bg-primary-foreground/15 rounded-full px-3 py-1"
-            >
-              About
+              <span>Try Demo</span>
+              <ArrowRight className="w-3 h-3" />
             </a>
           </div>
         </div>
       </div>
 
       {/* ================================================================ */}
-      {/* HERO — Oxatl Yoga + Role Picker                                 */}
+      {/* HERO — What is Tandava                                           */}
       {/* ================================================================ */}
       <section className="relative overflow-hidden">
-        {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/5" />
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
 
-        <div className="relative max-w-6xl mx-auto px-6 pt-10 pb-16">
-          {/* Studio header */}
-          <div className="flex items-center gap-3 mb-10">
-            <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-              <span className="text-lg font-display font-bold text-primary">O</span>
+        <div className="relative max-w-6xl mx-auto px-6 pt-16 pb-20">
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-2 mb-6">
+              <Code2 className="w-5 h-5 text-primary" />
+              <span className="text-sm font-medium text-primary">Open Source · AGPL-3.0 · Self-Hosted</span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-semibold tracking-tight mb-6 leading-[1.1]">
+              Studio management software you{' '}
+              <span className="text-primary">fork, deploy, and own</span>
+            </h1>
+
+            <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mb-8">
+              Tandava is open-source scheduling, membership, payment, and analytics software for yoga, pilates, and movement studios. No vendor lock-in. No per-member pricing. Your data stays yours.
+            </p>
+
+            <div className="flex flex-wrap gap-3 mb-10">
+              <a
+                href="#explore"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors"
+              >
+                Explore the Demo
+                <ArrowRight className="w-4 h-4" />
+              </a>
+              <a
+                href="https://github.com/TaylorONeal/tandava"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-border text-sm font-medium hover:bg-secondary transition-colors"
+              >
+                <Github className="w-4 h-4" />
+                View Source
+              </a>
+            </div>
+
+            {/* Quick stats */}
+            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <Terminal className="w-4 h-4 text-primary" />
+                React + TypeScript + Vite
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Database className="w-4 h-4 text-primary" />
+                Supabase (PostgreSQL)
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CreditCard className="w-4 h-4 text-primary" />
+                Stripe Connect
+              </span>
+              <span className="flex items-center gap-1.5">
+                <GitFork className="w-4 h-4 text-primary" />
+                Fork & Deploy
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* WHO THIS IS FOR / NOT FOR                                        */}
+      {/* ================================================================ */}
+      <section className="border-t border-border bg-card/30">
+        <div className="max-w-6xl mx-auto px-6 py-14">
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-accent-sage" />
+                Built for
+              </h2>
+              <ul className="space-y-3">
+                {[
+                  "Studios with a technical founder or engineering team",
+                  "Developer-led collectives building studio tools together",
+                  "Studios with a trusted dev partner for deployment",
+                  "Technical evaluators exploring what studio software should look like",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                    <CheckCircle2 className="w-4 h-4 text-accent-sage shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
             <div>
-              <h2 className="text-lg font-display font-semibold">{OXATL_STUDIO.name}</h2>
-              <p className="text-xs text-muted-foreground">Austin, Texas</p>
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <Layers className="w-5 h-5 text-muted-foreground" />
+                Not yet for
+              </h2>
+              <ul className="space-y-3">
+                {[
+                  "Non-technical studio owners without dev support",
+                  "Studios expecting hosted SaaS or guided onboarding",
+                  "Anyone looking for a turnkey Mindbody replacement",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                    <span className="w-4 h-4 shrink-0 mt-0.5 text-center text-xs text-muted-foreground/50">—</span>
+                    {item}
+                  </li>
+                ))}
+                <li className="text-xs text-muted-foreground/70 pl-6 pt-1">
+                  We aspire to make this more accessible over time, with the community.
+                </li>
+              </ul>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Main headline */}
-          <div className="max-w-3xl mb-12">
-            <p className="text-sm font-medium text-primary mb-3 flex items-center gap-2">
-              <Monitor className="w-4 h-4" />
-              Powered by Tandava — Open Source Studio Management
-            </p>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-semibold tracking-tight mb-5">
-              {OXATL_STUDIO.name}
-            </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl">
-              {OXATL_STUDIO.description}
-            </p>
-            <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <MapPin className="w-4 h-4" />
-                {OXATL_LOCATIONS.length} locations
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Users className="w-4 h-4" />
-                {OXATL_TEACHERS.length} teachers
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Calendar className="w-4 h-4" />
-                {OXATL_CLASS_TYPES.length} class types
-              </span>
-            </div>
+      {/* ================================================================ */}
+      {/* FEATURE HIGHLIGHTS — Quick overview                              */}
+      {/* ================================================================ */}
+      <section className="border-t border-border">
+        <div className="max-w-6xl mx-auto px-6 py-14">
+          <h2 className="text-2xl font-display font-semibold mb-2">What you get</h2>
+          <p className="text-muted-foreground mb-8">Everything a studio needs — scheduling, payments, analytics, and more</p>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {FEATURE_HIGHLIGHTS.map((feat) => {
+              const Icon = feat.icon;
+              return (
+                <div key={feat.label} className="flex items-start gap-3 p-4 rounded-xl border bg-card">
+                  <Icon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium">{feat.label}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{feat.description}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
+        </div>
+      </section>
 
-          {/* ============================================================ */}
-          {/* ROLE PICKER — The main interaction                           */}
-          {/* ============================================================ */}
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold mb-1">Explore the platform</h2>
-            <p className="text-sm text-muted-foreground">
-              Choose a role to see how Tandava works for everyone in the studio
+      {/* ================================================================ */}
+      {/* EXPLORE THE PLATFORM — Role Picker                               */}
+      {/* ================================================================ */}
+      <section id="explore" className="border-t border-border bg-gradient-to-b from-card/50 to-background">
+        <div className="max-w-6xl mx-auto px-6 py-16">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-display font-semibold mb-3">Explore the platform</h2>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              This demo loads <strong className="text-foreground">{OXATL_STUDIO.name}</strong>, a fictional Austin studio with{' '}
+              {OXATL_LOCATIONS.length} locations, {OXATL_TEACHERS.length} teachers, and {OXATL_CLASS_TYPES.length} class types.
+              Pick a role to see how Tandava works for everyone.
             </p>
           </div>
 
@@ -422,10 +440,10 @@ export default function Demo() {
                 <button
                   key={config.role}
                   onClick={() => handleRoleSelect(config)}
-                  className={`group relative text-left rounded-2xl border bg-gradient-to-br ${config.bg} p-5 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg`}
+                  className={`group relative text-left rounded-2xl border bg-gradient-to-br ${config.bg} p-6 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg`}
                 >
                   <div className="flex items-center gap-3 mb-3">
-                    <div className={`w-10 h-10 rounded-xl bg-card/50 flex items-center justify-center ${config.accent}`}>
+                    <div className={`w-11 h-11 rounded-xl bg-card/50 flex items-center justify-center ${config.accent}`}>
                       <Icon className="w-5 h-5" />
                     </div>
                     <h3 className="text-lg font-semibold">{config.title}</h3>
@@ -433,6 +451,14 @@ export default function Demo() {
                   <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                     {config.description}
                   </p>
+                  <ul className="space-y-1.5 mb-5">
+                    {config.features.map((f) => (
+                      <li key={f} className="text-xs text-muted-foreground flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3 h-3 text-primary/60" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
                   <div className={`flex items-center gap-2 text-sm font-medium ${config.accent} group-hover:gap-3 transition-all`}>
                     Enter as {config.title}
                     <ArrowRight className="w-4 h-4" />
@@ -445,17 +471,12 @@ export default function Demo() {
       </section>
 
       {/* ================================================================ */}
-      {/* FEATURE LIST                                                     */}
+      {/* FULL FEATURE LIST                                                */}
       {/* ================================================================ */}
       <section id="features" className="border-t border-border bg-card/20">
         <div className="max-w-6xl mx-auto px-6 py-14">
-          <div className="flex items-center gap-3 mb-2">
-            <CheckCircle2 className="w-5 h-5 text-primary" />
-            <h2 className="text-2xl font-display font-semibold">Platform Features</h2>
-          </div>
-          <p className="text-muted-foreground mb-8 max-w-2xl">
-            Everything a yoga, pilates, or movement studio needs — click any feature to see it in action
-          </p>
+          <h2 className="text-2xl font-display font-semibold mb-2">All features</h2>
+          <p className="text-muted-foreground mb-8">Click any feature to see it in action</p>
 
           <div className="space-y-10">
             {FEATURE_CATEGORIES.map((category) => (
@@ -494,235 +515,69 @@ export default function Demo() {
       </section>
 
       {/* ================================================================ */}
-      {/* TODAY'S SCHEDULE                                                 */}
+      {/* WHY OPEN SOURCE                                                  */}
       {/* ================================================================ */}
-      <section className="max-w-6xl mx-auto px-6 py-12">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-xl font-semibold">Today at Oxatl</h2>
-            <p className="text-sm text-muted-foreground mt-0.5">
-              {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
-            </p>
-          </div>
-          <button
-            onClick={() => { switchPersona('student'); navigate('/schedule'); }}
-            className="text-sm text-primary hover:underline flex items-center gap-1"
-          >
-            Full schedule <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        {todaysClasses.length > 0 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
-            {todaysClasses.map((cls, i) => (
-              <button
-                key={i}
-                onClick={() => { switchPersona('student'); navigate('/schedule'); }}
-                className="text-left p-4 rounded-xl border bg-card hover:border-primary/30 transition-colors"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <div
-                    className="w-2 h-2 rounded-full shrink-0"
-                    style={{ backgroundColor: cls.classType?.color || "#888" }}
-                  />
-                  <span className="text-sm font-medium truncate">{cls.classType?.name}</span>
-                </div>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  {formatTime(cls.time)} · {cls.classType?.duration_minutes}min
-                </p>
-                <p className="text-xs text-muted-foreground mt-1 truncate">
-                  {cls.teacher?.profile.display_name}
-                </p>
-                <p className="text-xs text-muted-foreground truncate">
-                  {cls.location?.name}
-                </p>
-              </button>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8 text-muted-foreground rounded-xl border bg-card">
-            <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">No classes today. Check the full schedule.</p>
-          </div>
-        )}
-      </section>
-
-      {/* ================================================================ */}
-      {/* CLASS TYPES + LOCATIONS                                          */}
-      {/* ================================================================ */}
-      <section className="max-w-6xl mx-auto px-6 pb-12">
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Class types */}
-          <div>
-            <h2 className="text-lg font-semibold mb-4">What We Offer</h2>
-            <div className="grid grid-cols-2 gap-3">
-              {OXATL_CLASS_TYPES.map((ct) => (
-                <div key={ct.id} className="p-3 rounded-xl border bg-card">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: ct.color }} />
-                    <span className="text-sm font-medium">{ct.name}</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground line-clamp-2">{ct.description}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{ct.duration_minutes} min</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Locations */}
-          <div>
-            <h2 className="text-lg font-semibold mb-4">Our Locations</h2>
-            <div className="space-y-3">
-              {OXATL_LOCATIONS.map((loc) => (
-                <div key={loc.id} className="p-4 rounded-xl border bg-card">
-                  <h3 className="font-medium mb-1">{loc.name}</h3>
-                  <p className="text-sm text-muted-foreground flex items-start gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                    {loc.address_line1}, {loc.city}, {loc.state} {loc.postal_code}
-                  </p>
-                  <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                    <span>{loc.rooms.map((r) => r.name).join(", ")}</span>
-                    <span>· Capacity: {loc.capacity}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* OUR TEACHERS                                                     */}
-      {/* ================================================================ */}
-      <section className="max-w-6xl mx-auto px-6 pb-12">
-        <h2 className="text-lg font-semibold mb-4">Our Teachers</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {OXATL_TEACHERS.slice(0, 8).map((teacher) => (
-            <div key={teacher.profile.id} className="p-4 rounded-xl border bg-card">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
-                  {teacher.profile.first_name?.[0]}{teacher.profile.last_name?.[0]}
-                </div>
-                <div className="min-w-0">
-                  <p className="font-medium text-sm truncate">{teacher.profile.display_name}</p>
-                  <p className="text-xs text-muted-foreground">{teacher.pay_type === 'per_class' ? 'Per-class' : 'Hourly'}</p>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {teacher.specialties.slice(0, 2).map((s) => (
-                  <span key={s} className="text-xs bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full">{s}</span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* ABOUT TANDAVA — Open Source Project Panel                        */}
-      {/* ================================================================ */}
-      <section id="about-tandava" className="border-t border-border bg-card/30">
-        <div className="max-w-6xl mx-auto px-6 py-16">
-          <div className="flex items-center gap-3 mb-2">
-            <Code2 className="w-6 h-6 text-primary" />
-            <h2 className="text-2xl font-display font-semibold">About Tandava</h2>
-          </div>
-          <p className="text-muted-foreground mb-8 max-w-2xl">
-            Open-source studio management for yoga, pilates, and movement studios.
-            Scheduling, memberships, payments, check-in, analytics — all self-hosted, all under your control.
-          </p>
-
-          {/* Feature grid */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-            {PLATFORM_FEATURES.map((feat) => {
-              const Icon = feat.icon;
-              return (
-                <div key={feat.label} className="flex items-start gap-3 p-4 rounded-xl border bg-card">
-                  <Icon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm font-medium">{feat.label}</p>
-                    <p className="text-xs text-muted-foreground">{feat.description}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Philosophy cards */}
-          <div className="grid md:grid-cols-3 gap-6 mb-10">
+      <section className="border-t border-border">
+        <div className="max-w-6xl mx-auto px-6 py-14">
+          <h2 className="text-2xl font-display font-semibold mb-8">Why open source</h2>
+          <div className="grid md:grid-cols-3 gap-6">
             <div className="p-5 rounded-xl border bg-card">
               <Lock className="w-5 h-5 text-primary mb-3" />
               <h3 className="font-semibold mb-2">Your Data Stays Yours</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Run it on your own infrastructure. Export everything, anytime, in standard formats. No vendor lock-in by design.
+                Run it on your own infrastructure. Export everything, anytime. No vendor lock-in by design.
               </p>
             </div>
             <div className="p-5 rounded-xl border bg-card">
               <Server className="w-5 h-5 text-primary mb-3" />
               <h3 className="font-semibold mb-2">Self-Hosted</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Deploy on Vercel, Netlify, or your own server. No per-member pricing that scales against you. No features behind enterprise tiers.
+                Deploy on Vercel, Netlify, or your own server. No per-member pricing. No features behind paywalls.
               </p>
             </div>
             <div className="p-5 rounded-xl border bg-card">
               <Zap className="w-5 h-5 text-primary mb-3" />
               <h3 className="font-semibold mb-2">Modern Stack</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                React 18, TypeScript, Vite, shadcn/ui, Supabase, Stripe Connect. Production-grade architecture with Row-Level Security.
+                React 18, TypeScript, Vite, shadcn/ui, Supabase, Stripe Connect. Production-grade architecture with RLS.
               </p>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Quick start + links */}
-          <div className="p-6 rounded-xl border bg-card">
-            <h3 className="font-semibold mb-3 flex items-center gap-2">
-              <BookOpen className="w-4 h-4" />
-              Quick Start
-            </h3>
-            <div className="bg-background rounded-lg p-4 mb-4 font-mono text-sm text-muted-foreground">
-              <p>git clone https://github.com/TaylorONeal/tandava.git</p>
-              <p>cd tandava && npm install</p>
-              <p>echo "VITE_DEMO_MODE=true" &gt; .env.local</p>
-              <p>npm run dev</p>
+      {/* ================================================================ */}
+      {/* QUICK START                                                      */}
+      {/* ================================================================ */}
+      <section className="border-t border-border bg-card/30">
+        <div className="max-w-6xl mx-auto px-6 py-14">
+          <div className="max-w-2xl">
+            <h2 className="text-2xl font-display font-semibold mb-2 flex items-center gap-2">
+              <BookOpen className="w-5 h-5" />
+              Get started
+            </h2>
+            <p className="text-muted-foreground mb-6">Clone, install, and run in under 2 minutes</p>
+
+            <div className="bg-background rounded-xl p-5 mb-6 font-mono text-sm text-muted-foreground border">
+              <p className="text-primary/70">$ git clone https://github.com/TaylorONeal/tandava.git</p>
+              <p className="text-primary/70">$ cd tandava && npm install</p>
+              <p className="text-primary/70">$ echo "VITE_DEMO_MODE=true" &gt; .env.local</p>
+              <p className="text-primary/70">$ npm run dev</p>
+              <p className="mt-2 text-muted-foreground/50"># → http://localhost:8080</p>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <a
-                href="https://github.com/TaylorONeal/tandava"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-              >
-                <Github className="w-4 h-4" />
-                GitHub Repository
-                <ExternalLink className="w-3 h-3" />
+
+            <div className="flex flex-wrap gap-4">
+              <a href="https://github.com/TaylorONeal/tandava" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <Github className="w-4 h-4" /> Repository <ExternalLink className="w-3 h-3" />
               </a>
-              <a
-                href="https://github.com/TaylorONeal/tandava/blob/main/CONTRIBUTING.md"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-              >
-                Contributing Guide
-                <ExternalLink className="w-3 h-3" />
+              <a href="https://github.com/TaylorONeal/tandava/blob/main/DEPLOYMENT.md" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                Deployment Guide <ExternalLink className="w-3 h-3" />
               </a>
-              <a
-                href="https://github.com/TaylorONeal/tandava/blob/main/DATA_INTEROPERABILITY.md"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-              >
-                Data Interoperability
-                <ExternalLink className="w-3 h-3" />
+              <a href="https://github.com/TaylorONeal/tandava/blob/main/ARCHITECTURE.md" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                Architecture <ExternalLink className="w-3 h-3" />
               </a>
-              <a
-                href="https://github.com/TaylorONeal/tandava/tree/main/docs"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-              >
-                Full Documentation
-                <ExternalLink className="w-3 h-3" />
+              <a href="https://github.com/TaylorONeal/tandava/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                Contributing <ExternalLink className="w-3 h-3" />
               </a>
             </div>
           </div>
@@ -733,35 +588,10 @@ export default function Demo() {
       {/* FAQ                                                               */}
       {/* ================================================================ */}
       <section className="border-t border-border">
-        <div className="max-w-3xl mx-auto px-6 py-16">
-          <h2 className="text-2xl font-display font-semibold mb-2">Frequently Asked Questions</h2>
-          <p className="text-muted-foreground mb-6">
-            Common questions from studio owners and developers
-          </p>
-
-          {/* Audience filter */}
-          <div className="flex gap-2 mb-6">
-            {([
-              { value: 'all' as const, label: 'All' },
-              { value: 'studio' as const, label: 'For Studios' },
-              { value: 'developer' as const, label: 'For Developers' },
-            ]).map((tab) => (
-              <button
-                key={tab.value}
-                onClick={() => setFaqFilter(tab.value)}
-                className={`text-sm px-4 py-1.5 rounded-full transition-colors ${
-                  faqFilter === tab.value
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
+        <div className="max-w-3xl mx-auto px-6 py-14">
+          <h2 className="text-2xl font-display font-semibold mb-6">FAQ</h2>
           <div className="space-y-2">
-            {filteredFAQ.map((item, i) => (
+            {FAQ_ITEMS.map((item, i) => (
               <FAQAccordion key={i} item={item} />
             ))}
           </div>
@@ -772,100 +602,60 @@ export default function Demo() {
       {/* ABOUT THE CREATOR                                                */}
       {/* ================================================================ */}
       <section className="border-t border-border bg-card/30">
-        <div className="max-w-3xl mx-auto px-6 py-16">
+        <div className="max-w-3xl mx-auto px-6 py-14">
           <div className="flex items-start gap-5">
             <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-lg font-display font-bold text-primary shrink-0">
               TO
             </div>
             <div>
               <h2 className="text-xl font-display font-semibold mb-1">Taylor O'Neal</h2>
-              <p className="text-sm text-muted-foreground mb-4">
-                Product Management, Yoga Practitioner
-              </p>
-              <div className="text-sm text-muted-foreground leading-relaxed space-y-4">
+              <p className="text-sm text-muted-foreground mb-4">Product Management, Yoga Practitioner</p>
+              <div className="text-sm text-muted-foreground leading-relaxed space-y-3">
                 <p>
                   I build digital products and practice yoga. Both require systems thinking,
-                  creative problem-solving, and a deep respect for the people you serve.
+                  creative problem-solving, and respect for the people you serve.
                 </p>
-
-                <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-1">Yoga Roots</h3>
-                  <p>
-                    I did my 200-hour Yoga Teacher Training in Seattle, WA. I have a full resume of workshops
-                    and trainings from places like Koh Phangan, Thailand and Whidbey Island. I always struggled
-                    with the overwhelming number of options and the challenge of actually practicing and memorizing
-                    sequences. More than that, I wanted to understand how to describe cueing, transitions, deepening,
-                    and activations. That's why I built{' '}
-                    <a href="https://cuecraftyoga.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                      CueCraft Yoga
-                    </a>
-                    {' '}— and it's the same practitioner-first mindset behind Tandava.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-1">Product & Systems Background</h3>
-                  <p>
-                    I have master's degrees in business and tech. From digital transformation to product management
-                    for websites, apps, and e-commerce, I work with both a systems mindset and a creative one —
-                    that started back in high school designing websites for punk bands. I bring an integration mindset
-                    to every product I touch, combining user insights, data storytelling, and cross-functional leadership
-                    to design experiences that drive both engagement and revenue.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-1">Teaching & Content</h3>
-                  <p>
-                    I also teach Product Management and Digital Analytics at Miami University, where I built two
-                    curricula and created online channels to help students use data and AI tools to build better
-                    digital products faster.
-                  </p>
-                </div>
+                <p>
+                  200-hour YTT in Seattle. Workshops in Thailand and Whidbey Island. That practitioner-first
+                  mindset led to <a href="https://cuecraftyoga.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">CueCraft Yoga</a> and
+                  now Tandava. I also teach Product Management and Digital Analytics at Miami University.
+                </p>
               </div>
-              <div className="flex flex-wrap gap-4 mt-5">
-                <a
-                  href="https://tayloroneal.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-                >
-                  <Globe className="w-4 h-4" />
-                  tayloroneal.com
-                  <ExternalLink className="w-3 h-3" />
+              <div className="flex flex-wrap gap-4 mt-4">
+                <a href="https://tayloroneal.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                  <Globe className="w-4 h-4" /> tayloroneal.com
                 </a>
-                <a
-                  href="https://cuecraftyoga.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-                >
-                  <Heart className="w-4 h-4" />
-                  CueCraft Yoga
-                  <ExternalLink className="w-3 h-3" />
+                <a href="https://cuecraftyoga.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                  <Heart className="w-4 h-4" /> CueCraft Yoga
                 </a>
-                <a
-                  href="https://www.linkedin.com/in/tayloroneal/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-                >
+                <a href="https://www.linkedin.com/in/tayloroneal/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
                   LinkedIn
-                  <ExternalLink className="w-3 h-3" />
                 </a>
-                <a
-                  href="https://github.com/TaylorONeal"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-                >
-                  <Github className="w-4 h-4" />
-                  GitHub
-                  <ExternalLink className="w-3 h-3" />
+                <a href="https://github.com/TaylorONeal" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                  <Github className="w-4 h-4" /> GitHub
                 </a>
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* CTA — Try the Demo                                               */}
+      {/* ================================================================ */}
+      <section className="border-t border-border bg-gradient-to-br from-primary/10 to-background">
+        <div className="max-w-6xl mx-auto px-6 py-14 text-center">
+          <h2 className="text-2xl font-display font-semibold mb-3">Ready to explore?</h2>
+          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+            See how Tandava handles scheduling, payments, check-in, and analytics — with real data from a demo studio.
+          </p>
+          <a
+            href="#explore"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors"
+          >
+            Choose a Role & Explore
+            <ArrowRight className="w-4 h-4" />
+          </a>
         </div>
       </section>
 
@@ -875,12 +665,12 @@ export default function Demo() {
       <footer className="border-t border-border py-8 px-6">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">{OXATL_STUDIO.name}</span>
+            <span className="font-medium text-foreground">Tandava</span>
             <span>·</span>
-            <span>Powered by <a href="https://github.com/TaylorONeal/tandava" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Tandava</a></span>
+            <span>Open-source studio management</span>
           </div>
           <p className="text-xs text-muted-foreground">
-            Open source · AGPL-3.0 · Self-hosted
+            AGPL-3.0 · Self-hosted · <a href="https://github.com/TaylorONeal/tandava" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">GitHub</a>
           </p>
         </div>
       </footer>

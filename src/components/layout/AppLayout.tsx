@@ -77,12 +77,12 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Desktop Header */}
       <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur-md">
         <div className="container flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link to="/home" className="flex items-center gap-2.5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary shadow-md">
-              <span className="text-lg font-bold text-primary-foreground">T</span>
+          {/* Studio Brand */}
+          <Link to="/home" className="flex items-center gap-2.5 mr-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-accent-teal to-accent-sage shadow-md">
+              <span className="text-lg font-bold text-white">O</span>
             </div>
-            <span className="text-xl font-bold tracking-tight">tandava</span>
+            <span className="text-xl font-display font-bold tracking-tight">Oxatl Yoga</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -228,6 +228,20 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* Main Content */}
       <main className="container py-8 md:py-10">{children}</main>
+
+      {/* Footer */}
+      <footer className="border-t border-border bg-card/50 py-6 mt-auto">
+        <div className="container flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
+          <span>&copy; {new Date().getFullYear()} Oxatl Yoga. All rights reserved.</span>
+          <span>
+            Powered by{" "}
+            <Link to="/" className="text-accent-teal hover:text-accent-teal/80 font-medium transition-colors">
+              Tandava
+            </Link>
+            {" "}&mdash; Open Source Studio Management
+          </span>
+        </div>
+      </footer>
     </div>
   );
 }
