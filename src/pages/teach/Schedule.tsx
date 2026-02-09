@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { TeachLayout } from "@/components/teach/TeachLayout";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -178,6 +179,7 @@ const mockSchedule: ScheduledClass[] = [
 ];
 
 export default function TeachSchedule() {
+  const { toast } = useToast();
   const [viewMode, setViewMode] = useState<ViewMode>("week");
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [subDialogOpen, setSubDialogOpen] = useState(false);
@@ -247,8 +249,10 @@ export default function TeachSchedule() {
 
   const handleRequestSub = () => {
     if (!selectedClass) return;
-    // In real app, this would make an API call
-    console.log("Requesting sub for:", selectedClass.id, "Reason:", subReason);
+    toast({
+      title: "Sub request sent",
+      description: `Sub request for ${selectedClass.className} has been submitted.`,
+    });
     setSubDialogOpen(false);
     setSelectedClass(null);
     setSubReason("");

@@ -23,7 +23,7 @@ export function StaffLayout({ children }: StaffLayoutProps) {
       <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur-md">
         <div className="container flex h-14 items-center gap-6">
           <Link
-            to="/"
+            to="/home"
             className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />

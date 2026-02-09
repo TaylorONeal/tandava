@@ -71,6 +71,12 @@ import TeachDashboard from "./pages/teach/Dashboard";
 import TeachSchedule from "./pages/teach/Schedule";
 import TeachSubs from "./pages/teach/Subs";
 import TeachEarnings from "./pages/teach/Earnings";
+import TeachAvailability from "./pages/teach/Availability";
+import TeachProfile from "./pages/teach/Profile";
+
+// Staff (front desk) pages
+import StaffCheckin from "./pages/staff/StaffCheckin";
+import StaffWaitlist from "./pages/staff/StaffWaitlist";
 
 // Kiosk page
 import Kiosk from "./pages/Kiosk";
@@ -97,12 +103,13 @@ const App = () => (
               <BrowserRouter>
                 <DemoPanel />
                 <Routes>
-                  {/* ---- Public pages ---- */}
+                  {/* ---- Demo landing page (role picker) ---- */}
+                  <Route path="/" element={<Demo />} />
                   <Route path="/demo" element={<Demo />} />
                   <Route path="/open-source" element={<OpenSource />} />
 
                   {/* ---- Student-facing routes ---- */}
-                  <Route path="/" element={<Index />} />
+                  <Route path="/home" element={<Index />} />
                   <Route path="/schedule" element={<Schedule />} />
                   <Route path="/studios" element={<Studios />} />
                   <Route path="/studios/:id" element={<StudioDetail />} />
@@ -167,8 +174,14 @@ const App = () => (
                   {/* ---- Instructor portal routes (/teach) ---- */}
                   <Route path="/teach" element={<TeachDashboard />} />
                   <Route path="/teach/schedule" element={<TeachSchedule />} />
+                  <Route path="/teach/availability" element={<TeachAvailability />} />
                   <Route path="/teach/subs" element={<TeachSubs />} />
                   <Route path="/teach/earnings" element={<TeachEarnings />} />
+                  <Route path="/teach/profile" element={<TeachProfile />} />
+
+                  {/* ---- Staff (front desk) routes ---- */}
+                  <Route path="/staff/checkin" element={<StaffCheckin />} />
+                  <Route path="/staff/waitlist" element={<StaffWaitlist />} />
 
                   {/* ---- Kiosk mode ---- */}
                   <Route path="/kiosk/:studioId" element={<Kiosk />} />

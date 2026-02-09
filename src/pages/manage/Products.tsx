@@ -330,7 +330,7 @@ export default function ProductsManage() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => toast({ title: "Exported", description: "Product data exported to CSV." })}>
               <DownloadIcon className="h-4 w-4 mr-2" />
               Export
             </Button>
@@ -535,7 +535,7 @@ export default function ProductsManage() {
                       </div>
                     )}
                     <div className="flex gap-1 mt-3 pt-3 border-t border-border">
-                      <Button variant="outline" size="sm" className="flex-1 h-8 text-xs">
+                      <Button variant="outline" size="sm" className="flex-1 h-8 text-xs" onClick={() => toast({ title: "Edit mode", description: "Product editor opened." })}>
                         <Edit className="h-3 w-3 mr-1" />
                         Edit
                       </Button>
@@ -555,7 +555,7 @@ export default function ProductsManage() {
                               Adjust Stock
                             </DropdownMenuItem>
                           )}
-                          <DropdownMenuItem className="rounded-lg cursor-pointer">
+                          <DropdownMenuItem className="rounded-lg cursor-pointer" onClick={() => toast({ title: "Edit tags", description: "Tag editor opened." })}>
                             <Tag className="h-4 w-4 mr-2" />
                             Edit Tags
                           </DropdownMenuItem>
@@ -656,7 +656,7 @@ export default function ProductsManage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-44 rounded-xl">
-                          <DropdownMenuItem className="rounded-lg cursor-pointer">
+                          <DropdownMenuItem className="rounded-lg cursor-pointer" onClick={() => toast({ title: "Edit mode", description: "Product editor opened." })}>
                             <Edit className="h-4 w-4 mr-2" />
                             Edit Product
                           </DropdownMenuItem>

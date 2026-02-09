@@ -62,12 +62,12 @@ const userData = {
 const membership = {
   type: "Unlimited Monthly",
   status: "ACTIVE",
-  renewsAt: "Jan 3, 2024",
+  renewsAt: "Feb 3, 2026",
   price: 149,
 };
 
 const packs = [
-  { type: "Class Pack", name: "10-Class Pack", remaining: 6, expires: "Feb 15, 2024" },
+  { type: "Class Pack", name: "10-Class Pack", remaining: 6, expires: "Mar 15, 2026" },
 ];
 
 const Account = () => {
@@ -143,7 +143,10 @@ const Account = () => {
                         {formData.firstName[0]}{formData.lastName[0]}
                       </AvatarFallback>
                     </Avatar>
-                    <button className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors">
+                    <button
+                      onClick={() => toast({ title: "Upload photo", description: "Photo upload requires backend storage connection." })}
+                      className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"
+                    >
                       <Camera className="h-4 w-4" />
                     </button>
                   </div>
@@ -487,7 +490,7 @@ const Account = () => {
                       </p>
                     </div>
                   </div>
-                  <Button variant="outline">Manage</Button>
+                  <Button variant="outline" onClick={() => toast({ title: "Manage membership", description: "Membership management requires Stripe integration." })}>Manage</Button>
                 </div>
               </CardContent>
             </Card>
@@ -518,7 +521,7 @@ const Account = () => {
                     <Badge variant="secondary">{pack.remaining} left</Badge>
                   </div>
                 ))}
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={() => toast({ title: "Browse packs", description: "Redirecting to available class packs and passes." })}>
                   Purchase More
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
@@ -541,12 +544,12 @@ const Account = () => {
                     </div>
                     <div>
                       <h4 className="font-medium">•••• •••• •••• 4242</h4>
-                      <p className="text-sm text-muted-foreground">Expires 12/25</p>
+                      <p className="text-sm text-muted-foreground">Expires 12/27</p>
                     </div>
                   </div>
                   <Badge variant="secondary">Default</Badge>
                 </div>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={() => toast({ title: "Add payment method", description: "Payment methods require Stripe integration." })}>
                   Add Payment Method
                 </Button>
               </CardContent>
@@ -560,9 +563,9 @@ const Account = () => {
               <CardContent>
                 <div className="space-y-3">
                   {[
-                    { date: "Dec 3, 2023", desc: "Unlimited Monthly", amount: 149 },
-                    { date: "Nov 3, 2023", desc: "Unlimited Monthly", amount: 149 },
-                    { date: "Oct 15, 2023", desc: "10-Class Pack", amount: 180 },
+                    { date: "Jan 3, 2026", desc: "Unlimited Monthly", amount: 149 },
+                    { date: "Dec 3, 2025", desc: "Unlimited Monthly", amount: 149 },
+                    { date: "Nov 15, 2025", desc: "10-Class Pack", amount: 180 },
                   ].map((item, i) => (
                     <div
                       key={i}

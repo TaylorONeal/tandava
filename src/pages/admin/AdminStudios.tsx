@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AdminStudios() {
+  const { toast } = useToast();
   return (
     <AdminLayout>
       <SEOHead title="Manage Studios" noindex />
@@ -16,7 +18,7 @@ export default function AdminStudios() {
             <h1 className="text-2xl font-bold tracking-tight">Studios</h1>
             <p className="text-muted-foreground">Approve, configure, and manage studios on this instance.</p>
           </div>
-          <Button>
+          <Button onClick={() => toast({ title: "Add studio", description: "Studio onboarding requires Supabase backend." })}>
             <Plus className="h-4 w-4 mr-2" />
             Add Studio
           </Button>

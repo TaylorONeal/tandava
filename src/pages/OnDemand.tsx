@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { useToast } from "@/hooks/use-toast";
 import { ClassTypeCard } from "@/components/ondemand/ClassTypeCard";
 import { SubscriptionCard } from "@/components/ondemand/SubscriptionCard";
 import { OnDemandClassCard } from "@/components/ondemand/OnDemandClassCard";
@@ -200,6 +201,7 @@ const onDemandClasses = [
 ];
 
 const OnDemand = () => {
+  const { toast } = useToast();
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedClass, setSelectedClass] = useState<typeof onDemandClasses[0] | null>(null);
@@ -343,7 +345,7 @@ const OnDemand = () => {
               <SubscriptionCard
                 key={option.type}
                 {...option}
-                onSelect={() => console.log("Selected:", option.type)}
+                onSelect={() => toast({ title: "Selected", description: `${option.type} subscription selected.` })}
               />
             ))}
           </div>

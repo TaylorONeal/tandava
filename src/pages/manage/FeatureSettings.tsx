@@ -6,6 +6,7 @@
  */
 
 import { useState, useMemo } from 'react';
+import { useToast } from '@/hooks/use-toast';
 import {
   FEATURE_DEFINITIONS,
   FEATURE_CATEGORY_INFO,
@@ -455,6 +456,7 @@ function StatsOverview({ enabledFeatures }: StatsOverviewProps) {
 // ============================================================================
 
 export default function FeatureSettings() {
+  const { toast } = useToast();
   const [enabledFeatures, setEnabledFeatures] = useState<Set<FeatureId>>(mockEnabledFeatures);
   const [warningModal, setWarningModal] = useState<{
     isOpen: boolean;
@@ -514,8 +516,7 @@ export default function FeatureSettings() {
   };
 
   const handleSave = () => {
-    // TODO: Save to API
-    console.log('Saving features:', Array.from(enabledFeatures));
+    toast({ title: "Settings saved", description: "Feature settings have been updated." });
     setHasChanges(false);
   };
 

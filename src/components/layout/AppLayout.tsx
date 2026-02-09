@@ -36,7 +36,7 @@ interface AppLayoutProps {
 }
 
 const navigation = [
-  { name: "Home", href: "/", icon: Home },
+  { name: "Home", href: "/home", icon: Home },
   { name: "Schedule", href: "/schedule", icon: Calendar },
   { name: "On-Demand", href: "/on-demand", icon: Play },
   { name: "Studios", href: "/studios", icon: Building2 },
@@ -78,7 +78,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur-md">
         <div className="container flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5">
+          <Link to="/home" className="flex items-center gap-2.5">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary shadow-md">
               <span className="text-lg font-bold text-primary-foreground">T</span>
             </div>

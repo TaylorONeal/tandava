@@ -19,6 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 
 interface OfferingItem {
   id: string;
@@ -47,6 +48,7 @@ const mockOfferings: OfferingItem[] = [
 ];
 
 export default function OfferingsManage() {
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredOfferings = mockOfferings.filter(
@@ -69,7 +71,7 @@ export default function OfferingsManage() {
               Class types and their configurations — {mockOfferings.filter(o => o.isActive).length} active
             </p>
           </div>
-          <Button size="sm">
+          <Button size="sm" onClick={() => toast({ title: "New offering", description: "Offering creation form opened." })}>
             <Plus className="h-4 w-4 mr-2" />
             New Offering
           </Button>
@@ -113,9 +115,9 @@ export default function OfferingsManage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-40 rounded-xl">
-                        <DropdownMenuItem className="rounded-lg cursor-pointer">Edit</DropdownMenuItem>
-                        <DropdownMenuItem className="rounded-lg cursor-pointer">Duplicate</DropdownMenuItem>
-                        <DropdownMenuItem className="rounded-lg cursor-pointer text-destructive">Deactivate</DropdownMenuItem>
+                        <DropdownMenuItem className="rounded-lg cursor-pointer" onClick={() => toast({ title: "Edit mode", description: "Editing offering details." })}>Edit</DropdownMenuItem>
+                        <DropdownMenuItem className="rounded-lg cursor-pointer" onClick={() => toast({ title: "Duplicated", description: "Offering duplicated as draft." })}>Duplicate</DropdownMenuItem>
+                        <DropdownMenuItem className="rounded-lg cursor-pointer text-destructive" onClick={() => toast({ title: "Deactivated", description: "Offering has been deactivated." })}>Deactivate</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -177,7 +179,7 @@ export default function OfferingsManage() {
                           <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Inactive</Badge>
                         </div>
                       </div>
-                      <Button variant="outline" size="sm" className="text-xs">Reactivate</Button>
+                      <Button variant="outline" size="sm" className="text-xs" onClick={() => toast({ title: "Reactivated", description: "Offering has been reactivated." })}>Reactivate</Button>
                     </div>
                   </CardContent>
                 </Card>

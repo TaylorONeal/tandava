@@ -203,7 +203,7 @@ export default function SettingsManage() {
                     <CardTitle>Locations</CardTitle>
                     <CardDescription>Manage your studio locations</CardDescription>
                   </div>
-                  <Button size="sm">
+                  <Button size="sm" onClick={() => toast({ title: "Add location", description: "Location form opened. Configure with Supabase for persistence." })}>
                     <MapPin className="h-4 w-4 mr-2" />
                     Add Location
                   </Button>
@@ -339,7 +339,7 @@ export default function SettingsManage() {
                   <div className="border-2 border-dashed border-border rounded-xl p-8 text-center">
                     <p className="text-sm text-muted-foreground">Drag and drop your logo, or click to upload</p>
                     <p className="text-xs text-muted-foreground mt-1">PNG, SVG, or JPG (512x512px recommended)</p>
-                    <Button variant="outline" size="sm" className="mt-3">Upload Logo</Button>
+                    <Button variant="outline" size="sm" className="mt-3" onClick={() => toast({ title: "Upload", description: "Logo upload requires Supabase Storage connection." })}>Upload Logo</Button>
                   </div>
                 </div>
 
@@ -390,7 +390,7 @@ export default function SettingsManage() {
                     Connect your Stripe account to process memberships, class packs, and drop-in payments.
                     Powered by Stripe Connect for secure, PCI-compliant payment processing.
                   </p>
-                  <Button className="mt-4">
+                  <Button className="mt-4" onClick={() => toast({ title: "Stripe Connect", description: "Stripe integration requires backend configuration." })}>
                     Connect with Stripe
                   </Button>
                 </div>

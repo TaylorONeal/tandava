@@ -1,4 +1,5 @@
 import { TeachLayout } from "@/components/teach/TeachLayout";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -138,6 +139,7 @@ const earningsSummary = {
 };
 
 export default function TeachDashboard() {
+  const { toast } = useToast();
   return (
     <TeachLayout>
       <div className="space-y-6">
@@ -201,12 +203,12 @@ export default function TeachDashboard() {
                     )}
                   </div>
                   <div className="flex gap-2 mt-3">
-                    <Button size="sm" className="flex-1">
+                    <Button size="sm" className="flex-1" onClick={() => toast({ title: "Check-in opened", description: "Student check-in for this class is now active." })}>
                       <ClipboardCheck className="h-4 w-4 mr-2" />
                       Check-in Students
                     </Button>
                     {(cls.deliveryMode === 'virtual' || cls.deliveryMode === 'hybrid') && (
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" onClick={() => toast({ title: "Stream starting", description: "Virtual class stream is being prepared..." })}>
                         <Video className="h-4 w-4 mr-2" />
                         Start Stream
                       </Button>

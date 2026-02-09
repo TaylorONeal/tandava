@@ -77,6 +77,15 @@ const mockInstructors = [
 
 const Instructors = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [specialtyFilter, setSpecialtyFilter] = useState("all");
+  const [studioFilter, setStudioFilter] = useState("all");
+
+  const filteredInstructors = mockInstructors.filter((instructor) => {
+    if (searchQuery && !instructor.name.toLowerCase().includes(searchQuery.toLowerCase()) && !instructor.bio.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (specialtyFilter !== "all" && !instructor.specialties.some(s => s.toLowerCase().includes(specialtyFilter.toLowerCase()))) return false;
+    if (studioFilter !== "all" && !instructor.studios.some(s => s.toLowerCase().includes(studioFilter.toLowerCase()))) return false;
+    return true;
+  });
 
   return (
     <AppLayout>
@@ -102,7 +111,7 @@ const Instructors = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <Select>
+            <Select value={specialtyFilter} onValueChange={setSpecialtyFilter}>
               <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Specialty" />
               </SelectTrigger>
@@ -116,7 +125,7 @@ const Instructors = () => {
               </SelectContent>
             </Select>
 
-            <Select>
+            <Select value={studioFilter} onValueChange={setStudioFilter}>
               <SelectTrigger className="w-[160px]">
                 <SelectValue placeholder="Studio" />
               </SelectTrigger>
@@ -128,7 +137,7 @@ const Instructors = () => {
               </SelectContent>
             </Select>
 
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" onClick={() => { setSearchQuery(""); setSpecialtyFilter("all"); setStudioFilter("all"); }}>
               <SlidersHorizontal className="h-4 w-4" />
             </Button>
           </div>
@@ -136,9 +145,14 @@ const Instructors = () => {
 
         {/* Instructors Grid */}
         <div className="grid md:grid-cols-2 gap-4">
-          {mockInstructors.map((instructor) => (
+          {filteredInstructors.map((instructor) => (
             <InstructorCard key={instructor.id} {...instructor} />
           ))}
+          {filteredInstructors.length === 0 && (
+            <div className="col-span-2 text-center py-8 text-muted-foreground">
+              <p>No instructors match your filters.</p>
+            </div>
+          )}
         </div>
       </div>
     </AppLayout>

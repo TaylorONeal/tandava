@@ -281,14 +281,23 @@ const Schedule = () => {
   const [classDetailOpen, setClassDetailOpen] = useState(false);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [showOnDemand, setShowOnDemand] = useState(false);
+  const [studioFilter, setStudioFilter] = useState("all studios");
+  const [styleFilter, setStyleFilter] = useState("all styles");
+  const [levelFilter, setLevelFilter] = useState("all levels");
+
+  const filteredClasses = mockClasses.filter((c) => {
+    if (searchQuery && !c.title.toLowerCase().includes(searchQuery.toLowerCase()) && !c.teacher.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (studioFilter !== "all studios" && c.studio.name.toLowerCase() !== studioFilter) return false;
+    if (styleFilter !== "all styles" && c.style.toLowerCase() !== styleFilter) return false;
+    if (levelFilter !== "all levels" && c.level.toLowerCase() !== levelFilter) return false;
+    return true;
+  });
 
   const handleBook = (id: string) => {
     const classItem = mockClasses.find(c => c.id === id);
     if (classItem) {
       setSelectedClass(classItem);
       setClassDetailOpen(true);
-    } else {
-      console.log("Booking:", id);
     }
   };
 
@@ -357,7 +366,7 @@ const Schedule = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <Select>
+              <Select value={studioFilter} onValueChange={setStudioFilter}>
                 <SelectTrigger className="w-[140px]">
                   <SelectValue placeholder="Studio" />
                 </SelectTrigger>
@@ -370,7 +379,7 @@ const Schedule = () => {
                 </SelectContent>
               </Select>
 
-              <Select>
+              <Select value={styleFilter} onValueChange={setStyleFilter}>
                 <SelectTrigger className="w-[140px]">
                   <SelectValue placeholder="Style" />
                 </SelectTrigger>
@@ -383,7 +392,7 @@ const Schedule = () => {
                 </SelectContent>
               </Select>
 
-              <Select>
+              <Select value={levelFilter} onValueChange={setLevelFilter}>
                 <SelectTrigger className="w-[140px]">
                   <SelectValue placeholder="Level" />
                 </SelectTrigger>
@@ -396,7 +405,7 @@ const Schedule = () => {
                 </SelectContent>
               </Select>
 
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" onClick={() => { setStudioFilter("all studios"); setStyleFilter("all styles"); setLevelFilter("all levels"); setSearchQuery(""); }}>
                 <SlidersHorizontal className="h-4 w-4" />
               </Button>
             </div>
@@ -471,9 +480,14 @@ const Schedule = () => {
           <TabsContent value="classes" className="mt-0">
             {viewMode === "list" ? (
               <div className="space-y-4">
-                {mockClasses.map((classItem) => (
+                {filteredClasses.map((classItem) => (
                   <ClassCard key={classItem.id} {...classItem} onBook={handleBook} />
                 ))}
+                {filteredClasses.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>No classes match your filters. Try adjusting your search criteria.</p>
+                  </div>
+                )}
                 
                 {/* On-Demand Classes Section */}
                 {showOnDemand && (

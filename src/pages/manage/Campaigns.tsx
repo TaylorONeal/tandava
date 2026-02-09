@@ -709,7 +709,7 @@ export default function CampaignsManage() {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end" className="w-44 rounded-xl">
-                                <DropdownMenuItem className="rounded-lg cursor-pointer">
+                                <DropdownMenuItem className="rounded-lg cursor-pointer" onClick={() => toast({ title: "Edit mode", description: "Campaign editor opened." })}>
                                   <Edit className="h-4 w-4 mr-2" />
                                   Edit
                                 </DropdownMenuItem>
