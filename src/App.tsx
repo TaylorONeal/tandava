@@ -9,7 +9,7 @@ import { DemoProvider } from "@/contexts/DemoContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AuthCallback } from "@/components/auth/AuthCallback";
-import { DemoPanel } from "@/components/DemoPanel";
+// DemoPanel removed — role selection now happens on landing page + DemoRoleBar
 import { DemoRoleBar } from "@/components/DemoRoleBar";
 import { Component, type ErrorInfo, type ReactNode } from "react";
 
@@ -145,7 +145,6 @@ const App = () => (
               <Sonner />
               <BrowserRouter>
                 <DemoRoleBar />
-                <DemoPanel />
                 <Routes>
                   {/* ---- Demo landing page (role picker) ---- */}
                   <Route path="/" element={<Demo />} />
