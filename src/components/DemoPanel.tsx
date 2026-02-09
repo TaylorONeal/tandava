@@ -30,10 +30,12 @@ import {
   Rocket,
   X,
   ShieldCheck,
+  MapPin,
 } from "lucide-react";
 import { useDemo, DEMO_MODE_ENABLED } from "@/contexts/DemoContext";
 import type { UserRole } from "@/types/database";
 import { cn } from "@/lib/utils";
+import { GuidedTour, TourLauncher, useTour } from "@/components/tour/GuidedTour";
 
 const ROLE_ICONS: Record<UserRole, typeof User> = {
   owner: Shield,
@@ -271,6 +273,28 @@ export function DemoPanel() {
   return <DemoPanelInner />;
 }
 
+function DemoTourOverlay({ role }: { role: string }) {
+  const { tour, step, showLauncher, startTour, skipTour, dismissTour, changeStep } = useTour(role);
+
+  if (!tour) return null;
+
+  return (
+    <>
+      {showLauncher && (
+        <TourLauncher tour={tour} onStart={startTour} onSkip={skipTour} />
+      )}
+      {step !== null && (
+        <GuidedTour
+          tour={tour}
+          currentStep={step}
+          onStepChange={changeStep}
+          onDismiss={dismissTour}
+        />
+      )}
+    </>
+  );
+}
+
 function DemoPanelInner() {
   const { activePersona, personas, switchPersona, panelOpen, setPanelOpen } = useDemo();
   const location = useLocation();
@@ -295,22 +319,35 @@ function DemoPanelInner() {
     navigate(destination);
   };
 
+  // Restart tour for current role
+  const handleRestartTour = () => {
+    const tourId = `tour-${activePersona.role}`;
+    localStorage.removeItem(`${tourId}-seen`);
+    // Force re-render by toggling a state
+    window.location.reload();
+  };
+
   if (!panelOpen) {
     return (
-      <button
-        onClick={() => setPanelOpen(true)}
-        className="fixed right-0 top-1/2 -translate-y-1/2 z-[100] bg-primary text-primary-foreground px-2 py-4 rounded-l-xl shadow-lg hover:px-3 transition-all"
-        title="Open demo panel"
-      >
-        <ChevronLeft className="h-4 w-4" />
-        <span className="text-[10px] font-bold tracking-wider" style={{ writingMode: 'vertical-rl' }}>
-          DEMO
-        </span>
-      </button>
+      <>
+        <DemoTourOverlay role={activePersona.role} />
+        <button
+          onClick={() => setPanelOpen(true)}
+          className="fixed right-0 top-1/2 -translate-y-1/2 z-[100] bg-primary text-primary-foreground px-2 py-4 rounded-l-xl shadow-lg hover:px-3 transition-all"
+          title="Open demo panel"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          <span className="text-[10px] font-bold tracking-wider" style={{ writingMode: 'vertical-rl' }}>
+            DEMO
+          </span>
+        </button>
+      </>
     );
   }
 
   return (
+    <>
+    <DemoTourOverlay role={activePersona.role} />
     <div className="fixed right-0 top-0 bottom-0 w-80 z-[100] bg-card border-l border-border shadow-2xl overflow-y-auto">
       {/* Header */}
       <div className="sticky top-0 bg-card/95 backdrop-blur-md border-b border-border p-4 z-10">
@@ -456,6 +493,21 @@ function DemoPanelInner() {
 
         <Separator />
 
+        {/* Tour */}
+        <div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full text-xs"
+            onClick={handleRestartTour}
+          >
+            <MapPin className="h-3.5 w-3.5 mr-1.5" />
+            Restart {activePersona.label} Tour
+          </Button>
+        </div>
+
+        <Separator />
+
         {/* Links */}
         <div className="space-y-2">
           <a
@@ -488,6 +540,7 @@ function DemoPanelInner() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

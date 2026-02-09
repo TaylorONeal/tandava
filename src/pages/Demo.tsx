@@ -46,6 +46,17 @@ import {
   Lock,
   Zap,
   Heart,
+  ListChecks,
+  Bell,
+  Receipt,
+  QrCode,
+  UserCheck,
+  RotateCcw,
+  Video,
+  FileBarChart,
+  Megaphone,
+  Upload,
+  CheckCircle2,
 } from 'lucide-react';
 
 // ============================================================================
@@ -196,6 +207,57 @@ const PLATFORM_FEATURES = [
 ];
 
 // ============================================================================
+// FULL FEATURE LIST — For landing page feature showcase
+// ============================================================================
+
+interface FeatureItem {
+  icon: typeof Calendar;
+  name: string;
+  description: string;
+  demoRoute: string;
+  demoRole: UserRole;
+}
+
+const FEATURE_CATEGORIES = [
+  {
+    title: "Scheduling & Classes",
+    features: [
+      { icon: Calendar, name: "Class Scheduling", description: "Recurring rules, one-off changes, and multi-location management", demoRoute: "/manage/schedule", demoRole: "owner" as UserRole },
+      { icon: RotateCcw, name: "Sub Management", description: "Teachers request subs, qualified instructors get notified", demoRoute: "/teach/subs", demoRole: "teacher" as UserRole },
+      { icon: ListChecks, name: "Waitlist Automation", description: "Auto-promote when spots open, configurable deadlines", demoRoute: "/staff/waitlist", demoRole: "front_desk" as UserRole },
+      { icon: Video, name: "On-Demand Library", description: "Recorded classes with streaming, categories, and progress tracking", demoRoute: "/on-demand", demoRole: "student" as UserRole },
+    ],
+  },
+  {
+    title: "Members & Check-In",
+    features: [
+      { icon: UserCheck, name: "Member Profiles", description: "Visit history, waivers, engagement scores, and lifecycle tracking", demoRoute: "/manage/students", demoRole: "owner" as UserRole },
+      { icon: QrCode, name: "Self Check-In", description: "Kiosk mode, QR code, and front desk manual check-in", demoRoute: "/staff/checkin", demoRole: "front_desk" as UserRole },
+      { icon: Users, name: "Community & Streaks", description: "Practice tracking, leaderboards, friend connections, milestones", demoRoute: "/community", demoRole: "student" as UserRole },
+      { icon: Bell, name: "Notifications", description: "Email, SMS, and push — class reminders, waitlist, and marketing", demoRoute: "/manage/notification-settings", demoRole: "owner" as UserRole },
+    ],
+  },
+  {
+    title: "Payments & Revenue",
+    features: [
+      { icon: CreditCard, name: "Stripe Connect", description: "Memberships, class packs, drop-ins, workshops — all through Stripe", demoRoute: "/manage/financials", demoRole: "owner" as UserRole },
+      { icon: Receipt, name: "Memberships & Packs", description: "Monthly/annual memberships, class packs, family plans, promo codes", demoRoute: "/manage/financials", demoRole: "owner" as UserRole },
+      { icon: BarChart3, name: "Revenue Analytics", description: "MRR, churn, LTV cohorts, teacher performance, attendance trends", demoRoute: "/manage/analytics", demoRole: "owner" as UserRole },
+      { icon: FileBarChart, name: "Custom Reports", description: "Build reports with date ranges, filters, and export to CSV", demoRoute: "/manage/reports", demoRole: "owner" as UserRole },
+    ],
+  },
+  {
+    title: "Operations & Marketing",
+    features: [
+      { icon: Megaphone, name: "Campaign Hub", description: "Email/SMS campaigns with audience segmentation and tracking", demoRoute: "/manage/campaigns", demoRole: "owner" as UserRole },
+      { icon: Upload, name: "Data Import", description: "Migrate from MindBody, Momence, Walla, or CSV with smart mapping", demoRoute: "/manage/import", demoRole: "owner" as UserRole },
+      { icon: Globe, name: "SEO Landing Pages", description: "Create optimized pages for local search and promotions", demoRoute: "/manage/landing-pages", demoRole: "owner" as UserRole },
+      { icon: Shield, name: "Role-Based Access", description: "Owner, teacher, front desk, student — each sees exactly what they need", demoRoute: "/manage/settings", demoRole: "owner" as UserRole },
+    ],
+  },
+];
+
+// ============================================================================
 // FAQ ACCORDION COMPONENT
 // ============================================================================
 
@@ -269,6 +331,12 @@ export default function Demo() {
             >
               <Github className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">View Source</span>
+            </a>
+            <a
+              href="#features"
+              className="hidden sm:inline text-xs font-medium hover:opacity-80 transition-opacity bg-primary-foreground/15 rounded-full px-3 py-1"
+            >
+              Features
             </a>
             <a
               href="#about-tandava"
@@ -363,6 +431,55 @@ export default function Demo() {
                 </button>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================ */}
+      {/* FEATURE LIST                                                     */}
+      {/* ================================================================ */}
+      <section id="features" className="border-t border-border bg-card/20">
+        <div className="max-w-6xl mx-auto px-6 py-14">
+          <div className="flex items-center gap-3 mb-2">
+            <CheckCircle2 className="w-5 h-5 text-primary" />
+            <h2 className="text-2xl font-display font-semibold">Platform Features</h2>
+          </div>
+          <p className="text-muted-foreground mb-8 max-w-2xl">
+            Everything a yoga, pilates, or movement studio needs — click any feature to see it in action
+          </p>
+
+          <div className="space-y-10">
+            {FEATURE_CATEGORIES.map((category) => (
+              <div key={category.title}>
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                  {category.title}
+                </h3>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {category.features.map((feat) => {
+                    const Icon = feat.icon;
+                    return (
+                      <button
+                        key={feat.name}
+                        onClick={() => {
+                          switchPersona(feat.demoRole);
+                          navigate(feat.demoRoute);
+                        }}
+                        className="group text-left p-4 rounded-xl border bg-card hover:border-primary/30 hover:shadow-md transition-all"
+                      >
+                        <div className="flex items-center gap-2.5 mb-2">
+                          <Icon className="w-4 h-4 text-primary" />
+                          <span className="text-sm font-medium group-hover:text-primary transition-colors">{feat.name}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground leading-relaxed">{feat.description}</p>
+                        <div className="flex items-center gap-1 mt-2 text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                          Try it <ArrowRight className="w-3 h-3" />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
