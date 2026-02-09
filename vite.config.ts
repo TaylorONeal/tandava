@@ -5,6 +5,9 @@ import { sentryVitePlugin } from "@sentry/vite-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  // Use relative paths so the app works on any hosting subpath
+  // (GitHub Pages at /repo-name/, Vercel at /, Netlify, etc.)
+  base: "./",
   server: {
     host: "::",
     port: 8080,
