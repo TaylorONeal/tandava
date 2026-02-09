@@ -4,7 +4,51 @@ Thank you for your interest in contributing.
 
 This project exists to provide **open, interoperable, and user-centered infrastructure** for studio management and business systems integration. Contributions are welcome, but they work best when grounded in shared goals, clear scope, and mutual respect for the project's direction.
 
-This guide explains how to contribute constructively and how decisions are made.
+This guide explains how to contribute constructively, how decisions are made, and what the project's biases are.
+
+---
+
+## Core Bias: Deployable Reference Implementation First
+
+Before contributing anything, understand this: Tandava is a **deployable reference implementation**, not a library, platform, or framework.
+
+This means:
+- Contributions that make Tandava easier to **fork, deploy, customize, and operate** for a real studio are prioritized
+- Contributions that add abstraction, packaging, or platform generalization without clear operator benefit will likely be declined
+- We optimize for clarity and deployability over reusability and extensibility
+- If something works for the single-studio, self-hosted use case, it ships. If it only makes sense in a hypothetical multi-tenant future, it waits
+
+This is not negotiable. It is the project's foundational design decision.
+
+---
+
+## Governance
+
+### Decision-Making Authority
+
+Technical and product decisions are made by the project maintainers. This is not a democracy — it is a benevolent dictatorship with transparency.
+
+**How decisions get made:**
+1. Maintainers evaluate contributions against the deploy-first bias
+2. If a contribution clearly aligns, it is merged
+3. If alignment is unclear, maintainers discuss in the PR/issue
+4. If a contributor disagrees with a decision, they can fork — that's the point of open source
+
+**What maintainers will not do:**
+- Justify every decision to every commenter
+- Merge something because it took effort to build
+- Accept scope expansion disguised as a bug fix
+- Engage in extended philosophical debates about architecture in PRs
+
+### Energy Protection
+
+Maintaining open-source software is work. We protect maintainer energy by:
+- Closing issues that are not actionable
+- Declining PRs that don't align, even if well-built
+- Limiting scope discussions to one round of feedback before deciding
+- Not responding to demands framed as urgency
+
+This is not hostility. It is sustainability.
 
 ---
 
@@ -70,8 +114,12 @@ To save everyone time, the following are generally out of scope:
 - Changes that undermine interoperability or data portability
 - "All-in-one" redesigns that expand scope without roadmap alignment
 - Legal or licensing debates inside pull requests
+- Abstraction layers that solve for hypothetical future extensibility
+- npm packaging or "install as a dependency" proposals
+- Multi-tenant SaaS features that complicate the single-studio deploy path
+- Plugin systems, middleware frameworks, or hook architectures not tied to a concrete operator need
 
-This doesn't mean these ideas are invalid. It means they require **discussion first**, not code.
+This doesn't mean these ideas are invalid. It means they require **discussion first**, not code. And some of them may simply not fit the project's direction — that's okay.
 
 ---
 
