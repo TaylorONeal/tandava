@@ -3,9 +3,16 @@
 ## Overview
 **Phase:** 1
 **Priority:** P1
-**Status:** Planned
+**Status:** In Progress (UI scaffolded, toggle implemented)
 **Owner:** TBD
 **Dependencies:** PRD-001 (Staff Portal)
+
+### Implementation Notes (Feb 2026)
+- **Tips are disabled by default** — studio owner must enable via Settings > Feature Settings toggle
+- When disabled: tips card, "Recent Tips" section, and tips line in earnings are all hidden from teacher dashboard and earnings page
+- Toggle lives in `ManageSettings.tsx` under "Feature Settings" card
+- Teacher dashboard checks `TIPS_ENABLED` constant (will be replaced with studio settings query when backend connected)
+- Teacher earnings page respects same flag for tips column visibility
 
 ---
 

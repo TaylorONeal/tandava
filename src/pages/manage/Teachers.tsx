@@ -20,6 +20,9 @@ import {
   Clock,
   Mail,
   Phone,
+  Users,
+  TrendingUp,
+  Repeat2,
 } from "lucide-react";
 
 interface Teacher {
@@ -39,6 +42,10 @@ interface Teacher {
   isActive: boolean;
   canSub: boolean;
   upcomingClasses: { name: string; day: string; time: string }[];
+  // Analytics
+  avgStudentsPerClass: number;
+  returnRate: number; // percentage of students who return to this teacher
+  totalStudentsTaught: number;
 }
 
 const mockTeachers: Teacher[] = [
@@ -47,6 +54,7 @@ const mockTeachers: Teacher[] = [
     specialties: ["Vinyasa", "Power Yoga"], certifications: ["E-RYT 500", "YACEP"],
     payType: "per_class", payRate: 7500, classesThisMonth: 22, earningsThisMonth: 165000,
     rating: 4.9, reviewCount: 312, isActive: true, canSub: true,
+    avgStudentsPerClass: 21.4, returnRate: 78, totalStudentsTaught: 1847,
     upcomingClasses: [
       { name: "Morning Vinyasa", day: "Mon/Wed/Fri", time: "7:00 AM" },
       { name: "Evening Vinyasa", day: "Mon/Wed", time: "6:00 PM" },
@@ -58,6 +66,7 @@ const mockTeachers: Teacher[] = [
     specialties: ["Hatha", "Ashtanga", "Yin"], certifications: ["RYT 200"],
     payType: "per_class", payRate: 6000, classesThisMonth: 16, earningsThisMonth: 96000,
     rating: 4.7, reviewCount: 189, isActive: true, canSub: true,
+    avgStudentsPerClass: 17.2, returnRate: 65, totalStudentsTaught: 1203,
     upcomingClasses: [
       { name: "Gentle Flow", day: "Mon/Wed", time: "9:30 AM" },
       { name: "Ashtanga Primary", day: "Tue/Thu", time: "12:00 PM" },
@@ -69,6 +78,7 @@ const mockTeachers: Teacher[] = [
     specialties: ["Vinyasa", "Power", "Hot Yoga"], certifications: ["E-RYT 500"],
     payType: "revenue_share", payRate: 40, classesThisMonth: 18, earningsThisMonth: 184000,
     rating: 4.8, reviewCount: 267, isActive: true, canSub: false,
+    avgStudentsPerClass: 23.1, returnRate: 82, totalStudentsTaught: 2156,
     upcomingClasses: [
       { name: "Power Yoga", day: "Mon/Thu", time: "12:00 PM" },
       { name: "Hot Vinyasa", day: "Tue/Thu", time: "9:00 AM" },
@@ -80,6 +90,7 @@ const mockTeachers: Teacher[] = [
     specialties: ["Yin", "Meditation", "Restorative"], certifications: ["RYT 500", "Yin Certified"],
     payType: "per_class", payRate: 6500, classesThisMonth: 12, earningsThisMonth: 78000,
     rating: 4.9, reviewCount: 198, isActive: true, canSub: true,
+    avgStudentsPerClass: 15.8, returnRate: 71, totalStudentsTaught: 967,
     upcomingClasses: [
       { name: "Sunrise Meditation", day: "Tue", time: "6:30 AM" },
       { name: "Yin Restore", day: "Mon/Wed", time: "4:30 PM" },
@@ -92,6 +103,7 @@ const mockTeachers: Teacher[] = [
     specialties: ["Ashtanga", "Vinyasa"], certifications: ["RYT 200"],
     payType: "per_class", payRate: 5500, classesThisMonth: 0, earningsThisMonth: 0,
     rating: 4.6, reviewCount: 87, isActive: false, canSub: true,
+    avgStudentsPerClass: 14.3, returnRate: 58, totalStudentsTaught: 412,
     upcomingClasses: [],
   },
 ];
@@ -189,18 +201,16 @@ export default function TeachersManage() {
                     {/* Stats */}
                     <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-border">
                       <div>
+                        <p className="text-xs text-muted-foreground">Avg Students</p>
+                        <p className="text-sm font-semibold">{teacher.avgStudentsPerClass}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Return Rate</p>
+                        <p className="text-sm font-semibold text-accent-sage">{teacher.returnRate}%</p>
+                      </div>
+                      <div>
                         <p className="text-xs text-muted-foreground">Classes/mo</p>
                         <p className="text-sm font-semibold">{teacher.classesThisMonth}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground">Earnings</p>
-                        <p className="text-sm font-semibold">
-                          ${(teacher.earningsThisMonth / 100).toLocaleString()}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground">Pay Rate</p>
-                        <p className="text-sm font-semibold">{formatPay(teacher)}</p>
                       </div>
                     </div>
                   </div>
@@ -281,6 +291,45 @@ export default function TeachersManage() {
                   <p className="text-xs text-muted-foreground">Rate</p>
                 </div>
               </div>
+
+              {/* Teacher Analytics */}
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-accent-sage" />
+                    Performance Analytics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-secondary/30">
+                    <div className="flex items-center gap-2">
+                      <Repeat2 className="h-4 w-4 text-accent-sage" />
+                      <span className="text-sm">Student Return Rate</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-sm font-bold text-accent-sage">{selectedTeacher.returnRate}%</span>
+                      <p className="text-[10px] text-muted-foreground">of students return</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-secondary/30">
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4 text-primary" />
+                      <span className="text-sm">Avg Students / Class</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-sm font-bold">{selectedTeacher.avgStudentsPerClass}</span>
+                      <p className="text-[10px] text-muted-foreground">per session</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-2.5 rounded-lg bg-secondary/30">
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">Total Students Taught</span>
+                    </div>
+                    <span className="text-sm font-bold">{selectedTeacher.totalStudentsTaught.toLocaleString()}</span>
+                  </div>
+                </CardContent>
+              </Card>
 
               {/* Schedule */}
               <Card>

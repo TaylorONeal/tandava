@@ -64,12 +64,13 @@ Visitors choose from 4 roles, each navigating to a role-specific area:
 
 | # | Flow | Entry Point | Steps | Status |
 |---|------|-------------|-------|--------|
-| 17 | **View teaching dashboard** | `/teach` | See upcoming classes, earnings summary, student stats | Working |
+| 17 | **View teaching dashboard** | `/teach` | See upcoming classes, check-in students via dialog, earnings summary | Working |
 | 18 | **Browse weekly schedule** | `/teach/schedule` | Navigate weeks, see class details, request sub | Working |
 | 19 | **Request a sub** | `/teach/schedule` | Select class -> Request Sub -> Enter reason -> Submit -> Toast | Working |
 | 20 | **Set availability** | `/teach/availability` | Toggle days, set time ranges, save -> Toast | Working |
 | 21 | **View earnings** | `/teach/earnings` | Browse pay periods, see per-class breakdown | Working |
 | 22 | **Edit profile** | `/teach/profile` | Edit bio, add/remove specialties, view certifications | Working |
+| 22b | **Check-in students** | `/teach` | Click "Check-in Students" on today's class -> Dialog with student list -> Click to toggle check-in -> Search students -> "Check All" button | Working |
 
 ### Front Desk Flows (23-24)
 
@@ -103,10 +104,15 @@ DemoProvider (tracks active role/persona)
 - Nothing persists across page reload — by design
 
 ### Role Switching
-- **DemoPanel** (floating side panel) allows switching roles at any time
+- **DemoRoleBar** (prominent sticky top bar, z-index 110) shows current role and enables instant switching
+- Shows current role with accent-colored badge (amber=Owner, blue=Instructor, violet=Front Desk, teal=Member)
+- One-click role switching buttons always visible
+- Green pulsing "DEMO" indicator + persona name
+- Only renders when `DEMO_MODE_ENABLED` is true
 - Switching calls `switchPersona(role)` in DemoContext + navigates to role destination
 - AuthContext syncs profile + permissions via useEffect
-- Memoized to prevent infinite re-render loops
+- Back links removed from all layouts — roles are parallel perspectives, not hierarchical
+- **DemoPanel** (floating side panel) still exists as secondary access
 
 ---
 
@@ -127,7 +133,7 @@ DemoProvider (tracks active role/persona)
 ### Student (AppLayout)
 | Route | Page | Key Features |
 |-------|------|-------------|
-| `/home` | Studio landing | Hero, locations, teachers, pricing, CTA |
+| `/home` | Studio landing | Compact hero, filterable today's schedule (location/style/mode), clickable teachers & styles, image carousel location cards, login-aware CTAs, inline streak stats |
 | `/schedule` | Class browser | Tabs (classes/workshops/appointments/retreats), filters, booking modal |
 | `/my-schedule` | My bookings | Upcoming/past tabs, cancel, rate |
 | `/account` | Account settings | Profile, membership, billing, preferences |
