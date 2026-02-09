@@ -11,13 +11,12 @@
  */
 
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
-  ChevronRight,
   ChevronLeft,
   Github,
   ExternalLink,
@@ -30,6 +29,7 @@ import {
   Code2,
   Rocket,
   X,
+  ShieldCheck,
 } from "lucide-react";
 import { useDemo, DEMO_MODE_ENABLED } from "@/contexts/DemoContext";
 import type { UserRole } from "@/types/database";
@@ -41,6 +41,7 @@ const ROLE_ICONS: Record<UserRole, typeof User> = {
   teacher: GraduationCap,
   front_desk: Users,
   student: User,
+  platform_admin: ShieldCheck,
 };
 
 const ROLE_COLORS: Record<UserRole, string> = {
@@ -49,93 +50,239 @@ const ROLE_COLORS: Record<UserRole, string> = {
   teacher: "bg-accent-sage/20 text-accent-sage border-accent-sage/30",
   front_desk: "bg-accent-coral/20 text-accent-coral border-accent-coral/30",
   student: "bg-accent-teal/20 text-[color:var(--accent-teal)] border-[color:var(--accent-teal)]/30",
+  platform_admin: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+};
+
+// Where each role should land when selected
+const ROLE_DESTINATIONS: Record<UserRole, string> = {
+  owner: "/manage",
+  admin: "/manage",
+  teacher: "/teach",
+  front_desk: "/manage",
+  student: "/home",
+  platform_admin: "/admin",
 };
 
 // Contextual descriptions for each page
 const PAGE_CONTEXT: Record<string, { title: string; description: string; techNote: string }> = {
   "/": {
-    title: "Student Home",
-    description: "The main landing page students see. Shows upcoming classes, stats, studios, and personalized recommendations.",
-    techNote: "Built with React components. Engagement nudges and newsletter signup are conditionally rendered based on user behavior data.",
+    title: "Demo Landing",
+    description: "Choose a role to explore the platform from different perspectives.",
+    techNote: "This is the demo entry point. In production, this would be the studio's public website.",
+  },
+  "/home": {
+    title: "Studio Home",
+    description: "The main landing page — today's classes, offerings, teachers, pricing, and locations.",
+    techNote: "Uses Oxatl Yoga demo data. Built from OXATL_SCHEDULE, OXATL_CLASS_TYPES, OXATL_TEACHERS, and OXATL_LOCATIONS.",
   },
   "/schedule": {
     title: "Class Schedule",
-    description: "Students browse, filter, and book classes here. Supports search by style, level, teacher, and time.",
-    techNote: "Schedule data comes from schedule_rules (recurring) and class_occurrences (individual). Filtering happens client-side for speed.",
+    description: "Browse, filter, and book classes. Shows classes, workshops, retreats, and private sessions.",
+    techNote: "Schedule data from schedule_rules (recurring) and class_occurrences (individual). BookingModal handles payment flow.",
+  },
+  "/my-schedule": {
+    title: "My Schedule",
+    description: "View upcoming and past bookings. Cancel bookings, rate past classes.",
+    techNote: "Bookings table with status: BOOKED, CHECKED_IN, CANCELED, NO_SHOW, WAITLISTED.",
   },
   "/community": {
     title: "Community & Stats",
-    description: "Practice tracking, friend connections, leaderboards. The gamification layer — designed to be energizing, not pushy.",
-    techNote: "Powered by engagement_profiles table. Streaks, milestones, and friend activity are computed server-side.",
+    description: "Practice stats, streaks, leaderboards, friend connections. Gamification layer for retention.",
+    techNote: "Powered by engagement_profiles table. Streaks, milestones, and friend activity computed server-side.",
   },
+  "/account": {
+    title: "Account Settings",
+    description: "Profile info, memberships, payment methods, billing history, notification preferences.",
+    techNote: "Profile stored in profiles table. Memberships link through member_memberships with entitlement tracking.",
+  },
+  "/on-demand": {
+    title: "On-Demand Library",
+    description: "Browse recorded classes by style, duration, and difficulty. Stream or download for offline.",
+    techNote: "Video content stored in Supabase Storage with streaming via signed URLs. Progress tracking per user.",
+  },
+  "/studios": {
+    title: "Studios",
+    description: "Browse studio locations with details, photos, and class schedules per location.",
+    techNote: "Studios and locations tables with RLS. Each location has rooms with capacity constraints.",
+  },
+  "/instructors": {
+    title: "Instructors",
+    description: "Meet the teaching team — bios, specialties, certifications, and schedules.",
+    techNote: "Teacher profiles with specialties array. Schedule pulls from class_occurrences by teacher_id.",
+  },
+  // ---------- Studio Management ----------
   "/manage": {
     title: "Management Dashboard",
-    description: "The owner/admin command center. Today's schedule, key metrics, alerts, and recent activity at a glance.",
-    techNote: "KPIs query analytics_daily for aggregated metrics. Alerts are computed from bookings, memberships, and class_occurrences.",
+    description: "The owner command center — today's schedule, KPIs, alerts, and recent activity at a glance.",
+    techNote: "KPIs from analytics_daily. Alerts computed from bookings, memberships, and class_occurrences.",
   },
   "/manage/schedule": {
     title: "Schedule Management",
-    description: "Manage recurring class rules, handle sub requests, cancel classes. The operational heart of the studio.",
-    techNote: "Uses schedule_rules for recurring patterns and class_occurrences for individual instances. Overrides don't change the rule.",
+    description: "Manage the weekly class schedule. Find subs, cancel classes, notify students.",
+    techNote: "Uses schedule_rules for recurring patterns, class_occurrences for instances. Overrides don't change the rule.",
   },
   "/manage/students": {
     title: "Student Management",
-    description: "Search and manage all students. View profiles, memberships, visit history, and engagement status.",
-    techNote: "Student list with RLS filtering by studio_id. Engagement profiles provide risk levels for retention management.",
+    description: "Search all students — profiles, memberships, visit history, engagement status, waivers.",
+    techNote: "Student list filtered by studio_id via RLS. Engagement profiles provide churn risk levels.",
+  },
+  "/manage/teachers": {
+    title: "Teacher Management",
+    description: "Manage instructor profiles, pay rates, availability, certifications, and performance.",
+    techNote: "Teacher profiles with pay_rate, specialties, certification tracking. Linked to schedule via teacher_id.",
+  },
+  "/manage/offerings": {
+    title: "Class Offerings",
+    description: "Define class types — names, descriptions, durations, levels, capacity, and colors.",
+    techNote: "Offerings table defines templates. class_occurrences reference offering_id for each scheduled class.",
   },
   "/manage/events": {
     title: "Events & Workshops",
-    description: "Create and manage workshops, trainings, retreats, and series. First-class event entities with tiered pricing.",
-    techNote: "Events are separate from regular classes — they have their own sessions, pricing tiers, and registration flow.",
+    description: "Create workshops, trainings, retreats, and series with tiered pricing and registration.",
+    techNote: "Events are separate from regular classes — own sessions, pricing tiers, and registration flow.",
   },
   "/manage/financials": {
     title: "Financials",
-    description: "Membership types, class packs, and transaction history. The financial backbone of studio operations.",
-    techNote: "Transactions table tracks all payments. Stripe Connect handles multi-tenant payment processing.",
+    description: "Membership types, class packs, transaction history. The financial backbone of the studio.",
+    techNote: "Transactions table tracks all payments. Stripe Connect handles payment processing.",
   },
   "/manage/analytics": {
     title: "Analytics Hub",
-    description: "The analytics home page. Provides a studio health score, benchmark comparisons, and routes to detailed dashboards.",
-    techNote: "Aggregates data from analytics_daily, engagement_profiles, mrr_snapshots, and clv_cohorts tables.",
+    description: "Studio health score, benchmark comparisons, and routes to detailed analytics dashboards.",
+    techNote: "Aggregates from analytics_daily, engagement_profiles, mrr_snapshots, and clv_cohorts.",
   },
   "/manage/settings": {
     title: "Studio Settings",
-    description: "Configure studio info, locations, policies, branding, payment processing, and notifications.",
-    techNote: "Settings are stored on the studios table. Theme customization uses CSS custom properties that override the base theme.",
+    description: "Configure studio info, locations, rooms, policies, branding, and integrations.",
+    techNote: "Settings stored on studios table. Theme customization uses CSS custom properties.",
   },
   "/manage/import": {
     title: "Data Import",
-    description: "Migrate data from another platform using CSV with intelligent column mapping and data quality checks.",
-    techNote: "Import connectors recognize common column layouts. Dry-run mode validates without saving. Duplicates matched by email.",
+    description: "Migrate from another platform via CSV — intelligent column mapping and data quality checks.",
+    techNote: "Import connectors recognize MindBody, Momence, Walla layouts. Dry-run mode validates first.",
   },
   "/manage/onboarding": {
     title: "Studio Onboarding",
-    description: "Guided setup wizard with three paths: Fresh Start, Import & Setup, and Quick Launch. Can run in test mode.",
-    techNote: "Progress tracked in studio_onboarding table. All steps are skippable and revisitable. Saves progress automatically.",
+    description: "Guided setup wizard — Fresh Start, Import & Setup, or Quick Launch paths.",
+    techNote: "Progress in studio_onboarding table. All steps skippable and revisitable.",
+  },
+  "/manage/products": {
+    title: "Products",
+    description: "Retail products — mats, props, merchandise. Track inventory and sales.",
+    techNote: "Products table with variants, pricing, and inventory levels per location.",
+  },
+  "/manage/inventory": {
+    title: "Inventory",
+    description: "Track product stock levels across locations. Low-stock alerts and reorder points.",
+    techNote: "Inventory tracked per location. Purchase orders link to vendors for restocking.",
+  },
+  "/manage/reports": {
+    title: "Reports",
+    description: "Generate detailed reports — attendance, revenue, teacher performance, retention.",
+    techNote: "Reports query analytics_daily and transaction tables with date range filtering.",
+  },
+  "/manage/promo-codes": {
+    title: "Promo Codes",
+    description: "Create and manage promotional codes for discounts on memberships and class packs.",
+    techNote: "Promo codes with usage limits, expiry dates, and percentage or fixed amount discounts.",
+  },
+  "/manage/campaigns": {
+    title: "Campaigns",
+    description: "Email and SMS marketing campaigns to reach students with announcements and promotions.",
+    techNote: "Campaign builder with audience segmentation, scheduling, and delivery tracking.",
+  },
+  "/manage/tasks": {
+    title: "Tasks",
+    description: "Studio task management — assign and track operational to-dos for your team.",
+    techNote: "Simple task system with assignment, due dates, and completion tracking.",
+  },
+  "/manage/sms-inbox": {
+    title: "SMS Inbox",
+    description: "Two-way SMS messaging with students. Send reminders, respond to questions.",
+    techNote: "SMS via Twilio integration. Messages stored with conversation threading.",
+  },
+  "/manage/landing-pages": {
+    title: "Landing Pages",
+    description: "Create custom landing pages for promotions, events, and seasonal campaigns.",
+    techNote: "Simple page builder with configurable sections, images, and CTAs.",
+  },
+  "/manage/utm-builder": {
+    title: "UTM Builder",
+    description: "Generate UTM-tagged links for tracking marketing campaign effectiveness.",
+    techNote: "Generates UTM parameters for Google Analytics tracking. Stores link history.",
+  },
+  "/manage/notification-settings": {
+    title: "Notification Settings",
+    description: "Configure which notifications to receive and how — email, SMS, or in-app.",
+    techNote: "Notification preferences per user. Provider-agnostic: Resend, SendGrid, SMTP, or console.",
+  },
+  // ---------- Teacher Portal ----------
+  "/teach": {
+    title: "Teacher Dashboard",
+    description: "Your teaching overview — today's classes with check-in, upcoming schedule, tips, and sub requests.",
+    techNote: "Filtered by teacher's profile_id. Shows only their classes and earnings.",
+  },
+  "/teach/schedule": {
+    title: "Teaching Schedule",
+    description: "Your full class schedule — upcoming and past classes with enrollment numbers.",
+    techNote: "class_occurrences filtered by teacher_id. Shows booked/capacity for each class.",
+  },
+  "/teach/subs": {
+    title: "Sub Management",
+    description: "Request subs for your classes or pick up open sub opportunities from other teachers.",
+    techNote: "Sub requests table with status tracking. Available subs matched by specialty.",
+  },
+  "/teach/earnings": {
+    title: "Earnings",
+    description: "Track your pay — base rate, tips, sub classes. Pay period summaries and history.",
+    techNote: "Earnings calculated from class_occurrences with teacher pay rates plus tip allocations.",
+  },
+  "/teach/availability": {
+    title: "Availability",
+    description: "Set your weekly availability and time-off requests for scheduling.",
+    techNote: "Availability stored as recurring patterns. Time-off requests go to studio owner for approval.",
+  },
+  "/teach/profile": {
+    title: "Teacher Profile",
+    description: "Edit your public teacher profile — bio, specialties, certifications, and photo.",
+    techNote: "Teacher profile data visible on the public Instructors page.",
+  },
+  // ---------- Platform Admin ----------
+  "/admin": {
+    title: "Platform Admin",
+    description: "Platform-wide administration — manage studios, users, billing, and system settings.",
+    techNote: "Platform admin bypasses studio RLS to access all data. Separated from studio management.",
   },
 };
 
 export function DemoPanel() {
-  // Don't render anything if demo mode is off
   if (!DEMO_MODE_ENABLED) return null;
-
   return <DemoPanelInner />;
 }
 
 function DemoPanelInner() {
   const { activePersona, personas, switchPersona, panelOpen, setPanelOpen } = useDemo();
   const location = useLocation();
+  const navigate = useNavigate();
   const [showTechNotes, setShowTechNotes] = useState(false);
 
   // Find the best matching page context
   const currentPath = location.pathname;
   const pageContext = PAGE_CONTEXT[currentPath] ??
-    Object.entries(PAGE_CONTEXT).find(([path]) =>
-      currentPath.startsWith(path) && path !== "/"
-    )?.[1] ??
+    Object.entries(PAGE_CONTEXT)
+      .filter(([path]) => path !== "/")
+      .sort((a, b) => b[0].length - a[0].length) // longest match first
+      .find(([path]) => currentPath.startsWith(path))?.[1] ??
     { title: "Page", description: "Explore this section of the platform.", techNote: "Check the source code for implementation details." };
 
-  const RoleIcon = ROLE_ICONS[activePersona.role];
+  const RoleIcon = ROLE_ICONS[activePersona.role] ?? User;
+
+  // Handle role switch — update demo context AND navigate to the role's home
+  const handleRoleSwitch = (role: UserRole) => {
+    switchPersona(role);
+    const destination = ROLE_DESTINATIONS[role] ?? "/home";
+    navigate(destination);
+  };
 
   if (!panelOpen) {
     return (
@@ -145,7 +292,7 @@ function DemoPanelInner() {
         title="Open demo panel"
       >
         <ChevronLeft className="h-4 w-4" />
-        <span className="text-[10px] font-bold tracking-wider writing-mode-vertical" style={{ writingMode: 'vertical-rl' }}>
+        <span className="text-[10px] font-bold tracking-wider" style={{ writingMode: 'vertical-rl' }}>
           DEMO
         </span>
       </button>
@@ -180,16 +327,16 @@ function DemoPanelInner() {
           </p>
           <div className="space-y-1.5">
             {personas.map((persona) => {
-              const Icon = ROLE_ICONS[persona.role];
+              const Icon = ROLE_ICONS[persona.role] ?? User;
               const isActive = persona.role === activePersona.role;
               return (
                 <button
                   key={persona.role}
-                  onClick={() => switchPersona(persona.role)}
+                  onClick={() => handleRoleSwitch(persona.role)}
                   className={cn(
                     "flex items-center gap-3 w-full p-2.5 rounded-xl text-left transition-all text-sm",
                     isActive
-                      ? `border ${ROLE_COLORS[persona.role]}`
+                      ? `border ${ROLE_COLORS[persona.role] ?? "border-border"}`
                       : "hover:bg-secondary text-muted-foreground hover:text-foreground"
                   )}
                 >

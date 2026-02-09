@@ -97,12 +97,13 @@ const App = () => (
               <BrowserRouter>
                 <DemoPanel />
                 <Routes>
-                  {/* ---- Public pages ---- */}
+                  {/* ---- Demo landing page (role picker) ---- */}
+                  <Route path="/" element={<Demo />} />
                   <Route path="/demo" element={<Demo />} />
                   <Route path="/open-source" element={<OpenSource />} />
 
                   {/* ---- Student-facing routes ---- */}
-                  <Route path="/" element={<Index />} />
+                  <Route path="/home" element={<Index />} />
                   <Route path="/schedule" element={<Schedule />} />
                   <Route path="/studios" element={<Studios />} />
                   <Route path="/studios/:id" element={<StudioDetail />} />

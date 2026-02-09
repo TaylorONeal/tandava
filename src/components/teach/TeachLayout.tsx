@@ -41,7 +41,7 @@ const teachNavigation = [
 
 export function TeachLayout({ children }: TeachLayoutProps) {
   const location = useLocation();
-  const { user } = useAuth();
+  const { profile } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const isActive = (href: string) => {
@@ -49,9 +49,8 @@ export function TeachLayout({ children }: TeachLayoutProps) {
     return location.pathname.startsWith(href);
   };
 
-  const profileName = user?.profile
-    ? `${user.profile.first_name} ${user.profile.last_name}`
-    : "Instructor";
+  const profileName = profile?.display_name
+    || (profile ? `${profile.first_name} ${profile.last_name}` : "Instructor");
 
   const initials = profileName
     .split(" ")
@@ -78,7 +77,7 @@ export function TeachLayout({ children }: TeachLayoutProps) {
               )}
             </Button>
             <Link
-              to="/"
+              to="/home"
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -112,7 +111,7 @@ export function TeachLayout({ children }: TeachLayoutProps) {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                   <Avatar className="h-9 w-9 border-2 border-accent-sage/20">
-                    <AvatarImage src={user?.profile.avatar_url ?? undefined} />
+                    <AvatarImage src={profile?.avatar_url ?? undefined} />
                     <AvatarFallback className="bg-accent-sage/20 text-foreground text-xs font-semibold">
                       {initials}
                     </AvatarFallback>
@@ -174,7 +173,7 @@ export function TeachLayout({ children }: TeachLayoutProps) {
             <div className="p-3 mb-2 rounded-xl bg-secondary/50">
               <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={user?.profile.avatar_url ?? undefined} />
+                  <AvatarImage src={profile?.avatar_url ?? undefined} />
                   <AvatarFallback className="bg-accent-sage/20 text-foreground text-sm font-semibold">
                     {initials}
                   </AvatarFallback>

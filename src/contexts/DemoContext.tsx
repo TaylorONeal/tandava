@@ -20,7 +20,7 @@
  * wrapper in App.tsx.
  */
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react';
 import type { UserRole, Profile, Studio } from '@/types/database';
 import {
   OXATL_STUDIO,
@@ -164,8 +164,14 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const [tourStep, setTourStep] = useState<number | null>(null);
   const [panelOpen, setPanelOpen] = useState(DEMO_MODE_ENABLED);
 
-  const activePersona = DEMO_PERSONAS.find(p => p.role === activeRole) ?? DEMO_PERSONAS[0];
-  const activeProfile = getProfileForPersona(activePersona);
+  const activePersona = useMemo(
+    () => DEMO_PERSONAS.find(p => p.role === activeRole) ?? DEMO_PERSONAS[0],
+    [activeRole]
+  );
+  const activeProfile = useMemo(
+    () => getProfileForPersona(activePersona),
+    [activePersona]
+  );
 
   const switchPersona = useCallback((role: UserRole) => {
     setActiveRole(role);

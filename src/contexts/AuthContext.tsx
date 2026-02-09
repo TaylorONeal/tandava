@@ -4,6 +4,7 @@ import type { AuthUser, AuthError } from "@/lib/backend";
 import type { Profile } from "@/types/database";
 import type { Permission } from "@/types/roles";
 import { getPermissionsForUserRole } from "@/types/roles";
+import { useDemo } from "@/contexts/DemoContext";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -30,53 +31,41 @@ interface AuthContextValue extends AuthState {
 }
 
 // ---------------------------------------------------------------------------
-// Demo mode fallback (when backend is not configured)
-// ---------------------------------------------------------------------------
-const DEMO_PROFILE: Profile = {
-  id: "demo-user-id",
-  email: "sarah@example.com",
-  first_name: "Sarah",
-  last_name: "Chen",
-  display_name: "Sarah Chen",
-  avatar_url: null,
-  role: "owner",
-  phone: null,
-  bio: "Studio owner and lead instructor.",
-  date_of_birth: null,
-  pronouns: null,
-  emergency_contact_name: null,
-  emergency_contact_phone: null,
-  specialties: [],
-  certifications: [],
-  instagram_handle: null,
-  website: null,
-  marketing_consent: false,
-  onboarding_completed: true,
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
-};
-
-// ---------------------------------------------------------------------------
 // Context
 // ---------------------------------------------------------------------------
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const isDemoMode = !isBackendConfigured();
+  const demo = useDemo();
+  const isDemoMode = demo.isDemoMode || !isBackendConfigured();
 
   const [state, setState] = useState<AuthState>({
     user: null,
-    profile: isDemoMode ? DEMO_PROFILE : null,
-    permissions: isDemoMode ? getPermissionsForUserRole(DEMO_PROFILE.role) : [],
+    profile: isDemoMode ? { ...demo.activeProfile, role: demo.activePersona.role } : null,
+    permissions: isDemoMode ? getPermissionsForUserRole(demo.activePersona.role) : [],
     isLoading: !isDemoMode,
     isDemoMode,
   });
 
   // -----------------------------------------------------------------------
-  // Fetch user profile
+  // Sync auth state with demo persona changes
+  // When user switches role in DemoPanel, update profile + permissions
+  // -----------------------------------------------------------------------
+  useEffect(() => {
+    if (!isDemoMode) return;
+    setState((prev) => ({
+      ...prev,
+      profile: { ...demo.activeProfile, role: demo.activePersona.role },
+      permissions: getPermissionsForUserRole(demo.activePersona.role),
+    }));
+    // demo.activeProfile is memoized in DemoContext
+  }, [isDemoMode, demo.activePersona.role, demo.activeProfile]);
+
+  // -----------------------------------------------------------------------
+  // Fetch user profile (production mode only)
   // -----------------------------------------------------------------------
   const fetchProfile = useCallback(async (userId: string): Promise<Profile | null> => {
-    if (isDemoMode) return DEMO_PROFILE;
+    if (isDemoMode) return { ...demo.activeProfile, role: demo.activePersona.role };
 
     const { data: profile, error } = await data.getProfile(userId);
 
@@ -85,7 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return null;
     }
     return profile;
-  }, [isDemoMode]);
+  }, [isDemoMode, demo.activeProfile, demo.activePersona.role]);
 
   const refreshProfile = useCallback(async () => {
     const userId = state.user?.id;
@@ -102,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [state.user?.id, fetchProfile]);
 
   // -----------------------------------------------------------------------
-  // Auth state listener
+  // Auth state listener (production mode only)
   // -----------------------------------------------------------------------
   useEffect(() => {
     if (isDemoMode) return;
@@ -155,10 +144,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Auth methods
   // -----------------------------------------------------------------------
   const signInWithEmail = async (email: string, password: string) => {
-    if (isDemoMode) {
-      setState((prev) => ({ ...prev, profile: DEMO_PROFILE, permissions: getPermissionsForUserRole(DEMO_PROFILE.role) }));
-      return { error: null };
-    }
+    if (isDemoMode) return { error: null };
     const { error } = await auth.signInWithEmail(email, password);
     return { error };
   };
@@ -174,19 +160,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signInWithGoogle = async () => {
-    if (isDemoMode) {
-      setState((prev) => ({ ...prev, profile: DEMO_PROFILE, permissions: getPermissionsForUserRole(DEMO_PROFILE.role) }));
-      return { error: null };
-    }
+    if (isDemoMode) return { error: null };
     const { error } = await auth.signInWithOAuth("google");
     return { error };
   };
 
   const signOut = async () => {
-    if (isDemoMode) {
-      setState((prev) => ({ ...prev, profile: null, permissions: [], user: null }));
-      return;
-    }
+    if (isDemoMode) return;
     await auth.signOut();
   };
 

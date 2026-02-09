@@ -22,6 +22,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface BookingItem {
   id: string;
@@ -233,6 +234,11 @@ function BookingCard({
 const MySchedule = () => {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<BookingItem | null>(null);
+  const [canceledIds, setCanceledIds] = useState<Set<string>>(new Set());
+  const [ratedIds, setRatedIds] = useState<Set<string>>(new Set());
+  const { toast } = useToast();
+
+  const activeUpcoming = upcomingBookings.filter((b) => !canceledIds.has(b.id));
 
   const handleCancelClick = (id: string) => {
     const booking = [...upcomingBookings, ...pastBookings].find((b) => b.id === id);
@@ -243,13 +249,23 @@ const MySchedule = () => {
   };
 
   const handleConfirmCancel = () => {
-    console.log("Canceling booking:", selectedBooking?.id);
+    if (!selectedBooking) return;
+    setCanceledIds((prev) => new Set(prev).add(selectedBooking.id));
+    toast({
+      title: "Booking canceled",
+      description: `Your ${selectedBooking.title} booking has been canceled. No fee applied.`,
+    });
     setCancelDialogOpen(false);
     setSelectedBooking(null);
   };
 
   const handleRate = (id: string) => {
-    console.log("Rating booking:", id);
+    setRatedIds((prev) => new Set(prev).add(id));
+    const booking = pastBookings.find((b) => b.id === id);
+    toast({
+      title: "Thanks for your feedback!",
+      description: `You rated ${booking?.title ?? "this class"}. Your teacher appreciates it.`,
+    });
   };
 
   return (
@@ -267,7 +283,7 @@ const MySchedule = () => {
         <Tabs defaultValue="upcoming" className="w-full">
           <TabsList className="grid w-full sm:w-auto grid-cols-2 sm:inline-grid">
             <TabsTrigger value="upcoming" className="px-8">
-              Upcoming ({upcomingBookings.length})
+              Upcoming ({activeUpcoming.length})
             </TabsTrigger>
             <TabsTrigger value="past" className="px-8">
               Past
@@ -275,9 +291,9 @@ const MySchedule = () => {
           </TabsList>
 
           <TabsContent value="upcoming" className="mt-6">
-            {upcomingBookings.length > 0 ? (
+            {activeUpcoming.length > 0 ? (
               <div className="space-y-4">
-                {upcomingBookings.map((booking) => (
+                {activeUpcoming.map((booking) => (
                   <BookingCard
                     key={booking.id}
                     booking={booking}

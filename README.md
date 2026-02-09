@@ -227,9 +227,9 @@ See [docs/ROADMAP.md](docs/ROADMAP.md) for the full roadmap.
 
 ## License
 
-Tandava is open source. License type is being finalized. See [LICENSE](LICENSE) for current status.
+Tandava is licensed under the [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0).
 
-For studios running Tandava for their own use, there are no restrictions beyond standard open-source norms. You own your data and control your deployment.
+For studios running Tandava for their own use, you own your data and control your deployment. If you modify the source and make it available over a network, you must share your modifications under the same license.
 
 ---
 

@@ -107,12 +107,19 @@ export default function ScheduleManage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [subDialogOpen, setSubDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [addClassDialogOpen, setAddClassDialogOpen] = useState(false);
   const [selectedClass, setSelectedClass] = useState<ClassOccurrence | null>(null);
   const [selectedSub, setSelectedSub] = useState("");
   const [notifyStudents, setNotifyStudents] = useState(true);
+  const [schedule, setSchedule] = useState(mockSchedule);
+  const [newClassName, setNewClassName] = useState("");
+  const [newClassTime, setNewClassTime] = useState("");
+  const [newClassTeacher, setNewClassTeacher] = useState("");
+  const [newClassStyle, setNewClassStyle] = useState("");
+  const [newClassRecurring, setNewClassRecurring] = useState(true);
   const { toast } = useToast();
 
-  const classes = mockSchedule[selectedDay] || [];
+  const classes = schedule[selectedDay] || [];
   const filteredClasses = classes.filter(
     (c) =>
       c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -133,12 +140,66 @@ export default function ScheduleManage() {
 
   const handleCancel = () => {
     if (!selectedClass) return;
+    // Mark class as cancelled in local state
+    setSchedule((prev) => ({
+      ...prev,
+      [selectedDay]: prev[selectedDay].map((cls) =>
+        cls.id === selectedClass.id ? { ...cls, isCancelled: true } : cls
+      ),
+    }));
     toast({
       title: "Class cancelled",
       description: `${selectedClass.name} at ${selectedClass.time} has been cancelled. ${notifyStudents ? `${selectedClass.booked} students notified.` : ""}`,
     });
     setCancelDialogOpen(false);
     setSelectedClass(null);
+  };
+
+  const handleAddClass = () => {
+    if (!newClassName || !newClassTime || !newClassTeacher) return;
+    const newId = `new-${Date.now()}`;
+    const teacher = availableSubs.find((t) => t.id === newClassTeacher);
+    const endTime = (() => {
+      const [time, period] = newClassTime.split(" ");
+      const [h, m] = time.split(":").map(Number);
+      const hour24 = period === "PM" && h !== 12 ? h + 12 : period === "AM" && h === 12 ? 0 : h;
+      const endHour = hour24 + 1;
+      const endPeriod = endHour >= 12 ? "PM" : "AM";
+      const endH12 = endHour > 12 ? endHour - 12 : endHour === 0 ? 12 : endHour;
+      return `${endH12}:${String(m).padStart(2, "0")} ${endPeriod}`;
+    })();
+    const newClass: ClassOccurrence = {
+      id: newId,
+      name: newClassName,
+      style: newClassStyle || "Vinyasa",
+      teacher: teacher?.name || "TBD",
+      time: newClassTime,
+      endTime,
+      room: "Main Studio",
+      location: "SOMA",
+      capacity: 25,
+      booked: 0,
+      waitlisted: 0,
+      checkedIn: 0,
+      isCancelled: false,
+      isSubbed: false,
+    };
+    setSchedule((prev) => ({
+      ...prev,
+      [selectedDay]: [...(prev[selectedDay] || []), newClass].sort((a, b) =>
+        a.time.localeCompare(b.time)
+      ),
+    }));
+    toast({
+      title: "Class added",
+      description: `${newClassName} at ${newClassTime} with ${teacher?.name || "TBD"}${newClassRecurring ? " — recurring weekly on " + selectedDay : ""}`,
+    });
+    setAddClassDialogOpen(false);
+    setNewClassName("");
+    setNewClassTime("");
+    setNewClassTeacher("");
+    setNewClassStyle("");
+    setNewClassRecurring(true);
   };
 
   return (
@@ -150,7 +211,7 @@ export default function ScheduleManage() {
             <h1 className="text-2xl font-bold tracking-tight">Schedule</h1>
             <p className="text-sm text-muted-foreground mt-1">Manage classes, subs, and cancellations</p>
           </div>
-          <Button size="sm">
+          <Button size="sm" onClick={() => setAddClassDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Add Class
           </Button>
@@ -402,6 +463,92 @@ export default function ScheduleManage() {
             </Button>
             <Button variant="destructive" onClick={handleCancel}>
               Cancel Class
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Class Dialog */}
+      <Dialog open={addClassDialogOpen} onOpenChange={setAddClassDialogOpen}>
+        <DialogContent className="sm:max-w-md rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>Add Class to Schedule</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="p-3 rounded-xl bg-primary/5 border border-primary/20">
+              <p className="text-sm font-medium">Adding to: <span className="font-semibold">{selectedDay}</span></p>
+              <p className="text-xs text-muted-foreground mt-0.5">This class will appear in the weekly schedule</p>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Class Name</label>
+              <Input
+                placeholder="e.g. Morning Vinyasa"
+                value={newClassName}
+                onChange={(e) => setNewClassName(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Time</label>
+              <Select value={newClassTime} onValueChange={setNewClassTime}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select time..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {["6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "9:30 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "4:30 PM", "5:00 PM", "5:30 PM", "6:00 PM", "7:00 PM", "7:30 PM"].map((t) => (
+                    <SelectItem key={t} value={t}>{t}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Teacher</label>
+              <Select value={newClassTeacher} onValueChange={setNewClassTeacher}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a teacher..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableSubs.map((teacher) => (
+                    <SelectItem key={teacher.id} value={teacher.id}>
+                      {teacher.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Style</label>
+              <Select value={newClassStyle} onValueChange={setNewClassStyle}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select style..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {["Vinyasa", "Hatha", "Power", "Yin", "Restorative", "Ashtanga", "Meditation", "Hot"].map((s) => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={newClassRecurring}
+                onChange={(e) => setNewClassRecurring(e.target.checked)}
+                className="rounded"
+              />
+              Recurring weekly on {selectedDay}
+            </label>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddClassDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddClass} disabled={!newClassName || !newClassTime || !newClassTeacher}>
+              Add Class
             </Button>
           </DialogFooter>
         </DialogContent>

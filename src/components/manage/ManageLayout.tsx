@@ -68,7 +68,7 @@ const manageNavigation = [
 
 export function ManageLayout({ children }: ManageLayoutProps) {
   const location = useLocation();
-  const { user } = useAuth();
+  const { profile } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const isActive = (href: string) => {
@@ -76,9 +76,8 @@ export function ManageLayout({ children }: ManageLayoutProps) {
     return location.pathname.startsWith(href);
   };
 
-  const profileName = user?.profile
-    ? `${user.profile.first_name} ${user.profile.last_name}`
-    : "Studio Admin";
+  const profileName = profile?.display_name
+    || (profile ? `${profile.first_name} ${profile.last_name}` : "Studio Admin");
 
   const initials = profileName.split(" ").map((n) => n[0]).join("").toUpperCase();
 
@@ -96,7 +95,7 @@ export function ManageLayout({ children }: ManageLayoutProps) {
             >
               {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
-            <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/home" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
               <ChevronLeft className="h-4 w-4" />
               <span className="text-sm hidden sm:inline">Student View</span>
             </Link>
@@ -124,7 +123,7 @@ export function ManageLayout({ children }: ManageLayoutProps) {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                   <Avatar className="h-9 w-9 border-2 border-primary/20">
-                    <AvatarImage src={user?.profile.avatar_url ?? undefined} />
+                    <AvatarImage src={profile?.avatar_url ?? undefined} />
                     <AvatarFallback className="bg-primary/20 text-foreground text-xs font-semibold">
                       {initials}
                     </AvatarFallback>

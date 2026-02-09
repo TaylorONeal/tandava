@@ -140,7 +140,7 @@ const ROLE_CARDS: RoleCardConfig[] = [
     description: 'Browse classes, book sessions, manage your membership, and track your practice journey.',
     features: ['Browse Schedule', 'Book Classes', 'On-Demand Library', 'Practice Stats', 'Community'],
     gradient: 'from-teal-600 to-teal-700',
-    destination: '/',
+    destination: '/home',
   },
 ];
 
