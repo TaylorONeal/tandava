@@ -38,24 +38,21 @@
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Visible while React loads. Replaced on mount. -->
+      <div id="app-loading" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f0a14;color:#f5f0e8;font-family:'DM Sans',sans-serif">
+        <div style="text-align:center">
+          <p style="font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:0.5rem">Tandava</p>
+          <p style="opacity:0.6;font-size:0.875rem">Loading...</p>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // GitHub Pages SPA route restoration
-      // When 404.html redirects, it encodes the original path as a query param
-      (function(l) {
-        if (l.search[1] === '/') {
-          var decoded = l.search.slice(1).split('&').map(function(s) {
-            return s.replace(/~and~/g, '&')
-          }).join('?');
-          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
-        }
-      }(window.location));
-
       // Register service worker for PWA support
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('./sw.js').catch(function() {});
+          navigator.serviceWorker.register('/sw.js').catch(function() {});
         });
       }
     </script>

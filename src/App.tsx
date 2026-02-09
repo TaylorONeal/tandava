@@ -10,6 +10,47 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AuthCallback } from "@/components/auth/AuthCallback";
 import { DemoPanel } from "@/components/DemoPanel";
+import { Component, type ErrorInfo, type ReactNode } from "react";
+
+// ---------------------------------------------------------------------------
+// Error Boundary — shows the crash instead of a black screen
+// ---------------------------------------------------------------------------
+class AppErrorBoundary extends Component<
+  { children: ReactNode },
+  { error: Error | null }
+> {
+  state = { error: null as Error | null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("[Tandava] Render crash:", error, info.componentStack);
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0f0a14", color: "#f5f0e8", fontFamily: "'DM Sans', sans-serif", padding: "2rem" }}>
+          <div style={{ maxWidth: "32rem", textAlign: "center" }}>
+            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "2rem", marginBottom: "1rem" }}>Something went wrong</h1>
+            <p style={{ opacity: 0.7, marginBottom: "1.5rem" }}>Tandava encountered an error during startup.</p>
+            <pre style={{ textAlign: "left", background: "rgba(255,255,255,0.05)", padding: "1rem", borderRadius: "0.5rem", fontSize: "0.75rem", overflow: "auto", maxHeight: "12rem", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+              {this.state.error.message}
+              {"\n\n"}
+              {this.state.error.stack}
+            </pre>
+            <button onClick={() => window.location.reload()} style={{ marginTop: "1.5rem", padding: "0.5rem 1.5rem", background: "#4fd1c5", color: "#0f0a14", border: "none", borderRadius: "0.375rem", cursor: "pointer", fontWeight: 600 }}>
+              Reload
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // Student-facing pages
 import Index from "./pages/Index";
@@ -92,6 +133,7 @@ import AdminSettings from "./pages/admin/AdminSettings";
 const queryClient = new QueryClient();
 
 const App = () => (
+  <AppErrorBoundary>
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <DemoProvider>
@@ -196,6 +238,7 @@ const App = () => (
       </DemoProvider>
     </QueryClientProvider>
   </HelmetProvider>
+  </AppErrorBoundary>
 );
 
 export default App;
