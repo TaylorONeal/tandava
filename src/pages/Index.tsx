@@ -2,358 +2,303 @@ import { Link } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { organizationSchema, websiteSchema } from "@/lib/structured-data";
-import { StatCard } from "@/components/stats/StatCard";
-import { ClassCard } from "@/components/schedule/ClassCard";
-import { StudioCard } from "@/components/studio/StudioCard";
-import { InstructorCard } from "@/components/instructor/InstructorCard";
-import { EngagementNudge } from "@/components/EngagementNudge";
-import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
 import {
-  Activity,
+  OXATL_STUDIO,
+  OXATL_LOCATIONS,
+  OXATL_TEACHERS,
+  OXATL_CLASS_TYPES,
+  OXATL_SCHEDULE,
+} from "@/data/demo";
+import {
   Calendar,
   Clock,
-  Flame,
-  TrendingUp,
-  ChevronRight,
-  Sun,
-  Moon,
-  Sunrise,
-  Search,
   MapPin,
-  Plane,
+  Users,
+  ChevronRight,
+  ArrowRight,
+  Mail,
+  Phone,
+  Sparkles,
 } from "lucide-react";
 
-// Mock data
-const stats = {
-  classesThisWeek: 4,
-  classesThisMonth: 12,
-  minutesPracticed: 540,
-  currentStreak: 8,
-  longestStreak: 21,
-  topStyle: "Vinyasa",
-  favoriteTeacher: "Maya Johnson",
-  peakTime: "Morning",
-};
+// Build today's schedule from demo data
+const DAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const;
+const today = DAYS[new Date().getDay()];
 
-const featuredStudios = [
-  {
-    id: "s1",
-    name: "Lotus Flow Studio",
-    description: "A tranquil sanctuary in the heart of downtown offering vinyasa, yin, and meditation classes.",
-    imageUrl: "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80",
-    location: { neighborhood: "Downtown", city: "San Francisco" },
-    rating: 4.9,
-    reviewCount: 342,
-    styles: ["Vinyasa", "Yin"],
-    classesToday: 12,
-  },
-  {
-    id: "s2",
-    name: "Hot Yoga Collective",
-    description: "Heated classes in a modern industrial space. Challenging flows and deep stretches.",
-    imageUrl: "https://images.unsplash.com/photo-1603988363607-e1e4a66962c6?w=800&q=80",
-    location: { neighborhood: "SoMa", city: "San Francisco" },
-    rating: 4.8,
-    reviewCount: 218,
-    styles: ["Hot Yoga", "Power"],
-    classesToday: 8,
-  },
-  {
-    id: "s3",
-    name: "Zen Garden Yoga",
-    description: "Traditional yoga practices with meditation and breathwork in a serene garden setting.",
-    imageUrl: "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=800&q=80",
-    location: { neighborhood: "Pacific Heights", city: "San Francisco" },
-    rating: 4.9,
-    reviewCount: 156,
-    styles: ["Hatha", "Meditation"],
-    classesToday: 6,
-  },
-];
+const todaysClasses = OXATL_SCHEDULE
+  .filter((slot) => slot.day === today)
+  .sort((a, b) => a.time.localeCompare(b.time))
+  .slice(0, 6)
+  .map((slot) => {
+    const classType = OXATL_CLASS_TYPES.find((c) => c.id === slot.class_type_id);
+    const teacher = OXATL_TEACHERS.find((t) => t.profile.id === slot.teacher_id);
+    const location = OXATL_LOCATIONS.find((l) => l.id === slot.location_id);
+    return { ...slot, classType, teacher, location };
+  });
 
-const topInstructors = [
-  {
-    id: "t1",
-    name: "Maya Johnson",
-    bio: "E-RYT 500 specializing in dynamic vinyasa and arm balances. 15+ years teaching experience.",
-    specialties: ["Vinyasa", "Inversions", "Arm Balances"],
-    rating: 4.9,
-    reviewCount: 456,
-    classCount: 2340,
-    studios: ["Lotus Flow Studio", "Hot Yoga Collective"],
-  },
-  {
-    id: "t2",
-    name: "David Park",
-    bio: "Yin yoga and meditation teacher. Trained in Thailand with a focus on mindfulness and stillness.",
-    specialties: ["Yin", "Meditation", "Restorative"],
-    rating: 4.8,
-    reviewCount: 312,
-    classCount: 1890,
-    studios: ["Lotus Flow Studio", "Zen Garden Yoga"],
-  },
-];
+const featuredTeachers = OXATL_TEACHERS.slice(0, 6);
 
-const upcomingClass = {
-  id: "1",
-  title: "Power Vinyasa Flow",
-  style: "Vinyasa",
-  level: "INTERMEDIATE" as const,
-  isHeated: true,
-  teacher: { name: "Maya Johnson", avatar: "" },
-  startTime: "Today, 6:00 PM",
-  duration: 60,
-  location: "Lotus Flow Studio",
-  spotsLeft: 4,
-  capacity: 20,
-};
-
-const featuredRetreats = [
-  {
-    destination: "Bali",
-    country: "Indonesia",
-    title: "7-Day Transformation",
-    price: 2499,
-    imageUrl: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80",
-  },
-  {
-    destination: "Costa Rica",
-    country: "Central America", 
-    title: "Jungle Wellness Escape",
-    price: 1899,
-    imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
-  },
-];
-
-const timeOfDayIcon = {
-  Morning: Sunrise,
-  Afternoon: Sun,
-  Evening: Moon,
-};
+function formatTime(time: string) {
+  const [h, m] = time.split(":");
+  const hour = parseInt(h);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const h12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+  return `${h12}:${m} ${ampm}`;
+}
 
 const Index = () => {
-  const handleBook = (id: string) => {
-    console.log("Booking class:", id);
-  };
-
-  const TimeIcon = timeOfDayIcon[stats.peakTime as keyof typeof timeOfDayIcon] || Sun;
-
   return (
     <AppLayout>
       <SEOHead
+        title={`${OXATL_STUDIO.name} | Yoga, Pilates & Meditation in Austin`}
+        description={OXATL_STUDIO.description}
         canonical="/"
         structuredData={[organizationSchema(), websiteSchema()]}
       />
-      <div className="space-y-10">
-        {/* Hero / Search Section */}
-        <div className="relative rounded-2xl bg-gradient-to-br from-primary/10 via-accent to-primary/5 p-8 md:p-12">
-          <div className="max-w-2xl">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">
-              Find your perfect practice
+      <div className="space-y-16">
+        {/* ---- Hero ---- */}
+        <section className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 via-accent/10 to-background p-8 md:p-14">
+          <div className="max-w-2xl relative z-10">
+            <Badge variant="outline" className="mb-4 text-primary border-primary/30">
+              <Sparkles className="h-3 w-3 mr-1" />
+              3 Locations in Austin
+            </Badge>
+            <h1 className="text-4xl md:text-5xl font-display font-semibold tracking-tight mb-4">
+              {OXATL_STUDIO.name}
             </h1>
-            <p className="text-muted-foreground text-lg mb-6">
-              Discover yoga studios, book classes, and track your journey — all in one place.
+            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+              {OXATL_STUDIO.description}
             </p>
-            
-            {/* Search bar */}
-            <div className="flex gap-3">
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                  placeholder="Search studios, classes, or teachers..."
-                  className="pl-12 h-12 bg-background/80 backdrop-blur-sm"
-                />
-              </div>
-              <Button size="lg" className="h-12 px-6">
-                <MapPin className="h-5 w-5 mr-2" />
-                Near me
+            <div className="flex flex-wrap gap-3">
+              <Button asChild size="lg">
+                <Link to="/schedule">
+                  <Calendar className="h-5 w-5 mr-2" />
+                  View Schedule
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg">
+                <Link to="/auth/register">
+                  Get Started
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Link>
               </Button>
             </div>
           </div>
-
-          {/* Quick stats for logged in user */}
-          <div className="mt-8 flex flex-wrap gap-6 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
-                <Flame className="h-4 w-4 text-primary" />
-              </div>
-              <div>
-                <span className="font-semibold text-lg">{stats.currentStreak}</span>
-                <span className="text-muted-foreground ml-1">day streak</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
-                <Calendar className="h-4 w-4 text-primary" />
-              </div>
-              <div>
-                <span className="font-semibold text-lg">{stats.classesThisMonth}</span>
-                <span className="text-muted-foreground ml-1">classes this month</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Your Next Class (if booked) */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">Your Next Class</h2>
-            <Link
-              to="/my-schedule"
-              className="text-sm text-primary hover:underline flex items-center gap-1"
-            >
-              View all
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </div>
-          <ClassCard {...upcomingClass} onBook={handleBook} />
         </section>
 
-        {/* Contextual engagement nudge — shown based on user behavior */}
-        <EngagementNudge
-          type="streak_at_risk"
-          title="Keep your streak alive!"
-          message="You haven't practiced in 2 days. A quick class today keeps the momentum going."
-          actionLabel="Find a class"
-          actionUrl="/schedule"
-          context={`${stats.currentStreak}-day streak`}
-        />
-
-        {/* Featured Studios */}
+        {/* ---- Today's Schedule ---- */}
         <section>
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-xl font-semibold">Popular Studios</h2>
-              <p className="text-sm text-muted-foreground">Top-rated studios near you</p>
+              <h2 className="text-2xl font-semibold">Today's Classes</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
+              </p>
             </div>
             <Link
-              to="/studios"
+              to="/schedule"
               className="text-sm text-primary hover:underline flex items-center gap-1"
             >
-              Browse all
+              Full schedule
               <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            {featuredStudios.map((studio) => (
-              <StudioCard key={studio.id} {...studio} />
+
+          {todaysClasses.length > 0 ? (
+            <div className="grid gap-3">
+              {todaysClasses.map((cls, i) => (
+                <Card key={i} className="hover:border-primary/30 transition-colors">
+                  <CardContent className="p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="text-center min-w-[60px]">
+                        <p className="text-sm font-semibold">{formatTime(cls.time)}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {cls.classType?.duration_minutes}min
+                        </p>
+                      </div>
+                      <div
+                        className="w-1 h-10 rounded-full"
+                        style={{ backgroundColor: cls.classType?.color || "#888" }}
+                      />
+                      <div>
+                        <p className="font-medium">{cls.classType?.name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {cls.teacher?.profile.display_name} · {cls.location?.name}
+                        </p>
+                      </div>
+                    </div>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/schedule">Book</Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Card>
+              <CardContent className="p-8 text-center text-muted-foreground">
+                No classes scheduled for today. Check the full schedule for upcoming classes.
+              </CardContent>
+            </Card>
+          )}
+        </section>
+
+        {/* ---- What We Offer ---- */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-6">What We Offer</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {OXATL_CLASS_TYPES.map((ct) => (
+              <Card key={ct.id} className="group hover:border-primary/30 transition-colors">
+                <CardContent className="p-5">
+                  <div
+                    className="w-3 h-3 rounded-full mb-3"
+                    style={{ backgroundColor: ct.color }}
+                  />
+                  <h3 className="font-medium mb-1">{ct.name}</h3>
+                  <p className="text-sm text-muted-foreground line-clamp-2">{ct.description}</p>
+                  <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    {ct.duration_minutes} min
+                  </p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </section>
 
-        {/* Featured Instructors */}
+        {/* ---- Our Teachers ---- */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-xl font-semibold">Top Instructors</h2>
-              <p className="text-sm text-muted-foreground">Learn from the best</p>
-            </div>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold">Our Teachers</h2>
             <Link
               to="/instructors"
               className="text-sm text-primary hover:underline flex items-center gap-1"
             >
-              View all
+              Meet the team
               <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
-            {topInstructors.map((instructor) => (
-              <InstructorCard key={instructor.id} {...instructor} />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {featuredTeachers.map((teacher) => (
+              <Card key={teacher.profile.id} className="hover:border-primary/30 transition-colors">
+                <CardContent className="p-5 flex items-start gap-4">
+                  <Avatar className="h-12 w-12 shrink-0">
+                    <AvatarFallback className="text-sm font-medium">
+                      {teacher.profile.first_name?.[0]}
+                      {teacher.profile.last_name?.[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    <p className="font-medium">{teacher.profile.display_name}</p>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {teacher.specialties.slice(0, 2).map((s) => (
+                        <Badge key={s} variant="secondary" className="text-xs">
+                          {s}
+                        </Badge>
+                      ))}
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{teacher.bio}</p>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </section>
 
-        {/* Retreats Teaser */}
+        {/* ---- Pricing ---- */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-xl font-semibold flex items-center gap-2">
-                <Plane className="h-5 w-5 text-info" />
-                Upcoming Retreats
-              </h2>
-              <p className="text-sm text-muted-foreground">Transform your practice with immersive experiences</p>
-            </div>
-            <Link
-              to="/schedule?tab=retreats"
-              className="text-sm text-primary hover:underline flex items-center gap-1"
-            >
-              View all
-              <ChevronRight className="h-4 w-4" />
-            </Link>
+          <h2 className="text-2xl font-semibold mb-6">Pricing</h2>
+          <div className="grid sm:grid-cols-3 gap-4">
+            <Card className="hover:border-primary/30 transition-colors">
+              <CardContent className="p-6 text-center">
+                <p className="text-sm text-muted-foreground mb-1">Drop-in</p>
+                <p className="text-3xl font-bold">$25</p>
+                <p className="text-sm text-muted-foreground mt-1">per class</p>
+                <Button variant="outline" className="mt-4 w-full" asChild>
+                  <Link to="/schedule">Book a Class</Link>
+                </Button>
+              </CardContent>
+            </Card>
+            <Card className="border-primary/50 hover:border-primary transition-colors relative">
+              <Badge className="absolute -top-2.5 left-1/2 -translate-x-1/2">Most Popular</Badge>
+              <CardContent className="p-6 text-center">
+                <p className="text-sm text-muted-foreground mb-1">Unlimited Monthly</p>
+                <p className="text-3xl font-bold">$149</p>
+                <p className="text-sm text-muted-foreground mt-1">per month</p>
+                <Button className="mt-4 w-full" asChild>
+                  <Link to="/auth/register">Start Membership</Link>
+                </Button>
+              </CardContent>
+            </Card>
+            <Card className="hover:border-primary/30 transition-colors">
+              <CardContent className="p-6 text-center">
+                <p className="text-sm text-muted-foreground mb-1">10-Class Pack</p>
+                <p className="text-3xl font-bold">$200</p>
+                <p className="text-sm text-muted-foreground mt-1">$20 per class</p>
+                <Button variant="outline" className="mt-4 w-full" asChild>
+                  <Link to="/auth/register">Buy Pack</Link>
+                </Button>
+              </CardContent>
+            </Card>
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
-            {featuredRetreats.map((retreat) => (
-              <Link
-                key={retreat.destination}
-                to="/schedule?tab=retreats"
-                className="group relative rounded-xl overflow-hidden aspect-[2/1]"
-              >
-                <img
-                  src={retreat.imageUrl}
-                  alt={retreat.destination}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                <div className="absolute bottom-4 left-4 text-white">
-                  <Badge className="bg-info text-info-foreground mb-2">Retreat</Badge>
-                  <p className="text-sm opacity-80">{retreat.country}</p>
-                  <h3 className="text-xl font-bold">{retreat.destination}</h3>
-                  <p className="text-sm opacity-90">{retreat.title} • From ${retreat.price}</p>
-                </div>
+        </section>
+
+        {/* ---- Locations ---- */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-6">Our Locations</h2>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {OXATL_LOCATIONS.map((loc) => (
+              <Card key={loc.id} className="hover:border-primary/30 transition-colors">
+                <CardContent className="p-5">
+                  <h3 className="font-medium mb-2">{loc.name}</h3>
+                  <div className="space-y-2 text-sm text-muted-foreground">
+                    <p className="flex items-start gap-2">
+                      <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
+                      <span>
+                        {loc.address_line1}
+                        {loc.address_line2 ? `, ${loc.address_line2}` : ""}
+                        <br />
+                        {loc.city}, {loc.state} {loc.postal_code}
+                      </span>
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <Users className="h-4 w-4 shrink-0" />
+                      {loc.rooms.map((r) => r.name).join(", ")}
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <Phone className="h-4 w-4 shrink-0" />
+                      {loc.phone}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* ---- CTA ---- */}
+        <section className="rounded-2xl bg-gradient-to-br from-primary/10 to-accent/5 p-8 md:p-12 text-center">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-3">Ready to start your practice?</h2>
+          <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
+            Join our community of practitioners. Your first class is on us.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button asChild size="lg">
+              <Link to="/schedule">
+                <Calendar className="h-5 w-5 mr-2" />
+                Browse Classes
               </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* Newsletter — contextual, not pushy */}
-        <NewsletterSignup
-          variant="card"
-          source="home_page"
-          heading="Stay in the flow"
-          subheading="Weekly class picks, studio news, and wellness tips — no spam, unsubscribe anytime."
-        />
-
-        {/* Personal Insights */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">Your Insights</h2>
-            <Link
-              to="/community"
-              className="text-sm text-primary hover:underline flex items-center gap-1"
-            >
-              View full stats
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard
-              label="This Week"
-              value={stats.classesThisWeek}
-              icon={Calendar}
-              trend={{ value: 2, label: "vs last week" }}
-            />
-            <StatCard
-              label="This Month"
-              value={stats.classesThisMonth}
-              icon={Activity}
-              variant="primary"
-            />
-            <StatCard
-              label="Minutes Practiced"
-              value={stats.minutesPracticed}
-              icon={Clock}
-            />
-            <StatCard
-              label="Day Streak"
-              value={stats.currentStreak}
-              icon={Flame}
-              trend={{ value: 0, label: `Best: ${stats.longestStreak}` }}
-            />
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <a href={`mailto:${OXATL_STUDIO.email}`}>
+                <Mail className="h-5 w-5 mr-2" />
+                Contact Us
+              </a>
+            </Button>
           </div>
         </section>
       </div>
