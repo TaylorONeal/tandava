@@ -76,14 +76,6 @@ export function TeachLayout({ children }: TeachLayoutProps) {
                 <Menu className="h-5 w-5" />
               )}
             </Button>
-            <Link
-              to="/home"
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ChevronLeft className="h-4 w-4" />
-              <span className="text-sm hidden sm:inline">Home</span>
-            </Link>
-            <div className="h-5 w-px bg-border mx-1" />
             <Link to="/teach" className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-sage">
                 <span className="text-sm font-bold text-white">T</span>
@@ -93,7 +85,7 @@ export function TeachLayout({ children }: TeachLayoutProps) {
                   Teacher Portal
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Tandava Yoga
+                  Oxatl Yoga
                 </p>
               </div>
             </Link>

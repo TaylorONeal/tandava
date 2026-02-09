@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AuthCallback } from "@/components/auth/AuthCallback";
 import { DemoPanel } from "@/components/DemoPanel";
+import { DemoRoleBar } from "@/components/DemoRoleBar";
 import { Component, type ErrorInfo, type ReactNode } from "react";
 
 // ---------------------------------------------------------------------------
@@ -143,6 +144,7 @@ const App = () => (
               <Toaster />
               <Sonner />
               <BrowserRouter>
+                <DemoRoleBar />
                 <DemoPanel />
                 <Routes>
                   {/* ---- Demo landing page (role picker) ---- */}
