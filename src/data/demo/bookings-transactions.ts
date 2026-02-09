@@ -225,12 +225,12 @@ function generateBookings(occurrences: DemoClassOccurrence[]): DemoBooking[] {
 
       if (isInPast) {
         const rand = Math.random();
+        const [startH, startM] = occ.start_time.split(':').map(Number);
         if (rand < 0.75) {
           // 75% checked in
           status = 'checked_in';
           const checkIn = new Date(occDate);
-          const [h, m] = occ.start_time.split(':').map(Number);
-          checkIn.setHours(h, m - randomInt(0, 15)); // Check in 0-15 min before
+          checkIn.setHours(startH, startM - randomInt(0, 15)); // Check in 0-15 min before
           checkedInAt = formatDateTime(checkIn);
         } else if (rand < 0.85) {
           // 10% cancelled
@@ -242,7 +242,7 @@ function generateBookings(occurrences: DemoClassOccurrence[]): DemoBooking[] {
           // 7% late cancel
           status = 'late_cancel';
           const cancel = new Date(occDate);
-          cancel.setHours(h - randomInt(1, 6), randomInt(0, 59));
+          cancel.setHours(startH - randomInt(1, 6), randomInt(0, 59));
           cancelledAt = formatDateTime(cancel);
         } else {
           // 8% no show
