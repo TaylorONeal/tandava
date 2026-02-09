@@ -156,8 +156,8 @@ const App = () => (
                   {/* ---- Student-facing routes ---- */}
                   <Route path="/home" element={<Index />} />
                   <Route path="/schedule" element={<Schedule />} />
-                  <Route path="/studios" element={<Studios />} />
-                  <Route path="/studios/:id" element={<StudioDetail />} />
+                  <Route path="/events" element={<Studios />} />
+                  <Route path="/events/:id" element={<StudioDetail />} />
                   <Route path="/instructors" element={<Instructors />} />
                   <Route path="/instructors/:id" element={<InstructorDetail />} />
                   <Route path="/on-demand" element={<OnDemand />} />

@@ -2,136 +2,199 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { useToast } from "@/hooks/use-toast";
-import { ClassCard } from "@/components/schedule/ClassCard";
-import { InstructorCard } from "@/components/instructor/InstructorCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import {
-  Star,
-  MapPin,
+  Calendar,
   Clock,
-  Phone,
-  Globe,
-  Heart,
-  Share2,
+  MapPin,
+  Users,
   ChevronLeft,
+  Share2,
+  Heart,
+  Sparkles,
+  GraduationCap,
+  Tent,
+  Layers,
+  Star,
+  CheckCircle2,
+  User,
 } from "lucide-react";
 
-// Mock studio data
-const studioData = {
-  id: "s1",
-  name: "Lotus Flow Studio",
-  description: "A tranquil sanctuary in the heart of downtown offering vinyasa, yin, and meditation classes. Our beautiful natural light studio features city views and top-of-the-line equipment. We believe yoga is for everyone and offer classes for all levels.",
-  imageUrl: "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80",
-  galleryImages: [
-    "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80",
-    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
-    "https://images.unsplash.com/photo-1588286840104-8957b019727f?w=800&q=80",
-  ],
-  location: {
-    address: "123 Market Street, Suite 400",
-    neighborhood: "Downtown",
-    city: "San Francisco",
-    state: "CA",
-    zip: "94102",
-  },
-  contact: {
-    phone: "(415) 555-0123",
-    website: "https://lotusflowstudio.com",
-  },
-  hours: {
-    weekday: "6:00 AM - 9:00 PM",
-    weekend: "8:00 AM - 6:00 PM",
-  },
-  rating: 4.9,
-  reviewCount: 342,
-  styles: ["Vinyasa", "Yin", "Meditation", "Restorative"],
-  amenities: ["Showers", "Mat Rental", "Props Provided", "Filtered Water", "Changing Rooms", "Retail Shop"],
+// ── Types ──────────────────────────────────────────────────────────
+interface EventDetail {
+  id: string;
+  title: string;
+  type: "workshop" | "training" | "event" | "retreat" | "series";
+  description: string;
+  longDescription: string;
+  imageUrl: string;
+  startsAt: string;
+  endsAt: string;
+  isMultiSession: boolean;
+  sessionCount: number;
+  sessions?: { date: string; time: string; topic: string }[];
+  teacher: { name: string; bio: string; avatar: string };
+  location: string;
+  locationDetail: string;
+  priceCents: number;
+  memberPriceCents: number | null;
+  earlyBirdCents: number | null;
+  earlyBirdEndsAt: string | null;
+  capacity: number;
+  spotsLeft: number;
+  tags: string[];
+  whatToBring: string[];
+  requirements: string[];
+}
+
+const typeConfig: Record<string, { icon: typeof Calendar; label: string; color: string }> = {
+  workshop: { icon: Sparkles, label: "Workshop", color: "bg-accent-teal/15 text-accent-teal border-accent-teal/30" },
+  training: { icon: GraduationCap, label: "Training", color: "bg-accent-gold/15 text-accent-gold border-accent-gold/30" },
+  event: { icon: Star, label: "Special Event", color: "bg-accent-coral/15 text-accent-coral border-accent-coral/30" },
+  retreat: { icon: Tent, label: "Retreat", color: "bg-accent-lilac/15 text-accent-lilac border-accent-lilac/30" },
+  series: { icon: Layers, label: "Series", color: "bg-accent-sage/15 text-accent-sage border-accent-sage/30" },
 };
 
-const studioClasses = [
-  {
-    id: "1",
-    title: "Power Vinyasa Flow",
-    style: "Vinyasa",
-    level: "INTERMEDIATE" as const,
-    isHeated: true,
-    teacher: { name: "Maya Johnson", avatar: "" },
-    startTime: "Today, 6:00 PM",
-    duration: 60,
+function formatPrice(cents: number): string {
+  return `$${(cents / 100).toFixed(cents % 100 === 0 ? 0 : 2)}`;
+}
+
+// ── Mock event detail data ─────────────────────────────────────────
+const eventsData: Record<string, EventDetail> = {
+  ev1: {
+    id: "ev1",
+    title: "Arm Balance & Inversion Workshop",
+    type: "workshop",
+    description: "Build confidence in arm balances and inversions with progressive drills, partner assists, and wall work.",
+    longDescription: "This three-hour workshop is designed for practitioners who want to deepen their inversion and arm balance practice. Whether you're working on your first crow pose or refining your handstand, Maya will guide you through progressive drills that build strength, proprioception, and confidence.\n\nThe workshop includes partner-assisted practice (you'll be paired thoughtfully), wall work for alignment, and detailed breakdowns of crow, side crow, forearm stand, and headstand variations. You'll leave with a personalized take-home practice plan.",
+    imageUrl: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1200&q=80",
+    startsAt: "2026-02-21T10:00:00",
+    endsAt: "2026-02-21T13:00:00",
+    isMultiSession: false,
+    sessionCount: 1,
+    teacher: {
+      name: "Maya Rodriguez",
+      bio: "E-RYT 500 with 15+ years teaching experience. Known for making arm balances and inversions accessible to all bodies.",
+      avatar: "",
+    },
     location: "Main Studio",
-    spotsLeft: 4,
-    capacity: 20,
+    locationDetail: "142 Valencia St, 2nd Floor, San Francisco, CA 94103",
+    priceCents: 7500,
+    memberPriceCents: 6500,
+    earlyBirdCents: 6000,
+    earlyBirdEndsAt: "2026-02-14",
+    capacity: 25,
+    spotsLeft: 6,
+    tags: ["Inversions", "Arm Balances", "All Levels"],
+    whatToBring: ["Your own mat", "Water bottle", "Small towel", "Comfortable clothing that stays in place when inverted"],
+    requirements: ["6+ months of regular yoga practice recommended", "No prior inversion experience needed"],
   },
-  {
-    id: "2",
-    title: "Yin Yoga & Meditation",
-    style: "Yin",
-    level: "ALL" as const,
-    isHeated: false,
-    teacher: { name: "David Park", avatar: "" },
-    startTime: "Today, 7:30 PM",
-    duration: 75,
-    location: "Zen Room",
-    spotsLeft: 8,
+  ev2: {
+    id: "ev2",
+    title: "200-Hour Yoga Teacher Training",
+    type: "training",
+    description: "Comprehensive Yoga Alliance certified teacher training.",
+    longDescription: "Our 200-hour teacher training is a deep immersion into the art and science of teaching yoga. Over 12 weekends, you'll develop a strong foundation in asana, anatomy, philosophy, sequencing, and teaching methodology.\n\nLed by Sarah Chen (E-RYT 500, YACEP) and James Park (E-RYT 200, C-IAYT), this program is registered with Yoga Alliance and qualifies graduates to register as RYT-200. Small cohort size ensures personalized mentoring.",
+    imageUrl: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&q=80",
+    startsAt: "2026-03-07T08:00:00",
+    endsAt: "2026-06-13T17:00:00",
+    isMultiSession: true,
+    sessionCount: 12,
+    sessions: [
+      { date: "Mar 7-8", time: "8am-5pm", topic: "Foundations & Asana I" },
+      { date: "Mar 21-22", time: "8am-5pm", topic: "Anatomy & Physiology" },
+      { date: "Apr 4-5", time: "8am-5pm", topic: "Asana II & Alignment" },
+      { date: "Apr 18-19", time: "8am-5pm", topic: "Yoga Philosophy" },
+      { date: "May 2-3", time: "8am-5pm", topic: "Sequencing & Cueing" },
+      { date: "May 16-17", time: "8am-5pm", topic: "Teaching Practicum" },
+    ],
+    teacher: {
+      name: "Sarah Chen & James Park",
+      bio: "Sarah is an E-RYT 500 and YACEP with 20+ years of practice. James is an E-RYT 200, C-IAYT specializing in yoga therapy and anatomy.",
+      avatar: "",
+    },
+    location: "Main Studio",
+    locationDetail: "142 Valencia St, 2nd Floor, San Francisco, CA 94103",
+    priceCents: 350000,
+    memberPriceCents: 320000,
+    earlyBirdCents: 299900,
+    earlyBirdEndsAt: "2026-02-21",
     capacity: 15,
+    spotsLeft: 4,
+    tags: ["YTT", "Certification", "Yoga Alliance"],
+    whatToBring: ["Yoga mat", "Notebook and pen", "Anatomy coloring book (provided)", "Open mind"],
+    requirements: ["1+ year of regular yoga practice", "Brief application and interview required", "Payment plan available"],
   },
-];
+  ev3: {
+    id: "ev3",
+    title: "Sound Bath & Meditation Evening",
+    type: "event",
+    description: "Immerse yourself in crystal singing bowls, gongs, and chimes.",
+    longDescription: "Settle into a supported restorative position and let the sound wash over you. Luna Patel leads this deeply relaxing evening with crystal singing bowls tuned to the chakras, Tibetan gongs, chimes, and rain sticks.\n\nThe evening begins with 15 minutes of guided meditation to help you arrive and settle, followed by 45 minutes of pure sound immersion. Bolsters, blankets, and eye pillows provided. Many participants report deep relaxation and improved sleep.",
+    imageUrl: "https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=1200&q=80",
+    startsAt: "2026-02-28T19:00:00",
+    endsAt: "2026-02-28T21:00:00",
+    isMultiSession: false,
+    sessionCount: 1,
+    teacher: {
+      name: "Luna Patel",
+      bio: "Certified sound healer and meditation teacher. Luna has studied with master teachers in India, Nepal, and Bali.",
+      avatar: "",
+    },
+    location: "Meditation Room",
+    locationDetail: "142 Valencia St, Ground Floor, San Francisco, CA 94103",
+    priceCents: 4500,
+    memberPriceCents: 3500,
+    earlyBirdCents: null,
+    earlyBirdEndsAt: null,
+    capacity: 40,
+    spotsLeft: 6,
+    tags: ["Sound Healing", "Meditation", "Relaxation"],
+    whatToBring: ["Comfortable clothing", "Optional: your own blanket or pillow"],
+    requirements: ["No experience needed", "Please arrive 10 minutes early to settle in"],
+  },
+};
 
-const studioInstructors = [
-  {
-    id: "t1",
-    name: "Maya Johnson",
-    bio: "E-RYT 500 specializing in dynamic vinyasa and arm balances. 15+ years teaching experience.",
-    specialties: ["Vinyasa", "Inversions", "Arm Balances"],
-    rating: 4.9,
-    reviewCount: 456,
-    classCount: 2340,
-    studios: ["Lotus Flow Studio"],
-  },
-  {
-    id: "t2",
-    name: "David Park",
-    bio: "Yin yoga and meditation teacher. Trained in Thailand with a focus on mindfulness.",
-    specialties: ["Yin", "Meditation", "Restorative"],
-    rating: 4.8,
-    reviewCount: 312,
-    classCount: 1890,
-    studios: ["Lotus Flow Studio"],
-  },
-];
+// Fallback for IDs not in eventsData
+const fallbackEvent: EventDetail = eventsData.ev1;
 
-const StudioDetail = () => {
+// ── Component ──────────────────────────────────────────────────────
+const EventDetailPage = () => {
   const { id } = useParams();
+  const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const { toast } = useToast();
-  const handleBook = (classId: string) => {
-    toast({ title: "Class selected", description: "Opening booking details..." });
-  };
+  const event = (id && eventsData[id]) || fallbackEvent;
+  const cfg = typeConfig[event.type] ?? typeConfig.event;
+  const TypeIcon = cfg.icon;
+  const startDate = new Date(event.startsAt);
+  const endDate = new Date(event.endsAt);
+  const spotsLow = event.spotsLeft <= 5;
 
   return (
     <AppLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 max-w-5xl mx-auto">
         {/* Back link */}
         <Link
-          to="/studios"
+          to="/events"
           className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft className="h-4 w-4 mr-1" />
-          Back to studios
+          Back to events
         </Link>
 
         {/* Hero Image */}
         <div className="relative rounded-xl overflow-hidden aspect-[3/1]">
           <img
-            src={studioData.imageUrl}
-            alt={studioData.name}
+            src={event.imageUrl}
+            alt={event.title}
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-          
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
           {/* Actions overlay */}
           <div className="absolute top-4 right-4 flex gap-2">
             <Button
@@ -142,138 +205,227 @@ const StudioDetail = () => {
             >
               <Heart className={`h-4 w-4 ${isFavorite ? "fill-destructive text-destructive" : ""}`} />
             </Button>
-            <Button variant="secondary" size="icon" className="bg-background/80 backdrop-blur-sm">
+            <Button
+              variant="secondary"
+              size="icon"
+              className="bg-background/80 backdrop-blur-sm"
+              onClick={() => toast({ title: "Link copied", description: "Event link copied to clipboard." })}
+            >
               <Share2 className="h-4 w-4" />
             </Button>
           </div>
 
-          {/* Studio name overlay */}
+          {/* Event info overlay */}
           <div className="absolute bottom-6 left-6 text-white">
             <div className="flex items-center gap-2 mb-2">
-              {studioData.styles.slice(0, 3).map((style) => (
-                <Badge key={style} variant="secondary" className="bg-background/80 backdrop-blur-sm">
-                  {style}
+              <Badge className={`${cfg.color} border`}>
+                <TypeIcon className="h-3 w-3 mr-1" />
+                {cfg.label}
+              </Badge>
+              {spotsLow && (
+                <Badge className="bg-accent-coral/90 text-white border-none">
+                  Only {event.spotsLeft} spots left
                 </Badge>
-              ))}
+              )}
             </div>
-            <h1 className="text-3xl font-bold">{studioData.name}</h1>
-            <div className="flex items-center gap-4 mt-2 text-sm">
-              <div className="flex items-center gap-1">
-                <Star className="h-4 w-4 fill-warning text-warning" />
-                <span className="font-medium">{studioData.rating}</span>
-                <span className="opacity-80">({studioData.reviewCount} reviews)</span>
-              </div>
-              <div className="flex items-center gap-1 opacity-80">
-                <MapPin className="h-4 w-4" />
-                {studioData.location.neighborhood}, {studioData.location.city}
-              </div>
-            </div>
+            <h1 className="text-2xl md:text-3xl font-display font-bold">{event.title}</h1>
+            <p className="text-sm opacity-80 mt-1">{event.description}</p>
           </div>
         </div>
 
         {/* Main content */}
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Left column - Main content */}
+          {/* Left column */}
           <div className="lg:col-span-2 space-y-6">
-            <Tabs defaultValue="classes" className="w-full">
-              <TabsList>
-                <TabsTrigger value="classes">Schedule</TabsTrigger>
-                <TabsTrigger value="instructors">Instructors</TabsTrigger>
-                <TabsTrigger value="about">About</TabsTrigger>
-                <TabsTrigger value="reviews">Reviews</TabsTrigger>
-              </TabsList>
+            {/* About */}
+            <div>
+              <h2 className="text-lg font-semibold mb-3">About This {cfg.label}</h2>
+              {event.longDescription.split("\n\n").map((para, i) => (
+                <p key={i} className="text-muted-foreground mb-3">{para}</p>
+              ))}
+            </div>
 
-              <TabsContent value="classes" className="mt-6 space-y-4">
-                {studioClasses.map((classItem) => (
-                  <ClassCard key={classItem.id} {...classItem} onBook={handleBook} />
-                ))}
-              </TabsContent>
+            <Separator />
 
-              <TabsContent value="instructors" className="mt-6 space-y-4">
-                {studioInstructors.map((instructor) => (
-                  <InstructorCard key={instructor.id} {...instructor} />
-                ))}
-              </TabsContent>
-
-              <TabsContent value="about" className="mt-6 space-y-6">
+            {/* Sessions (multi-session events) */}
+            {event.isMultiSession && event.sessions && (
+              <>
                 <div>
-                  <h3 className="font-semibold mb-2">About</h3>
-                  <p className="text-muted-foreground">{studioData.description}</p>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-2">Styles Offered</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {studioData.styles.map((style) => (
-                      <Badge key={style} variant="secondary">{style}</Badge>
+                  <h2 className="text-lg font-semibold mb-3">Schedule ({event.sessionCount} sessions)</h2>
+                  <div className="space-y-2">
+                    {event.sessions.map((session, i) => (
+                      <div key={i} className="flex items-center gap-4 p-3 rounded-lg bg-secondary/30 border border-border">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-sm font-semibold shrink-0">
+                          {i + 1}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">{session.topic}</p>
+                          <p className="text-xs text-muted-foreground">{session.date} &middot; {session.time}</p>
+                        </div>
+                      </div>
                     ))}
+                    {event.sessions.length < event.sessionCount && (
+                      <p className="text-xs text-muted-foreground pl-12">
+                        + {event.sessionCount - event.sessions.length} more sessions
+                      </p>
+                    )}
                   </div>
                 </div>
+                <Separator />
+              </>
+            )}
 
+            {/* Teacher */}
+            <div>
+              <h2 className="text-lg font-semibold mb-3">Instructor</h2>
+              <div className="flex items-start gap-4 p-4 rounded-xl bg-secondary/30 border border-border">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-lilac/20 text-accent-lilac shrink-0">
+                  <User className="h-6 w-6" />
+                </div>
                 <div>
-                  <h3 className="font-semibold mb-2">Amenities</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {studioData.amenities.map((amenity) => (
-                      <Badge key={amenity} variant="outline">{amenity}</Badge>
-                    ))}
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="reviews" className="mt-6">
-                <div className="text-center py-12 text-muted-foreground">
-                  <p>Reviews coming soon</p>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </div>
-
-          {/* Right column - Info card */}
-          <div className="space-y-4">
-            <div className="rounded-xl border bg-card p-5 shadow-card space-y-4">
-              <h3 className="font-semibold">Location & Hours</h3>
-              
-              <div className="space-y-3 text-sm">
-                <div className="flex items-start gap-3">
-                  <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-                  <div>
-                    <p>{studioData.location.address}</p>
-                    <p className="text-muted-foreground">
-                      {studioData.location.city}, {studioData.location.state} {studioData.location.zip}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <Clock className="h-4 w-4 text-muted-foreground mt-0.5" />
-                  <div>
-                    <p>Mon-Fri: {studioData.hours.weekday}</p>
-                    <p>Sat-Sun: {studioData.hours.weekend}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Phone className="h-4 w-4 text-muted-foreground" />
-                  <a href={`tel:${studioData.contact.phone}`} className="hover:text-primary">
-                    {studioData.contact.phone}
-                  </a>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Globe className="h-4 w-4 text-muted-foreground" />
-                  <a
-                    href={studioData.contact.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-primary"
-                  >
-                    Visit website
-                  </a>
+                  <p className="font-semibold">{event.teacher.name}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{event.teacher.bio}</p>
                 </div>
               </div>
-
-              <Button className="w-full">View All Classes</Button>
             </div>
+
+            <Separator />
+
+            {/* What to bring */}
+            {event.whatToBring.length > 0 && (
+              <div>
+                <h2 className="text-lg font-semibold mb-3">What to Bring</h2>
+                <ul className="space-y-2">
+                  {event.whatToBring.map((item, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <CheckCircle2 className="h-4 w-4 text-accent-sage shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Requirements */}
+            {event.requirements.length > 0 && (
+              <div>
+                <h2 className="text-lg font-semibold mb-3">Requirements</h2>
+                <ul className="space-y-2">
+                  {event.requirements.map((req, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Star className="h-4 w-4 text-accent-gold shrink-0" />
+                      {req}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* Right column — Booking card */}
+          <div className="space-y-4">
+            <Card className="sticky top-24">
+              <CardContent className="p-5 space-y-4">
+                <h3 className="font-semibold">Register</h3>
+
+                {/* Pricing */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">General</span>
+                    <span className="text-lg font-bold">{formatPrice(event.priceCents)}</span>
+                  </div>
+                  {event.memberPriceCents && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-primary">Member price</span>
+                      <span className="text-lg font-bold text-primary">{formatPrice(event.memberPriceCents)}</span>
+                    </div>
+                  )}
+                  {event.earlyBirdCents && event.earlyBirdEndsAt && (
+                    <div className="flex items-center justify-between p-2 rounded-lg bg-accent-gold/10 border border-accent-gold/20">
+                      <div>
+                        <span className="text-sm text-accent-gold font-medium">Early bird</span>
+                        <p className="text-[10px] text-muted-foreground">
+                          Until {new Date(event.earlyBirdEndsAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                        </p>
+                      </div>
+                      <span className="text-lg font-bold text-accent-gold">{formatPrice(event.earlyBirdCents)}</span>
+                    </div>
+                  )}
+                </div>
+
+                <Separator />
+
+                {/* Spots */}
+                <div className="flex items-center justify-between text-sm">
+                  <span className="flex items-center gap-1.5 text-muted-foreground">
+                    <Users className="h-4 w-4" />
+                    Spots remaining
+                  </span>
+                  <span className={`font-semibold ${spotsLow ? "text-accent-coral" : ""}`}>
+                    {event.spotsLeft} of {event.capacity}
+                  </span>
+                </div>
+
+                {/* Capacity bar */}
+                <div className="w-full bg-secondary rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full transition-all ${spotsLow ? "bg-accent-coral" : "bg-primary"}`}
+                    style={{ width: `${Math.round(((event.capacity - event.spotsLeft) / event.capacity) * 100)}%` }}
+                  />
+                </div>
+
+                <Button
+                  className="w-full"
+                  size="lg"
+                  onClick={() => toast({ title: "Registration started", description: "Opening checkout..." })}
+                >
+                  Register Now
+                </Button>
+
+                <Separator />
+
+                {/* Details */}
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-start gap-3">
+                    <Calendar className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                    <div>
+                      <p className="font-medium">
+                        {startDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+                      </p>
+                      {event.isMultiSession && (
+                        <p className="text-muted-foreground">
+                          through {endDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })} &middot; {event.sessionCount} sessions
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Clock className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                    <p>
+                      {startDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+                      {" — "}
+                      {endDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+                    </p>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                    <div>
+                      <p className="font-medium">{event.location}</p>
+                      <p className="text-muted-foreground">{event.locationDetail}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-1 pt-2">
+                  {event.tags.map((tag) => (
+                    <Badge key={tag} variant="outline" className="text-[10px]">{tag}</Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
@@ -281,4 +433,4 @@ const StudioDetail = () => {
   );
 };
 
-export default StudioDetail;
+export default EventDetailPage;

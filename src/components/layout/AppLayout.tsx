@@ -24,12 +24,13 @@ import {
   User,
   Bell,
   LayoutDashboard,
-  Building2,
   Heart,
   Play,
   Store,
   ClipboardCheck,
+  Sparkles,
 } from "lucide-react";
+
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 
@@ -41,7 +42,7 @@ const navigation = [
   { nameKey: "home", href: "/home", icon: Home },
   { nameKey: "schedule", href: "/schedule", icon: Calendar },
   { nameKey: "onDemand", href: "/on-demand", icon: Play },
-  { nameKey: "studios", href: "/studios", icon: Building2 },
+  { nameKey: "events", href: "/events", icon: Sparkles },
   { nameKey: "instructors", href: "/instructors", icon: Heart },
   { nameKey: "mySchedule", href: "/my-schedule", icon: CalendarCheck },
   { nameKey: "community", href: "/community", icon: Users },

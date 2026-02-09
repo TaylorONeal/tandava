@@ -4,7 +4,7 @@
  * Generates a static sitemap.xml for known routes.
  * Run after build: npx tsx scripts/generate-sitemap.ts
  *
- * For dynamic routes (studios, instructors), this script would query
+ * For dynamic routes (events, instructors), this script would query
  * Supabase for slugs. When Supabase is not configured, it generates
  * only the static routes.
  */
@@ -17,7 +17,7 @@ const SITE_URL = process.env.VITE_APP_URL || "https://tandava.yoga";
 const staticRoutes = [
   { path: "/", priority: "1.0", changefreq: "daily" },
   { path: "/schedule", priority: "0.9", changefreq: "daily" },
-  { path: "/studios", priority: "0.8", changefreq: "weekly" },
+  { path: "/events", priority: "0.8", changefreq: "weekly" },
   { path: "/instructors", priority: "0.8", changefreq: "weekly" },
   { path: "/on-demand", priority: "0.7", changefreq: "weekly" },
 ];
