@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { ClipboardCheck, ListOrdered, ArrowLeft } from "lucide-react";
+import { ClipboardCheck, ListOrdered } from "lucide-react";
 
 interface StaffLayoutProps {
   children: ReactNode;
@@ -22,16 +22,6 @@ export function StaffLayout({ children }: StaffLayoutProps) {
       {/* Top bar (staff gets a simpler horizontal nav) */}
       <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur-md">
         <div className="container flex h-14 items-center gap-6">
-          <Link
-            to="/home"
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </Link>
-
-          <div className="h-6 w-px bg-border" />
-
           <h2 className="text-sm font-bold tracking-tight">Front Desk</h2>
 
           <nav className="flex items-center gap-1 ml-4">

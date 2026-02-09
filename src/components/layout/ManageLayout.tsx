@@ -8,9 +8,10 @@ import {
   UserCheck,
   CreditCard,
   BarChart3,
-  Inbox,
   Settings,
-  ArrowLeft,
+  Sparkles,
+  FileBarChart,
+  CalendarDays,
 } from "lucide-react";
 
 interface ManageLayoutProps {
@@ -20,11 +21,13 @@ interface ManageLayoutProps {
 const navigation = [
   { name: "Dashboard", href: "/manage", icon: LayoutDashboard },
   { name: "Schedule", href: "/manage/schedule", icon: Calendar },
-  { name: "Members", href: "/manage/members", icon: Users },
-  { name: "Instructors", href: "/manage/instructors", icon: UserCheck },
-  { name: "Billing", href: "/manage/billing", icon: CreditCard },
+  { name: "Members", href: "/manage/students", icon: Users },
+  { name: "Instructors", href: "/manage/teachers", icon: UserCheck },
+  { name: "Events", href: "/manage/events", icon: CalendarDays },
+  { name: "Offerings", href: "/manage/offerings", icon: Sparkles },
+  { name: "Financials", href: "/manage/financials", icon: CreditCard },
   { name: "Analytics", href: "/manage/analytics", icon: BarChart3 },
-  { name: "Inbox", href: "/manage/inbox", icon: Inbox },
+  { name: "Reports", href: "/manage/reports", icon: FileBarChart },
   { name: "Settings", href: "/manage/settings", icon: Settings },
 ];
 
@@ -41,15 +44,8 @@ export function ManageLayout({ children }: ManageLayoutProps) {
       {/* Sidebar */}
       <aside className="w-64 border-r border-border bg-card/50 p-4 flex flex-col">
         <div className="mb-6">
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to App
-          </Link>
           <h2 className="text-lg font-bold tracking-tight">Studio Manager</h2>
-          <p className="text-xs text-muted-foreground">Manage your studio</p>
+          <p className="text-xs text-muted-foreground">Oxatl Yoga</p>
         </div>
 
         <nav className="space-y-1 flex-1">

@@ -201,6 +201,57 @@ export default function EventsManage() {
           ))}
         </div>
 
+        {/* Historical Trends by Event Type */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-accent-sage" />
+              Historical Trends
+            </CardTitle>
+            <CardDescription>Performance by event type over recent quarters</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              {[
+                { type: "Workshops", icon: Sparkles, events: 24, avgFill: 82, revenue: 892500, trend: "+12%" },
+                { type: "Trainings", icon: GraduationCap, events: 3, avgFill: 73, revenue: 10947000, trend: "+8%" },
+                { type: "Events", icon: Calendar, events: 18, avgFill: 88, revenue: 441000, trend: "+22%" },
+                { type: "Retreats", icon: Tent, events: 4, avgFill: 68, revenue: 2500000, trend: "-5%" },
+                { type: "Series", icon: Layers, events: 12, avgFill: 76, revenue: 1152000, trend: "+15%" },
+              ].map((item) => {
+                const ItemIcon = item.icon;
+                const isPositive = item.trend.startsWith("+");
+                return (
+                  <div key={item.type} className="p-3 rounded-xl bg-secondary/30 border border-border">
+                    <div className="flex items-center gap-2 mb-2">
+                      <ItemIcon className="h-4 w-4 text-primary" />
+                      <span className="text-xs font-medium">{item.type}</span>
+                    </div>
+                    <p className="text-lg font-bold">{item.events}</p>
+                    <p className="text-[10px] text-muted-foreground">events this year</p>
+                    <div className="mt-2 pt-2 border-t border-border/50 space-y-1">
+                      <div className="flex items-center justify-between text-[10px]">
+                        <span className="text-muted-foreground">Avg fill</span>
+                        <span className="font-medium">{item.avgFill}%</span>
+                      </div>
+                      <div className="flex items-center justify-between text-[10px]">
+                        <span className="text-muted-foreground">Revenue</span>
+                        <span className="font-medium">{formatPrice(item.revenue)}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-[10px]">
+                        <span className="text-muted-foreground">vs last year</span>
+                        <span className={`font-medium ${isPositive ? "text-accent-sage" : "text-accent-coral"}`}>
+                          {item.trend}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Filters */}
         <div className="flex items-center gap-3">
           <div className="relative flex-1 max-w-sm">
