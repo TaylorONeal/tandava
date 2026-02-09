@@ -111,7 +111,7 @@ On-demand video library UI for virtual and hybrid classes. Mobile-optimized layo
 
 One of the most effective decisions was creating a complete fictional studio to populate the demo. Oxatl Yoga is a three-location studio in Austin, Texas, with a full year of booking and transaction data, a roster of instructors with distinct specialties, a diverse class schedule, and realistic member profiles.
 
-The name blends "Ocelotl" (Aztec for jaguar — strength, grace) with Austin's creative spirit. It has locations in East Austin, South Congress, and a virtual studio. Instructors like Devika Sharma (Ashtanga, Sanskrit chanting), Marcus Chen (power vinyasa, athletics recovery), and Luna Reyes (yin, restorative, sound healing) each have distinct teaching styles and followings.
+Named after a favorite mural in South Austin which we thought embodied Austin's creative spirit. It has locations in East Austin, South Congress, and a virtual studio. Instructors like Devika Sharma (Ashtanga, Sanskrit chanting), Marcus Chen (power vinyasa, athletics recovery), and Luna Reyes (yin, restorative, sound healing) each have distinct teaching styles and followings.
 
 This wasn't just demo data. It was a design tool. Every feature we built, we tested against Oxatl's reality: *Would Marcus's Tuesday morning power flow students actually see this notification? Would the front desk at South Congress use this check-in flow during their 6pm rush? Would the owner look at this revenue chart and understand their business better?*
 
