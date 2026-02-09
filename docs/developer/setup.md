@@ -112,7 +112,7 @@ tandava/
 │   ├── main.tsx                 # Entry point (Sentry init)
 │   ├── App.tsx                  # Routes + providers
 │   ├── contexts/
-│   │   └── AuthContext.tsx       # Supabase auth + role/permissions
+│   │   └── AuthContext.tsx       # Auth state + role/permissions
 │   ├── components/
 │   │   ├── auth/                # ProtectedRoute, AuthCallback
 │   │   ├── contact/             # ContactForm (unified messaging)
@@ -120,13 +120,16 @@ tandava/
 │   │   ├── seo/                 # SEOHead (react-helmet-async wrapper)
 │   │   └── ui/                  # shadcn/ui components (60+)
 │   ├── lib/
-│   │   ├── supabase.ts          # Supabase client
+│   │   ├── backend/             # Backend abstraction layer
+│   │   │   ├── types.ts         # Provider interfaces (AuthProvider, DataProvider, ApiProvider)
+│   │   │   ├── supabase.ts      # Supabase implementation (default)
+│   │   │   └── index.ts         # Active provider export
 │   │   ├── stripe.ts            # Stripe.js + checkout/portal helpers
 │   │   ├── sentry.ts            # Sentry initialization
 │   │   ├── structured-data.ts   # JSON-LD schema generators
 │   │   └── utils.ts             # Tailwind cn() utility
 │   ├── types/
-│   │   ├── database.ts          # Supabase Database type definitions
+│   │   ├── database.ts          # Database type definitions
 │   │   └── roles.ts             # Role/permission system
 │   ├── pages/
 │   │   ├── admin/               # Platform admin (6 pages)
@@ -163,6 +166,9 @@ Three-tier admin model with distinct route prefixes:
 - `/staff/*` — Front desk (day-of operations)
 
 Permissions are defined in `src/types/roles.ts` and enforced via `<ProtectedRoute>`.
+
+### Backend Abstraction
+All application code imports from `src/lib/backend/` — never from a specific provider directly. The default implementation uses Supabase, but you can swap backends by implementing the `Backend` interface and changing one import. See [backend-flexibility.md](./backend-flexibility.md).
 
 ### Email Provider Abstraction
 The email system uses a provider interface pattern. Swap providers by changing one environment variable — no code changes needed. See `supabase/functions/email/provider.ts`.

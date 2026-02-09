@@ -1,0 +1,25 @@
+{
+  "name": "Tandava",
+  "short_name": "Tandava",
+  "description": "Open-source studio management for yoga, pilates, and movement studios",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF8F5",
+  "theme_color": "#1e293b",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["health", "fitness", "lifestyle", "business"]
+}

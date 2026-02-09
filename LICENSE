@@ -1,0 +1,65 @@
+# LICENSE - TENTATIVE
+
+**Status: Under Review**
+
+This license file is a placeholder. The final license type has not been determined.
+
+---
+
+## Current Intent
+
+Tandava is intended to be released as open-source software. The following license types are under consideration:
+
+### Option A: AGPL-3.0 (Currently Referenced in README)
+
+The GNU Affero General Public License v3.0 requires that:
+- Source code must be made available when the software is used over a network
+- Modifications must be released under the same license
+- Commercial use is permitted, but modifications must remain open
+
+**Implications for studios:** You can self-host and modify freely for your own studio. If you offer Tandava as a service to other studios, you must share your modifications.
+
+### Option B: MIT License
+
+A permissive license that allows:
+- Commercial use without restrictions
+- Modifications without sharing
+- Private use
+
+**Implications for studios:** Maximum freedom, but competitors could fork and close-source.
+
+### Option C: Apache 2.0
+
+Similar to MIT but with:
+- Explicit patent grants
+- Trademark protections
+
+---
+
+## Until License is Finalized
+
+During this tentative period:
+- The code is shared for evaluation and contribution purposes
+- Commercial deployment should wait for license clarification
+- Contributors should be aware the final license may differ
+
+---
+
+## Follow-Up Required
+
+- [ ] Decide on license type (AGPL-3.0, MIT, Apache 2.0, or other)
+- [ ] Replace this file with the full license text
+- [ ] Update README.md to reflect final choice
+- [ ] Notify early contributors of final decision
+
+---
+
+## Contact
+
+For license questions or to discuss commercial use before finalization:
+- Open a GitHub issue
+- Or contact the maintainers directly
+
+---
+
+*This placeholder was created on 2024-XX-XX. Final license pending.*

@@ -6,15 +6,10 @@
  *   2. Studio Owner    — manages their studio (/manage/...)
  *   3. Studio Staff    — front-desk / day-of operations (/staff/...)
  *
- * Members and instructors are NOT admin roles — they use the public app.
+ * Students and teachers use the public app + their respective portals.
  */
 
 import type { UserRole } from "./database";
-
-// ---------------------------------------------------------------------------
-// Studio-level roles (stored in studio_members.role)
-// ---------------------------------------------------------------------------
-export type StudioRole = "owner" | "manager" | "instructor" | "front_desk";
 
 // ---------------------------------------------------------------------------
 // Permission definitions
@@ -68,7 +63,7 @@ const STUDIO_OWNER_PERMISSIONS: Permission[] = [
   "studio.manage_waitlist",
 ];
 
-const STUDIO_MANAGER_PERMISSIONS: Permission[] = [
+const STUDIO_ADMIN_PERMISSIONS: Permission[] = [
   "studio.manage_schedule",
   "studio.manage_members",
   "studio.manage_instructors",
@@ -84,7 +79,7 @@ const STUDIO_FRONT_DESK_PERMISSIONS: Permission[] = [
   "studio.view_inbox",
 ];
 
-const STUDIO_INSTRUCTOR_PERMISSIONS: Permission[] = [
+const TEACHER_PERMISSIONS: Permission[] = [
   "studio.view_analytics", // own classes only
 ];
 
@@ -95,34 +90,22 @@ const MEMBER_PERMISSIONS: Permission[] = [
   "member.view_profile",
 ];
 
-/** Get platform-level permissions from a user's profile role */
+/** Get permissions from a user's role */
 export function getPermissionsForUserRole(role: UserRole): Permission[] {
   switch (role) {
     case "platform_admin":
-      return [...PLATFORM_ADMIN_PERMISSIONS, ...MEMBER_PERMISSIONS];
-    case "studio_owner":
+      return [...PLATFORM_ADMIN_PERMISSIONS, ...STUDIO_OWNER_PERMISSIONS, ...MEMBER_PERMISSIONS];
+    case "owner":
       return [...STUDIO_OWNER_PERMISSIONS, ...MEMBER_PERMISSIONS];
-    case "studio_staff":
+    case "admin":
+      return [...STUDIO_ADMIN_PERMISSIONS, ...MEMBER_PERMISSIONS];
+    case "front_desk":
       return [...STUDIO_FRONT_DESK_PERMISSIONS, ...MEMBER_PERMISSIONS];
-    case "instructor":
-      return [...STUDIO_INSTRUCTOR_PERMISSIONS, ...MEMBER_PERMISSIONS];
-    case "member":
+    case "teacher":
+      return [...TEACHER_PERMISSIONS, ...MEMBER_PERMISSIONS];
+    case "student":
     default:
       return [...MEMBER_PERMISSIONS];
-  }
-}
-
-/** Get studio-level permissions from a studio_members role */
-export function getPermissionsForStudioRole(role: StudioRole): Permission[] {
-  switch (role) {
-    case "owner":
-      return STUDIO_OWNER_PERMISSIONS;
-    case "manager":
-      return STUDIO_MANAGER_PERMISSIONS;
-    case "instructor":
-      return STUDIO_INSTRUCTOR_PERMISSIONS;
-    case "front_desk":
-      return STUDIO_FRONT_DESK_PERMISSIONS;
   }
 }
 
@@ -149,3 +132,11 @@ export const ROUTE_PERMISSIONS: Record<string, Permission> = {
   "/staff/checkin": "studio.checkin",
   "/staff/waitlist": "studio.manage_waitlist",
 };
+
+/** Role hierarchy — higher index = less privilege */
+const ROLE_HIERARCHY: UserRole[] = ["platform_admin", "owner", "admin", "teacher", "front_desk", "student"];
+
+/** Check if a role has at least the access level of another role */
+export function hasRoleLevel(userRole: UserRole, requiredRole: UserRole): boolean {
+  return ROLE_HIERARCHY.indexOf(userRole) <= ROLE_HIERARCHY.indexOf(requiredRole);
+}

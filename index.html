@@ -4,22 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#0f0a14" />
-    <title>Tandava Yoga Studio | Book Classes & Track Your Practice</title>
-    <meta name="description" content="Book yoga classes, workshops, and appointments at Tandava. Track your practice, connect with teachers, and join our wellness community." />
-    <meta name="author" content="Tandava Yoga" />
-    <meta name="keywords" content="yoga studio, yoga classes, vinyasa, yin yoga, meditation, wellness, book yoga class" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Tandava" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <title>Tandava | Open Source Studio Management</title>
+    <meta name="description" content="Open-source studio management software for yoga, pilates, and movement studios. Self-host your data, customize everything, no subscription fees." />
+    <meta name="author" content="Tandava" />
+    <meta name="keywords" content="yoga studio software, studio management, open source, booking system, class scheduling, vinyasa, yin yoga, meditation, wellness" />
     <link rel="canonical" href="https://tandava.yoga" />
 
-    <meta property="og:title" content="Tandava Yoga Studio | Book Classes & Track Your Practice" />
-    <meta property="og:description" content="Book yoga classes, workshops, and appointments. Track your practice and join our wellness community." />
+    <!-- Open Graph (social sharing) -->
+    <meta property="og:title" content="Tandava | Open Source Studio Management" />
+    <meta property="og:description" content="Free, open-source studio management for yoga, pilates, and movement studios." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta property="og:image" content="/og-image.png" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@TandavaYoga" />
-    <meta name="twitter:title" content="Tandava Yoga Studio" />
-    <meta name="twitter:description" content="Book yoga classes, workshops, and appointments. Track your practice and join our wellness community." />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta name="twitter:title" content="Tandava | Open Source Studio Management" />
+    <meta name="twitter:description" content="Free, open-source studio management for yoga, pilates, and movement studios." />
+    <meta name="twitter:image" content="/og-image.png" />
 
     <!-- Google Fonts for Design System -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -33,5 +40,13 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Register service worker for PWA support
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
   </body>
 </html>
