@@ -38,37 +38,39 @@ import {
   CheckSquare,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 
 interface ManageLayoutProps {
   children: ReactNode;
 }
 
 const manageNavigation = [
-  { name: "Dashboard", href: "/manage", icon: LayoutDashboard },
-  { name: "Schedule", href: "/manage/schedule", icon: Calendar },
-  { name: "Events", href: "/manage/events", icon: CalendarHeart },
-  { name: "Students", href: "/manage/students", icon: Users },
-  { name: "Teachers", href: "/manage/teachers", icon: UserCheck },
-  { name: "Offerings", href: "/manage/offerings", icon: Tag },
-  { name: "Promo Codes", href: "/manage/promo-codes", icon: Percent },
-  { name: "Financials", href: "/manage/financials", icon: CreditCard },
-  { name: "Products", href: "/manage/products", icon: Package },
-  { name: "Inventory", href: "/manage/inventory", icon: Warehouse },
-  { name: "Purchase Orders", href: "/manage/purchase-orders", icon: ClipboardList },
-  { name: "Landing Pages", href: "/manage/landing-pages", icon: Globe },
-  { name: "UTM Builder", href: "/manage/utm-builder", icon: Link2 },
-  { name: "Campaigns", href: "/manage/campaigns", icon: Megaphone },
-  { name: "Tasks", href: "/manage/tasks", icon: CheckSquare },
-  { name: "Reports", href: "/manage/reports", icon: BarChart3 },
-  { name: "Import Data", href: "/manage/import", icon: Upload },
-  { name: "SMS Inbox", href: "/manage/sms-inbox", icon: MessageSquare },
-  { name: "Notifications", href: "/manage/notification-settings", icon: Bell },
-  { name: "Settings", href: "/manage/settings", icon: Settings },
+  { nameKey: "dashboard", href: "/manage", icon: LayoutDashboard },
+  { nameKey: "schedule", href: "/manage/schedule", icon: Calendar },
+  { nameKey: "events", href: "/manage/events", icon: CalendarHeart },
+  { nameKey: "students", href: "/manage/students", icon: Users },
+  { nameKey: "teachers", href: "/manage/teachers", icon: UserCheck },
+  { nameKey: "offerings", href: "/manage/offerings", icon: Tag },
+  { nameKey: "promoCodes", href: "/manage/promo-codes", icon: Percent },
+  { nameKey: "financials", href: "/manage/financials", icon: CreditCard },
+  { nameKey: "products", href: "/manage/products", icon: Package },
+  { nameKey: "inventory", href: "/manage/inventory", icon: Warehouse },
+  { nameKey: "purchaseOrders", href: "/manage/purchase-orders", icon: ClipboardList },
+  { nameKey: "landingPages", href: "/manage/landing-pages", icon: Globe },
+  { nameKey: "utmBuilder", href: "/manage/utm-builder", icon: Link2 },
+  { nameKey: "campaigns", href: "/manage/campaigns", icon: Megaphone },
+  { nameKey: "tasks", href: "/manage/tasks", icon: CheckSquare },
+  { nameKey: "reports", href: "/manage/reports", icon: BarChart3 },
+  { nameKey: "importData", href: "/manage/import", icon: Upload },
+  { nameKey: "smsInbox", href: "/manage/sms-inbox", icon: MessageSquare },
+  { nameKey: "notifications", href: "/manage/notification-settings", icon: Bell },
+  { nameKey: "settings", href: "/manage/settings", icon: Settings },
 ];
 
 export function ManageLayout({ children }: ManageLayoutProps) {
   const location = useLocation();
   const { profile } = useAuth();
+  const { t } = useTranslation('manage');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const isActive = (href: string) => {
@@ -97,7 +99,7 @@ export function ManageLayout({ children }: ManageLayoutProps) {
             </Button>
             <Link to="/home" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
               <ChevronLeft className="h-4 w-4" />
-              <span className="text-sm hidden sm:inline">Student View</span>
+              <span className="text-sm hidden sm:inline">{t('studentView')}</span>
             </Link>
             <div className="h-5 w-px bg-border mx-1" />
             <Link to="/manage" className="flex items-center gap-2">
@@ -106,7 +108,7 @@ export function ManageLayout({ children }: ManageLayoutProps) {
               </div>
               <div className="hidden sm:block">
                 <p className="text-sm font-semibold leading-none">Tandava Yoga</p>
-                <p className="text-xs text-muted-foreground">Studio Management</p>
+                <p className="text-xs text-muted-foreground">{t('studioManagement')}</p>
               </div>
             </Link>
           </div>
@@ -134,27 +136,27 @@ export function ManageLayout({ children }: ManageLayoutProps) {
                 <div className="flex items-center gap-2 p-2 mb-1">
                   <div className="flex flex-col">
                     <p className="text-sm font-semibold">{profileName}</p>
-                    <p className="text-xs text-muted-foreground">Owner</p>
+                    <p className="text-xs text-muted-foreground">{t('owner')}</p>
                   </div>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild className="rounded-lg">
                   <Link to="/account" className="flex items-center gap-2 cursor-pointer">
                     <User className="h-4 w-4" />
-                    My Account
+                    {t('myAccount')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="rounded-lg">
                   <Link to="/manage/settings" className="flex items-center gap-2 cursor-pointer">
                     <Settings className="h-4 w-4" />
-                    Studio Settings
+                    {t('studioSettings')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild className="rounded-lg">
                   <Link to="/auth/login" className="flex items-center gap-2 cursor-pointer text-destructive">
                     <LogOut className="h-4 w-4" />
-                    Sign out
+                    {t('signOut')}
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -174,7 +176,7 @@ export function ManageLayout({ children }: ManageLayoutProps) {
           <nav className="flex flex-col gap-1 p-3 h-full">
             {manageNavigation.map((item) => (
               <Link
-                key={item.name}
+                key={item.nameKey}
                 to={item.href}
                 onClick={() => setSidebarOpen(false)}
                 className={cn(
@@ -185,7 +187,7 @@ export function ManageLayout({ children }: ManageLayoutProps) {
                 )}
               >
                 <item.icon className="h-4 w-4 shrink-0" />
-                {item.name}
+                {t(`nav.${item.nameKey}`)}
               </Link>
             ))}
           </nav>

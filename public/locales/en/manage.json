@@ -57,6 +57,10 @@
     "supabaseConnected": "Supabase connected",
     "stripeConfigured": "Stripe configured",
     "emailConfigured": "Email provider configured",
-    "sentryConfigured": "Sentry error monitoring"
-  }
+    "sentryConfigured": "Sentry error monitoring",
+    "setEnvVar": "Set {{key}} in .env"
+  },
+
+  "studioManagement": "Studio Management",
+  "owner": "Owner"
 }

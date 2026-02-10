@@ -94,9 +94,23 @@
     "poweredBy": "Powered by",
     "openSourceStudio": "Open Source Studio Management"
   },
+  "type": {
+    "class": "Class",
+    "workshop": "Workshop",
+    "retreat": "Retreat",
+    "appointment": "Appointment"
+  },
+  "guest": "Guest",
+  "studioManagement": "Studio Management",
+  "notFound": {
+    "title": "Oops! Page not found",
+    "returnHome": "Return to Home"
+  },
   "demo": {
     "title": "Tandava Open Source Studio Demo",
-    "switchRole": "Switch:"
+    "switchRole": "Switch:",
+    "studioOwner": "Studio Owner",
+    "demoMode": "(Demo mode)"
   },
   "contact": {
     "yourName": "Your Name",

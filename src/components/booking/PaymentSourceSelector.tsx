@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Check, CreditCard, Ticket, Infinity, Sparkles } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
+import { useTranslation } from "react-i18next";
 
 export type PaymentSourceType = "MEMBERSHIP" | "CLASS_PACK" | "WORKSHOP_PASS" | "DROP_IN";
 
@@ -33,12 +34,7 @@ const sourceIcons: Record<PaymentSourceType, React.ReactNode> = {
   DROP_IN: <CreditCard className="h-5 w-5" />,
 };
 
-const sourceLabels: Record<PaymentSourceType, string> = {
-  MEMBERSHIP: "Membership",
-  CLASS_PACK: "Class Pack",
-  WORKSHOP_PASS: "Workshop Pass",
-  DROP_IN: "Drop-in",
-};
+// sourceLabels moved to component body for i18n access
 
 export function PaymentSourceSelector({
   sources,
@@ -48,7 +44,15 @@ export function PaymentSourceSelector({
   onSelect,
 }: PaymentSourceSelectorProps) {
   const { formatPrice: localeFormatPrice } = useLocale();
+  const { t } = useTranslation('booking');
   const formatPrice = (cents: number) => localeFormatPrice(cents, currency);
+
+  const sourceLabels: Record<PaymentSourceType, string> = {
+    MEMBERSHIP: t('paymentSources.membership'),
+    CLASS_PACK: t('paymentSources.classPack'),
+    WORKSHOP_PASS: t('paymentSources.workshopPass'),
+    DROP_IN: t('paymentSources.dropIn'),
+  };
 
   // Sort: covering sources first, then by type
   const sortedSources = [...sources].sort((a, b) => {
@@ -63,8 +67,8 @@ export function PaymentSourceSelector({
     {
       id: "drop-in",
       type: "DROP_IN" as PaymentSourceType,
-      name: "Pay Drop-in Rate",
-      description: "One-time payment",
+      name: t('payDropInRate'),
+      description: t('oneTimePayment'),
       covers: true,
       priceCents: dropInPriceCents,
     },
@@ -72,7 +76,7 @@ export function PaymentSourceSelector({
 
   return (
     <div className="space-y-3">
-      <h3 className="font-semibold text-sm">Select payment method</h3>
+      <h3 className="font-semibold text-sm">{t('selectPaymentMethod')}</h3>
       
       {allSources.map((source) => {
         const isSelected = selectedId === source.id;
@@ -120,19 +124,19 @@ export function PaymentSourceSelector({
                     {isRecommended && (
                       <Badge variant="class" className="text-xs gap-1">
                         <Sparkles className="h-3 w-3" />
-                        Recommended
+                        {t('recommended')}
                       </Badge>
                     )}
                   </div>
                   
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     {source.remaining !== undefined && (
-                      <span>{source.remaining} classes remaining</span>
+                      <span>{t('classesRemaining', { count: source.remaining })}</span>
                     )}
                     {source.expiresAt && (
                       <>
                         <span>•</span>
-                        <span>Expires {source.expiresAt}</span>
+                        <span>{t('expires', { date: source.expiresAt })}</span>
                       </>
                     )}
                     {source.description && !source.remaining && (
@@ -142,7 +146,7 @@ export function PaymentSourceSelector({
 
                   {!source.covers && (
                     <p className="text-xs text-destructive mt-1">
-                      This {sourceLabels[source.type].toLowerCase()} doesn't cover this class type
+                      {t('doesntCover', { type: sourceLabels[source.type].toLowerCase() })}
                     </p>
                   )}
                 </div>
@@ -157,7 +161,7 @@ export function PaymentSourceSelector({
                 {/* Free indicator for membership/packs */}
                 {source.covers && !source.priceCents && (
                   <div className="flex-shrink-0">
-                    <Badge variant="mint">Included</Badge>
+                    <Badge variant="mint">{t('included')}</Badge>
                   </div>
                 )}
               </div>

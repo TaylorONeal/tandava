@@ -14,6 +14,7 @@ import { Clock, MapPin, AlertCircle, Shield, ChevronLeft, Zap, Check } from "luc
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/contexts/LocaleContext";
+import { useTranslation } from "react-i18next";
 
 // Quick book = single-tap for members with active coverage
 // Standard = payment selection → confirm (for drop-in or multiple options)
@@ -61,6 +62,7 @@ const mockPaymentSources: PaymentSource[] = [
 
 export function BookingModal({ open, onOpenChange, booking, enableQuickBook = true }: BookingModalProps) {
   const { formatPrice } = useLocale();
+  const { t } = useTranslation('booking');
 
   // Determine if user can quick-book (has active membership that covers this class)
   const primaryCoveringSource = useMemo(() => {
@@ -104,7 +106,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
   const handleContinue = () => {
     if (!selectedSource) {
       toast({
-        title: "Please select a payment method",
+        title: t('pleaseSelectPayment'),
         variant: "destructive",
       });
       return;
@@ -125,10 +127,10 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
     setStep("success");
 
     toast({
-      title: isFull ? "Added to waitlist!" : "You're booked!",
+      title: isFull ? t('addedToWaitlist') : t('youreBooked'),
       description: isFull
-        ? "We'll notify you if a spot opens up"
-        : `See you at ${booking.studio}`,
+        ? t('wellNotify')
+        : t('seeYouAt', { studio: booking.studio }),
     });
   };
 
@@ -149,10 +151,10 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
     setStep("success");
 
     toast({
-      title: isFull ? "Added to waitlist!" : "Booking confirmed!",
+      title: isFull ? t('addedToWaitlist') : t('bookingConfirmed'),
       description: isFull
-        ? "We'll notify you if a spot opens up"
-        : `See you at ${booking.studio}`,
+        ? t('wellNotify')
+        : t('seeYouAt', { studio: booking.studio }),
     });
   };
 
@@ -166,10 +168,10 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
   };
 
   const typeLabels = {
-    class: "Class",
-    workshop: "Workshop",
-    retreat: "Retreat",
-    appointment: "Appointment",
+    class: t('common:type.class'),
+    workshop: t('common:type.workshop'),
+    retreat: t('common:type.retreat'),
+    appointment: t('common:type.appointment'),
   };
 
   return (
@@ -192,10 +194,10 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
             }}
             onClose={handleClose}
             onAddToCalendar={() => {
-              toast({ title: "Added to calendar" });
+              toast({ title: t('addedToCalendar') });
             }}
             onInviteFriend={() => {
-              toast({ title: "Share link copied!" });
+              toast({ title: t('shareLinkCopied') });
             }}
           />
         ) : step === "quick" ? (
@@ -211,7 +213,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
                 <Clock className="h-4 w-4" />
                 <span>{booking.dateTime}</span>
                 <span>•</span>
-                <span>{booking.duration} min</span>
+                <span>{t('common:units.min', { count: booking.duration })}</span>
               </div>
               <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4" />
@@ -223,7 +225,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
             {selectedSource && (
               <div className="flex items-center justify-center gap-2 text-sm">
                 <Check className="h-4 w-4 text-primary" />
-                <span>Using {selectedSource.name}</span>
+                <span>{t('usingSource', { source: selectedSource.name })}</span>
               </div>
             )}
 
@@ -232,8 +234,8 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
               <div className="flex items-start gap-2 p-3 rounded-xl bg-warning/10 border border-warning/20 text-sm">
                 <AlertCircle className="h-4 w-4 text-warning flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium text-warning">Class is full</p>
-                  <p className="text-muted-foreground">You'll be added to the waitlist.</p>
+                  <p className="font-medium text-warning">{t('classIsFull')}</p>
+                  <p className="text-muted-foreground">{t('youllBeWaitlisted')}</p>
                 </div>
               </div>
             )}
@@ -251,19 +253,19 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
               {isProcessing ? (
                 <>
                   <span className="h-5 w-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                  Booking...
+                  {t('booking')}
                 </>
               ) : (
                 <>
                   <Zap className="h-5 w-5" />
-                  {isFull ? "Join Waitlist" : "Book Now"}
+                  {isFull ? t('joinWaitlist') : t('bookNow')}
                 </>
               )}
             </Button>
 
             {/* Cancellation policy note - inline, not a checkbox */}
             <p className="text-xs text-center text-muted-foreground">
-              Free cancellation up to {cancellationHours}h before class
+              {t('freeCancellationShort', { hours: cancellationHours })}
             </p>
 
             {/* Option to see other payment methods */}
@@ -271,7 +273,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
               onClick={handleShowAllOptions}
               className="w-full text-sm text-muted-foreground hover:text-foreground text-center py-2 touch-manipulation"
             >
-              Use different payment method
+              {t('useDifferentPayment')}
             </button>
           </div>
         ) : (
@@ -287,8 +289,8 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
               )}
               <DialogTitle>
                 {step === "select"
-                  ? (isFull ? "Join Waitlist" : "Book Class")
-                  : "Confirm Booking"
+                  ? (isFull ? t('joinWaitlist') : t('bookClass'))
+                  : t('confirmBooking')
                 }
               </DialogTitle>
             </DialogHeader>
@@ -313,7 +315,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
                   <span>{booking.dateTime}</span>
                 </div>
                 <span>•</span>
-                <span>{booking.duration} min</span>
+                <span>{t('common:units.min', { count: booking.duration })}</span>
               </div>
               
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -339,9 +341,9 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
                   <div className="flex items-start gap-2 p-3 rounded-xl bg-warning/10 border border-warning/20">
                     <AlertCircle className="h-4 w-4 text-warning flex-shrink-0 mt-0.5" />
                     <div className="text-sm">
-                      <p className="font-medium text-warning">Class is full</p>
+                      <p className="font-medium text-warning">{t('classIsFull')}</p>
                       <p className="text-muted-foreground">
-                        You'll be added to the waitlist. We'll notify you if a spot opens.
+                        {t('waitlistNotify')}
                       </p>
                     </div>
                   </div>
@@ -353,7 +355,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
                   onClick={handleContinue}
                   disabled={!selectedSource}
                 >
-                  Continue
+                  {t('continue')}
                 </Button>
               </>
             )}
@@ -364,17 +366,17 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
 
                 {/* Payment summary */}
                 <div className="space-y-3">
-                  <h3 className="font-semibold text-sm">Payment Summary</h3>
+                  <h3 className="font-semibold text-sm">{t('paymentSummary')}</h3>
 
                   <div className="flex items-center justify-between p-3 rounded-xl bg-muted/50">
                     <div>
                       <p className="font-medium">{selectedSource?.name}</p>
                       <p className="text-sm text-muted-foreground">
                         {selectedSource?.type === "DROP_IN"
-                          ? "One-time payment"
+                          ? t('oneTimePayment')
                           : selectedSource?.remaining
-                            ? `${selectedSource.remaining - 1} classes remaining after this`
-                            : "Unlimited classes"
+                            ? t('classesRemainingAfter', { count: selectedSource.remaining - 1 })
+                            : t('unlimitedClasses')
                         }
                       </p>
                     </div>
@@ -384,7 +386,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
                           {formatPrice(selectedSource.priceCents)}
                         </span>
                       ) : (
-                        <Badge variant="mint">Included</Badge>
+                        <Badge variant="mint">{t('included')}</Badge>
                       )}
                     </div>
                   </div>
@@ -394,8 +396,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
                 <div className="flex items-start gap-2 p-3 rounded-xl bg-muted/30">
                   <Shield className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
                   <p className="text-xs text-muted-foreground">
-                    Free cancellation up to {cancellationHours}h before class.
-                    Late cancellations may incur a fee.
+                    {t('freeCancellation', { hours: cancellationHours })}
                   </p>
                 </div>
 
@@ -409,20 +410,20 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
                   {isProcessing ? (
                     <span className="flex items-center gap-2">
                       <span className="h-5 w-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                      Processing...
+                      {t('processing')}
                     </span>
                   ) : isFull ? (
-                    "Join Waitlist"
+                    t('joinWaitlist')
                   ) : selectedSource?.priceCents ? (
-                    `Pay ${formatPrice(selectedSource.priceCents)}`
+                    t('payAmount', { amount: formatPrice(selectedSource.priceCents) })
                   ) : (
-                    "Confirm Booking"
+                    t('confirmBooking')
                   )}
                 </Button>
 
                 {/* Agreement note */}
                 <p className="text-xs text-center text-muted-foreground">
-                  By booking, you agree to the cancellation policy
+                  {t('agreeToPolicy')}
                 </p>
               </>
             )}

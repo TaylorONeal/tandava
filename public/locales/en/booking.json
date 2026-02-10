@@ -39,6 +39,22 @@
   "shareLinkCopied": "Share link copied!",
 
   "freeCancellation": "Free cancellation up to {{hours}}h before class. Late cancellations may incur a fee.",
+  "bookClass": "Book Class",
+  "book": "Book",
+  "waitlist": "Waitlist",
+  "bookingConfirmed": "Booking confirmed!",
+  "classIsFull": "Class is full",
+  "youllBeWaitlisted": "You'll be added to the waitlist.",
+  "waitlistNotify": "You'll be added to the waitlist. We'll notify you if a spot opens.",
+  "usingSource": "Using {{source}}",
+  "useDifferentPayment": "Use different payment method",
+  "paymentSummary": "Payment Summary",
+  "agreeToPolicy": "By booking, you agree to the cancellation policy",
+  "freeCancellationShort": "Free cancellation up to {{hours}}h before class",
+  "payDropInRate": "Pay Drop-in Rate",
+  "continue": "Continue",
+  "minutes_one": "{{count}} minute",
+  "minutes_other": "{{count}} minutes",
   "pleaseSelectPayment": "Please select a payment method",
 
   "addOns": {

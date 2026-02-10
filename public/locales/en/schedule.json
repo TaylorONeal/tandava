@@ -6,5 +6,7 @@
   "classesTaught": "classes taught",
   "heated": "Heated",
   "joinOnline": "Join online",
-  "locationPlusOnline": "{{location}} + Online"
+  "locationPlusOnline": "{{location}} + Online",
+  "live": "Live",
+  "spotsLeft": "{{count}} spots left"
 }

@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookingAddOns } from "./BookingAddOns";
 import { CheckCircle2, Calendar, Clock, MapPin, Share2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface BookingConfirmationProps {
   booking: {
@@ -53,12 +54,13 @@ export function BookingConfirmation({
   onInviteFriend,
 }: BookingConfirmationProps) {
   const [showAddOns, setShowAddOns] = useState(true);
+  const { t } = useTranslation('booking');
 
   const typeLabels = {
-    class: "Class",
-    workshop: "Workshop",
-    retreat: "Retreat",
-    appointment: "Appointment",
+    class: t('common:type.class'),
+    workshop: t('common:type.workshop'),
+    retreat: t('common:type.retreat'),
+    appointment: t('common:type.appointment'),
   };
 
   return (
@@ -69,9 +71,9 @@ export function BookingConfirmation({
           <CheckCircle2 className="h-8 w-8 text-success" />
         </div>
         <div>
-          <h2 className="text-xl font-bold">You're booked!</h2>
+          <h2 className="text-xl font-bold">{t('youreBooked')}</h2>
           <p className="text-muted-foreground text-sm mt-1">
-            We can't wait to see you on the mat
+            {t('cantWaitToSee')}
           </p>
         </div>
       </div>
@@ -86,7 +88,7 @@ export function BookingConfirmation({
               </Badge>
               <h3 className="font-semibold">{booking.title}</h3>
               <p className="text-sm text-muted-foreground">
-                with {booking.teacher}
+                {t('withTeacher', { teacher: booking.teacher })}
               </p>
             </div>
           </div>
@@ -98,7 +100,7 @@ export function BookingConfirmation({
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="h-4 w-4" />
-              <span>{booking.duration} minutes</span>
+              <span>{t('minutes', { count: booking.duration })}</span>
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <MapPin className="h-4 w-4" />
@@ -109,11 +111,11 @@ export function BookingConfirmation({
           <div className="flex gap-2 pt-2">
             <Button variant="outline" size="sm" onClick={onAddToCalendar}>
               <Calendar className="h-4 w-4 mr-1.5" />
-              Add to Calendar
+              {t('addToCalendar')}
             </Button>
             <Button variant="outline" size="sm" onClick={onInviteFriend}>
               <Share2 className="h-4 w-4 mr-1.5" />
-              Invite Friend
+              {t('inviteFriend')}
             </Button>
           </div>
         </CardContent>
@@ -134,7 +136,7 @@ export function BookingConfirmation({
       {/* Done button */}
       {!showAddOns && (
         <Button className="w-full" onClick={onClose}>
-          Done
+          {t('done')}
         </Button>
       )}
     </div>

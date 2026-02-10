@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Clock, MapPin, Users, Flame, Video, Monitor, Wifi } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { DeliveryMode } from "@/types/database";
+import { useTranslation } from "react-i18next";
 
 export interface ClassCardProps {
   id: string;
@@ -34,27 +35,19 @@ const levelVariants = {
   ADVANCED: "advanced",
 } as const;
 
-const levelLabels = {
-  BEGINNER: "Beginner",
-  ALL: "All Levels",
-  INTERMEDIATE: "Intermediate",
-  ADVANCED: "Advanced",
-};
+// levelLabels moved to component body for i18n access
 
-// Delivery mode badge config
-const deliveryModeConfig: Record<DeliveryMode, { label: string; icon: typeof Video; className: string }> = {
+// deliveryModeConfig moved to component body for i18n access
+const deliveryModeStyles: Record<DeliveryMode, { icon: typeof Video; className: string }> = {
   in_person: {
-    label: 'In-Person',
     icon: MapPin,
     className: 'bg-stone-100 text-stone-700 border-stone-200',
   },
   virtual: {
-    label: 'Virtual',
     icon: Video,
     className: 'bg-blue-100 text-blue-700 border-blue-200',
   },
   hybrid: {
-    label: 'Hybrid',
     icon: Wifi,
     className: 'bg-violet-100 text-violet-700 border-violet-200',
   },
@@ -77,10 +70,18 @@ export function ClassCard({
   isLive = false,
   virtualLink,
 }: ClassCardProps) {
+  const { t } = useTranslation('schedule');
   const isFull = spotsLeft === 0;
   const spotsPercentage = ((capacity - spotsLeft) / capacity) * 100;
-  const modeConfig = deliveryModeConfig[deliveryMode];
-  const ModeIcon = modeConfig.icon;
+  const modeStyle = deliveryModeStyles[deliveryMode];
+  const ModeIcon = modeStyle.icon;
+
+  const levelLabels = {
+    BEGINNER: t('common:levels.beginner'),
+    ALL: t('common:levels.allLevels'),
+    INTERMEDIATE: t('common:levels.intermediate'),
+    ADVANCED: t('common:levels.advanced'),
+  };
 
   return (
     <div className="group flex rounded-2xl border border-border bg-card overflow-hidden shadow-card transition-all duration-200 hover:shadow-card-hover hover:scale-[1.01]">
@@ -93,26 +94,26 @@ export function ClassCard({
           <div className="flex-1 min-w-0">
             {/* Badges row */}
             <div className="flex flex-wrap items-center gap-2 mb-3">
-              <Badge variant="class">Class</Badge>
+              <Badge variant="class">{t('classDetail')}</Badge>
               <Badge variant={levelVariants[level]}>{levelLabels[level]}</Badge>
               {isHeated && (
                 <Badge variant="heated" className="gap-1">
                   <Flame className="h-3 w-3" />
-                  Heated
+                  {t('heated')}
                 </Badge>
               )}
               {/* Delivery mode badge */}
               {deliveryMode !== 'in_person' && (
-                <Badge className={cn("gap-1 border", modeConfig.className)}>
+                <Badge className={cn("gap-1 border", modeStyle.className)}>
                   <ModeIcon className="h-3 w-3" />
-                  {modeConfig.label}
+                  {t(`common:deliveryMode.${deliveryMode}`)}
                 </Badge>
               )}
               {/* Live indicator */}
               {isLive && (deliveryMode === 'virtual' || deliveryMode === 'hybrid') && (
                 <Badge className="gap-1 bg-red-500 text-white border-red-500 animate-pulse">
                   <span className="w-2 h-2 rounded-full bg-white" />
-                  Live
+                  {t('live')}
                 </Badge>
               )}
             </div>
@@ -138,7 +139,7 @@ export function ClassCard({
                 <Clock className="h-4 w-4" />
                 <span>{startTime}</span>
                 <span className="text-muted-foreground/50">•</span>
-                <span>{duration} min</span>
+                <span>{t('common:units.min', { count: duration })}</span>
               </div>
               {deliveryMode === 'in_person' && (
                 <div className="flex items-center gap-1.5">
@@ -149,13 +150,13 @@ export function ClassCard({
               {deliveryMode === 'virtual' && (
                 <div className="flex items-center gap-1.5">
                   <Video className="h-4 w-4" />
-                  <span>Join online</span>
+                  <span>{t('joinOnline')}</span>
                 </div>
               )}
               {deliveryMode === 'hybrid' && (
                 <div className="flex items-center gap-1.5">
                   <Wifi className="h-4 w-4" />
-                  <span>{location} + Online</span>
+                  <span>{t('locationPlusOnline', { location })}</span>
                 </div>
               )}
             </div>
@@ -171,7 +172,7 @@ export function ClassCard({
                   "font-medium",
                   isFull ? "text-destructive" : spotsLeft <= 3 ? "text-warning" : "text-foreground"
                 )}>
-                  {isFull ? "Full" : `${spotsLeft} left`}
+                  {isFull ? t('booking:full') : t('booking:spotsLeft', { count: spotsLeft })}
                 </span>
               </div>
             </div>
@@ -200,12 +201,12 @@ export function ClassCard({
               {isLive && (deliveryMode === 'virtual' || deliveryMode === 'hybrid') ? (
                 <>
                   <Video className="h-4 w-4 mr-1" />
-                  Join Now
+                  {t('booking:joinNow')}
                 </>
               ) : isFull ? (
-                "Waitlist"
+                t('booking:waitlist')
               ) : (
-                "Book"
+                t('booking:book')
               )}
             </Button>
           </div>

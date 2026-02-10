@@ -8,11 +8,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { signInWithEmail, signInWithGoogle } = useAuth();
+  const { t } = useTranslation('auth');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -28,7 +30,7 @@ const Login = () => {
 
     if (error) {
       toast({
-        title: "Sign in failed",
+        title: t('signInFailed'),
         description: error.message,
         variant: "destructive",
       });
@@ -37,8 +39,8 @@ const Login = () => {
     }
 
     toast({
-      title: "Welcome back!",
-      description: "You have successfully logged in.",
+      title: t('welcomeBackSuccess'),
+      description: t('signInSuccess'),
     });
 
     navigate("/");
@@ -50,7 +52,7 @@ const Login = () => {
     const { error } = await signInWithGoogle();
     if (error) {
       toast({
-        title: "Sign in failed",
+        title: t('signInFailed'),
         description: error.message,
         variant: "destructive",
       });
@@ -73,9 +75,9 @@ const Login = () => {
               </div>
               <span className="text-2xl font-semibold tracking-tight">Tandava</span>
             </Link>
-            <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t('welcomeBack')}</h1>
             <p className="text-muted-foreground mt-2">
-              Sign in to your account to continue
+              {t('signInSubtitle')}
             </p>
           </div>
 
@@ -83,13 +85,13 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('email')}</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder={t('emailPlaceholder')}
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="pl-10"
@@ -101,12 +103,12 @@ const Login = () => {
             {/* Password */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('password')}</Label>
                 <Link
                   to="/auth/reset"
                   className="text-sm text-primary hover:underline"
                 >
-                  Forgot password?
+                  {t('forgotPassword')}
                 </Link>
               </div>
               <div className="relative">
@@ -114,7 +116,7 @@ const Login = () => {
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
+                  placeholder={t('passwordPlaceholder')}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="pl-10 pr-10"
@@ -136,7 +138,7 @@ const Login = () => {
 
             {/* Submit */}
             <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? t('signingIn') : t('signIn')}
             </Button>
           </form>
 
@@ -144,7 +146,7 @@ const Login = () => {
           <div className="relative">
             <Separator />
             <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-xs text-muted-foreground">
-              or continue with
+              {t('orContinueWith')}
             </span>
           </div>
 
@@ -174,21 +176,21 @@ const Login = () => {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              Google
+              {t('google')}
             </Button>
             <Button variant="outline" disabled className="w-full">
               <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
               </svg>
-              Apple
+              {t('apple')}
             </Button>
           </div>
 
           {/* Sign up link */}
           <p className="text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
+            {t('noAccount')}{" "}
             <Link to="/auth/register" className="text-primary hover:underline font-medium">
-              Sign up
+              {t('signUp')}
             </Link>
           </p>
         </div>
@@ -202,9 +204,9 @@ const Login = () => {
               <span className="text-4xl font-bold text-primary-foreground">T</span>
             </div>
           </div>
-          <h2 className="text-3xl font-bold mb-4">Your Practice Awaits</h2>
+          <h2 className="text-3xl font-bold mb-4">{t('practiceAwaits')}</h2>
           <p className="text-muted-foreground text-lg">
-            Book classes, track your progress, and connect with your yoga community – all in one place.
+            {t('practiceAwaitsDesc')}
           </p>
         </div>
       </div>
