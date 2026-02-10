@@ -1,0 +1,17 @@
+{
+  "emailRequired": "Email is required",
+  "emailInvalid": "Please enter a valid email address",
+  "passwordMinLength": "Password must be at least {{min}} characters",
+  "phoneInvalid": "Please enter a valid phone number",
+  "urlInvalid": "Please enter a valid URL",
+  "handleMinLength": "Handle must be at least {{min}} characters",
+  "handleMaxLength": "Handle must be less than {{max}} characters",
+  "handleFormat": "Handle can only contain letters, numbers, underscores, and hyphens",
+  "fieldRequired": "{{field}} is required",
+  "fieldInvalidUrl": "Please enter a valid {{field}}",
+  "endTimeAfterStart": "End time must be after start time",
+  "endDateAfterStart": "End date must be after start date",
+  "mustBePositive": "{{field}} must be greater than 0",
+  "mustBeValidAmount": "{{field}} must be a valid amount",
+  "mustBePositiveNumber": "{{field}} must be a positive number"
+}

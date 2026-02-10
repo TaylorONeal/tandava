@@ -225,6 +225,11 @@ export const CTA_SUGGESTIONS = [
 // TIME & DATE UTILITIES
 // ============================================================================
 
+/**
+ * English day names — kept as fallback constants for contexts where
+ * a locale isn't available (e.g., static data, server-side).
+ * For UI rendering, prefer `useLocale().getDayName()` instead.
+ */
 export const DAYS_OF_WEEK = [
   'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
 ] as const;
@@ -238,37 +243,52 @@ export function getDayName(dayOfWeek: number, short = false): string {
 }
 
 /**
- * Format time from HH:MM to display format (e.g., "9:00 AM")
+ * Format time from HH:MM to display format (e.g., "9:00 AM").
+ *
+ * @param time - Time string in HH:MM format
+ * @param locale - BCP 47 locale code (default: 'en-US'). For locale-aware
+ *   rendering in React components, prefer `useLocale().formatTime()` instead.
  */
-export function formatTime(time: string): string {
+export function formatTime(time: string, locale = 'en-US'): string {
   const [hours, minutes] = time.split(':').map(Number);
-  const period = hours >= 12 ? 'PM' : 'AM';
-  const displayHours = hours % 12 || 12;
-  return `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`;
+  const date = new Date(2000, 0, 1, hours, minutes);
+  return new Intl.DateTimeFormat(locale, {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  }).format(date);
 }
 
 /**
- * Format price from cents to display (e.g., 6500 → "$65")
+ * Format price from cents to display (e.g., 6500 → "$65").
+ *
+ * @param cents - Price in cents
+ * @param currency - ISO 4217 currency code (default: 'USD')
+ * @param locale - BCP 47 locale code (default: 'en-US'). For locale-aware
+ *   rendering in React components, prefer `useLocale().formatPrice()` instead.
  */
-export function formatPrice(cents: number, currency = 'USD'): string {
-  const dollars = cents / 100;
-  if (currency === 'USD') {
-    return dollars % 1 === 0 ? `$${dollars}` : `$${dollars.toFixed(2)}`;
-  }
-  return new Intl.NumberFormat('en-US', {
+export function formatPrice(cents: number, currency = 'USD', locale = 'en-US'): string {
+  return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
-  }).format(dollars);
+    minimumFractionDigits: cents % 100 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(cents / 100);
 }
 
 /**
- * Format date for display
+ * Format date for display.
+ *
+ * @param dateString - ISO date string
+ * @param options - Intl.DateTimeFormat options
+ * @param locale - BCP 47 locale code (default: 'en-US'). For locale-aware
+ *   rendering in React components, prefer `useLocale().formatDate()` instead.
  */
-export function formatDate(dateString: string, options?: Intl.DateTimeFormatOptions): string {
+export function formatDate(dateString: string, options?: Intl.DateTimeFormatOptions, locale = 'en-US'): string {
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', options ?? {
+  return new Intl.DateTimeFormat(locale, options ?? {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
-  });
+  }).format(date);
 }

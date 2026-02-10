@@ -30,6 +30,7 @@ import {
   Store,
   ClipboardCheck,
 } from "lucide-react";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -106,6 +107,9 @@ export function AppLayout({ children }: AppLayoutProps) {
 
           {/* Right side actions */}
           <div className="flex items-center gap-2">
+            {/* Language Switcher */}
+            <LanguageSwitcher compact />
+
             {/* Notifications */}
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />

@@ -1,0 +1,118 @@
+{
+  "nav": {
+    "home": "Home",
+    "schedule": "Schedule",
+    "onDemand": "On-Demand",
+    "studios": "Studios",
+    "instructors": "Instructors",
+    "mySchedule": "My Schedule",
+    "community": "Community"
+  },
+  "userMenu": {
+    "account": "Account",
+    "studioManager": "Studio Manager",
+    "frontDesk": "Front Desk",
+    "platformAdmin": "Platform Admin",
+    "signOut": "Sign out"
+  },
+  "roles": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "teacher": "Instructor",
+    "front_desk": "Front Desk",
+    "student": "Member",
+    "platform_admin": "Platform Admin"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "pending": "Pending",
+    "cancelled": "Cancelled",
+    "expired": "Expired",
+    "paused": "Paused"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset",
+    "back": "Back",
+    "next": "Next",
+    "loading": "Loading...",
+    "sending": "Sending...",
+    "processing": "Processing..."
+  },
+  "levels": {
+    "beginner": "Beginner",
+    "allLevels": "All Levels",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced"
+  },
+  "deliveryMode": {
+    "in_person": "In-Person",
+    "virtual": "Virtual",
+    "hybrid": "Hybrid"
+  },
+  "paymentMethods": {
+    "card": "Credit/Debit Card",
+    "cash": "Cash",
+    "venmo": "Venmo",
+    "cashapp": "Cash App",
+    "paypal": "PayPal",
+    "zelle": "Zelle",
+    "check": "Check",
+    "other": "Other"
+  },
+  "units": {
+    "min": "{{count}} min",
+    "hour_one": "{{count}} hour",
+    "hour_other": "{{count}} hours",
+    "day_one": "{{count}} day",
+    "day_other": "{{count}} days",
+    "week_one": "{{count}} week",
+    "week_other": "{{count}} weeks",
+    "class_one": "{{count}} class",
+    "class_other": "{{count}} classes",
+    "studio_one": "{{count}} studio",
+    "studio_other": "{{count}} studios",
+    "spot_one": "{{count}} spot",
+    "spot_other": "{{count}} spots",
+    "remaining": "{{count}} remaining"
+  },
+  "language": {
+    "label": "Language",
+    "changeLanguage": "Change language"
+  },
+  "footer": {
+    "allRightsReserved": "All rights reserved.",
+    "poweredBy": "Powered by",
+    "openSourceStudio": "Open Source Studio Management"
+  },
+  "demo": {
+    "title": "Tandava Open Source Studio Demo",
+    "switchRole": "Switch:"
+  },
+  "contact": {
+    "yourName": "Your Name",
+    "namePlaceholder": "Jane Doe",
+    "email": "Email",
+    "emailPlaceholder": "jane@example.com",
+    "subject": "Subject",
+    "subjectPlaceholder": "What's this about?",
+    "message": "Message",
+    "messagePlaceholder": "Tell us more...",
+    "sendMessage": "Send Message",
+    "messageSent": "Message sent!",
+    "thankYou": "Thank you for reaching out.",
+    "missingFields": "Missing fields",
+    "fillRequired": "Please fill in the subject and message.",
+    "failedToSend": "Failed to send",
+    "somethingWentWrong": "Something went wrong. Please try again."
+  }
+}

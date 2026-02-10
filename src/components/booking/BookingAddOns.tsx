@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useLocale } from "@/contexts/LocaleContext";
 
 interface AddOnItem {
   id: string;
@@ -32,12 +33,8 @@ export function BookingAddOns({ addOns, onAddOns, onSkip }: BookingAddOnsProps) 
     setSelected(newSelected);
   };
 
-  const formatPrice = (cents: number, currency: string) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-    }).format(cents / 100);
-  };
+  const { formatPrice: localeFormatPrice } = useLocale();
+  const formatPrice = (cents: number, currency: string) => localeFormatPrice(cents, currency);
 
   const handleAddToBooking = () => {
     if (selected.size > 0) {

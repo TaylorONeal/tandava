@@ -13,6 +13,7 @@ import { BookingConfirmation } from "./BookingConfirmation";
 import { Clock, MapPin, AlertCircle, Shield, ChevronLeft, Zap, Check } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/contexts/LocaleContext";
 
 // Quick book = single-tap for members with active coverage
 // Standard = payment selection → confirm (for drop-in or multiple options)
@@ -59,6 +60,8 @@ const mockPaymentSources: PaymentSource[] = [
 ];
 
 export function BookingModal({ open, onOpenChange, booking, enableQuickBook = true }: BookingModalProps) {
+  const { formatPrice } = useLocale();
+
   // Determine if user can quick-book (has active membership that covers this class)
   const primaryCoveringSource = useMemo(() => {
     // Prioritize: membership > class pack > drop-in
@@ -378,7 +381,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
                     <div className="text-right">
                       {selectedSource?.priceCents ? (
                         <span className="font-semibold">
-                          ${(selectedSource.priceCents / 100).toFixed(2)}
+                          {formatPrice(selectedSource.priceCents)}
                         </span>
                       ) : (
                         <Badge variant="mint">Included</Badge>
@@ -411,7 +414,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
                   ) : isFull ? (
                     "Join Waitlist"
                   ) : selectedSource?.priceCents ? (
-                    `Pay $${(selectedSource.priceCents / 100).toFixed(2)}`
+                    `Pay ${formatPrice(selectedSource.priceCents)}`
                   ) : (
                     "Confirm Booking"
                   )}

@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Check, CreditCard, Ticket, Infinity, Sparkles } from "lucide-react";
+import { useLocale } from "@/contexts/LocaleContext";
 
 export type PaymentSourceType = "MEMBERSHIP" | "CLASS_PACK" | "WORKSHOP_PASS" | "DROP_IN";
 
@@ -46,12 +47,8 @@ export function PaymentSourceSelector({
   selectedId,
   onSelect,
 }: PaymentSourceSelectorProps) {
-  const formatPrice = (cents: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-    }).format(cents / 100);
-  };
+  const { formatPrice: localeFormatPrice } = useLocale();
+  const formatPrice = (cents: number) => localeFormatPrice(cents, currency);
 
   // Sort: covering sources first, then by type
   const sortedSources = [...sources].sort((a, b) => {

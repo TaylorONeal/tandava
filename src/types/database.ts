@@ -2573,8 +2573,14 @@ export interface TaskTemplate {
 // UTILITY TYPES
 // ============================================================================
 
-export function formatCents(cents: number, currency: string = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
+/**
+ * Format cents to currency display string.
+ * For locale-aware rendering in React components, prefer `useLocale().formatPrice()`.
+ *
+ * @param locale - BCP 47 locale code (default: 'en-US')
+ */
+export function formatCents(cents: number, currency: string = 'USD', locale: string = 'en-US'): string {
+  return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
   }).format(cents / 100);
