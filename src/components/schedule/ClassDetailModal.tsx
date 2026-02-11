@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { PromoVisual } from "@/components/video/PromoVisual";
 import { Clock, MapPin, Users, Flame, Star, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface ClassDetailModalProps {
   open: boolean;
@@ -53,12 +54,7 @@ const levelVariants: Record<string, "beginner" | "allLevels" | "intermediate" | 
   ADVANCED: "advanced",
 };
 
-const levelLabels: Record<string, string> = {
-  BEGINNER: "Beginner",
-  ALL: "All Levels",
-  INTERMEDIATE: "Intermediate",
-  ADVANCED: "Advanced",
-};
+// levelLabels moved to component body for i18n access
 
 export function ClassDetailModal({
   open,
@@ -66,23 +62,32 @@ export function ClassDetailModal({
   classData,
   onBook,
 }: ClassDetailModalProps) {
+  const { t } = useTranslation('schedule');
+
   if (!classData) return null;
 
   const isFull = classData.spotsLeft === 0;
+
+  const levelLabels: Record<string, string> = {
+    BEGINNER: t('common:levels.beginner'),
+    ALL: t('common:levels.allLevels'),
+    INTERMEDIATE: t('common:levels.intermediate'),
+    ADVANCED: t('common:levels.advanced'),
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex flex-wrap gap-2 mb-2">
-            <Badge variant="class">Class</Badge>
+            <Badge variant="class">{t('classDetail')}</Badge>
             <Badge variant={levelVariants[classData.level]}>
               {levelLabels[classData.level]}
             </Badge>
             {classData.isHeated && (
               <Badge variant="heated" className="gap-1">
                 <Flame className="h-3 w-3" />
-                Heated
+                {t('heated')}
               </Badge>
             )}
           </div>
@@ -109,7 +114,7 @@ export function ClassDetailModal({
           {/* Benefits */}
           {classData.benefits.length > 0 && (
             <div>
-              <h4 className="text-sm font-medium mb-2">Benefits</h4>
+              <h4 className="text-sm font-medium mb-2">{t('benefits')}</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
                 {classData.benefits.map((benefit, i) => (
                   <li key={i} className="flex items-start gap-2">
@@ -124,7 +129,7 @@ export function ClassDetailModal({
           {/* What to bring */}
           {classData.whatToBring.length > 0 && (
             <div>
-              <h4 className="text-sm font-medium mb-2">What to Bring</h4>
+              <h4 className="text-sm font-medium mb-2">{t('whatToBring')}</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
                 {classData.whatToBring.map((item, i) => (
                   <li key={i} className="flex items-start gap-2">
@@ -192,13 +197,13 @@ export function ClassDetailModal({
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="text-muted-foreground">•</span>
-                <span>{classData.duration} min</span>
+                <span>{t('common:units.min', { count: classData.duration })}</span>
               </div>
             </div>
             <div className="flex items-center gap-1.5">
               <Users className="h-4 w-4 text-muted-foreground" />
               <span className={isFull ? "text-destructive" : classData.spotsLeft <= 3 ? "text-warning" : ""}>
-                {isFull ? "Full" : `${classData.spotsLeft} spots left`}
+                {isFull ? t('booking:full') : t('spotsLeft', { count: classData.spotsLeft })}
               </span>
             </div>
           </div>
@@ -210,7 +215,7 @@ export function ClassDetailModal({
             variant={isFull ? "outline" : "default"}
             onClick={onBook}
           >
-            {isFull ? "Join Waitlist" : "Book Class"}
+            {isFull ? t('booking:joinWaitlist') : t('booking:bookClass')}
           </Button>
         </div>
       </DialogContent>

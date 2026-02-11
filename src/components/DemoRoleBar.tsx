@@ -18,6 +18,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface RoleOption {
   role: UserRole;
@@ -29,11 +30,10 @@ interface RoleOption {
   activeBg: string;
 }
 
-const ROLES: RoleOption[] = [
+// Labels are resolved at render time via i18n
+const ROLES: Omit<RoleOption, 'label' | 'shortLabel'>[] = [
   {
     role: "owner",
-    label: "Studio Owner",
-    shortLabel: "Owner",
     icon: LayoutDashboard,
     destination: "/manage",
     accent: "text-amber-400",
@@ -41,8 +41,6 @@ const ROLES: RoleOption[] = [
   },
   {
     role: "teacher",
-    label: "Instructor",
-    shortLabel: "Instructor",
     icon: GraduationCap,
     destination: "/teach",
     accent: "text-blue-400",
@@ -50,8 +48,6 @@ const ROLES: RoleOption[] = [
   },
   {
     role: "front_desk",
-    label: "Front Desk",
-    shortLabel: "Front Desk",
     icon: ClipboardCheck,
     destination: "/staff/checkin",
     accent: "text-violet-400",
@@ -59,8 +55,6 @@ const ROLES: RoleOption[] = [
   },
   {
     role: "student",
-    label: "Member",
-    shortLabel: "Member",
     icon: Sparkles,
     destination: "/home",
     accent: "text-teal-400",
@@ -77,6 +71,21 @@ function DemoRoleBarInner() {
   const navigate = useNavigate();
   const location = useLocation();
   const { activePersona, switchPersona } = useDemo();
+  const { t } = useTranslation('common');
+
+  // Resolve role labels from i18n
+  const roleLabelMap: Record<string, string> = {
+    owner: t('demo.studioOwner'),
+    teacher: t('roles.teacher'),
+    front_desk: t('roles.front_desk'),
+    student: t('roles.student'),
+  };
+  const roleShortMap: Record<string, string> = {
+    owner: t('roles.owner'),
+    teacher: t('roles.teacher'),
+    front_desk: t('roles.front_desk'),
+    student: t('roles.student'),
+  };
 
   // Hide on landing page — role selection happens there
   if (location.pathname === "/" || location.pathname === "/demo") return null;
@@ -84,7 +93,7 @@ function DemoRoleBarInner() {
   const currentRole = ROLES.find((r) => r.role === activePersona.role) ?? ROLES[0];
   const CurrentIcon = currentRole.icon;
 
-  const handleSwitch = (option: RoleOption) => {
+  const handleSwitch = (option: typeof ROLES[number]) => {
     if (option.role === activePersona.role) {
       // Already this role — navigate to its home (refresh effect)
       navigate(option.destination);
@@ -108,12 +117,12 @@ function DemoRoleBarInner() {
             onClick={() => navigate("/")}
             className="text-xs text-white/50 hover:text-white/80 transition-colors hidden sm:inline"
           >
-            Tandava Open Source Studio Demo
+            {t('demo.title')}
           </button>
           <span className="text-white/20 hidden sm:inline">|</span>
           <div className={cn("flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-semibold", currentRole.activeBg)}>
             <CurrentIcon className="h-3 w-3" />
-            <span>{currentRole.label}</span>
+            <span>{roleLabelMap[currentRole.role]}</span>
           </div>
           <span className="text-xs text-white/40 hidden md:inline">
             {activePersona.name}
@@ -123,7 +132,7 @@ function DemoRoleBarInner() {
         {/* Role switcher buttons */}
         <div className="flex items-center gap-1">
           <span className="text-[10px] text-white/30 uppercase tracking-wider mr-2 hidden sm:inline">
-            Switch:
+            {t('demo.switchRole')}
           </span>
           {ROLES.map((option) => {
             const Icon = option.icon;
@@ -140,7 +149,7 @@ function DemoRoleBarInner() {
                 )}
               >
                 <Icon className="h-3 w-3" />
-                <span className="hidden sm:inline">{option.shortLabel}</span>
+                <span className="hidden sm:inline">{roleShortMap[option.role]}</span>
               </button>
             );
           })}

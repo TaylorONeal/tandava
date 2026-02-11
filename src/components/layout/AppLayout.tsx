@@ -30,25 +30,28 @@ import {
   Store,
   ClipboardCheck,
 } from "lucide-react";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
 const navigation = [
-  { name: "Home", href: "/home", icon: Home },
-  { name: "Schedule", href: "/schedule", icon: Calendar },
-  { name: "On-Demand", href: "/on-demand", icon: Play },
-  { name: "Studios", href: "/studios", icon: Building2 },
-  { name: "Instructors", href: "/instructors", icon: Heart },
-  { name: "My Schedule", href: "/my-schedule", icon: CalendarCheck },
-  { name: "Community", href: "/community", icon: Users },
+  { nameKey: "home", href: "/home", icon: Home },
+  { nameKey: "schedule", href: "/schedule", icon: Calendar },
+  { nameKey: "onDemand", href: "/on-demand", icon: Play },
+  { nameKey: "studios", href: "/studios", icon: Building2 },
+  { nameKey: "instructors", href: "/instructors", icon: Heart },
+  { nameKey: "mySchedule", href: "/my-schedule", icon: CalendarCheck },
+  { nameKey: "community", href: "/community", icon: Users },
 ];
 
 export function AppLayout({ children }: AppLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { profile, permissions, signOut } = useAuth();
+  const { t } = useTranslation('common');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const user = profile
@@ -58,7 +61,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         avatar: profile.avatar_url || "",
       }
     : {
-        name: "Guest",
+        name: t('guest'),
         email: "",
         avatar: "",
       };
@@ -89,7 +92,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           <nav className="hidden lg:flex items-center gap-1">
             {navigation.map((item) => (
               <Link
-                key={item.name}
+                key={item.nameKey}
                 to={item.href}
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200",
@@ -99,13 +102,16 @@ export function AppLayout({ children }: AppLayoutProps) {
                 )}
               >
                 <item.icon className="h-4 w-4" />
-                {item.name}
+                {t(`nav.${item.nameKey}`)}
               </Link>
             ))}
           </nav>
 
           {/* Right side actions */}
           <div className="flex items-center gap-2">
+            {/* Language Switcher */}
+            <LanguageSwitcher compact />
+
             {/* Notifications */}
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
@@ -143,7 +149,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 <DropdownMenuItem asChild className="rounded-xl">
                   <Link to="/account" className="flex items-center gap-2 cursor-pointer">
                     <User className="h-4 w-4" />
-                    Account
+                    {t('userMenu.account')}
                   </Link>
                 </DropdownMenuItem>
                 {(showManageLink || showStaffLink || showAdminLink) && (
@@ -153,7 +159,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                       <DropdownMenuItem asChild className="rounded-xl">
                         <Link to="/manage" className="flex items-center gap-2 cursor-pointer">
                           <Store className="h-4 w-4" />
-                          Studio Manager
+                          {t('userMenu.studioManager')}
                         </Link>
                       </DropdownMenuItem>
                     )}
@@ -161,7 +167,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                       <DropdownMenuItem asChild className="rounded-xl">
                         <Link to="/staff/checkin" className="flex items-center gap-2 cursor-pointer">
                           <ClipboardCheck className="h-4 w-4" />
-                          Front Desk
+                          {t('userMenu.frontDesk')}
                         </Link>
                       </DropdownMenuItem>
                     )}
@@ -169,7 +175,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                       <DropdownMenuItem asChild className="rounded-xl">
                         <Link to="/admin" className="flex items-center gap-2 cursor-pointer">
                           <Settings className="h-4 w-4" />
-                          Platform Admin
+                          {t('userMenu.platformAdmin')}
                         </Link>
                       </DropdownMenuItem>
                     )}
@@ -184,7 +190,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                   }}
                 >
                   <LogOut className="h-4 w-4 mr-2" />
-                  Sign out
+                  {t('userMenu.signOut')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -207,7 +213,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             <nav className="container py-4 space-y-1">
               {navigation.map((item) => (
                 <Link
-                  key={item.name}
+                  key={item.nameKey}
                   to={item.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
@@ -218,7 +224,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                   )}
                 >
                   <item.icon className="h-5 w-5" />
-                  {item.name}
+                  {t(`nav.${item.nameKey}`)}
                 </Link>
               ))}
             </nav>
@@ -232,13 +238,13 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Footer */}
       <footer className="border-t border-border bg-card/50 py-6 mt-auto">
         <div className="container flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
-          <span>&copy; {new Date().getFullYear()} Oxatl Yoga. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} Oxatl Yoga. {t('footer.allRightsReserved')}</span>
           <span>
-            Powered by{" "}
+            {t('footer.poweredBy')}{" "}
             <Link to="/" className="text-accent-teal hover:text-accent-teal/80 font-medium transition-colors">
               Tandava
             </Link>
-            {" "}&mdash; Open Source Studio Management
+            {" "}&mdash; {t('footer.openSourceStudio')}
           </span>
         </div>
       </footer>

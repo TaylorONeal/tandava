@@ -711,8 +711,27 @@ None of the target languages (Thai, Balinese, Spanish, Hindi, Portuguese) are RT
 
 ## Other Localization Concerns
 
-### 1. Timezone handling
-Already partially handled — `Studio.timezone` exists. Ensure all user-facing times are rendered in the studio's timezone (for schedules) or user's timezone (for notifications).
+### 1. Timezone handling — IMPLEMENTED
+**Decision: Class times render in the CLASS LOCATION's timezone, not the user's device.**
+
+This is critical for studios with members who travel, use VPNs, or book from different time zones. MindBody gets this wrong — if you're on a VPN or traveling, class times shift based on your device, creating booking confusion.
+
+**Tandava's approach (implemented in `LocaleContext.formatClassDateTime()`):**
+
+| Content type | Timezone used | Rationale |
+|--------------|---------------|-----------|
+| Scheduled classes | Location's timezone | A 6 PM class in Austin is always 6 PM, no matter where you browse from |
+| On-demand / virtual | Studio's default timezone | No physical location to anchor to |
+| Notifications | User's timezone (future) | "Your class starts in 2 hours" should be relative to the user |
+| Calendar exports (.ics) | UTC with TZID | Standard iCal format, calendar app handles conversion |
+
+```typescript
+// Example: Class in Austin (America/Chicago) viewed from Bangkok
+formatClassDateTime(startsAt, { timezone: 'America/Chicago' })
+// → "Sat, Feb 7, 6:00 PM"  (always Austin time, regardless of device)
+```
+
+This is handled by passing the class location's IANA timezone to `Intl.DateTimeFormat`. The `useLocale().formatClassDateTime()` hook defaults to the studio's timezone and accepts an optional location timezone override.
 
 ### 2. Phone number formatting
 Different countries have different formats. Use a library like `libphonenumber-js` for display formatting if expanding internationally.
@@ -723,8 +742,8 @@ Address formats vary wildly. Thailand: building, soi, road, district, province, 
 ### 4. Name ordering
 Thai and Hindi names follow Western order (given + family). No special handling needed for target languages. But if Japanese/Chinese/Korean are added, family name comes first.
 
-### 5. Legal/compliance text
-Waivers, terms of service, privacy policies need professional translation. These are legal documents — MT is not sufficient.
+### 5. Legal/compliance text — English only for now
+Waivers, terms of service, privacy policies remain in English for v1. Future support for alternate language legal text can use the same JSONB translation approach as studio content (`content_i18n` field). Professional human translation is required — MT is not sufficient for legal documents.
 
 ### 6. Image & media localization
 - Screenshots in documentation
@@ -751,77 +770,149 @@ Each locale needs:
 
 ## Phased Implementation Plan
 
-### Phase 1: Foundation (Estimated: 3-5 days of dev work)
+### Phase 1: Foundation — DONE
 
-- [ ] Install `react-i18next`, `i18next`, `i18next-http-backend`, `i18next-browser-languagedetector`
-- [ ] Create `src/i18n/` directory structure with English JSON files
-- [ ] Initialize i18next in `main.tsx`
-- [ ] Wrap app in `<I18nextProvider>`
-- [ ] Create locale-aware `formatDate()`, `formatTime()`, `formatPrice()` utilities
-- [ ] Replace `DAYS_OF_WEEK` arrays with `Intl.DateTimeFormat`
-- [ ] Add `useLocale()` hook that provides current locale + formatting functions
-- [ ] Add language switcher component (globe icon in navbar/footer)
+- [x] Install `react-i18next`, `i18next`, `i18next-http-backend`, `i18next-browser-languagedetector`
+- [x] Create `src/i18n/` directory structure with English JSON namespace files
+- [x] Initialize i18next in `main.tsx`
+- [x] Create `LocaleProvider` context with `useLocale()` hook
+- [x] Wire `LocaleProvider` into App.tsx provider stack
+- [x] Create locale-aware formatters: `formatDate()`, `formatTime()`, `formatPrice()`, `formatNumber()`, `formatRelativeTime()`, `formatClassDateTime()`, `getDayName()`
+- [x] Timezone-aware class time formatting (renders in class location's timezone, not device)
+- [x] Update `formatPrice()`, `formatDate()`, `formatTime()` in `lib/reference-data.ts` to accept locale parameter
+- [x] Update `formatCents()` in `types/database.ts` to accept locale parameter
+- [x] Replace hardcoded `Intl.NumberFormat("en-US")` in `BookingModal`, `PaymentSourceSelector`, `BookingAddOns` with `useLocale().formatPrice()`
+- [x] Add `LanguageSwitcher` component (globe icon dropdown in AppLayout header)
+- [x] Create English namespace files: `common`, `booking`, `schedule`, `manage`, `auth`, `validation`, `email`
+- [x] Create placeholder translation files for all target languages (th, es, hi, pt, ban)
+- [x] Define Balinese → Indonesian Intl fallback mapping
+- [x] Configure language detection cascade (localStorage → browser → English)
+- [x] US calendar style enforced (12-hour AM/PM, Sunday week start)
 
-### Phase 2: Core String Extraction (Estimated: 5-8 days)
+### Phase 2: Core String Extraction (Roadmap — estimated 5-8 days)
 
-- [ ] Extract booking flow strings (BookingModal, PaymentSourceSelector, BookingAddOns, BookingConfirmation)
-- [ ] Extract schedule strings (ClassCard, ClassDetailModal, Schedule page)
-- [ ] Extract auth strings (Login, Register)
-- [ ] Extract management nav and dashboard strings
-- [ ] Extract validation messages from `lib/validation.ts` and Zod schemas
-- [ ] Extract toast messages across all components
-- [ ] Extract reference data labels (levels, delivery modes, payment methods)
-- [ ] Set up `i18next-parser` config and verify extraction
+- [ ] Replace hardcoded strings with `t()` calls in booking flow components
+- [ ] Replace hardcoded strings in schedule components (ClassCard, ClassDetailModal)
+- [ ] Replace hardcoded strings in auth pages (Login, Register)
+- [ ] Replace hardcoded strings in management nav and dashboard
+- [ ] Replace validation messages in `lib/validation.ts` and Zod schemas with translation keys
+- [ ] Replace toast messages across all components
+- [ ] Replace reference data labels (levels, delivery modes, payment methods)
+- [ ] Set up `i18next-parser` config for automated key extraction
 
-### Phase 3: First Non-English Language — Thai (Estimated: 3-5 days + translator time)
+### Phase 3: First Non-English Language — Thai (Roadmap — 3-5 days + translator)
 
 - [ ] Complete Thai translation of all namespace files
 - [ ] Test Thai rendering across all UI surfaces
-- [ ] Fix any layout/overflow issues with Thai text
+- [ ] Fix layout/overflow issues with Thai text (no word spaces)
 - [ ] Verify date/time/currency formatting with `th` locale
-- [ ] Test Thai input in forms (search, contact, etc.)
-- [ ] Add Thai to language switcher
+- [ ] Test Thai input in forms
 
-### Phase 4: Additional Languages (Estimated: 2-3 days each + translator time)
+### Phase 4: Additional Languages (Roadmap — 2-3 days each + translator)
 
-- [ ] Spanish translations
-- [ ] Balinese translations (with Indonesian Intl fallback)
-- [ ] Hindi translations + Devanagari font stack
-- [ ] Portuguese (Brazilian) translations
+- [ ] Spanish (es) — neutral Latin American first, regional variants later
+- [ ] Balinese (ban) — manual translation needed, no major MT support
+- [ ] Hindi (hi) — add Devanagari font to Tailwind font stack
+- [ ] Portuguese (pt-BR) — Brazilian Portuguese first
 
-### Phase 5: Studio-Level Localization (Estimated: 3-5 days)
+### Phase 5: Studio-Level Localization (Roadmap — 3-5 days)
 
-- [ ] Add `default_locale` and `supported_locales` to Studio schema
-- [ ] Build language settings UI in Studio Settings
-- [ ] Implement studio content translation (JSONB approach for offerings, events, policies)
+- [ ] Database migration: add `default_locale`, `supported_locales` to studios table
+- [ ] Database migration: add `preferred_locale` to profiles table
+- [ ] Language settings UI in Studio Settings (`/manage/settings`)
+- [ ] Pass studio locale settings to `LocaleProvider` from studio record
+- [ ] Studio content translation via JSONB fields (offerings, events, policies)
 - [ ] Localize email templates with locale parameter
 - [ ] Localize SMS/push notification templates
-- [ ] Add `preferred_locale` to Profile schema
-- [ ] Implement language detection cascade (user -> studio -> browser -> English)
 
-### Phase 6: Polish & QA (Estimated: 3-5 days)
+### Phase 6: Polish & QA (Roadmap — 3-5 days)
 
-- [ ] Pseudo-translation testing for text expansion
+- [ ] Pseudo-translation testing for text expansion issues
 - [ ] Screen reader testing in each language
 - [ ] SEO hreflang setup for landing pages
-- [ ] Documentation for translators (style guide, glossary, process)
+- [ ] Translator documentation (style guide, glossary, process)
 - [ ] CI check for missing translation keys
+
+---
+
+## Developer Quick Reference
+
+### Files you need to know
+
+| File | Purpose |
+|------|---------|
+| `src/i18n/index.ts` | i18next initialization, supported languages, namespace config |
+| `src/contexts/LocaleContext.tsx` | `useLocale()` hook — formatting utilities, timezone handling |
+| `src/components/LanguageSwitcher.tsx` | Globe icon dropdown for language selection |
+| `public/locales/en/*.json` | English translation files (7 namespaces) |
+| `public/locales/{lang}/*.json` | Other language translations |
+
+### How to add a translatable string
+
+```tsx
+// 1. Import the hook
+import { useTranslation } from 'react-i18next';
+
+// 2. Use it in your component
+const { t } = useTranslation('booking'); // namespace = JSON filename
+return <Button>{t('bookNow')}</Button>;
+
+// 3. Add the key to public/locales/en/booking.json
+// { "bookNow": "Book Now" }
+```
+
+### How to format prices, dates, and times
+
+```tsx
+import { useLocale } from '@/contexts/LocaleContext';
+
+const { formatPrice, formatDate, formatTime, formatClassDateTime } = useLocale();
+
+formatPrice(6500)                    // "$65" (uses studio currency)
+formatPrice(210000, 'THB')           // "฿2,100"
+formatDate('2026-02-10')             // "Tue, Feb 10"
+formatTime('18:00')                  // "6:00 PM" (always AM/PM)
+formatClassDateTime(startsAt, {      // "Sat, Feb 7, 6:00 PM"
+  timezone: 'America/Chicago'        // renders in CLASS location timezone
+})
+```
+
+### How to add a new language
+
+1. Create directory: `public/locales/{code}/`
+2. Copy English files as templates: `cp public/locales/en/*.json public/locales/{code}/`
+3. Add to `SUPPORTED_LANGUAGES` in `src/i18n/index.ts`
+4. If the language isn't in CLDR (like Balinese), add an `INTL_LOCALE_MAP` entry
+5. Translate the JSON files
+6. Test with `?lng={code}` or browser language override
+
+### Key decisions
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Calendar style | US (Sunday start, 12h AM/PM) | Project requirement |
+| Class time timezone | Class location's timezone | Prevents VPN/travel confusion |
+| Sanskrit yoga terms | Keep as-is, don't translate | Universal in yoga worldwide |
+| Legal text | English only (v1) | Requires professional translation |
+| Currency | Per-studio setting, not per-language | Business setting, independent of UI language |
+| Balinese formatting | Falls back to Indonesian (id) | Balinese not in CLDR |
 
 ---
 
 ## Summary
 
-Tandava's architecture is well-suited for localization — clean component structure, centralized formatting utilities, and a clear separation between UI and data. The main work is:
+**Phase 1 is complete.** The i18n foundation is in place:
 
-1. **Mechanical extraction** — moving ~1,200 hardcoded strings into JSON namespace files
-2. **Formatting centralization** — replacing 6-8 hardcoded `en-US` formatters with locale-aware versions
-3. **Translation** — the actual human translation work (Thai and Balinese will need professional translators; Spanish, Hindi, and Portuguese have larger translator pools)
-4. **Studio config** — extending the data model to support per-studio and per-user language preferences
+- `react-i18next` is installed and configured with namespace splitting and lazy loading
+- `LocaleProvider` provides locale-aware formatting throughout the app
+- All hardcoded `en-US` formatters in core components have been replaced
+- Timezone-aware class time rendering prevents the "MindBody timezone problem"
+- Language switcher is live in the app header
+- 7 English namespace files are ready for string extraction
+- Template files exist for all 6 target languages
 
-The `react-i18next` approach keeps this maintainable: developers add English keys, translators fill in other languages, and the runtime handles everything else. No special build steps, no code generation, no vendor lock-in.
-
-Total estimated development effort: **20-30 days** for full implementation across all target languages, not including translation work itself.
+**Remaining work is incremental:** extract strings one component at a time (Phase 2), send JSONs to translators (Phase 3-4), and add database-backed studio/user preferences (Phase 5). Each phase is independently shippable.
 
 ---
 
-*Analysis prepared for Tandava, February 2026.*
+*Analysis prepared for Tandava, February 2026. Updated with Phase 1 implementation status.*

@@ -7,41 +7,48 @@
  */
 
 import { z } from 'zod';
+import i18n from '@/i18n';
+
+// Helper to get current translation (resolved at call time, not import time)
+const vt = (key: string, options?: Record<string, unknown>) => i18n.t(key, { ns: 'validation', ...options });
 
 // ============================================================================
 // ZOD SCHEMAS (Auth & Simple Forms)
+// Use getter functions so error messages resolve in the user's current language.
 // ============================================================================
 
-export const emailSchema = z
-  .string()
-  .min(1, 'Email is required')
-  .email('Please enter a valid email address');
+export function getEmailSchema() {
+  return z.string().min(1, vt('emailRequired')).email(vt('emailInvalid'));
+}
 
-export const passwordSchemaSignIn = z
-  .string()
-  .min(6, 'Password must be at least 6 characters');
+export function getPasswordSchemaSignIn() {
+  return z.string().min(6, vt('passwordMinLength', { min: 6 }));
+}
 
-export const passwordSchemaReset = z
-  .string()
-  .min(12, 'Password must be at least 12 characters');
+export function getPasswordSchemaReset() {
+  return z.string().min(12, vt('passwordMinLength', { min: 12 }));
+}
 
-export const phoneSchema = z
-  .string()
-  .regex(/^\+?[\d\s()-]{10,}$/, 'Please enter a valid phone number')
-  .optional()
-  .or(z.literal(''));
+export function getPhoneSchema() {
+  return z.string().regex(/^\+?[\d\s()-]{10,}$/, vt('phoneInvalid')).optional().or(z.literal(''));
+}
 
-export const urlSchema = z
-  .string()
-  .url('Please enter a valid URL')
-  .optional()
-  .or(z.literal(''));
+export function getUrlSchema() {
+  return z.string().url(vt('urlInvalid')).optional().or(z.literal(''));
+}
 
-export const handleSchema = z
-  .string()
-  .min(3, 'Handle must be at least 3 characters')
-  .max(30, 'Handle must be less than 30 characters')
-  .regex(/^[a-z0-9_-]+$/i, 'Handle can only contain letters, numbers, underscores, and hyphens');
+export function getHandleSchema() {
+  return z.string().min(3, vt('handleMinLength', { min: 3 })).max(30, vt('handleMaxLength', { max: 30 })).regex(/^[a-z0-9_-]+$/i, vt('handleFormat'));
+}
+
+// Backwards-compatible static exports (English, evaluated at import time).
+// New code should prefer the getter functions above for proper i18n.
+export const emailSchema = z.string().min(1, 'Email is required').email('Please enter a valid email address');
+export const passwordSchemaSignIn = z.string().min(6, 'Password must be at least 6 characters');
+export const passwordSchemaReset = z.string().min(12, 'Password must be at least 12 characters');
+export const phoneSchema = z.string().regex(/^\+?[\d\s()-]{10,}$/, 'Please enter a valid phone number').optional().or(z.literal(''));
+export const urlSchema = z.string().url('Please enter a valid URL').optional().or(z.literal(''));
+export const handleSchema = z.string().min(3, 'Handle must be at least 3 characters').max(30, 'Handle must be less than 30 characters').regex(/^[a-z0-9_-]+$/i, 'Handle can only contain letters, numbers, underscores, and hyphens');
 
 // ============================================================================
 // VALIDATION HELPERS
@@ -81,7 +88,7 @@ export function validateRequired(
   fieldName: string
 ): string | undefined {
   if (isEmpty(value)) {
-    return `${fieldName} is required`;
+    return vt('fieldRequired', { field: fieldName });
   }
   return undefined;
 }
@@ -98,7 +105,7 @@ export function validateUrl(
     new URL(value);
     return undefined;
   } catch {
-    return `Please enter a valid ${fieldName}`;
+    return vt('fieldInvalidUrl', { field: fieldName });
   }
 }
 
@@ -121,7 +128,7 @@ export function validateTimeRange(
   endTime: string
 ): string | undefined {
   if (startTime >= endTime) {
-    return 'End time must be after start time';
+    return vt('endTimeAfterStart');
   }
   return undefined;
 }
@@ -134,7 +141,7 @@ export function validateDateRange(
   endDate: string
 ): string | undefined {
   if (new Date(endDate) < new Date(startDate)) {
-    return 'End date must be after start date';
+    return vt('endDateAfterStart');
   }
   return undefined;
 }
@@ -147,7 +154,7 @@ export function validatePositiveNumber(
   fieldName = 'Value'
 ): string | undefined {
   if (value <= 0) {
-    return `${fieldName} must be greater than 0`;
+    return vt('mustBePositive', { field: fieldName });
   }
   return undefined;
 }
@@ -160,7 +167,7 @@ export function validatePriceCents(
   fieldName = 'Price'
 ): string | undefined {
   if (!Number.isInteger(value) || value < 0) {
-    return `${fieldName} must be a valid amount`;
+    return vt('mustBeValidAmount', { field: fieldName });
   }
   return undefined;
 }
@@ -173,7 +180,7 @@ export function validateCapacity(
   fieldName = 'Capacity'
 ): string | undefined {
   if (!Number.isInteger(value) || value <= 0) {
-    return `${fieldName} must be a positive number`;
+    return vt('mustBePositiveNumber', { field: fieldName });
   }
   return undefined;
 }

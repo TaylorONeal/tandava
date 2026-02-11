@@ -2,17 +2,20 @@ import { AdminLayout } from "@/components/layout/AdminLayout";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Building2, Users, CreditCard, AlertTriangle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function AdminDashboard() {
+  const { t } = useTranslation('manage');
+
   return (
     <AdminLayout>
       <SEOHead title="Platform Admin" noindex />
 
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Platform Dashboard</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t('admin.platformDashboard')}</h1>
           <p className="text-muted-foreground">
-            Overview of your Tandava instance health and activity.
+            {t('admin.overview')}
           </p>
         </div>
 
@@ -21,52 +24,52 @@ export default function AdminDashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Active Studios
+                {t('admin.activeStudios')}
               </CardTitle>
               <Building2 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">—</div>
-              <p className="text-xs text-muted-foreground">Connect Supabase to see live data</p>
+              <p className="text-xs text-muted-foreground">{t('admin.connectSupabase')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Users
+                {t('admin.totalUsers')}
               </CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">—</div>
-              <p className="text-xs text-muted-foreground">Across all studios</p>
+              <p className="text-xs text-muted-foreground">{t('admin.acrossAllStudios')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Stripe Status
+                {t('admin.stripeStatus')}
               </CardTitle>
               <CreditCard className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">—</div>
-              <p className="text-xs text-muted-foreground">Webhook health</p>
+              <p className="text-xs text-muted-foreground">{t('admin.webhookHealth')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Error Rate
+                {t('admin.errorRate')}
               </CardTitle>
               <AlertTriangle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">—</div>
-              <p className="text-xs text-muted-foreground">Connect Sentry for monitoring</p>
+              <p className="text-xs text-muted-foreground">{t('admin.connectSentry')}</p>
             </CardContent>
           </Card>
         </div>
@@ -74,15 +77,15 @@ export default function AdminDashboard() {
         {/* Setup checklist */}
         <Card>
           <CardHeader>
-            <CardTitle>Setup Checklist</CardTitle>
+            <CardTitle>{t('admin.setupChecklist')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {[
-                { label: "Supabase connected", key: "VITE_SUPABASE_URL" },
-                { label: "Stripe configured", key: "VITE_STRIPE_PUBLISHABLE_KEY" },
-                { label: "Email provider configured", key: "EMAIL_PROVIDER" },
-                { label: "Sentry error monitoring", key: "VITE_SENTRY_DSN" },
+                { label: t('admin.supabaseConnected'), key: "VITE_SUPABASE_URL" },
+                { label: t('admin.stripeConfigured'), key: "VITE_STRIPE_PUBLISHABLE_KEY" },
+                { label: t('admin.emailConfigured'), key: "EMAIL_PROVIDER" },
+                { label: t('admin.sentryConfigured'), key: "VITE_SENTRY_DSN" },
               ].map((item) => {
                 const isConfigured = Boolean(import.meta.env[item.key]);
                 return (
@@ -97,7 +100,7 @@ export default function AdminDashboard() {
                     </span>
                     {!isConfigured && (
                       <span className="text-xs text-muted-foreground ml-auto">
-                        Set {item.key} in .env
+                        {t('admin.setEnvVar', { key: item.key })}
                       </span>
                     )}
                   </div>

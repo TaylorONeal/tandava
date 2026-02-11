@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 type RegistrationStep = "info" | "complete";
 
@@ -15,6 +16,7 @@ const Register = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
+  const { t } = useTranslation('auth');
   const [step, setStep] = useState<RegistrationStep>("info");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,8 +38,8 @@ const Register = () => {
 
     if (!formData.agreeToTerms) {
       toast({
-        title: "Terms Required",
-        description: "Please agree to the terms and waiver to continue.",
+        title: t('register.termsRequired'),
+        description: t('register.termsError'),
         variant: "destructive",
       });
       return;
@@ -66,9 +68,9 @@ const Register = () => {
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold">Welcome, {formData.firstName}!</h1>
+            <h1 className="text-2xl font-bold">{t('register.welcomeUser', { firstName: formData.firstName })}</h1>
             <p className="text-muted-foreground">
-              Your account is ready. Let's find your first class.
+              {t('register.accountReady')}
             </p>
           </div>
 
@@ -79,7 +81,7 @@ const Register = () => {
               className="w-full h-14 text-lg"
               size="lg"
             >
-              Browse Classes
+              {t('register.browseClasses')}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
 
@@ -88,7 +90,7 @@ const Register = () => {
               onClick={() => navigate("/account")}
               className="w-full h-12"
             >
-              Complete Your Profile
+              {t('register.completeProfile')}
             </Button>
 
             <Button
@@ -96,13 +98,13 @@ const Register = () => {
               onClick={() => navigate("/")}
               className="w-full"
             >
-              Go to Home
+              {t('register.goHome')}
             </Button>
           </div>
 
           {/* First-time member benefits hint */}
           <div className="pt-4 text-sm text-muted-foreground">
-            <p>New members get special intro pricing on classes and memberships.</p>
+            <p>{t('register.introPricing')}</p>
           </div>
         </div>
       </div>
@@ -113,8 +115,8 @@ const Register = () => {
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     toast({
-      title: "Welcome to Tandava!",
-      description: "Your account has been created with Google.",
+      title: t('register.welcomeToTandava'),
+      description: t('register.googleCreated'),
     });
     navigate("/");
     setIsLoading(false);
@@ -130,9 +132,9 @@ const Register = () => {
               <span className="text-4xl font-bold text-primary-foreground">T</span>
             </div>
           </div>
-          <h2 className="text-3xl font-bold mb-4">Begin Your Journey</h2>
+          <h2 className="text-3xl font-bold mb-4">{t('register.title')}</h2>
           <p className="text-muted-foreground text-lg">
-            Join our community of practitioners and discover the transformative power of yoga.
+            {t('register.subtitle')}
           </p>
         </div>
       </div>
@@ -148,9 +150,9 @@ const Register = () => {
               </div>
               <span className="text-xl sm:text-2xl font-semibold tracking-tight">Tandava</span>
             </Link>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Create your account</h1>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{t('register.createAccount')}</h1>
             <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-2">
-              Start your yoga journey today
+              {t('register.startJourney')}
             </p>
           </div>
 
@@ -159,12 +161,12 @@ const Register = () => {
             {/* Name fields - stack on very small screens */}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label htmlFor="firstName" className="text-sm">First name</Label>
+                <Label htmlFor="firstName" className="text-sm">{t('register.firstName')}</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="firstName"
-                    placeholder="Sarah"
+                    placeholder={t('register.firstNamePlaceholder')}
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                     className="pl-10 h-12 text-base"
@@ -174,10 +176,10 @@ const Register = () => {
                 </div>
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="lastName" className="text-sm">Last name</Label>
+                <Label htmlFor="lastName" className="text-sm">{t('register.lastName')}</Label>
                 <Input
                   id="lastName"
-                  placeholder="Chen"
+                  placeholder={t('register.lastNamePlaceholder')}
                   value={formData.lastName}
                   onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                   className="h-12 text-base"
@@ -189,13 +191,13 @@ const Register = () => {
 
             {/* Email */}
             <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-sm">Email</Label>
+              <Label htmlFor="email" className="text-sm">{t('email')}</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder={t('emailPlaceholder')}
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="pl-10 h-12 text-base"
@@ -207,13 +209,13 @@ const Register = () => {
 
             {/* Password */}
             <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-sm">Password</Label>
+              <Label htmlFor="password" className="text-sm">{t('password')}</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
+                  placeholder={t('passwordPlaceholder')}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="pl-10 pr-12 h-12 text-base"
@@ -243,9 +245,9 @@ const Register = () => {
                   formData.password.length < 12 ? "bg-warning" : "bg-primary"
                 )} />
                 <span className="text-xs text-muted-foreground">
-                  {formData.password.length === 0 ? "8+ characters" :
-                   formData.password.length < 8 ? `${8 - formData.password.length} more needed` :
-                   "Strong"}
+                  {formData.password.length === 0 ? t('register.passwordRequirement') :
+                   formData.password.length < 8 ? t('register.moreNeeded', { count: 8 - formData.password.length }) :
+                   t('register.strong')}
                 </span>
               </div>
             </div>
@@ -262,13 +264,13 @@ const Register = () => {
                   className="mt-0.5 h-5 w-5"
                 />
                 <span className="text-sm leading-tight">
-                  I agree to the{" "}
+                  {t('register.agreeToTerms')}{" "}
                   <Link to="/terms" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                    Terms of Service
+                    {t('register.termsOfService')}
                   </Link>{" "}
-                  and{" "}
+                  {t('register.and')}{" "}
                   <Link to="/waiver" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                    Studio Waiver
+                    {t('register.studioWaiver')}
                   </Link>
                 </span>
               </label>
@@ -282,7 +284,7 @@ const Register = () => {
                   className="mt-0.5 h-5 w-5"
                 />
                 <span className="text-sm leading-tight">
-                  Send me updates about classes, workshops, and special offers
+                  {t('register.marketingConsent')}
                 </span>
               </label>
             </div>
@@ -297,11 +299,11 @@ const Register = () => {
               {isLoading ? (
                 <span className="flex items-center gap-2">
                   <span className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                  Creating account...
+                  {t('register.creatingAccount')}
                 </span>
               ) : (
                 <>
-                  Create account
+                  {t('register.createAccountBtn')}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </>
               )}
@@ -312,7 +314,7 @@ const Register = () => {
           <div className="relative py-2">
             <Separator />
             <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-3 text-xs text-muted-foreground">
-              or continue with
+              {t('orContinueWith')}
             </span>
           </div>
 
@@ -342,26 +344,26 @@ const Register = () => {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              Google
+              {t('google')}
             </Button>
             <Button variant="outline" disabled className="w-full h-12">
               <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
               </svg>
-              Apple
+              {t('apple')}
             </Button>
           </div>
 
           {/* Login link - larger tap area */}
           <div className="text-center py-2">
             <p className="text-sm text-muted-foreground">
-              Already have an account?{" "}
+              {t('hasAccount')}{" "}
             </p>
             <Link
               to="/auth/login"
               className="inline-block mt-1 px-4 py-2 text-primary hover:underline font-medium touch-manipulation"
             >
-              Sign in
+              {t('signIn')}
             </Link>
           </div>
         </div>

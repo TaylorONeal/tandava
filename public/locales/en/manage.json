@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "schedule": "Schedule",
+    "events": "Events",
+    "students": "Students",
+    "teachers": "Teachers",
+    "offerings": "Offerings",
+    "promoCodes": "Promo Codes",
+    "financials": "Financials",
+    "products": "Products",
+    "inventory": "Inventory",
+    "purchaseOrders": "Purchase Orders",
+    "landingPages": "Landing Pages",
+    "utmBuilder": "UTM Builder",
+    "campaigns": "Campaigns",
+    "tasks": "Tasks",
+    "reports": "Reports",
+    "importData": "Import Data",
+    "smsInbox": "SMS Inbox",
+    "notifications": "Notifications",
+    "settings": "Settings"
+  },
+  "title": "Studio Admin",
+  "studentView": "Student View",
+  "myAccount": "My Account",
+  "studioSettings": "Studio Settings",
+  "signOut": "Sign out",
+
+  "schedule": {
+    "title": "Schedule",
+    "subtitle": "Create and manage your class schedule.",
+    "addClass": "Add Class",
+    "emptyState": "No classes scheduled yet. Create your first class to get started."
+  },
+  "offerings": {
+    "title": "Offerings",
+    "subtitle": "Class types and their configurations — {{count}} active",
+    "newOffering": "New Offering",
+    "searchPlaceholder": "Search offerings...",
+    "activeOfferings": "Active Offerings"
+  },
+
+  "admin": {
+    "platformAdmin": "Platform Admin",
+    "platformDashboard": "Platform Dashboard",
+    "overview": "Overview of your Tandava instance health and activity.",
+    "activeStudios": "Active Studios",
+    "totalUsers": "Total Users",
+    "stripeStatus": "Stripe Status",
+    "errorRate": "Error Rate",
+    "connectSupabase": "Connect Supabase to see live data",
+    "acrossAllStudios": "Across all studios",
+    "webhookHealth": "Webhook health",
+    "connectSentry": "Connect Sentry for monitoring",
+    "setupChecklist": "Setup Checklist",
+    "supabaseConnected": "Supabase connected",
+    "stripeConfigured": "Stripe configured",
+    "emailConfigured": "Email provider configured",
+    "sentryConfigured": "Sentry error monitoring",
+    "setEnvVar": "Set {{key}} in .env"
+  },
+
+  "studioManagement": "Studio Management",
+  "owner": "Owner"
+}

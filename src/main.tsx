@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { initSentry } from "./lib/sentry";
+import "./i18n"; // Initialize i18n before rendering
 import App from "./App.tsx";
 import "./index.css";
 

@@ -1,0 +1,21 @@
+{
+  "bookingConfirmation": {
+    "youreBooked": "You're booked!",
+    "greeting": "Hi {{name}}, your {{type}} is confirmed. We look forward to seeing you.",
+    "class": "Class",
+    "workshop": "Workshop",
+    "appointment": "Appointment",
+    "instructor": "Instructor",
+    "dateTime": "Date & Time",
+    "duration": "Duration",
+    "location": "Location",
+    "spotNumber": "Spot Number",
+    "addToCalendar": "Add to Calendar",
+    "getDirections": "Get Directions",
+    "whatToBring": "What to Bring",
+    "whatToBringText": "Please arrive 10-15 minutes early for check-in. Bring water, a towel, and wear comfortable clothing. Mats are provided, but feel free to bring your own.",
+    "cancellationPolicy": "Cancellation Policy:",
+    "manageBooking": "Manage your booking",
+    "needChanges": "Need to make changes?"
+  }
+}

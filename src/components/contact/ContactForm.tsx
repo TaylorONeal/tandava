@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { data, isBackendConfigured } from "@/lib/backend";
 import type { FeedbackType } from "@/types/database";
 import { Send } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface ContactFormProps {
   /** The type of message being sent */
@@ -31,6 +32,7 @@ export function ContactForm({
 }: ContactFormProps) {
   const { profile } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation('common');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: profile ? `${profile.first_name} ${profile.last_name}` : "",
@@ -48,14 +50,14 @@ export function ContactForm({
 
     // Honeypot check — if filled, silently reject
     if (formData._hp) {
-      toast({ title: "Message sent!", description: "Thank you for reaching out." });
+      toast({ title: t('contact.messageSent'), description: t('contact.thankYou') });
       return;
     }
 
     if (!formData.subject.trim() || !formData.body.trim()) {
       toast({
-        title: "Missing fields",
-        description: "Please fill in the subject and message.",
+        title: t('contact.missingFields'),
+        description: t('contact.fillRequired'),
         variant: "destructive",
       });
       return;
@@ -66,7 +68,7 @@ export function ContactForm({
     if (!isBackendConfigured()) {
       // Demo mode — just show success
       await new Promise((r) => setTimeout(r, 500));
-      toast({ title: "Message sent!", description: "Thank you for reaching out. (Demo mode)" });
+      toast({ title: t('contact.messageSent'), description: `${t('contact.thankYou')} ${t('demo.demoMode')}` });
       setFormData((prev) => ({ ...prev, subject: "", body: "" }));
       setIsSubmitting(false);
       onSuccess?.();
@@ -87,12 +89,12 @@ export function ContactForm({
 
     if (error) {
       toast({
-        title: "Failed to send",
-        description: "Something went wrong. Please try again.",
+        title: t('contact.failedToSend'),
+        description: t('contact.somethingWentWrong'),
         variant: "destructive",
       });
     } else {
-      toast({ title: "Message sent!", description: "Thank you for reaching out." });
+      toast({ title: t('contact.messageSent'), description: t('contact.thankYou') });
       setFormData((prev) => ({ ...prev, subject: "", body: "" }));
       onSuccess?.();
     }
@@ -117,23 +119,23 @@ export function ContactForm({
       {isAnonymous && (
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="contact-name">Your Name</Label>
+            <Label htmlFor="contact-name">{t('contact.yourName')}</Label>
             <Input
               id="contact-name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="Jane Doe"
+              placeholder={t('contact.namePlaceholder')}
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="contact-email">Email</Label>
+            <Label htmlFor="contact-email">{t('contact.email')}</Label>
             <Input
               id="contact-email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="jane@example.com"
+              placeholder={t('contact.emailPlaceholder')}
               required
             />
           </div>
@@ -141,23 +143,23 @@ export function ContactForm({
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="contact-subject">Subject</Label>
+        <Label htmlFor="contact-subject">{t('contact.subject')}</Label>
         <Input
           id="contact-subject"
           value={formData.subject}
           onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-          placeholder="What's this about?"
+          placeholder={t('contact.subjectPlaceholder')}
           required
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="contact-body">Message</Label>
+        <Label htmlFor="contact-body">{t('contact.message')}</Label>
         <Textarea
           id="contact-body"
           value={formData.body}
           onChange={(e) => setFormData({ ...formData, body: e.target.value })}
-          placeholder="Tell us more..."
+          placeholder={t('contact.messagePlaceholder')}
           rows={5}
           required
         />
@@ -165,7 +167,7 @@ export function ContactForm({
 
       <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto">
         <Send className="h-4 w-4 mr-2" />
-        {isSubmitting ? "Sending..." : "Send Message"}
+        {isSubmitting ? t('actions.sending') : t('contact.sendMessage')}
       </Button>
     </form>
   );

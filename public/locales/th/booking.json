@@ -1,0 +1,59 @@
+{
+  "bookNow": "Book Now",
+  "joinWaitlist": "Join Waitlist",
+  "joinNow": "Join Now",
+  "cancelBooking": "Cancel Booking",
+  "confirmBooking": "Confirm Booking",
+  "processing": "Processing...",
+  "booking": "Booking...",
+  "payAmount": "Pay {{amount}}",
+  "included": "Included",
+  "free": "Free",
+  "full": "Full",
+
+  "spotsLeft_one": "{{count}} left",
+  "spotsLeft_other": "{{count}} left",
+  "classesRemaining_one": "{{count}} class remaining",
+  "classesRemaining_other": "{{count}} classes remaining",
+  "classesRemainingAfter_one": "{{count}} class remaining after this",
+  "classesRemainingAfter_other": "{{count}} classes remaining after this",
+  "unlimitedClasses": "Unlimited classes",
+  "oneTimePayment": "One-time payment",
+
+  "selectPaymentMethod": "Select payment method",
+  "recommended": "Recommended",
+  "doesntCover": "This {{type}} doesn't cover this class type",
+  "expires": "Expires {{date}}",
+
+  "youreBooked": "You're booked!",
+  "seeYouAt": "See you at {{studio}}",
+  "cantWaitToSee": "We can't wait to see you on the mat",
+  "withTeacher": "with {{teacher}}",
+  "addToCalendar": "Add to Calendar",
+  "inviteFriend": "Invite Friend",
+  "done": "Done",
+
+  "addedToWaitlist": "Added to waitlist!",
+  "wellNotify": "We'll notify you if a spot opens up",
+  "addedToCalendar": "Added to calendar",
+  "shareLinkCopied": "Share link copied!",
+
+  "freeCancellation": "Free cancellation up to {{hours}}h before class. Late cancellations may incur a fee.",
+  "pleaseSelectPayment": "Please select a payment method",
+
+  "addOns": {
+    "title": "Want us to have anything ready for you?",
+    "subtitle": "Totally optional. You can always add this at the studio.",
+    "addToBooking": "Add to my booking",
+    "skip": "Skip for now",
+    "added": "Add-ons added",
+    "readyForYou": "We'll have them ready for you!"
+  },
+
+  "paymentSources": {
+    "membership": "Membership",
+    "classPack": "Class Pack",
+    "workshopPass": "Workshop Pass",
+    "dropIn": "Drop-in"
+  }
+}

@@ -4,6 +4,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useLocale } from "@/contexts/LocaleContext";
+import { useTranslation } from "react-i18next";
 
 interface AddOnItem {
   id: string;
@@ -32,19 +34,16 @@ export function BookingAddOns({ addOns, onAddOns, onSkip }: BookingAddOnsProps) 
     setSelected(newSelected);
   };
 
-  const formatPrice = (cents: number, currency: string) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-    }).format(cents / 100);
-  };
+  const { formatPrice: localeFormatPrice } = useLocale();
+  const { t } = useTranslation('booking');
+  const formatPrice = (cents: number, currency: string) => localeFormatPrice(cents, currency);
 
   const handleAddToBooking = () => {
     if (selected.size > 0) {
       onAddOns?.(Array.from(selected));
       toast({
-        title: "Add-ons added ✨",
-        description: "We'll have them ready for you!",
+        title: t('addOns.added'),
+        description: t('addOns.readyForYou'),
       });
     }
   };
@@ -56,10 +55,10 @@ export function BookingAddOns({ addOns, onAddOns, onSkip }: BookingAddOnsProps) 
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
-          Want us to have anything ready for you?
+          {t('addOns.title')}
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          Totally optional. You can always add this at the studio.
+          {t('addOns.subtitle')}
         </p>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -92,7 +91,7 @@ export function BookingAddOns({ addOns, onAddOns, onSkip }: BookingAddOnsProps) 
         <div className="flex items-center gap-3 pt-2">
           {selected.size > 0 && (
             <Button onClick={handleAddToBooking} className="flex-1">
-              Add to my booking
+              {t('addOns.addToBooking')}
             </Button>
           )}
           <Button
@@ -100,7 +99,7 @@ export function BookingAddOns({ addOns, onAddOns, onSkip }: BookingAddOnsProps) 
             onClick={onSkip}
             className={selected.size > 0 ? "" : "w-full"}
           >
-            Skip for now
+            {t('addOns.skip')}
           </Button>
         </div>
       </CardContent>

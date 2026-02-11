@@ -7,6 +7,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { DemoProvider } from "@/contexts/DemoContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { LocaleProvider } from "@/contexts/LocaleContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AuthCallback } from "@/components/auth/AuthCallback";
 // DemoPanel removed — role selection now happens on landing page + DemoRoleBar
@@ -137,6 +138,7 @@ const App = () => (
   <AppErrorBoundary>
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
+      <LocaleProvider>
       <DemoProvider>
         <ThemeProvider>
           <AuthProvider>
@@ -237,6 +239,7 @@ const App = () => (
           </AuthProvider>
         </ThemeProvider>
       </DemoProvider>
+      </LocaleProvider>
     </QueryClientProvider>
   </HelmetProvider>
   </AppErrorBoundary>
