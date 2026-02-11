@@ -70,7 +70,7 @@ export function studioSchema(studio: {
     additionalType: "https://schema.org/SportsActivityLocation",
     name: studio.name,
     description: studio.description || undefined,
-    url: `${SITE_URL}/studios/${studio.slug}`,
+    url: `${SITE_URL}/events/${studio.slug}`,
     image: studio.image_url || undefined,
     telephone: studio.phone || undefined,
     email: studio.email || undefined,
@@ -145,7 +145,7 @@ export function classEventSchema(classData: {
     organizer: {
       "@type": "Organization",
       name: classData.studio_name,
-      url: `${SITE_URL}/studios/${classData.studio_slug}`,
+      url: `${SITE_URL}/events/${classData.studio_slug}`,
     },
     performer: {
       "@type": "Person",

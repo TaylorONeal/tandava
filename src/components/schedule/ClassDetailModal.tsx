@@ -171,10 +171,9 @@ export function ClassDetailModal({
 
           <Separator />
 
-          {/* Studio */}
-          <Link
-            to={`/studios/${classData.studio.id}`}
-            className="flex items-center justify-between p-3 -mx-3 rounded-lg hover:bg-muted transition-colors"
+          {/* Studio location */}
+          <div
+            className="flex items-center justify-between p-3 -mx-3 rounded-lg"
           >
             <div>
               <p className="font-medium">{classData.studio.name}</p>
@@ -183,8 +182,7 @@ export function ClassDetailModal({
                 {classData.studio.location}
               </div>
             </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-          </Link>
+          </div>
 
           <Separator />
 
