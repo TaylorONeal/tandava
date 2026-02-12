@@ -23,6 +23,7 @@ export type TeacherPayType = 'per_class' | 'revenue_share' | 'hourly' | 'salary'
 export type CreditType = 'earned' | 'purchased' | 'gifted' | 'promotional';
 export type CreditStatus = 'available' | 'used' | 'expired';
 export type DeliveryMode = 'in_person' | 'virtual' | 'hybrid';
+export type InstructorRole = 'lead' | 'assistant' | 'staff_instructor' | 'teacher_in_training';
 
 // ============================================================================
 // TABLE TYPES
@@ -165,6 +166,7 @@ export interface ScheduleRule {
   offering_id: string;
   location_id: string;
   teacher_id: string | null;
+  instructor_role: InstructorRole;
   recurrence: ScheduleRecurrence;
   day_of_week: DayOfWeek;
   start_time: string;
@@ -189,6 +191,7 @@ export interface ClassOccurrence {
   schedule_rule_id: string | null;
   location_id: string;
   teacher_id: string | null;
+  instructor_role: InstructorRole;
   starts_at: string;
   ends_at: string;
   room: string | null;
