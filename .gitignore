@@ -10,6 +10,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+coverage
 *.local
 
 # Environment files (contain secrets)
@@ -27,3 +28,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Subagents workspace artifacts
+subagents/

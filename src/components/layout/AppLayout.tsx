@@ -52,7 +52,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { profile, permissions, signOut } = useAuth();
-  const { t } = useTranslation('common');
+  const { t } = useTranslation("common");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const user = profile
@@ -62,7 +62,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         avatar: profile.avatar_url || "",
       }
     : {
-        name: t('guest'),
+        name: t("guest"),
         email: "",
         avatar: "",
       };
@@ -78,15 +78,27 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen bg-background">
+      <a
+        href="#main-content"
+        className="sr-only absolute left-4 top-4 z-[70] rounded-md bg-background px-3 py-2 text-sm font-medium shadow-md focus:not-sr-only focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+      >
+        Skip to main content
+      </a>
+
       {/* Desktop Header */}
       <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur-md">
         <div className="container flex h-16 items-center justify-between">
           {/* Studio Brand */}
-          <Link to="/home" className="flex items-center gap-2.5 mr-4">
+          <Link
+            to="/home"
+            className="mr-4 flex items-center gap-2.5 rounded-xl px-1 py-1 transition-colors hover:bg-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          >
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-accent-teal to-accent-sage shadow-md">
               <span className="text-lg font-bold text-white">O</span>
             </div>
-            <span className="text-xl font-display font-bold tracking-tight">Oxatl Yoga</span>
+            <span className="text-xl font-display font-bold tracking-tight">
+              Oxatl Yoga
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -96,10 +108,10 @@ export function AppLayout({ children }: AppLayoutProps) {
                 key={item.nameKey}
                 to={item.href}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200",
+                  "flex min-h-11 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                   isActive(item.href)
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    ? "border border-primary/20 bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary",
                 )}
               >
                 <item.icon className="h-4 w-4" />
@@ -114,7 +126,12 @@ export function AppLayout({ children }: AppLayoutProps) {
             <LanguageSwitcher compact />
 
             {/* Notifications */}
-            <Button variant="ghost" size="icon" className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="View notifications"
+              className="relative h-10 w-10 rounded-full focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
               <Bell className="h-5 w-5" />
               <span className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-primary text-[10px] font-bold text-primary-foreground flex items-center justify-center shadow-sm">
                 3
@@ -124,11 +141,18 @@ export function AppLayout({ children }: AppLayoutProps) {
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                <Button
+                  variant="ghost"
+                  aria-label="Open user menu"
+                  className="relative h-10 w-10 rounded-full focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                >
                   <Avatar className="h-10 w-10 border-2 border-primary/20">
                     <AvatarImage src={user.avatar} alt={user.name} />
                     <AvatarFallback className="bg-accent-lilac text-foreground font-semibold">
-                      {user.name.split(" ").map((n) => n[0]).join("")}
+                      {user.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -138,19 +162,27 @@ export function AppLayout({ children }: AppLayoutProps) {
                   <Avatar className="h-11 w-11">
                     <AvatarImage src={user.avatar} alt={user.name} />
                     <AvatarFallback className="bg-accent-lilac text-foreground font-semibold">
-                      {user.name.split(" ").map((n) => n[0]).join("")}
+                      {user.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
                     <p className="text-sm font-semibold">{user.name}</p>
-                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {user.email}
+                    </p>
                   </div>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild className="rounded-xl">
-                  <Link to="/account" className="flex items-center gap-2 cursor-pointer">
+                  <Link
+                    to="/account"
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
                     <User className="h-4 w-4" />
-                    {t('userMenu.account')}
+                    {t("userMenu.account")}
                   </Link>
                 </DropdownMenuItem>
                 {(showManageLink || showStaffLink || showAdminLink) && (
@@ -158,25 +190,34 @@ export function AppLayout({ children }: AppLayoutProps) {
                     <DropdownMenuSeparator />
                     {showManageLink && (
                       <DropdownMenuItem asChild className="rounded-xl">
-                        <Link to="/manage" className="flex items-center gap-2 cursor-pointer">
+                        <Link
+                          to="/manage"
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
                           <Store className="h-4 w-4" />
-                          {t('userMenu.studioManager')}
+                          {t("userMenu.studioManager")}
                         </Link>
                       </DropdownMenuItem>
                     )}
                     {showStaffLink && (
                       <DropdownMenuItem asChild className="rounded-xl">
-                        <Link to="/staff/checkin" className="flex items-center gap-2 cursor-pointer">
+                        <Link
+                          to="/staff/checkin"
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
                           <ClipboardCheck className="h-4 w-4" />
-                          {t('userMenu.frontDesk')}
+                          {t("userMenu.frontDesk")}
                         </Link>
                       </DropdownMenuItem>
                     )}
                     {showAdminLink && (
                       <DropdownMenuItem asChild className="rounded-xl">
-                        <Link to="/admin" className="flex items-center gap-2 cursor-pointer">
+                        <Link
+                          to="/admin"
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
                           <Settings className="h-4 w-4" />
-                          {t('userMenu.platformAdmin')}
+                          {t("userMenu.platformAdmin")}
                         </Link>
                       </DropdownMenuItem>
                     )}
@@ -191,7 +232,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                   }}
                 >
                   <LogOut className="h-4 w-4 mr-2" />
-                  {t('userMenu.signOut')}
+                  {t("userMenu.signOut")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -200,17 +241,27 @@ export function AppLayout({ children }: AppLayoutProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden"
+              aria-label={
+                mobileMenuOpen
+                  ? "Close navigation menu"
+                  : "Open navigation menu"
+              }
+              aria-expanded={mobileMenuOpen}
+              className="h-10 w-10 rounded-full lg:hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {mobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </Button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-border bg-card animate-fade-in">
+          <div className="border-t border-border bg-card shadow-sm animate-fade-in lg:hidden">
             <nav className="container py-4 space-y-1">
               {navigation.map((item) => (
                 <Link
@@ -218,10 +269,10 @@ export function AppLayout({ children }: AppLayoutProps) {
                   to={item.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-2xl transition-all duration-200",
+                    "flex min-h-12 items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                     isActive(item.href)
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                      ? "border border-primary/20 bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary",
                   )}
                 >
                   <item.icon className="h-5 w-5" />
@@ -234,18 +285,26 @@ export function AppLayout({ children }: AppLayoutProps) {
       </header>
 
       {/* Main Content */}
-      <main className="container py-8 md:py-10">{children}</main>
+      <main id="main-content" className="container py-8 md:py-10">
+        {children}
+      </main>
 
       {/* Footer */}
       <footer className="border-t border-border bg-card/50 py-6 mt-auto">
         <div className="container flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
-          <span>&copy; {new Date().getFullYear()} Oxatl Yoga. {t('footer.allRightsReserved')}</span>
           <span>
-            {t('footer.poweredBy')}{" "}
-            <Link to="/" className="text-accent-teal hover:text-accent-teal/80 font-medium transition-colors">
+            &copy; {new Date().getFullYear()} Oxatl Yoga.{" "}
+            {t("footer.allRightsReserved")}
+          </span>
+          <span>
+            {t("footer.poweredBy")}{" "}
+            <Link
+              to="/"
+              className="font-medium text-accent-teal transition-colors hover:text-accent-teal/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
               Tandava
-            </Link>
-            {" "}&mdash; {t('footer.openSourceStudio')}
+            </Link>{" "}
+            &mdash; {t("footer.openSourceStudio")}
           </span>
         </div>
       </footer>

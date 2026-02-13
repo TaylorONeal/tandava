@@ -52,7 +52,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { LandingPageWizard } from "@/components/landing-pages/LandingPageWizard";
+import { LandingPageWizard, type LandingPageData } from "@/components/landing-pages/LandingPageWizard";
 
 type PageStatus = "draft" | "published" | "expired" | "archived";
 type ExpiredBehavior = "show_alternatives" | "redirect_parent" | "show_message" | "custom_redirect";
@@ -171,6 +171,10 @@ const statusColors: Record<PageStatus, { bg: string; text: string; icon: typeof 
   archived: { bg: "bg-secondary", text: "text-muted-foreground", icon: Archive },
 };
 
+const isPageStatus = (value: string): value is PageStatus => {
+  return value === "draft" || value === "published" || value === "expired" || value === "archived";
+};
+
 export default function LandingPagesManage() {
   const { toast } = useToast();
   const [pages, setPages] = useState(mockPages);
@@ -185,7 +189,7 @@ export default function LandingPagesManage() {
   const totalConversions = pages.reduce((s, p) => s + p.totalConversions, 0);
   const avgConversionRate = totalViews > 0 ? ((totalConversions / totalViews) * 100).toFixed(1) : "0";
 
-  const handleWizardComplete = (data: any) => {
+  const handleWizardComplete = (data: LandingPageData) => {
     const newPage: LandingPageRow = {
       id: `lp${pages.length + 1}`,
       title: data.title,
@@ -341,7 +345,14 @@ export default function LandingPagesManage() {
         </Card>
 
         {/* Pages List with Tabs */}
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => {
+            if (value === "all" || isPageStatus(value)) {
+              setActiveTab(value);
+            }
+          }}
+        >
           <div className="flex items-center justify-between mb-3">
             <TabsList>
               <TabsTrigger value="all" className="text-xs">

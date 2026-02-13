@@ -190,6 +190,19 @@ const Kiosk = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
 
+  const resetToScanner = useCallback(() => {
+    setView("scanner");
+    setSearchQuery("");
+    setSearchResults([]);
+    setSelectedMember(null);
+    setSelectedClass(null);
+    setCheckedInMember(null);
+    setCheckedInClass(null);
+    setErrorType(null);
+    setIsScanning(false);
+    setScanProgress(0);
+  }, []);
+
   // Update time every second
   useEffect(() => {
     const timer = setInterval(() => {
@@ -206,7 +219,7 @@ const Kiosk = () => {
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [view]);
+  }, [view, resetToScanner]);
 
   // Auto-dismiss error screen
   useEffect(() => {
@@ -216,20 +229,7 @@ const Kiosk = () => {
       }, 4000);
       return () => clearTimeout(timer);
     }
-  }, [view, errorType]);
-
-  const resetToScanner = useCallback(() => {
-    setView("scanner");
-    setSearchQuery("");
-    setSearchResults([]);
-    setSelectedMember(null);
-    setSelectedClass(null);
-    setCheckedInMember(null);
-    setCheckedInClass(null);
-    setErrorType(null);
-    setIsScanning(false);
-    setScanProgress(0);
-  }, []);
+  }, [view, errorType, resetToScanner]);
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString("en-US", {
