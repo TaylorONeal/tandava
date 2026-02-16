@@ -40,11 +40,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 
+type InstructorRole = 'lead' | 'assistant' | 'staff_instructor' | 'teacher_in_training';
+
+const instructorRoleLabels: Record<InstructorRole, string> = {
+  lead: "Lead Instructor",
+  assistant: "Assistant",
+  staff_instructor: "Staff Instructor",
+  teacher_in_training: "Teacher in Training",
+};
+
 interface ClassOccurrence {
   id: string;
   name: string;
   style: string;
   teacher: string;
+  instructorRole: InstructorRole;
   time: string;
   endTime: string;
   room: string;
@@ -62,35 +72,35 @@ const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const mockSchedule: Record<string, ClassOccurrence[]> = {
   Mon: [
-    { id: "1", name: "Morning Vinyasa", style: "Vinyasa", teacher: "Maya Patel", time: "7:00 AM", endTime: "8:15 AM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 22, waitlisted: 2, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "2", name: "Gentle Flow", style: "Hatha", teacher: "James Liu", time: "9:30 AM", endTime: "10:30 AM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 12, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "3", name: "Power Yoga", style: "Power", teacher: "Sarah Chen", time: "12:00 PM", endTime: "1:00 PM", room: "Hot Room", location: "SOMA", capacity: 30, booked: 30, waitlisted: 3, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "4", name: "Yin Restore", style: "Yin", teacher: "Ava Kim", time: "4:30 PM", endTime: "5:45 PM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 8, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "5", name: "Evening Vinyasa", style: "Vinyasa", teacher: "Maya Patel", time: "6:00 PM", endTime: "7:15 PM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 20, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "1", name: "Morning Vinyasa", style: "Vinyasa", teacher: "Maya Patel", instructorRole: "lead", time: "7:00 AM", endTime: "8:15 AM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 22, waitlisted: 2, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "2", name: "Gentle Flow", style: "Hatha", teacher: "James Liu", instructorRole: "lead", time: "9:30 AM", endTime: "10:30 AM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 12, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "3", name: "Power Yoga", style: "Power", teacher: "Sarah Chen", instructorRole: "lead", time: "12:00 PM", endTime: "1:00 PM", room: "Hot Room", location: "SOMA", capacity: 30, booked: 30, waitlisted: 3, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "4", name: "Yin Restore", style: "Yin", teacher: "Ava Kim", instructorRole: "staff_instructor", time: "4:30 PM", endTime: "5:45 PM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 8, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "5", name: "Evening Vinyasa", style: "Vinyasa", teacher: "Maya Patel", instructorRole: "lead", time: "6:00 PM", endTime: "7:15 PM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 20, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
   ],
   Tue: [
-    { id: "6", name: "Sunrise Meditation", style: "Meditation", teacher: "Ava Kim", time: "6:30 AM", endTime: "7:15 AM", room: "Meditation Room", location: "SOMA", capacity: 15, booked: 10, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "7", name: "Hot Vinyasa", style: "Vinyasa", teacher: "Sarah Chen", time: "9:00 AM", endTime: "10:15 AM", room: "Hot Room", location: "SOMA", capacity: 30, booked: 28, waitlisted: 1, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "8", name: "Ashtanga Primary", style: "Ashtanga", teacher: "James Liu", time: "12:00 PM", endTime: "1:30 PM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 15, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: true, originalTeacher: "David Park" },
+    { id: "6", name: "Sunrise Meditation", style: "Meditation", teacher: "Ava Kim", instructorRole: "lead", time: "6:30 AM", endTime: "7:15 AM", room: "Meditation Room", location: "SOMA", capacity: 15, booked: 10, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "7", name: "Hot Vinyasa", style: "Vinyasa", teacher: "Sarah Chen", instructorRole: "lead", time: "9:00 AM", endTime: "10:15 AM", room: "Hot Room", location: "SOMA", capacity: 30, booked: 28, waitlisted: 1, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "8", name: "Ashtanga Primary", style: "Ashtanga", teacher: "James Liu", instructorRole: "lead", time: "12:00 PM", endTime: "1:30 PM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 15, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: true, originalTeacher: "David Park" },
   ],
   Wed: [
-    { id: "9", name: "Morning Vinyasa", style: "Vinyasa", teacher: "Maya Patel", time: "7:00 AM", endTime: "8:15 AM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 19, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "10", name: "Gentle Flow", style: "Hatha", teacher: "James Liu", time: "9:30 AM", endTime: "10:30 AM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 14, waitlisted: 0, checkedIn: 0, isCancelled: true, isSubbed: false },
+    { id: "9", name: "Morning Vinyasa", style: "Vinyasa", teacher: "Maya Patel", instructorRole: "lead", time: "7:00 AM", endTime: "8:15 AM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 19, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "10", name: "Gentle Flow", style: "Hatha", teacher: "James Liu", instructorRole: "teacher_in_training", time: "9:30 AM", endTime: "10:30 AM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 14, waitlisted: 0, checkedIn: 0, isCancelled: true, isSubbed: false },
   ],
   Thu: [
-    { id: "11", name: "Hot Vinyasa", style: "Vinyasa", teacher: "Sarah Chen", time: "9:00 AM", endTime: "10:15 AM", room: "Hot Room", location: "SOMA", capacity: 30, booked: 25, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "12", name: "Restorative", style: "Restorative", teacher: "Ava Kim", time: "5:30 PM", endTime: "7:00 PM", room: "Main Studio", location: "SOMA", capacity: 18, booked: 16, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "11", name: "Hot Vinyasa", style: "Vinyasa", teacher: "Sarah Chen", instructorRole: "lead", time: "9:00 AM", endTime: "10:15 AM", room: "Hot Room", location: "SOMA", capacity: 30, booked: 25, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "12", name: "Restorative", style: "Restorative", teacher: "Ava Kim", instructorRole: "lead", time: "5:30 PM", endTime: "7:00 PM", room: "Main Studio", location: "SOMA", capacity: 18, booked: 16, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
   ],
   Fri: [
-    { id: "13", name: "Morning Vinyasa", style: "Vinyasa", teacher: "Maya Patel", time: "7:00 AM", endTime: "8:15 AM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 17, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "14", name: "Slow Flow", style: "Hatha", teacher: "James Liu", time: "10:00 AM", endTime: "11:15 AM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 11, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "13", name: "Morning Vinyasa", style: "Vinyasa", teacher: "Maya Patel", instructorRole: "lead", time: "7:00 AM", endTime: "8:15 AM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 17, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "14", name: "Slow Flow", style: "Hatha", teacher: "James Liu", instructorRole: "lead", time: "10:00 AM", endTime: "11:15 AM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 11, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
   ],
   Sat: [
-    { id: "15", name: "Weekend Power", style: "Power", teacher: "Sarah Chen", time: "9:00 AM", endTime: "10:15 AM", room: "Hot Room", location: "SOMA", capacity: 30, booked: 28, waitlisted: 2, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "16", name: "Community Flow", style: "Vinyasa", teacher: "Maya Patel", time: "11:00 AM", endTime: "12:15 PM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 23, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "15", name: "Weekend Power", style: "Power", teacher: "Sarah Chen", instructorRole: "lead", time: "9:00 AM", endTime: "10:15 AM", room: "Hot Room", location: "SOMA", capacity: 30, booked: 28, waitlisted: 2, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "16", name: "Community Flow", style: "Vinyasa", teacher: "Maya Patel", instructorRole: "lead", time: "11:00 AM", endTime: "12:15 PM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 23, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
   ],
   Sun: [
-    { id: "17", name: "Sunday Slow", style: "Yin", teacher: "Ava Kim", time: "10:00 AM", endTime: "11:30 AM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 18, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "17", name: "Sunday Slow", style: "Yin", teacher: "Ava Kim", instructorRole: "lead", time: "10:00 AM", endTime: "11:30 AM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 18, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
   ],
 };
 
@@ -110,12 +120,14 @@ export default function ScheduleManage() {
   const [addClassDialogOpen, setAddClassDialogOpen] = useState(false);
   const [selectedClass, setSelectedClass] = useState<ClassOccurrence | null>(null);
   const [selectedSub, setSelectedSub] = useState("");
+  const [subInstructorRole, setSubInstructorRole] = useState<InstructorRole>("lead");
   const [notifyStudents, setNotifyStudents] = useState(true);
   const [schedule, setSchedule] = useState(mockSchedule);
   const [newClassName, setNewClassName] = useState("");
   const [newClassTime, setNewClassTime] = useState("");
   const [newClassTeacher, setNewClassTeacher] = useState("");
   const [newClassStyle, setNewClassStyle] = useState("");
+  const [newClassInstructorRole, setNewClassInstructorRole] = useState<InstructorRole>("lead");
   const [newClassRecurring, setNewClassRecurring] = useState(true);
   const { toast } = useToast();
 
@@ -129,13 +141,15 @@ export default function ScheduleManage() {
   const handleSub = () => {
     if (!selectedClass || !selectedSub) return;
     const subTeacher = availableSubs.find((t) => t.id === selectedSub);
+    const roleLabel = instructorRoleLabels[subInstructorRole];
     toast({
       title: "Sub confirmed",
-      description: `${subTeacher?.name} will teach ${selectedClass.name} at ${selectedClass.time}. ${notifyStudents ? "Students have been notified." : ""}`,
+      description: `${subTeacher?.name} (${roleLabel}) will teach ${selectedClass.name} at ${selectedClass.time}. ${notifyStudents ? "Students have been notified." : ""}`,
     });
     setSubDialogOpen(false);
     setSelectedClass(null);
     setSelectedSub("");
+    setSubInstructorRole("lead");
   };
 
   const handleCancel = () => {
@@ -173,6 +187,7 @@ export default function ScheduleManage() {
       name: newClassName,
       style: newClassStyle || "Vinyasa",
       teacher: teacher?.name || "TBD",
+      instructorRole: newClassInstructorRole,
       time: newClassTime,
       endTime,
       room: "Main Studio",
@@ -190,15 +205,17 @@ export default function ScheduleManage() {
         a.time.localeCompare(b.time)
       ),
     }));
+    const roleLabel = instructorRoleLabels[newClassInstructorRole];
     toast({
       title: "Class added",
-      description: `${newClassName} at ${newClassTime} with ${teacher?.name || "TBD"}${newClassRecurring ? " — recurring weekly on " + selectedDay : ""}`,
+      description: `${newClassName} at ${newClassTime} with ${teacher?.name || "TBD"} (${roleLabel})${newClassRecurring ? " — recurring weekly on " + selectedDay : ""}`,
     });
     setAddClassDialogOpen(false);
     setNewClassName("");
     setNewClassTime("");
     setNewClassTeacher("");
     setNewClassStyle("");
+    setNewClassInstructorRole("lead");
     setNewClassRecurring(true);
   };
 
@@ -278,6 +295,11 @@ export default function ScheduleManage() {
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
                           <h3 className="text-sm font-semibold">{cls.name}</h3>
+                          {cls.instructorRole !== "lead" && (
+                            <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                              {instructorRoleLabels[cls.instructorRole]}
+                            </Badge>
+                          )}
                           {cls.isCancelled && (
                             <Badge variant="destructive" className="text-xs">Cancelled</Badge>
                           )}
@@ -406,6 +428,21 @@ export default function ScheduleManage() {
                 </Select>
               </div>
 
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Instructor Role</label>
+                <Select value={subInstructorRole} onValueChange={(v) => setSubInstructorRole(v as InstructorRole)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="lead">Lead Instructor</SelectItem>
+                    <SelectItem value="assistant">Assistant</SelectItem>
+                    <SelectItem value="staff_instructor">Staff Instructor</SelectItem>
+                    <SelectItem value="teacher_in_training">Teacher in Training</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <label className="flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"
@@ -515,6 +552,21 @@ export default function ScheduleManage() {
                       {teacher.name}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Instructor Role</label>
+              <Select value={newClassInstructorRole} onValueChange={(v) => setNewClassInstructorRole(v as InstructorRole)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="lead">Lead Instructor</SelectItem>
+                  <SelectItem value="assistant">Assistant</SelectItem>
+                  <SelectItem value="staff_instructor">Staff Instructor</SelectItem>
+                  <SelectItem value="teacher_in_training">Teacher in Training</SelectItem>
                 </SelectContent>
               </Select>
             </div>
