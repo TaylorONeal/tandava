@@ -20,10 +20,15 @@ const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    _hp: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Honeypot guard: bots tend to fill hidden fields.
+    if (formData._hp.trim()) return;
+
     setIsLoading(true);
 
     const { error } = await signInWithEmail(formData.email, formData.password);
@@ -83,6 +88,16 @@ const Login = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              value={formData._hp}
+              onChange={(e) => setFormData({ ...formData, _hp: e.target.value })}
+              className="hidden"
+              aria-hidden="true"
+            />
             {/* Email */}
             <div className="space-y-2">
               <Label htmlFor="email">{t('email')}</Label>

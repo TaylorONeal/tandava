@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Check, CreditCard, Ticket, Infinity, Sparkles } from "lucide-react";
+import { Check, CreditCard, Infinity as InfinityIcon, Sparkles, Ticket } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useTranslation } from "react-i18next";
 
@@ -28,7 +28,7 @@ interface PaymentSourceSelectorProps {
 }
 
 const sourceIcons: Record<PaymentSourceType, React.ReactNode> = {
-  MEMBERSHIP: <Infinity className="h-5 w-5" />,
+  MEMBERSHIP: <InfinityIcon className="h-5 w-5" />,
   CLASS_PACK: <Ticket className="h-5 w-5" />,
   WORKSHOP_PASS: <Ticket className="h-5 w-5" />,
   DROP_IN: <CreditCard className="h-5 w-5" />,

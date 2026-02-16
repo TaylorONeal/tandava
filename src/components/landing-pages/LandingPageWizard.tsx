@@ -44,7 +44,7 @@ interface LandingPageWizardProps {
   initialTemplate?: string;
 }
 
-interface LandingPageData {
+export interface LandingPageData {
   title: string;
   slug: string;
   template: string;
@@ -142,6 +142,33 @@ const KEYWORD_TOOLS = [
   { name: "AnswerThePublic", url: "https://answerthepublic.com/", free: true },
   { name: "Ahrefs Free Tools", url: "https://ahrefs.com/free-seo-tools", free: true },
   { name: "Moz Keyword Explorer", url: "https://moz.com/explorer", free: false },
+];
+
+const EXPIRED_BEHAVIOR_OPTIONS: Array<{
+  value: LandingPageData["expiredBehavior"];
+  label: string;
+  desc: string;
+}> = [
+  {
+    value: "show_alternatives",
+    label: "Current programs/classes",
+    desc: "Best for SEO. Shows similar offerings with a friendly notice.",
+  },
+  {
+    value: "redirect_parent",
+    label: "Redirect to category page",
+    desc: "301 redirect to /schedule or a parent page.",
+  },
+  {
+    value: "show_message",
+    label: "Custom message only",
+    desc: "Keep the page with a notice that the promotion ended.",
+  },
+  {
+    value: "custom_redirect",
+    label: "Custom redirect URL",
+    desc: "Redirect to a specific page of your choice.",
+  },
 ];
 
 export function LandingPageWizard({ open, onOpenChange, onComplete, initialTemplate }: LandingPageWizardProps) {
@@ -410,7 +437,7 @@ export function LandingPageWizard({ open, onOpenChange, onComplete, initialTempl
           </div>
         );
 
-      case "seo":
+      case "seo": {
         const { score, checks } = calculateSeoScore();
         return (
           <div className="space-y-4">
@@ -516,6 +543,7 @@ export function LandingPageWizard({ open, onOpenChange, onComplete, initialTempl
             </div>
           </div>
         );
+      }
 
       case "expiration":
         return (
@@ -553,31 +581,10 @@ export function LandingPageWizard({ open, onOpenChange, onComplete, initialTempl
                 <div className="space-y-2">
                   <Label>When promotion ends, show:</Label>
                   <div className="space-y-2">
-                    {[
-                      {
-                        value: "show_alternatives",
-                        label: "Current programs/classes",
-                        desc: "Best for SEO. Shows similar offerings with a friendly notice.",
-                      },
-                      {
-                        value: "redirect_parent",
-                        label: "Redirect to category page",
-                        desc: "301 redirect to /schedule or a parent page.",
-                      },
-                      {
-                        value: "show_message",
-                        label: "Custom message only",
-                        desc: "Keep the page with a notice that the promotion ended.",
-                      },
-                      {
-                        value: "custom_redirect",
-                        label: "Custom redirect URL",
-                        desc: "Redirect to a specific page of your choice.",
-                      },
-                    ].map((option) => (
+                    {EXPIRED_BEHAVIOR_OPTIONS.map((option) => (
                       <button
                         key={option.value}
-                        onClick={() => updateData({ expiredBehavior: option.value as any })}
+                        onClick={() => updateData({ expiredBehavior: option.value })}
                         className={cn(
                           "w-full p-3 rounded-xl border text-left transition-all",
                           data.expiredBehavior === option.value
@@ -636,7 +643,7 @@ export function LandingPageWizard({ open, onOpenChange, onComplete, initialTempl
           </div>
         );
 
-      case "preview":
+      case "preview": {
         const seoResult = calculateSeoScore();
         return (
           <div className="space-y-4">
@@ -707,6 +714,7 @@ export function LandingPageWizard({ open, onOpenChange, onComplete, initialTempl
             </div>
           </div>
         );
+      }
 
       default:
         return null;

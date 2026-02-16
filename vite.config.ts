@@ -11,6 +11,32 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+
+          if (id.includes("recharts")) return "charts-vendor";
+          if (id.includes("@supabase")) return "supabase-vendor";
+          if (id.includes("@sentry")) return "sentry-vendor";
+          if (id.includes("@radix-ui")) return "radix-vendor";
+          if (
+            id.includes("react-router") ||
+            id.includes("@tanstack/react-query") ||
+            id.includes("i18next")
+          ) {
+            return "app-vendor";
+          }
+          if (
+            id.includes("react") ||
+            id.includes("react-dom") ||
+            id.includes("scheduler")
+          ) {
+            return "react-vendor";
+          }
+        },
+      },
+    },
   },
   plugins: [
     react(),

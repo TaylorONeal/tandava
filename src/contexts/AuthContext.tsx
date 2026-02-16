@@ -5,6 +5,12 @@ import type { Profile } from "@/types/database";
 import type { Permission } from "@/types/roles";
 import { getPermissionsForUserRole } from "@/types/roles";
 import { useDemo } from "@/contexts/DemoContext";
+import {
+  checkLoginRateLimit,
+  clearLoginRateLimit,
+  formatRetryAfter,
+  recordFailedLoginAttempt,
+} from "@/lib/security/loginRateLimit";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -145,7 +151,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // -----------------------------------------------------------------------
   const signInWithEmail = async (email: string, password: string) => {
     if (isDemoMode) return { error: null };
+
+    const rateLimit = checkLoginRateLimit(email);
+    if (!rateLimit.allowed) {
+      return {
+        error: {
+          message: `Too many login attempts. Try again in ${formatRetryAfter(rateLimit.retryAfterMs)}.`,
+        },
+      };
+    }
+
     const { error } = await auth.signInWithEmail(email, password);
+
+    if (error) {
+      const attemptResult = recordFailedLoginAttempt(email);
+      if (!attemptResult.allowed) {
+        return {
+          error: {
+            message: `Too many login attempts. Try again in ${formatRetryAfter(attemptResult.retryAfterMs)}.`,
+          },
+        };
+      }
+      return { error };
+    }
+
+    clearLoginRateLimit(email);
     return { error };
   };
 

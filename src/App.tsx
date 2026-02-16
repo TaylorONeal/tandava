@@ -12,7 +12,7 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AuthCallback } from "@/components/auth/AuthCallback";
 // DemoPanel removed — role selection now happens on landing page + DemoRoleBar
 import { DemoRoleBar } from "@/components/DemoRoleBar";
-import { Component, type ErrorInfo, type ReactNode } from "react";
+import { Component, lazy, Suspense, type ErrorInfo, type ReactNode } from "react";
 
 // ---------------------------------------------------------------------------
 // Error Boundary — shows the crash instead of a black screen
@@ -54,85 +54,84 @@ class AppErrorBoundary extends Component<
   }
 }
 
-// Student-facing pages
-import Index from "./pages/Index";
-import Schedule from "./pages/Schedule";
-import MySchedule from "./pages/MySchedule";
-import Community from "./pages/Community";
-import Account from "./pages/Account";
-import Studios from "./pages/Studios";
-import StudioDetail from "./pages/StudioDetail";
-import Instructors from "./pages/Instructors";
-import InstructorDetail from "./pages/InstructorDetail";
-import OnDemand from "./pages/OnDemand";
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
-import NotFound from "./pages/NotFound";
-import Demo from "./pages/Demo";
-import OpenSource from "./pages/OpenSource";
+const Index = lazy(() => import("./pages/Index"));
+const Schedule = lazy(() => import("./pages/Schedule"));
+const MySchedule = lazy(() => import("./pages/MySchedule"));
+const Community = lazy(() => import("./pages/Community"));
+const Account = lazy(() => import("./pages/Account"));
+const Studios = lazy(() => import("./pages/Studios"));
+const StudioDetail = lazy(() => import("./pages/StudioDetail"));
+const Instructors = lazy(() => import("./pages/Instructors"));
+const InstructorDetail = lazy(() => import("./pages/InstructorDetail"));
+const OnDemand = lazy(() => import("./pages/OnDemand"));
+const Login = lazy(() => import("./pages/auth/Login"));
+const Register = lazy(() => import("./pages/auth/Register"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Demo = lazy(() => import("./pages/Demo"));
+const OpenSource = lazy(() => import("./pages/OpenSource"));
 
-// Studio management pages
-import ManageDashboard from "./pages/manage/Dashboard";
-import ScheduleManage from "./pages/manage/ScheduleManage";
-import StudentsManage from "./pages/manage/Students";
-import TeachersManage from "./pages/manage/Teachers";
-import OfferingsManage from "./pages/manage/Offerings";
-import FinancialsManage from "./pages/manage/Financials";
-import ReportsManage from "./pages/manage/Reports";
-import ImportManage from "./pages/manage/Import";
-import SettingsManage from "./pages/manage/Settings";
-import OnboardingManage from "./pages/manage/Onboarding";
-import MemberDetailManage from "./pages/manage/MemberDetail";
-import PromoCodesManage from "./pages/manage/PromoCodes";
-import EventsManage from "./pages/manage/Events";
-import LandingPagesManage from "./pages/manage/LandingPages";
-import AnalyticsHubManage from "./pages/manage/AnalyticsHub";
-import MemberAnalyticsManage from "./pages/manage/MemberAnalytics";
-import SalesAnalyticsManage from "./pages/manage/SalesAnalytics";
-import FinancialAnalyticsManage from "./pages/manage/FinancialAnalytics";
-import SiteAnalyticsManage from "./pages/manage/SiteAnalytics";
-import DataConnectorsManage from "./pages/manage/DataConnectors";
-import ProductsManage from "./pages/manage/Products";
-import InventoryManage from "./pages/manage/Inventory";
-import PurchaseOrdersManage from "./pages/manage/PurchaseOrders";
-import NotificationSettingsManage from "./pages/manage/NotificationSettings";
-import SmsInboxManage from "./pages/manage/SmsInbox";
-import UtmBuilderManage from "./pages/manage/UtmBuilder";
-import CampaignsManage from "./pages/manage/Campaigns";
-import TasksManage from "./pages/manage/Tasks";
-import OnDemandManage from "./pages/manage/OnDemand";
-import FeatureSettingsManage from "./pages/manage/FeatureSettings";
-import AuditLogsManage from "./pages/manage/AuditLogs";
-import DataDictionaryManage from "./pages/manage/DataDictionary";
-import DefinitionsManage from "./pages/manage/Definitions";
+const ManageDashboard = lazy(() => import("./pages/manage/Dashboard"));
+const ScheduleManage = lazy(() => import("./pages/manage/ScheduleManage"));
+const StudentsManage = lazy(() => import("./pages/manage/Students"));
+const TeachersManage = lazy(() => import("./pages/manage/Teachers"));
+const OfferingsManage = lazy(() => import("./pages/manage/Offerings"));
+const FinancialsManage = lazy(() => import("./pages/manage/Financials"));
+const ReportsManage = lazy(() => import("./pages/manage/Reports"));
+const ImportManage = lazy(() => import("./pages/manage/Import"));
+const SettingsManage = lazy(() => import("./pages/manage/Settings"));
+const OnboardingManage = lazy(() => import("./pages/manage/Onboarding"));
+const MemberDetailManage = lazy(() => import("./pages/manage/MemberDetail"));
+const PromoCodesManage = lazy(() => import("./pages/manage/PromoCodes"));
+const EventsManage = lazy(() => import("./pages/manage/Events"));
+const LandingPagesManage = lazy(() => import("./pages/manage/LandingPages"));
+const AnalyticsHubManage = lazy(() => import("./pages/manage/AnalyticsHub"));
+const MemberAnalyticsManage = lazy(() => import("./pages/manage/MemberAnalytics"));
+const SalesAnalyticsManage = lazy(() => import("./pages/manage/SalesAnalytics"));
+const FinancialAnalyticsManage = lazy(() => import("./pages/manage/FinancialAnalytics"));
+const SiteAnalyticsManage = lazy(() => import("./pages/manage/SiteAnalytics"));
+const DataConnectorsManage = lazy(() => import("./pages/manage/DataConnectors"));
+const ProductsManage = lazy(() => import("./pages/manage/Products"));
+const InventoryManage = lazy(() => import("./pages/manage/Inventory"));
+const PurchaseOrdersManage = lazy(() => import("./pages/manage/PurchaseOrders"));
+const NotificationSettingsManage = lazy(() => import("./pages/manage/NotificationSettings"));
+const SmsInboxManage = lazy(() => import("./pages/manage/SmsInbox"));
+const UtmBuilderManage = lazy(() => import("./pages/manage/UtmBuilder"));
+const CampaignsManage = lazy(() => import("./pages/manage/Campaigns"));
+const TasksManage = lazy(() => import("./pages/manage/Tasks"));
+const OnDemandManage = lazy(() => import("./pages/manage/OnDemand"));
+const FeatureSettingsManage = lazy(() => import("./pages/manage/FeatureSettings"));
+const AuditLogsManage = lazy(() => import("./pages/manage/AuditLogs"));
+const DataDictionaryManage = lazy(() => import("./pages/manage/DataDictionary"));
+const DefinitionsManage = lazy(() => import("./pages/manage/Definitions"));
 
-// Account pages
-import NotificationPreferences from "./pages/account/NotificationPreferences";
+const NotificationPreferences = lazy(() => import("./pages/account/NotificationPreferences"));
 
-// Instructor portal pages
-import TeachDashboard from "./pages/teach/Dashboard";
-import TeachSchedule from "./pages/teach/Schedule";
-import TeachSubs from "./pages/teach/Subs";
-import TeachEarnings from "./pages/teach/Earnings";
-import TeachAvailability from "./pages/teach/Availability";
-import TeachProfile from "./pages/teach/Profile";
+const TeachDashboard = lazy(() => import("./pages/teach/Dashboard"));
+const TeachSchedule = lazy(() => import("./pages/teach/Schedule"));
+const TeachSubs = lazy(() => import("./pages/teach/Subs"));
+const TeachEarnings = lazy(() => import("./pages/teach/Earnings"));
+const TeachAvailability = lazy(() => import("./pages/teach/Availability"));
+const TeachProfile = lazy(() => import("./pages/teach/Profile"));
 
-// Staff (front desk) pages
-import StaffCheckin from "./pages/staff/StaffCheckin";
-import StaffWaitlist from "./pages/staff/StaffWaitlist";
+const StaffCheckin = lazy(() => import("./pages/staff/StaffCheckin"));
+const StaffWaitlist = lazy(() => import("./pages/staff/StaffWaitlist"));
 
-// Kiosk page
-import Kiosk from "./pages/Kiosk";
+const Kiosk = lazy(() => import("./pages/Kiosk"));
 
-// Platform admin pages
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminStudios from "./pages/admin/AdminStudios";
-import AdminUsers from "./pages/admin/AdminUsers";
-import AdminBilling from "./pages/admin/AdminBilling";
-import AdminFeedback from "./pages/admin/AdminFeedback";
-import AdminSettings from "./pages/admin/AdminSettings";
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminStudios = lazy(() => import("./pages/admin/AdminStudios"));
+const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
+const AdminBilling = lazy(() => import("./pages/admin/AdminBilling"));
+const AdminFeedback = lazy(() => import("./pages/admin/AdminFeedback"));
+const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 
 const queryClient = new QueryClient();
+
+const RouteLoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+  </div>
+);
 
 const App = () => (
   <AppErrorBoundary>
@@ -147,6 +146,7 @@ const App = () => (
               <Sonner />
               <BrowserRouter>
                 <DemoRoleBar />
+                <Suspense fallback={<RouteLoadingFallback />}>
                 <Routes>
                   {/* ---- Demo landing page (role picker) ---- */}
                   <Route path="/" element={<Demo />} />
@@ -234,6 +234,7 @@ const App = () => (
                   {/* ---- Catch-all ---- */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
+                </Suspense>
               </BrowserRouter>
             </TooltipProvider>
           </AuthProvider>

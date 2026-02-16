@@ -27,6 +27,7 @@ const Register = () => {
     password: "",
     agreeToTerms: false,
     marketingConsent: false,
+    _hp: "",
   });
 
   // Check if form is valid for quick validation
@@ -35,6 +36,9 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Honeypot guard: bots tend to fill hidden fields.
+    if (formData._hp.trim()) return;
 
     if (!formData.agreeToTerms) {
       toast({
@@ -158,6 +162,16 @@ const Register = () => {
 
           {/* Form - larger touch targets for mobile */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              value={formData._hp}
+              onChange={(e) => setFormData({ ...formData, _hp: e.target.value })}
+              className="hidden"
+              aria-hidden="true"
+            />
             {/* Name fields - stack on very small screens */}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
