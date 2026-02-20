@@ -272,12 +272,28 @@ const mockOnDemandClasses = [
   },
 ];
 
+type SelectedBooking = {
+  id: string;
+  type: "class" | "workshop" | "retreat" | "appointment";
+  title: string;
+  style?: string;
+  teacher: string;
+  studio: string;
+  location: string;
+  dateTime: string;
+  duration: number;
+  spotsLeft: number;
+  dropInPriceCents: number;
+  cancellationMinutes: number;
+};
+
 const Schedule = () => {
   const [activeTab, setActiveTab] = useState("classes");
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [selectedClass, setSelectedClass] = useState<typeof mockClasses[0] | null>(null);
+  const [selectedBooking, setSelectedBooking] = useState<SelectedBooking | null>(null);
   const [classDetailOpen, setClassDetailOpen] = useState(false);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [showOnDemand, setShowOnDemand] = useState(false);
@@ -298,6 +314,80 @@ const Schedule = () => {
     if (classItem) {
       setSelectedClass(classItem);
       setClassDetailOpen(true);
+      setSelectedBooking({
+        id: classItem.id,
+        type: "class",
+        title: classItem.title,
+        style: classItem.style,
+        teacher: classItem.teacher.name,
+        studio: classItem.studio.name,
+        location: classItem.studio.location,
+        dateTime: classItem.startTime,
+        duration: classItem.duration,
+        spotsLeft: classItem.spotsLeft,
+        dropInPriceCents: 2500,
+        cancellationMinutes: 120,
+      });
+      return;
+    }
+
+    const workshopItem = mockWorkshops.find((workshop) => workshop.id === id);
+    if (workshopItem) {
+      setSelectedClass(null);
+      setSelectedBooking({
+        id: workshopItem.id,
+        type: "workshop",
+        title: workshopItem.title,
+        teacher: workshopItem.teacher.name,
+        studio: workshopItem.location,
+        location: workshopItem.location,
+        dateTime: workshopItem.startTime,
+        duration: workshopItem.duration,
+        spotsLeft: workshopItem.spotsLeft,
+        dropInPriceCents: workshopItem.price * 100,
+        cancellationMinutes: 24 * 60,
+      });
+      setBookingModalOpen(true);
+      return;
+    }
+
+    const appointmentItem = mockAppointments.find((appointment) => appointment.id === id);
+    if (appointmentItem) {
+      setSelectedClass(null);
+      setSelectedBooking({
+        id: appointmentItem.id,
+        type: "appointment",
+        title: appointmentItem.type,
+        teacher: appointmentItem.teacher.name,
+        studio: appointmentItem.location,
+        location: appointmentItem.location,
+        dateTime: appointmentItem.startTime,
+        duration: appointmentItem.duration,
+        spotsLeft: 1,
+        dropInPriceCents: appointmentItem.price * 100,
+        cancellationMinutes: 24 * 60,
+      });
+      setBookingModalOpen(true);
+      return;
+    }
+
+    const retreatItem = mockRetreats.find((retreat) => retreat.id === id);
+    if (retreatItem) {
+      setSelectedClass(null);
+      setSelectedBooking({
+        id: retreatItem.id,
+        type: "retreat",
+        title: retreatItem.title,
+        teacher: retreatItem.teachers.map((teacher) => teacher.name).join(" & "),
+        studio: `${retreatItem.destination}, ${retreatItem.country}`,
+        location: `${retreatItem.destination}, ${retreatItem.country}`,
+        dateTime: `${retreatItem.startDate} - ${retreatItem.endDate}`,
+        duration: 7 * 24 * 60,
+        spotsLeft: retreatItem.spotsLeft,
+        dropInPriceCents: retreatItem.price * 100,
+        cancellationMinutes: 7 * 24 * 60,
+      });
+      setBookingModalOpen(true);
     }
   };
 
@@ -580,24 +670,11 @@ const Schedule = () => {
       />
 
       {/* Booking Modal */}
-      {selectedClass && (
+      {selectedBooking && (
         <BookingModal
           open={bookingModalOpen}
           onOpenChange={setBookingModalOpen}
-          booking={{
-            id: selectedClass.id,
-            type: "class",
-            title: selectedClass.title,
-            style: selectedClass.style,
-            teacher: selectedClass.teacher.name,
-            studio: selectedClass.studio.name,
-            location: selectedClass.studio.location,
-            dateTime: selectedClass.startTime,
-            duration: selectedClass.duration,
-            spotsLeft: selectedClass.spotsLeft,
-            dropInPriceCents: 2500, // $25 drop-in
-            cancellationMinutes: 120,
-          }}
+          booking={selectedBooking}
         />
       )}
     </AppLayout>
