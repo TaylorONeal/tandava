@@ -34,13 +34,11 @@ import {
   Shield,
   CreditCard,
   BarChart3,
-  Globe,
   BookOpen,
   ExternalLink,
   Server,
   Lock,
   Zap,
-  Heart,
   ListChecks,
   Bell,
   Receipt,
@@ -847,78 +845,13 @@ export default function Demo() {
       </section>
 
       {/* ================================================================ */}
-      {/* ABOUT THE CREATOR                                                */}
+      {/* OPEN SOURCE                                                      */}
       {/* ================================================================ */}
       <section className="border-t border-border bg-card/30">
-        <div className="max-w-3xl mx-auto px-6 py-14">
-          <div className="flex items-start gap-5">
-            <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-lg font-display font-bold text-primary shrink-0">
-              TO
-            </div>
-            <div>
-              <h2 className="text-xl font-display font-semibold mb-1">
-                Taylor O'Neal
-              </h2>
-              <p className="text-sm text-muted-foreground mb-4">
-                Product Management, Yoga Practitioner
-              </p>
-              <div className="text-sm text-muted-foreground leading-relaxed space-y-3">
-                <p>
-                  I build digital products and practice yoga. Both require
-                  systems thinking, creative problem-solving, and respect for
-                  the people you serve.
-                </p>
-                <p>
-                  200-hour YTT in Seattle. Workshops in Thailand and Whidbey
-                  Island. That practitioner-first mindset led to{" "}
-                  <a
-                    href="https://cuecraftyoga.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                  >
-                    CueCraft Yoga
-                  </a>{" "}
-                  and now Tandava. I also teach Product Management and Digital
-                  Analytics at Miami University.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-4 mt-4">
-                <a
-                  href="https://tayloroneal.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-10 items-center gap-2 text-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                >
-                  <Globe className="w-4 h-4" /> tayloroneal.com
-                </a>
-                <a
-                  href="https://cuecraftyoga.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-10 items-center gap-2 text-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                >
-                  <Heart className="w-4 h-4" /> CueCraft Yoga
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/tayloroneal/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-10 items-center gap-2 text-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                >
-                  LinkedIn
-                </a>
-                <a
-                  href="https://github.com/TaylorONeal"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-10 items-center gap-2 text-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                >
-                  <Github className="w-4 h-4" /> GitHub
-                </a>
-              </div>
-            </div>
-          </div>
+        <div className="max-w-3xl mx-auto px-6 py-14 text-center">
+          <p className="text-sm text-muted-foreground">
+            Tandava is open-source software. Built by the community, for the community.
+          </p>
         </div>
       </section>
 
