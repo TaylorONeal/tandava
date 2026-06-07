@@ -161,7 +161,7 @@ supabase link --project-ref YOUR_PROJECT_REF
 supabase db push
 ```
 
-This runs `supabase/migrations/001_initial_schema.sql` which creates the full schema.
+This applies every migration in `supabase/migrations/` in order (`00001_initial_schema.sql` through the latest), creating the full schema, RLS policies, and triggers.
 
 ### 3. Configure Environment
 
