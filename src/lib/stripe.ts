@@ -49,11 +49,11 @@ export function isStripeConfigured(): boolean {
 // ---------------------------------------------------------------------------
 import { api } from "@/lib/backend";
 
-/** Redirect to Stripe Checkout for a class drop-in */
-export async function checkoutDropIn(classId: string): Promise<{ error?: string }> {
+/** Redirect to Stripe Checkout for a class drop-in (by class occurrence id) */
+export async function checkoutDropIn(occurrenceId: string): Promise<{ error?: string }> {
   const { data, error } = await api.invoke<{ url: string }>("stripe-checkout", {
     type: "drop_in",
-    classId,
+    occurrenceId,
   });
 
   if (error) return { error: error.message };
@@ -69,12 +69,12 @@ export async function checkoutDropIn(classId: string): Promise<{ error?: string 
 /** Redirect to Stripe Checkout for a membership/subscription */
 export async function checkoutMembership(
   studioId: string,
-  planId: string
+  membershipTypeId: string
 ): Promise<{ error?: string }> {
   const { data, error } = await api.invoke<{ url: string }>("stripe-checkout", {
     type: "membership",
     studioId,
-    planId,
+    membershipTypeId,
   });
 
   if (error) return { error: error.message };
@@ -87,15 +87,15 @@ export async function checkoutMembership(
   return { error: "No checkout URL returned" };
 }
 
-/** Redirect to Stripe Checkout for a class pack */
+/** Redirect to Stripe Checkout for a class pack (by class pack type id) */
 export async function checkoutClassPack(
   studioId: string,
-  packSize: number
+  classPackTypeId: string
 ): Promise<{ error?: string }> {
   const { data, error } = await api.invoke<{ url: string }>("stripe-checkout", {
     type: "class_pack",
     studioId,
-    packSize,
+    classPackTypeId,
   });
 
   if (error) return { error: error.message };
