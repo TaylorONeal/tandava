@@ -115,18 +115,29 @@ Tandava is in active development. The demo shows complete UI and workflows. Some
 
 **Working now (frontend complete):**
 - Full UI for scheduling, bookings, roster management
-- Role-based access (Owner, Front Desk, Teacher, Student)
+- Role-based access enforced at the route level (Owner, Admin, Teacher, Front Desk, Student)
 - Analytics dashboards with revenue, attendance, retention metrics
 - Teacher check-in dialog with student roster
 - Event management with historical trends
 - Demo mode with realistic sample data
-- Data import/export
+- CSV import engine: real parsing, provider auto-detection, column
+  auto-mapping, validation, and dedupe (see `src/lib/connectors/`)
 
-**Needs integration for production:**
-- Payment processing (Stripe Connect architecture ready, not connected)
-- Real authentication (Supabase Auth configured, currently mock in demo)
-- Email/SMS notifications (provider abstraction built, needs configuration)
-- Data persistence (full Supabase schema with RLS ready, needs deployment)
+**Backend implemented, needs your keys/config:**
+- Payments: Stripe Checkout, Customer Portal, and webhook Edge Functions are
+  implemented (drop-in, membership subscriptions, class packs) and support both
+  single-studio and Stripe Connect platform modes — set your Stripe secrets and
+  webhook endpoint to go live
+- Email: provider abstraction (Resend / SendGrid / SMTP / console) with a
+  deployable Edge Function — set `EMAIL_PROVIDER` + keys
+- Auth: real Supabase Auth (mock only when `VITE_DEMO_MODE=true`)
+- Data persistence: full Supabase schema with RLS — run the migrations
+
+**Still in progress (see [docs/ROADMAP.md](docs/ROADMAP.md)):**
+- Wiring the booking/checkout UI to the live payment + entitlement layer
+- Final import persistence (member creation via a service-role function)
+- SMS / push notification providers
+- Workshop/event registration UI (multi-session, deposits, partial series)
 
 ### Versioning
 

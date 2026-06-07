@@ -168,10 +168,10 @@ const App = () => (
                   <Route path="/auth/callback" element={<AuthCallback />} />
 
                   {/* ---- Authenticated member routes ---- */}
-                  <Route path="/my-schedule" element={<MySchedule />} />
-                  <Route path="/community" element={<Community />} />
-                  <Route path="/account" element={<Account />} />
-                  <Route path="/account/notifications" element={<NotificationPreferences />} />
+                  <Route path="/my-schedule" element={<ProtectedRoute permission="member.view_profile"><MySchedule /></ProtectedRoute>} />
+                  <Route path="/community" element={<ProtectedRoute permission="member.view_profile"><Community /></ProtectedRoute>} />
+                  <Route path="/account" element={<ProtectedRoute permission="member.view_profile"><Account /></ProtectedRoute>} />
+                  <Route path="/account/notifications" element={<ProtectedRoute permission="member.view_profile"><NotificationPreferences /></ProtectedRoute>} />
 
                   {/* ---- Platform admin routes (/admin) ---- */}
                   <Route path="/admin" element={<ProtectedRoute permission="platform.admin"><AdminDashboard /></ProtectedRoute>} />
@@ -181,52 +181,55 @@ const App = () => (
                   <Route path="/admin/feedback" element={<ProtectedRoute permission="platform.admin"><AdminFeedback /></ProtectedRoute>} />
                   <Route path="/admin/settings" element={<ProtectedRoute permission="platform.admin"><AdminSettings /></ProtectedRoute>} />
 
-                  {/* ---- Studio management routes (/manage) ---- */}
-                  <Route path="/manage" element={<ManageDashboard />} />
-                  <Route path="/manage/schedule" element={<ScheduleManage />} />
-                  <Route path="/manage/students" element={<StudentsManage />} />
-                  <Route path="/manage/teachers" element={<TeachersManage />} />
-                  <Route path="/manage/offerings" element={<OfferingsManage />} />
-                  <Route path="/manage/financials" element={<FinancialsManage />} />
-                  <Route path="/manage/reports" element={<ReportsManage />} />
-                  <Route path="/manage/import" element={<ImportManage />} />
-                  <Route path="/manage/settings" element={<SettingsManage />} />
-                  <Route path="/manage/onboarding" element={<OnboardingManage />} />
-                  <Route path="/manage/members/:id" element={<MemberDetailManage />} />
-                  <Route path="/manage/promo-codes" element={<PromoCodesManage />} />
-                  <Route path="/manage/events" element={<EventsManage />} />
-                  <Route path="/manage/landing-pages" element={<LandingPagesManage />} />
-                  <Route path="/manage/analytics" element={<AnalyticsHubManage />} />
-                  <Route path="/manage/analytics/members" element={<MemberAnalyticsManage />} />
-                  <Route path="/manage/analytics/sales" element={<SalesAnalyticsManage />} />
-                  <Route path="/manage/analytics/financials" element={<FinancialAnalyticsManage />} />
-                  <Route path="/manage/analytics/site" element={<SiteAnalyticsManage />} />
-                  <Route path="/manage/connectors" element={<DataConnectorsManage />} />
-                  <Route path="/manage/products" element={<ProductsManage />} />
-                  <Route path="/manage/inventory" element={<InventoryManage />} />
-                  <Route path="/manage/purchase-orders" element={<PurchaseOrdersManage />} />
-                  <Route path="/manage/notification-settings" element={<NotificationSettingsManage />} />
-                  <Route path="/manage/sms-inbox" element={<SmsInboxManage />} />
-                  <Route path="/manage/utm-builder" element={<UtmBuilderManage />} />
-                  <Route path="/manage/campaigns" element={<CampaignsManage />} />
-                  <Route path="/manage/tasks" element={<TasksManage />} />
-                  <Route path="/manage/on-demand" element={<OnDemandManage />} />
-                  <Route path="/manage/feature-settings" element={<FeatureSettingsManage />} />
-                  <Route path="/manage/audit-logs" element={<AuditLogsManage />} />
-                  <Route path="/manage/data-dictionary" element={<DataDictionaryManage />} />
-                  <Route path="/manage/definitions" element={<DefinitionsManage />} />
+                  {/* ---- Studio management routes (/manage) ----
+                       Guards: "studio.manage_schedule" = owner + admin (day-to-day mgmt);
+                               "studio.manage_settings"  = owner only (settings, money, growth).
+                       Demo mode bypasses all guards (see ProtectedRoute). */}
+                  <Route path="/manage" element={<ProtectedRoute permission="studio.manage_schedule"><ManageDashboard /></ProtectedRoute>} />
+                  <Route path="/manage/schedule" element={<ProtectedRoute permission="studio.manage_schedule"><ScheduleManage /></ProtectedRoute>} />
+                  <Route path="/manage/students" element={<ProtectedRoute permission="studio.manage_schedule"><StudentsManage /></ProtectedRoute>} />
+                  <Route path="/manage/teachers" element={<ProtectedRoute permission="studio.manage_schedule"><TeachersManage /></ProtectedRoute>} />
+                  <Route path="/manage/offerings" element={<ProtectedRoute permission="studio.manage_schedule"><OfferingsManage /></ProtectedRoute>} />
+                  <Route path="/manage/financials" element={<ProtectedRoute permission="studio.manage_settings"><FinancialsManage /></ProtectedRoute>} />
+                  <Route path="/manage/reports" element={<ProtectedRoute permission="studio.manage_schedule"><ReportsManage /></ProtectedRoute>} />
+                  <Route path="/manage/import" element={<ProtectedRoute permission="studio.manage_settings"><ImportManage /></ProtectedRoute>} />
+                  <Route path="/manage/settings" element={<ProtectedRoute permission="studio.manage_settings"><SettingsManage /></ProtectedRoute>} />
+                  <Route path="/manage/onboarding" element={<ProtectedRoute permission="studio.manage_settings"><OnboardingManage /></ProtectedRoute>} />
+                  <Route path="/manage/members/:id" element={<ProtectedRoute permission="studio.manage_schedule"><MemberDetailManage /></ProtectedRoute>} />
+                  <Route path="/manage/promo-codes" element={<ProtectedRoute permission="studio.manage_settings"><PromoCodesManage /></ProtectedRoute>} />
+                  <Route path="/manage/events" element={<ProtectedRoute permission="studio.manage_schedule"><EventsManage /></ProtectedRoute>} />
+                  <Route path="/manage/landing-pages" element={<ProtectedRoute permission="studio.manage_settings"><LandingPagesManage /></ProtectedRoute>} />
+                  <Route path="/manage/analytics" element={<ProtectedRoute permission="studio.manage_schedule"><AnalyticsHubManage /></ProtectedRoute>} />
+                  <Route path="/manage/analytics/members" element={<ProtectedRoute permission="studio.manage_schedule"><MemberAnalyticsManage /></ProtectedRoute>} />
+                  <Route path="/manage/analytics/sales" element={<ProtectedRoute permission="studio.manage_settings"><SalesAnalyticsManage /></ProtectedRoute>} />
+                  <Route path="/manage/analytics/financials" element={<ProtectedRoute permission="studio.manage_settings"><FinancialAnalyticsManage /></ProtectedRoute>} />
+                  <Route path="/manage/analytics/site" element={<ProtectedRoute permission="studio.manage_schedule"><SiteAnalyticsManage /></ProtectedRoute>} />
+                  <Route path="/manage/connectors" element={<ProtectedRoute permission="studio.manage_settings"><DataConnectorsManage /></ProtectedRoute>} />
+                  <Route path="/manage/products" element={<ProtectedRoute permission="studio.manage_schedule"><ProductsManage /></ProtectedRoute>} />
+                  <Route path="/manage/inventory" element={<ProtectedRoute permission="studio.manage_schedule"><InventoryManage /></ProtectedRoute>} />
+                  <Route path="/manage/purchase-orders" element={<ProtectedRoute permission="studio.manage_settings"><PurchaseOrdersManage /></ProtectedRoute>} />
+                  <Route path="/manage/notification-settings" element={<ProtectedRoute permission="studio.manage_settings"><NotificationSettingsManage /></ProtectedRoute>} />
+                  <Route path="/manage/sms-inbox" element={<ProtectedRoute permission="studio.view_inbox"><SmsInboxManage /></ProtectedRoute>} />
+                  <Route path="/manage/utm-builder" element={<ProtectedRoute permission="studio.manage_settings"><UtmBuilderManage /></ProtectedRoute>} />
+                  <Route path="/manage/campaigns" element={<ProtectedRoute permission="studio.manage_settings"><CampaignsManage /></ProtectedRoute>} />
+                  <Route path="/manage/tasks" element={<ProtectedRoute permission="studio.manage_schedule"><TasksManage /></ProtectedRoute>} />
+                  <Route path="/manage/on-demand" element={<ProtectedRoute permission="studio.manage_schedule"><OnDemandManage /></ProtectedRoute>} />
+                  <Route path="/manage/feature-settings" element={<ProtectedRoute permission="studio.manage_settings"><FeatureSettingsManage /></ProtectedRoute>} />
+                  <Route path="/manage/audit-logs" element={<ProtectedRoute permission="studio.manage_settings"><AuditLogsManage /></ProtectedRoute>} />
+                  <Route path="/manage/data-dictionary" element={<ProtectedRoute permission="studio.manage_schedule"><DataDictionaryManage /></ProtectedRoute>} />
+                  <Route path="/manage/definitions" element={<ProtectedRoute permission="studio.manage_schedule"><DefinitionsManage /></ProtectedRoute>} />
 
                   {/* ---- Instructor portal routes (/teach) ---- */}
-                  <Route path="/teach" element={<TeachDashboard />} />
-                  <Route path="/teach/schedule" element={<TeachSchedule />} />
-                  <Route path="/teach/availability" element={<TeachAvailability />} />
-                  <Route path="/teach/subs" element={<TeachSubs />} />
-                  <Route path="/teach/earnings" element={<TeachEarnings />} />
-                  <Route path="/teach/profile" element={<TeachProfile />} />
+                  <Route path="/teach" element={<ProtectedRoute permission="studio.teach"><TeachDashboard /></ProtectedRoute>} />
+                  <Route path="/teach/schedule" element={<ProtectedRoute permission="studio.teach"><TeachSchedule /></ProtectedRoute>} />
+                  <Route path="/teach/availability" element={<ProtectedRoute permission="studio.teach"><TeachAvailability /></ProtectedRoute>} />
+                  <Route path="/teach/subs" element={<ProtectedRoute permission="studio.teach"><TeachSubs /></ProtectedRoute>} />
+                  <Route path="/teach/earnings" element={<ProtectedRoute permission="studio.teach"><TeachEarnings /></ProtectedRoute>} />
+                  <Route path="/teach/profile" element={<ProtectedRoute permission="studio.teach"><TeachProfile /></ProtectedRoute>} />
 
                   {/* ---- Staff (front desk) routes ---- */}
-                  <Route path="/staff/checkin" element={<StaffCheckin />} />
-                  <Route path="/staff/waitlist" element={<StaffWaitlist />} />
+                  <Route path="/staff/checkin" element={<ProtectedRoute permission="studio.checkin"><StaffCheckin /></ProtectedRoute>} />
+                  <Route path="/staff/waitlist" element={<ProtectedRoute permission="studio.manage_waitlist"><StaffWaitlist /></ProtectedRoute>} />
 
                   {/* ---- Kiosk mode ---- */}
                   <Route path="/kiosk/:studioId" element={<Kiosk />} />

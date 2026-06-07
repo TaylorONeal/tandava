@@ -161,7 +161,7 @@ supabase link --project-ref YOUR_PROJECT_REF
 supabase db push
 ```
 
-This runs `supabase/migrations/001_initial_schema.sql` which creates the full schema.
+This applies every migration in `supabase/migrations/` in order (`00001_initial_schema.sql` through the latest), creating the full schema, RLS policies, and triggers.
 
 ### 3. Configure Environment
 
@@ -209,9 +209,31 @@ Point your domain to your hosting provider. Each provider has its own DNS instru
 If accepting payments:
 
 1. Create a Stripe account
-2. Set up a webhook endpoint pointing to your Supabase Edge Function
-3. Configure Stripe secrets in Supabase
-4. Test with Stripe test mode before going live
+2. Deploy the payment Edge Functions:
+   ```bash
+   supabase functions deploy stripe-checkout
+   supabase functions deploy stripe-portal
+   supabase functions deploy stripe-webhook
+   supabase functions deploy email
+   ```
+3. Configure secrets in Supabase:
+   ```bash
+   supabase secrets set STRIPE_SECRET_KEY=sk_live_...
+   supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...
+   supabase secrets set APP_URL=https://your-studio.com
+   ```
+4. Add a webhook endpoint in the Stripe Dashboard pointing to
+   `https://<project-ref>.supabase.co/functions/v1/stripe-webhook` and
+   subscribe to: `checkout.session.completed`, `customer.subscription.updated`,
+   `customer.subscription.deleted`, `invoice.payment_failed`. Copy its signing
+   secret into `STRIPE_WEBHOOK_SECRET`.
+5. Test with Stripe test mode before going live.
+
+**Single-studio vs platform mode:** if you self-host for one studio, leave
+`studios.stripe_account_id` null and the studio's own Stripe key handles
+everything directly. For a multi-studio platform, set each studio's
+`stripe_account_id` (Stripe Connect) and the functions automatically route
+funds via destination charges, with an optional `PLATFORM_FEE_BPS` fee.
 
 See [docs/developer/stripe-setup.md](docs/developer/stripe-setup.md) for detailed instructions.
 

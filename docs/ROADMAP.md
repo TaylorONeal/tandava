@@ -5,6 +5,47 @@ Tandava is an open-source (AGPL-3.0) studio management platform that provides fe
 
 ---
 
+## June 2026 Engineering Review & Hardening
+
+A full repo review (build/lint/typecheck/tests + feature audit vs Mindbody,
+Arketa, Momence) surfaced several "won't deploy / can't transact" gaps. These
+have now been addressed:
+
+**Shipped in this pass**
+- Removed a legacy `001_initial_schema.sql` that collided with the canonical
+  `00001–00010` migration series on `supabase db push`.
+- Added route-level RBAC guards to `/manage`, `/teach`, `/staff`, and member
+  routes (previously only `/admin` was guarded) + a `studio.teach` permission.
+- Implemented the `stripe-checkout` and `stripe-portal` Edge Functions the
+  frontend already called, and aligned `stripe-webhook` to the canonical schema.
+  Supports single-studio (direct) and Connect (destination charge) modes.
+- Added the email Edge Function HTTP entry point over the provider abstraction.
+- Reconciled the events types with the real schema and added a registration
+  window (`00011`).
+- Built a tested CSV import engine (parser, transforms, alias matching,
+  validation, dedupe) and wired the import wizard to real file data.
+
+**Remaining to be studio-ready (priority order)**
+1. Wire the booking/checkout UI to live entitlements + the new payment functions
+   (eligibility checks, pack/membership decrement, late-cancel fees, waitlist
+   promotion notifications).
+2. Finish CSV import persistence (service-role function that creates member
+   profiles + `studio_members` and writes `import_jobs`).
+3. Workshop/event registration UX: event detail page, tier picker (early-bird +
+   member pricing), partial-series session selector, deposits/payment plans,
+   add-to-cart.
+4. SMS + push notification providers behind `NotificationService`.
+5. Make `/manage/onboarding` actually provision (upserts per step + Stripe
+   Connect link), as the spine of non-technical setup.
+
+**Installable-by-non-technical-studios plan**
+- *Phase A:* one-click deploy buttons + `seed.sql` + guided env + first-run setup.
+- *Phase B:* provisioning onboarding (#5) + working import (#2) — "deploy it" and
+  "bring your data" together.
+- *Phase C:* optional hosted / managed-fork provisioning service.
+
+---
+
 ## Current State (V1 Alpha)
 
 ### Completed
