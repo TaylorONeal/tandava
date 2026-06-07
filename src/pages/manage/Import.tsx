@@ -19,7 +19,6 @@ import {
   AlertTriangle,
   ArrowRight,
   ChevronRight,
-  Download,
   Loader2,
   X,
   Columns,
@@ -37,18 +36,19 @@ import {
   CONNECTOR_SHORT_DISCLAIMER,
   detectProviderFormat,
   getProviderDisplayName,
+  parseCsvFile,
+  autoMatchColumns,
+  validateClientRows,
   type ConnectorProviderInfo,
+  type ParsedCsv,
+  type ColumnMatch,
+  type TargetField,
+  type RowError,
 } from "@/lib/connectors";
 
 type ImportStep = "source" | "upload" | "mapping" | "preview" | "processing" | "complete";
 
-interface ColumnMapping {
-  sourceColumn: string;
-  targetField: string;
-  sampleValues: string[];
-  isRequired: boolean;
-  autoMatched: boolean;
-}
+type ColumnMapping = ColumnMatch;
 
 // Build source options from connector providers
 const sourceOptions = Object.entries(CONNECTOR_PROVIDERS).map(([id, info]) => ({
@@ -66,32 +66,24 @@ const importTypes = [
   { value: "transactions", label: "Transaction History", icon: CreditCard, description: "Purchase history, payments, and refunds" },
 ];
 
-// Mock: simulates auto-detected column mappings from a typical client export CSV
-const mockColumnMappings: ColumnMapping[] = [
-  { sourceColumn: "First Name", targetField: "first_name", sampleValues: ["Emma", "Alex", "Mia"], isRequired: true, autoMatched: true },
-  { sourceColumn: "Last Name", targetField: "last_name", sampleValues: ["Wilson", "Rivera", "Tanaka"], isRequired: true, autoMatched: true },
-  { sourceColumn: "Email", targetField: "email", sampleValues: ["emma@ex.com", "alex@ex.com", "mia@ex.com"], isRequired: true, autoMatched: true },
-  { sourceColumn: "Mobile Phone", targetField: "phone", sampleValues: ["415-555-0101", "415-555-0102", ""], isRequired: false, autoMatched: true },
-  { sourceColumn: "Birth Date", targetField: "date_of_birth", sampleValues: ["03/15/1990", "07/22/1985", ""], isRequired: false, autoMatched: true },
-  { sourceColumn: "Emergency Contact Name", targetField: "emergency_contact_name", sampleValues: ["John Wilson", "", "Ken Tanaka"], isRequired: false, autoMatched: true },
-  { sourceColumn: "Emergency Contact Phone", targetField: "emergency_contact_phone", sampleValues: ["415-555-0201", "", "415-555-0203"], isRequired: false, autoMatched: true },
-  { sourceColumn: "Notes", targetField: "notes", sampleValues: ["Knee injury", "", "Prenatal"], isRequired: false, autoMatched: true },
-  { sourceColumn: "Client ID", targetField: "", sampleValues: ["MB10001", "MB10002", "MB10003"], isRequired: false, autoMatched: false },
-  { sourceColumn: "Home Phone", targetField: "", sampleValues: ["", "", ""], isRequired: false, autoMatched: false },
+// Target fields for a client/student import, with header aliases used for
+// auto-matching against real-world Mindbody/Momence/Arketa export columns.
+const CLIENT_TARGETS: TargetField[] = [
+  { value: "first_name", label: "First Name", required: true, aliases: ["FirstName", "given name", "first"] },
+  { value: "last_name", label: "Last Name", required: true, aliases: ["LastName", "surname", "last"] },
+  { value: "email", label: "Email", required: true, aliases: ["email address", "e-mail"] },
+  { value: "phone", label: "Phone", aliases: ["Mobile Phone", "cell", "mobile", "phone number"] },
+  { value: "date_of_birth", label: "Date of Birth", aliases: ["Birth Date", "dob", "birthday"] },
+  { value: "emergency_contact_name", label: "Emergency Contact Name", aliases: ["emergency name"] },
+  { value: "emergency_contact_phone", label: "Emergency Contact Phone", aliases: ["emergency phone"] },
+  { value: "notes", label: "Notes", aliases: ["note", "comments"] },
+  { value: "tags", label: "Tags", aliases: ["tag", "labels"] },
+  { value: "pronouns", label: "Pronouns" },
 ];
 
 const targetFieldOptions = [
   { value: "", label: "Skip this column" },
-  { value: "first_name", label: "First Name" },
-  { value: "last_name", label: "Last Name" },
-  { value: "email", label: "Email" },
-  { value: "phone", label: "Phone" },
-  { value: "date_of_birth", label: "Date of Birth" },
-  { value: "emergency_contact_name", label: "Emergency Contact Name" },
-  { value: "emergency_contact_phone", label: "Emergency Contact Phone" },
-  { value: "notes", label: "Notes" },
-  { value: "tags", label: "Tags" },
-  { value: "pronouns", label: "Pronouns" },
+  ...CLIENT_TARGETS.map((t) => ({ value: t.value, label: t.label })),
 ];
 
 export default function ImportManage() {
@@ -101,11 +93,13 @@ export default function ImportManage() {
   const [fileName, setFileName] = useState("");
   const [fileSize, setFileSize] = useState(0);
   const [columnMappings, setColumnMappings] = useState<ColumnMapping[]>([]);
+  const [parsed, setParsed] = useState<ParsedCsv | null>(null);
+  const [rowErrors, setRowErrors] = useState<RowError[]>([]);
   const [progress, setProgress] = useState(0);
   const [importResults, setImportResults] = useState({ total: 0, success: 0, errors: 0, skipped: 0 });
   const { toast } = useToast();
 
-  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -117,11 +111,33 @@ export default function ImportManage() {
     setFileName(file.name);
     setFileSize(file.size);
 
-    // In production: parse the CSV headers, auto-detect mappings
-    // For now: use mock mappings
-    setColumnMappings(mockColumnMappings);
-    setStep("mapping");
-  }, [toast]);
+    try {
+      const result = await parseCsvFile(file);
+      if (result.headers.length === 0 || result.rows.length === 0) {
+        toast({ title: "Empty file", description: "That CSV has no data rows.", variant: "destructive" });
+        return;
+      }
+
+      // Surface the detected provider (purely informational).
+      const detected = detectProviderFormat(result.headers);
+      if (detected && detected !== selectedSource) {
+        toast({
+          title: "Format detected",
+          description: `Looks like a ${getProviderDisplayName(detected)} export.`,
+        });
+      }
+
+      setParsed(result);
+      setColumnMappings(autoMatchColumns(result.headers, result.rows, CLIENT_TARGETS));
+      setStep("mapping");
+    } catch (err) {
+      toast({
+        title: "Could not read file",
+        description: err instanceof Error ? err.message : "Unknown error parsing CSV.",
+        variant: "destructive",
+      });
+    }
+  }, [toast, selectedSource]);
 
   const handleMappingChange = (index: number, targetField: string) => {
     setColumnMappings((prev) =>
@@ -133,18 +149,26 @@ export default function ImportManage() {
     setStep("processing");
     setProgress(0);
 
-    // Simulate import processing
+    // Validate, dedupe, and map the real parsed rows.
+    const result = validateClientRows(parsed?.rows ?? [], columnMappings);
+    setRowErrors(result.errors);
+
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          setImportResults({ total: 347, success: 339, errors: 3, skipped: 5 });
+          setImportResults({
+            total: result.total,
+            success: result.valid,
+            errors: result.errors.length,
+            skipped: result.duplicates,
+          });
           setStep("complete");
           return 100;
         }
-        return prev + 5;
+        return prev + 10;
       });
-    }, 150);
+    }, 80);
   };
 
   const handleReset = () => {
@@ -154,6 +178,8 @@ export default function ImportManage() {
     setFileName("");
     setFileSize(0);
     setColumnMappings([]);
+    setParsed(null);
+    setRowErrors([]);
     setProgress(0);
   };
 
@@ -445,7 +471,7 @@ export default function ImportManage() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 rounded-xl bg-secondary/50 text-center">
-                    <p className="text-2xl font-bold">347</p>
+                    <p className="text-2xl font-bold">{(parsed?.rows.length ?? 0).toLocaleString()}</p>
                     <p className="text-xs text-muted-foreground">Total Records</p>
                   </div>
                   <div className="p-4 rounded-xl bg-secondary/50 text-center">
@@ -460,14 +486,14 @@ export default function ImportManage() {
                     <div>
                       <p className="text-sm font-medium">Ready to import</p>
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        347 {selectedImportType} records from {sourceOptions.find(s => s.value === selectedSource)?.label} will be imported.
+                        {(parsed?.rows.length ?? 0).toLocaleString()} {selectedImportType} records from {sourceOptions.find(s => s.value === selectedSource)?.label} will be validated and imported.
                         Duplicates (matched by email) will be skipped.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Sample Preview Table */}
+                {/* Sample Preview Table — real first 3 rows of the uploaded file */}
                 <div>
                   <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">First 3 rows</p>
                   <div className="overflow-x-auto rounded-xl border border-border">
@@ -482,11 +508,11 @@ export default function ImportManage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {[0, 1, 2].map((row) => (
-                          <tr key={row} className="border-b border-border last:border-0">
+                        {(parsed?.rows ?? []).slice(0, 3).map((row, rowIdx) => (
+                          <tr key={rowIdx} className="border-b border-border last:border-0">
                             {columnMappings.filter((m) => m.targetField).slice(0, 4).map((m) => (
                               <td key={m.sourceColumn} className="p-2 text-xs">
-                                {m.sampleValues[row] || <span className="text-muted-foreground">—</span>}
+                                {row[m.sourceColumn] || <span className="text-muted-foreground">—</span>}
                               </td>
                             ))}
                           </tr>
@@ -567,20 +593,15 @@ export default function ImportManage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  {[
-                    { row: 45, message: "Invalid email format: 'not-an-email'" },
-                    { row: 128, message: "Duplicate email: emma.w@example.com (already exists)" },
-                    { row: 301, message: "Missing required field: Last Name" },
-                  ].map((error, i) => (
+                  {rowErrors.slice(0, 20).map((error, i) => (
                     <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-destructive/5 text-sm">
                       <AlertCircle className="h-3.5 w-3.5 text-destructive mt-0.5 shrink-0" />
                       <span>Row {error.row}: {error.message}</span>
                     </div>
                   ))}
-                  <Button variant="outline" size="sm" className="mt-2">
-                    <Download className="h-3.5 w-3.5 mr-1.5" />
-                    Download Error Report
-                  </Button>
+                  {rowErrors.length > 20 && (
+                    <p className="text-xs text-muted-foreground">+ {rowErrors.length - 20} more…</p>
+                  )}
                 </CardContent>
               </Card>
             )}
