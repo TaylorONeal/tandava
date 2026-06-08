@@ -170,6 +170,47 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       break;
     }
 
+    case "workshop": {
+      const balanceDue = parseInt(metadata.balance_due_cents || "0", 10);
+      const paid = session.amount_total ?? 0;
+
+      const { data: txn } = await supabase
+        .from("transactions")
+        .insert({
+          studio_id: metadata.studio_id,
+          profile_id: metadata.profile_id,
+          type: "workshop",
+          status: "completed",
+          amount_cents: paid,
+          stripe_payment_intent_id: paymentIntentId,
+        })
+        .select("id")
+        .single();
+
+      const { error: regErr } = await supabase.from("event_registrations").insert({
+        event_id: metadata.event_id,
+        studio_id: metadata.studio_id,
+        profile_id: metadata.profile_id,
+        pricing_tier_id: metadata.tier_id || null,
+        status: "registered",
+        amount_paid_cents: paid,
+        deposit_paid_cents: balanceDue > 0 ? paid : 0,
+        balance_due_cents: balanceDue,
+        transaction_id: txn?.id ?? null,
+      });
+      if (regErr) {
+        console.error("Failed to create event registration:", regErr);
+        break;
+      }
+
+      // Bump denormalized registration counts (no trigger for events).
+      await supabase.rpc("increment_event_registered", { p_event_id: metadata.event_id });
+      if (metadata.tier_id) {
+        await supabase.rpc("increment_tier_registered", { p_tier_id: metadata.tier_id });
+      }
+      break;
+    }
+
     case "class_pack": {
       const { data: pt } = await supabase
         .from("class_pack_types")

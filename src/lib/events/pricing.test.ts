@@ -3,6 +3,7 @@ import {
   isEarlyBirdActive,
   resolveEventPrice,
   resolveTierPrice,
+  resolveDeposit,
   registrationState,
   sessionsForTier,
 } from "./pricing";
@@ -73,6 +74,17 @@ describe("resolveTierPrice", () => {
     expect(resolveTierPrice({ priceCents: 12000, memberPriceCents: 10000 }, true)).toMatchObject({ cents: 10000, label: "tier_member", savingsCents: 2000 });
     expect(resolveTierPrice({ priceCents: 12000, memberPriceCents: 10000 }, false)).toMatchObject({ cents: 12000, label: "tier" });
     expect(resolveTierPrice({ priceCents: 12000 }, true).cents).toBe(12000);
+  });
+});
+
+describe("resolveDeposit", () => {
+  it("splits a total into deposit + balance", () => {
+    expect(resolveDeposit(350000, 50000)).toEqual({ dueNowCents: 50000, balanceCents: 300000, isDeposit: true });
+  });
+  it("degrades to full payment when no/invalid deposit", () => {
+    expect(resolveDeposit(7500, null)).toEqual({ dueNowCents: 7500, balanceCents: 0, isDeposit: false });
+    expect(resolveDeposit(7500, 0)).toMatchObject({ isDeposit: false, dueNowCents: 7500 });
+    expect(resolveDeposit(7500, 9000)).toMatchObject({ isDeposit: false, dueNowCents: 7500 });
   });
 });
 

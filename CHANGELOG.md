@@ -48,6 +48,15 @@ schema changes).
   column auto-matching, and required-field/email validation with dedupe — plus
   13 unit tests. The import wizard now parses the user's actual file and reports
   real counts, preview rows, and validation errors instead of mock data.
+- **Event registration + deposits (go-live).** `migration 00014` adds
+  `events.deposit_cents` / `allow_payment_plan` and `event_registrations`
+  deposit/balance columns + atomic count-bump RPCs. The `stripe-checkout`
+  function gained a `workshop` type (server-side price recompute — early-bird /
+  member / tier — plus deposit vs full), and `stripe-webhook` creates the
+  `event_registrations` row + `workshop` transaction and bumps registration
+  counts. `checkoutEvent()` client helper + a `resolveDeposit()` pricing helper
+  (tested). `EventRegistrationPanel` now shows a Pay-in-full / Pay-deposit choice
+  with the balance-due-later note.
 - **Workshop registration UX (Mindbody-style).** New event pricing core
   (`src/lib/events/pricing.ts`, 16 tests): resolves the applicable price
   (early-bird window vs member vs regular vs tier — lowest wins), computes

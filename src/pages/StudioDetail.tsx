@@ -58,6 +58,7 @@ interface EventDetail {
   registrationOpensAt?: string | null;
   registrationClosesAt?: string | null;
   pricingTiers?: EventPricingTierLite[];
+  depositCents?: number | null;
 }
 
 const typeConfig: Record<string, { icon: typeof Calendar; label: string; color: string }> = {
@@ -138,6 +139,7 @@ const eventsData: Record<string, EventDetail> = {
     whatToBring: ["Yoga mat", "Notebook and pen", "Anatomy coloring book (provided)", "Open mind"],
     requirements: ["1+ year of regular yoga practice", "Brief application and interview required", "Payment plan available"],
     waitlistEnabled: true,
+    depositCents: 50000,
     pricingTiers: [
       {
         id: "full",
@@ -212,7 +214,8 @@ const EventDetailPage = () => {
   }));
 
   const handleRegister = (sel: {
-    priceCents: number;
+    dueNowCents: number;
+    paymentOption: "full" | "deposit";
     isWaitlist: boolean;
     sessionNumbers: number[];
   }) => {
@@ -221,11 +224,12 @@ const EventDetailPage = () => {
       return;
     }
     const sessionNote = sel.sessionNumbers.length && sel.sessionNumbers.length < panelSessions.length
-      ? ` (${sel.sessionNumbers.length} sessions)`
+      ? ` · ${sel.sessionNumbers.length} sessions`
       : "";
+    const depositNote = sel.paymentOption === "deposit" ? " deposit" : "";
     toast({
       title: "Registration started",
-      description: `Opening checkout for ${formatPrice(sel.priceCents)}${sessionNote}…`,
+      description: `Opening checkout for ${formatPrice(sel.dueNowCents)}${depositNote}${sessionNote}…`,
     });
   };
 
@@ -392,6 +396,7 @@ const EventDetailPage = () => {
               waitlistEnabled={event.waitlistEnabled}
               sessions={panelSessions}
               tiers={event.pricingTiers}
+              depositCents={event.depositCents}
               showMemberToggle
               onRegister={handleRegister}
             />
