@@ -29,14 +29,15 @@ have now been addressed:
   backend method. `BookingModal` now renders engine-resolved payment sources.
 
 **Remaining to be studio-ready (priority order)**
-1. **Booking loop — finish the data binding.** Core logic is done (entitlement
-   engine + `book_class` RPC + `data.bookClass`). Still to wire: load the
-   member's real memberships/packs + the occurrence's offering/location in
-   `Schedule`/`MySchedule` and pass `resolvePaymentSources(...)` into
-   `BookingModal`; call `data.bookClass()` (covered) or Stripe checkout
-   (drop-in) on confirm; apply late-cancel fees on cancellation (engine's
-   `isLateCancel` + a `late_cancel_fee` transaction); send the waitlist-promotion
-   notification (the DB trigger already promotes).
+1. **Booking loop — finish the data binding.** Core + plumbing done: entitlement
+   engine, `book_class` RPC, `data.bookClass`, backend reads
+   (`getUpcomingClasses`/`getMemberEntitlements`), React Query hooks
+   (`src/hooks/useBooking.ts`), and a pluggable `BookingModal.onConfirm`.
+   **Remaining:** swap `Schedule`/`MySchedule` from mock to `useUpcomingClasses`,
+   pass `useBookingSources(...)` + an `onConfirm` that calls `useBookClass()`
+   (covered) or `checkoutDropIn()` (drop-in); apply late-cancel fees on
+   cancellation (engine's `isLateCancel` + a `late_cancel_fee` transaction); send
+   the waitlist-promotion notification (the DB trigger already promotes).
 2. Finish CSV import persistence (service-role function that creates member
    profiles + `studio_members` and writes `import_jobs`).
 3. Workshop/event registration UX. **Done:** pricing core

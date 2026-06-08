@@ -25,11 +25,12 @@ import type {
   MutationResult,
   CreateMessageInput,
   BookClassInput,
+  MemberEntitlements,
   ApiProvider,
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile, Booking } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack } from "@/types/database";
 
 // ---------------------------------------------------------------------------
 // Supabase client singleton
@@ -171,6 +172,48 @@ const supabaseData: DataProvider = {
     return {
       data: (data as Booking) ?? null,
       error: error ? { message: error.message } : null,
+    };
+  },
+
+  async getUpcomingClasses(studioId): Promise<DataResult<ClassOccurrence[]>> {
+    const { data, error } = await getClient()
+      .from("class_occurrences")
+      .select("*, offering:offerings(*), location:locations(*)")
+      .eq("studio_id", studioId)
+      .eq("is_cancelled", false)
+      .gte("starts_at", new Date().toISOString())
+      .order("starts_at", { ascending: true });
+
+    return {
+      data: (data as ClassOccurrence[]) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async getMemberEntitlements(profileId, studioId): Promise<DataResult<MemberEntitlements>> {
+    const client = getClient();
+    const [membershipsRes, packsRes] = await Promise.all([
+      client
+        .from("memberships")
+        .select("*, membership_type:membership_types(*)")
+        .eq("profile_id", profileId)
+        .eq("studio_id", studioId),
+      client
+        .from("class_packs")
+        .select("*, class_pack_type:class_pack_types(*)")
+        .eq("profile_id", profileId)
+        .eq("studio_id", studioId),
+    ]);
+
+    const error = membershipsRes.error || packsRes.error;
+    if (error) return { data: null, error: { message: error.message } };
+
+    return {
+      data: {
+        memberships: (membershipsRes.data as Membership[]) ?? [],
+        packs: (packsRes.data as ClassPack[]) ?? [],
+      },
+      error: null,
     };
   },
 };
