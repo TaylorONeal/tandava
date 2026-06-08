@@ -2645,7 +2645,13 @@ export interface Database {
       studio_staff: { Row: StudioStaff; Insert: Partial<StudioStaff>; Update: Partial<StudioStaff> };
       classes: { Row: ClassDefinition; Insert: Partial<ClassDefinition>; Update: Partial<ClassDefinition> };
       bookings: { Row: Booking; Insert: Partial<Booking>; Update: Partial<Booking> };
+      locations: { Row: Location; Insert: Partial<Location>; Update: Partial<Location> };
+      offerings: { Row: Offering; Insert: Partial<Offering>; Update: Partial<Offering> };
+      class_occurrences: { Row: ClassOccurrence; Insert: Partial<ClassOccurrence>; Update: Partial<ClassOccurrence> };
       memberships: { Row: Membership; Insert: Partial<Membership>; Update: Partial<Membership> };
+      membership_types: { Row: MembershipType; Insert: Partial<MembershipType>; Update: Partial<MembershipType> };
+      class_packs: { Row: ClassPack; Insert: Partial<ClassPack>; Update: Partial<ClassPack> };
+      class_pack_types: { Row: ClassPackType; Insert: Partial<ClassPackType>; Update: Partial<ClassPackType> };
       transactions: { Row: Transaction; Insert: Partial<Transaction>; Update: Partial<Transaction> };
       messages: {
         Row: {

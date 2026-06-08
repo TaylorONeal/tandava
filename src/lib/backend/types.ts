@@ -9,7 +9,7 @@
  * See docs/developer/backend-flexibility.md for architecture details.
  */
 
-import type { Profile, Booking } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack } from "@/types/database";
 import type { FeedbackType } from "@/types/database";
 
 // ---------------------------------------------------------------------------
@@ -93,6 +93,12 @@ export interface BookClassInput {
   sourceId: string;
 }
 
+/** A member's entitlements for resolving booking coverage. */
+export interface MemberEntitlements {
+  memberships: Membership[];
+  packs: ClassPack[];
+}
+
 export interface DataProvider {
   /** Fetch a user profile by ID */
   getProfile(userId: string): Promise<DataResult<Profile>>;
@@ -106,6 +112,12 @@ export interface DataProvider {
    * Drop-in/paid bookings use the Stripe checkout flow instead.
    */
   bookClass(input: BookClassInput): Promise<DataResult<Booking>>;
+
+  /** Upcoming (non-cancelled, future) class occurrences for a studio, with offering + location joined. */
+  getUpcomingClasses(studioId: string): Promise<DataResult<ClassOccurrence[]>>;
+
+  /** A member's memberships + class packs (with their types joined) for entitlement resolution. */
+  getMemberEntitlements(profileId: string, studioId: string): Promise<DataResult<MemberEntitlements>>;
 }
 
 // ---------------------------------------------------------------------------

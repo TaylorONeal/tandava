@@ -56,6 +56,15 @@ schema changes).
   recommends the best covering source, and determines late-cancel — 19 unit
   tests. `BookingModal` now derives its payment options from this engine
   (`paymentSources` prop) instead of hardcoded mock coverage.
+- **Booking data-access layer.** Extended the typed `Database` with the tables
+  the booking flow reads (`locations`, `offerings`, `class_occurrences`,
+  `membership_types`, `class_packs`, `class_pack_types`); added backend methods
+  `getUpcomingClasses()` and `getMemberEntitlements()`; added React Query hooks
+  (`useUpcomingClasses`, `useMemberEntitlements`, `useBookingSources`,
+  `useBookClass`) in `src/hooks/useBooking.ts`. `BookingModal` gained an optional
+  `onConfirm` callback so a caller can perform the real booking (covered →
+  `data.bookClass()`, drop-in → Stripe checkout); the demo simulation remains the
+  fallback.
 - **`book_class()` RPC** (`migration 00012`): atomic, `SECURITY DEFINER`
   server-side booking against a membership or class pack — re-validates
   eligibility (mirroring the engine), books confirmed/waitlisted by capacity,

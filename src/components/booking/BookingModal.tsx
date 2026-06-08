@@ -46,6 +46,12 @@ interface BookingModalProps {
    * When omitted, a demo set is shown.
    */
   paymentSources?: PaymentSource[];
+  /**
+   * Perform the real booking. Covered sources should call data.bookClass();
+   * a DROP_IN source should start Stripe checkout. Return an error message to
+   * surface a failure. When omitted, the modal simulates success (demo).
+   */
+  onConfirm?: (selection: { source: PaymentSource; isWaitlist: boolean }) => Promise<{ error?: string }>;
 }
 
 // Demo fallback when no resolved entitlements are provided.
@@ -67,7 +73,7 @@ const demoPaymentSources: PaymentSource[] = [
   },
 ];
 
-export function BookingModal({ open, onOpenChange, booking, enableQuickBook = true, paymentSources }: BookingModalProps) {
+export function BookingModal({ open, onOpenChange, booking, enableQuickBook = true, paymentSources, onConfirm }: BookingModalProps) {
   const { formatPrice } = useLocale();
   const { t } = useTranslation('booking');
 
@@ -121,16 +127,31 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
     setStep("confirm");
   };
 
+  // Run the real booking (when wired) or simulate it (demo).
+  // Returns true on success.
+  const runBooking = async (simulateMs: number): Promise<boolean> => {
+    if (!selectedSource) return false;
+    if (onConfirm) {
+      const { error } = await onConfirm({ source: selectedSource, isWaitlist: isFull });
+      if (error) {
+        toast({ title: t('common:error', 'Something went wrong'), description: error, variant: "destructive" });
+        return false;
+      }
+      return true;
+    }
+    // Demo fallback — no backend wired.
+    await new Promise((resolve) => setTimeout(resolve, simulateMs));
+    return true;
+  };
+
   // Quick book - single tap instant confirmation
   const handleQuickBook = async () => {
     if (!selectedSource) return;
 
     setIsProcessing(true);
-
-    // Simulate API call - faster for quick book
-    await new Promise(resolve => setTimeout(resolve, 800));
-
+    const ok = await runBooking(800);
     setIsProcessing(false);
+    if (!ok) return;
     setStep("success");
 
     toast({
@@ -150,11 +171,9 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
     if (!selectedSource) return;
 
     setIsProcessing(true);
-
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1200));
-
+    const ok = await runBooking(1200);
     setIsProcessing(false);
+    if (!ok) return;
     setStep("success");
 
     toast({
