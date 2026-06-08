@@ -24,11 +24,19 @@ have now been addressed:
   window (`00011`).
 - Built a tested CSV import engine (parser, transforms, alias matching,
   validation, dedupe) and wired the import wizard to real file data.
+- Added the booking **entitlement engine** (`src/lib/booking/entitlements.ts`,
+  19 tests) + an atomic `book_class()` RPC (`00012`) + a `data.bookClass()`
+  backend method. `BookingModal` now renders engine-resolved payment sources.
 
 **Remaining to be studio-ready (priority order)**
-1. Wire the booking/checkout UI to live entitlements + the new payment functions
-   (eligibility checks, pack/membership decrement, late-cancel fees, waitlist
-   promotion notifications).
+1. **Booking loop — finish the data binding.** Core logic is done (entitlement
+   engine + `book_class` RPC + `data.bookClass`). Still to wire: load the
+   member's real memberships/packs + the occurrence's offering/location in
+   `Schedule`/`MySchedule` and pass `resolvePaymentSources(...)` into
+   `BookingModal`; call `data.bookClass()` (covered) or Stripe checkout
+   (drop-in) on confirm; apply late-cancel fees on cancellation (engine's
+   `isLateCancel` + a `late_cancel_fee` transaction); send the waitlist-promotion
+   notification (the DB trigger already promotes).
 2. Finish CSV import persistence (service-role function that creates member
    profiles + `studio_members` and writes `import_jobs`).
 3. Workshop/event registration UX: event detail page, tier picker (early-bird +

@@ -41,6 +41,18 @@ schema changes).
   column auto-matching, and required-field/email validation with dedupe — plus
   13 unit tests. The import wizard now parses the user's actual file and reports
   real counts, preview rows, and validation errors instead of mock data.
+- **Booking entitlement engine** (`src/lib/booking/entitlements.ts`): pure,
+  tested logic that resolves a member's memberships/class packs against a class
+  (scope by offering + location, status, billing period, usage limits, expiry),
+  recommends the best covering source, and determines late-cancel — 19 unit
+  tests. `BookingModal` now derives its payment options from this engine
+  (`paymentSources` prop) instead of hardcoded mock coverage.
+- **`book_class()` RPC** (`migration 00012`): atomic, `SECURITY DEFINER`
+  server-side booking against a membership or class pack — re-validates
+  eligibility (mirroring the engine), books confirmed/waitlisted by capacity,
+  and decrements the entitlement in one transaction. Exposed through the backend
+  abstraction as `data.bookClass()` (typed `book_class` in the `Database`
+  `Functions` map). Drop-in/paid bookings continue through Stripe Checkout.
 - **Event registration window** (`migration 00011`):
   `events.registration_opens_at` / `registration_closes_at`.
 - `docs/ROADMAP.md` June 2026 review section, `CHANGELOG.md`, and updated

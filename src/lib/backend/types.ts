@@ -9,7 +9,7 @@
  * See docs/developer/backend-flexibility.md for architecture details.
  */
 
-import type { Profile } from "@/types/database";
+import type { Profile, Booking } from "@/types/database";
 import type { FeedbackType } from "@/types/database";
 
 // ---------------------------------------------------------------------------
@@ -86,12 +86,26 @@ export interface CreateMessageInput {
   honeypot?: string | null;
 }
 
+/** Book a class against a covered entitlement (membership or class pack). */
+export interface BookClassInput {
+  occurrenceId: string;
+  sourceType: "membership" | "class_pack";
+  sourceId: string;
+}
+
 export interface DataProvider {
   /** Fetch a user profile by ID */
   getProfile(userId: string): Promise<DataResult<Profile>>;
 
   /** Create a new message (contact form, feedback, etc.) */
   createMessage(input: CreateMessageInput): Promise<MutationResult>;
+
+  /**
+   * Atomically book a class against a membership or class pack via the
+   * book_class() RPC (server-side eligibility check + entitlement decrement).
+   * Drop-in/paid bookings use the Stripe checkout flow instead.
+   */
+  bookClass(input: BookClassInput): Promise<DataResult<Booking>>;
 }
 
 // ---------------------------------------------------------------------------

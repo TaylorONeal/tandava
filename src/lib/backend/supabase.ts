@@ -24,11 +24,12 @@ import type {
   DataResult,
   MutationResult,
   CreateMessageInput,
+  BookClassInput,
   ApiProvider,
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile } from "@/types/database";
+import type { Profile, Booking } from "@/types/database";
 
 // ---------------------------------------------------------------------------
 // Supabase client singleton
@@ -158,6 +159,19 @@ const supabaseData: DataProvider = {
     });
 
     return { error: error ? { message: error.message } : null };
+  },
+
+  async bookClass(input: BookClassInput): Promise<DataResult<Booking>> {
+    const { data, error } = await getClient().rpc("book_class", {
+      p_occurrence_id: input.occurrenceId,
+      p_source_type: input.sourceType,
+      p_source_id: input.sourceId,
+    });
+
+    return {
+      data: (data as Booking) ?? null,
+      error: error ? { message: error.message } : null,
+    };
   },
 };
 
