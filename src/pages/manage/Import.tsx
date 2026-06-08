@@ -29,6 +29,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { api, isBackendConfigured } from "@/lib/backend";
 import type { ImportSource } from "@/types/database";
 import {
   CONNECTOR_PROVIDERS,
@@ -145,23 +146,56 @@ export default function ImportManage() {
     );
   };
 
-  const handleStartImport = () => {
+  const handleStartImport = async () => {
     setStep("processing");
     setProgress(0);
 
     // Validate, dedupe, and map the real parsed rows.
     const result = validateClientRows(parsed?.rows ?? [], columnMappings);
-    setRowErrors(result.errors);
+
+    let finalErrors = result.errors;
+    let success = result.valid;
+    let skipped = result.duplicates;
+
+    // When a backend is configured, persist the validated records server-side;
+    // otherwise this is a local validation/dry-run (demo).
+    if (isBackendConfigured() && result.records.length > 0) {
+      try {
+        const { data, error } = await api.invoke<{
+          total: number;
+          success: number;
+          skipped: number;
+          errors: { row: number; message: string }[];
+        }>("import-members", {
+          source: selectedSource,
+          fileName,
+          records: result.records,
+        });
+        if (error) throw new Error(error.message);
+        const serverErrors = data?.errors ?? [];
+        finalErrors = [...result.errors, ...serverErrors];
+        success = data?.success ?? 0;
+        skipped = result.duplicates + (data?.skipped ?? 0);
+      } catch (err) {
+        toast({
+          title: "Import failed",
+          description: err instanceof Error ? err.message : "Could not reach the import service.",
+          variant: "destructive",
+        });
+      }
+    }
+
+    setRowErrors(finalErrors);
 
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           setImportResults({
-            total: result.total,
-            success: result.valid,
-            errors: result.errors.length,
-            skipped: result.duplicates,
+            total: parsed?.rows.length ?? result.total,
+            success,
+            errors: finalErrors.length,
+            skipped,
           });
           setStep("complete");
           return 100;
