@@ -36,6 +36,11 @@ schema changes).
 - **Email backend.** `supabase/functions/email/index.ts` HTTP entry point with a
   template dispatcher over the existing provider abstraction (Resend / SendGrid /
   SMTP / console).
+- **Onboarding provisioning.** The 11-step setup wizard (`/manage/onboarding`)
+  now persists when a backend is configured: a new `onboarding` Edge Function
+  creates the studio (+ links the caller as owner on the first step) and upserts
+  location, branding, a starter offering, and starter pack/membership pricing.
+  `handleSave` posts each step (with a saving state); demo stays toast-only.
 - **SMS + web push notifications.** New `sms` Edge Function (Twilio / console
   providers + templates: class reminder, waitlist promoted, class cancelled,
   booking confirmation) and `push` Edge Function (Web Push/VAPID, delivers to a

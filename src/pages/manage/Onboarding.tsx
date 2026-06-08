@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { api, isBackendConfigured } from "@/lib/backend";
 import { Textarea } from "@/components/ui/textarea";
 import { Link } from "react-router-dom";
 import {
@@ -50,7 +51,22 @@ export default function Onboarding() {
     setF((p) => ({ ...p, [key]: e.target.value }));
   const sel = (key: string) => (val: string) => setF((p) => ({ ...p, [key]: val }));
 
-  const handleSave = () => {
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    // Persist the step server-side when a backend is configured; demo just advances.
+    if (isBackendConfigured()) {
+      setSaving(true);
+      const { error } = await api.invoke("onboarding", {
+        step: STEPS[step].key,
+        data: { ...f, memberUnlimited },
+      });
+      setSaving(false);
+      if (error) {
+        toast({ title: "Couldn't save", description: error.message, variant: "destructive" });
+        return;
+      }
+    }
     setDone((prev) => new Set([...prev, step]));
     toast({ title: `${STEPS[step].label} saved`, description: "Your progress has been saved." });
     if (step < STEPS.length - 1) setStep(step + 1);
@@ -287,7 +303,7 @@ export default function Onboarding() {
                 <Button variant="ghost" size="sm" onClick={handleSkip} className="text-muted-foreground">
                   <SkipForward className="h-4 w-4 mr-1.5" />Skip for now
                 </Button>
-                <Button onClick={handleSave}>Save & Continue<ChevronRight className="h-4 w-4 ml-1.5" /></Button>
+                <Button onClick={handleSave} disabled={saving}>{saving ? "Saving…" : "Save & Continue"}<ChevronRight className="h-4 w-4 ml-1.5" /></Button>
               </div>
             )}
           </div>
