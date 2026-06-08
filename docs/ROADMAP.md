@@ -39,9 +39,12 @@ have now been addressed:
    notification (the DB trigger already promotes).
 2. Finish CSV import persistence (service-role function that creates member
    profiles + `studio_members` and writes `import_jobs`).
-3. Workshop/event registration UX: event detail page, tier picker (early-bird +
-   member pricing), partial-series session selector, deposits/payment plans,
-   add-to-cart.
+3. Workshop/event registration UX. **Done:** pricing core
+   (`src/lib/events/pricing.ts`) + `EventRegistrationPanel` (tier picker,
+   early-bird/member auto-resolution, partial-series session display,
+   state-aware CTA) on the event detail page. **Remaining:** real
+   `event_registrations` writes + Stripe checkout for events, deposits/payment
+   plans, add-to-cart.
 4. SMS + push notification providers behind `NotificationService`.
 5. Make `/manage/onboarding` actually provision (upserts per step + Stripe
    Connect link), as the spine of non-technical setup.

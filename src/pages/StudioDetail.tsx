@@ -7,6 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
+  EventRegistrationPanel,
+  type EventPricingTierLite,
+  type EventSessionLite,
+} from "@/components/events/EventRegistrationPanel";
+import {
   Calendar,
   Clock,
   MapPin,
@@ -48,6 +53,11 @@ interface EventDetail {
   tags: string[];
   whatToBring: string[];
   requirements: string[];
+  status?: string;
+  waitlistEnabled?: boolean;
+  registrationOpensAt?: string | null;
+  registrationClosesAt?: string | null;
+  pricingTiers?: EventPricingTierLite[];
 }
 
 const typeConfig: Record<string, { icon: typeof Calendar; label: string; color: string }> = {
@@ -127,6 +137,25 @@ const eventsData: Record<string, EventDetail> = {
     tags: ["YTT", "Certification", "Yoga Alliance"],
     whatToBring: ["Yoga mat", "Notebook and pen", "Anatomy coloring book (provided)", "Open mind"],
     requirements: ["1+ year of regular yoga practice", "Brief application and interview required", "Payment plan available"],
+    waitlistEnabled: true,
+    pricingTiers: [
+      {
+        id: "full",
+        name: "Full Immersion (certification)",
+        description: "All 12 weekends · RYT-200 eligible",
+        priceCents: 350000,
+        memberPriceCents: 320000,
+        includesSessions: [],
+      },
+      {
+        id: "audit",
+        name: "Foundations Audit",
+        description: "First 3 weekends · no certification",
+        priceCents: 95000,
+        memberPriceCents: 85000,
+        includesSessions: [1, 2, 3],
+      },
+    ],
   },
   ev3: {
     id: "ev3",
@@ -173,6 +202,32 @@ const EventDetailPage = () => {
   const startDate = new Date(event.startsAt);
   const endDate = new Date(event.endsAt);
   const spotsLow = event.spotsLeft <= 5;
+
+  // Map the event's sessions into the panel's shape (numbered, for partial series).
+  const panelSessions: EventSessionLite[] = (event.sessions ?? []).map((s, i) => ({
+    session_number: i + 1,
+    title: s.topic,
+    dateLabel: s.date,
+    timeLabel: s.time,
+  }));
+
+  const handleRegister = (sel: {
+    priceCents: number;
+    isWaitlist: boolean;
+    sessionNumbers: number[];
+  }) => {
+    if (sel.isWaitlist) {
+      toast({ title: "Added to waitlist", description: "We'll notify you if a spot opens up." });
+      return;
+    }
+    const sessionNote = sel.sessionNumbers.length && sel.sessionNumbers.length < panelSessions.length
+      ? ` (${sel.sessionNumbers.length} sessions)`
+      : "";
+    toast({
+      title: "Registration started",
+      description: `Opening checkout for ${formatPrice(sel.priceCents)}${sessionNote}…`,
+    });
+  };
 
   return (
     <AppLayout>
@@ -322,104 +377,59 @@ const EventDetailPage = () => {
             )}
           </div>
 
-          {/* Right column — Booking card */}
+          {/* Right column — Registration */}
           <div className="space-y-4">
-            <Card className="sticky top-24">
-              <CardContent className="p-5 space-y-4">
-                <h3 className="font-semibold">Register</h3>
+            <EventRegistrationPanel
+              regularCents={event.priceCents}
+              memberCents={event.memberPriceCents}
+              earlyBirdCents={event.earlyBirdCents}
+              earlyBirdEndsAt={event.earlyBirdEndsAt}
+              status={event.status}
+              registrationOpensAt={event.registrationOpensAt}
+              registrationClosesAt={event.registrationClosesAt}
+              capacity={event.capacity}
+              spotsLeft={event.spotsLeft}
+              waitlistEnabled={event.waitlistEnabled}
+              sessions={panelSessions}
+              tiers={event.pricingTiers}
+              showMemberToggle
+              onRegister={handleRegister}
+            />
 
-                {/* Pricing */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">General</span>
-                    <span className="text-lg font-bold">{formatPrice(event.priceCents)}</span>
-                  </div>
-                  {event.memberPriceCents && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-primary">Member price</span>
-                      <span className="text-lg font-bold text-primary">{formatPrice(event.memberPriceCents)}</span>
-                    </div>
-                  )}
-                  {event.earlyBirdCents && event.earlyBirdEndsAt && (
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-accent-gold/10 border border-accent-gold/20">
-                      <div>
-                        <span className="text-sm text-accent-gold font-medium">Early bird</span>
-                        <p className="text-[10px] text-muted-foreground">
-                          Until {new Date(event.earlyBirdEndsAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                        </p>
-                      </div>
-                      <span className="text-lg font-bold text-accent-gold">{formatPrice(event.earlyBirdCents)}</span>
-                    </div>
-                  )}
-                </div>
-
-                <Separator />
-
-                {/* Spots */}
-                <div className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-1.5 text-muted-foreground">
-                    <Users className="h-4 w-4" />
-                    Spots remaining
-                  </span>
-                  <span className={`font-semibold ${spotsLow ? "text-accent-coral" : ""}`}>
-                    {event.spotsLeft} of {event.capacity}
-                  </span>
-                </div>
-
-                {/* Capacity bar */}
-                <div className="w-full bg-secondary rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full transition-all ${spotsLow ? "bg-accent-coral" : "bg-primary"}`}
-                    style={{ width: `${Math.round(((event.capacity - event.spotsLeft) / event.capacity) * 100)}%` }}
-                  />
-                </div>
-
-                <Button
-                  className="w-full"
-                  size="lg"
-                  onClick={() => toast({ title: "Registration started", description: "Opening checkout..." })}
-                >
-                  Register Now
-                </Button>
-
-                <Separator />
-
-                {/* Details */}
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-start gap-3">
-                    <Calendar className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-                    <div>
-                      <p className="font-medium">
-                        {startDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
-                      </p>
-                      {event.isMultiSession && (
-                        <p className="text-muted-foreground">
-                          through {endDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })} &middot; {event.sessionCount} sessions
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Clock className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-                    <p>
-                      {startDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
-                      {" — "}
-                      {endDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+            <Card>
+              <CardContent className="p-5 space-y-3 text-sm">
+                <div className="flex items-start gap-3">
+                  <Calendar className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-medium">
+                      {startDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
                     </p>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-                    <div>
-                      <p className="font-medium">{event.location}</p>
-                      <p className="text-muted-foreground">{event.locationDetail}</p>
-                    </div>
+                    {event.isMultiSession && (
+                      <p className="text-muted-foreground">
+                        through {endDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })} &middot; {event.sessionCount} sessions
+                      </p>
+                    )}
                   </div>
                 </div>
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1 pt-2">
+                <div className="flex items-start gap-3">
+                  <Clock className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                  <p>
+                    {startDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+                    {" — "}
+                    {endDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-medium">{event.location}</p>
+                    <p className="text-muted-foreground">{event.locationDetail}</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-1 pt-1">
                   {event.tags.map((tag) => (
                     <Badge key={tag} variant="outline" className="text-[10px]">{tag}</Badge>
                   ))}

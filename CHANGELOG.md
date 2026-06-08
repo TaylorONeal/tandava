@@ -41,6 +41,15 @@ schema changes).
   column auto-matching, and required-field/email validation with dedupe — plus
   13 unit tests. The import wizard now parses the user's actual file and reports
   real counts, preview rows, and validation errors instead of mock data.
+- **Workshop registration UX (Mindbody-style).** New event pricing core
+  (`src/lib/events/pricing.ts`, 16 tests): resolves the applicable price
+  (early-bird window vs member vs regular vs tier — lowest wins), computes
+  registration state (status + open/close window + capacity → open / not-open /
+  closed / sold-out / waitlist), and filters sessions per tier for partial-series
+  registration. New reusable `EventRegistrationPanel` component (tier picker,
+  member toggle, auto-resolved price with savings, multi-session schedule with
+  per-tier coverage, capacity bar, state-aware CTA), wired into the event detail
+  page with a demo partial-series ("Full Immersion" vs "Foundations Audit").
 - **Booking entitlement engine** (`src/lib/booking/entitlements.ts`): pure,
   tested logic that resolves a member's memberships/class packs against a class
   (scope by offering + location, status, billing period, usage limits, expiry),
