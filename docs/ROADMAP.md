@@ -53,8 +53,11 @@ have now been addressed:
    (Web Push/VAPID + `push_subscriptions`) Edge Functions + client dispatch
    helpers. (Still to add: a client service worker + subscription UI for push,
    and triggering these from booking/waitlist events.)
-5. Make `/manage/onboarding` actually provision (upserts per step + Stripe
-   Connect link), as the spine of non-technical setup.
+5. ~~Make `/manage/onboarding` actually provision~~ **Done** — the `onboarding`
+   Edge Function creates the studio (+ owner link) and upserts location,
+   branding, a starter offering, and starter pricing per step; the wizard posts
+   each step when a backend is configured. (Still to add: Stripe Connect link
+   step + staff invites.)
 
 **Installable-by-non-technical-studios plan**
 - *Phase A:* one-click deploy buttons + `seed.sql` + guided env + first-run setup.
