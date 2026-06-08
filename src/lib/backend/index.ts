@@ -21,6 +21,7 @@ export type {
   DataResult,
   MutationResult,
   CreateMessageInput,
+  BookClassInput,
   ApiProvider,
   ApiResult,
   Backend,

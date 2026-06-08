@@ -2680,5 +2680,11 @@ export interface Database {
         Update: Record<string, unknown>;
       };
     };
+    Functions: {
+      book_class: {
+        Args: { p_occurrence_id: string; p_source_type: string; p_source_id: string };
+        Returns: Booking;
+      };
+    };
   };
 }

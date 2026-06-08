@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { PaymentSourceSelector, PaymentSource } from "./PaymentSourceSelector";
 import { BookingConfirmation } from "./BookingConfirmation";
+import { pickRecommended } from "@/lib/booking/entitlements";
 import { Clock, MapPin, AlertCircle, Shield, ChevronLeft, Zap, Check } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -39,10 +40,16 @@ interface BookingModalProps {
   };
   // Enable instant booking mode (skip payment selection if user has membership)
   enableQuickBook?: boolean;
+  /**
+   * The member's payment sources for this class, already resolved against their
+   * entitlements via resolvePaymentSources() in @/lib/booking/entitlements.
+   * When omitted, a demo set is shown.
+   */
+  paymentSources?: PaymentSource[];
 }
 
-// Mock user payment sources
-const mockPaymentSources: PaymentSource[] = [
+// Demo fallback when no resolved entitlements are provided.
+const demoPaymentSources: PaymentSource[] = [
   {
     id: "mem-1",
     type: "MEMBERSHIP",
@@ -60,17 +67,17 @@ const mockPaymentSources: PaymentSource[] = [
   },
 ];
 
-export function BookingModal({ open, onOpenChange, booking, enableQuickBook = true }: BookingModalProps) {
+export function BookingModal({ open, onOpenChange, booking, enableQuickBook = true, paymentSources }: BookingModalProps) {
   const { formatPrice } = useLocale();
   const { t } = useTranslation('booking');
 
-  // Determine if user can quick-book (has active membership that covers this class)
-  const primaryCoveringSource = useMemo(() => {
-    // Prioritize: membership > class pack > drop-in
-    return mockPaymentSources.find(s => s.type === "MEMBERSHIP" && s.covers) ||
-           mockPaymentSources.find(s => s.covers) ||
-           null;
-  }, []);
+  const sources = useMemo(
+    () => paymentSources ?? demoPaymentSources,
+    [paymentSources],
+  );
+
+  // Highest-preference covering source (tested logic in the entitlements engine).
+  const primaryCoveringSource = useMemo(() => pickRecommended(sources), [sources]);
 
   const canQuickBook = enableQuickBook && primaryCoveringSource !== null;
 
@@ -330,7 +337,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
                 
                 {/* Payment source selection */}
                 <PaymentSourceSelector
-                  sources={mockPaymentSources}
+                  sources={sources}
                   dropInPriceCents={booking.dropInPriceCents}
                   selectedId={selectedSource?.id || null}
                   onSelect={setSelectedSource}
