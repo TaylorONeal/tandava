@@ -175,6 +175,16 @@ const supabaseData: DataProvider = {
     };
   },
 
+  async cancelBooking(bookingId): Promise<DataResult<Booking>> {
+    const { data, error } = await getClient().rpc("cancel_booking", {
+      p_booking_id: bookingId,
+    });
+    return {
+      data: (data as Booking) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
   async getUpcomingClasses(studioId): Promise<DataResult<ClassOccurrence[]>> {
     const { data, error } = await getClient()
       .from("class_occurrences")

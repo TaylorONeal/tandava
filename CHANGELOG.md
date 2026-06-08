@@ -72,6 +72,11 @@ schema changes).
   `onConfirm` callback so a caller can perform the real booking (covered →
   `data.bookClass()`, drop-in → Stripe checkout); the demo simulation remains the
   fallback.
+- **`cancel_booking()` RPC** (`migration 00013`): cancellation with late-cancel
+  detection — on-time cancels refund the consumed membership/pack class; late
+  cancels (inside `studios.default_cancellation_minutes`) forfeit it and record a
+  `late_cancel_fee` transaction. Waitlist promotion is handled by the existing
+  trigger. Exposed as `data.cancelBooking()` + the `useCancelBooking` hook.
 - **`book_class()` RPC** (`migration 00012`): atomic, `SECURITY DEFINER`
   server-side booking against a membership or class pack — re-validates
   eligibility (mirroring the engine), books confirmed/waitlisted by capacity,

@@ -82,3 +82,20 @@ export function useBookClass() {
     },
   });
 }
+
+/** Cancel a booking (late-cancel fee + entitlement refund handled server-side). */
+export function useCancelBooking() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (bookingId: string) => {
+      const { data, error } = await backendData.cancelBooking(bookingId);
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["entitlements"] });
+      queryClient.invalidateQueries({ queryKey: ["upcoming-classes"] });
+      queryClient.invalidateQueries({ queryKey: ["my-bookings"] });
+    },
+  });
+}
