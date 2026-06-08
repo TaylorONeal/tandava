@@ -38,8 +38,10 @@ have now been addressed:
    (covered) or `checkoutDropIn()` (drop-in); apply late-cancel fees on
    cancellation (engine's `isLateCancel` + a `late_cancel_fee` transaction); send
    the waitlist-promotion notification (the DB trigger already promotes).
-2. Finish CSV import persistence (service-role function that creates member
-   profiles + `studio_members` and writes `import_jobs`).
+2. ~~Finish CSV import persistence~~ **Done** — `import-members` Edge Function
+   creates member profiles + `studio_members` and writes `import_jobs`; the
+   wizard calls it when a backend is configured. (Still to add: attendance &
+   transaction import types beyond clients.)
 3. Workshop/event registration UX. **Done:** pricing core
    (`src/lib/events/pricing.ts`) + `EventRegistrationPanel` (tier picker,
    early-bird/member auto-resolution, partial-series session display,

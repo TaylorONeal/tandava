@@ -36,6 +36,13 @@ schema changes).
 - **Email backend.** `supabase/functions/email/index.ts` HTTP entry point with a
   template dispatcher over the existing provider abstraction (Resend / SendGrid /
   SMTP / console).
+- **CSV import persistence** (`supabase/functions/import-members`): a
+  service-role Edge Function that turns the validated/deduped records into a real
+  studio roster — creates an auth user per new member (profile via the existing
+  trigger) or reuses an existing profile by email, fills in profile fields, links
+  `studio_members` (deduped), and records an `import_jobs` row. Authorizes the
+  caller as studio staff and derives the studio from their staff row. The import
+  wizard calls it when a backend is configured (demo stays a local dry-run).
 - **Real CSV import engine** (`src/lib/connectors/`): a dependency-free RFC 4180
   parser, value transforms (`to_date`, `to_cents`, `to_phone`, …), alias-aware
   column auto-matching, and required-field/email validation with dedupe — plus
