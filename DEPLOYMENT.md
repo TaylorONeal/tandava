@@ -215,8 +215,11 @@ If accepting payments:
    supabase functions deploy stripe-portal
    supabase functions deploy stripe-webhook
    supabase functions deploy email
+   supabase functions deploy sms
+   supabase functions deploy push
    supabase functions deploy import-members
    ```
+   (`sms` needs Twilio secrets; `push` needs VAPID keys — see `.env.example`.)
    (`import-members` powers the data-migration importer; the others are for
    payments + email. All use secrets/keys set below.)
 3. Configure secrets in Supabase:

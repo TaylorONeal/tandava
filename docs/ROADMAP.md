@@ -49,7 +49,10 @@ have now been addressed:
    `workshop` Stripe type, `event_registrations` writes via webhook, deposits).
    **Remaining:** balance-collection flow for deposits, add-to-cart, event
    waitlist registration.
-4. SMS + push notification providers behind `NotificationService`.
+4. ~~SMS + push notification providers~~ **Done** — `sms` (Twilio) and `push`
+   (Web Push/VAPID + `push_subscriptions`) Edge Functions + client dispatch
+   helpers. (Still to add: a client service worker + subscription UI for push,
+   and triggering these from booking/waitlist events.)
 5. Make `/manage/onboarding` actually provision (upserts per step + Stripe
    Connect link), as the spine of non-technical setup.
 

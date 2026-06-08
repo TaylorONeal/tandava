@@ -36,6 +36,12 @@ schema changes).
 - **Email backend.** `supabase/functions/email/index.ts` HTTP entry point with a
   template dispatcher over the existing provider abstraction (Resend / SendGrid /
   SMTP / console).
+- **SMS + web push notifications.** New `sms` Edge Function (Twilio / console
+  providers + templates: class reminder, waitlist promoted, class cancelled,
+  booking confirmation) and `push` Edge Function (Web Push/VAPID, delivers to a
+  member's `push_subscriptions`, prunes stale ones). `migration 00015` adds the
+  `push_subscriptions` table + RLS. Typed client dispatch helpers
+  (`sendEmail`/`sendSms`/`sendPush` in `src/lib/notifications/dispatch.ts`).
 - **CSV import persistence** (`supabase/functions/import-members`): a
   service-role Edge Function that turns the validated/deduped records into a real
   studio roster — creates an auth user per new member (profile via the existing
