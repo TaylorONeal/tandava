@@ -113,6 +113,9 @@ export interface DataProvider {
    */
   bookClass(input: BookClassInput): Promise<DataResult<Booking>>;
 
+  /** Cancel a booking via the cancel_booking() RPC (late-cancel detection + refund/fee). */
+  cancelBooking(bookingId: string): Promise<DataResult<Booking>>;
+
   /** Upcoming (non-cancelled, future) class occurrences for a studio, with offering + location joined. */
   getUpcomingClasses(studioId: string): Promise<DataResult<ClassOccurrence[]>>;
 

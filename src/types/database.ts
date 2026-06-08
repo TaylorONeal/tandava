@@ -2691,6 +2691,10 @@ export interface Database {
         Args: { p_occurrence_id: string; p_source_type: string; p_source_id: string };
         Returns: Booking;
       };
+      cancel_booking: {
+        Args: { p_booking_id: string };
+        Returns: Booking;
+      };
     };
   };
 }
