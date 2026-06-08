@@ -108,6 +108,28 @@ export async function checkoutClassPack(
   return { error: "No checkout URL returned" };
 }
 
+/** Redirect to Stripe Checkout to register for a workshop/event (full or deposit) */
+export async function checkoutEvent(params: {
+  eventId: string;
+  tierId?: string;
+  paymentOption?: "full" | "deposit";
+  sessionNumbers?: number[];
+}): Promise<{ error?: string }> {
+  const { data, error } = await api.invoke<{ url: string }>("stripe-checkout", {
+    type: "workshop",
+    ...params,
+  });
+
+  if (error) return { error: error.message };
+
+  if (data?.url) {
+    window.location.href = data.url;
+    return {};
+  }
+
+  return { error: "No checkout URL returned" };
+}
+
 /** Open the Stripe Customer Portal for self-service billing management */
 export async function openCustomerPortal(studioId: string): Promise<{ error?: string }> {
   const { data, error } = await api.invoke<{ url: string }>("stripe-portal", {

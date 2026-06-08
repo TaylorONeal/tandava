@@ -304,6 +304,131 @@ serve(async (req) => {
       return json({ url: session.url });
     }
 
+    if (type === "workshop") {
+      const eventId = String(payload.eventId ?? "");
+      if (!eventId) return json({ error: "Missing eventId" }, 400);
+      const tierId = payload.tierId ? String(payload.tierId) : null;
+      const paymentOption = String(payload.paymentOption ?? "full");
+      const sessionNumbers = Array.isArray(payload.sessionNumbers) ? payload.sessionNumbers : [];
+
+      const { data: ev } = await db
+        .from("events")
+        .select(
+          "id, studio_id, title, price_cents, member_price_cents, early_bird_price_cents, early_bird_ends_at, deposit_cents, capacity, registered_count, status, registration_opens_at, registration_closes_at",
+        )
+        .eq("id", eventId)
+        .single();
+      if (!ev) return json({ error: "Event not found" }, 404);
+
+      // Registration window + capacity.
+      const nowMs = Date.now();
+      if (["draft", "cancelled", "completed"].includes(ev.status)) {
+        return json({ error: "Registration is closed" }, 409);
+      }
+      if (ev.registration_opens_at && nowMs < new Date(ev.registration_opens_at).getTime()) {
+        return json({ error: "Registration is not open yet" }, 409);
+      }
+      if (ev.registration_closes_at && nowMs > new Date(ev.registration_closes_at).getTime()) {
+        return json({ error: "Registration has closed" }, 409);
+      }
+      if ((ev.registered_count ?? 0) >= (ev.capacity ?? 0)) {
+        return json({ error: "This event is full" }, 409);
+      }
+
+      // Already registered?
+      const { data: existingReg } = await db
+        .from("event_registrations")
+        .select("id, status")
+        .eq("event_id", eventId)
+        .eq("profile_id", profileId)
+        .maybeSingle();
+      if (existingReg && existingReg.status !== "cancelled") {
+        return json({ error: "You are already registered for this event" }, 409);
+      }
+
+      // Optional tier.
+      let tier: { price_cents: number; member_price_cents: number | null } | null = null;
+      if (tierId) {
+        const { data: t } = await db
+          .from("event_pricing_tiers")
+          .select("price_cents, member_price_cents")
+          .eq("id", tierId)
+          .eq("event_id", eventId)
+          .single();
+        if (!t) return json({ error: "Pricing tier not found" }, 404);
+        tier = t;
+      }
+
+      // Server-side member detection (never trust the client).
+      const { data: activeMem } = await db
+        .from("memberships")
+        .select("id")
+        .eq("profile_id", profileId)
+        .eq("studio_id", ev.studio_id)
+        .eq("status", "active")
+        .limit(1);
+      const isMember = Boolean(activeMem && activeMem.length > 0);
+
+      // Resolve the applicable price (lowest of regular / early-bird / member).
+      const regular = tier ? tier.price_cents : (ev.price_cents as number);
+      const memberPrice = tier ? tier.member_price_cents : ev.member_price_cents;
+      const earlyBirdActive =
+        !tier &&
+        ev.early_bird_price_cents != null &&
+        (!ev.early_bird_ends_at || nowMs <= new Date(ev.early_bird_ends_at).getTime());
+      let applied = regular;
+      if (earlyBirdActive) applied = Math.min(applied, ev.early_bird_price_cents as number);
+      if (isMember && memberPrice != null) applied = Math.min(applied, memberPrice);
+
+      // Deposit vs full.
+      const deposit = ev.deposit_cents as number | null;
+      const useDeposit =
+        paymentOption === "deposit" && deposit != null && deposit > 0 && deposit < applied;
+      const dueNow = useDeposit ? (deposit as number) : applied;
+      const balanceDue = useDeposit ? applied - (deposit as number) : 0;
+
+      const { currency, connected } = await connectFor(ev.studio_id as string);
+
+      const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        line_items: [
+          {
+            price_data: {
+              currency,
+              unit_amount: dueNow,
+              product_data: {
+                name: useDeposit ? `Deposit: ${ev.title}` : (ev.title as string),
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+        client_reference_id: profileId,
+        metadata: {
+          type: "workshop",
+          event_id: eventId,
+          studio_id: ev.studio_id as string,
+          profile_id: profileId,
+          tier_id: tierId ?? "",
+          amount_cents: String(dueNow),
+          balance_due_cents: String(balanceDue),
+          session_numbers: sessionNumbers.join(","),
+        },
+        ...(connected
+          ? {
+              payment_intent_data: {
+                application_fee_amount: Math.round((dueNow * platformFeeBps) / 10000),
+                transfer_data: { destination: connected },
+              },
+            }
+          : {}),
+      });
+
+      return json({ url: session.url });
+    }
+
     return json({ error: `Unknown checkout type: ${type}` }, 400);
   } catch (err) {
     console.error("[stripe-checkout] error:", err);

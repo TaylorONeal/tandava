@@ -11,6 +11,7 @@ import { useLocale } from "@/contexts/LocaleContext";
 import {
   resolveEventPrice,
   resolveTierPrice,
+  resolveDeposit,
   registrationState,
   sessionsForTier,
   type ResolvedPrice,
@@ -38,6 +39,9 @@ export interface RegistrationSelection {
   tierId?: string;
   sessionNumbers: number[];
   priceCents: number;
+  /** Amount charged now (deposit when paymentOption is "deposit", else full price). */
+  dueNowCents: number;
+  paymentOption: "full" | "deposit";
   isMember: boolean;
   isWaitlist: boolean;
 }
@@ -61,6 +65,9 @@ interface EventRegistrationPanelProps {
   // Multi-session / partial series
   sessions?: EventSessionLite[];
   tiers?: EventPricingTierLite[];
+
+  /** Optional deposit (cents). When set and below the price, a pay-deposit option appears. */
+  depositCents?: number | null;
 
   /** Whether the viewer is a member of this studio (drives member pricing). */
   isMember?: boolean;
@@ -93,6 +100,7 @@ export function EventRegistrationPanel({
   waitlistEnabled,
   sessions = [],
   tiers = [],
+  depositCents,
   isMember: isMemberProp = false,
   showMemberToggle = false,
   now,
@@ -126,6 +134,13 @@ export function EventRegistrationPanel({
       now,
     });
   }, [selectedTier, isMember, regularCents, memberCents, earlyBirdCents, earlyBirdEndsAt, now]);
+
+  // Deposit / pay-in-full split.
+  const [paymentOption, setPaymentOption] = useState<"full" | "deposit">("full");
+  const deposit = resolveDeposit(price.cents, depositCents);
+  const depositAvailable = deposit.isDeposit;
+  const dueNow = depositAvailable && paymentOption === "deposit" ? deposit.dueNowCents : price.cents;
+  const balance = depositAvailable && paymentOption === "deposit" ? deposit.balanceCents : 0;
 
   const state: RegistrationState = registrationState({
     status,
@@ -164,6 +179,8 @@ export function EventRegistrationPanel({
       tierId: selectedTier?.id,
       sessionNumbers: coveredSessions.map((s) => s.session_number),
       priceCents: price.cents,
+      dueNowCents: dueNow,
+      paymentOption: depositAvailable ? paymentOption : "full",
       isMember,
       isWaitlist: state === "waitlist",
     });
@@ -276,6 +293,41 @@ export function EventRegistrationPanel({
             )}
           </div>
         </div>
+
+        {/* Deposit / pay-in-full option */}
+        {depositAvailable && (
+          <RadioGroup
+            value={paymentOption}
+            onValueChange={(v) => setPaymentOption(v as "full" | "deposit")}
+            className="space-y-2"
+          >
+            <Label htmlFor="pay-full" className={`flex items-center justify-between gap-2 rounded-lg border p-2.5 cursor-pointer ${paymentOption === "full" ? "border-primary bg-primary/5" : "border-border"}`}>
+              <span className="flex items-center gap-2 text-sm">
+                <RadioGroupItem value="full" id="pay-full" />
+                Pay in full
+              </span>
+              <span className="text-sm font-medium">{fmt(price.cents)}</span>
+            </Label>
+            <Label htmlFor="pay-deposit" className={`flex items-center justify-between gap-2 rounded-lg border p-2.5 cursor-pointer ${paymentOption === "deposit" ? "border-primary bg-primary/5" : "border-border"}`}>
+              <span className="flex items-center gap-2 text-sm">
+                <RadioGroupItem value="deposit" id="pay-deposit" />
+                Pay deposit
+              </span>
+              <span className="text-right text-sm">
+                <span className="font-medium">{fmt(deposit.dueNowCents)}</span>
+                <span className="block text-[11px] text-muted-foreground">
+                  {fmt(deposit.balanceCents)} due later
+                </span>
+              </span>
+            </Label>
+          </RadioGroup>
+        )}
+
+        {balance > 0 && (
+          <p className="text-xs text-center text-muted-foreground">
+            You'll pay {fmt(dueNow)} now and {fmt(balance)} later.
+          </p>
+        )}
 
         {/* Spots */}
         <div className="space-y-2">

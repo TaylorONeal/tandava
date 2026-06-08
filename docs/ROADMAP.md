@@ -45,9 +45,10 @@ have now been addressed:
 3. Workshop/event registration UX. **Done:** pricing core
    (`src/lib/events/pricing.ts`) + `EventRegistrationPanel` (tier picker,
    early-bird/member auto-resolution, partial-series session display,
-   state-aware CTA) on the event detail page. **Remaining:** real
-   `event_registrations` writes + Stripe checkout for events, deposits/payment
-   plans, add-to-cart.
+   state-aware CTA, **deposit/pay-in-full**) + real **event checkout** (the
+   `workshop` Stripe type, `event_registrations` writes via webhook, deposits).
+   **Remaining:** balance-collection flow for deposits, add-to-cart, event
+   waitlist registration.
 4. SMS + push notification providers behind `NotificationService`.
 5. Make `/manage/onboarding` actually provision (upserts per step + Stripe
    Connect link), as the spine of non-technical setup.

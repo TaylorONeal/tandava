@@ -94,6 +94,30 @@ export function resolveTierPrice(tier: TierInput, isMember?: boolean): ResolvedP
 }
 
 // ---------------------------------------------------------------------------
+// Deposits / payment plans
+// ---------------------------------------------------------------------------
+
+export interface DepositSplit {
+  /** Charged now. */
+  dueNowCents: number;
+  /** Owed later (0 when paid in full). */
+  balanceCents: number;
+  /** Whether a partial deposit is being taken. */
+  isDeposit: boolean;
+}
+
+/**
+ * Split a total into a deposit-now / balance-later pair. A deposit that is
+ * absent or >= the total degrades to paying in full.
+ */
+export function resolveDeposit(totalCents: number, depositCents?: number | null): DepositSplit {
+  if (depositCents == null || depositCents <= 0 || depositCents >= totalCents) {
+    return { dueNowCents: totalCents, balanceCents: 0, isDeposit: false };
+  }
+  return { dueNowCents: depositCents, balanceCents: totalCents - depositCents, isDeposit: true };
+}
+
+// ---------------------------------------------------------------------------
 // Registration availability
 // ---------------------------------------------------------------------------
 
