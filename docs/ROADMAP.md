@@ -27,6 +27,10 @@ have now been addressed:
 - Added the booking **entitlement engine** (`src/lib/booking/entitlements.ts`,
   19 tests) + an atomic `book_class()` RPC (`00012`) + a `data.bookClass()`
   backend method. `BookingModal` now renders engine-resolved payment sources.
+- Added an **embeddable booking widget** (`public/embed.js` + `/embed/*` routes +
+  `/manage/embed` generator + `docs/guides/website-embed.md`) so studios can put
+  booking on their own website — the integration surface Mindbody/Arketa/Momence
+  lead with. See the guide for usage.
 
 **Remaining to be studio-ready (priority order)**
 1. **Booking loop — finish the data binding.** Core + plumbing done: entitlement

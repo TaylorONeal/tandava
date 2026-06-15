@@ -122,6 +122,9 @@ Tandava is in active development. The demo shows complete UI and workflows. Some
 - Demo mode with realistic sample data
 - CSV import engine: real parsing, provider auto-detection, column
   auto-mapping, validation, and dedupe (see `src/lib/connectors/`)
+- Embeddable booking widget: a one-line `<script>` that puts your live
+  schedule / a "Book Now" button / an event on your own website
+  (Squarespace, Wix, WordPress) — see `public/embed.js` and `/manage/embed`
 
 **Backend implemented, needs your keys/config:**
 - Payments: Stripe Checkout, Customer Portal, and webhook Edge Functions are
@@ -171,6 +174,7 @@ Tandava follows [SemVer](https://semver.org/). We are pre-1.0 (`v0.x`).
 | Financials | Memberships, class packs, transactions |
 | Reports | Attendance, revenue, teacher performance |
 | Feature Toggles | Tips, reviews, and other optional features on/off |
+| Website Embed | One-line script widget for booking on your own site |
 | Data Import | CSV import with column mapping |
 | Settings | Studio info, policies, branding |
 

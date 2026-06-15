@@ -11,11 +11,24 @@ import { useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { data as backendData, isBackendConfigured } from "@/lib/backend";
 import type { BookClassInput } from "@/lib/backend";
-import type { ClassOccurrence, Membership, ClassPack } from "@/types/database";
+import type { ClassOccurrence, Membership, ClassPack, Studio } from "@/types/database";
 import { resolvePaymentSources } from "@/lib/booking/entitlements";
 import type { PaymentSource } from "@/components/booking/PaymentSourceSelector";
 
 const enabled = () => isBackendConfigured();
+
+/** Resolve a publicly discoverable studio by slug (used by the embed widget). */
+export function usePublicStudio(slug: string | undefined) {
+  return useQuery({
+    queryKey: ["public-studio", slug],
+    enabled: Boolean(slug) && enabled(),
+    queryFn: async (): Promise<Studio | null> => {
+      const { data, error } = await backendData.getStudioBySlug(slug!);
+      if (error) throw new Error(error.message);
+      return data;
+    },
+  });
+}
 
 /** Upcoming class occurrences for a studio (offering + location joined). */
 export function useUpcomingClasses(studioId: string | undefined) {

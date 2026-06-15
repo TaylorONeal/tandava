@@ -30,7 +30,7 @@ import type {
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, Studio } from "@/types/database";
 
 // ---------------------------------------------------------------------------
 // Supabase client singleton
@@ -183,6 +183,16 @@ const supabaseData: DataProvider = {
       data: (data as Booking) ?? null,
       error: error ? { message: error.message } : null,
     };
+  },
+
+  async getStudioBySlug(slug): Promise<DataResult<Studio>> {
+    const { data, error } = await getClient()
+      .from("studios")
+      .select("*")
+      .eq("slug", slug)
+      .eq("discoverable", true)
+      .maybeSingle();
+    return { data: (data as Studio) ?? null, error: error ? { message: error.message } : null };
   },
 
   async getUpcomingClasses(studioId): Promise<DataResult<ClassOccurrence[]>> {

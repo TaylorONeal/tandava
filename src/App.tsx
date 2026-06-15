@@ -103,6 +103,7 @@ const FeatureSettingsManage = lazy(() => import("./pages/manage/FeatureSettings"
 const AuditLogsManage = lazy(() => import("./pages/manage/AuditLogs"));
 const DataDictionaryManage = lazy(() => import("./pages/manage/DataDictionary"));
 const DefinitionsManage = lazy(() => import("./pages/manage/Definitions"));
+const EmbedSettingsManage = lazy(() => import("./pages/manage/EmbedSettings"));
 
 const NotificationPreferences = lazy(() => import("./pages/account/NotificationPreferences"));
 
@@ -117,6 +118,9 @@ const StaffCheckin = lazy(() => import("./pages/staff/StaffCheckin"));
 const StaffWaitlist = lazy(() => import("./pages/staff/StaffWaitlist"));
 
 const Kiosk = lazy(() => import("./pages/Kiosk"));
+
+const EmbedSchedule = lazy(() => import("./pages/embed/EmbedSchedule"));
+const EmbedEvent = lazy(() => import("./pages/embed/EmbedEvent"));
 
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminStudios = lazy(() => import("./pages/admin/AdminStudios"));
@@ -218,6 +222,7 @@ const App = () => (
                   <Route path="/manage/audit-logs" element={<ProtectedRoute permission="studio.manage_settings"><AuditLogsManage /></ProtectedRoute>} />
                   <Route path="/manage/data-dictionary" element={<ProtectedRoute permission="studio.manage_schedule"><DataDictionaryManage /></ProtectedRoute>} />
                   <Route path="/manage/definitions" element={<ProtectedRoute permission="studio.manage_schedule"><DefinitionsManage /></ProtectedRoute>} />
+                  <Route path="/manage/embed" element={<ProtectedRoute permission="studio.manage_settings"><EmbedSettingsManage /></ProtectedRoute>} />
 
                   {/* ---- Instructor portal routes (/teach) ---- */}
                   <Route path="/teach" element={<ProtectedRoute permission="studio.teach"><TeachDashboard /></ProtectedRoute>} />
@@ -230,6 +235,10 @@ const App = () => (
                   {/* ---- Staff (front desk) routes ---- */}
                   <Route path="/staff/checkin" element={<ProtectedRoute permission="studio.checkin"><StaffCheckin /></ProtectedRoute>} />
                   <Route path="/staff/waitlist" element={<ProtectedRoute permission="studio.manage_waitlist"><StaffWaitlist /></ProtectedRoute>} />
+
+                  {/* ---- Embeddable widget (chrome-less, public) ---- */}
+                  <Route path="/embed/schedule/:slug" element={<EmbedSchedule />} />
+                  <Route path="/embed/event/:id" element={<EmbedEvent />} />
 
                   {/* ---- Kiosk mode ---- */}
                   <Route path="/kiosk/:studioId" element={<Kiosk />} />

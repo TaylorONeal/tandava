@@ -89,6 +89,8 @@ function DemoRoleBarInner() {
 
   // Hide on landing page — role selection happens there
   if (location.pathname === "/" || location.pathname === "/demo") return null;
+  // Embeddable widget + kiosk are chrome-less public surfaces.
+  if (location.pathname.startsWith("/embed/") || location.pathname.startsWith("/kiosk/")) return null;
 
   const currentRole = ROLES.find((r) => r.role === activePersona.role) ?? ROLES[0];
   const CurrentIcon = currentRole.icon;
