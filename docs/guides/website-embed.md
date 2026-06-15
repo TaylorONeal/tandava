@@ -54,9 +54,10 @@ Paste it into a code/embed block where you want the widget to appear. That's it.
    deployment.
 2. The script injects a sandboxed `<iframe>` pointing at a chrome-less page on
    your site (`/embed/schedule/:slug`, `/embed/event/:id`).
-3. That page reads **public data only** (discoverable studios, offerings,
-   published events, and non-cancelled class times) via the Supabase anon key and
-   Row-Level Security — so there are **no secrets on your website**.
+3. That page reads **public data only** via a narrow `get_public_schedule` RPC
+   (and published-events RLS) using the Supabase anon key — so there are **no
+   secrets on your website**. The RPC returns only safe, public columns for a
+   discoverable studio's *upcoming* classes; the underlying tables stay private.
 4. The iframe **auto-resizes** to its content via `postMessage` (no inner
    scrollbars), and honors your `data-primary` brand color.
 5. **Booking and payment open on your Tandava site in a new tab**, so checkout
@@ -70,8 +71,10 @@ widget is embedded on — instantly.
 ## Security & privacy
 
 - Read-only, public data only. No tokens or keys are exposed in the snippet.
-- RLS enforces that only discoverable studios' public schedule is visible
-  (migration `00016_public_schedule_read.sql`).
+- The public schedule comes from a `SECURITY DEFINER` RPC that returns only
+  safe columns for *future* classes of a *discoverable* studio
+  (migration `00016_public_schedule_read.sql`) — the `class_occurrences` table
+  itself stays participants-only, so internal fields and history aren't exposed.
 - The iframe is isolated from your site's CSS and JavaScript.
 
 ---
@@ -91,5 +94,5 @@ search-indexable, Tandava-hosted pages, use the **Landing Pages** builder
 | Loader script | `public/embed.js` |
 | Embed pages | `src/pages/embed/` (`EmbedSchedule`, `EmbedEvent`, `EmbedLayout`) |
 | Routes | `/embed/schedule/:slug`, `/embed/event/:id` (in `src/App.tsx`) |
-| Public read policy | `supabase/migrations/00016_public_schedule_read.sql` |
+| Public read RPC | `get_public_schedule()` in `supabase/migrations/00016_public_schedule_read.sql` |
 | Snippet generator | `/manage/embed` (`src/pages/manage/EmbedSettings.tsx`) |

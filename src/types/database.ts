@@ -2637,6 +2637,22 @@ export type EmailProvider = "resend" | "sendgrid" | "smtp" | "console";
  * Provides type safety for .from("table") queries.
  * Extend as tables are added to supabase/migrations/.
  */
+/** A row of the public embed schedule (from the get_public_schedule RPC). */
+export interface PublicScheduleRow {
+  occurrence_id: string;
+  starts_at: string;
+  ends_at: string;
+  room: string | null;
+  offering_name: string;
+  location_name: string | null;
+  teacher_name: string | null;
+  capacity: number;
+  booked_count: number;
+  studio_name: string;
+  studio_timezone: string;
+  studio_primary_color: string | null;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -2694,6 +2710,10 @@ export interface Database {
       cancel_booking: {
         Args: { p_booking_id: string };
         Returns: Booking;
+      };
+      get_public_schedule: {
+        Args: { p_slug: string; p_limit?: number };
+        Returns: PublicScheduleRow[];
       };
     };
   };

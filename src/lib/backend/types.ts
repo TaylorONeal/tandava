@@ -9,7 +9,7 @@
  * See docs/developer/backend-flexibility.md for architecture details.
  */
 
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, Studio } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow } from "@/types/database";
 import type { FeedbackType } from "@/types/database";
 
 // ---------------------------------------------------------------------------
@@ -116,8 +116,8 @@ export interface DataProvider {
   /** Cancel a booking via the cancel_booking() RPC (late-cancel detection + refund/fee). */
   cancelBooking(bookingId: string): Promise<DataResult<Booking>>;
 
-  /** Look up a (publicly discoverable) studio by slug — used by the embed widget. */
-  getStudioBySlug(slug: string): Promise<DataResult<Studio>>;
+  /** Public upcoming schedule for a discoverable studio (by slug) — used by the embed widget. */
+  getPublicSchedule(slug: string, limit?: number): Promise<DataResult<PublicScheduleRow[]>>;
 
   /** Upcoming (non-cancelled, future) class occurrences for a studio, with offering + location joined. */
   getUpcomingClasses(studioId: string): Promise<DataResult<ClassOccurrence[]>>;
