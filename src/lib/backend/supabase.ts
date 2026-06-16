@@ -30,7 +30,7 @@ import type {
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow } from "@/types/database";
 
 // ---------------------------------------------------------------------------
 // Supabase client singleton
@@ -181,6 +181,17 @@ const supabaseData: DataProvider = {
     });
     return {
       data: (data as Booking) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async getPublicSchedule(slug, limit = 12): Promise<DataResult<PublicScheduleRow[]>> {
+    const { data, error } = await getClient().rpc("get_public_schedule", {
+      p_slug: slug,
+      p_limit: limit,
+    });
+    return {
+      data: (data as PublicScheduleRow[]) ?? null,
       error: error ? { message: error.message } : null,
     };
   },

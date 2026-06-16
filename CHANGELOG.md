@@ -24,6 +24,18 @@ schema changes).
   `class_packs` tables and map Stripe statuses to the `membership_status` enum.
 
 ### Added
+- **Embeddable booking widget.** A one-line `<script>` (`public/embed.js`) that
+  studios paste on their own website (Squarespace / Wix / WordPress) to show their
+  live schedule, a "Book Now" lightbox button, or a single event. It injects a
+  sandboxed, auto-resizing (postMessage) iframe over chrome-less `/embed/*` routes
+  that read public data via a narrow `get_public_schedule` `SECURITY DEFINER` RPC
+  (`migration 00016`) — only safe columns of a discoverable studio's *upcoming*
+  classes; the base table stays participants-only. No keys on the page;
+  booking/checkout open top-level in a new tab. Times render in the studio's
+  timezone, and live embeds show a real empty state (demo rows only in demo mode).
+  `getPublicSchedule` + `usePublicSchedule`;
+  an in-app snippet generator / how-it-works page at `/manage/embed`; and the
+  `docs/guides/website-embed.md` guide. Surfaced in the demo feature grid + README.
 - **Route-level RBAC.** `/manage`, `/teach`, `/staff`, and authenticated member
   routes are now wrapped in `ProtectedRoute` (previously only `/admin` was).
   Added a `studio.teach` permission for the instructor portal. Demo mode still

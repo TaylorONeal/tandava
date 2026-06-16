@@ -357,6 +357,13 @@ const FEATURE_CATEGORIES = [
         demoRoute: "/manage/connectors",
         demoRole: "owner" as UserRole,
       },
+      {
+        icon: Code2,
+        name: "Website Embed",
+        description: "Put booking on your own site — one-line script widget",
+        demoRoute: "/manage/embed",
+        demoRole: "owner" as UserRole,
+      },
     ],
   },
 ];
