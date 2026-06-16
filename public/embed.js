@@ -39,6 +39,12 @@
     iframe.src = embedSrc();
     iframe.title = "Tandava booking";
     iframe.setAttribute("loading", "lazy");
+    // Sandbox: allow the app to run (same-origin to Tandava, scripts, forms) and
+    // to open booking/checkout in a new tab, while isolating it from the host page.
+    iframe.setAttribute(
+      "sandbox",
+      "allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+    );
     iframe.style.cssText =
       "width:100%;border:0;display:block;background:transparent;min-height:120px;";
     iframe.setAttribute("scrolling", "no");
