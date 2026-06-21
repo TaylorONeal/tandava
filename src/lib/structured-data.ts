@@ -191,6 +191,85 @@ export function instructorSchema(instructor: {
   };
 }
 
+/** BlogPosting schema for an individual blog article (SEO + AEO). */
+export function blogPostingSchema(post: {
+  title: string;
+  description: string;
+  slug: string;
+  author: string;
+  datePublished: string;
+  dateModified: string;
+  image?: string;
+  tags?: string[];
+  categoryName?: string;
+}) {
+  const url = `${SITE_URL}/blog/${post.slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.description,
+    image: post.image
+      ? post.image.startsWith("http")
+        ? post.image
+        : `${SITE_URL}${post.image}`
+      : `${SITE_URL}/og-image.png`,
+    datePublished: post.datePublished,
+    dateModified: post.dateModified,
+    url,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    author: {
+      "@type": "Person",
+      name: post.author,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: import.meta.env.VITE_APP_NAME || "Tandava",
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/favicon.ico`,
+      },
+    },
+    articleSection: post.categoryName || undefined,
+    keywords: post.tags?.length ? post.tags.join(", ") : undefined,
+  };
+}
+
+/** Blog (CollectionPage) schema listing recent posts — used on /blog. */
+export function blogSchema(posts: Array<{ title: string; slug: string; description: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: `${import.meta.env.VITE_APP_NAME || "Tandava"} Blog`,
+    url: `${SITE_URL}/blog`,
+    blogPost: posts.map((p) => ({
+      "@type": "BlogPosting",
+      headline: p.title,
+      description: p.description,
+      url: `${SITE_URL}/blog/${p.slug}`,
+    })),
+  };
+}
+
+/**
+ * FAQPage schema — Answer Engine Optimization (AEO). Pass question/answer
+ * pairs to make content eligible for rich results and AI answer surfaces.
+ */
+export function faqSchema(items: Array<{ question: string; answer: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+}
+
 /** BreadcrumbList schema */
 export function breadcrumbSchema(
   items: Array<{ name: string; path: string }>
