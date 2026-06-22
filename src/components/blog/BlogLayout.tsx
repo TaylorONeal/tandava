@@ -6,8 +6,8 @@
  * and footer rather than the logged-in studio navigation.
  */
 
-import { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { ReactNode, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { BLOG_CATEGORIES } from "@/config/blog";
 
@@ -32,6 +32,14 @@ const TandavaMark = ({ className }: { className?: string }) => (
 );
 
 export function BlogLayout({ children, activeCategory }: BlogLayoutProps) {
+  const { pathname } = useLocation();
+
+  // Reset scroll to the top on navigation between blog pages — otherwise
+  // clicking a related post from the bottom of an article lands mid-page.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <a
