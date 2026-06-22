@@ -9,7 +9,7 @@
 import { ReactNode, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { BLOG_CATEGORIES } from "@/config/blog";
+import { getCategoriesWithCounts } from "@/lib/blog";
 
 interface BlogLayoutProps {
   children: ReactNode;
@@ -33,6 +33,8 @@ const TandavaMark = ({ className }: { className?: string }) => (
 
 export function BlogLayout({ children, activeCategory }: BlogLayoutProps) {
   const { pathname } = useLocation();
+  // Only surface categories that actually have published posts.
+  const categories = getCategoriesWithCounts();
 
   // Reset scroll to the top on navigation between blog pages — otherwise
   // clicking a related post from the bottom of an article lands mid-page.
@@ -64,7 +66,7 @@ export function BlogLayout({ children, activeCategory }: BlogLayoutProps) {
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex" aria-label="Blog categories">
-            {BLOG_CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <Link
                 key={cat.slug}
                 to={`/blog/category/${cat.slug}`}
@@ -109,7 +111,7 @@ export function BlogLayout({ children, activeCategory }: BlogLayoutProps) {
 
           <nav aria-label="Blog footer" className="grid grid-cols-2 gap-x-10 gap-y-2 text-sm">
             <span className="col-span-2 font-semibold text-foreground">Topics</span>
-            {BLOG_CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <Link
                 key={cat.slug}
                 to={`/blog/category/${cat.slug}`}
