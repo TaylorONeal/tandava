@@ -154,7 +154,7 @@ const BlogPost = () => {
 
         {/* Body */}
         <div
-          className="prose prose-neutral mt-10 max-w-none dark:prose-invert prose-headings:font-display prose-headings:font-semibold prose-a:text-primary prose-img:rounded-xl"
+          className="blog-content prose prose-neutral mt-10 max-w-none dark:prose-invert prose-headings:font-display"
           // Content is authored in-repo markdown, not user input — safe to inject.
           dangerouslySetInnerHTML={{ __html: post.html }}
         />
