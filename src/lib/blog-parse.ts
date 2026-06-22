@@ -110,7 +110,10 @@ export function parsePost(raw: string, fileId: string): BlogPost {
   const date = toIsoDate(data.date) ?? new Date().toISOString().slice(0, 10);
   const updated = toIsoDate(data.updated) ?? date;
 
-  const html = marked.parse(body, { async: false }) as string;
+  const html = (marked.parse(body, { async: false }) as string)
+    // Wrap tables so they can scroll horizontally on small screens.
+    .replace(/<table>/g, '<div class="blog-table-wrap"><table>')
+    .replace(/<\/table>/g, "</table></div>");
 
   const wordCount = body
     .replace(/[#>*_`~\-[\]()!]/g, " ")

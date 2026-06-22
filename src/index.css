@@ -682,3 +682,173 @@
     opacity: 0;
   }
 }
+
+/* ==========================================================================
+   Blog article typography — applied via `.blog-content` on the post body.
+   Uses design tokens so it adapts to light/dark automatically.
+   ========================================================================== */
+@layer components {
+  .blog-content {
+    color: hsl(var(--foreground) / 0.9);
+    font-size: 1.075rem;
+    line-height: 1.75;
+  }
+
+  /* Lead paragraph */
+  .blog-content > p:first-of-type {
+    font-size: 1.28rem;
+    line-height: 1.6;
+    color: hsl(var(--foreground) / 0.8);
+  }
+
+  .blog-content p {
+    margin: 0 0 1.2rem;
+  }
+
+  .blog-content h2 {
+    margin: 2.9rem 0 1rem;
+    font-size: 1.6rem;
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px solid hsl(var(--border));
+  }
+
+  .blog-content h3 {
+    margin: 2rem 0 0.6rem;
+    font-size: 1.22rem;
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  .blog-content a {
+    color: hsl(var(--primary));
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    font-weight: 500;
+  }
+  .blog-content a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  .blog-content strong {
+    color: hsl(var(--foreground));
+    font-weight: 650;
+  }
+
+  .blog-content ul,
+  .blog-content ol {
+    margin: 0 0 1.25rem;
+    padding-left: 1.4rem;
+  }
+  .blog-content li {
+    margin: 0.45rem 0;
+    padding-left: 0.2rem;
+  }
+  .blog-content li::marker {
+    color: hsl(var(--primary));
+  }
+
+  /* Blockquotes become accent callouts (used for caveats/notes) */
+  .blog-content blockquote {
+    margin: 1.85rem 0;
+    padding: 1rem 1.3rem;
+    border-left: 4px solid hsl(var(--primary));
+    border-radius: 0 0.85rem 0.85rem 0;
+    background: hsl(var(--primary) / 0.07);
+    color: hsl(var(--foreground) / 0.9);
+    font-style: normal;
+  }
+  .blog-content blockquote p {
+    margin: 0.4rem 0;
+  }
+  .blog-content blockquote p:first-child {
+    margin-top: 0;
+  }
+  .blog-content blockquote p:last-child {
+    margin-bottom: 0;
+  }
+  .blog-content blockquote p:first-child::before,
+  .blog-content blockquote p:last-child::after {
+    content: none;
+  }
+  .blog-content blockquote strong:first-child {
+    color: hsl(var(--primary));
+  }
+
+  .blog-content code {
+    background: hsl(var(--muted));
+    padding: 0.15em 0.4em;
+    border-radius: 0.35rem;
+    font-size: 0.88em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  .blog-content hr {
+    margin: 2.75rem auto;
+    border: 0;
+    height: 1px;
+    width: 55%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--border-strong)),
+      transparent
+    );
+  }
+
+  /* Tables */
+  .blog-content .blog-table-wrap {
+    margin: 1.85rem 0;
+    overflow-x: auto;
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.85rem;
+  }
+  .blog-content table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    margin: 0;
+  }
+  .blog-content thead th {
+    background: hsl(var(--muted) / 0.6);
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: hsl(var(--foreground) / 0.7);
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid hsl(var(--border));
+    white-space: nowrap;
+  }
+  .blog-content tbody td {
+    padding: 0.65rem 0.9rem;
+    border-bottom: 1px solid hsl(var(--border) / 0.55);
+    vertical-align: top;
+  }
+  .blog-content tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .blog-content tbody tr:nth-child(even) td {
+    background: hsl(var(--muted) / 0.22);
+  }
+  /* Respect markdown column alignment (marked emits align="…") */
+  .blog-content [align="center"] {
+    text-align: center;
+  }
+  .blog-content [align="right"] {
+    text-align: right;
+  }
+
+  /* Figures (charts) */
+  .blog-content figure {
+    margin: 2.1rem 0;
+  }
+  .blog-content img {
+    border-radius: 0.75rem;
+    border: 1px solid hsl(var(--border));
+  }
+}
