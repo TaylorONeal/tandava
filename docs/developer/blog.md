@@ -72,8 +72,10 @@ dev` but hidden in production builds.
 ## Going live (launch checklist)
 
 1. Set `BLOG_PUBLISHED = true` in `src/config/blog.ts`.
-2. Add a "Blog" link to the main nav (`src/components/layout/AppLayout.tsx`)
-   and/or marketing pages, plus the `blog` i18n key.
+2. Link the blog from the **public landing page** (`src/pages/Demo.tsx`, the
+   site root `/`), not the studio app chrome (`AppLayout`) — the blog is a
+   marketing surface and uses its own `BlogLayout`. A "Blog" link already lives
+   in the landing page header + footer.
 3. `npm run build` — this adds `/blog` URLs to `sitemap.xml` and drops `noindex`
    from the prerendered snapshots.
 4. Submit the updated sitemap and validate a post in Google's Rich Results Test.
