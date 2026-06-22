@@ -42,6 +42,15 @@ website.
 | Bsport | 4 | 1% |
 | Acuity, Momoyoga, Rezerv, Fresha, Setmore, Wix, Strongbee, others | 1–3 each | tail |
 
+> **A wrinkle on "own website."** These buckets aren't perfectly mutually
+> exclusive. A studio that takes bookings on its own domain might be running a
+> genuinely independent system — *or* it might have an embedded booking **widget**
+> from one of these platforms (Mindbody, Momence, Walla, Arketa and others all
+> offer them). We classified by whatever powered the checkout when we could tell,
+> but an unbranded embed can look like "own website." So read "direct" as *"books
+> on their own domain,"* not necessarily *"uses no platform"* — the true platform
+> footprint is likely a little higher than the direct share alone suggests.
+
 ## Grouped by generation
 
 Cluster the platforms into three families — **legacy** (Mindbody, WellnessLiving),
