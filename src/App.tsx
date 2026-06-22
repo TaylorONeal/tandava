@@ -69,6 +69,9 @@ const Register = lazy(() => import("./pages/auth/Register"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Demo = lazy(() => import("./pages/Demo"));
 const OpenSource = lazy(() => import("./pages/OpenSource"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogCategory = lazy(() => import("./pages/blog/BlogCategory"));
+const BlogPost = lazy(() => import("./pages/blog/BlogPost"));
 
 const ManageDashboard = lazy(() => import("./pages/manage/Dashboard"));
 const ScheduleManage = lazy(() => import("./pages/manage/ScheduleManage"));
@@ -156,6 +159,12 @@ const App = () => (
                   <Route path="/" element={<Demo />} />
                   <Route path="/demo" element={<Demo />} />
                   <Route path="/open-source" element={<OpenSource />} />
+
+                  {/* ---- Blog (built but not yet linked in nav; noindex until
+                       BLOG_PUBLISHED is flipped on in src/config/blog.ts) ---- */}
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/blog/category/:category" element={<BlogCategory />} />
+                  <Route path="/blog/:slug" element={<BlogPost />} />
 
                   {/* ---- Student-facing routes ---- */}
                   <Route path="/home" element={<Index />} />
