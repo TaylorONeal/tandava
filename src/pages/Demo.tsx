@@ -8,7 +8,7 @@
  */
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useDemo } from "@/contexts/DemoContext";
 import type { UserRole } from "@/types/database";
 import {
@@ -439,6 +439,13 @@ export default function Demo() {
               <Github className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">GitHub</span>
             </a>
+            <Link
+              to="/blog"
+              className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Blog</span>
+            </Link>
             <a
               href="#explore"
               className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
@@ -799,6 +806,12 @@ export default function Demo() {
             </div>
 
             <div className="flex flex-wrap gap-3">
+              <Link
+                to="/blog"
+                className="inline-flex min-h-10 items-center gap-2 rounded-full border border-primary/20 bg-background px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              >
+                <BookOpen className="w-4 h-4" /> Blog
+              </Link>
               <a
                 href="https://github.com/TaylorONeal/tandava"
                 target="_blank"
