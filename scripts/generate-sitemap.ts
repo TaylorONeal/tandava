@@ -2,7 +2,7 @@
  * Sitemap Generator
  *
  * Generates a static sitemap.xml for known routes.
- * Run after build: npx tsx scripts/generate-sitemap.ts
+ * Run after build: node scripts/run-postbuild.mjs
  *
  * For dynamic routes (events, instructors), this script would query
  * Supabase for slugs. When Supabase is not configured, it generates
