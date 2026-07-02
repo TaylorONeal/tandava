@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
-    "postbuild": "npx tsx scripts/generate-sitemap.ts && npx tsx scripts/prerender-blog.ts",
+    "postbuild": "node scripts/run-postbuild.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
