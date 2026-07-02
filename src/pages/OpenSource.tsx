@@ -254,26 +254,101 @@ export default function OpenSource() {
               <span className="text-slate-500">you actually own</span>
             </h1>
             <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
-              Tandava is a free, open-source platform for yoga, pilates, and
-              movement studios. Self-host it, customize it, and never pay
-              per-member fees again.
+              Tandava is an open-source platform for yoga, pilates, and
+              movement studios. Start free on our hosted version, or self-host
+              it yourself — and never pay per-member fees again.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                to="/demo"
+                to="/auth/register"
                 className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-slate-900 px-6 py-3 font-medium text-white transition-colors hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2"
+              >
+                Start your studio
+                <ArrowRightIcon className="h-4 w-4" />
+              </Link>
+              <Link
+                to="/demo"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-slate-300 px-6 py-3 font-medium text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2"
               >
                 Try the Demo
                 <ArrowRightIcon className="h-4 w-4" />
               </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Two ways to run Tandava */}
+        <section className="max-w-6xl mx-auto px-6 pb-4">
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Hosted */}
+            <div className="rounded-2xl border-2 border-slate-900 bg-white p-8 shadow-sm">
+              <div className="inline-flex items-center gap-2 bg-slate-900 text-white px-3 py-1 rounded-full text-xs font-medium mb-4">
+                Easiest — no setup
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">
+                Let us host it
+              </h3>
+              <p className="text-slate-600 mb-4">
+                Sign up, complete the setup wizard, and go live. No servers, no
+                database, no DNS. Free to run — we take a small percentage of the
+                payments you process, so we only earn when your studio does.
+              </p>
+              <ul className="space-y-2 text-sm text-slate-700 mb-6">
+                {[
+                  "Nothing to install or deploy",
+                  "Guided setup: studio, staff, pricing, waivers, data import",
+                  "Bring your own Stripe — payouts go straight to you",
+                  "No per-member or monthly fees",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/auth/register"
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-6 py-3 font-medium text-white transition-colors hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2"
+              >
+                Start your studio free
+                <ArrowRightIcon className="h-4 w-4" />
+              </Link>
+            </div>
+
+            {/* Self-host */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+              <div className="inline-flex items-center gap-2 bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-xs font-medium mb-4">
+                Full control
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">
+                Run it yourself
+              </h3>
+              <p className="text-slate-600 mb-4">
+                Clone the repository and deploy Tandava on your own
+                infrastructure. Own the data and the servers, and change
+                anything. Requires comfort with hosting and configuration.
+              </p>
+              <ul className="space-y-2 text-sm text-slate-700 mb-6">
+                {[
+                  "Your infrastructure, your data, your rules",
+                  "Modify the source — it's AGPL-3.0",
+                  "Pay only your hosting costs",
+                  "Same application as the hosted version",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
               <a
-                href="https://github.com/TaylorONeal/tandava"
+                href="https://github.com/TaylorONeal/tandava/blob/main/DEPLOYMENT.md"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-slate-300 px-6 py-3 font-medium text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2"
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-slate-300 px-6 py-3 font-medium text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2"
               >
                 <GitHubIcon className="h-5 w-5" />
-                View on GitHub
+                Deployment guide
               </a>
             </div>
           </div>
@@ -378,24 +453,24 @@ export default function OpenSource() {
               </div>
               <div className="bg-slate-50 border border-slate-200 rounded-lg p-6">
                 <h4 className="font-semibold text-slate-900 mb-3">
-                  Needs Backend Integration
+                  On the hosted version, already wired. Self-hosting? Bring your keys.
                 </h4>
                 <ul className="space-y-2 text-sm text-slate-700">
                   <li className="flex items-start gap-2">
                     <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
-                    Payment processing (Stripe Connect ready, not connected)
+                    Payments — Stripe Connect (your account, your payouts)
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
-                    Real authentication (currently mock users)
+                    Authentication — real accounts via Supabase Auth
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
-                    Email/SMS notifications
+                    Email/SMS notifications — pick your provider
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
-                    Data persistence (Supabase schema ready)
+                    Data persistence — Supabase (Postgres + row-level security)
                   </li>
                 </ul>
               </div>
