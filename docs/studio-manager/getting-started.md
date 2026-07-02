@@ -41,6 +41,18 @@ The steps:
 
 On the **Stripe** step, click **Connect with Stripe**. You'll be sent to Stripe to link your existing account or create a new one, then brought right back to the wizard. Once connected, you can accept payments for classes, memberships, and class packs — and payouts go **directly to your bank account**, not through anyone else.
 
+## Your Studio's Web Address
+
+On the hosted version, your studio lives at the same address your students already know — you sign in and manage everything there, and students book from the public schedule. You don't set up a domain, DNS, or hosting; that's all handled for you.
+
+A few things worth knowing:
+
+- **Today:** your studio runs on the shared hosted address. You can share a direct link to your booking page and embed your schedule on your existing website with a one-line snippet (see [Website Embed](../guides/website-embed.md)) — so your current site, Instagram, and Google listing all keep working.
+- **Coming soon — your own subdomain:** a clean address like `yourstudio.tandavastudio.com`, set up for you automatically, nothing to configure.
+- **Later — your own domain:** point a domain you own (e.g. `book.yourstudio.com`) at your Tandava studio. This will be an optional extra once available.
+
+If you'd rather run everything on your own domain and infrastructure from day one, that's the self-hosted path — it needs a developer. See [DEPLOYMENT.md](../../DEPLOYMENT.md).
+
 **What you need to know about Stripe:**
 - Stripe charges a standard processing fee (typically 2.9% + $0.30 per transaction)
 - Payouts go directly to your linked bank account on Stripe's schedule
