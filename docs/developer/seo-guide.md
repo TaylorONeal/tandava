@@ -58,7 +58,7 @@ Generated at build time by `scripts/generate-sitemap.ts`.
 
 ```bash
 # After build
-npx tsx scripts/generate-sitemap.ts
+node scripts/run-postbuild.mjs
 ```
 
 For dynamic routes (studios, instructors), extend the script to query Supabase for slugs.

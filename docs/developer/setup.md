@@ -186,7 +186,7 @@ npm run build
 npm run preview
 
 # Generate sitemap (after build)
-npx tsx scripts/generate-sitemap.ts
+node scripts/run-postbuild.mjs
 ```
 
 The `dist/` directory is a static site — deploy to:
