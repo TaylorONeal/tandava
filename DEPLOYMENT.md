@@ -2,6 +2,8 @@
 
 How to deploy Tandava for a real studio. This guide assumes you are a developer or have one.
 
+Once deployed, see [docs/guides/DEVICE_INSTALLATION.md](docs/guides/DEVICE_INSTALLATION.md) for getting the app onto the studio's devices (Chromebook, Mac, iPad) — there are no native installers; Tandava installs as a PWA.
+
 ---
 
 ## Before You Start
