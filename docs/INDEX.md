@@ -30,6 +30,18 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 
 ---
 
+## Hosting & Distribution
+
+| Document | Purpose |
+|----------|---------|
+| [Deployment Guide](../DEPLOYMENT.md) | Self-host Tandava for a single studio |
+| [Operator Setup](OPERATOR_SETUP.md) | Run the hosted service (`tandavastudio.com`) many studios sign up for |
+| [Deploy Cowork Prompt](cowork-prompts/deploy-hosted.md) | Paste-ready prompt to stand up the hosted service against your cloud accounts |
+| [Device Installation](guides/DEVICE_INSTALLATION.md) | Installing Tandava as a PWA on Chromebook / Mac / iPad (no native installers) |
+| [Multi-Tenancy & Host-Based Routing](architecture/MULTI_TENANCY.md) | How one deployment serves many studios; subdomain & custom-domain roadmap |
+
+---
+
 ## Studio Guides
 
 | Guide | Purpose |
