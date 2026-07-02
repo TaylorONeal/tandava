@@ -36,8 +36,16 @@ export interface AuthProvider {
   /** Sign in with email and password */
   signInWithEmail(email: string, password: string): Promise<{ user: AuthUser | null; error: AuthError | null }>;
 
-  /** Create a new account with email and password */
-  signUpWithEmail(email: string, password: string, metadata: SignUpMetadata): Promise<{ error: AuthError | null }>;
+  /**
+   * Create a new account with email and password.
+   * `requiresEmailConfirmation` is true when the backend created the account
+   * but withheld a session until the user confirms their email address.
+   */
+  signUpWithEmail(
+    email: string,
+    password: string,
+    metadata: SignUpMetadata
+  ): Promise<{ error: AuthError | null; requiresEmailConfirmation?: boolean }>;
 
   /** Initiate OAuth flow (redirects the browser) */
   signInWithOAuth(provider: "google" | "apple"): Promise<{ error: AuthError | null }>;

@@ -2715,6 +2715,10 @@ export interface Database {
         Args: { p_slug: string; p_limit?: number };
         Returns: PublicScheduleRow[];
       };
+      get_my_effective_role: {
+        Args: Record<string, never>;
+        Returns: UserRole;
+      };
     };
   };
 }

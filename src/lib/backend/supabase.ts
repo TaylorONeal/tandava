@@ -91,12 +91,14 @@ const supabaseAuth: AuthProvider = {
   },
 
   async signUpWithEmail(email, password, metadata: SignUpMetadata) {
-    const { error } = await getClient().auth.signUp({
+    const { data, error } = await getClient().auth.signUp({
       email,
       password,
       options: { data: metadata },
     });
-    return { error: mapError(error) };
+    // A user without a session means Supabase is waiting for email confirmation.
+    const requiresEmailConfirmation = Boolean(data?.user && !data?.session);
+    return { error: mapError(error), requiresEmailConfirmation };
   },
 
   async signInWithOAuth(provider) {
@@ -137,13 +139,30 @@ const supabaseAuth: AuthProvider = {
 
 const supabaseData: DataProvider = {
   async getProfile(userId): Promise<DataResult<Profile>> {
-    const { data, error } = await getClient()
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
+    const client = getClient();
+    // Roles live in studio_staff, not profiles. Resolve the caller's highest
+    // studio role server-side so permission gating works in production. The
+    // RPC always describes the *session* user, so only stamp it onto their
+    // own profile — never onto another user's row.
+    const [profileRes, sessionRes, roleRes] = await Promise.all([
+      client.from("profiles").select("*").eq("id", userId).single(),
+      client.auth.getSession(),
+      client.rpc("get_my_effective_role"),
+    ]);
 
-    return { data, error: error ? { message: error.message } : null };
+    const profile = profileRes.data as Profile | null;
+    if (profileRes.error || !profile) {
+      return { data: null, error: { message: profileRes.error?.message ?? "Profile not found" } };
+    }
+
+    if (roleRes.error) {
+      // Older deployments may not have the function yet — default to student.
+      console.warn("get_my_effective_role unavailable:", roleRes.error.message);
+    }
+
+    const isOwnProfile = sessionRes.data?.session?.user?.id === userId;
+    const role = isOwnProfile ? roleRes.data ?? "student" : profile.role;
+    return { data: { ...profile, role }, error: null };
   },
 
   async createMessage(input: CreateMessageInput): Promise<MutationResult> {

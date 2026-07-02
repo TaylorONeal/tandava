@@ -189,6 +189,23 @@ serve(async (req) => {
   skipped = records.length - success - errors.length;
   const status = errors.length === 0 ? "completed" : success > 0 ? "partial" : "failed";
 
+  // Reflect a successful import in the setup wizard's progress tracker.
+  if (success > 0) {
+    const { data: onboarding } = await db
+      .from("studio_onboarding")
+      .select("id, completed_steps")
+      .eq("studio_id", studioId)
+      .maybeSingle();
+    if (onboarding) {
+      const steps = new Set<string>(onboarding.completed_steps ?? []);
+      steps.add("import");
+      await db
+        .from("studio_onboarding")
+        .update({ completed_steps: [...steps], has_imported_data: true })
+        .eq("id", onboarding.id);
+    }
+  }
+
   if (job?.id) {
     await db
       .from("import_jobs")

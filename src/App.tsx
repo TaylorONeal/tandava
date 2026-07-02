@@ -207,7 +207,10 @@ const App = () => (
                   <Route path="/manage/reports" element={<ProtectedRoute permission="studio.manage_schedule"><ReportsManage /></ProtectedRoute>} />
                   <Route path="/manage/import" element={<ProtectedRoute permission="studio.manage_settings"><ImportManage /></ProtectedRoute>} />
                   <Route path="/manage/settings" element={<ProtectedRoute permission="studio.manage_settings"><SettingsManage /></ProtectedRoute>} />
-                  <Route path="/manage/onboarding" element={<ProtectedRoute permission="studio.manage_settings"><OnboardingManage /></ProtectedRoute>} />
+                  {/* No permission gate: this is where a new owner *creates* their
+                       studio, before they hold any studio role. Authenticated-only;
+                       the onboarding edge function authorizes each write. */}
+                  <Route path="/manage/onboarding" element={<ProtectedRoute><OnboardingManage /></ProtectedRoute>} />
                   <Route path="/manage/members/:id" element={<ProtectedRoute permission="studio.manage_schedule"><MemberDetailManage /></ProtectedRoute>} />
                   <Route path="/manage/promo-codes" element={<ProtectedRoute permission="studio.manage_settings"><PromoCodesManage /></ProtectedRoute>} />
                   <Route path="/manage/events" element={<ProtectedRoute permission="studio.manage_schedule"><EventsManage /></ProtectedRoute>} />

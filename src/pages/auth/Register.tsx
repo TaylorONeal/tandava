@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, CheckCircle2, Sparkles, MailCheck, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
@@ -17,7 +18,9 @@ const Register = () => {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { t } = useTranslation('auth');
+  const { signUpWithEmail, signInWithGoogle, isDemoMode } = useAuth();
   const [step, setStep] = useState<RegistrationStep>("info");
+  const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -51,15 +54,76 @@ const Register = () => {
 
     setIsLoading(true);
 
-    // Simulate registration
-    await new Promise((resolve) => setTimeout(resolve, 1200));
+    if (isDemoMode) {
+      // Demo mode: simulate registration.
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      setIsLoading(false);
+      setStep("complete");
+      return;
+    }
+
+    const { error, requiresEmailConfirmation } = await signUpWithEmail(
+      formData.email,
+      formData.password,
+      {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        marketing_consent: formData.marketingConsent,
+      }
+    );
 
     setIsLoading(false);
+
+    if (error) {
+      toast({
+        title: t('register.signupFailed'),
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setNeedsEmailConfirmation(Boolean(requiresEmailConfirmation));
     setStep("complete");
   };
 
   // Success screen - mobile-optimized with clear next actions
   if (step === "complete") {
+    // Email confirmation pending: the account exists but there's no session
+    // yet, so the only useful action is confirming and signing in.
+    if (needsEmailConfirmation) {
+      return (
+        <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-b from-background to-accent/20">
+          <div className="w-full max-w-md space-y-8 text-center">
+            <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+              <MailCheck className="h-10 w-10 text-primary animate-in zoom-in-50 duration-300" />
+            </div>
+
+            <div className="space-y-2">
+              <h1 className="text-2xl font-bold">{t('register.confirmEmailTitle')}</h1>
+              <p className="text-muted-foreground">
+                {t('register.confirmEmailBody', { email: formData.email })}
+              </p>
+            </div>
+
+            <div className="space-y-3 pt-4">
+              <Button
+                onClick={() => navigate("/auth/login")}
+                className="w-full h-14 text-lg"
+                size="lg"
+              >
+                {t('register.goToSignIn')}
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button variant="ghost" onClick={() => navigate("/")} className="w-full">
+                {t('register.goHome')}
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-b from-background to-accent/20">
         <div className="w-full max-w-md space-y-8 text-center">
@@ -98,6 +162,15 @@ const Register = () => {
             </Button>
 
             <Button
+              variant="outline"
+              onClick={() => navigate("/manage/onboarding")}
+              className="w-full h-12"
+            >
+              <Store className="mr-2 h-4 w-4" />
+              {t('register.setupStudio')}
+            </Button>
+
+            <Button
               variant="ghost"
               onClick={() => navigate("/")}
               className="w-full"
@@ -117,13 +190,28 @@ const Register = () => {
 
   const handleGoogleSignup = async () => {
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast({
-      title: t('register.welcomeToTandava'),
-      description: t('register.googleCreated'),
-    });
-    navigate("/");
-    setIsLoading(false);
+
+    if (isDemoMode) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast({
+        title: t('register.welcomeToTandava'),
+        description: t('register.googleCreated'),
+      });
+      navigate("/");
+      setIsLoading(false);
+      return;
+    }
+
+    const { error } = await signInWithGoogle();
+    if (error) {
+      toast({
+        title: t('register.signupFailed'),
+        description: error.message,
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
+    // OAuth redirect handles navigation on success.
   };
 
   return (
