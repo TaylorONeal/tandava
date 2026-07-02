@@ -2,6 +2,8 @@
 
 How to deploy Tandava for a real studio. This guide assumes you are a developer or have one.
 
+> **Running the hosted service for many studios** (e.g. `tandavastudio.com`) instead of a single self-hosted studio? Use [docs/OPERATOR_SETUP.md](docs/OPERATOR_SETUP.md) — same building blocks, plus Stripe Connect take-rate and multi-tenant config, done once so studio owners can just sign up.
+
 Once deployed, see [docs/guides/DEVICE_INSTALLATION.md](docs/guides/DEVICE_INSTALLATION.md) for getting the app onto the studio's devices (Chromebook, Mac, iPad) — there are no native installers; Tandava installs as a PWA.
 
 ---

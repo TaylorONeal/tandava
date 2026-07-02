@@ -2,6 +2,8 @@
 
 Welcome! This guide walks you through setting up and managing your yoga studio on Tandava.
 
+> **You don't install or deploy anything.** Go to **[tandavastudio.com](https://tandavastudio.com)**, create an account, and a setup wizard walks you through the rest. No servers, no DNS, no technical setup. You'll need an email address, about 15 minutes, and — when you're ready to take payments — a Stripe account (the wizard helps you create or connect one). To add Tandava to your phone or front-desk tablet like an app, see [Installing on your devices](../guides/DEVICE_INSTALLATION.md).
+
 ## What You Can Do
 
 As a studio owner or manager, you have access to the **Studio Manager** panel at `/manage`. From here you can:
@@ -14,29 +16,30 @@ As a studio owner or manager, you have access to the **Studio Manager** panel at
 - **Analytics** — See bookings, revenue, and retention metrics
 - **Settings** — Update studio info, location, hours, and cancellation policy
 
-## Accessing the Manager
+## The Setup Wizard
 
-1. Log in to your Tandava account
-2. Click your avatar (top-right) → **Studio Manager**
-3. You'll see your studio dashboard with key metrics
+After you sign up, open **Studio Setup** at `/manage/onboarding`. It's a step-by-step wizard, and two things make it stress-free:
 
-## Setting Up Your Studio
+- **Skip anything.** Not ready to write your waiver or import members? Click **Skip for now** and come back later.
+- **Everything saves.** Your progress is stored as you go, so you can close the tab and pick up where you left off — even on a different device.
 
-### Step 1: Studio Information
+The steps:
 
-Go to **Settings** and fill in:
-- Studio name and description
-- Address and contact info
-- Yoga styles offered
-- Operating hours
-- Studio photos
+1. **Studio Info** — name, description, timezone, currency
+2. **Location** — address and room names
+3. **Branding** — your colors and logo
+4. **Offerings** — your class types (e.g. Vinyasa, Yin), with duration, capacity, drop-in price
+5. **Schedule** — add a recurring class to your weekly schedule
+6. **Pricing** — a membership and a class pack (you can refine these later in Financials)
+7. **Staff** — invite teachers and front-desk staff by email; each gets an invitation to join
+8. **Waivers** — the liability waiver students agree to before their first class
+9. **Import** — bring your students/schedule over from Mindbody, Momoyoga, Walla, Arketa, or a CSV (or skip)
+10. **Stripe** — connect your Stripe account so you can accept payments (see below)
+11. **Launch** — review and go live
 
-### Step 2: Connect Payments
+### Connecting Payments (the Stripe step)
 
-In **Settings → Payment Setup**:
-1. Click **Connect Stripe Account**
-2. You'll be redirected to Stripe to link your existing account (or create one)
-3. Once connected, you can accept payments for classes, memberships, and class packs
+On the **Stripe** step, click **Connect with Stripe**. You'll be sent to Stripe to link your existing account or create a new one, then brought right back to the wizard. Once connected, you can accept payments for classes, memberships, and class packs — and payouts go **directly to your bank account**, not through anyone else.
 
 **What you need to know about Stripe:**
 - Stripe charges a standard processing fee (typically 2.9% + $0.30 per transaction)
@@ -54,10 +57,10 @@ Go to **Schedule** → **Add Class**:
 - Set pricing (drop-in price, or include in membership)
 - Optionally set up recurring classes
 
-### Step 4: Invite Your Team
+### Inviting Your Team
 
-Ask your platform administrator to add team members with the appropriate roles:
-- **Manager** — Can manage schedule, members, and instructors
+You can invite staff during the wizard's **Staff** step, or any time afterward from **Teachers** / **Settings**. Each person you add by email receives an invitation to join your studio with the role you choose:
+- **Admin** — Can manage schedule, members, and instructors
 - **Instructor** — Can view their own class analytics
 - **Front Desk** — Can check in members and manage waitlists
 

@@ -1,8 +1,13 @@
 # Tandava
 
-**Open-source studio management software you fork, deploy, and own.**
+**Open-source studio management software — run it yourself, or let us host it.**
 
-Scheduling. Memberships. Payments. Check-in. Analytics. Built for yoga, pilates, and movement studios with technical teams.
+Scheduling. Memberships. Payments. Check-in. Analytics. Built for yoga, pilates, and movement studios.
+
+Two ways to use Tandava:
+
+- **Hosted** — sign up at **[tandavastudio.com](https://tandavastudio.com)**, complete the setup wizard, and go live. No servers, no DNS, no deployment. Free to run — we make money only by taking a small percentage of the payments you process, so we only earn when your studio does.
+- **Self-host** — clone this repo and deploy it on your own infrastructure. Own every byte, pay only your hosting costs, change anything. AGPL-3.0.
 
 > **[Live Demo](https://tandava-flame.vercel.app)** — Explore the full platform with sample data. No signup required.
 
@@ -12,11 +17,13 @@ Scheduling. Memberships. Payments. Check-in. Analytics. Built for yoga, pilates,
 
 ## What This Is
 
-Tandava is a **deployable reference implementation** of studio management software. You clone it, configure it, deploy it, and run your studio on it.
+Tandava is studio management software you can either **sign up for** (hosted) or **deploy yourself** (open source) — the same application either way.
 
 It handles the operational reality of running a movement studio: scheduling classes, tracking memberships, processing payments, managing teachers, and understanding your business through analytics.
 
 It is designed for studios with 1-3 locations where the owner is often also the lead teacher, the person handling check-ins, and the one reconciling the books at month-end.
+
+**Open core, not open bait.** Every feature is in this repository — nothing is held back for a paid tier. The hosted version runs this exact code; you pay for the convenience of not operating it, not for locked features. The software is licensed AGPL-3.0, which keeps it open for everyone and lets the project sustain itself by offering hosting.
 
 **What you get:**
 - Full scheduling with recurring classes, subs, and cancellations
@@ -34,28 +41,17 @@ It is designed for studios with 1-3 locations where the owner is often also the 
 - Data you can't export
 - Features hidden behind enterprise tiers
 
-## What This Is Not
+## Which Path Is Yours
 
-**Not a hosted SaaS.** There is no sign-up page, no onboarding wizard, no managed hosting. You deploy this yourself.
+**Non-technical owner? Use the hosted version.** Go to [tandavastudio.com](https://tandavastudio.com), sign up, and the setup wizard walks you through your studio, staff, offerings, pricing, waivers, importing data from your old system, and connecting Stripe. You never touch a server, a database, or DNS. This is the turnkey path.
 
-**Not for non-technical studio owners (yet).** If you don't have a developer, technical co-founder, or trusted dev partner, this is not ready for you. We aspire to make it more accessible over time, in the open, with the community — but we won't pretend it's there today.
+**Have a developer, or want full control? Self-host.** Clone the repo and deploy it on your own Supabase + static host. You own the data and the infrastructure, and you can change anything. This requires comfort with hosting, environment variables, and payment configuration — see [DEPLOYMENT.md](DEPLOYMENT.md).
 
-**Not a plug-and-play Mindbody alternative.** This is software you adopt, customize, and maintain. It requires understanding your own infrastructure: hosting, database, payment processing, DNS.
+### Honest status
 
-**Not a platform.** Tandava runs one studio (or a small number of locations under one owner). It is not a marketplace, directory, or multi-tenant SaaS. Platform-mode capabilities exist as scaffolding but are not the primary use case.
+The frontend and workflows are complete; the backend (Supabase schema, auth, RLS, edge functions) is architecturally ready and being hardened under real use. If you self-host today, budget time to verify RLS, payments, and email against your own project before real members rely on it — the hosted version exists precisely so you don't have to.
 
-### Who This Is For
-
-- Yoga studios with an internal engineering team or technical founder
-- Studios with a trusted development partner willing to deploy and maintain
-- Developer-led collectives building studio software together
-- Technical people exploring what studio management software should look like
-
-### Who This Is Not For (Yet)
-
-- Non-technical studio owners without dev support
-- Studios expecting hosted SaaS or guided onboarding
-- Anyone looking for a turnkey solution they can use without touching code or infrastructure
+**Tandava is multi-tenant by design.** One deployment serves many studios, isolated by row-level security — which is exactly what makes the hosted version possible. Self-hosters typically run it for a single studio (or a few locations under one owner), but the platform capabilities are real, not scaffolding.
 
 ---
 
@@ -78,6 +74,10 @@ No signup, no backend, no database. Everything runs client-side with mock data.
 
 ## Quick Start
 
+**Just want to run a studio?** Skip all of this — go to [tandavastudio.com](https://tandavastudio.com), sign up, and follow the setup wizard. See the [studio owner quickstart](docs/studio-manager/getting-started.md).
+
+**Want to run the code locally or self-host?**
+
 ```bash
 # Clone and install
 git clone https://github.com/TaylorONeal/tandava.git
@@ -91,7 +91,8 @@ npm run dev
 
 Opens at `http://localhost:8080` with sample data.
 
-For production deployment, see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
+- **Self-host for your own studio:** [DEPLOYMENT.md](DEPLOYMENT.md)
+- **Operate the hosted service (run your own tandavastudio.com):** [docs/OPERATOR_SETUP.md](docs/OPERATOR_SETUP.md)
 
 ---
 
@@ -237,17 +238,19 @@ For architectural decisions and trade-offs, see **[ARCHITECTURE.md](ARCHITECTURE
 
 ---
 
-## Why Open Source
+## Why Open Source (and how the hosted version fits)
 
 Most studio software traps you. Your member data lives on someone else's servers. Switching providers means starting over. Customization requires paying for higher tiers or begging for features.
 
 Tandava takes the opposite approach:
 
-**Your data stays yours.** Run it on your own infrastructure or use managed hosting. Export everything, anytime, in standard formats.
+**Your data stays yours.** Run it on your own infrastructure, or use the hosted version and export everything, anytime, in standard formats.
 
-**The code is open.** Every line is auditable. If something doesn't work for your studio, you can change it or hire someone to change it.
+**The code is open.** Every line is auditable. If something doesn't work for your studio, you can change it or hire someone to change it — or ask us to.
 
 **No lock-in by design.** We're building toward a standardized data interchange format so moving to or from Tandava is straightforward.
+
+**Aligned incentives.** The hosted service earns a small percentage of the payments a studio processes — nothing else. There's no per-member fee, no seat pricing, no locked features. We grow only when studios grow, and any studio that outgrows the arrangement can take the open-source code and self-host. That option existing is what keeps the hosted version honest.
 
 ---
 
