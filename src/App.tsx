@@ -55,6 +55,7 @@ class AppErrorBoundary extends Component<
 }
 
 const Home = lazy(() => import("./pages/Home"));
+const StudioStorefront = lazy(() => import("./pages/StudioStorefront"));
 const Index = lazy(() => import("./pages/Index"));
 const Schedule = lazy(() => import("./pages/Schedule"));
 const MySchedule = lazy(() => import("./pages/MySchedule"));
@@ -162,6 +163,10 @@ const App = () => (
                   <Route path="/" element={<Home />} />
                   <Route path="/demo" element={<Demo />} />
                   <Route path="/open-source" element={<OpenSource />} />
+
+                  {/* ---- Public studio storefront (slug-driven; what per-studio
+                       subdomains will render). Gated on studios.discoverable. ---- */}
+                  <Route path="/s/:slug" element={<StudioStorefront />} />
 
                   {/* ---- Blog (built but not yet linked in nav; noindex until
                        BLOG_PUBLISHED is flipped on in src/config/blog.ts) ---- */}

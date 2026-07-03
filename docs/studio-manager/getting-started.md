@@ -47,7 +47,7 @@ On the hosted version, your studio lives at the same address your students alrea
 
 A few things worth knowing:
 
-- **Today:** your studio runs on the shared hosted address. You can share a direct link to your booking page and embed your schedule on your existing website with a one-line snippet (see [Website Embed](../guides/website-embed.md)) — so your current site, Instagram, and Google listing all keep working.
+- **Today:** your studio runs on the shared hosted address. Once you turn on public listing (the **Launch** step, or Settings), you get a shareable public page at `/s/your-studio` showing your classes, schedule, and pricing — link it from Instagram or your Google listing. You can also embed your schedule on your existing website with a one-line snippet (see [Website Embed](../guides/website-embed.md)).
 - **Coming soon — your own subdomain:** a clean address like `yourstudio.tandavastudio.com`, set up for you automatically, nothing to configure.
 - **Later — your own domain:** point a domain you own (e.g. `book.yourstudio.com`) at your Tandava studio. This will be an optional extra once available.
 

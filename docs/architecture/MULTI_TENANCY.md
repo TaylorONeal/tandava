@@ -32,7 +32,9 @@ Before any host-based routing is useful, the public root of a studio needs to sh
 
 **Fixed — the root no longer serves demo content in production.** The `/` route used to render the demo landing (`pages/Demo.tsx`, Oxatl sample data) unconditionally, and the sample storefront (`pages/Index.tsx`) still lives at `/home`. `pages/Home.tsx` now resolves `/`: the demo landing appears only on demo / no-backend deployments, while a production visitor gets the platform landing (or their workspace when signed in). So the shared hosted root is honest today.
 
-**Still to build — a real per-studio storefront.** `pages/Index.tsx` (`/home`) remains the Oxatl **sample** storefront. Host-based routing needs a **slug-driven storefront** that reads a studio (by slug/host) and renders its real schedule, offerings, teachers, and pricing via the public RPCs — the same data the embed widget already pulls (`get_public_schedule(slug)`). This is the largest single piece of the effort and is worth doing on its own merits, independent of subdomains: once it exists, a resolved subdomain/custom-domain simply renders it for the matched studio.
+**Built — a real per-studio storefront at `/s/:slug`.** `pages/StudioStorefront.tsx` renders a discoverable studio's real profile, offerings, pricing, and upcoming schedule, fetched by slug from two public SECURITY DEFINER RPCs: `get_studio_storefront(slug)` (00018 — studio + offerings + membership/pack pricing) and the existing `get_public_schedule(slug)` (00016). Both gate on `studios.discoverable`, so a private or unknown slug lands on a neutral "not available" page. This is the component host-based routing renders: **once subdomains land, a resolved subdomain simply mounts `StudioStorefront` for the matched slug** — the resolver is the only remaining piece.
+
+(`pages/Index.tsx` at `/home` is still the Oxatl **sample** storefront used by the demo; the real public page is `/s/:slug`.)
 
 ---
 
@@ -92,8 +94,9 @@ When a visitor hits a studio host, should an unlisted studio be reachable?
 ## Recommended phasing
 
 1. **Now — shared domain.** `tandavastudio.com`, login-based studio resolution. Live via [OPERATOR_SETUP.md](../OPERATOR_SETUP.md). No per-studio infra.
-2. **Next — storefront + subdomains (Tier 1).** Build the slug-driven storefront (also fixes the demo-data-at-root bug), add the host resolver, and configure the wildcard domain. Every studio gets `slug.tandavastudio.com` automatically.
-3. **On demand — custom domains (Tier 2).** Add the `studio_domains` table, the Vercel Domains API provisioning flow, and the owner-facing verification UI when studios ask for vanity domains.
+2. **Done — slug-driven storefront.** `pages/StudioStorefront.tsx` at `/s/:slug` renders any discoverable studio's real public page today; it's also a shareable URL owners can use immediately.
+3. **Next — subdomains (Tier 1).** Add the host resolver (subdomain → slug → mount `StudioStorefront`) and configure the wildcard domain. Every studio gets `slug.tandavastudio.com` automatically; the page it serves already exists.
+4. **On demand — custom domains (Tier 2).** Add the `studio_domains` table, the Vercel Domains API provisioning flow, and the owner-facing verification UI when studios ask for vanity domains.
 
 Each phase is independently shippable and each earlier phase de-risks the next.
 
