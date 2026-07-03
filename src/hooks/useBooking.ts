@@ -11,7 +11,7 @@ import { useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { data as backendData, isBackendConfigured } from "@/lib/backend";
 import type { BookClassInput } from "@/lib/backend";
-import type { ClassOccurrence, Membership, ClassPack, PublicScheduleRow } from "@/types/database";
+import type { ClassOccurrence, Membership, ClassPack, PublicScheduleRow, StudioStorefront } from "@/types/database";
 import { resolvePaymentSources } from "@/lib/booking/entitlements";
 import type { PaymentSource } from "@/components/booking/PaymentSourceSelector";
 
@@ -26,6 +26,19 @@ export function usePublicSchedule(slug: string | undefined) {
       const { data, error } = await backendData.getPublicSchedule(slug!);
       if (error) throw new Error(error.message);
       return data ?? [];
+    },
+  });
+}
+
+/** Public storefront (profile + offerings + pricing) for a discoverable studio by slug. */
+export function useStudioStorefront(slug: string | undefined) {
+  return useQuery({
+    queryKey: ["studio-storefront", slug],
+    enabled: Boolean(slug) && enabled(),
+    queryFn: async (): Promise<StudioStorefront | null> => {
+      const { data, error } = await backendData.getStudioStorefront(slug!);
+      if (error) throw new Error(error.message);
+      return data;
     },
   });
 }

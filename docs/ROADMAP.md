@@ -89,13 +89,13 @@ track. Full design: [architecture/MULTI_TENANCY.md](architecture/MULTI_TENANCY.m
 | Phase | What | Effort | Status |
 |-------|------|--------|--------|
 | Shared domain | `tandavastudio.com`, studio resolved from login | Live | ✅ |
-| Slug-driven storefront | Real per-studio public page (replaces demo-hardcoded `/`); prerequisite for host routing | Medium | 🔜 Next |
-| Subdomains (Tier 1) | `slug.tandavastudio.com` via wildcard domain + host resolver; zero per-studio ops | Medium | 🔜 Next |
+| Slug-driven storefront | Real per-studio public page at `/s/:slug` (`get_studio_storefront` RPC + `StudioStorefront.tsx`) | Medium | ✅ |
+| Subdomains (Tier 1) | `slug.tandavastudio.com` via wildcard domain + host resolver mounting the storefront; zero per-studio ops | Medium | 🔜 Next |
 | Custom domains (Tier 2) | `book.studio.com` via `studio_domains` + Vercel Domains API + verification UI | Large | 🔮 On demand |
 
-Recommended order: shared (done) → storefront + subdomains → custom domains
-when studios ask. Public visibility of a studio host gates on
-`studios.discoverable`.
+The storefront is built and gated on `studios.discoverable`; the remaining
+Tier-1 work is purely the host resolver + wildcard domain (it renders the same
+`StudioStorefront` component). Then custom domains when studios ask.
 
 ---
 

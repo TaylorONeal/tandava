@@ -2638,6 +2638,54 @@ export type EmailProvider = "resend" | "sendgrid" | "smtp" | "console";
  * Extend as tables are added to supabase/migrations/.
  */
 /** A row of the public embed schedule (from the get_public_schedule RPC). */
+/** Public storefront payload for a discoverable studio (from get_studio_storefront). */
+export interface StorefrontOffering {
+  id: string;
+  name: string;
+  style: string | null;
+  level: string | null;
+  description: string | null;
+  duration_minutes: number;
+  capacity: number;
+  drop_in_price_cents: number | null;
+  is_heated: boolean;
+}
+
+export interface StorefrontMembership {
+  id: string;
+  name: string;
+  description: string | null;
+  billing_cycle: string;
+  price_cents: number;
+  classes_per_cycle: number | null;
+}
+
+export interface StorefrontPack {
+  id: string;
+  name: string;
+  description: string | null;
+  class_count: number;
+  price_cents: number;
+  validity_days: number;
+}
+
+export interface StudioStorefront {
+  studio: {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    primary_color: string | null;
+    secondary_color: string | null;
+    font: string | null;
+    timezone: string;
+    currency: string;
+  };
+  offerings: StorefrontOffering[];
+  memberships: StorefrontMembership[];
+  packs: StorefrontPack[];
+}
+
 export interface PublicScheduleRow {
   occurrence_id: string;
   starts_at: string;
@@ -2718,6 +2766,10 @@ export interface Database {
       get_my_effective_role: {
         Args: Record<string, never>;
         Returns: UserRole;
+      };
+      get_studio_storefront: {
+        Args: { p_slug: string };
+        Returns: StudioStorefront | null;
       };
     };
   };
