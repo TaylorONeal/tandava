@@ -30,9 +30,9 @@ What's missing is (a) resolving a **hostname** to a studio, and (b) a real per-s
 
 Before any host-based routing is useful, the public root of a studio needs to show **that studio's** content.
 
-Today `src/pages/Index.tsx` (the `/` route) is hardcoded to the **Oxatl demo studio** — it imports `@/data/demo` directly regardless of `VITE_DEMO_MODE`. On the shared hosted instance, that means the root currently renders fictional Oxatl content to everyone. That's a bug for the shared-domain launch and a hard blocker for host-based routing (a subdomain that shows someone else's demo data is worse than no subdomain).
+**Fixed — the root no longer serves demo content in production.** The `/` route used to render the demo landing (`pages/Demo.tsx`, Oxatl sample data) unconditionally, and the sample storefront (`pages/Index.tsx`) still lives at `/home`. `pages/Home.tsx` now resolves `/`: the demo landing appears only on demo / no-backend deployments, while a production visitor gets the platform landing (or their workspace when signed in). So the shared hosted root is honest today.
 
-**Work:** a slug-driven storefront that reads a studio (by slug/host) and renders its real schedule, offerings, teachers, and pricing via the existing public RPCs — the same data the embed widget already pulls. This is the largest single piece of the effort and is worth doing on its own merits, independent of subdomains.
+**Still to build — a real per-studio storefront.** `pages/Index.tsx` (`/home`) remains the Oxatl **sample** storefront. Host-based routing needs a **slug-driven storefront** that reads a studio (by slug/host) and renders its real schedule, offerings, teachers, and pricing via the public RPCs — the same data the embed widget already pulls (`get_public_schedule(slug)`). This is the largest single piece of the effort and is worth doing on its own merits, independent of subdomains: once it exists, a resolved subdomain/custom-domain simply renders it for the matched studio.
 
 ---
 
