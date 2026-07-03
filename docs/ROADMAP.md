@@ -66,8 +66,36 @@ have now been addressed:
 **Installable-by-non-technical-studios plan**
 - *Phase A:* one-click deploy buttons + `seed.sql` + guided env + first-run setup.
 - *Phase B:* provisioning onboarding (#5) + working import (#2) — "deploy it" and
-  "bring your data" together.
-- *Phase C:* optional hosted / managed-fork provisioning service.
+  "bring your data" together. **Done** — the onboarding wizard now provisions a
+  studio end to end (staff invites, schedule, waivers, Stripe Connect, launch)
+  and the CSV importer brings data over.
+- *Phase C:* **hosted service — chosen direction.** Rather than a per-studio
+  managed fork, Tandava runs as one multi-tenant hosted instance
+  (`tandavastudio.com`) that studios sign up for. Same open-source code as
+  self-host; monetized only by a Stripe Connect payment take-rate
+  (`PLATFORM_FEE_BPS`), no per-seat or subscription fees. Operator setup:
+  [OPERATOR_SETUP.md](OPERATOR_SETUP.md); one-shot deploy prompt:
+  [cowork-prompts/deploy-hosted.md](cowork-prompts/deploy-hosted.md).
+
+---
+
+## Hosted Platform & Host-Based Tenancy
+
+The hosted model (Phase C above) runs today on a **shared domain** with
+login-based studio resolution — one deployment, many studios, no per-studio
+infrastructure. Giving each studio its own web address is a separate, phased
+track. Full design: [architecture/MULTI_TENANCY.md](architecture/MULTI_TENANCY.md).
+
+| Phase | What | Effort | Status |
+|-------|------|--------|--------|
+| Shared domain | `tandavastudio.com`, studio resolved from login | Live | ✅ |
+| Slug-driven storefront | Real per-studio public page (replaces demo-hardcoded `/`); prerequisite for host routing | Medium | 🔜 Next |
+| Subdomains (Tier 1) | `slug.tandavastudio.com` via wildcard domain + host resolver; zero per-studio ops | Medium | 🔜 Next |
+| Custom domains (Tier 2) | `book.studio.com` via `studio_domains` + Vercel Domains API + verification UI | Large | 🔮 On demand |
+
+Recommended order: shared (done) → storefront + subdomains → custom domains
+when studios ask. Public visibility of a studio host gates on
+`studios.discoverable`.
 
 ---
 
