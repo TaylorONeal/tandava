@@ -54,6 +54,7 @@ class AppErrorBoundary extends Component<
   }
 }
 
+const Home = lazy(() => import("./pages/Home"));
 const Index = lazy(() => import("./pages/Index"));
 const Schedule = lazy(() => import("./pages/Schedule"));
 const MySchedule = lazy(() => import("./pages/MySchedule"));
@@ -155,8 +156,10 @@ const App = () => (
                 <DemoRoleBar />
                 <Suspense fallback={<RouteLoadingFallback />}>
                 <Routes>
-                  {/* ---- Demo landing page (role picker) ---- */}
-                  <Route path="/" element={<Demo />} />
+                  {/* ---- Root: resolves to the demo landing in demo mode, or the
+                       real platform landing / user's workspace in production
+                       (see pages/Home.tsx). The demo role picker stays at /demo. ---- */}
+                  <Route path="/" element={<Home />} />
                   <Route path="/demo" element={<Demo />} />
                   <Route path="/open-source" element={<OpenSource />} />
 
