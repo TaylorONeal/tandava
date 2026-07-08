@@ -118,6 +118,15 @@ It's applied as a Stripe `application_fee` on every drop-in, membership, and cla
 
 That's the only DNS anyone ever touches. Studio owners never see this.
 
+### Optional — per-studio subdomains
+
+To give each studio its own address (`oxatl.tandavastudio.com` → that studio's public storefront):
+
+1. In Vercel → **Settings → Domains**, add the **wildcard** `*.tandavastudio.com` (Vercel issues a wildcard TLS certificate once the domain's nameservers are delegated to Vercel).
+2. Set the frontend env var `VITE_ROOT_DOMAIN=tandavastudio.com` and redeploy.
+
+That's it — every discoverable studio's slug then resolves automatically at `slug.tandavastudio.com`, rendering the same storefront available at `/s/slug`. Reserved labels (`www`, `app`, `api`, `admin`, `docs`, …) and the apex stay on the platform. Leave `VITE_ROOT_DOMAIN` unset to keep everything on the shared domain. (Custom per-studio domains like `book.theirstudio.com` are a separate future feature — see [architecture/MULTI_TENANCY.md](architecture/MULTI_TENANCY.md).)
+
 ---
 
 ## Step 5 — Verify end-to-end
