@@ -30,8 +30,10 @@ const CYCLE_LABEL: Record<string, string> = {
   annual: "year",
 };
 
-export default function StudioStorefront() {
-  const { slug } = useParams<{ slug: string }>();
+export default function StudioStorefront({ slug: slugProp }: { slug?: string } = {}) {
+  const params = useParams<{ slug: string }>();
+  // Slug comes from the route (/s/:slug) or, on a studio subdomain, the host.
+  const slug = slugProp ?? params.slug;
   const { data: storefront, isLoading, isError } = useStudioStorefront(slug);
   const { data: schedule } = usePublicSchedule(slug);
 
