@@ -42,17 +42,14 @@ Before any host-based routing is useful, the public root of a studio needs to sh
 
 The recommended first step after the shared-domain launch. Low ongoing ops, no per-studio manual work.
 
-**Resolution (code):**
-- A `StudioHostProvider` reads `window.location.hostname`, extracts the left-most label (the subdomain), and resolves it to a studio by `slug`.
-- The apex host (`tandavastudio.com`, `www`) and any reserved labels (`app`, `admin`, `api`, `docs`, …) resolve to the platform/marketing surface, not a studio.
-- Resolved studio id/slug flows into a context the storefront and member views consume.
+**Resolution (code) — built.** `src/lib/studio-host.ts` (`getStudioSlugFromHost`, unit-tested in `studio-host.test.ts`) reads `window.location.hostname` and, when `VITE_ROOT_DOMAIN` is set, extracts a single-label subdomain and resolves it to a studio `slug`. `pages/Home.tsx` (the `/` resolver) mounts `StudioStorefront` for that slug. The apex, `www`, reserved labels (`app`, `api`, `admin`, `docs`, `demo`, …), multi-level subdomains, Vercel previews, and localhost all fall through to the platform surface. It's **off unless `VITE_ROOT_DOMAIN` is configured**, so nothing changes for the shared apex or self-hosters.
 
-**Infrastructure (one-time):**
-- Add a **wildcard domain** `*.tandavastudio.com` to the Vercel project.
-- Wildcard DNS + wildcard TLS. Vercel issues the wildcard certificate when the domain's nameservers are delegated to Vercel.
-- After that, every new studio's subdomain works automatically — **zero per-studio provisioning**.
+**Infrastructure (one-time, ops):**
+- Add a **wildcard domain** `*.tandavastudio.com` to the Vercel project (wildcard DNS + wildcard TLS, issued when nameservers are delegated to Vercel).
+- Set `VITE_ROOT_DOMAIN=tandavastudio.com` and redeploy.
+- After that, every discoverable studio's subdomain works automatically — **zero per-studio provisioning**. See [OPERATOR_SETUP.md](../OPERATOR_SETUP.md) → "per-studio subdomains".
 
-**Effort:** moderate, mostly frontend. The storefront prerequisite is the bulk of it; the resolver itself is small.
+**Status:** the resolver + storefront mounting are done; only the one-time wildcard-domain + env config remains (an operator step, not code). Today a subdomain scopes the **root** to the studio's storefront; deeper per-subdomain scoping of member/booking views can follow if needed.
 
 ---
 
@@ -95,7 +92,7 @@ When a visitor hits a studio host, should an unlisted studio be reachable?
 
 1. **Now — shared domain.** `tandavastudio.com`, login-based studio resolution. Live via [OPERATOR_SETUP.md](../OPERATOR_SETUP.md). No per-studio infra.
 2. **Done — slug-driven storefront.** `pages/StudioStorefront.tsx` at `/s/:slug` renders any discoverable studio's real public page today; it's also a shareable URL owners can use immediately.
-3. **Next — subdomains (Tier 1).** Add the host resolver (subdomain → slug → mount `StudioStorefront`) and configure the wildcard domain. Every studio gets `slug.tandavastudio.com` automatically; the page it serves already exists.
+3. **Done — subdomains (Tier 1).** Host resolver (`studio-host.ts`) mounts `StudioStorefront` for `slug.<root>`; enable with the wildcard domain + `VITE_ROOT_DOMAIN`. Zero per-studio provisioning.
 4. **On demand — custom domains (Tier 2).** Add the `studio_domains` table, the Vercel Domains API provisioning flow, and the owner-facing verification UI when studios ask for vanity domains.
 
 Each phase is independently shippable and each earlier phase de-risks the next.

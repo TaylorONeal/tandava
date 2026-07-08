@@ -2,9 +2,11 @@ import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { hasPermission } from "@/types/roles";
+import { resolveStudioSlug } from "@/lib/studio-host";
 
 const Demo = lazy(() => import("./Demo"));
 const OpenSource = lazy(() => import("./OpenSource"));
+const StudioStorefront = lazy(() => import("./StudioStorefront"));
 
 /**
  * Root route (`/`) resolver.
@@ -20,6 +22,12 @@ const OpenSource = lazy(() => import("./OpenSource"));
  */
 export default function Home() {
   const { isDemoMode, isLoading, profile, permissions } = useAuth();
+
+  // Per-studio subdomain (e.g. oxatl.tandavastudio.com) → that studio's public
+  // storefront. Off unless VITE_ROOT_DOMAIN is configured, so this never fires
+  // on the apex, previews, localhost, or self-hosted single-domain setups.
+  const studioSlug = resolveStudioSlug();
+  if (studioSlug) return <StudioStorefront slug={studioSlug} />;
 
   // `isDemoMode` is true when VITE_DEMO_MODE is set OR no backend is configured.
   if (isDemoMode) return <Demo />;
