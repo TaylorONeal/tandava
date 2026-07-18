@@ -27,12 +27,15 @@ export default function EmbedSettings() {
 
   const origin = typeof window !== "undefined" ? window.location.origin : "https://yourstudio.com";
   const p = primary.replace(/^#/, "");
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "https://YOUR-PROJECT.supabase.co";
+  const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "YOUR_PUBLISHABLE_ANON_KEY";
 
   const snippets = useMemo(() => ({
     schedule: `<script src="${origin}/embed.js"\n  data-studio="${slug}"\n  data-view="schedule"\n  data-primary="${p}"></script>`,
     button: `<script src="${origin}/embed.js"\n  data-studio="${slug}"\n  data-view="button"\n  data-label="Book a Class"\n  data-primary="${p}"></script>`,
     event: `<script src="${origin}/embed.js"\n  data-studio="${slug}"\n  data-view="event"\n  data-event="EVENT_ID"\n  data-primary="${p}"></script>`,
-  }), [origin, slug, p]);
+    webComponent: `<script src="${origin}/widget.js" defer></script>\n<tandava-schedule\n  supabase-url="${supabaseUrl}"\n  anon-key="${anonKey}"\n  studio="${slug}"\n  app-url="${origin}"\n  primary="#${p}"></tandava-schedule>`,
+  }), [origin, slug, p, supabaseUrl, anonKey]);
 
   const copy = (code: string) => {
     navigator.clipboard?.writeText(code);
@@ -43,6 +46,7 @@ export default function EmbedSettings() {
     { key: "schedule", icon: Calendar, title: "Class schedule", desc: "Shows your upcoming classes inline with a Book button on each." },
     { key: "button", icon: MousePointerClick, title: "Book Now button", desc: "A single button that opens your schedule in a lightbox popup." },
     { key: "event", icon: CalendarDays, title: "Single event", desc: "Promotes one workshop/training (set data-event to the event ID)." },
+    { key: "webComponent", icon: Code2, title: "No-iframe (Web Component)", desc: "Renders the schedule inline via a custom element — for sites/CMS plans that block iframes." },
   ] as const;
 
   return (
@@ -94,6 +98,21 @@ export default function EmbedSettings() {
                 <Snippet code={snippets[c.key]} onCopy={() => copy(snippets[c.key])} />
               </div>
             ))}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">3. Preview</CardTitle>
+            <CardDescription>The live widget for this studio and color (uses sample data in demo mode).</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <iframe
+              title="Widget preview"
+              src={`${origin}/embed/schedule/${encodeURIComponent(slug)}?primary=${p}`}
+              className="w-full rounded-lg border border-border"
+              style={{ minHeight: 320 }}
+            />
           </CardContent>
         </Card>
 
