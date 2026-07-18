@@ -48,6 +48,43 @@ Paste it into a code/embed block where you want the widget to appear. That's it.
 
 ---
 
+## No-iframe option (Web Component)
+
+Some CMS plans strip `<iframe>` tags, or you may want the schedule inlined into
+your own DOM. The `tandava-schedule` custom element renders into shadow DOM (so
+it still won't fight your page's styles) and reads the same public RPC directly:
+
+```html
+<script src="https://YOUR-STUDIO.com/widget.js" defer></script>
+<tandava-schedule
+  supabase-url="https://xxxx.supabase.co"
+  anon-key="eyJ...publishable..."
+  studio="your-studio-slug"
+  app-url="https://YOUR-STUDIO.com"
+  primary="#4fd1c5"></tandava-schedule>
+```
+
+The `/manage/embed` generator fills in your project's Supabase URL and
+publishable key. That key is **safe to expose** — it only permits the public,
+read-only `get_public_schedule` RPC (row/column-restricted server-side). As with
+the iframe, booking opens `app-url` in a new tab.
+
+Trade-off vs. the iframe: more attributes to set (URL + key), no automatic
+resize needed (it's inline). Prefer the iframe snippet unless your host blocks it.
+
+---
+
+## Why booking opens in a new tab (not in the widget)
+
+Browsers **partition storage per top-level site**, so a member who is logged in
+on your Tandava site is *not* seen as logged in inside a widget embedded on
+`yoursite.com` — they're different storage partitions. Rather than force an
+unreliable in-widget login, the widget always hands off to your Tandava site
+(new tab) to complete booking, payment, and auth. This is the same pattern the
+incumbents use for embedded booking.
+
+---
+
 ## How it works
 
 1. The snippet loads a ~4 KB script (`public/embed.js`) from your Tandava
@@ -91,7 +128,8 @@ search-indexable, Tandava-hosted pages, use the **Landing Pages** builder
 
 | Piece | Location |
 |-------|----------|
-| Loader script | `public/embed.js` |
+| Loader script (iframe) | `public/embed.js` |
+| Web Component (no iframe) | `public/widget.js` (`<tandava-schedule>`) |
 | Embed pages | `src/pages/embed/` (`EmbedSchedule`, `EmbedEvent`, `EmbedLayout`) |
 | Routes | `/embed/schedule/:slug`, `/embed/event/:id` (in `src/App.tsx`) |
 | Public read RPC | `get_public_schedule()` in `supabase/migrations/00016_public_schedule_read.sql` |

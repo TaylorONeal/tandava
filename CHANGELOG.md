@@ -7,6 +7,15 @@ schema changes).
 
 ## [Unreleased] — Deploy & transaction hardening
 
+### Added
+- **Web Component embed** (`public/widget.js`, `<tandava-schedule>`): a
+  no-iframe alternative to the script/iframe widget for sites/CMS plans that
+  strip iframes — renders the public schedule into shadow DOM via the
+  `get_public_schedule` RPC. The `/manage/embed` generator gained this snippet
+  (prefilled with the deployment's Supabase URL/publishable key) plus a **live
+  preview** of the widget. Guide documents both options and why booking hands off
+  to a new tab (browser storage partitioning).
+
 ### Fixed
 - **Migration conflict that broke `supabase db push`.** Removed the legacy
   `supabase/migrations/001_initial_schema.sql`, which defined an outdated
