@@ -53,7 +53,9 @@
 
   class TandavaSchedule extends HTMLElement {
     connectedCallback() {
-      this._root = this.attachShadow({ mode: "open" });
+      // Reuse the shadow root if the element is re-parented (connectedCallback
+      // can fire more than once); attachShadow() throws on a second call.
+      this._root = this.shadowRoot || this.attachShadow({ mode: "open" });
       this._primary = this.getAttribute("primary") || "#4fd1c5";
       this._appUrl = (this.getAttribute("app-url") || "").replace(/\/$/, "");
       this.render('<p class="muted">Loading classes…</p>');
