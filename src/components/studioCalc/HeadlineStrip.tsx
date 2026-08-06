@@ -8,6 +8,7 @@
  */
 import { useState } from "react";
 import { Info } from "lucide-react";
+import { InfoTip, GLOSSARY } from "./InfoTip";
 import { RENT_HEURISTIC, type StudioResults } from "@/lib/studioEcon";
 import { money, pct, count } from "@/lib/studioNarrative";
 import { useAnimatedNumber, usePrefersReducedMotion } from "./useAnimatedNumber";
@@ -38,8 +39,9 @@ export function HeadlineStrip({ results, members }: Props) {
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-3" data-testid="headline-strip">
       {/* EBITDA */}
       <div className="rounded-xl border border-border bg-card p-4">
-        <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        <p className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
           EBITDA per month
+          <InfoTip label="EBITDA">{GLOSSARY.ebitda}</InfoTip>
         </p>
         <p
           className="mt-1 font-display text-3xl tabular-nums leading-none"
@@ -55,8 +57,9 @@ export function HeadlineStrip({ results, members }: Props) {
 
       {/* Break-even bullet */}
       <div className="rounded-xl border border-border bg-card p-4">
-        <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        <p className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
           Break-even members
+          <InfoTip label="break-even members">{GLOSSARY.breakEvenMembers}</InfoTip>
         </p>
         <p className="mt-1 font-display text-3xl tabular-nums leading-none text-foreground" data-testid="stat-breakeven">
           {Number.isFinite(results.breakEvenMembers) ? count(breakEven) : "not reachable"}
@@ -81,15 +84,17 @@ export function HeadlineStrip({ results, members }: Props) {
             />
           </div>
         </div>
-        <p className="mt-1.5 text-xs tabular-nums text-muted-foreground">
+        <p className="mt-1.5 flex items-center gap-1 text-xs tabular-nums text-muted-foreground">
           at {count(members)} members, {pct(results.marginOfSafety, 1)} margin of safety
+          <InfoTip label="margin of safety">{GLOSSARY.marginOfSafety}</InfoTip>
         </p>
       </div>
 
       {/* Rent traffic light */}
       <div className="rounded-xl border border-border bg-card p-4">
-        <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        <p className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
           Rent, share of revenue
+          <InfoTip label="rent as a share of revenue">{GLOSSARY.rentPct}</InfoTip>
         </p>
         <button
           type="button"

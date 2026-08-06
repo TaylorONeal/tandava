@@ -8,7 +8,7 @@
  * Testing: https://search.google.com/test/rich-results
  */
 
-const SITE_URL = import.meta.env.VITE_APP_URL || "https://tandava.yoga";
+const SITE_URL = import.meta.env.VITE_APP_URL || "https://tandavastudio.com";
 
 /** Organization schema — used on the homepage */
 export function organizationSchema() {

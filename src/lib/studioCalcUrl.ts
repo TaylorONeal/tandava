@@ -232,7 +232,7 @@ export function decodeScenario(search: string): { inputs: StudioInputs; presetId
 /** Absolute shareable URL for the current scenario. */
 export function scenarioUrl(inputs: StudioInputs, presetId: string, origin?: string): string {
   const base =
-    origin ?? (typeof window !== "undefined" ? window.location.origin : "https://tandava.yoga");
+    origin ?? (typeof window !== "undefined" ? window.location.origin : "https://tandavastudio.com");
   return `${base}/tools/studio-calculator?${encodeScenario(inputs, presetId)}`;
 }
 

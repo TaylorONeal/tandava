@@ -107,6 +107,18 @@ export default function StudioCalculator() {
     setInputs((prev) => ({ ...prev, assumptions: { ...prev.assumptions, ...next } }));
   }, []);
 
+  /**
+   * Drop overrides so the tier or business-model default takes effect again.
+   * Distinct from resetKeys, which restores the preset's own explicit values.
+   */
+  const clearAssumptions = useCallback((keys: (keyof Assumptions)[]) => {
+    setInputs((prev) => {
+      const assumptions = { ...prev.assumptions };
+      keys.forEach((key) => delete assumptions[key]);
+      return { ...prev, assumptions };
+    });
+  }, []);
+
   const resetKeys = useCallback(
     (keys: (keyof Assumptions)[]) => {
       setInputs((prev) => {
@@ -163,9 +175,12 @@ export default function StudioCalculator() {
       <div className="mx-auto w-full max-w-6xl">
         {/* ── Hero ─────────────────────────────────────────────────────── */}
         <header>
+          {/* Not a pricing badge. Everything Tandava ships is free and open
+              source, so "free tool, no account" would be saying nothing here.
+              The eyebrow says what the page is instead. */}
           <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
             <Calculator className="h-3.5 w-3.5" aria-hidden />
-            Free tool, no account
+            Studio economics
           </p>
           <h1 className="mt-2 font-display text-3xl leading-tight text-foreground sm:text-4xl">
             Yoga Studio Profitability Calculator
@@ -200,11 +215,15 @@ export default function StudioCalculator() {
           >
             <QuickConfig
               inputs={inputs}
+              resolved={results.resolvedAssumptions}
+              rent={results.rent}
+              rentableSf={results.rentableSf}
               softwareCost={results.resolvedAssumptions.softwareCost}
               fiveYear={fiveYear}
               revenuePerVisit={results.revenuePerVisit}
               onPatch={patch}
-              onPatchAssumption={(key, value) => patchAssumptions({ [key]: value })}
+              onPatchAssumptions={patchAssumptions}
+              onClearAssumptions={clearAssumptions}
             />
             <AdvancedDrawer
               inputs={inputs}
