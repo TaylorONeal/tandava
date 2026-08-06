@@ -58,6 +58,17 @@ Quiet dissatisfaction is the most common reason members leave. Ask — briefly a
 regularly — how things are going, and visibly act on what you hear. A member who
 sees their suggestion turn into a schedule change becomes an advocate.
 
+## Know the number retention is protecting
+
+Retention compounds against a specific figure: your **margin of safety**, or how
+far attendance can fall before the studio stops paying for itself. In our
+[profitability model](/tools/studio-calculator), a typical two-room studio sits around 12 percent.
+Under 10 percent you are running the business from the bank balance rather than
+from the plan.
+
+Worth knowing yours before deciding how hard to pull these levers. See
+[what a yoga studio actually makes](/blog/yoga-studio-profit-and-break-even) for how it is calculated.
+
 ## The compounding effect
 
 None of these levers is dramatic on its own. But retention compounds: a studio

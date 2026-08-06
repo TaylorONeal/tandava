@@ -17,7 +17,7 @@
  * adds the blog (and every published post) to the sitemap, and lets you link
  * it from the primary nav.
  */
-export const BLOG_PUBLISHED = false;
+export const BLOG_PUBLISHED = true;
 
 /** Base path for the blog section. */
 export const BLOG_BASE_PATH = "/blog";
