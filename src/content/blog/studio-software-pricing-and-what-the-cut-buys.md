@@ -189,6 +189,17 @@ Commission is rational compensation for sourcing a high-value lead. It is not
 rational as a tax on a transaction you already owned. Discovery is the expensive,
 valuable thing; the booking layer, however slick, is plumbing.
 
+## How big is this line, really?
+
+Worth keeping in proportion. In our [profitability model](/tools/studio-calculator), swapping a
+two-room studio from an enterprise-tier platform to a self-hosted one is worth
+about $439 a month and three members of break-even. Trimming 600 square feet off
+the same studio's lease is worth $3,405 a month.
+
+Software is the line you can change in a week, which is exactly why it gets more
+attention than it deserves. Fix it, then go and look at the lease. The full
+arithmetic is in [what a yoga studio actually makes](/blog/yoga-studio-profit-and-break-even).
+
 ## A note on this comparison
 
 Our honest opinion, offered to help — **not legal or financial advice**, and we'd

@@ -82,12 +82,20 @@ export function BlogLayout({ children, activeCategory }: BlogLayoutProps) {
             ))}
           </nav>
 
-          <Link
-            to="/demo"
-            className="hidden shrink-0 rounded-full border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:inline-flex"
-          >
-            Try the demo
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <Link
+              to="/tools/studio-calculator"
+              className="hidden rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 lg:inline-flex"
+            >
+              Profitability calculator
+            </Link>
+            <Link
+              to="/demo"
+              className="hidden rounded-full border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:inline-flex"
+            >
+              Try the demo
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -111,6 +119,12 @@ export function BlogLayout({ children, activeCategory }: BlogLayoutProps) {
 
           <nav aria-label="Blog footer" className="grid grid-cols-2 gap-x-10 gap-y-2 text-sm">
             <span className="col-span-2 font-semibold text-foreground">Topics</span>
+            <Link
+              to="/tools/studio-calculator"
+              className="col-span-2 text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Studio profitability calculator
+            </Link>
             {categories.map((cat) => (
               <Link
                 key={cat.slug}

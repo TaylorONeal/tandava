@@ -68,6 +68,17 @@ experience, not out-spending a franchise. In a few metros (Denver and Austin
 stand out in our data), a handful of multi-location brands do set local pricing
 and expectations, and it's worth knowing where you sit relative to them.
 
+## Positioning is downstream of the lease
+
+Style and positioning decide who walks in. The lease decides whether that is
+enough. Two studios in the same market with the same members and the same price
+can differ by $40,000 a year on square footage alone.
+
+Before committing to a format, run the space through the
+[studio profitability calculator](/tools/studio-calculator) and check what break-even actually
+looks like at your rent. The reasoning is in
+[what a yoga studio actually makes](/blog/yoga-studio-profit-and-break-even).
+
 ## If you take three things from this
 
 1. **The core is parity.** Vinyasa/Hatha/Yin is table stakes; it won't set you
