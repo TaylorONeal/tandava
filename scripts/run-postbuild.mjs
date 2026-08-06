@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 import { build } from "esbuild";
 
 const OUT_DIR = join(process.cwd(), "node_modules", ".cache", "tandava-postbuild");
-const tasks = ["generate-sitemap.ts", "prerender-blog.ts"];
+const tasks = ["generate-sitemap.ts", "prerender-blog.ts", "prerender-tools.ts"];
 
 mkdirSync(OUT_DIR, { recursive: true });
 
