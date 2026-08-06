@@ -211,7 +211,7 @@ export function calcStaticHtml(): string {
  * by a Node build script, where import.meta.env does not exist.
  */
 export function calcStructuredData(
-  siteUrl = "https://tandava.yoga",
+  siteUrl = "https://tandavastudio.com",
 ): Record<string, unknown>[] {
   const url = `${siteUrl}${CALC_ROUTE}`;
   return [

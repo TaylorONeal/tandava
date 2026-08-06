@@ -15,7 +15,7 @@ import { BLOG_PUBLISHED, BLOG_CATEGORIES } from "../src/config/blog";
 import { CALC_ROUTE } from "../src/content/studioCalculator";
 import { loadPublishedPosts } from "./load-blog-posts";
 
-const SITE_URL = process.env.VITE_APP_URL || "https://tandava.yoga";
+const SITE_URL = process.env.VITE_APP_URL || "https://tandavastudio.com";
 
 const staticRoutes = [
   { path: "/", priority: "1.0", changefreq: "daily" },
