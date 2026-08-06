@@ -12,6 +12,7 @@
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 import { BLOG_PUBLISHED, BLOG_CATEGORIES } from "../src/config/blog";
+import { CALC_ROUTE } from "../src/content/studioCalculator";
 import { loadPublishedPosts } from "./load-blog-posts";
 
 const SITE_URL = process.env.VITE_APP_URL || "https://tandava.yoga";
@@ -22,6 +23,8 @@ const staticRoutes = [
   { path: "/events", priority: "0.8", changefreq: "weekly" },
   { path: "/instructors", priority: "0.8", changefreq: "weekly" },
   { path: "/on-demand", priority: "0.7", changefreq: "weekly" },
+  // Public tools. Prerendered by scripts/prerender-tools.ts.
+  { path: CALC_ROUTE, priority: "0.8", changefreq: "monthly" },
 ];
 
 // Blog routes are only added once the blog is published (see src/config/blog.ts).
