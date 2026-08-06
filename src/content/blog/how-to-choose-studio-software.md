@@ -102,6 +102,15 @@ A neutral orientation (depth and opinion come in the
    — marketplaces versus white-label apps, and where your members really come
    from.
 
+## Before you spend a month on this decision
+
+Software is worth getting right, and it is not where studio outcomes are decided.
+If you want the honest ordering of what actually moves your bottom line, run your
+own numbers through the [studio profitability calculator](/tools/studio-calculator) first. Rent and
+room size typically dominate the software line by roughly eight to one, and
+[what a yoga studio actually makes](/blog/yoga-studio-profit-and-break-even)
+walks through why.
+
 ## How to read this series
 
 This is our honest opinion, offered to help — not a verdict, and not legal or

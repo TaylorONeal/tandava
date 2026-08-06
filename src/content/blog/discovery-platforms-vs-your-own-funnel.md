@@ -109,6 +109,19 @@ helps real studios thrive. The goal isn't to win a comparison — it's to know
 exactly what you're paying for, so the technology works for you instead of the
 other way around.
 
+## What the dilution actually costs you
+
+The strategic argument above has a numeric version. In our
+[profitability model](/tools/studio-calculator), turning aggregator visits on at 20 percent of
+traffic drops revenue per visit from $25.44 to $22.25, and raises EBITDA from
+$7,392 to $12,798.
+
+Both at once, because that studio is running at 22 percent seat utilization: the
+seats being filled were empty and earning nothing. In a studio whose peak classes
+already fill, the same visits displace full-price students and the answer
+reverses. Toggle it yourself, or read the
+[longer version of the argument](/blog/yoga-studio-profit-and-break-even).
+
 ## A note on this comparison
 
 Our honest opinion, offered to help — not a verdict, and not legal or financial
