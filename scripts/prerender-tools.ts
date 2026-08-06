@@ -23,7 +23,7 @@ import {
   calcStructuredData,
 } from "../src/content/studioCalculator";
 
-const SITE_URL = process.env.VITE_APP_URL || "https://tandava.yoga";
+const SITE_URL = process.env.VITE_APP_URL || "https://tandavastudio.com";
 const SITE_NAME = process.env.VITE_APP_NAME || "Tandava";
 const DIST = resolve(process.cwd(), "dist");
 const TEMPLATE_PATH = join(DIST, "index.html");

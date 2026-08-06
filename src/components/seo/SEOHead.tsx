@@ -19,7 +19,7 @@ interface SEOHeadProps {
 
 const DEFAULTS = {
   siteName: import.meta.env.VITE_APP_NAME || "Tandava",
-  siteUrl: import.meta.env.VITE_APP_URL || "https://tandava.yoga",
+  siteUrl: import.meta.env.VITE_APP_URL || "https://tandavastudio.com",
   defaultDescription:
     "Book yoga classes, workshops, and appointments. Track your practice, connect with teachers, and join our wellness community.",
   defaultImage: "/og-image.png",
