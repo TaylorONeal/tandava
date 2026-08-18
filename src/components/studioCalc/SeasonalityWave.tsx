@@ -31,6 +31,14 @@ export function SeasonalityWave({ results }: { results: StudioResults }) {
     [results.seasonality],
   );
 
+  // Split point for the gradient: profit months teal, negative months red.
+  const zeroOffset = useMemo(() => {
+    const values = results.seasonality.map((month) => month.netCash);
+    const max = Math.max(...values);
+    const min = Math.min(...values);
+    return max <= 0 ? 0 : min >= 0 ? 1 : max / (max - min);
+  }, [results.seasonality]);
+
   const summary = results.seasonality
     .map((m) => `${m.label} ${money(m.netCash)}`)
     .join(", ");
@@ -51,8 +59,14 @@ export function SeasonalityWave({ results }: { results: StudioResults }) {
           <AreaChart data={results.seasonality} margin={{ top: 12, right: 8, bottom: 4, left: 4 }}>
             <defs>
               <linearGradient id="seasonPos" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={CHART.positive} stopOpacity={0.4} />
-                <stop offset="100%" stopColor={CHART.positive} stopOpacity={0.03} />
+                <stop offset={0} stopColor={CHART.positive} stopOpacity={0.4} />
+                <stop offset={zeroOffset} stopColor={CHART.positive} stopOpacity={0.03} />
+                <stop offset={zeroOffset} stopColor={CHART.negative} stopOpacity={0.06} />
+                <stop offset={1} stopColor={CHART.negative} stopOpacity={0.35} />
+              </linearGradient>
+              <linearGradient id="seasonStroke" x1="0" y1="0" x2="0" y2="1">
+                <stop offset={zeroOffset} stopColor={CHART.positive} />
+                <stop offset={zeroOffset} stopColor={CHART.negative} />
               </linearGradient>
             </defs>
             <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" vertical={false} />
@@ -67,13 +81,13 @@ export function SeasonalityWave({ results }: { results: StudioResults }) {
               tickLine={false}
               axisLine={false}
               width={54}
-              tickFormatter={(v: number) => `${Math.round(v / 1000)}k`}
+              tickFormatter={(v: number) => `$${Math.round(v / 1000)}k`}
             />
             <ReferenceLine y={0} stroke="hsl(var(--muted-foreground))" />
             <Area
               type="monotone"
               dataKey="netCash"
-              stroke={CHART.positive}
+              stroke="url(#seasonStroke)"
               strokeWidth={2}
               fill="url(#seasonPos)"
               isAnimationActive={!reduced}
@@ -86,14 +100,6 @@ export function SeasonalityWave({ results }: { results: StudioResults }) {
                 r={4}
                 fill={CHART.negative}
                 stroke="none"
-                // Month only: the dollar figure is already in the subtitle and
-                // in the reserve note, and a long label clips at the axis edge.
-                label={{
-                  value: trough.label,
-                  position: "bottom",
-                  fontSize: 10,
-                  fill: CHART.negative,
-                }}
               />
             )}
             <RTooltip
