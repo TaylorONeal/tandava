@@ -54,7 +54,7 @@ export function PresetCards({ activePresetId, dirty, onSelect }: Props) {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span
-                        className="inline-flex shrink-0 items-center gap-1 rounded-full bg-secondary/15 px-2 py-0.5 text-[11px] font-medium text-secondary"
+                        className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[#d4a574]/15 px-2 py-0.5 text-[11px] font-medium text-[#d4a574]"
                         tabIndex={0}
                         role="note"
                         aria-label={`Editor's pick. ${preset.editorsPickReason}`}

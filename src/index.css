@@ -216,7 +216,12 @@
     font-family: var(--font-body);
     min-height: 100vh;
     min-height: 100dvh;
+    /* Guard against horizontal scroll without breaking position:sticky.
+       `hidden` turns body into a scroll container, which silently disables
+       every sticky descendant; `clip` clips without doing that. The `hidden`
+       line stays as the fallback for browsers without clip support. */
     overflow-x: hidden;
+    overflow-x: clip;
   }
 
   h1, h2, h3, h4, h5, h6 {

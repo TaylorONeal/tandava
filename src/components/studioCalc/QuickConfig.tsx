@@ -290,15 +290,20 @@ export function QuickConfig({
           <Label htmlFor="membership-price" className="text-sm font-medium text-foreground">
             {model.donationBased ? "Suggested monthly give" : "Membership price"}
           </Label>
-          <Input
-            id="membership-price"
-            type="number"
-            min={0}
-            value={Math.round(inputs.membershipPrice)}
-            onChange={(e) => onPatch({ membershipPrice: Math.max(0, Number(e.target.value) || 0) })}
-            className="mt-1 tabular-nums"
-            data-testid="membership-price"
-          />
+          <div className="relative mt-1">
+            <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+              $
+            </span>
+            <Input
+              id="membership-price"
+              type="number"
+              min={0}
+              value={Math.round(inputs.membershipPrice)}
+              onChange={(e) => onPatch({ membershipPrice: Math.max(0, Number(e.target.value) || 0) })}
+              className="pl-6 tabular-nums"
+              data-testid="membership-price"
+            />
+          </div>
           <p className="mt-1 text-[11px] text-muted-foreground">
             Tier {tier.tier} clusters near {money(tier.typicalMembership)}
           </p>
