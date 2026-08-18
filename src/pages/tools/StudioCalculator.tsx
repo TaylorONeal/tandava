@@ -12,7 +12,7 @@
  * (src/content/studioCalculator.ts), so the structured data can never claim
  * something the page does not say.
  */
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Link2, Check, ShieldAlert, Calculator } from "lucide-react";
 import {
@@ -51,6 +51,7 @@ import { SeasonalityWave } from "@/components/studioCalc/SeasonalityWave";
 import { RoomEconomics } from "@/components/studioCalc/RoomEconomics";
 import { ClassPassStrip } from "@/components/studioCalc/ClassPassStrip";
 import { NarrativePanel } from "@/components/studioCalc/NarrativePanel";
+import { MobileStatsBar } from "@/components/studioCalc/MobileStatsBar";
 import { useDebounced, usePrefersReducedMotion } from "@/components/studioCalc/useAnimatedNumber";
 import { ToolLayout } from "@/components/tools/ToolLayout";
 import { SEOHead } from "@/components/seo/SEOHead";
@@ -75,6 +76,8 @@ export default function StudioCalculator() {
   const [copied, setCopied] = useState(false);
   const [highlight, setHighlight] = useState(false);
   const reduced = usePrefersReducedMotion();
+  // Watched by MobileStatsBar: the bar shows while this is scrolled off screen.
+  const headlineRef = useRef<HTMLDivElement | null>(null);
 
   // 120ms debounce so slider drags feel live without recomputing on every frame.
   const debouncedInputs = useDebounced(inputs, 120);
@@ -190,9 +193,14 @@ export default function StudioCalculator() {
           </p>
         </header>
 
-        <div className="mt-6">
+        <div ref={headlineRef} className="mt-6 scroll-mt-20">
           <HeadlineStrip results={results} members={debouncedInputs.members} />
         </div>
+        <MobileStatsBar
+          results={results}
+          members={debouncedInputs.members}
+          watchRef={headlineRef}
+        />
 
         <p className="mt-3 flex items-start gap-1.5 rounded-lg border border-border bg-muted/50 px-3 py-2 text-[11px] leading-relaxed text-muted-foreground">
           <ShieldAlert className="mt-px h-3.5 w-3.5 shrink-0" aria-hidden />
@@ -209,7 +217,7 @@ export default function StudioCalculator() {
           {/* Preset selection sweeps a brief tint across the changed fields.
               Reduced motion drops the transition, so the tint never appears. */}
           <div
-            className={`space-y-4 rounded-xl ${
+            className={`space-y-4 rounded-xl lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-y-auto lg:overscroll-contain lg:pr-1 ${
               reduced ? "" : "transition-colors duration-700"
             } ${highlight && !reduced ? "bg-primary/10" : "bg-transparent"}`}
           >
@@ -250,7 +258,7 @@ export default function StudioCalculator() {
             </div>
           </div>
 
-          <div className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+          <div className="space-y-4">
             <NarrativePanel inputs={debouncedInputs} results={results} />
             <BreakEvenMountain
               inputs={debouncedInputs}

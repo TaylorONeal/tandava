@@ -42,7 +42,7 @@ interface Props {
 export function BreakEvenMountain({ inputs, results, onMembersChange }: Props) {
   const reduced = usePrefersReducedMotion();
 
-  const { curve, ceiling } = useMemo(() => {
+  const { curve, ceiling, zeroOffset } = useMemo(() => {
     const rawCeiling = capacityCeilingMembers(inputs);
     // 1.5x the capacity ceiling is meaningless; cap the axis at the ceiling or
     // 1.5x the current member count, whichever gives a readable picture.
@@ -57,7 +57,14 @@ export function BreakEvenMountain({ inputs, results, onMembersChange }: Props) {
       const members = Math.round(i * step);
       return { members, netCash: netCashAtMembers(inputs, members) };
     });
-    return { curve, ceiling: rawCeiling };
+    // Where zero sits between the curve's extremes, 0..1 from the top. Used to
+    // split the gradient so profit renders teal and the loss region renders
+    // red instead of both wearing the same optimistic green.
+    const values = curve.map((point) => point.netCash);
+    const peak = Math.max(...values);
+    const trough = Math.min(...values);
+    const zeroOffset = peak <= 0 ? 0 : trough >= 0 ? 1 : peak / (peak - trough);
+    return { curve, ceiling: rawCeiling, zeroOffset };
   }, [inputs, results.breakEvenMembers]);
 
   const maxMembers = curve[curve.length - 1].members;
@@ -81,14 +88,26 @@ export function BreakEvenMountain({ inputs, results, onMembersChange }: Props) {
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={curve} margin={{ top: 8, right: 8, bottom: 4, left: 4 }}>
             <defs>
+              {/* Fill: teal fading toward zero, then red deepening below it. */}
               <linearGradient id="beProfit" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={CHART.positive} stopOpacity={0.35} />
-                <stop offset="100%" stopColor={CHART.positive} stopOpacity={0.02} />
+                <stop offset={0} stopColor={CHART.positive} stopOpacity={0.35} />
+                <stop offset={zeroOffset} stopColor={CHART.positive} stopOpacity={0.03} />
+                <stop offset={zeroOffset} stopColor={CHART.negative} stopOpacity={0.06} />
+                <stop offset={1} stopColor={CHART.negative} stopOpacity={0.3} />
+              </linearGradient>
+              {/* Stroke: the line itself changes color at break-even. */}
+              <linearGradient id="beStroke" x1="0" y1="0" x2="0" y2="1">
+                <stop offset={zeroOffset} stopColor={CHART.positive} />
+                <stop offset={zeroOffset} stopColor={CHART.negative} />
               </linearGradient>
             </defs>
             <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="members"
+              type="number"
+              domain={[0, "dataMax"]}
+              tickCount={6}
+              allowDecimals={false}
               tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
               tickLine={false}
               axisLine={{ stroke: "hsl(var(--border))" }}
@@ -105,26 +124,21 @@ export function BreakEvenMountain({ inputs, results, onMembersChange }: Props) {
               tickLine={false}
               axisLine={false}
               width={54}
-              tickFormatter={(v: number) => `${Math.round(v / 1000)}k`}
+              tickFormatter={(v: number) => `$${Math.round(v / 1000)}k`}
             />
             {/* The loss region: everything below zero. */}
             <ReferenceLine y={0} stroke="hsl(var(--muted-foreground))" strokeWidth={1} />
             <Area
               type="monotone"
               dataKey="netCash"
-              stroke={CHART.positive}
+              stroke="url(#beStroke)"
               strokeWidth={2}
               fill="url(#beProfit)"
               isAnimationActive={!reduced}
               animationDuration={300}
             />
             <ReferenceLine
-              x={curve.reduce((best, p) =>
-                Math.abs(p.members - results.breakEvenMembers) <
-                Math.abs(best.members - results.breakEvenMembers)
-                  ? p
-                  : best,
-              ).members}
+              x={Math.min(results.breakEvenMembers, maxMembers)}
               stroke={CHART.negative}
               strokeDasharray="4 3"
               label={{
@@ -135,11 +149,7 @@ export function BreakEvenMountain({ inputs, results, onMembersChange }: Props) {
               }}
             />
             <ReferenceLine
-              x={curve.reduce((best, p) =>
-                Math.abs(p.members - inputs.members) < Math.abs(best.members - inputs.members)
-                  ? p
-                  : best,
-              ).members}
+              x={Math.min(inputs.members, maxMembers)}
               stroke={CHART.current}
               strokeWidth={2}
               // Bottom-right, so it cannot collide with the break-even label
