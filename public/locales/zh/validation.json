@@ -1,0 +1,17 @@
+{
+  "emailRequired": "请输入电子邮箱",
+  "emailInvalid": "请输入有效的电子邮箱地址",
+  "passwordMinLength": "密码至少需要 {{min}} 个字符",
+  "phoneInvalid": "请输入有效的电话号码",
+  "urlInvalid": "请输入有效的网址",
+  "handleMinLength": "用户名至少需要 {{min}} 个字符",
+  "handleMaxLength": "用户名不能超过 {{max}} 个字符",
+  "handleFormat": "用户名只能包含字母、数字、下划线和连字符",
+  "fieldRequired": "请填写{{field}}",
+  "fieldInvalidUrl": "请输入有效的{{field}}",
+  "endTimeAfterStart": "结束时间必须晚于开始时间",
+  "endDateAfterStart": "结束日期必须晚于开始日期",
+  "mustBePositive": "{{field}}必须大于 0",
+  "mustBeValidAmount": "{{field}}必须是有效金额",
+  "mustBePositiveNumber": "{{field}}必须是正数"
+}

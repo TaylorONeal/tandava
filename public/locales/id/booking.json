@@ -1,0 +1,71 @@
+{
+  "bookNow": "Pesan Sekarang",
+  "joinWaitlist": "Masuk Daftar Tunggu",
+  "joinNow": "Gabung Sekarang",
+  "cancelBooking": "Batalkan Pemesanan",
+  "confirmBooking": "Konfirmasi Pemesanan",
+  "processing": "Memproses...",
+  "booking": "Memesan...",
+  "payAmount": "Bayar {{amount}}",
+  "included": "Termasuk",
+  "free": "Gratis",
+  "full": "Penuh",
+
+  "spotsLeft_other": "{{count}} tersisa",
+  "classesRemaining_other": "{{count}} kelas tersisa",
+  "classesRemainingAfter_other": "{{count}} kelas tersisa setelah ini",
+  "unlimitedClasses": "Kelas tanpa batas",
+  "oneTimePayment": "Pembayaran satu kali",
+
+  "selectPaymentMethod": "Pilih metode pembayaran",
+  "recommended": "Direkomendasikan",
+  "doesntCover": "{{type}} ini tidak mencakup jenis kelas ini",
+  "expires": "Berakhir {{date}}",
+
+  "youreBooked": "Pemesanan berhasil!",
+  "seeYouAt": "Sampai jumpa di {{studio}}",
+  "cantWaitToSee": "Kami tidak sabar bertemu Anda di atas matras",
+  "withTeacher": "bersama {{teacher}}",
+  "addToCalendar": "Tambahkan ke Kalender",
+  "inviteFriend": "Undang Teman",
+  "done": "Selesai",
+
+  "addedToWaitlist": "Ditambahkan ke daftar tunggu!",
+  "wellNotify": "Kami akan memberi tahu Anda jika ada tempat kosong",
+  "addedToCalendar": "Ditambahkan ke kalender",
+  "shareLinkCopied": "Tautan berbagi disalin!",
+
+  "freeCancellation": "Pembatalan gratis hingga {{hours}} jam sebelum kelas. Pembatalan mendadak dapat dikenai biaya.",
+  "bookClass": "Pesan Kelas",
+  "book": "Pesan",
+  "waitlist": "Daftar Tunggu",
+  "bookingConfirmed": "Pemesanan dikonfirmasi!",
+  "classIsFull": "Kelas penuh",
+  "youllBeWaitlisted": "Anda akan ditambahkan ke daftar tunggu.",
+  "waitlistNotify": "Anda akan ditambahkan ke daftar tunggu. Kami akan memberi tahu Anda jika ada tempat kosong.",
+  "usingSource": "Menggunakan {{source}}",
+  "useDifferentPayment": "Gunakan metode pembayaran lain",
+  "paymentSummary": "Ringkasan Pembayaran",
+  "agreeToPolicy": "Dengan memesan, Anda menyetujui kebijakan pembatalan",
+  "freeCancellationShort": "Pembatalan gratis hingga {{hours}} jam sebelum kelas",
+  "payDropInRate": "Bayar Tarif Drop-in",
+  "continue": "Lanjutkan",
+  "minutes_other": "{{count}} menit",
+  "pleaseSelectPayment": "Silakan pilih metode pembayaran",
+
+  "addOns": {
+    "title": "Ingin kami siapkan sesuatu untuk Anda?",
+    "subtitle": "Sepenuhnya opsional. Anda selalu bisa menambahkannya di studio.",
+    "addToBooking": "Tambahkan ke pemesanan saya",
+    "skip": "Lewati dulu",
+    "added": "Tambahan berhasil ditambahkan",
+    "readyForYou": "Kami akan menyiapkannya untuk Anda!"
+  },
+
+  "paymentSources": {
+    "membership": "Keanggotaan",
+    "classPack": "Paket Kelas",
+    "workshopPass": "Tiket Lokakarya",
+    "dropIn": "Drop-in"
+  }
+}

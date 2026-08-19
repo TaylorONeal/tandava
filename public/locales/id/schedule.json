@@ -1,0 +1,12 @@
+{
+  "title": "Jadwal",
+  "classDetail": "Kelas",
+  "benefits": "Manfaat",
+  "whatToBring": "Yang Perlu Dibawa",
+  "classesTaught": "kelas diajarkan",
+  "heated": "Ruangan Panas",
+  "joinOnline": "Gabung online",
+  "locationPlusOnline": "{{location}} + Online",
+  "live": "Langsung",
+  "spotsLeft": "{{count}} tempat tersisa"
+}

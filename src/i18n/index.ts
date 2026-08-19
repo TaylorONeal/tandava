@@ -29,7 +29,9 @@ export const SUPPORTED_LANGUAGES = [
   { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸' },
   { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', flag: '🇮🇳' },
   { code: 'pt', name: 'Portuguese', nativeName: 'Português', flag: '🇧🇷' },
+  { code: 'id', name: 'Indonesian', nativeName: 'Bahasa Indonesia', flag: '🇮🇩' },
   { code: 'ban', name: 'Balinese', nativeName: 'Basa Bali', flag: '🇮🇩' },
+  { code: 'zh', name: 'Mandarin', nativeName: '中文', flag: '🇨🇳' },
 ] as const;
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number]['code'];
