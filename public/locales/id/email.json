@@ -1,0 +1,21 @@
+{
+  "bookingConfirmation": {
+    "youreBooked": "Pemesanan berhasil!",
+    "greeting": "Halo {{name}}, {{type}} Anda telah dikonfirmasi. Kami menantikan kehadiran Anda.",
+    "class": "Kelas",
+    "workshop": "Lokakarya",
+    "appointment": "Janji Temu",
+    "instructor": "Pengajar",
+    "dateTime": "Tanggal & Waktu",
+    "duration": "Durasi",
+    "location": "Lokasi",
+    "spotNumber": "Nomor Tempat",
+    "addToCalendar": "Tambahkan ke Kalender",
+    "getDirections": "Petunjuk Arah",
+    "whatToBring": "Yang Perlu Dibawa",
+    "whatToBringText": "Harap tiba 10-15 menit lebih awal untuk check-in. Bawa air minum dan handuk, serta kenakan pakaian yang nyaman. Matras disediakan, tetapi Anda boleh membawa sendiri.",
+    "cancellationPolicy": "Kebijakan Pembatalan:",
+    "manageBooking": "Kelola pemesanan Anda",
+    "needChanges": "Perlu melakukan perubahan?"
+  }
+}

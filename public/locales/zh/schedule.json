@@ -1,0 +1,12 @@
+{
+  "title": "课程表",
+  "classDetail": "课程",
+  "benefits": "益处",
+  "whatToBring": "需要携带",
+  "classesTaught": "节课已授",
+  "heated": "高温",
+  "joinOnline": "在线参加",
+  "locationPlusOnline": "{{location}} + 线上",
+  "live": "直播",
+  "spotsLeft": "剩余 {{count}} 个名额"
+}

@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "Dasbor",
+    "schedule": "Jadwal",
+    "events": "Acara",
+    "students": "Murid",
+    "teachers": "Pengajar",
+    "offerings": "Penawaran",
+    "promoCodes": "Kode Promo",
+    "financials": "Keuangan",
+    "products": "Produk",
+    "inventory": "Inventaris",
+    "purchaseOrders": "Pesanan Pembelian",
+    "landingPages": "Halaman Arahan",
+    "utmBuilder": "Pembuat UTM",
+    "campaigns": "Kampanye",
+    "tasks": "Tugas",
+    "reports": "Laporan",
+    "importData": "Impor Data",
+    "smsInbox": "Kotak Masuk SMS",
+    "notifications": "Notifikasi",
+    "settings": "Pengaturan"
+  },
+  "title": "Admin Studio",
+  "studentView": "Tampilan Murid",
+  "myAccount": "Akun Saya",
+  "studioSettings": "Pengaturan Studio",
+  "signOut": "Keluar",
+
+  "schedule": {
+    "title": "Jadwal",
+    "subtitle": "Buat dan kelola jadwal kelas Anda.",
+    "addClass": "Tambah Kelas",
+    "emptyState": "Belum ada kelas terjadwal. Buat kelas pertama Anda untuk memulai."
+  },
+  "offerings": {
+    "title": "Penawaran",
+    "subtitle": "Jenis kelas dan konfigurasinya — {{count}} aktif",
+    "newOffering": "Penawaran Baru",
+    "searchPlaceholder": "Cari penawaran...",
+    "activeOfferings": "Penawaran Aktif"
+  },
+
+  "admin": {
+    "platformAdmin": "Admin Platform",
+    "platformDashboard": "Dasbor Platform",
+    "overview": "Ringkasan kesehatan dan aktivitas instans Tandava Anda.",
+    "activeStudios": "Studio Aktif",
+    "totalUsers": "Total Pengguna",
+    "stripeStatus": "Status Stripe",
+    "errorRate": "Tingkat Kesalahan",
+    "connectSupabase": "Hubungkan Supabase untuk melihat data langsung",
+    "acrossAllStudios": "Di semua studio",
+    "webhookHealth": "Kesehatan webhook",
+    "connectSentry": "Hubungkan Sentry untuk pemantauan",
+    "setupChecklist": "Daftar Persiapan",
+    "supabaseConnected": "Supabase terhubung",
+    "stripeConfigured": "Stripe dikonfigurasi",
+    "emailConfigured": "Penyedia email dikonfigurasi",
+    "sentryConfigured": "Pemantauan kesalahan Sentry",
+    "setEnvVar": "Atur {{key}} di .env"
+  },
+
+  "studioManagement": "Manajemen Studio",
+  "owner": "Pemilik"
+}

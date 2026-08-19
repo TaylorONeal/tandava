@@ -1,0 +1,17 @@
+{
+  "emailRequired": "Email wajib diisi",
+  "emailInvalid": "Masukkan alamat email yang valid",
+  "passwordMinLength": "Kata sandi minimal {{min}} karakter",
+  "phoneInvalid": "Masukkan nomor telepon yang valid",
+  "urlInvalid": "Masukkan URL yang valid",
+  "handleMinLength": "Handle minimal {{min}} karakter",
+  "handleMaxLength": "Handle harus kurang dari {{max}} karakter",
+  "handleFormat": "Handle hanya boleh berisi huruf, angka, garis bawah, dan tanda hubung",
+  "fieldRequired": "{{field}} wajib diisi",
+  "fieldInvalidUrl": "Masukkan {{field}} yang valid",
+  "endTimeAfterStart": "Waktu selesai harus setelah waktu mulai",
+  "endDateAfterStart": "Tanggal selesai harus setelah tanggal mulai",
+  "mustBePositive": "{{field}} harus lebih besar dari 0",
+  "mustBeValidAmount": "{{field}} harus berupa jumlah yang valid",
+  "mustBePositiveNumber": "{{field}} harus berupa angka positif"
+}

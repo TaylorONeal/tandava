@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "home": "Beranda",
+    "schedule": "Jadwal",
+    "onDemand": "On-Demand",
+    "events": "Acara",
+    "instructors": "Pengajar",
+    "mySchedule": "Jadwal Saya",
+    "community": "Komunitas"
+  },
+  "userMenu": {
+    "account": "Akun",
+    "studioManager": "Manajer Studio",
+    "frontDesk": "Resepsionis",
+    "platformAdmin": "Admin Platform",
+    "signOut": "Keluar"
+  },
+  "roles": {
+    "owner": "Pemilik",
+    "admin": "Admin",
+    "teacher": "Pengajar",
+    "front_desk": "Resepsionis",
+    "student": "Anggota",
+    "platform_admin": "Admin Platform"
+  },
+  "status": {
+    "active": "Aktif",
+    "inactive": "Tidak Aktif",
+    "pending": "Menunggu",
+    "cancelled": "Dibatalkan",
+    "expired": "Kedaluwarsa",
+    "paused": "Dijeda"
+  },
+  "actions": {
+    "save": "Simpan",
+    "cancel": "Batal",
+    "delete": "Hapus",
+    "edit": "Ubah",
+    "close": "Tutup",
+    "confirm": "Konfirmasi",
+    "submit": "Kirim",
+    "search": "Cari",
+    "filter": "Filter",
+    "reset": "Atur Ulang",
+    "back": "Kembali",
+    "next": "Berikutnya",
+    "loading": "Memuat...",
+    "sending": "Mengirim...",
+    "processing": "Memproses..."
+  },
+  "levels": {
+    "beginner": "Pemula",
+    "allLevels": "Semua Tingkat",
+    "intermediate": "Menengah",
+    "advanced": "Lanjutan"
+  },
+  "deliveryMode": {
+    "in_person": "Tatap Muka",
+    "virtual": "Virtual",
+    "hybrid": "Hibrida"
+  },
+  "paymentMethods": {
+    "card": "Kartu Kredit/Debit",
+    "cash": "Tunai",
+    "venmo": "Venmo",
+    "cashapp": "Cash App",
+    "paypal": "PayPal",
+    "zelle": "Zelle",
+    "check": "Cek",
+    "other": "Lainnya"
+  },
+  "units": {
+    "min": "{{count}} mnt",
+    "hour_other": "{{count}} jam",
+    "day_other": "{{count}} hari",
+    "week_other": "{{count}} minggu",
+    "class_other": "{{count}} kelas",
+    "studio_other": "{{count}} studio",
+    "spot_other": "{{count}} tempat",
+    "remaining": "{{count}} tersisa"
+  },
+  "language": {
+    "label": "Bahasa",
+    "changeLanguage": "Ganti bahasa"
+  },
+  "footer": {
+    "allRightsReserved": "Hak cipta dilindungi.",
+    "poweredBy": "Didukung oleh",
+    "openSourceStudio": "Manajemen Studio Sumber Terbuka"
+  },
+  "type": {
+    "class": "Kelas",
+    "workshop": "Lokakarya",
+    "retreat": "Retret",
+    "appointment": "Janji Temu"
+  },
+  "guest": "Tamu",
+  "studioManagement": "Manajemen Studio",
+  "notFound": {
+    "title": "Ups! Halaman tidak ditemukan",
+    "returnHome": "Kembali ke Beranda"
+  },
+  "demo": {
+    "title": "Demo Studio Sumber Terbuka Tandava",
+    "switchRole": "Ganti:",
+    "studioOwner": "Pemilik Studio",
+    "demoMode": "(Mode demo)"
+  },
+  "contact": {
+    "yourName": "Nama Anda",
+    "namePlaceholder": "Dewi Lestari",
+    "email": "Email",
+    "emailPlaceholder": "dewi@contoh.com",
+    "subject": "Subjek",
+    "subjectPlaceholder": "Tentang apa ini?",
+    "message": "Pesan",
+    "messagePlaceholder": "Ceritakan lebih lanjut...",
+    "sendMessage": "Kirim Pesan",
+    "messageSent": "Pesan terkirim!",
+    "thankYou": "Terima kasih telah menghubungi kami.",
+    "missingFields": "Kolom belum lengkap",
+    "fillRequired": "Silakan isi subjek dan pesan.",
+    "failedToSend": "Gagal mengirim",
+    "somethingWentWrong": "Terjadi kesalahan. Silakan coba lagi."
+  }
+}
