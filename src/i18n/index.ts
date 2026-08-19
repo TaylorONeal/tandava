@@ -22,6 +22,10 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 /**
  * Supported languages.
  * Add new languages here and create matching directory in public/locales/
+ *
+ * Roadmap (next wave — see docs/LOCALIZATION_ANALYSIS.md → "Next Wave"):
+ * ko (Korean), ms (Malay — Singapore/Malaysia), zh-Hant (Cantonese/Traditional),
+ * fil (Filipino), de (German)
  */
 export const SUPPORTED_LANGUAGES = [
   { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸' },

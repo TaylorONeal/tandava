@@ -416,6 +416,63 @@ i18n.addResourceBundle('ban', 'common', balineseTranslations);
 
 **Recommendation:** Start with `pt-BR` (larger market), add `pt-PT` later.
 
+### Next Wave — Planned (Roadmap)
+
+Queued after Indonesian (`id`) and Mandarin (`zh`) ship. None of these are implemented yet; each follows the standard process in [Adding a new language](#adding-a-new-language).
+
+#### Korean (ko) — Planned
+
+| Consideration | Details |
+|---------------|---------|
+| Script | Hangul (한글) |
+| Text expansion | Compact — similar to or shorter than English |
+| Fonts | Noto Sans KR; default system stacks handle Hangul well |
+| Plural forms | 1 (other) — no grammatical plural |
+| Register | Korean has formality levels. Studio context = polite 해요체, not formal 합쇼체 |
+| Yoga terms | Sanskrit terms transliterated into Hangul; widely understood in Korea's large yoga/pilates market |
+
+#### Malay (ms) — Planned (covers Singapore & Malaysia)
+
+"Singaporean" isn't a single language — Singapore's official languages are English, Mandarin, Malay, and Tamil. English and Mandarin are already supported, so Malay closes most of the remaining gap (and covers Malaysia). Singapore-specific formatting (SGD currency, date order) comes free from `Intl` regional locales like `en-SG`/`zh-SG`.
+
+| Consideration | Details |
+|---------------|---------|
+| Script | Latin |
+| CLDR support | Full |
+| Overlap with Indonesian | Very close to `id` — heavy shared vocabulary, but real differences in register and loanwords. Translate separately; do not alias to Indonesian |
+| Plural forms | 1 (other) |
+
+#### Cantonese (yue / zh-Hant) — Planned (Hong Kong & diaspora)
+
+| Consideration | Details |
+|---------------|---------|
+| Script | Traditional Chinese characters — our existing `zh` is Simplified, so this is a genuinely separate file set |
+| Written form | Most HK products ship standard written Chinese in Traditional script (`zh-HK`) rather than colloquial written Cantonese (`yue`) |
+| CLDR support | Both `yue` and `zh-Hant`/`zh-HK` supported by modern `Intl` |
+| Plural forms | 1 (other) |
+
+**Recommendation:** Implement as Traditional Chinese (`zh-Hant`, HK conventions) first; add colloquial written Cantonese only if studios ask for it.
+
+#### Filipino (fil) — Planned
+
+| Consideration | Details |
+|---------------|---------|
+| Script | Latin |
+| Text expansion | 20-30% longer than English |
+| CLDR support | Full (`fil`) |
+| English mixing | Taglish is normal in Philippine UI contexts — keeping English tech/booking terms is acceptable and often preferred |
+| Plural forms | 2 (one, other) |
+
+#### German (de) — Planned
+
+| Consideration | Details |
+|---------------|---------|
+| Text expansion | 30-40% longer than English; long compound nouns stress narrow buttons and table columns |
+| Formality | Sie vs. du — yoga/wellness context conventionally uses informal "du" |
+| Capitalization | All nouns capitalized |
+| Currency | EUR (€), also CHF for Switzerland |
+| Plural forms | 2 (one, other) |
+
 ---
 
 ## Translation Workflow for Developers
