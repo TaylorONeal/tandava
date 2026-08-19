@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "home": "首页",
+    "schedule": "课程表",
+    "onDemand": "点播课程",
+    "events": "活动",
+    "instructors": "导师",
+    "mySchedule": "我的课程",
+    "community": "社区"
+  },
+  "userMenu": {
+    "account": "账户",
+    "studioManager": "场馆管理",
+    "frontDesk": "前台",
+    "platformAdmin": "平台管理员",
+    "signOut": "退出登录"
+  },
+  "roles": {
+    "owner": "馆主",
+    "admin": "管理员",
+    "teacher": "导师",
+    "front_desk": "前台",
+    "student": "会员",
+    "platform_admin": "平台管理员"
+  },
+  "status": {
+    "active": "有效",
+    "inactive": "停用",
+    "pending": "待处理",
+    "cancelled": "已取消",
+    "expired": "已过期",
+    "paused": "已暂停"
+  },
+  "actions": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "close": "关闭",
+    "confirm": "确认",
+    "submit": "提交",
+    "search": "搜索",
+    "filter": "筛选",
+    "reset": "重置",
+    "back": "返回",
+    "next": "下一步",
+    "loading": "加载中...",
+    "sending": "发送中...",
+    "processing": "处理中..."
+  },
+  "levels": {
+    "beginner": "初级",
+    "allLevels": "不限级别",
+    "intermediate": "中级",
+    "advanced": "高级"
+  },
+  "deliveryMode": {
+    "in_person": "线下",
+    "virtual": "线上",
+    "hybrid": "线上线下"
+  },
+  "paymentMethods": {
+    "card": "信用卡/借记卡",
+    "cash": "现金",
+    "venmo": "Venmo",
+    "cashapp": "Cash App",
+    "paypal": "PayPal",
+    "zelle": "Zelle",
+    "check": "支票",
+    "other": "其他"
+  },
+  "units": {
+    "min": "{{count}} 分钟",
+    "hour_other": "{{count}} 小时",
+    "day_other": "{{count}} 天",
+    "week_other": "{{count}} 周",
+    "class_other": "{{count}} 节课",
+    "studio_other": "{{count}} 家场馆",
+    "spot_other": "{{count}} 个名额",
+    "remaining": "剩余 {{count}}"
+  },
+  "language": {
+    "label": "语言",
+    "changeLanguage": "切换语言"
+  },
+  "footer": {
+    "allRightsReserved": "版权所有。",
+    "poweredBy": "技术支持",
+    "openSourceStudio": "开源场馆管理系统"
+  },
+  "type": {
+    "class": "课程",
+    "workshop": "工作坊",
+    "retreat": "静修营",
+    "appointment": "预约"
+  },
+  "guest": "访客",
+  "studioManagement": "场馆管理",
+  "notFound": {
+    "title": "糟糕！找不到页面",
+    "returnHome": "返回首页"
+  },
+  "demo": {
+    "title": "Tandava 开源场馆演示",
+    "switchRole": "切换：",
+    "studioOwner": "馆主",
+    "demoMode": "（演示模式）"
+  },
+  "contact": {
+    "yourName": "您的姓名",
+    "namePlaceholder": "陈思雨",
+    "email": "电子邮箱",
+    "emailPlaceholder": "you@example.com",
+    "subject": "主题",
+    "subjectPlaceholder": "想咨询什么？",
+    "message": "留言",
+    "messagePlaceholder": "请详细说明...",
+    "sendMessage": "发送留言",
+    "messageSent": "留言已发送！",
+    "thankYou": "感谢您的来信。",
+    "missingFields": "信息不完整",
+    "fillRequired": "请填写主题和留言内容。",
+    "failedToSend": "发送失败",
+    "somethingWentWrong": "出了点问题，请重试。"
+  }
+}

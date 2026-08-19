@@ -1,0 +1,71 @@
+{
+  "bookNow": "立即预订",
+  "joinWaitlist": "加入候补名单",
+  "joinNow": "立即加入",
+  "cancelBooking": "取消预订",
+  "confirmBooking": "确认预订",
+  "processing": "处理中...",
+  "booking": "预订中...",
+  "payAmount": "支付 {{amount}}",
+  "included": "已包含",
+  "free": "免费",
+  "full": "已满",
+
+  "spotsLeft_other": "剩余 {{count}}",
+  "classesRemaining_other": "剩余 {{count}} 节课",
+  "classesRemainingAfter_other": "本次之后剩余 {{count}} 节课",
+  "unlimitedClasses": "不限次课程",
+  "oneTimePayment": "一次性付款",
+
+  "selectPaymentMethod": "选择支付方式",
+  "recommended": "推荐",
+  "doesntCover": "此{{type}}不适用于该课程类型",
+  "expires": "有效期至 {{date}}",
+
+  "youreBooked": "预订成功！",
+  "seeYouAt": "{{studio}} 见",
+  "cantWaitToSee": "期待在瑜伽垫上见到您",
+  "withTeacher": "导师：{{teacher}}",
+  "addToCalendar": "添加到日历",
+  "inviteFriend": "邀请朋友",
+  "done": "完成",
+
+  "addedToWaitlist": "已加入候补名单！",
+  "wellNotify": "如有名额空出，我们会通知您",
+  "addedToCalendar": "已添加到日历",
+  "shareLinkCopied": "分享链接已复制！",
+
+  "freeCancellation": "课前 {{hours}} 小时前可免费取消。逾时取消可能产生费用。",
+  "bookClass": "预订课程",
+  "book": "预订",
+  "waitlist": "候补",
+  "bookingConfirmed": "预订已确认！",
+  "classIsFull": "课程已满",
+  "youllBeWaitlisted": "您将被加入候补名单。",
+  "waitlistNotify": "您将被加入候补名单。如有名额空出，我们会通知您。",
+  "usingSource": "使用{{source}}",
+  "useDifferentPayment": "使用其他支付方式",
+  "paymentSummary": "支付明细",
+  "agreeToPolicy": "预订即表示您同意取消政策",
+  "freeCancellationShort": "课前 {{hours}} 小时前可免费取消",
+  "payDropInRate": "按单次价格支付",
+  "continue": "继续",
+  "minutes_other": "{{count}} 分钟",
+  "pleaseSelectPayment": "请选择支付方式",
+
+  "addOns": {
+    "title": "需要我们提前为您准备些什么吗？",
+    "subtitle": "完全可选。您也可以到馆后再添加。",
+    "addToBooking": "添加到我的预订",
+    "skip": "暂时跳过",
+    "added": "附加项目已添加",
+    "readyForYou": "我们会为您准备好！"
+  },
+
+  "paymentSources": {
+    "membership": "会员卡",
+    "classPack": "课程卡",
+    "workshopPass": "工作坊通票",
+    "dropIn": "单次课"
+  }
+}
