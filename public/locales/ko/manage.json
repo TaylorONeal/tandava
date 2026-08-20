@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "대시보드",
+    "schedule": "수업 일정",
+    "events": "이벤트",
+    "students": "수강생",
+    "teachers": "강사",
+    "offerings": "수업 상품",
+    "promoCodes": "프로모션 코드",
+    "financials": "재무",
+    "products": "상품",
+    "inventory": "재고",
+    "purchaseOrders": "구매 주문",
+    "landingPages": "랜딩 페이지",
+    "utmBuilder": "UTM 빌더",
+    "campaigns": "캠페인",
+    "tasks": "작업",
+    "reports": "보고서",
+    "importData": "데이터 가져오기",
+    "smsInbox": "SMS 수신함",
+    "notifications": "알림",
+    "settings": "설정"
+  },
+  "title": "스튜디오 관리자",
+  "studentView": "수강생 화면",
+  "myAccount": "내 계정",
+  "studioSettings": "스튜디오 설정",
+  "signOut": "로그아웃",
+
+  "schedule": {
+    "title": "수업 일정",
+    "subtitle": "수업 일정을 만들고 관리하세요.",
+    "addClass": "수업 추가",
+    "emptyState": "아직 예정된 수업이 없습니다. 첫 수업을 만들어 시작하세요."
+  },
+  "offerings": {
+    "title": "수업 상품",
+    "subtitle": "수업 유형과 구성 — {{count}}개 활성",
+    "newOffering": "새 수업 상품",
+    "searchPlaceholder": "수업 상품 검색...",
+    "activeOfferings": "활성 수업 상품"
+  },
+
+  "admin": {
+    "platformAdmin": "플랫폼 관리자",
+    "platformDashboard": "플랫폼 대시보드",
+    "overview": "Tandava 인스턴스의 상태와 활동 개요.",
+    "activeStudios": "활성 스튜디오",
+    "totalUsers": "전체 사용자",
+    "stripeStatus": "Stripe 상태",
+    "errorRate": "오류율",
+    "connectSupabase": "실시간 데이터를 보려면 Supabase를 연결하세요",
+    "acrossAllStudios": "전체 스튜디오 합계",
+    "webhookHealth": "웹훅 상태",
+    "connectSentry": "모니터링을 위해 Sentry를 연결하세요",
+    "setupChecklist": "설정 체크리스트",
+    "supabaseConnected": "Supabase 연결됨",
+    "stripeConfigured": "Stripe 구성됨",
+    "emailConfigured": "이메일 제공업체 구성됨",
+    "sentryConfigured": "Sentry 오류 모니터링",
+    "setEnvVar": ".env에 {{key}} 설정"
+  },
+
+  "studioManagement": "스튜디오 관리",
+  "owner": "대표"
+}

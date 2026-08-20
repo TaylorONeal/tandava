@@ -1,0 +1,71 @@
+{
+  "bookNow": "立即預約",
+  "joinWaitlist": "加入候補名單",
+  "joinNow": "立即加入",
+  "cancelBooking": "取消預約",
+  "confirmBooking": "確認預約",
+  "processing": "處理中...",
+  "booking": "預約中...",
+  "payAmount": "支付 {{amount}}",
+  "included": "已包含",
+  "free": "免費",
+  "full": "已滿",
+
+  "spotsLeft_other": "剩餘 {{count}}",
+  "classesRemaining_other": "剩餘 {{count}} 節課",
+  "classesRemainingAfter_other": "本次之後剩餘 {{count}} 節課",
+  "unlimitedClasses": "不限次課程",
+  "oneTimePayment": "一次性付款",
+
+  "selectPaymentMethod": "選擇付款方式",
+  "recommended": "推薦",
+  "doesntCover": "此{{type}}不適用於該課程類型",
+  "expires": "有效期至 {{date}}",
+
+  "youreBooked": "預約成功！",
+  "seeYouAt": "{{studio}} 見",
+  "cantWaitToSee": "期待在瑜伽墊上見到您",
+  "withTeacher": "導師：{{teacher}}",
+  "addToCalendar": "加入日曆",
+  "inviteFriend": "邀請朋友",
+  "done": "完成",
+
+  "addedToWaitlist": "已加入候補名單！",
+  "wellNotify": "如有名額空出，我們會通知您",
+  "addedToCalendar": "已加入日曆",
+  "shareLinkCopied": "分享連結已複製！",
+
+  "freeCancellation": "課前 {{hours}} 小時前可免費取消。逾時取消可能產生費用。",
+  "bookClass": "預約課程",
+  "book": "預約",
+  "waitlist": "候補",
+  "bookingConfirmed": "預約已確認！",
+  "classIsFull": "課程已滿",
+  "youllBeWaitlisted": "您將被加入候補名單。",
+  "waitlistNotify": "您將被加入候補名單。如有名額空出，我們會通知您。",
+  "usingSource": "使用{{source}}",
+  "useDifferentPayment": "使用其他付款方式",
+  "paymentSummary": "付款明細",
+  "agreeToPolicy": "預約即表示您同意取消政策",
+  "freeCancellationShort": "課前 {{hours}} 小時前可免費取消",
+  "payDropInRate": "按單堂價格支付",
+  "continue": "繼續",
+  "minutes_other": "{{count}} 分鐘",
+  "pleaseSelectPayment": "請選擇付款方式",
+
+  "addOns": {
+    "title": "需要我們提前為您準備些什麼嗎？",
+    "subtitle": "完全自由選擇。您也可以到館後再加購。",
+    "addToBooking": "加入我的預約",
+    "skip": "暫時跳過",
+    "added": "加購項目已加入",
+    "readyForYou": "我們會為您準備好！"
+  },
+
+  "paymentSources": {
+    "membership": "會員卡",
+    "classPack": "課程卡",
+    "workshopPass": "工作坊通行證",
+    "dropIn": "單堂課"
+  }
+}
