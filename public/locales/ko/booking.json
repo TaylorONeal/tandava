@@ -1,0 +1,71 @@
+{
+  "bookNow": "지금 예약",
+  "joinWaitlist": "대기자 명단 등록",
+  "joinNow": "지금 참여",
+  "cancelBooking": "예약 취소",
+  "confirmBooking": "예약 확정",
+  "processing": "처리 중...",
+  "booking": "예약 중...",
+  "payAmount": "{{amount}} 결제",
+  "included": "포함됨",
+  "free": "무료",
+  "full": "마감",
+
+  "spotsLeft_other": "{{count}}자리 남음",
+  "classesRemaining_other": "수업 {{count}}회 남음",
+  "classesRemainingAfter_other": "이번 수업 후 {{count}}회 남음",
+  "unlimitedClasses": "무제한 수업",
+  "oneTimePayment": "일회성 결제",
+
+  "selectPaymentMethod": "결제 수단 선택",
+  "recommended": "추천",
+  "doesntCover": "이 {{type}}은(는) 이 수업 유형에 적용되지 않습니다",
+  "expires": "{{date}} 만료",
+
+  "youreBooked": "예약 완료!",
+  "seeYouAt": "{{studio}}에서 만나요",
+  "cantWaitToSee": "매트 위에서 만나길 기대할게요",
+  "withTeacher": "{{teacher}} 강사",
+  "addToCalendar": "캘린더에 추가",
+  "inviteFriend": "친구 초대",
+  "done": "완료",
+
+  "addedToWaitlist": "대기자 명단에 등록되었습니다!",
+  "wellNotify": "자리가 나면 알려드릴게요",
+  "addedToCalendar": "캘린더에 추가되었습니다",
+  "shareLinkCopied": "공유 링크가 복사되었습니다!",
+
+  "freeCancellation": "수업 {{hours}}시간 전까지 무료 취소할 수 있습니다. 늦은 취소는 수수료가 부과될 수 있습니다.",
+  "bookClass": "수업 예약",
+  "book": "예약",
+  "waitlist": "대기",
+  "bookingConfirmed": "예약이 확정되었습니다!",
+  "classIsFull": "수업이 마감되었습니다",
+  "youllBeWaitlisted": "대기자 명단에 등록됩니다.",
+  "waitlistNotify": "대기자 명단에 등록됩니다. 자리가 나면 알려드릴게요.",
+  "usingSource": "{{source}} 사용 중",
+  "useDifferentPayment": "다른 결제 수단 사용",
+  "paymentSummary": "결제 요약",
+  "agreeToPolicy": "예약 시 취소 정책에 동의하는 것으로 간주됩니다",
+  "freeCancellationShort": "수업 {{hours}}시간 전까지 무료 취소",
+  "payDropInRate": "1회권 요금 결제",
+  "continue": "계속",
+  "minutes_other": "{{count}}분",
+  "pleaseSelectPayment": "결제 수단을 선택해 주세요",
+
+  "addOns": {
+    "title": "미리 준비해 드릴 것이 있나요?",
+    "subtitle": "선택 사항입니다. 스튜디오에서 언제든 추가할 수 있어요.",
+    "addToBooking": "예약에 추가",
+    "skip": "지금은 건너뛰기",
+    "added": "추가 항목이 담겼습니다",
+    "readyForYou": "준비해 둘게요!"
+  },
+
+  "paymentSources": {
+    "membership": "멤버십",
+    "classPack": "횟수권",
+    "workshopPass": "워크숍 패스",
+    "dropIn": "1회권"
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "bookNow": "Jetzt buchen",
+  "joinWaitlist": "Auf die Warteliste",
+  "joinNow": "Jetzt teilnehmen",
+  "cancelBooking": "Buchung stornieren",
+  "confirmBooking": "Buchung bestätigen",
+  "processing": "Wird verarbeitet...",
+  "booking": "Wird gebucht...",
+  "payAmount": "{{amount}} bezahlen",
+  "included": "Inklusive",
+  "free": "Kostenlos",
+  "full": "Ausgebucht",
+
+  "spotsLeft_one": "noch {{count}}",
+  "spotsLeft_other": "noch {{count}}",
+  "classesRemaining_one": "noch {{count}} Kurs übrig",
+  "classesRemaining_other": "noch {{count}} Kurse übrig",
+  "classesRemainingAfter_one": "danach noch {{count}} Kurs übrig",
+  "classesRemainingAfter_other": "danach noch {{count}} Kurse übrig",
+  "unlimitedClasses": "Unbegrenzte Kurse",
+  "oneTimePayment": "Einmalzahlung",
+
+  "selectPaymentMethod": "Zahlungsmethode wählen",
+  "recommended": "Empfohlen",
+  "doesntCover": "{{type}} deckt diesen Kurstyp nicht ab",
+  "expires": "Läuft ab am {{date}}",
+
+  "youreBooked": "Du bist gebucht!",
+  "seeYouAt": "Wir sehen uns im {{studio}}",
+  "cantWaitToSee": "Wir freuen uns, dich auf der Matte zu sehen",
+  "withTeacher": "mit {{teacher}}",
+  "addToCalendar": "Zum Kalender hinzufügen",
+  "inviteFriend": "Freund:in einladen",
+  "done": "Fertig",
+
+  "addedToWaitlist": "Zur Warteliste hinzugefügt!",
+  "wellNotify": "Wir benachrichtigen dich, wenn ein Platz frei wird",
+  "addedToCalendar": "Zum Kalender hinzugefügt",
+  "shareLinkCopied": "Link kopiert!",
+
+  "freeCancellation": "Kostenlose Stornierung bis {{hours}} Std. vor Kursbeginn. Späte Stornierungen können kostenpflichtig sein.",
+  "bookClass": "Kurs buchen",
+  "book": "Buchen",
+  "waitlist": "Warteliste",
+  "bookingConfirmed": "Buchung bestätigt!",
+  "classIsFull": "Kurs ist ausgebucht",
+  "youllBeWaitlisted": "Du wirst zur Warteliste hinzugefügt.",
+  "waitlistNotify": "Du wirst zur Warteliste hinzugefügt. Wir benachrichtigen dich, wenn ein Platz frei wird.",
+  "usingSource": "{{source}} wird verwendet",
+  "useDifferentPayment": "Andere Zahlungsmethode verwenden",
+  "paymentSummary": "Zahlungsübersicht",
+  "agreeToPolicy": "Mit deiner Buchung stimmst du der Stornierungsrichtlinie zu",
+  "freeCancellationShort": "Kostenlose Stornierung bis {{hours}} Std. vor Kursbeginn",
+  "payDropInRate": "Drop-in-Preis zahlen",
+  "continue": "Weiter",
+  "minutes_one": "{{count}} Minute",
+  "minutes_other": "{{count}} Minuten",
+  "pleaseSelectPayment": "Bitte wähle eine Zahlungsmethode",
+
+  "addOns": {
+    "title": "Sollen wir etwas für dich bereitlegen?",
+    "subtitle": "Völlig optional. Du kannst es auch jederzeit im Studio hinzufügen.",
+    "addToBooking": "Zu meiner Buchung hinzufügen",
+    "skip": "Erstmal überspringen",
+    "added": "Extras hinzugefügt",
+    "readyForYou": "Wir legen sie für dich bereit!"
+  },
+
+  "paymentSources": {
+    "membership": "Mitgliedschaft",
+    "classPack": "Kurspaket",
+    "workshopPass": "Workshop-Pass",
+    "dropIn": "Drop-in"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "emailRequired": "E-Mail ist erforderlich",
+  "emailInvalid": "Bitte gib eine gültige E-Mail-Adresse ein",
+  "passwordMinLength": "Das Passwort muss mindestens {{min}} Zeichen lang sein",
+  "phoneInvalid": "Bitte gib eine gültige Telefonnummer ein",
+  "urlInvalid": "Bitte gib eine gültige URL ein",
+  "handleMinLength": "Der Handle muss mindestens {{min}} Zeichen lang sein",
+  "handleMaxLength": "Der Handle muss kürzer als {{max}} Zeichen sein",
+  "handleFormat": "Der Handle darf nur Buchstaben, Zahlen, Unterstriche und Bindestriche enthalten",
+  "fieldRequired": "{{field}} ist erforderlich",
+  "fieldInvalidUrl": "Bitte gib einen gültigen Wert für {{field}} ein",
+  "endTimeAfterStart": "Die Endzeit muss nach der Startzeit liegen",
+  "endDateAfterStart": "Das Enddatum muss nach dem Startdatum liegen",
+  "mustBePositive": "{{field}} muss größer als 0 sein",
+  "mustBeValidAmount": "{{field}} muss ein gültiger Betrag sein",
+  "mustBePositiveNumber": "{{field}} muss eine positive Zahl sein"
+}

@@ -1,0 +1,17 @@
+{
+  "emailRequired": "Emel diperlukan",
+  "emailInvalid": "Sila masukkan alamat emel yang sah",
+  "passwordMinLength": "Kata laluan mestilah sekurang-kurangnya {{min}} aksara",
+  "phoneInvalid": "Sila masukkan nombor telefon yang sah",
+  "urlInvalid": "Sila masukkan URL yang sah",
+  "handleMinLength": "Handle mestilah sekurang-kurangnya {{min}} aksara",
+  "handleMaxLength": "Handle mestilah kurang daripada {{max}} aksara",
+  "handleFormat": "Handle hanya boleh mengandungi huruf, nombor, garis bawah dan sengkang",
+  "fieldRequired": "{{field}} diperlukan",
+  "fieldInvalidUrl": "Sila masukkan {{field}} yang sah",
+  "endTimeAfterStart": "Masa tamat mesti selepas masa mula",
+  "endDateAfterStart": "Tarikh tamat mesti selepas tarikh mula",
+  "mustBePositive": "{{field}} mesti lebih besar daripada 0",
+  "mustBeValidAmount": "{{field}} mesti jumlah yang sah",
+  "mustBePositiveNumber": "{{field}} mesti nombor positif"
+}

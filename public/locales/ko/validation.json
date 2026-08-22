@@ -1,0 +1,17 @@
+{
+  "emailRequired": "이메일을 입력해 주세요",
+  "emailInvalid": "유효한 이메일 주소를 입력해 주세요",
+  "passwordMinLength": "비밀번호는 최소 {{min}}자 이상이어야 합니다",
+  "phoneInvalid": "유효한 전화번호를 입력해 주세요",
+  "urlInvalid": "유효한 URL을 입력해 주세요",
+  "handleMinLength": "핸들은 최소 {{min}}자 이상이어야 합니다",
+  "handleMaxLength": "핸들은 {{max}}자 미만이어야 합니다",
+  "handleFormat": "핸들은 문자, 숫자, 밑줄, 하이픈만 사용할 수 있습니다",
+  "fieldRequired": "{{field}}을(를) 입력해 주세요",
+  "fieldInvalidUrl": "유효한 {{field}}을(를) 입력해 주세요",
+  "endTimeAfterStart": "종료 시간은 시작 시간 이후여야 합니다",
+  "endDateAfterStart": "종료 날짜는 시작 날짜 이후여야 합니다",
+  "mustBePositive": "{{field}}은(는) 0보다 커야 합니다",
+  "mustBeValidAmount": "{{field}}은(는) 유효한 금액이어야 합니다",
+  "mustBePositiveNumber": "{{field}}은(는) 양수여야 합니다"
+}
