@@ -1,0 +1,75 @@
+{
+  "bookNow": "Mag-book Ngayon",
+  "joinWaitlist": "Sumali sa Waitlist",
+  "joinNow": "Sumali Ngayon",
+  "cancelBooking": "Kanselahin ang Booking",
+  "confirmBooking": "Kumpirmahin ang Booking",
+  "processing": "Pinoproseso...",
+  "booking": "Nagbu-book...",
+  "payAmount": "Magbayad ng {{amount}}",
+  "included": "Kasama na",
+  "free": "Libre",
+  "full": "Puno na",
+
+  "spotsLeft_one": "{{count}} na lang",
+  "spotsLeft_other": "{{count}} na lang",
+  "classesRemaining_one": "{{count}} klase na lang",
+  "classesRemaining_other": "{{count}} klase na lang",
+  "classesRemainingAfter_one": "{{count}} klase na lang pagkatapos nito",
+  "classesRemainingAfter_other": "{{count}} klase na lang pagkatapos nito",
+  "unlimitedClasses": "Walang limitasyong klase",
+  "oneTimePayment": "Isang beses na bayad",
+
+  "selectPaymentMethod": "Pumili ng paraan ng pagbabayad",
+  "recommended": "Inirerekomenda",
+  "doesntCover": "Hindi sakop ng {{type}} na ito ang ganitong uri ng klase",
+  "expires": "Mag-e-expire sa {{date}}",
+
+  "youreBooked": "Naka-book ka na!",
+  "seeYouAt": "Kita-kits sa {{studio}}",
+  "cantWaitToSee": "Excited na kaming makita ka sa mat",
+  "withTeacher": "kasama si {{teacher}}",
+  "addToCalendar": "Idagdag sa Kalendaryo",
+  "inviteFriend": "Mag-imbita ng Kaibigan",
+  "done": "Tapos na",
+
+  "addedToWaitlist": "Naidagdag sa waitlist!",
+  "wellNotify": "Aabisuhan ka namin kapag may nabakanteng puwesto",
+  "addedToCalendar": "Naidagdag sa kalendaryo",
+  "shareLinkCopied": "Nakopya ang share link!",
+
+  "freeCancellation": "Libreng kanselasyon hanggang {{hours}} oras bago ang klase. Maaaring may bayad ang late na kanselasyon.",
+  "bookClass": "Mag-book ng Klase",
+  "book": "Book",
+  "waitlist": "Waitlist",
+  "bookingConfirmed": "Kumpirmado na ang booking!",
+  "classIsFull": "Puno na ang klase",
+  "youllBeWaitlisted": "Idadagdag ka sa waitlist.",
+  "waitlistNotify": "Idadagdag ka sa waitlist. Aabisuhan ka namin kapag may nabakante.",
+  "usingSource": "Gamit ang {{source}}",
+  "useDifferentPayment": "Gumamit ng ibang paraan ng pagbabayad",
+  "paymentSummary": "Buod ng Pagbabayad",
+  "agreeToPolicy": "Sa pag-book, sumasang-ayon ka sa patakaran sa kanselasyon",
+  "freeCancellationShort": "Libreng kanselasyon hanggang {{hours}} oras bago ang klase",
+  "payDropInRate": "Magbayad ng Drop-in Rate",
+  "continue": "Magpatuloy",
+  "minutes_one": "{{count}} minuto",
+  "minutes_other": "{{count}} minuto",
+  "pleaseSelectPayment": "Pakipili ang paraan ng pagbabayad",
+
+  "addOns": {
+    "title": "Gusto mo bang may ihanda kami para sa iyo?",
+    "subtitle": "Opsyonal lang ito. Puwede mo ring idagdag sa studio.",
+    "addToBooking": "Idagdag sa aking booking",
+    "skip": "Laktawan muna",
+    "added": "Naidagdag ang mga add-on",
+    "readyForYou": "Ihahanda namin para sa iyo!"
+  },
+
+  "paymentSources": {
+    "membership": "Membership",
+    "classPack": "Class Pack",
+    "workshopPass": "Workshop Pass",
+    "dropIn": "Drop-in"
+  }
+}

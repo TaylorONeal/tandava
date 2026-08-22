@@ -416,11 +416,11 @@ i18n.addResourceBundle('ban', 'common', balineseTranslations);
 
 **Recommendation:** Start with `pt-BR` (larger market), add `pt-PT` later.
 
-### Next Wave — Planned (Roadmap)
+### Next Wave — Implemented
 
-Queued after Indonesian (`id`) and Mandarin (`zh`) ship. None of these are implemented yet; each follows the standard process in [Adding a new language](#adding-a-new-language).
+All five next-wave languages are implemented (machine-drafted translations, pending native-speaker review — see the status table in [docs/roadmap/LANGUAGE_ROLLOUT_PLAN.md](roadmap/LANGUAGE_ROLLOUT_PLAN.md)). Per-language notes below are kept for translators and reviewers.
 
-#### Korean (ko) — Planned
+#### Korean (ko) — Implemented
 
 | Consideration | Details |
 |---------------|---------|
@@ -431,7 +431,7 @@ Queued after Indonesian (`id`) and Mandarin (`zh`) ship. None of these are imple
 | Register | Korean has formality levels. Studio context = polite 해요체, not formal 합쇼체 |
 | Yoga terms | Sanskrit terms transliterated into Hangul; widely understood in Korea's large yoga/pilates market |
 
-#### Malay (ms) — Planned (covers Singapore & Malaysia)
+#### Malay (ms) — Implemented (covers Singapore & Malaysia)
 
 "Singaporean" isn't a single language — Singapore's official languages are English, Mandarin, Malay, and Tamil. English and Mandarin are already supported, so Malay closes most of the remaining gap (and covers Malaysia). Singapore-specific formatting (SGD currency, date order) comes free from `Intl` regional locales like `en-SG`/`zh-SG`.
 
@@ -442,7 +442,7 @@ Queued after Indonesian (`id`) and Mandarin (`zh`) ship. None of these are imple
 | Overlap with Indonesian | Very close to `id` — heavy shared vocabulary, but real differences in register and loanwords. Translate separately; do not alias to Indonesian |
 | Plural forms | 1 (other) |
 
-#### Cantonese (yue / zh-Hant) — Planned (Hong Kong & diaspora)
+#### Cantonese (yue / zh-Hant) — Implemented as Traditional Chinese (Hong Kong & diaspora)
 
 | Consideration | Details |
 |---------------|---------|
@@ -451,9 +451,9 @@ Queued after Indonesian (`id`) and Mandarin (`zh`) ship. None of these are imple
 | CLDR support | Both `yue` and `zh-Hant`/`zh-HK` supported by modern `Intl` |
 | Plural forms | 1 (other) |
 
-**Recommendation:** Implement as Traditional Chinese (`zh-Hant`, HK conventions) first; add colloquial written Cantonese only if studios ask for it.
+**Shipped as:** Traditional Chinese (`zh-Hant`, HK conventions). Browser codes `zh-TW`/`zh-HK`/`zh-MO` are mapped to `zh-Hant` via `convertDetectedLanguage` in the detector config; colloquial written Cantonese (`yue`) remains a future candidate if studios ask for it.
 
-#### Filipino (fil) — Planned
+#### Filipino (fil) — Implemented
 
 | Consideration | Details |
 |---------------|---------|
@@ -463,7 +463,7 @@ Queued after Indonesian (`id`) and Mandarin (`zh`) ship. None of these are imple
 | English mixing | Taglish is normal in Philippine UI contexts — keeping English tech/booking terms is acceptable and often preferred |
 | Plural forms | 2 (one, other) |
 
-#### German (de) — Planned
+#### German (de) — Implemented
 
 | Consideration | Details |
 |---------------|---------|
@@ -529,18 +529,39 @@ npx i18next-parser
 
 ```bash
 # 1. Create the locale directory
-mkdir src/i18n/locales/ja
+mkdir public/locales/ja
 
 # 2. Copy English files as templates
-cp src/i18n/locales/en/*.json src/i18n/locales/ja/
+cp public/locales/en/*.json public/locales/ja/
 
-# 3. Register in i18n config
-# Add 'ja' to supportedLngs array
+# 3. Register in SUPPORTED_LANGUAGES (src/i18n/index.ts)
+# { code: 'ja', name: 'Japanese', nativeName: '日本語', flag: '🇯🇵' }
 
-# 4. Translate the JSON files (or send to translators)
+# 4. Translate the JSON files (or send to translators), using the plural
+#    forms Intl.PluralRules('ja') requires
 
-# 5. Test with ?lng=ja or browser language override
+# 5. Validate — also runs automatically before every build
+npm run check:locales
+
+# 6. Test with ?lng=ja or browser language override
 ```
+
+See [docs/roadmap/LANGUAGE_ROLLOUT_PLAN.md](roadmap/LANGUAGE_ROLLOUT_PLAN.md) for the full checklist (RTL, detection mapping, review status).
+
+### Locale validation (`scripts/check-locales.mjs`)
+
+`npm run check:locales` compares every locale against English and runs as a
+`prebuild` step, so CI and Vercel builds fail on structural drift:
+
+| Finding | Severity |
+|---------|----------|
+| Invalid JSON | error (fails build) |
+| Locale directory not registered in `SUPPORTED_LANGUAGES` (or vice versa) | error |
+| Namespace file that doesn't exist in `en/` | error |
+| `{{placeholder}}` set differs from English for the same key | error |
+| Missing keys (fall back to English) | warning + coverage % |
+| Keys not present in English (dead keys) | warning |
+| Plural set doesn't match the locale's CLDR categories | warning |
 
 ### Extraction tooling (`i18next-parser`)
 

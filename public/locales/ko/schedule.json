@@ -1,0 +1,12 @@
+{
+  "title": "수업 일정",
+  "classDetail": "수업",
+  "benefits": "효과",
+  "whatToBring": "준비물",
+  "classesTaught": "회 수업 진행",
+  "heated": "핫 요가",
+  "joinOnline": "온라인 참여",
+  "locationPlusOnline": "{{location}} + 온라인",
+  "live": "라이브",
+  "spotsLeft": "{{count}}자리 남음"
+}

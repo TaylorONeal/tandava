@@ -34,9 +34,8 @@ export function LanguageSwitcher({ compact = true }: LanguageSwitcherProps) {
     ?? SUPPORTED_LANGUAGES[0];
 
   const handleLanguageChange = (code: string) => {
+    // <html lang> and dir are synced by the languageChanged listener in src/i18n
     i18n.changeLanguage(code);
-    // Update HTML lang attribute for screen readers & SEO
-    document.documentElement.lang = code;
   };
 
   return (

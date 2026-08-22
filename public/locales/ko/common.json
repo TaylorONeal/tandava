@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "home": "홈",
+    "schedule": "수업 일정",
+    "onDemand": "온디맨드",
+    "events": "이벤트",
+    "instructors": "강사",
+    "mySchedule": "내 일정",
+    "community": "커뮤니티"
+  },
+  "userMenu": {
+    "account": "계정",
+    "studioManager": "스튜디오 관리자",
+    "frontDesk": "프런트 데스크",
+    "platformAdmin": "플랫폼 관리자",
+    "signOut": "로그아웃"
+  },
+  "roles": {
+    "owner": "대표",
+    "admin": "관리자",
+    "teacher": "강사",
+    "front_desk": "프런트 데스크",
+    "student": "회원",
+    "platform_admin": "플랫폼 관리자"
+  },
+  "status": {
+    "active": "활성",
+    "inactive": "비활성",
+    "pending": "대기 중",
+    "cancelled": "취소됨",
+    "expired": "만료됨",
+    "paused": "일시중지됨"
+  },
+  "actions": {
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "편집",
+    "close": "닫기",
+    "confirm": "확인",
+    "submit": "제출",
+    "search": "검색",
+    "filter": "필터",
+    "reset": "초기화",
+    "back": "뒤로",
+    "next": "다음",
+    "loading": "로딩 중...",
+    "sending": "전송 중...",
+    "processing": "처리 중..."
+  },
+  "levels": {
+    "beginner": "초급",
+    "allLevels": "모든 레벨",
+    "intermediate": "중급",
+    "advanced": "고급"
+  },
+  "deliveryMode": {
+    "in_person": "대면",
+    "virtual": "온라인",
+    "hybrid": "혼합"
+  },
+  "paymentMethods": {
+    "card": "신용/체크카드",
+    "cash": "현금",
+    "venmo": "Venmo",
+    "cashapp": "Cash App",
+    "paypal": "PayPal",
+    "zelle": "Zelle",
+    "check": "수표",
+    "other": "기타"
+  },
+  "units": {
+    "min": "{{count}}분",
+    "hour_other": "{{count}}시간",
+    "day_other": "{{count}}일",
+    "week_other": "{{count}}주",
+    "class_other": "수업 {{count}}회",
+    "studio_other": "스튜디오 {{count}}곳",
+    "spot_other": "자리 {{count}}개",
+    "remaining": "{{count}}개 남음"
+  },
+  "language": {
+    "label": "언어",
+    "changeLanguage": "언어 변경"
+  },
+  "footer": {
+    "allRightsReserved": "모든 권리 보유.",
+    "poweredBy": "제공",
+    "openSourceStudio": "오픈 소스 스튜디오 관리"
+  },
+  "type": {
+    "class": "수업",
+    "workshop": "워크숍",
+    "retreat": "리트릿",
+    "appointment": "예약"
+  },
+  "guest": "게스트",
+  "studioManagement": "스튜디오 관리",
+  "notFound": {
+    "title": "앗! 페이지를 찾을 수 없습니다",
+    "returnHome": "홈으로 돌아가기"
+  },
+  "demo": {
+    "title": "Tandava 오픈 소스 스튜디오 데모",
+    "switchRole": "전환:",
+    "studioOwner": "스튜디오 대표",
+    "demoMode": "(데모 모드)"
+  },
+  "contact": {
+    "yourName": "이름",
+    "namePlaceholder": "김하늘",
+    "email": "이메일",
+    "emailPlaceholder": "haneul@example.com",
+    "subject": "제목",
+    "subjectPlaceholder": "어떤 내용인가요?",
+    "message": "메시지",
+    "messagePlaceholder": "자세히 알려주세요...",
+    "sendMessage": "메시지 보내기",
+    "messageSent": "메시지가 전송되었습니다!",
+    "thankYou": "연락해 주셔서 감사합니다.",
+    "missingFields": "입력이 누락되었습니다",
+    "fillRequired": "제목과 메시지를 입력해 주세요.",
+    "failedToSend": "전송 실패",
+    "somethingWentWrong": "문제가 발생했습니다. 다시 시도해 주세요."
+  }
+}

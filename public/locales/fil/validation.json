@@ -1,0 +1,17 @@
+{
+  "emailRequired": "Kailangan ang email",
+  "emailInvalid": "Maglagay ng valid na email address",
+  "passwordMinLength": "Ang password ay dapat hindi bababa sa {{min}} karakter",
+  "phoneInvalid": "Maglagay ng valid na numero ng telepono",
+  "urlInvalid": "Maglagay ng valid na URL",
+  "handleMinLength": "Ang handle ay dapat hindi bababa sa {{min}} karakter",
+  "handleMaxLength": "Ang handle ay dapat mas maikli sa {{max}} karakter",
+  "handleFormat": "Ang handle ay maaari lamang maglaman ng mga letra, numero, underscore, at gitling",
+  "fieldRequired": "Kailangan ang {{field}}",
+  "fieldInvalidUrl": "Maglagay ng valid na {{field}}",
+  "endTimeAfterStart": "Ang end time ay dapat pagkatapos ng start time",
+  "endDateAfterStart": "Ang end date ay dapat pagkatapos ng start date",
+  "mustBePositive": "Ang {{field}} ay dapat mas malaki sa 0",
+  "mustBeValidAmount": "Ang {{field}} ay dapat valid na halaga",
+  "mustBePositiveNumber": "Ang {{field}} ay dapat positibong numero"
+}

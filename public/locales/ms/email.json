@@ -1,0 +1,21 @@
+{
+  "bookingConfirmation": {
+    "youreBooked": "Tempahan berjaya!",
+    "greeting": "Hai {{name}}, {{type}} anda telah disahkan. Kami tidak sabar bertemu anda.",
+    "class": "Kelas",
+    "workshop": "Bengkel",
+    "appointment": "Temu Janji",
+    "instructor": "Pengajar",
+    "dateTime": "Tarikh & Masa",
+    "duration": "Tempoh",
+    "location": "Lokasi",
+    "spotNumber": "Nombor Tempat",
+    "addToCalendar": "Tambah ke Kalendar",
+    "getDirections": "Dapatkan Arah",
+    "whatToBring": "Apa yang Perlu Dibawa",
+    "whatToBringText": "Sila tiba 10-15 minit lebih awal untuk daftar masuk. Bawa air dan tuala, serta pakai pakaian yang selesa. Tikar disediakan, tetapi anda dialu-alukan membawa sendiri.",
+    "cancellationPolicy": "Polisi Pembatalan:",
+    "manageBooking": "Urus tempahan anda",
+    "needChanges": "Perlu membuat perubahan?"
+  }
+}

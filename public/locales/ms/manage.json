@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "Papan Pemuka",
+    "schedule": "Jadual",
+    "events": "Acara",
+    "students": "Pelajar",
+    "teachers": "Pengajar",
+    "offerings": "Tawaran",
+    "promoCodes": "Kod Promosi",
+    "financials": "Kewangan",
+    "products": "Produk",
+    "inventory": "Inventori",
+    "purchaseOrders": "Pesanan Belian",
+    "landingPages": "Halaman Pendaratan",
+    "utmBuilder": "Pembina UTM",
+    "campaigns": "Kempen",
+    "tasks": "Tugasan",
+    "reports": "Laporan",
+    "importData": "Import Data",
+    "smsInbox": "Peti Masuk SMS",
+    "notifications": "Pemberitahuan",
+    "settings": "Tetapan"
+  },
+  "title": "Admin Studio",
+  "studentView": "Paparan Pelajar",
+  "myAccount": "Akaun Saya",
+  "studioSettings": "Tetapan Studio",
+  "signOut": "Log keluar",
+
+  "schedule": {
+    "title": "Jadual",
+    "subtitle": "Cipta dan urus jadual kelas anda.",
+    "addClass": "Tambah Kelas",
+    "emptyState": "Tiada kelas dijadualkan lagi. Cipta kelas pertama anda untuk bermula."
+  },
+  "offerings": {
+    "title": "Tawaran",
+    "subtitle": "Jenis kelas dan konfigurasinya — {{count}} aktif",
+    "newOffering": "Tawaran Baharu",
+    "searchPlaceholder": "Cari tawaran...",
+    "activeOfferings": "Tawaran Aktif"
+  },
+
+  "admin": {
+    "platformAdmin": "Pentadbir Platform",
+    "platformDashboard": "Papan Pemuka Platform",
+    "overview": "Gambaran keseluruhan kesihatan dan aktiviti instans Tandava anda.",
+    "activeStudios": "Studio Aktif",
+    "totalUsers": "Jumlah Pengguna",
+    "stripeStatus": "Status Stripe",
+    "errorRate": "Kadar Ralat",
+    "connectSupabase": "Sambungkan Supabase untuk melihat data langsung",
+    "acrossAllStudios": "Merentas semua studio",
+    "webhookHealth": "Kesihatan webhook",
+    "connectSentry": "Sambungkan Sentry untuk pemantauan",
+    "setupChecklist": "Senarai Semak Persediaan",
+    "supabaseConnected": "Supabase disambungkan",
+    "stripeConfigured": "Stripe dikonfigurasi",
+    "emailConfigured": "Penyedia emel dikonfigurasi",
+    "sentryConfigured": "Pemantauan ralat Sentry",
+    "setEnvVar": "Tetapkan {{key}} dalam .env"
+  },
+
+  "studioManagement": "Pengurusan Studio",
+  "owner": "Pemilik"
+}

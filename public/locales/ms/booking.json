@@ -1,0 +1,71 @@
+{
+  "bookNow": "Tempah Sekarang",
+  "joinWaitlist": "Sertai Senarai Menunggu",
+  "joinNow": "Sertai Sekarang",
+  "cancelBooking": "Batalkan Tempahan",
+  "confirmBooking": "Sahkan Tempahan",
+  "processing": "Memproses...",
+  "booking": "Menempah...",
+  "payAmount": "Bayar {{amount}}",
+  "included": "Termasuk",
+  "free": "Percuma",
+  "full": "Penuh",
+
+  "spotsLeft_other": "{{count}} lagi",
+  "classesRemaining_other": "{{count}} kelas berbaki",
+  "classesRemainingAfter_other": "{{count}} kelas berbaki selepas ini",
+  "unlimitedClasses": "Kelas tanpa had",
+  "oneTimePayment": "Bayaran sekali sahaja",
+
+  "selectPaymentMethod": "Pilih kaedah pembayaran",
+  "recommended": "Disyorkan",
+  "doesntCover": "{{type}} ini tidak meliputi jenis kelas ini",
+  "expires": "Tamat {{date}}",
+
+  "youreBooked": "Tempahan berjaya!",
+  "seeYouAt": "Jumpa di {{studio}}",
+  "cantWaitToSee": "Kami tidak sabar bertemu anda di atas tikar",
+  "withTeacher": "bersama {{teacher}}",
+  "addToCalendar": "Tambah ke Kalendar",
+  "inviteFriend": "Jemput Rakan",
+  "done": "Selesai",
+
+  "addedToWaitlist": "Ditambah ke senarai menunggu!",
+  "wellNotify": "Kami akan memaklumkan anda jika ada tempat kosong",
+  "addedToCalendar": "Ditambah ke kalendar",
+  "shareLinkCopied": "Pautan kongsi disalin!",
+
+  "freeCancellation": "Pembatalan percuma sehingga {{hours}} jam sebelum kelas. Pembatalan lewat mungkin dikenakan bayaran.",
+  "bookClass": "Tempah Kelas",
+  "book": "Tempah",
+  "waitlist": "Senarai Menunggu",
+  "bookingConfirmed": "Tempahan disahkan!",
+  "classIsFull": "Kelas penuh",
+  "youllBeWaitlisted": "Anda akan ditambah ke senarai menunggu.",
+  "waitlistNotify": "Anda akan ditambah ke senarai menunggu. Kami akan memaklumkan jika ada tempat kosong.",
+  "usingSource": "Menggunakan {{source}}",
+  "useDifferentPayment": "Guna kaedah pembayaran lain",
+  "paymentSummary": "Ringkasan Pembayaran",
+  "agreeToPolicy": "Dengan menempah, anda bersetuju dengan polisi pembatalan",
+  "freeCancellationShort": "Pembatalan percuma sehingga {{hours}} jam sebelum kelas",
+  "payDropInRate": "Bayar Kadar Drop-in",
+  "continue": "Teruskan",
+  "minutes_other": "{{count}} minit",
+  "pleaseSelectPayment": "Sila pilih kaedah pembayaran",
+
+  "addOns": {
+    "title": "Mahu kami sediakan apa-apa untuk anda?",
+    "subtitle": "Pilihan sepenuhnya. Anda boleh menambahnya di studio bila-bila masa.",
+    "addToBooking": "Tambah ke tempahan saya",
+    "skip": "Langkau buat masa ini",
+    "added": "Tambahan berjaya ditambah",
+    "readyForYou": "Kami akan sediakannya untuk anda!"
+  },
+
+  "paymentSources": {
+    "membership": "Keahlian",
+    "classPack": "Pek Kelas",
+    "workshopPass": "Pas Bengkel",
+    "dropIn": "Drop-in"
+  }
+}

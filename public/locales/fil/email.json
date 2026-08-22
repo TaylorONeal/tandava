@@ -1,0 +1,21 @@
+{
+  "bookingConfirmation": {
+    "youreBooked": "Naka-book ka na!",
+    "greeting": "Hi {{name}}, kumpirmado na ang iyong {{type}}. Inaabangan ka namin.",
+    "class": "Klase",
+    "workshop": "Workshop",
+    "appointment": "Appointment",
+    "instructor": "Instructor",
+    "dateTime": "Petsa at Oras",
+    "duration": "Tagal",
+    "location": "Lokasyon",
+    "spotNumber": "Numero ng Puwesto",
+    "addToCalendar": "Idagdag sa Kalendaryo",
+    "getDirections": "Kumuha ng Direksyon",
+    "whatToBring": "Ano ang Dadalhin",
+    "whatToBringText": "Dumating nang 10-15 minutong mas maaga para sa check-in. Magdala ng tubig at tuwalya, at magsuot ng komportableng damit. May mga mat na nakalaan, pero puwede kang magdala ng sarili mo.",
+    "cancellationPolicy": "Patakaran sa Kanselasyon:",
+    "manageBooking": "Pamahalaan ang iyong booking",
+    "needChanges": "Kailangan ng pagbabago?"
+  }
+}

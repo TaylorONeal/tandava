@@ -21,11 +21,10 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 /**
  * Supported languages.
- * Add new languages here and create matching directory in public/locales/
- *
- * Roadmap (next wave — see docs/LOCALIZATION_ANALYSIS.md → "Next Wave"):
- * ko (Korean), ms (Malay — Singapore/Malaysia), zh-Hant (Cantonese/Traditional),
- * fil (Filipino), de (German)
+ * Add new languages here and create matching directory in public/locales/ —
+ * `npm run check:locales` (run automatically before builds) validates that
+ * every registered language has complete, well-formed translation files.
+ * See docs/LOCALIZATION_ANALYSIS.md for per-language notes and future candidates.
  */
 export const SUPPORTED_LANGUAGES = [
   { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸' },
@@ -34,8 +33,13 @@ export const SUPPORTED_LANGUAGES = [
   { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', flag: '🇮🇳' },
   { code: 'pt', name: 'Portuguese', nativeName: 'Português', flag: '🇧🇷' },
   { code: 'id', name: 'Indonesian', nativeName: 'Bahasa Indonesia', flag: '🇮🇩' },
+  { code: 'ms', name: 'Malay', nativeName: 'Bahasa Melayu', flag: '🇲🇾' },
   { code: 'ban', name: 'Balinese', nativeName: 'Basa Bali', flag: '🇮🇩' },
-  { code: 'zh', name: 'Mandarin', nativeName: '中文', flag: '🇨🇳' },
+  { code: 'zh', name: 'Simplified Chinese', nativeName: '简体中文', flag: '🇨🇳' },
+  { code: 'zh-Hant', name: 'Traditional Chinese', nativeName: '繁體中文', flag: '🇭🇰' },
+  { code: 'ko', name: 'Korean', nativeName: '한국어', flag: '🇰🇷' },
+  { code: 'fil', name: 'Filipino', nativeName: 'Filipino', flag: '🇵🇭' },
+  { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪' },
 ] as const;
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number]['code'];
@@ -95,6 +99,15 @@ i18n
       order: ['localStorage', 'navigator', 'htmlTag'],
       lookupLocalStorage: 'tandava-language',
       caches: ['localStorage'],
+      // Chinese needs script-aware mapping: default language-only fallback
+      // would send zh-TW/zh-HK users to Simplified Chinese. Route Traditional
+      // regions/scripts to zh-Hant, everything else Chinese to zh (Simplified).
+      convertDetectedLanguage: (lng: string) => {
+        if (/^zh\b/i.test(lng)) {
+          return /hant|tw|hk|mo/i.test(lng) ? 'zh-Hant' : 'zh';
+        }
+        return lng;
+      },
     },
 
     interpolation: {
@@ -108,5 +121,22 @@ i18n
       useSuspense: false,
     },
   });
+
+/**
+ * Right-to-left languages, by base subtag. None are supported yet — this set
+ * exists so adding one (e.g. Arabic) flips the document direction with no
+ * further code changes.
+ */
+const RTL_LANGUAGES = new Set(['ar', 'he', 'fa', 'ur']);
+
+// Keep <html lang> and <html dir> in sync with the active language, for
+// screen readers, SEO, and font/direction selection. Fires on initial
+// detection and on every switch, so no component needs to manage this.
+i18n.on('languageChanged', (lng) => {
+  if (typeof document !== 'undefined') {
+    document.documentElement.lang = lng;
+    document.documentElement.dir = RTL_LANGUAGES.has(lng.split('-')[0]) ? 'rtl' : 'ltr';
+  }
+});
 
 export default i18n;

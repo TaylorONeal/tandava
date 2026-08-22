@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "schedule": "Iskedyul",
+    "events": "Mga Event",
+    "students": "Mga Estudyante",
+    "teachers": "Mga Teacher",
+    "offerings": "Mga Offering",
+    "promoCodes": "Mga Promo Code",
+    "financials": "Pananalapi",
+    "products": "Mga Produkto",
+    "inventory": "Imbentaryo",
+    "purchaseOrders": "Mga Purchase Order",
+    "landingPages": "Mga Landing Page",
+    "utmBuilder": "UTM Builder",
+    "campaigns": "Mga Campaign",
+    "tasks": "Mga Gawain",
+    "reports": "Mga Report",
+    "importData": "Mag-import ng Data",
+    "smsInbox": "SMS Inbox",
+    "notifications": "Mga Notipikasyon",
+    "settings": "Mga Setting"
+  },
+  "title": "Studio Admin",
+  "studentView": "View ng Estudyante",
+  "myAccount": "Aking Account",
+  "studioSettings": "Mga Setting ng Studio",
+  "signOut": "Mag-sign out",
+
+  "schedule": {
+    "title": "Iskedyul",
+    "subtitle": "Gumawa at pamahalaan ang iskedyul ng iyong mga klase.",
+    "addClass": "Magdagdag ng Klase",
+    "emptyState": "Wala pang nakaiskedyul na klase. Gumawa ng iyong unang klase para magsimula."
+  },
+  "offerings": {
+    "title": "Mga Offering",
+    "subtitle": "Mga uri ng klase at kanilang configuration — {{count}} aktibo",
+    "newOffering": "Bagong Offering",
+    "searchPlaceholder": "Maghanap ng mga offering...",
+    "activeOfferings": "Mga Aktibong Offering"
+  },
+
+  "admin": {
+    "platformAdmin": "Platform Admin",
+    "platformDashboard": "Platform Dashboard",
+    "overview": "Pangkalahatang-tanaw ng kalusugan at aktibidad ng iyong Tandava instance.",
+    "activeStudios": "Mga Aktibong Studio",
+    "totalUsers": "Kabuuang User",
+    "stripeStatus": "Status ng Stripe",
+    "errorRate": "Error Rate",
+    "connectSupabase": "Ikonekta ang Supabase para makita ang live na data",
+    "acrossAllStudios": "Sa lahat ng studio",
+    "webhookHealth": "Kalusugan ng webhook",
+    "connectSentry": "Ikonekta ang Sentry para sa monitoring",
+    "setupChecklist": "Setup Checklist",
+    "supabaseConnected": "Nakakonekta ang Supabase",
+    "stripeConfigured": "Naka-configure ang Stripe",
+    "emailConfigured": "Naka-configure ang email provider",
+    "sentryConfigured": "Sentry error monitoring",
+    "setEnvVar": "Itakda ang {{key}} sa .env"
+  },
+
+  "studioManagement": "Pamamahala ng Studio",
+  "owner": "May-ari"
+}

@@ -1,0 +1,21 @@
+{
+  "bookingConfirmation": {
+    "youreBooked": "Du bist gebucht!",
+    "greeting": "Hallo {{name}}, dein {{type}} ist bestätigt. Wir freuen uns auf dich.",
+    "class": "Kurs",
+    "workshop": "Workshop",
+    "appointment": "Termin",
+    "instructor": "Lehrer:in",
+    "dateTime": "Datum & Uhrzeit",
+    "duration": "Dauer",
+    "location": "Ort",
+    "spotNumber": "Platznummer",
+    "addToCalendar": "Zum Kalender hinzufügen",
+    "getDirections": "Route anzeigen",
+    "whatToBring": "Was du mitbringen solltest",
+    "whatToBringText": "Bitte komm 10-15 Minuten früher zum Check-in. Bring Wasser und ein Handtuch mit und trag bequeme Kleidung. Matten sind vorhanden, du kannst aber gern deine eigene mitbringen.",
+    "cancellationPolicy": "Stornierungsrichtlinie:",
+    "manageBooking": "Buchung verwalten",
+    "needChanges": "Möchtest du etwas ändern?"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "bookingConfirmation": {
+    "youreBooked": "예약 완료!",
+    "greeting": "안녕하세요 {{name}}님, {{type}} 예약이 확정되었습니다. 뵙기를 기대합니다.",
+    "class": "수업",
+    "workshop": "워크숍",
+    "appointment": "예약",
+    "instructor": "강사",
+    "dateTime": "날짜 및 시간",
+    "duration": "소요 시간",
+    "location": "장소",
+    "spotNumber": "자리 번호",
+    "addToCalendar": "캘린더에 추가",
+    "getDirections": "길찾기",
+    "whatToBring": "준비물",
+    "whatToBringText": "체크인을 위해 10-15분 일찍 도착해 주세요. 물과 수건을 지참하고 편안한 복장을 착용하세요. 매트는 제공되지만 개인 매트를 가져오셔도 좋습니다.",
+    "cancellationPolicy": "취소 정책:",
+    "manageBooking": "예약 관리",
+    "needChanges": "변경이 필요하신가요?"
+  }
+}
