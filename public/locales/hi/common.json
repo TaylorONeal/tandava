@@ -1,117 +1,132 @@
 {
   "nav": {
-    "home": "Home",
-    "schedule": "Schedule",
-    "onDemand": "On-Demand",
-    "instructors": "Instructors",
-    "mySchedule": "My Schedule",
-    "community": "Community"
+    "home": "होम",
+    "schedule": "शेड्यूल",
+    "onDemand": "ऑन-डिमांड",
+    "events": "इवेंट",
+    "instructors": "शिक्षक",
+    "mySchedule": "मेरा शेड्यूल",
+    "community": "समुदाय"
   },
   "userMenu": {
-    "account": "Account",
-    "studioManager": "Studio Manager",
-    "frontDesk": "Front Desk",
-    "platformAdmin": "Platform Admin",
-    "signOut": "Sign out"
+    "account": "खाता",
+    "studioManager": "स्टूडियो प्रबंधन",
+    "frontDesk": "फ्रंट डेस्क",
+    "platformAdmin": "प्लेटफ़ॉर्म एडमिन",
+    "signOut": "साइन आउट"
   },
   "roles": {
-    "owner": "Owner",
-    "admin": "Admin",
-    "teacher": "Instructor",
-    "front_desk": "Front Desk",
-    "student": "Member",
-    "platform_admin": "Platform Admin"
+    "owner": "मालिक",
+    "admin": "एडमिन",
+    "teacher": "शिक्षक",
+    "front_desk": "फ्रंट डेस्क",
+    "student": "सदस्य",
+    "platform_admin": "प्लेटफ़ॉर्म एडमिन"
   },
   "status": {
-    "active": "Active",
-    "inactive": "Inactive",
-    "pending": "Pending",
-    "cancelled": "Cancelled",
-    "expired": "Expired",
-    "paused": "Paused"
+    "active": "सक्रिय",
+    "inactive": "निष्क्रिय",
+    "pending": "लंबित",
+    "cancelled": "रद्द",
+    "expired": "समाप्त",
+    "paused": "रोका गया"
   },
   "actions": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "close": "Close",
-    "confirm": "Confirm",
-    "submit": "Submit",
-    "search": "Search",
-    "filter": "Filter",
-    "reset": "Reset",
-    "back": "Back",
-    "next": "Next",
-    "loading": "Loading...",
-    "sending": "Sending...",
-    "processing": "Processing..."
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "delete": "हटाएँ",
+    "edit": "संपादित करें",
+    "close": "बंद करें",
+    "confirm": "पुष्टि करें",
+    "submit": "भेजें",
+    "search": "खोजें",
+    "filter": "फ़िल्टर",
+    "reset": "रीसेट",
+    "back": "वापस",
+    "next": "आगे",
+    "loading": "लोड हो रहा है...",
+    "sending": "भेजा जा रहा है...",
+    "processing": "प्रोसेस हो रहा है..."
   },
   "levels": {
-    "beginner": "Beginner",
-    "allLevels": "All Levels",
-    "intermediate": "Intermediate",
-    "advanced": "Advanced"
+    "beginner": "शुरुआती",
+    "allLevels": "सभी स्तर",
+    "intermediate": "मध्यम",
+    "advanced": "उन्नत"
   },
   "deliveryMode": {
-    "in_person": "In-Person",
-    "virtual": "Virtual",
-    "hybrid": "Hybrid"
+    "in_person": "स्टूडियो में",
+    "virtual": "ऑनलाइन",
+    "hybrid": "हाइब्रिड"
   },
   "paymentMethods": {
-    "card": "Credit/Debit Card",
-    "cash": "Cash",
+    "card": "क्रेडिट/डेबिट कार्ड",
+    "cash": "नकद",
     "venmo": "Venmo",
     "cashapp": "Cash App",
     "paypal": "PayPal",
     "zelle": "Zelle",
-    "check": "Check",
-    "other": "Other"
+    "check": "चेक",
+    "other": "अन्य"
   },
   "units": {
-    "min": "{{count}} min",
-    "hour_one": "{{count}} hour",
-    "hour_other": "{{count}} hours",
-    "day_one": "{{count}} day",
-    "day_other": "{{count}} days",
-    "week_one": "{{count}} week",
-    "week_other": "{{count}} weeks",
-    "class_one": "{{count}} class",
-    "class_other": "{{count}} classes",
-    "studio_one": "{{count}} studio",
-    "studio_other": "{{count}} studios",
-    "spot_one": "{{count}} spot",
-    "spot_other": "{{count}} spots",
-    "remaining": "{{count}} remaining"
+    "min": "{{count}} मिनट",
+    "hour_one": "{{count}} घंटा",
+    "hour_other": "{{count}} घंटे",
+    "day_one": "{{count}} दिन",
+    "day_other": "{{count}} दिन",
+    "week_one": "{{count}} सप्ताह",
+    "week_other": "{{count}} सप्ताह",
+    "class_one": "{{count}} क्लास",
+    "class_other": "{{count}} क्लास",
+    "studio_one": "{{count}} स्टूडियो",
+    "studio_other": "{{count}} स्टूडियो",
+    "spot_one": "{{count}} स्थान",
+    "spot_other": "{{count}} स्थान",
+    "remaining": "{{count}} शेष"
   },
   "language": {
-    "label": "Language",
-    "changeLanguage": "Change language"
+    "label": "भाषा",
+    "changeLanguage": "भाषा बदलें"
   },
   "footer": {
-    "allRightsReserved": "All rights reserved.",
-    "poweredBy": "Powered by",
-    "openSourceStudio": "Open Source Studio Management"
+    "allRightsReserved": "सर्वाधिकार सुरक्षित।",
+    "poweredBy": "संचालित",
+    "openSourceStudio": "ओपन सोर्स स्टूडियो प्रबंधन"
+  },
+  "type": {
+    "class": "क्लास",
+    "workshop": "वर्कशॉप",
+    "retreat": "रिट्रीट",
+    "appointment": "व्यक्तिगत सत्र"
+  },
+  "guest": "अतिथि",
+  "studioManagement": "स्टूडियो प्रबंधन",
+  "notFound": {
+    "title": "ओह! पेज नहीं मिला",
+    "returnHome": "होम पर लौटें"
   },
   "demo": {
-    "title": "Tandava Open Source Studio Demo",
-    "switchRole": "Switch:"
+    "title": "Tandava ओपन सोर्स स्टूडियो डेमो",
+    "switchRole": "बदलें:",
+    "studioOwner": "स्टूडियो मालिक",
+    "demoMode": "(डेमो मोड)"
   },
   "contact": {
-    "yourName": "Your Name",
-    "namePlaceholder": "Jane Doe",
-    "email": "Email",
-    "emailPlaceholder": "jane@example.com",
-    "subject": "Subject",
-    "subjectPlaceholder": "What's this about?",
-    "message": "Message",
-    "messagePlaceholder": "Tell us more...",
-    "sendMessage": "Send Message",
-    "messageSent": "Message sent!",
-    "thankYou": "Thank you for reaching out.",
-    "missingFields": "Missing fields",
-    "fillRequired": "Please fill in the subject and message.",
-    "failedToSend": "Failed to send",
-    "somethingWentWrong": "Something went wrong. Please try again."
+    "yourName": "आपका नाम",
+    "namePlaceholder": "प्रिया शर्मा",
+    "email": "ईमेल",
+    "emailPlaceholder": "priya@example.com",
+    "subject": "विषय",
+    "subjectPlaceholder": "किस बारे में बात करनी है?",
+    "message": "संदेश",
+    "messagePlaceholder": "हमें विस्तार से बताएँ...",
+    "sendMessage": "संदेश भेजें",
+    "messageSent": "संदेश भेज दिया गया!",
+    "thankYou": "संपर्क करने के लिए धन्यवाद।",
+    "missingFields": "कुछ जानकारी बाकी है",
+    "fillRequired": "कृपया विषय और संदेश भरें।",
+    "failedToSend": "भेजा नहीं जा सका",
+    "somethingWentWrong": "कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें।"
   }
 }
