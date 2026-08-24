@@ -1,0 +1,21 @@
+{
+  "bookingConfirmation": {
+    "youreBooked": "Bạn đã đặt chỗ thành công!",
+    "greeting": "Chào {{name}}, {{type}} của bạn đã được xác nhận. Hẹn gặp bạn.",
+    "class": "Lớp học",
+    "workshop": "Workshop",
+    "appointment": "Buổi hẹn riêng",
+    "instructor": "Giáo viên",
+    "dateTime": "Ngày & giờ",
+    "duration": "Thời lượng",
+    "location": "Địa điểm",
+    "spotNumber": "Số chỗ",
+    "addToCalendar": "Thêm vào lịch",
+    "getDirections": "Xem chỉ đường",
+    "whatToBring": "Cần mang theo",
+    "whatToBringText": "Vui lòng đến sớm 10-15 phút để làm thủ tục. Mang theo nước, khăn và mặc trang phục thoải mái. Studio có sẵn thảm, nhưng bạn có thể mang thảm riêng.",
+    "cancellationPolicy": "Chính sách hủy:",
+    "manageBooking": "Quản lý đặt chỗ của bạn",
+    "needChanges": "Cần thay đổi gì không?"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "emailRequired": "L'e-mail est obligatoire",
+  "emailInvalid": "Merci de saisir une adresse e-mail valide",
+  "passwordMinLength": "Le mot de passe doit contenir au moins {{min}} caractères",
+  "phoneInvalid": "Merci de saisir un numéro de téléphone valide",
+  "urlInvalid": "Merci de saisir une URL valide",
+  "handleMinLength": "L'identifiant doit contenir au moins {{min}} caractères",
+  "handleMaxLength": "L'identifiant doit contenir moins de {{max}} caractères",
+  "handleFormat": "L'identifiant ne peut contenir que des lettres, chiffres, tirets bas et tirets",
+  "fieldRequired": "{{field}} est obligatoire",
+  "fieldInvalidUrl": "Merci de saisir un {{field}} valide",
+  "endTimeAfterStart": "L'heure de fin doit être postérieure à l'heure de début",
+  "endDateAfterStart": "La date de fin doit être postérieure à la date de début",
+  "mustBePositive": "{{field}} doit être supérieur à 0",
+  "mustBeValidAmount": "{{field}} doit être un montant valide",
+  "mustBePositiveNumber": "{{field}} doit être un nombre positif"
+}

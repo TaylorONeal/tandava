@@ -1,0 +1,12 @@
+{
+  "title": "スケジュール",
+  "classDetail": "クラス",
+  "benefits": "効果",
+  "whatToBring": "お持ちいただくもの",
+  "classesTaught": "クラス担当実績",
+  "heated": "ホット",
+  "joinOnline": "オンラインで参加",
+  "locationPlusOnline": "{{location}} + オンライン",
+  "live": "ライブ",
+  "spotsLeft": "残り{{count}}席"
+}

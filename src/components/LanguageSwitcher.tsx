@@ -53,7 +53,12 @@ export function LanguageSwitcher({ compact = true }: LanguageSwitcherProps) {
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[180px] rounded-2xl p-2">
+      {/* The list grows with every language shipped — cap the height so it
+          scrolls inside the menu instead of running off the viewport. */}
+      <DropdownMenuContent
+        align="end"
+        className="min-w-[180px] max-h-[60vh] overflow-y-auto rounded-2xl p-2"
+      >
         {SUPPORTED_LANGUAGES.map((lang) => (
           <DropdownMenuItem
             key={lang.code}

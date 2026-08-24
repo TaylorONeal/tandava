@@ -1,117 +1,126 @@
 {
   "nav": {
-    "home": "Home",
-    "schedule": "Schedule",
-    "onDemand": "On-Demand",
-    "instructors": "Instructors",
-    "mySchedule": "My Schedule",
-    "community": "Community"
+    "home": "หน้าแรก",
+    "schedule": "ตารางคลาส",
+    "onDemand": "ดูย้อนหลัง",
+    "events": "อีเวนต์",
+    "instructors": "ครูผู้สอน",
+    "mySchedule": "ตารางของฉัน",
+    "community": "คอมมูนิตี้"
   },
   "userMenu": {
-    "account": "Account",
-    "studioManager": "Studio Manager",
-    "frontDesk": "Front Desk",
-    "platformAdmin": "Platform Admin",
-    "signOut": "Sign out"
+    "account": "บัญชี",
+    "studioManager": "จัดการสตูดิโอ",
+    "frontDesk": "เคาน์เตอร์ต้อนรับ",
+    "platformAdmin": "ผู้ดูแลแพลตฟอร์ม",
+    "signOut": "ออกจากระบบ"
   },
   "roles": {
-    "owner": "Owner",
-    "admin": "Admin",
-    "teacher": "Instructor",
-    "front_desk": "Front Desk",
-    "student": "Member",
-    "platform_admin": "Platform Admin"
+    "owner": "เจ้าของ",
+    "admin": "ผู้ดูแล",
+    "teacher": "ครูผู้สอน",
+    "front_desk": "เคาน์เตอร์ต้อนรับ",
+    "student": "สมาชิก",
+    "platform_admin": "ผู้ดูแลแพลตฟอร์ม"
   },
   "status": {
-    "active": "Active",
-    "inactive": "Inactive",
-    "pending": "Pending",
-    "cancelled": "Cancelled",
-    "expired": "Expired",
-    "paused": "Paused"
+    "active": "ใช้งานอยู่",
+    "inactive": "ไม่ได้ใช้งาน",
+    "pending": "รอดำเนินการ",
+    "cancelled": "ยกเลิกแล้ว",
+    "expired": "หมดอายุแล้ว",
+    "paused": "พักชั่วคราว"
   },
   "actions": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "close": "Close",
-    "confirm": "Confirm",
-    "submit": "Submit",
-    "search": "Search",
-    "filter": "Filter",
-    "reset": "Reset",
-    "back": "Back",
-    "next": "Next",
-    "loading": "Loading...",
-    "sending": "Sending...",
-    "processing": "Processing..."
+    "save": "บันทึก",
+    "cancel": "ยกเลิก",
+    "delete": "ลบ",
+    "edit": "แก้ไข",
+    "close": "ปิด",
+    "confirm": "ยืนยัน",
+    "submit": "ส่ง",
+    "search": "ค้นหา",
+    "filter": "กรอง",
+    "reset": "รีเซ็ต",
+    "back": "ย้อนกลับ",
+    "next": "ถัดไป",
+    "loading": "กำลังโหลด...",
+    "sending": "กำลังส่ง...",
+    "processing": "กำลังดำเนินการ..."
   },
   "levels": {
-    "beginner": "Beginner",
-    "allLevels": "All Levels",
-    "intermediate": "Intermediate",
-    "advanced": "Advanced"
+    "beginner": "ระดับเริ่มต้น",
+    "allLevels": "ทุกระดับ",
+    "intermediate": "ระดับกลาง",
+    "advanced": "ระดับสูง"
   },
   "deliveryMode": {
-    "in_person": "In-Person",
-    "virtual": "Virtual",
-    "hybrid": "Hybrid"
+    "in_person": "ที่สตูดิโอ",
+    "virtual": "ออนไลน์",
+    "hybrid": "ผสมผสาน"
   },
   "paymentMethods": {
-    "card": "Credit/Debit Card",
-    "cash": "Cash",
+    "card": "บัตรเครดิต/เดบิต",
+    "cash": "เงินสด",
     "venmo": "Venmo",
     "cashapp": "Cash App",
     "paypal": "PayPal",
     "zelle": "Zelle",
-    "check": "Check",
-    "other": "Other"
+    "check": "เช็ค",
+    "other": "อื่น ๆ"
   },
   "units": {
-    "min": "{{count}} min",
-    "hour_one": "{{count}} hour",
-    "hour_other": "{{count}} hours",
-    "day_one": "{{count}} day",
-    "day_other": "{{count}} days",
-    "week_one": "{{count}} week",
-    "week_other": "{{count}} weeks",
-    "class_one": "{{count}} class",
-    "class_other": "{{count}} classes",
-    "studio_one": "{{count}} studio",
-    "studio_other": "{{count}} studios",
-    "spot_one": "{{count}} spot",
-    "spot_other": "{{count}} spots",
-    "remaining": "{{count}} remaining"
+    "min": "{{count}} นาที",
+    "hour_other": "{{count}} ชั่วโมง",
+    "day_other": "{{count}} วัน",
+    "week_other": "{{count}} สัปดาห์",
+    "class_other": "{{count}} คลาส",
+    "studio_other": "{{count}} สตูดิโอ",
+    "spot_other": "{{count}} ที่",
+    "remaining": "เหลือ {{count}}"
   },
   "language": {
-    "label": "Language",
-    "changeLanguage": "Change language"
+    "label": "ภาษา",
+    "changeLanguage": "เปลี่ยนภาษา"
   },
   "footer": {
-    "allRightsReserved": "All rights reserved.",
-    "poweredBy": "Powered by",
-    "openSourceStudio": "Open Source Studio Management"
+    "allRightsReserved": "สงวนลิขสิทธิ์",
+    "poweredBy": "ขับเคลื่อนโดย",
+    "openSourceStudio": "ระบบจัดการสตูดิโอโอเพนซอร์ส"
+  },
+  "type": {
+    "class": "คลาส",
+    "workshop": "เวิร์กช็อป",
+    "retreat": "รีทรีต",
+    "appointment": "นัดหมายส่วนตัว"
+  },
+  "guest": "ผู้เยี่ยมชม",
+  "studioManagement": "การจัดการสตูดิโอ",
+  "notFound": {
+    "title": "ขออภัย ไม่พบหน้านี้",
+    "returnHome": "กลับสู่หน้าแรก"
   },
   "demo": {
-    "title": "Tandava Open Source Studio Demo",
-    "switchRole": "Switch:"
+    "title": "เดโมสตูดิโอโอเพนซอร์ส Tandava",
+    "switchRole": "สลับ:",
+    "studioOwner": "เจ้าของสตูดิโอ",
+    "demoMode": "(โหมดเดโม)"
   },
   "contact": {
-    "yourName": "Your Name",
-    "namePlaceholder": "Jane Doe",
-    "email": "Email",
-    "emailPlaceholder": "jane@example.com",
-    "subject": "Subject",
-    "subjectPlaceholder": "What's this about?",
-    "message": "Message",
-    "messagePlaceholder": "Tell us more...",
-    "sendMessage": "Send Message",
-    "messageSent": "Message sent!",
-    "thankYou": "Thank you for reaching out.",
-    "missingFields": "Missing fields",
-    "fillRequired": "Please fill in the subject and message.",
-    "failedToSend": "Failed to send",
-    "somethingWentWrong": "Something went wrong. Please try again."
+    "yourName": "ชื่อของคุณ",
+    "namePlaceholder": "สมหญิง ใจดี",
+    "email": "อีเมล",
+    "emailPlaceholder": "somying@example.com",
+    "subject": "หัวข้อ",
+    "subjectPlaceholder": "ต้องการสอบถามเรื่องอะไร?",
+    "message": "ข้อความ",
+    "messagePlaceholder": "เล่าให้เราฟังเพิ่มเติม...",
+    "sendMessage": "ส่งข้อความ",
+    "messageSent": "ส่งข้อความแล้ว!",
+    "thankYou": "ขอบคุณที่ติดต่อเรา",
+    "missingFields": "กรอกข้อมูลไม่ครบ",
+    "fillRequired": "กรุณากรอกหัวข้อและข้อความ",
+    "failedToSend": "ส่งไม่สำเร็จ",
+    "somethingWentWrong": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"
   }
 }

@@ -1,10 +1,12 @@
 {
-  "title": "Schedule",
-  "classDetail": "Class",
-  "benefits": "Benefits",
-  "whatToBring": "What to Bring",
-  "classesTaught": "classes taught",
-  "heated": "Heated",
-  "joinOnline": "Join online",
-  "locationPlusOnline": "{{location}} + Online"
+  "title": "शेड्यूल",
+  "classDetail": "क्लास",
+  "benefits": "लाभ",
+  "whatToBring": "क्या साथ लाएँ",
+  "classesTaught": "क्लास पढ़ाई गईं",
+  "heated": "हीटेड",
+  "joinOnline": "ऑनलाइन जुड़ें",
+  "locationPlusOnline": "{{location}} + ऑनलाइन",
+  "live": "लाइव",
+  "spotsLeft": "{{count}} स्थान शेष"
 }

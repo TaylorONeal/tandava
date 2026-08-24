@@ -1,123 +1,138 @@
 {
   "nav": {
-    "home": "Home",
-    "schedule": "Schedule",
-    "onDemand": "On-Demand",
-    "instructors": "Instructors",
-    "mySchedule": "My Schedule",
-    "community": "Community"
+    "home": "Inicio",
+    "schedule": "Horario",
+    "onDemand": "Bajo demanda",
+    "events": "Eventos",
+    "instructors": "Profesores",
+    "mySchedule": "Mi horario",
+    "community": "Comunidad"
   },
   "userMenu": {
-    "account": "Account",
-    "studioManager": "Studio Manager",
-    "frontDesk": "Front Desk",
-    "platformAdmin": "Platform Admin",
-    "signOut": "Sign out"
+    "account": "Cuenta",
+    "studioManager": "Gestión del estudio",
+    "frontDesk": "Recepción",
+    "platformAdmin": "Administración de la plataforma",
+    "signOut": "Cerrar sesión"
   },
   "roles": {
-    "owner": "Owner",
-    "admin": "Admin",
-    "teacher": "Instructor",
-    "front_desk": "Front Desk",
-    "student": "Member",
-    "platform_admin": "Platform Admin"
+    "owner": "Propietario",
+    "admin": "Administrador",
+    "teacher": "Profesor",
+    "front_desk": "Recepción",
+    "student": "Miembro",
+    "platform_admin": "Administrador de la plataforma"
   },
   "status": {
-    "active": "Active",
-    "inactive": "Inactive",
-    "pending": "Pending",
-    "cancelled": "Cancelled",
-    "expired": "Expired",
-    "paused": "Paused"
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "pending": "Pendiente",
+    "cancelled": "Cancelado",
+    "expired": "Caducado",
+    "paused": "En pausa"
   },
   "actions": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "close": "Close",
-    "confirm": "Confirm",
-    "submit": "Submit",
-    "search": "Search",
-    "filter": "Filter",
-    "reset": "Reset",
-    "back": "Back",
-    "next": "Next",
-    "loading": "Loading...",
-    "sending": "Sending...",
-    "processing": "Processing..."
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "submit": "Enviar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "reset": "Restablecer",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "loading": "Cargando...",
+    "sending": "Enviando...",
+    "processing": "Procesando..."
   },
   "levels": {
-    "beginner": "Beginner",
-    "allLevels": "All Levels",
-    "intermediate": "Intermediate",
-    "advanced": "Advanced"
+    "beginner": "Principiante",
+    "allLevels": "Todos los niveles",
+    "intermediate": "Intermedio",
+    "advanced": "Avanzado"
   },
   "deliveryMode": {
-    "in_person": "In-Person",
-    "virtual": "Virtual",
-    "hybrid": "Hybrid"
+    "in_person": "Presencial",
+    "virtual": "En línea",
+    "hybrid": "Híbrido"
   },
   "paymentMethods": {
-    "card": "Credit/Debit Card",
-    "cash": "Cash",
+    "card": "Tarjeta de crédito/débito",
+    "cash": "Efectivo",
     "venmo": "Venmo",
     "cashapp": "Cash App",
     "paypal": "PayPal",
     "zelle": "Zelle",
-    "check": "Check",
-    "other": "Other"
+    "check": "Cheque",
+    "other": "Otro"
   },
   "units": {
     "min": "{{count}} min",
-    "hour_one": "{{count}} hour",
-    "hour_other": "{{count}} hours",
-    "hour_many": "{{count}} hours",
-    "day_one": "{{count}} day",
-    "day_other": "{{count}} days",
-    "day_many": "{{count}} days",
-    "week_one": "{{count}} week",
-    "week_other": "{{count}} weeks",
-    "week_many": "{{count}} weeks",
-    "class_one": "{{count}} class",
-    "class_other": "{{count}} classes",
-    "class_many": "{{count}} classes",
-    "studio_one": "{{count}} studio",
-    "studio_other": "{{count}} studios",
-    "studio_many": "{{count}} studios",
-    "spot_one": "{{count}} spot",
-    "spot_other": "{{count}} spots",
-    "spot_many": "{{count}} spots",
-    "remaining": "{{count}} remaining"
+    "hour_one": "{{count}} hora",
+    "hour_many": "{{count}} horas",
+    "hour_other": "{{count}} horas",
+    "day_one": "{{count}} día",
+    "day_many": "{{count}} días",
+    "day_other": "{{count}} días",
+    "week_one": "{{count}} semana",
+    "week_many": "{{count}} semanas",
+    "week_other": "{{count}} semanas",
+    "class_one": "{{count}} clase",
+    "class_many": "{{count}} clases",
+    "class_other": "{{count}} clases",
+    "studio_one": "{{count}} estudio",
+    "studio_many": "{{count}} estudios",
+    "studio_other": "{{count}} estudios",
+    "spot_one": "{{count}} plaza",
+    "spot_many": "{{count}} plazas",
+    "spot_other": "{{count}} plazas",
+    "remaining": "quedan {{count}}"
   },
   "language": {
-    "label": "Language",
-    "changeLanguage": "Change language"
+    "label": "Idioma",
+    "changeLanguage": "Cambiar idioma"
   },
   "footer": {
-    "allRightsReserved": "All rights reserved.",
-    "poweredBy": "Powered by",
-    "openSourceStudio": "Open Source Studio Management"
+    "allRightsReserved": "Todos los derechos reservados.",
+    "poweredBy": "Con la tecnología de",
+    "openSourceStudio": "Gestión de estudios de código abierto"
+  },
+  "type": {
+    "class": "Clase",
+    "workshop": "Taller",
+    "retreat": "Retiro",
+    "appointment": "Cita"
+  },
+  "guest": "Invitado",
+  "studioManagement": "Gestión de estudios",
+  "notFound": {
+    "title": "¡Vaya! Página no encontrada",
+    "returnHome": "Volver al inicio"
   },
   "demo": {
-    "title": "Tandava Open Source Studio Demo",
-    "switchRole": "Switch:"
+    "title": "Demo del estudio de código abierto Tandava",
+    "switchRole": "Cambiar:",
+    "studioOwner": "Propietario del estudio",
+    "demoMode": "(Modo demo)"
   },
   "contact": {
-    "yourName": "Your Name",
-    "namePlaceholder": "Jane Doe",
-    "email": "Email",
-    "emailPlaceholder": "jane@example.com",
-    "subject": "Subject",
-    "subjectPlaceholder": "What's this about?",
-    "message": "Message",
-    "messagePlaceholder": "Tell us more...",
-    "sendMessage": "Send Message",
-    "messageSent": "Message sent!",
-    "thankYou": "Thank you for reaching out.",
-    "missingFields": "Missing fields",
-    "fillRequired": "Please fill in the subject and message.",
-    "failedToSend": "Failed to send",
-    "somethingWentWrong": "Something went wrong. Please try again."
+    "yourName": "Tu nombre",
+    "namePlaceholder": "Lucía García",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "lucia@ejemplo.com",
+    "subject": "Asunto",
+    "subjectPlaceholder": "¿Sobre qué quieres escribirnos?",
+    "message": "Mensaje",
+    "messagePlaceholder": "Cuéntanos más...",
+    "sendMessage": "Enviar mensaje",
+    "messageSent": "¡Mensaje enviado!",
+    "thankYou": "Gracias por ponerte en contacto.",
+    "missingFields": "Faltan campos",
+    "fillRequired": "Completa el asunto y el mensaje.",
+    "failedToSend": "No se pudo enviar",
+    "somethingWentWrong": "Algo salió mal. Inténtalo de nuevo."
   }
 }

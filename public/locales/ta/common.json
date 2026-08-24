@@ -1,0 +1,132 @@
+{
+  "nav": {
+    "home": "முகப்பு",
+    "schedule": "அட்டவணை",
+    "onDemand": "ஆன்-டிமாண்ட்",
+    "events": "நிகழ்வுகள்",
+    "instructors": "பயிற்றுநர்கள்",
+    "mySchedule": "என் அட்டவணை",
+    "community": "சமூகம்"
+  },
+  "userMenu": {
+    "account": "கணக்கு",
+    "studioManager": "ஸ்டுடியோ நிர்வாகம்",
+    "frontDesk": "வரவேற்பு",
+    "platformAdmin": "தள நிர்வாகம்",
+    "signOut": "வெளியேறு"
+  },
+  "roles": {
+    "owner": "உரிமையாளர்",
+    "admin": "நிர்வாகி",
+    "teacher": "பயிற்றுநர்",
+    "front_desk": "வரவேற்பு",
+    "student": "உறுப்பினர்",
+    "platform_admin": "தள நிர்வாகி"
+  },
+  "status": {
+    "active": "செயலில்",
+    "inactive": "செயலில் இல்லை",
+    "pending": "நிலுவையில்",
+    "cancelled": "ரத்து செய்யப்பட்டது",
+    "expired": "காலாவதியானது",
+    "paused": "இடைநிறுத்தப்பட்டது"
+  },
+  "actions": {
+    "save": "சேமி",
+    "cancel": "ரத்து செய்",
+    "delete": "நீக்கு",
+    "edit": "திருத்து",
+    "close": "மூடு",
+    "confirm": "உறுதிப்படுத்து",
+    "submit": "சமர்ப்பி",
+    "search": "தேடு",
+    "filter": "வடிகட்டு",
+    "reset": "மீட்டமை",
+    "back": "பின்செல்",
+    "next": "அடுத்து",
+    "loading": "ஏற்றுகிறது...",
+    "sending": "அனுப்புகிறது...",
+    "processing": "செயலாக்குகிறது..."
+  },
+  "levels": {
+    "beginner": "தொடக்கநிலை",
+    "allLevels": "அனைத்து நிலைகளும்",
+    "intermediate": "இடைநிலை",
+    "advanced": "மேல்நிலை"
+  },
+  "deliveryMode": {
+    "in_person": "நேரில்",
+    "virtual": "ஆன்லைன்",
+    "hybrid": "கலப்பு"
+  },
+  "paymentMethods": {
+    "card": "கிரெடிட்/டெபிட் கார்டு",
+    "cash": "ரொக்கம்",
+    "venmo": "Venmo",
+    "cashapp": "Cash App",
+    "paypal": "PayPal",
+    "zelle": "Zelle",
+    "check": "காசோலை",
+    "other": "பிற"
+  },
+  "units": {
+    "min": "{{count}} நிமிடம்",
+    "hour_one": "{{count}} மணி நேரம்",
+    "hour_other": "{{count}} மணி நேரம்",
+    "day_one": "{{count}} நாள்",
+    "day_other": "{{count}} நாட்கள்",
+    "week_one": "{{count}} வாரம்",
+    "week_other": "{{count}} வாரங்கள்",
+    "class_one": "{{count}} வகுப்பு",
+    "class_other": "{{count}} வகுப்புகள்",
+    "studio_one": "{{count}} ஸ்டுடியோ",
+    "studio_other": "{{count}} ஸ்டுடியோக்கள்",
+    "spot_one": "{{count}} இடம்",
+    "spot_other": "{{count}} இடங்கள்",
+    "remaining": "{{count}} மீதம்"
+  },
+  "language": {
+    "label": "மொழி",
+    "changeLanguage": "மொழியை மாற்று"
+  },
+  "footer": {
+    "allRightsReserved": "அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.",
+    "poweredBy": "இயக்குவது",
+    "openSourceStudio": "திறந்த மூல ஸ்டுடியோ மேலாண்மை"
+  },
+  "type": {
+    "class": "வகுப்பு",
+    "workshop": "பட்டறை",
+    "retreat": "தியான முகாம்",
+    "appointment": "தனிப்பயிற்சி"
+  },
+  "guest": "விருந்தினர்",
+  "studioManagement": "ஸ்டுடியோ மேலாண்மை",
+  "notFound": {
+    "title": "ஐயோ! பக்கம் கிடைக்கவில்லை",
+    "returnHome": "முகப்புக்குத் திரும்பு"
+  },
+  "demo": {
+    "title": "Tandava திறந்த மூல ஸ்டுடியோ டெமோ",
+    "switchRole": "மாற்று:",
+    "studioOwner": "ஸ்டுடியோ உரிமையாளர்",
+    "demoMode": "(டெமோ பயன்முறை)"
+  },
+  "contact": {
+    "yourName": "உங்கள் பெயர்",
+    "namePlaceholder": "பிரியா ராமன்",
+    "email": "மின்னஞ்சல்",
+    "emailPlaceholder": "priya@example.com",
+    "subject": "தலைப்பு",
+    "subjectPlaceholder": "எதைப் பற்றியது?",
+    "message": "செய்தி",
+    "messagePlaceholder": "மேலும் விவரமாகச் சொல்லுங்கள்...",
+    "sendMessage": "செய்தியை அனுப்பு",
+    "messageSent": "செய்தி அனுப்பப்பட்டது!",
+    "thankYou": "எங்களைத் தொடர்பு கொண்டதற்கு நன்றி.",
+    "missingFields": "நிரப்பப்படாத புலங்கள்",
+    "fillRequired": "தலைப்பையும் செய்தியையும் நிரப்பவும்.",
+    "failedToSend": "அனுப்ப முடியவில்லை",
+    "somethingWentWrong": "ஏதோ தவறு நடந்தது. மீண்டும் முயற்சிக்கவும்."
+  }
+}

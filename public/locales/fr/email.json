@@ -1,0 +1,21 @@
+{
+  "bookingConfirmation": {
+    "youreBooked": "Ta réservation est confirmée !",
+    "greeting": "Bonjour {{name}}, ton {{type}} est confirmé. Nous avons hâte de te voir.",
+    "class": "Cours",
+    "workshop": "Atelier",
+    "appointment": "Rendez-vous",
+    "instructor": "Professeur",
+    "dateTime": "Date et heure",
+    "duration": "Durée",
+    "location": "Lieu",
+    "spotNumber": "Numéro de place",
+    "addToCalendar": "Ajouter au calendrier",
+    "getDirections": "Voir l'itinéraire",
+    "whatToBring": "À apporter",
+    "whatToBringText": "Merci d'arriver 10 à 15 minutes en avance pour l'accueil. Apporte de l'eau, une serviette et porte une tenue confortable. Les tapis sont fournis, mais tu peux apporter le tien.",
+    "cancellationPolicy": "Conditions d'annulation :",
+    "manageBooking": "Gérer ta réservation",
+    "needChanges": "Besoin de modifier quelque chose ?"
+  }
+}

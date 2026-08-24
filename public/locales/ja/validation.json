@@ -1,0 +1,17 @@
+{
+  "emailRequired": "メールアドレスを入力してください",
+  "emailInvalid": "有効なメールアドレスを入力してください",
+  "passwordMinLength": "パスワードは{{min}}文字以上で入力してください",
+  "phoneInvalid": "有効な電話番号を入力してください",
+  "urlInvalid": "有効なURLを入力してください",
+  "handleMinLength": "ハンドルは{{min}}文字以上で入力してください",
+  "handleMaxLength": "ハンドルは{{max}}文字未満で入力してください",
+  "handleFormat": "ハンドルに使用できるのは英数字、アンダースコア、ハイフンのみです",
+  "fieldRequired": "{{field}}を入力してください",
+  "fieldInvalidUrl": "有効な{{field}}を入力してください",
+  "endTimeAfterStart": "終了時刻は開始時刻より後に設定してください",
+  "endDateAfterStart": "終了日は開始日より後に設定してください",
+  "mustBePositive": "{{field}}は0より大きい値にしてください",
+  "mustBeValidAmount": "{{field}}に有効な金額を入力してください",
+  "mustBePositiveNumber": "{{field}}は正の数にしてください"
+}

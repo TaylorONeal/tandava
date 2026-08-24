@@ -1,0 +1,21 @@
+{
+  "bookingConfirmation": {
+    "youreBooked": "予約が完了しました!",
+    "greeting": "{{name}}様、{{type}}のご予約が確定しました。お会いできるのを楽しみにしています。",
+    "class": "クラス",
+    "workshop": "ワークショップ",
+    "appointment": "予約セッション",
+    "instructor": "インストラクター",
+    "dateTime": "日時",
+    "duration": "所要時間",
+    "location": "場所",
+    "spotNumber": "席番号",
+    "addToCalendar": "カレンダーに追加",
+    "getDirections": "地図を見る",
+    "whatToBring": "お持ちいただくもの",
+    "whatToBringText": "受付のため10〜15分前にお越しください。お水とタオルをご持参のうえ、動きやすい服装でお越しください。マットはご用意していますが、ご自身のものもお使いいただけます。",
+    "cancellationPolicy": "キャンセルポリシー:",
+    "manageBooking": "予約を管理する",
+    "needChanges": "変更が必要ですか?"
+  }
+}
