@@ -16,6 +16,13 @@
  *   - Keys missing from a locale (coverage % is reported per locale)
  *   - Keys present in a locale but not in English (dead keys)
  *   - Plural sets that don't match the locale's CLDR plural categories
+ *   - Locales whose values are still verbatim English (untranslated scaffolding)
+ *
+ * Two numbers are reported per locale, and they mean different things:
+ *   keys  — how many keys exist (missing ones fall back to English)
+ *   text  — how many present values are actually translated, not copied English
+ * A locale can sit at 100% keys and 0% text; that is a shipped-but-untranslated
+ * locale, which is why both are reported.
  */
 
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
@@ -34,6 +41,28 @@ const warnings = [];
 // ---------------------------------------------------------------------------
 
 const PLURAL_SUFFIX = /_(zero|one|two|few|many|other)$/;
+
+/**
+ * Strings that are legitimately identical across languages: brand and product
+ * names, and units that most locales keep verbatim. Without this, correctly
+ * translated locales would look partly untranslated.
+ */
+const SHARED_TOKENS = new Set([
+  'google', 'apple', 'paypal', 'venmo', 'zelle', 'cash app', 'stripe',
+  'supabase', 'sentry', 'tandava', 'sms', 'utm', 'workshop', 'min',
+  'email', 'e-mail', 'home', 'dashboard', 'community', 'powered by',
+]);
+
+/** True when a locale value being identical to English means "not translated yet". */
+function looksUntranslated(enValue, locValue) {
+  if (enValue !== locValue) return false;
+  const v = locValue.trim().toLowerCase();
+  if (!v) return false;
+  if (SHARED_TOKENS.has(v)) return false;
+  // Pure placeholders/punctuation/digits carry no translatable text
+  if (!/[a-z]/i.test(v.replace(/\{\{[^}]*\}\}/g, ''))) return false;
+  return true;
+}
 
 /** Flatten nested JSON into { "a.b.c": "value" } pairs. */
 function flatten(obj, prefix = '') {
@@ -76,10 +105,26 @@ function groupPlurals(flatKeys) {
   return bases;
 }
 
-/** CLDR plural categories for a locale ('ban' and other non-CLDR codes → root → ['other']). */
+/**
+ * CLDR plural categories for a locale.
+ *
+ * Intl.PluralRules does NOT throw on a well-formed but unknown tag like 'ban' —
+ * it quietly negotiates down to the runtime's default locale, which would make
+ * the required plural forms depend on the build machine rather than on the
+ * language. So we resolve through INTL_LOCALE_MAP first (the same mapping the
+ * app uses for formatting) and then verify Intl actually honoured the request,
+ * falling back to 'other' only when it did not.
+ */
 function pluralCategories(locale) {
+  const requested = intlLocaleMap[locale] ?? locale;
   try {
-    return new Set(new Intl.PluralRules(locale).resolvedOptions().pluralCategories);
+    const rules = new Intl.PluralRules(requested);
+    const resolved = rules.resolvedOptions().locale;
+    if (resolved.split('-')[0] !== requested.split('-')[0]) {
+      // Intl fell back to another locale — treat as non-CLDR, 'other' only
+      return new Set(['other']);
+    }
+    return new Set(rules.resolvedOptions().pluralCategories);
   } catch {
     return new Set(['other']);
   }
@@ -100,6 +145,13 @@ function readJson(path, label) {
 
 const i18nSource = readFileSync(i18nIndexPath, 'utf8');
 const registeredCodes = [...i18nSource.matchAll(/code:\s*'([^']+)'/g)].map(m => m[1]);
+
+// INTL_LOCALE_MAP tells us which CLDR locale a non-CLDR language formats as
+// (e.g. Balinese → Indonesian). Plural validation has to follow the same map.
+const intlLocaleMap = Object.fromEntries(
+  [...(i18nSource.match(/INTL_LOCALE_MAP[^{]*\{([^}]*)\}/s)?.[1] ?? '')
+    .matchAll(/(\w[\w-]*)\s*:\s*'([^']+)'/g)].map(m => [m[1], m[2]])
+);
 const localeDirs = readdirSync(localesDir, { withFileTypes: true })
   .filter(d => d.isDirectory())
   .map(d => d.name);
@@ -139,6 +191,8 @@ for (const locale of localeDirs.filter(l => l !== 'en').sort()) {
   const cats = pluralCategories(locale);
   let totalBases = 0;
   let presentBases = 0;
+  let comparableValues = 0;
+  let untranslatedValues = 0;
 
   // Namespace files that don't exist in English are almost certainly typos
   for (const file of readdirSync(dir).filter(f => f.endsWith('.json'))) {
@@ -184,6 +238,9 @@ for (const locale of localeDirs.filter(l => l !== 'en').sort()) {
         if (!(key in flat)) continue;
         const enValue = ref.flat[key] ?? ref.flat[`${base}_other`] ?? ref.flat[base];
         if (enValue === undefined) continue;
+        comparableValues++;
+        if (looksUntranslated(enValue, flat[key])) untranslatedValues++;
+
         const want = placeholders(enValue);
         const got = placeholders(flat[key]);
         if (want.size !== got.size || [...want].some(p => !got.has(p))) {
@@ -201,16 +258,31 @@ for (const locale of localeDirs.filter(l => l !== 'en').sort()) {
     }
   }
 
-  coverage.push({ locale, pct: totalBases ? Math.round((presentBases / totalBases) * 100) : 100 });
+  const translatedPct = comparableValues
+    ? Math.round(((comparableValues - untranslatedValues) / comparableValues) * 100)
+    : 100;
+  if (untranslatedValues && translatedPct < 50) {
+    warnings.push(
+      `${locale}: ${untranslatedValues} of ${comparableValues} present strings are still verbatim English ` +
+      `(${translatedPct}% translated) — the locale ships but reads as English`
+    );
+  }
+  coverage.push({
+    locale,
+    pct: totalBases ? Math.round((presentBases / totalBases) * 100) : 100,
+    translatedPct,
+  });
 }
 
 // ---------------------------------------------------------------------------
 // Report
 // ---------------------------------------------------------------------------
 
-console.log('Locale coverage vs en:');
-for (const { locale, pct } of coverage) {
-  console.log(`  ${locale.padEnd(8)} ${String(pct).padStart(3)}%`);
+console.log('Locale coverage vs en:   keys = present, text = actually translated');
+for (const { locale, pct, translatedPct } of coverage) {
+  console.log(
+    `  ${locale.padEnd(8)} keys ${String(pct).padStart(3)}%   text ${String(translatedPct).padStart(3)}%`
+  );
 }
 
 if (warnings.length) {
