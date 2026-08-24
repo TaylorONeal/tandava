@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "ダッシュボード",
+    "schedule": "スケジュール",
+    "events": "イベント",
+    "students": "メンバー",
+    "teachers": "インストラクター",
+    "offerings": "クラス種別",
+    "promoCodes": "プロモコード",
+    "financials": "収支",
+    "products": "商品",
+    "inventory": "在庫",
+    "purchaseOrders": "発注",
+    "landingPages": "ランディングページ",
+    "utmBuilder": "UTMビルダー",
+    "campaigns": "キャンペーン",
+    "tasks": "タスク",
+    "reports": "レポート",
+    "importData": "データ取り込み",
+    "smsInbox": "SMS受信箱",
+    "notifications": "通知",
+    "settings": "設定"
+  },
+  "title": "スタジオ管理",
+  "studentView": "メンバー画面",
+  "myAccount": "マイアカウント",
+  "studioSettings": "スタジオ設定",
+  "signOut": "ログアウト",
+
+  "schedule": {
+    "title": "スケジュール",
+    "subtitle": "クラススケジュールを作成・管理します。",
+    "addClass": "クラスを追加",
+    "emptyState": "まだクラスが登録されていません。最初のクラスを作成して始めましょう。"
+  },
+  "offerings": {
+    "title": "クラス種別",
+    "subtitle": "クラスの種類と設定 — 有効{{count}}件",
+    "newOffering": "新規作成",
+    "searchPlaceholder": "クラス種別を検索...",
+    "activeOfferings": "有効なクラス種別"
+  },
+
+  "admin": {
+    "platformAdmin": "プラットフォーム管理",
+    "platformDashboard": "プラットフォーム ダッシュボード",
+    "overview": "Tandavaインスタンスの稼働状況とアクティビティの概要です。",
+    "activeStudios": "稼働中のスタジオ",
+    "totalUsers": "ユーザー総数",
+    "stripeStatus": "Stripeの状態",
+    "errorRate": "エラー率",
+    "connectSupabase": "ライブデータを表示するにはSupabaseに接続してください",
+    "acrossAllStudios": "全スタジオ合計",
+    "webhookHealth": "Webhookの状態",
+    "connectSentry": "監視するにはSentryに接続してください",
+    "setupChecklist": "セットアップ チェックリスト",
+    "supabaseConnected": "Supabase接続済み",
+    "stripeConfigured": "Stripe設定済み",
+    "emailConfigured": "メール配信サービス設定済み",
+    "sentryConfigured": "Sentryエラー監視",
+    "setEnvVar": ".envに{{key}}を設定してください"
+  },
+
+  "studioManagement": "スタジオ管理",
+  "owner": "オーナー"
+}

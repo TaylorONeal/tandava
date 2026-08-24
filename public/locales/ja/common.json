@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "home": "ホーム",
+    "schedule": "スケジュール",
+    "onDemand": "オンデマンド",
+    "events": "イベント",
+    "instructors": "インストラクター",
+    "mySchedule": "マイスケジュール",
+    "community": "コミュニティ"
+  },
+  "userMenu": {
+    "account": "アカウント",
+    "studioManager": "スタジオ管理",
+    "frontDesk": "フロントデスク",
+    "platformAdmin": "プラットフォーム管理",
+    "signOut": "ログアウト"
+  },
+  "roles": {
+    "owner": "オーナー",
+    "admin": "管理者",
+    "teacher": "インストラクター",
+    "front_desk": "フロントデスク",
+    "student": "メンバー",
+    "platform_admin": "プラットフォーム管理者"
+  },
+  "status": {
+    "active": "有効",
+    "inactive": "無効",
+    "pending": "保留中",
+    "cancelled": "キャンセル済み",
+    "expired": "期限切れ",
+    "paused": "一時停止中"
+  },
+  "actions": {
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "close": "閉じる",
+    "confirm": "確定",
+    "submit": "送信",
+    "search": "検索",
+    "filter": "絞り込み",
+    "reset": "リセット",
+    "back": "戻る",
+    "next": "次へ",
+    "loading": "読み込み中...",
+    "sending": "送信中...",
+    "processing": "処理中..."
+  },
+  "levels": {
+    "beginner": "初級",
+    "allLevels": "全レベル",
+    "intermediate": "中級",
+    "advanced": "上級"
+  },
+  "deliveryMode": {
+    "in_person": "対面",
+    "virtual": "オンライン",
+    "hybrid": "ハイブリッド"
+  },
+  "paymentMethods": {
+    "card": "クレジット/デビットカード",
+    "cash": "現金",
+    "venmo": "Venmo",
+    "cashapp": "Cash App",
+    "paypal": "PayPal",
+    "zelle": "Zelle",
+    "check": "小切手",
+    "other": "その他"
+  },
+  "units": {
+    "min": "{{count}}分",
+    "hour_other": "{{count}}時間",
+    "day_other": "{{count}}日",
+    "week_other": "{{count}}週間",
+    "class_other": "{{count}}クラス",
+    "studio_other": "{{count}}スタジオ",
+    "spot_other": "{{count}}席",
+    "remaining": "残り{{count}}"
+  },
+  "language": {
+    "label": "言語",
+    "changeLanguage": "言語を変更"
+  },
+  "footer": {
+    "allRightsReserved": "All rights reserved.",
+    "poweredBy": "Powered by",
+    "openSourceStudio": "オープンソースのスタジオ管理"
+  },
+  "type": {
+    "class": "クラス",
+    "workshop": "ワークショップ",
+    "retreat": "リトリート",
+    "appointment": "予約セッション"
+  },
+  "guest": "ゲスト",
+  "studioManagement": "スタジオ管理",
+  "notFound": {
+    "title": "ページが見つかりません",
+    "returnHome": "ホームに戻る"
+  },
+  "demo": {
+    "title": "Tandava オープンソース スタジオ デモ",
+    "switchRole": "切り替え:",
+    "studioOwner": "スタジオオーナー",
+    "demoMode": "(デモモード)"
+  },
+  "contact": {
+    "yourName": "お名前",
+    "namePlaceholder": "山田 花子",
+    "email": "メールアドレス",
+    "emailPlaceholder": "hanako@example.com",
+    "subject": "件名",
+    "subjectPlaceholder": "どのようなご用件でしょうか?",
+    "message": "メッセージ",
+    "messagePlaceholder": "詳しくお聞かせください...",
+    "sendMessage": "メッセージを送信",
+    "messageSent": "送信しました!",
+    "thankYou": "お問い合わせありがとうございます。",
+    "missingFields": "未入力の項目があります",
+    "fillRequired": "件名とメッセージをご入力ください。",
+    "failedToSend": "送信できませんでした",
+    "somethingWentWrong": "エラーが発生しました。もう一度お試しください。"
+  }
+}

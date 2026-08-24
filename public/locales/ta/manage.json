@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "டாஷ்போர்டு",
+    "schedule": "அட்டவணை",
+    "events": "நிகழ்வுகள்",
+    "students": "மாணவர்கள்",
+    "teachers": "பயிற்றுநர்கள்",
+    "offerings": "வகுப்பு வகைகள்",
+    "promoCodes": "சலுகைக் குறியீடுகள்",
+    "financials": "நிதி",
+    "products": "பொருட்கள்",
+    "inventory": "சரக்கு",
+    "purchaseOrders": "கொள்முதல் ஆணைகள்",
+    "landingPages": "லேண்டிங் பக்கங்கள்",
+    "utmBuilder": "UTM உருவாக்கி",
+    "campaigns": "பிரச்சாரங்கள்",
+    "tasks": "பணிகள்",
+    "reports": "அறிக்கைகள்",
+    "importData": "தரவை இறக்குமதி செய்",
+    "smsInbox": "SMS இன்பாக்ஸ்",
+    "notifications": "அறிவிப்புகள்",
+    "settings": "அமைப்புகள்"
+  },
+  "title": "ஸ்டுடியோ நிர்வாகம்",
+  "studentView": "மாணவர் காட்சி",
+  "myAccount": "என் கணக்கு",
+  "studioSettings": "ஸ்டுடியோ அமைப்புகள்",
+  "signOut": "வெளியேறு",
+
+  "schedule": {
+    "title": "அட்டவணை",
+    "subtitle": "உங்கள் வகுப்பு அட்டவணையை உருவாக்கி நிர்வகிக்கவும்.",
+    "addClass": "வகுப்பைச் சேர்",
+    "emptyState": "இதுவரை வகுப்புகள் எதுவும் திட்டமிடப்படவில்லை. தொடங்க உங்கள் முதல் வகுப்பை உருவாக்குங்கள்."
+  },
+  "offerings": {
+    "title": "வகுப்பு வகைகள்",
+    "subtitle": "வகுப்பு வகைகளும் அவற்றின் அமைப்புகளும் — {{count}} செயலில்",
+    "newOffering": "புதிய வகை",
+    "searchPlaceholder": "வகுப்பு வகைகளைத் தேடு...",
+    "activeOfferings": "செயலில் உள்ள வகைகள்"
+  },
+
+  "admin": {
+    "platformAdmin": "தள நிர்வாகம்",
+    "platformDashboard": "தள டாஷ்போர்டு",
+    "overview": "உங்கள் Tandava நிறுவலின் நிலை மற்றும் செயல்பாட்டின் மேலோட்டம்.",
+    "activeStudios": "செயலில் உள்ள ஸ்டுடியோக்கள்",
+    "totalUsers": "மொத்தப் பயனர்கள்",
+    "stripeStatus": "Stripe நிலை",
+    "errorRate": "பிழை விகிதம்",
+    "connectSupabase": "நேரடித் தரவைக் காண Supabase ஐ இணைக்கவும்",
+    "acrossAllStudios": "அனைத்து ஸ்டுடியோக்களிலும்",
+    "webhookHealth": "Webhook நிலை",
+    "connectSentry": "கண்காணிப்புக்கு Sentry ஐ இணைக்கவும்",
+    "setupChecklist": "அமைப்புச் சரிபார்ப்புப் பட்டியல்",
+    "supabaseConnected": "Supabase இணைக்கப்பட்டது",
+    "stripeConfigured": "Stripe அமைக்கப்பட்டது",
+    "emailConfigured": "மின்னஞ்சல் சேவை அமைக்கப்பட்டது",
+    "sentryConfigured": "Sentry பிழைக் கண்காணிப்பு",
+    "setEnvVar": ".env இல் {{key}} ஐ அமைக்கவும்"
+  },
+
+  "studioManagement": "ஸ்டுடியோ மேலாண்மை",
+  "owner": "உரிமையாளர்"
+}
