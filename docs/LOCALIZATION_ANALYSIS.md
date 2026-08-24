@@ -473,6 +473,49 @@ All five next-wave languages are implemented (machine-drafted translations, pend
 | Currency | EUR (€), also CHF for Switzerland |
 | Plural forms | 2 (one, other) |
 
+#### French (fr) — Implemented
+
+| Consideration | Details |
+|---------------|---------|
+| Text expansion | 15-25% longer than English |
+| Formality | vous vs. tu — wellness apps conventionally use informal "tu", which is what we ship |
+| Typography | Narrow no-break space before `?` `!` `:` in strict French typography; we use ordinary spaces, which is standard for web UI |
+| Plural forms | 3 (one, many, other) — `many` is the compact-number form CLDR added in v42 |
+
+#### Italian (it) — Implemented
+
+| Consideration | Details |
+|---------------|---------|
+| Text expansion | 15-25% longer than English |
+| Formality | Lei vs. tu — informal "tu" for the wellness context |
+| Plural forms | 3 (one, many, other) — same shape as French |
+
+#### Japanese (ja) — Implemented
+
+| Consideration | Details |
+|---------------|---------|
+| Script | Mixed kanji/hiragana/katakana; no spaces between words, so line breaking is handled by the browser |
+| Register | Polite です・ます throughout; a more formal 敬語 tier is a future option |
+| Text expansion | Usually *shorter* than English in character count but visually denser |
+| Plural forms | 1 (other) |
+
+#### Tamil (ta) — Implemented
+
+| Consideration | Details |
+|---------------|---------|
+| Script | Tamil script (தமிழ் அரிச்சுவடி); long words, watch narrow buttons |
+| Market | Completes Singapore's four official languages (`en`, `zh`, `ms`, `ta`); also Tamil Nadu and the diaspora |
+| Fonts | System stacks include Noto Sans Tamil on all target platforms |
+| Plural forms | 2 (one, other) |
+
+#### Vietnamese (vi) — Implemented
+
+| Consideration | Details |
+|---------------|---------|
+| Script | Latin with extensive diacritics — stacked tone marks need adequate line-height |
+| Text expansion | 10-20% longer than English |
+| Plural forms | 1 (other) |
+
 ---
 
 ## Translation Workflow for Developers
@@ -559,9 +602,29 @@ See [docs/roadmap/LANGUAGE_ROLLOUT_PLAN.md](roadmap/LANGUAGE_ROLLOUT_PLAN.md) fo
 | Locale directory not registered in `SUPPORTED_LANGUAGES` (or vice versa) | error |
 | Namespace file that doesn't exist in `en/` | error |
 | `{{placeholder}}` set differs from English for the same key | error |
-| Missing keys (fall back to English) | warning + coverage % |
+| Missing keys (fall back to English) | warning + `keys` % |
 | Keys not present in English (dead keys) | warning |
 | Plural set doesn't match the locale's CLDR categories | warning |
+| Locale whose values are still verbatim English | warning + `text` % |
+
+The report prints two percentages per locale and they measure different things:
+
+- **`keys`** — how many English keys exist in the locale. Missing ones fall back
+  to English, so this is about completeness of the file.
+- **`text`** — how many of the present values are actually translated rather than
+  copied English. A locale can be 100% `keys` and 0% `text`: fully populated,
+  fully English. Below 50% `text` the checker names the locale as untranslated
+  scaffolding.
+
+Values that are legitimately identical across languages (brand names like
+Stripe or PayPal, and a small set of shared UI words) are allowlisted in the
+script so a correct locale isn't reported as untranslated.
+
+Plural validation resolves the locale through `INTL_LOCALE_MAP` and verifies
+that `Intl.PluralRules` honoured the request. This matters because Intl does not
+throw on an unknown-but-well-formed tag such as `ban` — it negotiates down to
+the runtime's default locale, which would otherwise make the required plural
+forms depend on the build machine.
 
 ### Extraction tooling (`i18next-parser`)
 
@@ -878,20 +941,28 @@ Each locale needs:
 - [ ] Replace reference data labels (levels, delivery modes, payment methods)
 - [ ] Set up `i18next-parser` config for automated key extraction
 
-### Phase 3: First Non-English Language — Thai (Roadmap — 3-5 days + translator)
+### Phase 3: First Non-English Language — Thai
 
-- [ ] Complete Thai translation of all namespace files
+- [x] Complete Thai translation of all namespace files
 - [ ] Test Thai rendering across all UI surfaces
 - [ ] Fix layout/overflow issues with Thai text (no word spaces)
 - [ ] Verify date/time/currency formatting with `th` locale
 - [ ] Test Thai input in forms
 
-### Phase 4: Additional Languages (Roadmap — 2-3 days each + translator)
+### Phase 4: Additional Languages
 
-- [ ] Spanish (es) — neutral Latin American first, regional variants later
-- [ ] Balinese (ban) — manual translation needed, no major MT support
-- [ ] Hindi (hi) — add Devanagari font to Tailwind font stack
-- [ ] Portuguese (pt-BR) — Brazilian Portuguese first
+Seventeen non-English locales now ship at 100% key coverage with real
+translations. See [the rollout plan](roadmap/LANGUAGE_ROLLOUT_PLAN.md) for the
+per-wave order, the current status table, and the add-a-language checklist.
+
+- [x] Spanish (es) — neutral Latin American
+- [x] Balinese (ban) — manual translation, no major MT support
+- [x] Hindi (hi)
+- [x] Portuguese (pt-BR) — Brazilian Portuguese
+- [x] Indonesian (id), Malay (ms), Chinese (zh, zh-Hant), Korean (ko), Filipino (fil), German (de)
+- [x] French (fr), Italian (it), Japanese (ja), Tamil (ta), Vietnamese (vi)
+- [ ] Native-speaker review pass per locale — all current translations are machine-drafted
+- [ ] Arabic (ar) — first RTL language; needs the layout audit, not just the strings
 
 ### Phase 5: Studio-Level Localization (Roadmap — 3-5 days)
 
@@ -909,7 +980,7 @@ Each locale needs:
 - [ ] Screen reader testing in each language
 - [ ] SEO hreflang setup for landing pages
 - [ ] Translator documentation (style guide, glossary, process)
-- [ ] CI check for missing translation keys
+- [x] CI check for missing translation keys (`scripts/check-locales.mjs`, wired to `prebuild`)
 
 ---
 

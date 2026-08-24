@@ -1,10 +1,12 @@
 {
-  "title": "Schedule",
-  "classDetail": "Class",
-  "benefits": "Benefits",
-  "whatToBring": "What to Bring",
-  "classesTaught": "classes taught",
-  "heated": "Heated",
-  "joinOnline": "Join online",
-  "locationPlusOnline": "{{location}} + Online"
+  "title": "Agenda",
+  "classDetail": "Aula",
+  "benefits": "Benefícios",
+  "whatToBring": "O que levar",
+  "classesTaught": "aulas ministradas",
+  "heated": "Sala aquecida",
+  "joinOnline": "Participar online",
+  "locationPlusOnline": "{{location}} + online",
+  "live": "Ao vivo",
+  "spotsLeft": "{{count}} vagas restantes"
 }

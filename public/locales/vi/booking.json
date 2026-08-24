@@ -1,0 +1,71 @@
+{
+  "bookNow": "Đặt chỗ ngay",
+  "joinWaitlist": "Vào danh sách chờ",
+  "joinNow": "Tham gia ngay",
+  "cancelBooking": "Hủy đặt chỗ",
+  "confirmBooking": "Xác nhận đặt chỗ",
+  "processing": "Đang xử lý...",
+  "booking": "Đang đặt chỗ...",
+  "payAmount": "Thanh toán {{amount}}",
+  "included": "Đã bao gồm",
+  "free": "Miễn phí",
+  "full": "Hết chỗ",
+
+  "spotsLeft_other": "còn {{count}}",
+  "classesRemaining_other": "còn {{count}} lớp",
+  "classesRemainingAfter_other": "còn {{count}} lớp sau buổi này",
+  "unlimitedClasses": "Không giới hạn lớp",
+  "oneTimePayment": "Thanh toán một lần",
+
+  "selectPaymentMethod": "Chọn phương thức thanh toán",
+  "recommended": "Được đề xuất",
+  "doesntCover": "{{type}} này không áp dụng cho loại lớp này",
+  "expires": "Hết hạn ngày {{date}}",
+
+  "youreBooked": "Bạn đã đặt chỗ thành công!",
+  "seeYouAt": "Hẹn gặp bạn tại {{studio}}",
+  "cantWaitToSee": "Chúng tôi rất mong được gặp bạn trên thảm tập",
+  "withTeacher": "cùng {{teacher}}",
+  "addToCalendar": "Thêm vào lịch",
+  "inviteFriend": "Mời bạn bè",
+  "done": "Xong",
+
+  "addedToWaitlist": "Đã vào danh sách chờ!",
+  "wellNotify": "Chúng tôi sẽ báo cho bạn khi có chỗ trống",
+  "addedToCalendar": "Đã thêm vào lịch",
+  "shareLinkCopied": "Đã sao chép liên kết chia sẻ!",
+
+  "freeCancellation": "Hủy miễn phí trước giờ học {{hours}} tiếng. Hủy muộn có thể bị tính phí.",
+  "bookClass": "Đặt lớp học",
+  "book": "Đặt chỗ",
+  "waitlist": "Danh sách chờ",
+  "bookingConfirmed": "Đã xác nhận đặt chỗ!",
+  "classIsFull": "Lớp đã hết chỗ",
+  "youllBeWaitlisted": "Bạn sẽ được thêm vào danh sách chờ.",
+  "waitlistNotify": "Bạn sẽ được thêm vào danh sách chờ. Chúng tôi sẽ báo khi có chỗ trống.",
+  "usingSource": "Dùng {{source}}",
+  "useDifferentPayment": "Dùng phương thức thanh toán khác",
+  "paymentSummary": "Tóm tắt thanh toán",
+  "agreeToPolicy": "Khi đặt chỗ, bạn đồng ý với chính sách hủy",
+  "freeCancellationShort": "Hủy miễn phí trước giờ học {{hours}} tiếng",
+  "payDropInRate": "Thanh toán giá lẻ",
+  "continue": "Tiếp tục",
+  "minutes_other": "{{count}} phút",
+  "pleaseSelectPayment": "Vui lòng chọn phương thức thanh toán",
+
+  "addOns": {
+    "title": "Bạn muốn chúng tôi chuẩn bị sẵn gì không?",
+    "subtitle": "Hoàn toàn tùy chọn. Bạn luôn có thể thêm tại studio.",
+    "addToBooking": "Thêm vào đặt chỗ của tôi",
+    "skip": "Bỏ qua",
+    "added": "Đã thêm dịch vụ",
+    "readyForYou": "Chúng tôi sẽ chuẩn bị sẵn cho bạn!"
+  },
+
+  "paymentSources": {
+    "membership": "Gói thành viên",
+    "classPack": "Gói lớp học",
+    "workshopPass": "Vé workshop",
+    "dropIn": "Vé lẻ"
+  }
+}

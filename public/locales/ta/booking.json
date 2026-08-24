@@ -1,0 +1,75 @@
+{
+  "bookNow": "இப்போது பதிவு செய்",
+  "joinWaitlist": "காத்திருப்புப் பட்டியலில் சேர்",
+  "joinNow": "இப்போது சேர்",
+  "cancelBooking": "பதிவை ரத்து செய்",
+  "confirmBooking": "பதிவை உறுதிப்படுத்து",
+  "processing": "செயலாக்குகிறது...",
+  "booking": "பதிவு செய்கிறது...",
+  "payAmount": "{{amount}} செலுத்து",
+  "included": "உள்ளடங்கியது",
+  "free": "இலவசம்",
+  "full": "நிரம்பியது",
+
+  "spotsLeft_one": "{{count}} மீதம்",
+  "spotsLeft_other": "{{count}} மீதம்",
+  "classesRemaining_one": "{{count}} வகுப்பு மீதம்",
+  "classesRemaining_other": "{{count}} வகுப்புகள் மீதம்",
+  "classesRemainingAfter_one": "இதற்குப் பிறகு {{count}} வகுப்பு மீதம்",
+  "classesRemainingAfter_other": "இதற்குப் பிறகு {{count}} வகுப்புகள் மீதம்",
+  "unlimitedClasses": "வரம்பற்ற வகுப்புகள்",
+  "oneTimePayment": "ஒருமுறை கட்டணம்",
+
+  "selectPaymentMethod": "கட்டண முறையைத் தேர்ந்தெடு",
+  "recommended": "பரிந்துரைக்கப்படுகிறது",
+  "doesntCover": "இந்த {{type}} இந்த வகை வகுப்பிற்குப் பொருந்தாது",
+  "expires": "{{date}} அன்று காலாவதியாகும்",
+
+  "youreBooked": "உங்கள் இடம் உறுதி!",
+  "seeYouAt": "{{studio}} இல் சந்திப்போம்",
+  "cantWaitToSee": "பாயில் உங்களைச் சந்திக்க ஆவலுடன் காத்திருக்கிறோம்",
+  "withTeacher": "{{teacher}} உடன்",
+  "addToCalendar": "காலெண்டரில் சேர்",
+  "inviteFriend": "நண்பரை அழை",
+  "done": "முடிந்தது",
+
+  "addedToWaitlist": "காத்திருப்புப் பட்டியலில் சேர்க்கப்பட்டது!",
+  "wellNotify": "இடம் காலியானால் உங்களுக்குத் தெரிவிப்போம்",
+  "addedToCalendar": "காலெண்டரில் சேர்க்கப்பட்டது",
+  "shareLinkCopied": "பகிர்வு இணைப்பு நகலெடுக்கப்பட்டது!",
+
+  "freeCancellation": "வகுப்புக்கு {{hours}} மணி நேரம் முன்பு வரை இலவச ரத்து. தாமதமான ரத்துக்குக் கட்டணம் விதிக்கப்படலாம்.",
+  "bookClass": "வகுப்பைப் பதிவு செய்",
+  "book": "பதிவு செய்",
+  "waitlist": "காத்திருப்புப் பட்டியல்",
+  "bookingConfirmed": "பதிவு உறுதி செய்யப்பட்டது!",
+  "classIsFull": "வகுப்பு நிரம்பிவிட்டது",
+  "youllBeWaitlisted": "நீங்கள் காத்திருப்புப் பட்டியலில் சேர்க்கப்படுவீர்கள்.",
+  "waitlistNotify": "நீங்கள் காத்திருப்புப் பட்டியலில் சேர்க்கப்படுவீர்கள். இடம் காலியானால் தெரிவிப்போம்.",
+  "usingSource": "{{source}} பயன்படுத்துகிறது",
+  "useDifferentPayment": "வேறு கட்டண முறையைப் பயன்படுத்து",
+  "paymentSummary": "கட்டணச் சுருக்கம்",
+  "agreeToPolicy": "பதிவு செய்வதன் மூலம் ரத்துக் கொள்கையை ஏற்கிறீர்கள்",
+  "freeCancellationShort": "வகுப்புக்கு {{hours}} மணி நேரம் முன்பு வரை இலவச ரத்து",
+  "payDropInRate": "டிராப்-இன் கட்டணம் செலுத்து",
+  "continue": "தொடர்",
+  "minutes_one": "{{count}} நிமிடம்",
+  "minutes_other": "{{count}} நிமிடங்கள்",
+  "pleaseSelectPayment": "கட்டண முறையைத் தேர்ந்தெடுக்கவும்",
+
+  "addOns": {
+    "title": "உங்களுக்காக ஏதேனும் தயார் செய்ய வேண்டுமா?",
+    "subtitle": "விருப்பத்தேர்வு மட்டுமே. ஸ்டுடியோவிலும் இதைச் சேர்க்கலாம்.",
+    "addToBooking": "என் பதிவில் சேர்",
+    "skip": "இப்போது வேண்டாம்",
+    "added": "கூடுதல் சேவைகள் சேர்க்கப்பட்டன",
+    "readyForYou": "உங்களுக்காகத் தயாராக வைத்திருப்போம்!"
+  },
+
+  "paymentSources": {
+    "membership": "உறுப்பினர் சேர்க்கை",
+    "classPack": "வகுப்புத் தொகுப்பு",
+    "workshopPass": "பட்டறை அனுமதி",
+    "dropIn": "டிராப்-இன்"
+  }
+}

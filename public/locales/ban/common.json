@@ -1,117 +1,126 @@
 {
   "nav": {
-    "home": "Home",
-    "schedule": "Schedule",
+    "home": "Beranda",
+    "schedule": "Jadwal",
     "onDemand": "On-Demand",
-    "instructors": "Instructors",
-    "mySchedule": "My Schedule",
-    "community": "Community"
+    "events": "Acara",
+    "instructors": "Guru",
+    "mySchedule": "Jadwal Tiang",
+    "community": "Krama"
   },
   "userMenu": {
-    "account": "Account",
-    "studioManager": "Studio Manager",
-    "frontDesk": "Front Desk",
-    "platformAdmin": "Platform Admin",
-    "signOut": "Sign out"
+    "account": "Akun",
+    "studioManager": "Manajemen Studio",
+    "frontDesk": "Meja Depan",
+    "platformAdmin": "Admin Platform",
+    "signOut": "Medal"
   },
   "roles": {
-    "owner": "Owner",
+    "owner": "Nuwe Studio",
     "admin": "Admin",
-    "teacher": "Instructor",
-    "front_desk": "Front Desk",
-    "student": "Member",
-    "platform_admin": "Platform Admin"
+    "teacher": "Guru",
+    "front_desk": "Meja Depan",
+    "student": "Anggota",
+    "platform_admin": "Admin Platform"
   },
   "status": {
-    "active": "Active",
-    "inactive": "Inactive",
-    "pending": "Pending",
-    "cancelled": "Cancelled",
-    "expired": "Expired",
-    "paused": "Paused"
+    "active": "Aktif",
+    "inactive": "Nenten Aktif",
+    "pending": "Kantun Nyantos",
+    "cancelled": "Kabatalang",
+    "expired": "Sampun Lintang",
+    "paused": "Kaandeg Akedik"
   },
   "actions": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "close": "Close",
-    "confirm": "Confirm",
-    "submit": "Submit",
-    "search": "Search",
-    "filter": "Filter",
-    "reset": "Reset",
-    "back": "Back",
-    "next": "Next",
-    "loading": "Loading...",
-    "sending": "Sending...",
-    "processing": "Processing..."
+    "save": "Simpen",
+    "cancel": "Batalang",
+    "delete": "Hapus",
+    "edit": "Ubah",
+    "close": "Tutup",
+    "confirm": "Pastikayang",
+    "submit": "Kirim",
+    "search": "Rereh",
+    "filter": "Saring",
+    "reset": "Balikang",
+    "back": "Mewali",
+    "next": "Salanturnyane",
+    "loading": "Kantun ngemuat...",
+    "sending": "Kantun ngirim...",
+    "processing": "Kantun kaproses..."
   },
   "levels": {
-    "beginner": "Beginner",
-    "allLevels": "All Levels",
-    "intermediate": "Intermediate",
-    "advanced": "Advanced"
+    "beginner": "Pemula",
+    "allLevels": "Sami Tingkat",
+    "intermediate": "Menengah",
+    "advanced": "Lanjut"
   },
   "deliveryMode": {
-    "in_person": "In-Person",
-    "virtual": "Virtual",
-    "hybrid": "Hybrid"
+    "in_person": "Ring Studio",
+    "virtual": "Online",
+    "hybrid": "Campuran"
   },
   "paymentMethods": {
-    "card": "Credit/Debit Card",
-    "cash": "Cash",
+    "card": "Kartu Kredit/Debit",
+    "cash": "Jinah Tunai",
     "venmo": "Venmo",
     "cashapp": "Cash App",
     "paypal": "PayPal",
     "zelle": "Zelle",
-    "check": "Check",
-    "other": "Other"
+    "check": "Cek",
+    "other": "Sane Lianan"
   },
   "units": {
-    "min": "{{count}} min",
-    "hour_one": "{{count}} hour",
-    "hour_other": "{{count}} hours",
-    "day_one": "{{count}} day",
-    "day_other": "{{count}} days",
-    "week_one": "{{count}} week",
-    "week_other": "{{count}} weeks",
-    "class_one": "{{count}} class",
-    "class_other": "{{count}} classes",
-    "studio_one": "{{count}} studio",
-    "studio_other": "{{count}} studios",
-    "spot_one": "{{count}} spot",
-    "spot_other": "{{count}} spots",
-    "remaining": "{{count}} remaining"
+    "min": "{{count}} menit",
+    "hour_other": "{{count}} jam",
+    "day_other": "{{count}} rahina",
+    "week_other": "{{count}} minggu",
+    "class_other": "{{count}} kelas",
+    "studio_other": "{{count}} studio",
+    "spot_other": "{{count}} genah",
+    "remaining": "kantun {{count}}"
   },
   "language": {
-    "label": "Language",
-    "changeLanguage": "Change language"
+    "label": "Basa",
+    "changeLanguage": "Ganti basa"
   },
   "footer": {
-    "allRightsReserved": "All rights reserved.",
-    "poweredBy": "Powered by",
-    "openSourceStudio": "Open Source Studio Management"
+    "allRightsReserved": "Sami hak kacadang.",
+    "poweredBy": "Kasokong olih",
+    "openSourceStudio": "Manajemen Studio Open Source"
+  },
+  "type": {
+    "class": "Kelas",
+    "workshop": "Lokakarya",
+    "retreat": "Retret",
+    "appointment": "Sesi Pribadi"
+  },
+  "guest": "Tamiu",
+  "studioManagement": "Manajemen Studio",
+  "notFound": {
+    "title": "Ampura! Kaca nenten kapanggih",
+    "returnHome": "Mewali ka Beranda"
   },
   "demo": {
-    "title": "Tandava Open Source Studio Demo",
-    "switchRole": "Switch:"
+    "title": "Demo Studio Open Source Tandava",
+    "switchRole": "Ganti:",
+    "studioOwner": "Nuwe Studio",
+    "demoMode": "(Mode demo)"
   },
   "contact": {
-    "yourName": "Your Name",
-    "namePlaceholder": "Jane Doe",
+    "yourName": "Wastan Ragane",
+    "namePlaceholder": "Ni Luh Ayu",
     "email": "Email",
-    "emailPlaceholder": "jane@example.com",
-    "subject": "Subject",
-    "subjectPlaceholder": "What's this about?",
-    "message": "Message",
-    "messagePlaceholder": "Tell us more...",
-    "sendMessage": "Send Message",
-    "messageSent": "Message sent!",
-    "thankYou": "Thank you for reaching out.",
-    "missingFields": "Missing fields",
-    "fillRequired": "Please fill in the subject and message.",
-    "failedToSend": "Failed to send",
-    "somethingWentWrong": "Something went wrong. Please try again."
+    "emailPlaceholder": "ayu@example.com",
+    "subject": "Indik",
+    "subjectPlaceholder": "Indik napi puniki?",
+    "message": "Pesan",
+    "messagePlaceholder": "Nikayang malih akidik...",
+    "sendMessage": "Kirim Pesan",
+    "messageSent": "Pesan sampun kakirim!",
+    "thankYou": "Matur suksma sampun ngubungin tiang.",
+    "missingFields": "Wenten sane durung kaisi",
+    "fillRequired": "Ledang isi indik miwah pesan.",
+    "failedToSend": "Nenten prasida kakirim",
+    "somethingWentWrong": "Wenten iwang. Ledang cobain malih."
   }
 }

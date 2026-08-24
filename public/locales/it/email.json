@@ -1,0 +1,21 @@
+{
+  "bookingConfirmation": {
+    "youreBooked": "La tua prenotazione è confermata!",
+    "greeting": "Ciao {{name}}, il tuo {{type}} è confermato. Non vediamo l'ora di vederti.",
+    "class": "Lezione",
+    "workshop": "Workshop",
+    "appointment": "Appuntamento",
+    "instructor": "Insegnante",
+    "dateTime": "Data e ora",
+    "duration": "Durata",
+    "location": "Luogo",
+    "spotNumber": "Numero del posto",
+    "addToCalendar": "Aggiungi al calendario",
+    "getDirections": "Indicazioni stradali",
+    "whatToBring": "Cosa portare",
+    "whatToBringText": "Arriva 10-15 minuti prima per il check-in. Porta acqua e un asciugamano e indossa abbigliamento comodo. I tappetini sono a disposizione, ma puoi portare il tuo.",
+    "cancellationPolicy": "Politica di cancellazione:",
+    "manageBooking": "Gestisci la tua prenotazione",
+    "needChanges": "Devi modificare qualcosa?"
+  }
+}

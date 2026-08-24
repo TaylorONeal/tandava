@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "schedule": "Calendario",
+    "events": "Eventi",
+    "students": "Allievi",
+    "teachers": "Insegnanti",
+    "offerings": "Tipi di lezione",
+    "promoCodes": "Codici promo",
+    "financials": "Contabilità",
+    "products": "Prodotti",
+    "inventory": "Magazzino",
+    "purchaseOrders": "Ordini di acquisto",
+    "landingPages": "Landing page",
+    "utmBuilder": "Generatore UTM",
+    "campaigns": "Campagne",
+    "tasks": "Attività",
+    "reports": "Report",
+    "importData": "Importa dati",
+    "smsInbox": "Posta SMS",
+    "notifications": "Notifiche",
+    "settings": "Impostazioni"
+  },
+  "title": "Amministrazione studio",
+  "studentView": "Vista allievo",
+  "myAccount": "Il mio account",
+  "studioSettings": "Impostazioni studio",
+  "signOut": "Esci",
+
+  "schedule": {
+    "title": "Calendario",
+    "subtitle": "Crea e gestisci il calendario delle lezioni.",
+    "addClass": "Aggiungi lezione",
+    "emptyState": "Nessuna lezione in calendario. Crea la tua prima lezione per iniziare."
+  },
+  "offerings": {
+    "title": "Tipi di lezione",
+    "subtitle": "Tipi di lezione e relative configurazioni — {{count}} attivi",
+    "newOffering": "Nuovo tipo",
+    "searchPlaceholder": "Cerca tipi di lezione...",
+    "activeOfferings": "Tipi attivi"
+  },
+
+  "admin": {
+    "platformAdmin": "Amministrazione piattaforma",
+    "platformDashboard": "Dashboard piattaforma",
+    "overview": "Panoramica dello stato e dell'attività della tua istanza Tandava.",
+    "activeStudios": "Studi attivi",
+    "totalUsers": "Utenti totali",
+    "stripeStatus": "Stato Stripe",
+    "errorRate": "Tasso di errore",
+    "connectSupabase": "Collega Supabase per vedere i dati in tempo reale",
+    "acrossAllStudios": "Su tutti gli studi",
+    "webhookHealth": "Stato dei webhook",
+    "connectSentry": "Collega Sentry per il monitoraggio",
+    "setupChecklist": "Checklist di configurazione",
+    "supabaseConnected": "Supabase collegato",
+    "stripeConfigured": "Stripe configurato",
+    "emailConfigured": "Provider email configurato",
+    "sentryConfigured": "Monitoraggio errori Sentry",
+    "setEnvVar": "Imposta {{key}} in .env"
+  },
+
+  "studioManagement": "Gestione studio",
+  "owner": "Titolare"
+}

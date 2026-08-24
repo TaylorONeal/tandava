@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "Bảng điều khiển",
+    "schedule": "Lịch lớp",
+    "events": "Sự kiện",
+    "students": "Học viên",
+    "teachers": "Giáo viên",
+    "offerings": "Loại lớp",
+    "promoCodes": "Mã khuyến mãi",
+    "financials": "Tài chính",
+    "products": "Sản phẩm",
+    "inventory": "Kho hàng",
+    "purchaseOrders": "Đơn nhập hàng",
+    "landingPages": "Trang đích",
+    "utmBuilder": "Trình tạo UTM",
+    "campaigns": "Chiến dịch",
+    "tasks": "Công việc",
+    "reports": "Báo cáo",
+    "importData": "Nhập dữ liệu",
+    "smsInbox": "Hộp thư SMS",
+    "notifications": "Thông báo",
+    "settings": "Cài đặt"
+  },
+  "title": "Quản trị studio",
+  "studentView": "Giao diện học viên",
+  "myAccount": "Tài khoản của tôi",
+  "studioSettings": "Cài đặt studio",
+  "signOut": "Đăng xuất",
+
+  "schedule": {
+    "title": "Lịch lớp",
+    "subtitle": "Tạo và quản lý lịch lớp học của bạn.",
+    "addClass": "Thêm lớp",
+    "emptyState": "Chưa có lớp nào được lên lịch. Tạo lớp đầu tiên để bắt đầu."
+  },
+  "offerings": {
+    "title": "Loại lớp",
+    "subtitle": "Các loại lớp và cấu hình — {{count}} đang hoạt động",
+    "newOffering": "Tạo loại lớp",
+    "searchPlaceholder": "Tìm loại lớp...",
+    "activeOfferings": "Loại lớp đang hoạt động"
+  },
+
+  "admin": {
+    "platformAdmin": "Quản trị nền tảng",
+    "platformDashboard": "Bảng điều khiển nền tảng",
+    "overview": "Tổng quan về tình trạng và hoạt động của hệ thống Tandava.",
+    "activeStudios": "Studio đang hoạt động",
+    "totalUsers": "Tổng số người dùng",
+    "stripeStatus": "Trạng thái Stripe",
+    "errorRate": "Tỷ lệ lỗi",
+    "connectSupabase": "Kết nối Supabase để xem dữ liệu trực tiếp",
+    "acrossAllStudios": "Trên tất cả studio",
+    "webhookHealth": "Tình trạng webhook",
+    "connectSentry": "Kết nối Sentry để giám sát",
+    "setupChecklist": "Danh sách thiết lập",
+    "supabaseConnected": "Đã kết nối Supabase",
+    "stripeConfigured": "Đã cấu hình Stripe",
+    "emailConfigured": "Đã cấu hình dịch vụ email",
+    "sentryConfigured": "Giám sát lỗi Sentry",
+    "setEnvVar": "Đặt {{key}} trong .env"
+  },
+
+  "studioManagement": "Quản lý studio",
+  "owner": "Chủ studio"
+}

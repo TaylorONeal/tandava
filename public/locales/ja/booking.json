@@ -1,0 +1,71 @@
+{
+  "bookNow": "今すぐ予約",
+  "joinWaitlist": "キャンセル待ちに登録",
+  "joinNow": "今すぐ参加",
+  "cancelBooking": "予約をキャンセル",
+  "confirmBooking": "予約を確定",
+  "processing": "処理中...",
+  "booking": "予約中...",
+  "payAmount": "{{amount}}を支払う",
+  "included": "込み",
+  "free": "無料",
+  "full": "満席",
+
+  "spotsLeft_other": "残り{{count}}席",
+  "classesRemaining_other": "残り{{count}}クラス",
+  "classesRemainingAfter_other": "このクラス後、残り{{count}}クラス",
+  "unlimitedClasses": "クラス受け放題",
+  "oneTimePayment": "一回払い",
+
+  "selectPaymentMethod": "お支払い方法を選択",
+  "recommended": "おすすめ",
+  "doesntCover": "この{{type}}はこのクラスの種類には利用できません",
+  "expires": "有効期限 {{date}}",
+
+  "youreBooked": "予約が完了しました!",
+  "seeYouAt": "{{studio}}でお待ちしています",
+  "cantWaitToSee": "マットの上でお会いできるのを楽しみにしています",
+  "withTeacher": "担当: {{teacher}}",
+  "addToCalendar": "カレンダーに追加",
+  "inviteFriend": "友達を招待",
+  "done": "完了",
+
+  "addedToWaitlist": "キャンセル待ちに登録しました!",
+  "wellNotify": "空きが出ましたらお知らせします",
+  "addedToCalendar": "カレンダーに追加しました",
+  "shareLinkCopied": "共有リンクをコピーしました!",
+
+  "freeCancellation": "クラス開始の{{hours}}時間前まで無料でキャンセルできます。直前のキャンセルには料金が発生する場合があります。",
+  "bookClass": "クラスを予約",
+  "book": "予約",
+  "waitlist": "キャンセル待ち",
+  "bookingConfirmed": "予約が確定しました!",
+  "classIsFull": "このクラスは満席です",
+  "youllBeWaitlisted": "キャンセル待ちに登録されます。",
+  "waitlistNotify": "キャンセル待ちに登録されます。空きが出ましたらお知らせします。",
+  "usingSource": "{{source}}を利用",
+  "useDifferentPayment": "別のお支払い方法を使う",
+  "paymentSummary": "お支払い内容",
+  "agreeToPolicy": "予約するとキャンセルポリシーに同意したことになります",
+  "freeCancellationShort": "クラス開始の{{hours}}時間前まで無料でキャンセル可能",
+  "payDropInRate": "ドロップイン料金を支払う",
+  "continue": "次へ進む",
+  "minutes_other": "{{count}}分",
+  "pleaseSelectPayment": "お支払い方法を選択してください",
+
+  "addOns": {
+    "title": "ご用意しておくものはありますか?",
+    "subtitle": "任意です。スタジオでも追加いただけます。",
+    "addToBooking": "予約に追加する",
+    "skip": "今回はスキップ",
+    "added": "オプションを追加しました",
+    "readyForYou": "ご用意してお待ちしています!"
+  },
+
+  "paymentSources": {
+    "membership": "メンバーシップ",
+    "classPack": "回数券",
+    "workshopPass": "ワークショップパス",
+    "dropIn": "ドロップイン"
+  }
+}

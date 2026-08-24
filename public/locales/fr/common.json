@@ -1,0 +1,138 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "schedule": "Planning",
+    "onDemand": "À la demande",
+    "events": "Événements",
+    "instructors": "Professeurs",
+    "mySchedule": "Mon planning",
+    "community": "Communauté"
+  },
+  "userMenu": {
+    "account": "Compte",
+    "studioManager": "Gestion du studio",
+    "frontDesk": "Accueil",
+    "platformAdmin": "Administration plateforme",
+    "signOut": "Se déconnecter"
+  },
+  "roles": {
+    "owner": "Propriétaire",
+    "admin": "Administrateur",
+    "teacher": "Professeur",
+    "front_desk": "Accueil",
+    "student": "Membre",
+    "platform_admin": "Administrateur plateforme"
+  },
+  "status": {
+    "active": "Actif",
+    "inactive": "Inactif",
+    "pending": "En attente",
+    "cancelled": "Annulé",
+    "expired": "Expiré",
+    "paused": "En pause"
+  },
+  "actions": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "submit": "Envoyer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "reset": "Réinitialiser",
+    "back": "Retour",
+    "next": "Suivant",
+    "loading": "Chargement...",
+    "sending": "Envoi...",
+    "processing": "Traitement..."
+  },
+  "levels": {
+    "beginner": "Débutant",
+    "allLevels": "Tous niveaux",
+    "intermediate": "Intermédiaire",
+    "advanced": "Avancé"
+  },
+  "deliveryMode": {
+    "in_person": "Sur place",
+    "virtual": "En ligne",
+    "hybrid": "Hybride"
+  },
+  "paymentMethods": {
+    "card": "Carte bancaire",
+    "cash": "Espèces",
+    "venmo": "Venmo",
+    "cashapp": "Cash App",
+    "paypal": "PayPal",
+    "zelle": "Zelle",
+    "check": "Chèque",
+    "other": "Autre"
+  },
+  "units": {
+    "min": "{{count}} min",
+    "hour_one": "{{count}} heure",
+    "hour_many": "{{count}} heures",
+    "hour_other": "{{count}} heures",
+    "day_one": "{{count}} jour",
+    "day_many": "{{count}} jours",
+    "day_other": "{{count}} jours",
+    "week_one": "{{count}} semaine",
+    "week_many": "{{count}} semaines",
+    "week_other": "{{count}} semaines",
+    "class_one": "{{count}} cours",
+    "class_many": "{{count}} cours",
+    "class_other": "{{count}} cours",
+    "studio_one": "{{count}} studio",
+    "studio_many": "{{count}} studios",
+    "studio_other": "{{count}} studios",
+    "spot_one": "{{count}} place",
+    "spot_many": "{{count}} places",
+    "spot_other": "{{count}} places",
+    "remaining": "{{count}} restant(e)s"
+  },
+  "language": {
+    "label": "Langue",
+    "changeLanguage": "Changer de langue"
+  },
+  "footer": {
+    "allRightsReserved": "Tous droits réservés.",
+    "poweredBy": "Propulsé par",
+    "openSourceStudio": "Gestion de studio open source"
+  },
+  "type": {
+    "class": "Cours",
+    "workshop": "Atelier",
+    "retreat": "Retraite",
+    "appointment": "Rendez-vous"
+  },
+  "guest": "Invité",
+  "studioManagement": "Gestion de studio",
+  "notFound": {
+    "title": "Oups ! Page introuvable",
+    "returnHome": "Retour à l'accueil"
+  },
+  "demo": {
+    "title": "Démo studio open source Tandava",
+    "switchRole": "Changer :",
+    "studioOwner": "Propriétaire du studio",
+    "demoMode": "(Mode démo)"
+  },
+  "contact": {
+    "yourName": "Votre nom",
+    "namePlaceholder": "Camille Martin",
+    "email": "E-mail",
+    "emailPlaceholder": "camille@exemple.fr",
+    "subject": "Objet",
+    "subjectPlaceholder": "De quoi s'agit-il ?",
+    "message": "Message",
+    "messagePlaceholder": "Dites-nous en plus...",
+    "sendMessage": "Envoyer le message",
+    "messageSent": "Message envoyé !",
+    "thankYou": "Merci de nous avoir contactés.",
+    "missingFields": "Champs manquants",
+    "fillRequired": "Merci de renseigner l'objet et le message.",
+    "failedToSend": "Échec de l'envoi",
+    "somethingWentWrong": "Une erreur est survenue. Merci de réessayer."
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Planning",
+  "classDetail": "Cours",
+  "benefits": "Bienfaits",
+  "whatToBring": "À apporter",
+  "classesTaught": "cours enseignés",
+  "heated": "Chauffé",
+  "joinOnline": "Rejoindre en ligne",
+  "locationPlusOnline": "{{location}} + en ligne",
+  "live": "En direct",
+  "spotsLeft": "{{count}} places restantes"
+}

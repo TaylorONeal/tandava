@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "home": "Trang chủ",
+    "schedule": "Lịch lớp",
+    "onDemand": "Theo yêu cầu",
+    "events": "Sự kiện",
+    "instructors": "Giáo viên",
+    "mySchedule": "Lịch của tôi",
+    "community": "Cộng đồng"
+  },
+  "userMenu": {
+    "account": "Tài khoản",
+    "studioManager": "Quản lý studio",
+    "frontDesk": "Lễ tân",
+    "platformAdmin": "Quản trị nền tảng",
+    "signOut": "Đăng xuất"
+  },
+  "roles": {
+    "owner": "Chủ studio",
+    "admin": "Quản trị viên",
+    "teacher": "Giáo viên",
+    "front_desk": "Lễ tân",
+    "student": "Thành viên",
+    "platform_admin": "Quản trị nền tảng"
+  },
+  "status": {
+    "active": "Đang hoạt động",
+    "inactive": "Ngừng hoạt động",
+    "pending": "Chờ xử lý",
+    "cancelled": "Đã hủy",
+    "expired": "Đã hết hạn",
+    "paused": "Tạm dừng"
+  },
+  "actions": {
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "close": "Đóng",
+    "confirm": "Xác nhận",
+    "submit": "Gửi",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "reset": "Đặt lại",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "loading": "Đang tải...",
+    "sending": "Đang gửi...",
+    "processing": "Đang xử lý..."
+  },
+  "levels": {
+    "beginner": "Cơ bản",
+    "allLevels": "Mọi trình độ",
+    "intermediate": "Trung cấp",
+    "advanced": "Nâng cao"
+  },
+  "deliveryMode": {
+    "in_person": "Tại studio",
+    "virtual": "Trực tuyến",
+    "hybrid": "Kết hợp"
+  },
+  "paymentMethods": {
+    "card": "Thẻ tín dụng/ghi nợ",
+    "cash": "Tiền mặt",
+    "venmo": "Venmo",
+    "cashapp": "Cash App",
+    "paypal": "PayPal",
+    "zelle": "Zelle",
+    "check": "Séc",
+    "other": "Khác"
+  },
+  "units": {
+    "min": "{{count}} phút",
+    "hour_other": "{{count}} giờ",
+    "day_other": "{{count}} ngày",
+    "week_other": "{{count}} tuần",
+    "class_other": "{{count}} lớp",
+    "studio_other": "{{count}} studio",
+    "spot_other": "{{count}} chỗ",
+    "remaining": "còn {{count}}"
+  },
+  "language": {
+    "label": "Ngôn ngữ",
+    "changeLanguage": "Đổi ngôn ngữ"
+  },
+  "footer": {
+    "allRightsReserved": "Bảo lưu mọi quyền.",
+    "poweredBy": "Vận hành bởi",
+    "openSourceStudio": "Quản lý studio mã nguồn mở"
+  },
+  "type": {
+    "class": "Lớp học",
+    "workshop": "Workshop",
+    "retreat": "Khóa tĩnh tâm",
+    "appointment": "Buổi hẹn riêng"
+  },
+  "guest": "Khách",
+  "studioManagement": "Quản lý studio",
+  "notFound": {
+    "title": "Rất tiếc! Không tìm thấy trang",
+    "returnHome": "Về trang chủ"
+  },
+  "demo": {
+    "title": "Bản demo studio mã nguồn mở Tandava",
+    "switchRole": "Chuyển:",
+    "studioOwner": "Chủ studio",
+    "demoMode": "(Chế độ demo)"
+  },
+  "contact": {
+    "yourName": "Tên của bạn",
+    "namePlaceholder": "Nguyễn Thu Hà",
+    "email": "Email",
+    "emailPlaceholder": "ha@example.com",
+    "subject": "Tiêu đề",
+    "subjectPlaceholder": "Bạn cần hỗ trợ gì?",
+    "message": "Nội dung",
+    "messagePlaceholder": "Hãy cho chúng tôi biết thêm...",
+    "sendMessage": "Gửi tin nhắn",
+    "messageSent": "Đã gửi tin nhắn!",
+    "thankYou": "Cảm ơn bạn đã liên hệ.",
+    "missingFields": "Thiếu thông tin",
+    "fillRequired": "Vui lòng điền tiêu đề và nội dung.",
+    "failedToSend": "Gửi không thành công",
+    "somethingWentWrong": "Đã xảy ra lỗi. Vui lòng thử lại."
+  }
+}
