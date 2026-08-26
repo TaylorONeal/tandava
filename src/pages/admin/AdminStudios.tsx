@@ -19,7 +19,7 @@ export default function AdminStudios() {
             <p className="text-muted-foreground">Approve, configure, and manage studios on this instance.</p>
           </div>
           <Button onClick={() => toast({ title: "Add studio", description: "Studio onboarding requires Supabase backend." })}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 me-2" />
             Add Studio
           </Button>
         </div>

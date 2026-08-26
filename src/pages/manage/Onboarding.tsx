@@ -512,7 +512,7 @@ export default function Onboarding() {
               </div>
             ))}
             <Button variant="outline" size="sm" onClick={() => setStaffList((rows) => [...rows, emptyStaffRow()])}>
-              <Plus className="h-4 w-4 mr-1.5" />Add another
+              <Plus className="h-4 w-4 me-1.5" />Add another
             </Button>
           </div>
         </StepCard>
@@ -531,7 +531,7 @@ export default function Onboarding() {
         <StepCard title="Import Existing Data" desc="Migrate students, schedules, and memberships from another platform">
           <p className="text-sm text-muted-foreground">If you have existing data from Mindbody, Momoyoga, or another platform, you can import it now or come back later. Completing an import checks this step off automatically.</p>
           <Button variant="outline" asChild>
-            <Link to="/manage/import"><ExternalLink className="h-4 w-4 mr-2" />Go to Import Tool</Link>
+            <Link to="/manage/import"><ExternalLink className="h-4 w-4 me-2" />Go to Import Tool</Link>
           </Button>
         </StepCard>
       );
@@ -549,7 +549,7 @@ export default function Onboarding() {
               <h3 className="text-sm font-semibold mt-3">Connect your Stripe account</h3>
               <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">Securely process memberships, class packs, and drop-in payments with Stripe Connect. You'll be redirected to Stripe and brought back here.</p>
               <Button className="mt-4" onClick={handleConnectStripe} disabled={stripeBusy}>
-                {stripeBusy ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                {stripeBusy ? <Loader2 className="h-4 w-4 me-2 animate-spin" /> : null}
                 Connect with Stripe
               </Button>
             </div>
@@ -565,7 +565,7 @@ export default function Onboarding() {
                 <div key={i} className="flex items-center gap-3 p-2 rounded-lg">
                   {item.ok ? <CheckCircle2 className="h-5 w-5 text-primary shrink-0" /> : <Circle className="h-5 w-5 text-muted-foreground/40 shrink-0" />}
                   <span className={`text-sm ${item.ok ? "text-foreground" : "text-muted-foreground"}`}>{item.label}</span>
-                  {item.ok && <Badge variant="outline" className="ml-auto text-xs">Done</Badge>}
+                  {item.ok && <Badge variant="outline" className="ms-auto text-xs">Done</Badge>}
                 </div>
               ))}
             </div>
@@ -581,7 +581,7 @@ export default function Onboarding() {
             <div className="text-center pt-2">
               <p className="text-sm text-muted-foreground mb-4">{done.size} of {STEPS.length - 1} steps completed</p>
               <Button size="lg" className="px-8" onClick={handleLaunch} disabled={launching}>
-                {launching ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Rocket className="h-4 w-4 mr-2" />}
+                {launching ? <Loader2 className="h-4 w-4 me-2 animate-spin" /> : <Rocket className="h-4 w-4 me-2" />}
                 Launch Studio
               </Button>
             </div>
@@ -615,7 +615,7 @@ export default function Onboarding() {
                     const isDone = done.has(i);
                     const Icon = s.icon;
                     return (
-                      <button key={s.key} onClick={() => setStep(i)} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 lg:shrink lg:whitespace-normal w-full ${isCurrent ? "bg-primary text-primary-foreground shadow-sm" : isDone ? "text-foreground hover:bg-secondary" : "text-muted-foreground hover:text-foreground hover:bg-secondary"}`}>
+                      <button key={s.key} onClick={() => setStep(i)} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-start text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 lg:shrink lg:whitespace-normal w-full ${isCurrent ? "bg-primary text-primary-foreground shadow-sm" : isDone ? "text-foreground hover:bg-secondary" : "text-muted-foreground hover:text-foreground hover:bg-secondary"}`}>
                         <span className="shrink-0">{isDone && !isCurrent ? <Check className="h-4 w-4 text-primary" /> : <Icon className="h-4 w-4" />}</span>
                         <span className="hidden sm:inline text-xs lg:text-sm">{s.label}</span>
                       </button>
@@ -641,9 +641,9 @@ export default function Onboarding() {
             {step < STEPS.length - 1 && (
               <div className="flex items-center justify-between pt-2">
                 <Button variant="ghost" size="sm" onClick={handleSkip} className="text-muted-foreground">
-                  <SkipForward className="h-4 w-4 mr-1.5" />Skip for now
+                  <SkipForward className="h-4 w-4 me-1.5" />Skip for now
                 </Button>
-                <Button onClick={handleSave} disabled={saving}>{saving ? "Saving…" : "Save & Continue"}<ChevronRight className="h-4 w-4 ml-1.5" /></Button>
+                <Button onClick={handleSave} disabled={saving}>{saving ? "Saving…" : "Save & Continue"}<ChevronRight className="h-4 w-4 ms-1.5" /></Button>
               </div>
             )}
           </div>

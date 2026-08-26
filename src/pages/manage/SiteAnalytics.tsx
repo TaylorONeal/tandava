@@ -58,13 +58,13 @@ function InfoTip({ text }: { text: string }) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="ml-1 text-muted-foreground hover:text-foreground transition-colors"
+        className="ms-1 text-muted-foreground hover:text-foreground transition-colors"
         aria-label="More info"
       >
         <HelpCircle className="h-3.5 w-3.5" />
       </button>
       {open && (
-        <span className="absolute left-0 top-full mt-1 z-20 w-64 rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground shadow-lg">
+        <span className="absolute start-0 top-full mt-1 z-20 w-64 rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground shadow-lg">
           {text}
         </span>
       )}
@@ -378,7 +378,7 @@ export default function SiteAnalytics() {
                 </SelectContent>
               </Select>
               <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
+                <Download className="h-4 w-4 me-2" />
                 Export
               </Button>
             </div>
@@ -412,7 +412,7 @@ export default function SiteAnalytics() {
                             : "bg-destructive/10 text-destructive"
                         }`}
                       >
-                        <TrendingUp className="h-3 w-3 mr-1" />
+                        <TrendingUp className="h-3 w-3 me-1" />
                         {kpi.change}
                       </Badge>
                     </div>
@@ -532,22 +532,22 @@ export default function SiteAnalytics() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Page</TableHead>
-                      <TableHead className="text-right">Views</TableHead>
-                      <TableHead className="text-right hidden sm:table-cell">Unique Views</TableHead>
-                      <TableHead className="text-right hidden md:table-cell">Avg Time</TableHead>
-                      <TableHead className="text-right">Bounce Rate</TableHead>
+                      <TableHead className="text-end">Views</TableHead>
+                      <TableHead className="text-end hidden sm:table-cell">Unique Views</TableHead>
+                      <TableHead className="text-end hidden md:table-cell">Avg Time</TableHead>
+                      <TableHead className="text-end">Bounce Rate</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {topPages.map((page) => (
                       <TableRow key={page.page}>
                         <TableCell className="font-medium">{page.page}</TableCell>
-                        <TableCell className="text-right">{page.views.toLocaleString()}</TableCell>
-                        <TableCell className="text-right hidden sm:table-cell">
+                        <TableCell className="text-end">{page.views.toLocaleString()}</TableCell>
+                        <TableCell className="text-end hidden sm:table-cell">
                           {page.uniqueViews.toLocaleString()}
                         </TableCell>
-                        <TableCell className="text-right hidden md:table-cell">{page.avgTime}</TableCell>
-                        <TableCell className="text-right">{page.bounceRate}</TableCell>
+                        <TableCell className="text-end hidden md:table-cell">{page.avgTime}</TableCell>
+                        <TableCell className="text-end">{page.bounceRate}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -608,10 +608,10 @@ export default function SiteAnalytics() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Source</TableHead>
-                      <TableHead className="text-right">Sessions</TableHead>
-                      <TableHead className="text-right hidden sm:table-cell">% of Total</TableHead>
-                      <TableHead className="text-right hidden md:table-cell">Signups</TableHead>
-                      <TableHead className="text-right">Conv Rate</TableHead>
+                      <TableHead className="text-end">Sessions</TableHead>
+                      <TableHead className="text-end hidden sm:table-cell">% of Total</TableHead>
+                      <TableHead className="text-end hidden md:table-cell">Signups</TableHead>
+                      <TableHead className="text-end">Conv Rate</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -622,15 +622,15 @@ export default function SiteAnalytics() {
                           <TableCell className="font-medium">
                             {src.source}
                             {isBest && (
-                              <Badge className="ml-2 text-[10px] bg-accent-gold/20 text-accent-gold">
+                              <Badge className="ms-2 text-[10px] bg-accent-gold/20 text-accent-gold">
                                 Best conversion
                               </Badge>
                             )}
                           </TableCell>
-                          <TableCell className="text-right">{src.sessions}</TableCell>
-                          <TableCell className="text-right hidden sm:table-cell">{src.percent}</TableCell>
-                          <TableCell className="text-right hidden md:table-cell">{src.signups}</TableCell>
-                          <TableCell className={`text-right font-semibold ${isBest ? "text-accent-gold" : ""}`}>
+                          <TableCell className="text-end">{src.sessions}</TableCell>
+                          <TableCell className="text-end hidden sm:table-cell">{src.percent}</TableCell>
+                          <TableCell className="text-end hidden md:table-cell">{src.signups}</TableCell>
+                          <TableCell className={`text-end font-semibold ${isBest ? "text-accent-gold" : ""}`}>
                             {src.convRate}
                           </TableCell>
                         </TableRow>
@@ -656,9 +656,9 @@ export default function SiteAnalytics() {
                       <TableHead>Campaign Name</TableHead>
                       <TableHead className="hidden sm:table-cell">Source</TableHead>
                       <TableHead className="hidden md:table-cell">Medium</TableHead>
-                      <TableHead className="text-right">Sessions</TableHead>
-                      <TableHead className="text-right hidden sm:table-cell">Conversions</TableHead>
-                      <TableHead className="text-right">Conv Rate</TableHead>
+                      <TableHead className="text-end">Sessions</TableHead>
+                      <TableHead className="text-end hidden sm:table-cell">Conversions</TableHead>
+                      <TableHead className="text-end">Conv Rate</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -667,9 +667,9 @@ export default function SiteAnalytics() {
                         <TableCell className="font-medium font-mono text-xs">{campaign.name}</TableCell>
                         <TableCell className="hidden sm:table-cell">{campaign.source}</TableCell>
                         <TableCell className="hidden md:table-cell">{campaign.medium}</TableCell>
-                        <TableCell className="text-right">{campaign.sessions}</TableCell>
-                        <TableCell className="text-right hidden sm:table-cell">{campaign.conversions}</TableCell>
-                        <TableCell className="text-right font-semibold">{campaign.convRate}</TableCell>
+                        <TableCell className="text-end">{campaign.sessions}</TableCell>
+                        <TableCell className="text-end hidden sm:table-cell">{campaign.conversions}</TableCell>
+                        <TableCell className="text-end font-semibold">{campaign.convRate}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -693,7 +693,7 @@ export default function SiteAnalytics() {
                       className="flex items-center justify-between p-2.5 rounded-xl bg-secondary/30"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="text-xs text-muted-foreground w-5 text-right">{i + 1}.</span>
+                        <span className="text-xs text-muted-foreground w-5 text-end">{i + 1}.</span>
                         <Globe className="h-4 w-4 text-muted-foreground shrink-0" />
                         <span className="text-sm font-medium">{ref.domain}</span>
                       </div>
@@ -730,7 +730,7 @@ export default function SiteAnalytics() {
                   <CardTitle className="text-lg">Landing Page Performance</CardTitle>
                   <Link to="/manage/landing-pages">
                     <Button variant="ghost" size="sm" className="text-xs">
-                      Manage Landing Pages <ArrowRight className="h-3 w-3 ml-1" />
+                      Manage Landing Pages <ArrowRight className="h-3 w-3 ms-1" />
                     </Button>
                   </Link>
                 </div>
@@ -742,11 +742,11 @@ export default function SiteAnalytics() {
                       <TableHead>Page Title</TableHead>
                       <TableHead className="hidden sm:table-cell">Slug</TableHead>
                       <TableHead className="hidden md:table-cell">Status</TableHead>
-                      <TableHead className="text-right">Views</TableHead>
-                      <TableHead className="text-right hidden sm:table-cell">Unique</TableHead>
-                      <TableHead className="text-right hidden md:table-cell">Conv</TableHead>
-                      <TableHead className="text-right">Conv Rate</TableHead>
-                      <TableHead className="text-right hidden lg:table-cell">SEO</TableHead>
+                      <TableHead className="text-end">Views</TableHead>
+                      <TableHead className="text-end hidden sm:table-cell">Unique</TableHead>
+                      <TableHead className="text-end hidden md:table-cell">Conv</TableHead>
+                      <TableHead className="text-end">Conv Rate</TableHead>
+                      <TableHead className="text-end hidden lg:table-cell">SEO</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -768,13 +768,13 @@ export default function SiteAnalytics() {
                             {page.status}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-right">{page.views.toLocaleString()}</TableCell>
-                        <TableCell className="text-right hidden sm:table-cell">
+                        <TableCell className="text-end">{page.views.toLocaleString()}</TableCell>
+                        <TableCell className="text-end hidden sm:table-cell">
                           {page.uniqueViews.toLocaleString()}
                         </TableCell>
-                        <TableCell className="text-right hidden md:table-cell">{page.conversions}</TableCell>
-                        <TableCell className="text-right font-semibold">{page.convRate}</TableCell>
-                        <TableCell className="text-right hidden lg:table-cell">
+                        <TableCell className="text-end hidden md:table-cell">{page.conversions}</TableCell>
+                        <TableCell className="text-end font-semibold">{page.convRate}</TableCell>
+                        <TableCell className="text-end hidden lg:table-cell">
                           <span className={`font-semibold ${seoScoreColor(page.seoScore)}`}>
                             {page.seoScore}/100
                           </span>
@@ -804,7 +804,7 @@ export default function SiteAnalytics() {
                         </div>
                         <span className="text-sm font-bold text-accent-gold">{page.convRate}</span>
                       </div>
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground ml-8">
+                      <div className="flex items-center gap-4 text-xs text-muted-foreground ms-8">
                         <span>{page.views} views</span>
                         <span>{page.conversions} conversions</span>
                         <span className="font-mono">{page.slug}</span>
@@ -860,7 +860,7 @@ export default function SiteAnalytics() {
                       {landingPages.map((page) => (
                         <div key={page.slug} className="space-y-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-xs font-medium truncate mr-2">{page.title}</span>
+                            <span className="text-xs font-medium truncate me-2">{page.title}</span>
                             <span className={`text-xs font-semibold ${seoScoreColor(page.seoScore)}`}>
                               {page.seoScore}
                             </span>
@@ -972,16 +972,16 @@ export default function SiteAnalytics() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Source</TableHead>
-                      <TableHead className="text-right">Subscribers</TableHead>
-                      <TableHead className="text-right">% of Total</TableHead>
+                      <TableHead className="text-end">Subscribers</TableHead>
+                      <TableHead className="text-end">% of Total</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {signupSources.map((src) => (
                       <TableRow key={src.source}>
                         <TableCell className="font-medium">{src.source}</TableCell>
-                        <TableCell className="text-right">{src.subscribers}</TableCell>
-                        <TableCell className="text-right">{src.percent}</TableCell>
+                        <TableCell className="text-end">{src.subscribers}</TableCell>
+                        <TableCell className="text-end">{src.percent}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

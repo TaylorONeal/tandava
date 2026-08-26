@@ -133,7 +133,7 @@ function DemoRoleBarInner() {
 
         {/* Role switcher buttons */}
         <div className="flex items-center gap-1">
-          <span className="text-[10px] text-white/30 uppercase tracking-wider mr-2 hidden sm:inline">
+          <span className="text-[10px] text-white/30 uppercase tracking-wider me-2 hidden sm:inline">
             {t('demo.switchRole')}
           </span>
           {ROLES.map((option) => {

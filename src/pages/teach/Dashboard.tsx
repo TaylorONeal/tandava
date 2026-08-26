@@ -311,12 +311,12 @@ export default function TeachDashboard() {
                           setSearchQuery("");
                         }}
                       >
-                        <ClipboardCheck className="h-4 w-4 mr-2" />
+                        <ClipboardCheck className="h-4 w-4 me-2" />
                         Check-in Students ({clsCheckedIn}/{cls.booked})
                       </Button>
                       {(cls.deliveryMode === 'virtual' || cls.deliveryMode === 'hybrid') && (
                         <Button size="sm" variant="outline" onClick={() => toast({ title: "Stream starting", description: "Virtual class stream is being prepared..." })}>
-                          <Video className="h-4 w-4 mr-2" />
+                          <Video className="h-4 w-4 me-2" />
                           Start Stream
                         </Button>
                       )}
@@ -343,16 +343,16 @@ export default function TeachDashboard() {
 
             <div className="flex items-center gap-2 mt-2">
               <div className="relative flex-1">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search students..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 h-9"
+                  className="ps-9 h-9"
                 />
               </div>
               <Button variant="outline" size="sm" onClick={checkInAll}>
-                <UserCheck className="h-4 w-4 mr-1" />
+                <UserCheck className="h-4 w-4 me-1" />
                 All
               </Button>
             </div>
@@ -362,7 +362,7 @@ export default function TeachDashboard() {
                 <button
                   key={student.id}
                   onClick={() => toggleStudentCheckIn(student.id)}
-                  className={`w-full flex items-center gap-3 p-2.5 rounded-lg transition-colors text-left ${
+                  className={`w-full flex items-center gap-3 p-2.5 rounded-lg transition-colors text-start ${
                     student.checkedIn
                       ? "bg-accent-sage/10 border border-accent-sage/20"
                       : "bg-secondary/30 hover:bg-secondary/60 border border-transparent"
@@ -401,19 +401,19 @@ export default function TeachDashboard() {
         <div className="hidden sm:flex flex-wrap gap-2">
           <Button variant="outline" size="sm" asChild>
             <Link to="/teach/schedule">
-              <Calendar className="h-4 w-4 mr-2" />
+              <Calendar className="h-4 w-4 me-2" />
               View Schedule
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link to="/teach/subs">
-              <Repeat2 className="h-4 w-4 mr-2" />
+              <Repeat2 className="h-4 w-4 me-2" />
               Request Sub
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link to="/teach/earnings">
-              <DollarSign className="h-4 w-4 mr-2" />
+              <DollarSign className="h-4 w-4 me-2" />
               View Earnings
             </Link>
           </Button>
@@ -538,7 +538,7 @@ export default function TeachDashboard() {
                   <CardTitle className="text-lg">Upcoming Classes</CardTitle>
                   <Button variant="ghost" size="sm" asChild>
                     <Link to="/teach/schedule" className="text-xs">
-                      View Full Schedule <ArrowRight className="h-3 w-3 ml-1" />
+                      View Full Schedule <ArrowRight className="h-3 w-3 ms-1" />
                     </Link>
                   </Button>
                 </div>
@@ -657,7 +657,7 @@ export default function TeachDashboard() {
                     asChild
                   >
                     <Link to="/teach/subs">
-                      Manage Requests <ChevronRight className="h-3 w-3 ml-1" />
+                      Manage Requests <ChevronRight className="h-3 w-3 ms-1" />
                     </Link>
                   </Button>
                 </CardContent>
@@ -699,7 +699,7 @@ export default function TeachDashboard() {
                   asChild
                 >
                   <Link to="/teach/subs">
-                    View All <ChevronRight className="h-3 w-3 ml-1" />
+                    View All <ChevronRight className="h-3 w-3 ms-1" />
                   </Link>
                 </Button>
               </CardContent>
@@ -749,7 +749,7 @@ export default function TeachDashboard() {
                   asChild
                 >
                   <Link to="/teach/earnings">
-                    View Details <ChevronRight className="h-3 w-3 ml-1" />
+                    View Details <ChevronRight className="h-3 w-3 ms-1" />
                   </Link>
                 </Button>
               </CardContent>

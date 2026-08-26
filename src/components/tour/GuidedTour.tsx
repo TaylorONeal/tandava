@@ -209,7 +209,7 @@ export function GuidedTour({ tour, currentStep, onStepChange, onDismiss }: Guide
   const isOnCorrectPage = location.pathname === step.route || location.pathname.startsWith(step.route + "/");
 
   return (
-    <div className="fixed bottom-6 left-6 z-[60] w-[380px] max-w-[calc(100vw-3rem)]">
+    <div className="fixed bottom-6 start-6 z-[60] w-[380px] max-w-[calc(100vw-3rem)]">
       <div className="bg-card border border-border rounded-2xl shadow-xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-2.5 bg-primary/5 border-b border-border">
@@ -266,7 +266,7 @@ export function GuidedTour({ tour, currentStep, onStepChange, onDismiss }: Guide
             disabled={isFirst}
             className="text-xs"
           >
-            <ChevronLeft className="w-3.5 h-3.5 mr-1" />
+            <ChevronLeft className="w-3.5 h-3.5 me-1" />
             Previous
           </Button>
 
@@ -281,7 +281,7 @@ export function GuidedTour({ tour, currentStep, onStepChange, onDismiss }: Guide
               className="text-xs"
             >
               Next
-              <ChevronRight className="w-3.5 h-3.5 ml-1" />
+              <ChevronRight className="w-3.5 h-3.5 ms-1" />
             </Button>
           )}
         </div>
@@ -336,7 +336,7 @@ export function TourLauncher({ tour, onStart, onSkip }: TourLauncherProps) {
           </Button>
           <Button size="sm" onClick={onStart}>
             Start tour
-            <ChevronRight className="w-3.5 h-3.5 ml-1" />
+            <ChevronRight className="w-3.5 h-3.5 ms-1" />
           </Button>
         </div>
       </div>

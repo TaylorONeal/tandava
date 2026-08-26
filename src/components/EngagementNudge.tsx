@@ -94,16 +94,16 @@ export function EngagementNudge({
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 px-2 text-xs mt-1.5 -ml-2"
+            className="h-7 px-2 text-xs mt-1.5 -ms-2"
             onClick={handleAction}
             asChild={!!actionUrl}
           >
             {actionUrl ? (
               <a href={actionUrl}>
-                {actionLabel} <ArrowRight className="h-3 w-3 ml-1" />
+                {actionLabel} <ArrowRight className="h-3 w-3 ms-1" />
               </a>
             ) : (
-              <span>{actionLabel} <ArrowRight className="h-3 w-3 ml-1" /></span>
+              <span>{actionLabel} <ArrowRight className="h-3 w-3 ms-1" /></span>
             )}
           </Button>
         )}
@@ -152,7 +152,7 @@ export function MilestoneCelebration({
     )}>
       <button
         onClick={() => { setDismissed(true); onDismiss?.(); }}
-        className="absolute top-3 right-3 text-muted-foreground hover:text-foreground"
+        className="absolute top-3 end-3 text-muted-foreground hover:text-foreground"
       >
         <X className="h-4 w-4" />
       </button>
@@ -163,7 +163,7 @@ export function MilestoneCelebration({
         <p className="text-sm text-muted-foreground mt-1">{message}</p>
         {reward && (
           <p className="text-sm font-medium text-accent-gold mt-2">
-            <Gift className="h-3.5 w-3.5 inline mr-1" />
+            <Gift className="h-3.5 w-3.5 inline me-1" />
             {reward}
           </p>
         )}

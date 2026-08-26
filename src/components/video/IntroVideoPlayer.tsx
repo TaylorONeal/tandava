@@ -68,10 +68,10 @@ export function IntroVideoPlayer({
               onClick={handlePlay}
               className="h-16 w-16 rounded-full bg-primary flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
             >
-              <Play className="h-7 w-7 text-primary-foreground ml-1" />
+              <Play className="h-7 w-7 text-primary-foreground ms-1" />
             </button>
           </div>
-          <div className="absolute bottom-3 left-3 right-3">
+          <div className="absolute bottom-3 start-3 end-3">
             <p className="text-sm text-background font-medium drop-shadow-md">
               {title}
             </p>
@@ -100,7 +100,7 @@ export function IntroVideoPlayer({
                 {isPlaying ? (
                   <Pause className="h-4 w-4" />
                 ) : (
-                  <Play className="h-4 w-4 ml-0.5" />
+                  <Play className="h-4 w-4 ms-0.5" />
                 )}
               </Button>
               <Button
@@ -115,7 +115,7 @@ export function IntroVideoPlayer({
                   <Volume2 className="h-4 w-4" />
                 )}
               </Button>
-              <span className="text-xs text-background ml-auto">{title}</span>
+              <span className="text-xs text-background ms-auto">{title}</span>
             </div>
           </div>
         </div>

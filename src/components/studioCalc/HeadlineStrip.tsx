@@ -100,7 +100,7 @@ export function HeadlineStrip({ results, members }: Props) {
           type="button"
           onClick={() => setRentOpen((v) => !v)}
           aria-expanded={rentOpen}
-          className="mt-1 flex items-center gap-2 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mt-1 flex items-center gap-2 rounded-md text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           data-testid="stat-rent"
         >
           <span

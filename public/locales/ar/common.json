@@ -1,0 +1,156 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "schedule": "الجدول",
+    "onDemand": "عند الطلب",
+    "events": "الفعاليات",
+    "instructors": "المدرّبون",
+    "mySchedule": "جدولي",
+    "community": "المجتمع"
+  },
+  "userMenu": {
+    "account": "الحساب",
+    "studioManager": "مدير الاستوديو",
+    "frontDesk": "الاستقبال",
+    "platformAdmin": "مشرف المنصة",
+    "signOut": "تسجيل الخروج"
+  },
+  "roles": {
+    "owner": "المالك",
+    "admin": "مشرف",
+    "teacher": "مدرّب",
+    "front_desk": "الاستقبال",
+    "student": "عضو",
+    "platform_admin": "مشرف المنصة"
+  },
+  "status": {
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "pending": "قيد الانتظار",
+    "cancelled": "ملغى",
+    "expired": "منتهي الصلاحية",
+    "paused": "متوقف مؤقتًا"
+  },
+  "actions": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "close": "إغلاق",
+    "confirm": "تأكيد",
+    "submit": "إرسال",
+    "search": "بحث",
+    "filter": "تصفية",
+    "reset": "إعادة تعيين",
+    "back": "رجوع",
+    "next": "التالي",
+    "loading": "جارٍ التحميل...",
+    "sending": "جارٍ الإرسال...",
+    "processing": "جارٍ المعالجة..."
+  },
+  "levels": {
+    "beginner": "مبتدئ",
+    "allLevels": "جميع المستويات",
+    "intermediate": "متوسط",
+    "advanced": "متقدم"
+  },
+  "deliveryMode": {
+    "in_person": "حضوري",
+    "virtual": "عن بُعد",
+    "hybrid": "مختلط"
+  },
+  "paymentMethods": {
+    "card": "بطاقة ائتمان/خصم",
+    "cash": "نقدًا",
+    "venmo": "Venmo",
+    "cashapp": "Cash App",
+    "paypal": "PayPal",
+    "zelle": "Zelle",
+    "check": "شيك",
+    "other": "أخرى"
+  },
+  "units": {
+    "min": "{{count}} دقيقة",
+    "hour_zero": "{{count}} ساعة",
+    "hour_one": "{{count}} ساعة",
+    "hour_two": "{{count}} ساعتان",
+    "hour_few": "{{count}} ساعات",
+    "hour_many": "{{count}} ساعة",
+    "hour_other": "{{count}} ساعة",
+    "day_zero": "{{count}} يوم",
+    "day_one": "{{count}} يوم",
+    "day_two": "{{count}} يومان",
+    "day_few": "{{count}} أيام",
+    "day_many": "{{count}} يومًا",
+    "day_other": "{{count}} يوم",
+    "week_zero": "{{count}} أسبوع",
+    "week_one": "{{count}} أسبوع",
+    "week_two": "{{count}} أسبوعان",
+    "week_few": "{{count}} أسابيع",
+    "week_many": "{{count}} أسبوعًا",
+    "week_other": "{{count}} أسبوع",
+    "class_zero": "{{count}} حصة",
+    "class_one": "{{count}} حصة",
+    "class_two": "{{count}} حصتان",
+    "class_few": "{{count}} حصص",
+    "class_many": "{{count}} حصة",
+    "class_other": "{{count}} حصة",
+    "studio_zero": "{{count}} استوديو",
+    "studio_one": "{{count}} استوديو",
+    "studio_two": "{{count}} استوديوهان",
+    "studio_few": "{{count}} استوديوهات",
+    "studio_many": "{{count}} استوديو",
+    "studio_other": "{{count}} استوديو",
+    "spot_zero": "{{count}} مكان",
+    "spot_one": "{{count}} مكان",
+    "spot_two": "{{count}} مكانان",
+    "spot_few": "{{count}} أماكن",
+    "spot_many": "{{count}} مكانًا",
+    "spot_other": "{{count}} مكان",
+    "remaining": "{{count}} متبقية"
+  },
+  "language": {
+    "label": "اللغة",
+    "changeLanguage": "تغيير اللغة"
+  },
+  "footer": {
+    "allRightsReserved": "جميع الحقوق محفوظة.",
+    "poweredBy": "مشغَّل بواسطة",
+    "openSourceStudio": "إدارة استوديو مفتوحة المصدر"
+  },
+  "type": {
+    "class": "حصة",
+    "workshop": "ورشة عمل",
+    "retreat": "خلوة",
+    "appointment": "موعد"
+  },
+  "guest": "ضيف",
+  "studioManagement": "إدارة الاستوديو",
+  "notFound": {
+    "title": "عذرًا! الصفحة غير موجودة",
+    "returnHome": "العودة إلى الرئيسية"
+  },
+  "demo": {
+    "title": "عرض تجريبي لاستوديو تاندافا مفتوح المصدر",
+    "switchRole": "تبديل:",
+    "studioOwner": "مالك الاستوديو",
+    "demoMode": "(وضع تجريبي)"
+  },
+  "contact": {
+    "yourName": "اسمك",
+    "namePlaceholder": "منى أحمد",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "muna@example.com",
+    "subject": "الموضوع",
+    "subjectPlaceholder": "بمَ يتعلق الأمر؟",
+    "message": "الرسالة",
+    "messagePlaceholder": "أخبرنا المزيد...",
+    "sendMessage": "إرسال الرسالة",
+    "messageSent": "تم إرسال الرسالة!",
+    "thankYou": "شكرًا لتواصلك معنا.",
+    "missingFields": "حقول ناقصة",
+    "fillRequired": "يرجى تعبئة الموضوع والرسالة.",
+    "failedToSend": "فشل الإرسال",
+    "somethingWentWrong": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+  }
+}

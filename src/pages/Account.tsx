@@ -145,7 +145,7 @@ const Account = () => {
                     </Avatar>
                     <button
                       onClick={() => toast({ title: "Upload photo", description: "Photo upload requires backend storage connection." })}
-                      className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"
+                      className="absolute bottom-0 end-0 h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors"
                     >
                       <Camera className="h-4 w-4" />
                     </button>
@@ -236,13 +236,13 @@ const Account = () => {
                     Instagram
                   </Label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">@</span>
+                    <span className="absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground">@</span>
                     <Input
                       id="instagram"
                       value={formData.instagramHandle}
                       onChange={(e) => setFormData({ ...formData, instagramHandle: e.target.value })}
                       placeholder="yourusername"
-                      className="pl-8"
+                      className="ps-8"
                     />
                   </div>
                   <p className="text-xs text-muted-foreground">
@@ -523,7 +523,7 @@ const Account = () => {
                 ))}
                 <Button variant="outline" className="w-full" onClick={() => toast({ title: "Browse packs", description: "Redirecting to available class packs and passes." })}>
                   Purchase More
-                  <ChevronRight className="h-4 w-4 ml-1" />
+                  <ChevronRight className="h-4 w-4 ms-1" />
                 </Button>
               </CardContent>
             </Card>

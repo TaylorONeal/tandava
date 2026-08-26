@@ -44,13 +44,13 @@ function InfoTip({ text }: { text: string }) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="ml-1 text-muted-foreground hover:text-foreground transition-colors"
+        className="ms-1 text-muted-foreground hover:text-foreground transition-colors"
         aria-label="More info"
       >
         <HelpCircle className="h-3.5 w-3.5" />
       </button>
       {open && (
-        <span className="absolute left-0 top-full mt-1 z-20 w-64 rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground shadow-lg">
+        <span className="absolute start-0 top-full mt-1 z-20 w-64 rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground shadow-lg">
           {text}
         </span>
       )}
@@ -333,7 +333,7 @@ export default function FinancialAnalytics() {
               </SelectContent>
             </Select>
             <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="h-4 w-4 me-2" />
               Export
             </Button>
           </div>
@@ -359,11 +359,11 @@ export default function FinancialAnalytics() {
                   <CardTitle className="text-lg">Profit & Loss Statement</CardTitle>
                   <div className="flex items-center gap-2">
                     <Button variant="outline" size="sm">
-                      <Settings className="h-4 w-4 mr-2" />
+                      <Settings className="h-4 w-4 me-2" />
                       Edit Manual Expenses
                     </Button>
                     <Button variant="outline" size="sm">
-                      <FileSpreadsheet className="h-4 w-4 mr-2" />
+                      <FileSpreadsheet className="h-4 w-4 me-2" />
                       Export for QuickBooks
                     </Button>
                   </div>
@@ -380,10 +380,10 @@ export default function FinancialAnalytics() {
                       <div key={item.label} className="flex items-center justify-between px-3 py-1.5">
                         <span className="text-sm">{item.label}</span>
                         <div className="flex items-center gap-4">
-                          <span className="text-sm font-semibold text-accent-sage w-24 text-right">
+                          <span className="text-sm font-semibold text-accent-sage w-24 text-end">
                             ${item.amount.toLocaleString()}
                           </span>
-                          <span className="text-xs text-muted-foreground w-12 text-right">
+                          <span className="text-xs text-muted-foreground w-12 text-end">
                             {item.pct}%
                           </span>
                         </div>
@@ -395,7 +395,7 @@ export default function FinancialAnalytics() {
 
                   <div className="flex items-center justify-between px-3 py-1.5">
                     <span className="text-sm font-semibold">Gross Revenue</span>
-                    <span className="text-sm font-bold w-24 text-right">
+                    <span className="text-sm font-bold w-24 text-end">
                       ${grossRevenue.toLocaleString()}
                     </span>
                   </div>
@@ -403,7 +403,7 @@ export default function FinancialAnalytics() {
                   {deductions.map((item) => (
                     <div key={item.label} className="flex items-center justify-between px-3 py-1.5">
                       <span className="text-sm text-muted-foreground">Less: {item.label}</span>
-                      <span className="text-sm text-destructive w-24 text-right">
+                      <span className="text-sm text-destructive w-24 text-end">
                         (${Math.abs(item.amount).toLocaleString()})
                       </span>
                     </div>
@@ -436,10 +436,10 @@ export default function FinancialAnalytics() {
                           )}
                         </span>
                         <div className="flex items-center gap-4">
-                          <span className="text-sm font-semibold w-24 text-right">
+                          <span className="text-sm font-semibold w-24 text-end">
                             ${item.amount.toLocaleString()}
                           </span>
-                          <span className="text-xs text-muted-foreground w-12 text-right">
+                          <span className="text-xs text-muted-foreground w-12 text-end">
                             {item.pct}%
                           </span>
                         </div>
@@ -451,7 +451,7 @@ export default function FinancialAnalytics() {
 
                   <div className="flex items-center justify-between px-3 py-1.5">
                     <span className="text-sm font-semibold">Total Expenses</span>
-                    <span className="text-sm font-bold w-24 text-right">
+                    <span className="text-sm font-bold w-24 text-end">
                       ${totalExpenses.toLocaleString()}
                     </span>
                   </div>
@@ -540,7 +540,7 @@ export default function FinancialAnalytics() {
                     <ShieldCheck className="h-4 w-4 text-accent-sage" />
                     <p className="text-sm font-medium">Teacher Payroll: 30.2% of revenue</p>
                   </div>
-                  <p className="text-xs text-muted-foreground ml-6">
+                  <p className="text-xs text-muted-foreground ms-6">
                     Benchmark: 28-35%. Your payroll ratio is within the healthy range for a studio
                     of your size.
                   </p>
@@ -550,7 +550,7 @@ export default function FinancialAnalytics() {
                     <ShieldCheck className="h-4 w-4 text-accent-sage" />
                     <p className="text-sm font-medium">Operating Margin: 35.6%</p>
                   </div>
-                  <p className="text-xs text-muted-foreground ml-6">
+                  <p className="text-xs text-muted-foreground ms-6">
                     Benchmark: 25-40%. Your margin is healthy, indicating good cost control
                     relative to revenue.
                   </p>
@@ -560,7 +560,7 @@ export default function FinancialAnalytics() {
                     <Info className="h-4 w-4 text-muted-foreground" />
                     <p className="text-sm font-medium">Rent: 20.2% of revenue</p>
                   </div>
-                  <p className="text-xs text-muted-foreground ml-6">
+                  <p className="text-xs text-muted-foreground ms-6">
                     Benchmark: 15-25%. Rent is your second-largest expense. If revenue grows, this
                     ratio improves naturally with fixed rent.
                   </p>
@@ -852,7 +852,7 @@ export default function FinancialAnalytics() {
                   <p className="text-sm text-muted-foreground mb-2">
                     Your revenue dips 20-25% during summer months. Consider these strategies:
                   </p>
-                  <ul className="text-xs text-muted-foreground space-y-1 ml-6 list-disc">
+                  <ul className="text-xs text-muted-foreground space-y-1 ms-6 list-disc">
                     <li>Launch summer promo campaigns in late May</li>
                     <li>Offer outdoor or park classes as a seasonal differentiator</li>
                     <li>Run teacher training workshops to fill the revenue gap</li>
@@ -868,7 +868,7 @@ export default function FinancialAnalytics() {
                   <p className="text-sm text-muted-foreground mb-2">
                     January is your strongest month (+15% above average). Plan ahead:
                   </p>
-                  <ul className="text-xs text-muted-foreground space-y-1 ml-6 list-disc">
+                  <ul className="text-xs text-muted-foreground space-y-1 ms-6 list-disc">
                     <li>Add pop-up or overflow classes to handle increased demand</li>
                     <li>Prepare onboarding materials for a wave of new students</li>
                     <li>Stock merchandise and promote annual memberships</li>
@@ -912,7 +912,7 @@ export default function FinancialAnalytics() {
                     </p>
                     <p className="text-sm font-semibold">${row.thisYear.toLocaleString()}</p>
                     <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage w-fit">
-                      <TrendingUp className="h-3 w-3 mr-1" />+{row.delta}%
+                      <TrendingUp className="h-3 w-3 me-1" />+{row.delta}%
                     </Badge>
                   </div>
                 ))}
@@ -934,7 +934,7 @@ export default function FinancialAnalytics() {
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center">
-                  <Building2 className="h-4 w-4 text-muted-foreground mr-2" />
+                  <Building2 className="h-4 w-4 text-muted-foreground me-2" />
                   Should I Open a New Studio?
                 </CardTitle>
               </CardHeader>
@@ -1011,7 +1011,7 @@ export default function FinancialAnalytics() {
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center">
-                  <MapPin className="h-4 w-4 text-muted-foreground mr-2" />
+                  <MapPin className="h-4 w-4 text-muted-foreground me-2" />
                   Student Geography
                   <InfoTip text="Where your students live based on their registered zip codes. Helps identify demand clusters for a potential new location." />
                 </CardTitle>
@@ -1029,7 +1029,7 @@ export default function FinancialAnalytics() {
                         <span className="text-sm font-mono w-14 shrink-0">{z.zip}</span>
                         <div className="flex-1 h-6 bg-secondary/30 rounded-lg overflow-hidden">
                           <div
-                            className="h-full bg-primary/50 rounded-lg flex items-center justify-end pr-2"
+                            className="h-full bg-primary/50 rounded-lg flex items-center justify-end pe-2"
                             style={{ width: `${Math.max(widthPct, 15)}%` }}
                           >
                             <span className="text-[10px] font-semibold text-primary-foreground">
@@ -1037,7 +1037,7 @@ export default function FinancialAnalytics() {
                             </span>
                           </div>
                         </div>
-                        <span className="text-xs text-muted-foreground w-16 text-right">
+                        <span className="text-xs text-muted-foreground w-16 text-end">
                           {z.students} students
                         </span>
                       </div>

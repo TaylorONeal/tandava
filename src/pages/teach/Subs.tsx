@@ -262,7 +262,7 @@ export default function TeachSubs() {
             <TabsTrigger value="opportunities" className="gap-2">
               <Repeat2 className="h-4 w-4" />
               Open Opportunities
-              <Badge variant="secondary" className="ml-1 text-[10px]">
+              <Badge variant="secondary" className="ms-1 text-[10px]">
                 {mockOpportunities.length}
               </Badge>
             </TabsTrigger>
@@ -270,7 +270,7 @@ export default function TeachSubs() {
               <Clock className="h-4 w-4" />
               My Requests
               {pendingRequests.length > 0 && (
-                <Badge className="ml-1 text-[10px] bg-accent-gold/20 text-accent-gold border-0">
+                <Badge className="ms-1 text-[10px] bg-accent-gold/20 text-accent-gold border-0">
                   {pendingRequests.length}
                 </Badge>
               )}
@@ -378,7 +378,7 @@ export default function TeachSubs() {
                               setClaimDialogOpen(true);
                             }}
                           >
-                            <Check className="h-3 w-3 mr-1" />
+                            <Check className="h-3 w-3 me-1" />
                             Claim
                           </Button>
                         </div>
@@ -454,7 +454,7 @@ export default function TeachSubs() {
                             setCancelDialogOpen(true);
                           }}
                         >
-                          <X className="h-3 w-3 mr-1" />
+                          <X className="h-3 w-3 me-1" />
                           Cancel
                         </Button>
                       </div>
@@ -589,7 +589,7 @@ export default function TeachSubs() {
               Cancel
             </Button>
             <Button onClick={handleClaimSub}>
-              <Check className="h-4 w-4 mr-2" />
+              <Check className="h-4 w-4 me-2" />
               Confirm Claim
             </Button>
           </DialogFooter>

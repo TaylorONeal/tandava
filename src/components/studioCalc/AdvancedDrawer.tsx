@@ -132,7 +132,7 @@ export function AdvancedDrawer({
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls="advanced-drawer"
-          className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+          className="flex w-full items-center justify-between gap-3 px-4 py-3 text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
           data-testid="advanced-toggle"
         >
           <span>
@@ -365,7 +365,7 @@ function NumberField({
       </Label>
       <div className="relative mt-0.5">
         {unit === "$" && (
-          <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+          <span className="pointer-events-none absolute start-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
             $
           </span>
         )}
@@ -376,7 +376,7 @@ function NumberField({
           step={step}
           value={Number(value.toFixed(decimals))}
           onChange={(e) => onChange(Math.max(0, Number(e.target.value) || 0))}
-          className={`h-8 tabular-nums ${unit === "$" ? "pl-5" : ""} text-xs`}
+          className={`h-8 tabular-nums ${unit === "$" ? "ps-5" : ""} text-xs`}
         />
       </div>
       {hint && <p className="mt-0.5 text-[10px] leading-snug text-muted-foreground">{hint}</p>}

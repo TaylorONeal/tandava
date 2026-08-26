@@ -318,7 +318,7 @@ export default function DataDictionary() {
           </div>
           <Link to="/manage/analytics">
             <Badge variant="outline" className="cursor-pointer hover:bg-muted">
-              <ArrowRight className="h-3 w-3 mr-1" />
+              <ArrowRight className="h-3 w-3 me-1" />
               Back to Analytics
             </Badge>
           </Link>
@@ -326,12 +326,12 @@ export default function DataDictionary() {
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search metrics..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="ps-10"
           />
         </div>
 
@@ -366,7 +366,7 @@ export default function DataDictionary() {
                     {primaryMetrics.map((metric) => (
                       <AccordionItem key={metric.term} value={metric.term}>
                         <AccordionTrigger className="hover:no-underline">
-                          <div className="flex flex-col items-start text-left">
+                          <div className="flex flex-col items-start text-start">
                             <span className="font-semibold">{metric.term}</span>
                             <span className="text-sm text-muted-foreground font-normal">
                               {metric.shortDefinition}
@@ -435,7 +435,7 @@ export default function DataDictionary() {
                     {secondaryMetrics.map((metric) => (
                       <AccordionItem key={metric.term} value={metric.term}>
                         <AccordionTrigger className="hover:no-underline">
-                          <div className="flex flex-col items-start text-left">
+                          <div className="flex flex-col items-start text-start">
                             <span className="font-semibold">{metric.term}</span>
                             <span className="text-sm text-muted-foreground font-normal">
                               {metric.shortDefinition}

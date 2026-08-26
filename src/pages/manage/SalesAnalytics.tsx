@@ -45,13 +45,13 @@ function InfoTip({ text }: { text: string }) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="ml-1 text-muted-foreground hover:text-foreground transition-colors"
+        className="ms-1 text-muted-foreground hover:text-foreground transition-colors"
         aria-label="More info"
       >
         <HelpCircle className="h-3.5 w-3.5" />
       </button>
       {open && (
-        <span className="absolute left-0 top-full mt-1 z-20 w-64 rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground shadow-lg">
+        <span className="absolute start-0 top-full mt-1 z-20 w-64 rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground shadow-lg">
           {text}
         </span>
       )}
@@ -234,7 +234,7 @@ export default function SalesAnalytics() {
               </SelectContent>
             </Select>
             <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="h-4 w-4 me-2" />
               Export
             </Button>
           </div>
@@ -260,7 +260,7 @@ export default function SalesAnalytics() {
                   <div className="flex items-center justify-between">
                     <UserPlus className="h-5 w-5 text-primary" />
                     <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage">
-                      <TrendingUp className="h-3 w-3 mr-1" /> +9%
+                      <TrendingUp className="h-3 w-3 me-1" /> +9%
                     </Badge>
                   </div>
                   <p className="text-2xl font-bold mt-2">12</p>
@@ -297,7 +297,7 @@ export default function SalesAnalytics() {
                   <div className="flex items-center justify-between">
                     <Target className="h-5 w-5 text-accent-sage" />
                     <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage">
-                      <TrendingUp className="h-3 w-3 mr-1" /> +5%
+                      <TrendingUp className="h-3 w-3 me-1" /> +5%
                     </Badge>
                   </div>
                   <p className="text-2xl font-bold mt-2">71%</p>
@@ -357,7 +357,7 @@ export default function SalesAnalytics() {
                       <span className="text-xs text-muted-foreground w-8 shrink-0">{m.month}</span>
                       <div className="flex-1 h-6 bg-secondary/30 rounded-lg overflow-hidden">
                         <div
-                          className="h-full bg-primary/70 rounded-lg flex items-center justify-end pr-2"
+                          className="h-full bg-primary/70 rounded-lg flex items-center justify-end pe-2"
                           style={{ width: `${(m.count / maxAcquisition) * 100}%` }}
                         >
                           <span className="text-[10px] font-semibold text-primary-foreground">
@@ -467,7 +467,7 @@ export default function SalesAnalytics() {
                     </p>
                   </div>
                   <div className="p-4 rounded-xl bg-secondary/50 text-center relative">
-                    <ArrowRight className="hidden lg:block absolute -left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <ArrowRight className="hidden lg:block absolute -start-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <p className="text-xs text-muted-foreground uppercase tracking-wider">
                       Revenue Generated
                     </p>
@@ -476,7 +476,7 @@ export default function SalesAnalytics() {
                     </p>
                   </div>
                   <div className="p-4 rounded-xl bg-secondary/50 text-center relative">
-                    <ArrowRight className="hidden lg:block absolute -left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <ArrowRight className="hidden lg:block absolute -start-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <p className="text-xs text-muted-foreground uppercase tracking-wider">
                       Net Lift
                     </p>
@@ -485,7 +485,7 @@ export default function SalesAnalytics() {
                     </p>
                   </div>
                   <div className="p-4 rounded-xl bg-accent-sage/10 text-center relative">
-                    <ArrowRight className="hidden lg:block absolute -left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <ArrowRight className="hidden lg:block absolute -start-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <p className="text-xs text-muted-foreground uppercase tracking-wider">ROI</p>
                     <p className="text-xl font-bold text-accent-sage mt-1">
                       {activePromos[selectedPromo].roi}%
@@ -581,7 +581,7 @@ export default function SalesAnalytics() {
                         </div>
                       )}
                       <div className="flex items-center gap-3">
-                        <span className="text-xs text-muted-foreground w-28 shrink-0 text-right">
+                        <span className="text-xs text-muted-foreground w-28 shrink-0 text-end">
                           {step.label}
                         </span>
                         <div className="flex-1">
@@ -659,7 +659,7 @@ export default function SalesAnalytics() {
                         </Badge>
                       </div>
                       <div className="flex items-center justify-between">
-                        <div className="flex-1 mr-4">
+                        <div className="flex-1 me-4">
                           <div className="h-2.5 rounded-full bg-secondary overflow-hidden">
                             <div
                               className="h-full rounded-full bg-primary/60"
@@ -683,7 +683,7 @@ export default function SalesAnalytics() {
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center">
-                  <MousePointerClick className="h-4 w-4 text-muted-foreground mr-2" />
+                  <MousePointerClick className="h-4 w-4 text-muted-foreground me-2" />
                   Where Visitors Drop Off
                 </CardTitle>
               </CardHeader>
@@ -797,7 +797,7 @@ export default function SalesAnalytics() {
                           </div>
                         )}
                         <div className="flex items-center gap-3">
-                          <span className="text-xs text-muted-foreground w-24 shrink-0 text-right">
+                          <span className="text-xs text-muted-foreground w-24 shrink-0 text-end">
                             {step.label}
                           </span>
                           <div className="flex-1">

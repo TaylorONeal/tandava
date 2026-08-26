@@ -200,7 +200,7 @@ export function ClassCard({
             >
               {isLive && (deliveryMode === 'virtual' || deliveryMode === 'hybrid') ? (
                 <>
-                  <Video className="h-4 w-4 mr-1" />
+                  <Video className="h-4 w-4 me-1" />
                   {t('booking:joinNow')}
                 </>
               ) : isFull ? (

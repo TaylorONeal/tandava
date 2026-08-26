@@ -153,7 +153,7 @@ export function PaymentSourceSelector({
 
                 {/* Price (for drop-in) */}
                 {source.priceCents && (
-                  <div className="flex-shrink-0 text-right">
+                  <div className="flex-shrink-0 text-end">
                     <span className="font-semibold">{formatPrice(source.priceCents)}</span>
                   </div>
                 )}

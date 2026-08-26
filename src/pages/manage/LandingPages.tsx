@@ -277,7 +277,7 @@ export default function LandingPagesManage() {
             </p>
           </div>
           <Button onClick={() => setWizardOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 me-2" />
             Create Page
           </Button>
         </div>
@@ -336,7 +336,7 @@ export default function LandingPagesManage() {
                     </div>
                   )}
                 </div>
-                <Button size="sm" variant="outline" className="shrink-0 ml-3">
+                <Button size="sm" variant="outline" className="shrink-0 ms-3">
                   Create Page
                 </Button>
               </div>
@@ -359,19 +359,19 @@ export default function LandingPagesManage() {
                 All ({pages.length})
               </TabsTrigger>
               <TabsTrigger value="published" className="text-xs">
-                <CheckCircle className="h-3 w-3 mr-1" />
+                <CheckCircle className="h-3 w-3 me-1" />
                 Published ({pages.filter((p) => p.status === "published").length})
               </TabsTrigger>
               <TabsTrigger value="draft" className="text-xs">
-                <Clock className="h-3 w-3 mr-1" />
+                <Clock className="h-3 w-3 me-1" />
                 Drafts ({pages.filter((p) => p.status === "draft").length})
               </TabsTrigger>
               <TabsTrigger value="expired" className="text-xs">
-                <AlertTriangle className="h-3 w-3 mr-1" />
+                <AlertTriangle className="h-3 w-3 me-1" />
                 Expired ({pages.filter((p) => p.status === "expired").length})
               </TabsTrigger>
               <TabsTrigger value="archived" className="text-xs">
-                <Archive className="h-3 w-3 mr-1" />
+                <Archive className="h-3 w-3 me-1" />
                 Archived ({pages.filter((p) => p.status === "archived").length})
               </TabsTrigger>
             </TabsList>
@@ -392,7 +392,7 @@ export default function LandingPagesManage() {
                           <div className="flex items-center gap-2 flex-wrap">
                             <h3 className="text-sm font-semibold">{page.title}</h3>
                             <Badge className={`text-[10px] ${statusColors[page.status].bg} ${statusColors[page.status].text}`}>
-                              <StatusIcon className="h-2.5 w-2.5 mr-1" />
+                              <StatusIcon className="h-2.5 w-2.5 me-1" />
                               {page.status}
                             </Badge>
                             <Badge variant="outline" className="text-[10px] capitalize">
@@ -412,7 +412,7 @@ export default function LandingPagesManage() {
                             )}
                             {isExpiringSoon(page.expirationDate) && (
                               <Badge className="text-[10px] bg-accent-gold/20 text-accent-gold">
-                                <Calendar className="h-2.5 w-2.5 mr-1" />
+                                <Calendar className="h-2.5 w-2.5 me-1" />
                                 Expires {formatDate(page.expirationDate!)}
                               </Badge>
                             )}
@@ -462,43 +462,43 @@ export default function LandingPagesManage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-48">
                               <DropdownMenuItem onClick={() => handleDuplicate(page)}>
-                                <Copy className="h-3.5 w-3.5 mr-2" />
+                                <Copy className="h-3.5 w-3.5 me-2" />
                                 Duplicate
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               {page.status === "draft" && (
                                 <DropdownMenuItem onClick={() => handleStatusChange(page.id, "published")}>
-                                  <Globe className="h-3.5 w-3.5 mr-2" />
+                                  <Globe className="h-3.5 w-3.5 me-2" />
                                   Publish
                                 </DropdownMenuItem>
                               )}
                               {page.status === "published" && (
                                 <DropdownMenuItem onClick={() => handleStatusChange(page.id, "draft")}>
-                                  <Clock className="h-3.5 w-3.5 mr-2" />
+                                  <Clock className="h-3.5 w-3.5 me-2" />
                                   Unpublish (Draft)
                                 </DropdownMenuItem>
                               )}
                               {page.status === "expired" && (
                                 <>
                                   <DropdownMenuItem onClick={() => handleStatusChange(page.id, "published")}>
-                                    <RefreshCw className="h-3.5 w-3.5 mr-2" />
+                                    <RefreshCw className="h-3.5 w-3.5 me-2" />
                                     Republish
                                   </DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => handleStatusChange(page.id, "archived")}>
-                                    <Archive className="h-3.5 w-3.5 mr-2" />
+                                    <Archive className="h-3.5 w-3.5 me-2" />
                                     Archive
                                   </DropdownMenuItem>
                                 </>
                               )}
                               {page.status !== "archived" && (
                                 <DropdownMenuItem onClick={() => handleStatusChange(page.id, "archived")}>
-                                  <Archive className="h-3.5 w-3.5 mr-2" />
+                                  <Archive className="h-3.5 w-3.5 me-2" />
                                   Archive
                                 </DropdownMenuItem>
                               )}
                               {page.status === "archived" && (
                                 <DropdownMenuItem onClick={() => handleStatusChange(page.id, "draft")}>
-                                  <RefreshCw className="h-3.5 w-3.5 mr-2" />
+                                  <RefreshCw className="h-3.5 w-3.5 me-2" />
                                   Restore as Draft
                                 </DropdownMenuItem>
                               )}
@@ -524,7 +524,7 @@ export default function LandingPagesManage() {
                   </p>
                   {activeTab === "all" && (
                     <Button className="mt-4" onClick={() => setWizardOpen(true)}>
-                      <Plus className="h-4 w-4 mr-2" />
+                      <Plus className="h-4 w-4 me-2" />
                       Create Page
                     </Button>
                   )}

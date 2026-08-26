@@ -203,7 +203,7 @@ export default function OpenSource() {
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       <a
         href="#opensource-main"
-        className="sr-only absolute left-4 top-4 z-[70] rounded-md bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-md focus:not-sr-only focus:outline-none focus:ring-2 focus:ring-slate-700 focus:ring-offset-2"
+        className="sr-only absolute start-4 top-4 z-[70] rounded-md bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-md focus:not-sr-only focus:outline-none focus:ring-2 focus:ring-slate-700 focus:ring-offset-2"
       >
         Skip to main content
       </a>
@@ -487,7 +487,7 @@ export default function OpenSource() {
               <p className="text-slate-400 mb-8">
                 Modern stack, clean architecture, comprehensive documentation.
               </p>
-              <div className="mb-8 grid gap-4 text-left sm:grid-cols-3">
+              <div className="mb-8 grid gap-4 text-start sm:grid-cols-3">
                 <div className="rounded-lg border border-slate-700 bg-slate-800/70 p-4">
                   <h4 className="font-semibold mb-2">Stack</h4>
                   <p className="text-sm text-slate-400">

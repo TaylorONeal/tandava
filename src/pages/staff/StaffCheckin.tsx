@@ -53,10 +53,10 @@ export default function StaffCheckin() {
 
         {/* Search */}
         <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             placeholder="Search by name or email..."
-            className="pl-10 h-12"
+            className="ps-10 h-12"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -76,7 +76,7 @@ export default function StaffCheckin() {
                 <button
                   key={cls.id}
                   onClick={() => setSelectedClass(cls)}
-                  className={`text-left p-3 rounded-xl border transition-all ${
+                  className={`text-start p-3 rounded-xl border transition-all ${
                     selectedClass.id === cls.id
                       ? "border-primary bg-primary/5"
                       : "hover:bg-muted/50"

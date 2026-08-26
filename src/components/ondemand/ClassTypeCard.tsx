@@ -40,7 +40,7 @@ export function ClassTypeCard({
     <button
       onClick={onClick}
       className={cn(
-        "relative overflow-hidden rounded-3xl border-2 p-6 text-left transition-all duration-200 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]",
+        "relative overflow-hidden rounded-3xl border-2 p-6 text-start transition-all duration-200 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]",
         colorVariants[color],
         isSelected && "ring-2 ring-primary ring-offset-2"
       )}

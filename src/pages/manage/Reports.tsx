@@ -53,7 +53,7 @@ export default function ReportsManage() {
               </SelectContent>
             </Select>
             <Button variant="outline" size="sm" onClick={() => toast({ title: "Exported", description: "Report data exported to CSV." })}>
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="h-4 w-4 me-2" />
               Export
             </Button>
           </div>
@@ -66,7 +66,7 @@ export default function ReportsManage() {
               <div className="flex items-center justify-between">
                 <DollarSign className="h-5 w-5 text-accent-gold" />
                 <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage">
-                  <TrendingUp className="h-3 w-3 mr-1" /> +8%
+                  <TrendingUp className="h-3 w-3 me-1" /> +8%
                 </Badge>
               </div>
               <p className="text-2xl font-bold mt-2">$18,420</p>
@@ -79,7 +79,7 @@ export default function ReportsManage() {
               <div className="flex items-center justify-between">
                 <Repeat className="h-5 w-5 text-primary" />
                 <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage">
-                  <TrendingUp className="h-3 w-3 mr-1" /> +3%
+                  <TrendingUp className="h-3 w-3 me-1" /> +3%
                 </Badge>
               </div>
               <p className="text-2xl font-bold mt-2">$14,100</p>
@@ -92,7 +92,7 @@ export default function ReportsManage() {
               <div className="flex items-center justify-between">
                 <CreditCard className="h-5 w-5 text-accent-coral" />
                 <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage">
-                  <TrendingUp className="h-3 w-3 mr-1" /> +12%
+                  <TrendingUp className="h-3 w-3 me-1" /> +12%
                 </Badge>
               </div>
               <p className="text-2xl font-bold mt-2">$3,200</p>
@@ -105,7 +105,7 @@ export default function ReportsManage() {
               <div className="flex items-center justify-between">
                 <DollarSign className="h-5 w-5 text-muted-foreground" />
                 <Badge className="text-[10px] bg-destructive/10 text-destructive">
-                  <TrendingDown className="h-3 w-3 mr-1" /> -2%
+                  <TrendingDown className="h-3 w-3 me-1" /> -2%
                 </Badge>
               </div>
               <p className="text-2xl font-bold mt-2">$1,120</p>
@@ -159,7 +159,7 @@ export default function ReportsManage() {
                         <p className="text-sm font-medium">{cls.name}</p>
                         <p className="text-xs text-muted-foreground">{cls.teacher}</p>
                       </div>
-                      <div className="text-right">
+                      <div className="text-end">
                         <p className="text-sm font-semibold">{cls.avg}/{cls.capacity}</p>
                         <p className="text-xs text-muted-foreground">{Math.round((cls.avg / cls.capacity) * 100)}% fill</p>
                       </div>
@@ -227,7 +227,7 @@ export default function ReportsManage() {
                     <p className="text-sm font-medium">{membership.type}</p>
                     <p className="text-xs text-muted-foreground">{membership.count} active</p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-end">
                     <p className="text-sm font-semibold">${membership.revenue.toLocaleString()}</p>
                     <p className={`text-xs ${membership.trend.startsWith('+') ? 'text-accent-sage' : 'text-destructive'}`}>
                       {membership.trend} this month
@@ -244,7 +244,7 @@ export default function ReportsManage() {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Payroll Summary</CardTitle>
                 <Button variant="ghost" size="sm" className="text-xs">
-                  View Details <ArrowRight className="h-3 w-3 ml-1" />
+                  View Details <ArrowRight className="h-3 w-3 ms-1" />
                 </Button>
               </div>
             </CardHeader>

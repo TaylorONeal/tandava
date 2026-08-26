@@ -333,7 +333,7 @@ function DemoPanelInner() {
         <DemoTourOverlay role={activePersona.role} />
         <button
           onClick={() => setPanelOpen(true)}
-          className="fixed right-0 top-1/2 -translate-y-1/2 z-[100] bg-primary text-primary-foreground px-2 py-4 rounded-l-xl shadow-lg hover:px-3 transition-all"
+          className="fixed end-0 top-1/2 -translate-y-1/2 z-[100] bg-primary text-primary-foreground px-2 py-4 rounded-s-xl shadow-lg hover:px-3 transition-all"
           title="Open demo panel"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -348,7 +348,7 @@ function DemoPanelInner() {
   return (
     <>
     <DemoTourOverlay role={activePersona.role} />
-    <div className="fixed right-0 top-0 bottom-0 w-80 z-[100] bg-card border-l border-border shadow-2xl overflow-y-auto">
+    <div className="fixed end-0 top-0 bottom-0 w-80 z-[100] bg-card border-s border-border shadow-2xl overflow-y-auto">
       {/* Header */}
       <div className="sticky top-0 bg-card/95 backdrop-blur-md border-b border-border p-4 z-10">
         <div className="flex items-center justify-between">
@@ -382,7 +382,7 @@ function DemoPanelInner() {
                   key={persona.role}
                   onClick={() => handleRoleSwitch(persona.role)}
                   className={cn(
-                    "flex items-center gap-3 w-full p-2.5 rounded-xl text-left transition-all text-sm",
+                    "flex items-center gap-3 w-full p-2.5 rounded-xl text-start transition-all text-sm",
                     isActive
                       ? `border ${ROLE_COLORS[persona.role] ?? "border-border"}`
                       : "hover:bg-secondary text-muted-foreground hover:text-foreground"
@@ -501,7 +501,7 @@ function DemoPanelInner() {
             className="w-full text-xs"
             onClick={handleRestartTour}
           >
-            <MapPin className="h-3.5 w-3.5 mr-1.5" />
+            <MapPin className="h-3.5 w-3.5 me-1.5" />
             Restart {activePersona.label} Tour
           </Button>
         </div>

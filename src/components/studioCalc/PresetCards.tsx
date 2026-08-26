@@ -37,7 +37,7 @@ export function PresetCards({ activePresetId, dirty, onSelect }: Props) {
               aria-pressed={active}
               // Press feedback is a 2px settle. Under reduced motion the
               // transition class is dropped and the card simply stays put.
-              className={`relative rounded-xl border p-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+              className={`relative rounded-xl border p-4 text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                 reduced ? "" : "transition-[colors,transform] duration-150 active:translate-y-0.5"
               } ${
                 active

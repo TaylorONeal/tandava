@@ -44,7 +44,7 @@ export function TierSelect({ value, onChange }: Props) {
                   type="button"
                   onClick={() => onChange(tier.tier)}
                   aria-pressed={active}
-                  className={`rounded-lg border px-3 py-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                  className={`rounded-lg border px-3 py-2 text-start transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                     active
                       ? "border-primary bg-primary/5"
                       : "border-border bg-card hover:border-primary/40"

@@ -443,7 +443,7 @@ export default function NotificationPreferences() {
         {/* Save Button */}
         <div className="flex justify-end pb-6">
           <Button onClick={handleSave} size="lg">
-            <Save className="h-4 w-4 mr-2" />
+            <Save className="h-4 w-4 me-2" />
             Save Preferences
           </Button>
         </div>

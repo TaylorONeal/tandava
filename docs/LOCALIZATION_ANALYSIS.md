@@ -951,7 +951,7 @@ Each locale needs:
 
 ### Phase 4: Additional Languages
 
-Seventeen non-English locales now ship at 100% key coverage with real
+Eighteen non-English locales now ship at 100% key coverage with real
 translations. See [the rollout plan](roadmap/LANGUAGE_ROLLOUT_PLAN.md) for the
 per-wave order, the current status table, and the add-a-language checklist.
 
@@ -961,8 +961,11 @@ per-wave order, the current status table, and the add-a-language checklist.
 - [x] Portuguese (pt-BR) — Brazilian Portuguese
 - [x] Indonesian (id), Malay (ms), Chinese (zh, zh-Hant), Korean (ko), Filipino (fil), German (de)
 - [x] French (fr), Italian (it), Japanese (ja), Tamil (ta), Vietnamese (vi)
+- [x] Arabic (ar) — first RTL language, shipped with the RTL layout audit: layouts
+      converted to logical Tailwind utilities (`ms-`/`me-`/`ps-`/`pe-`/`start-`/`end-`),
+      directional icons mirror under `dir="rtl"`, full six-form CLDR plurals
+      (zero/one/two/few/many/other)
 - [ ] Native-speaker review pass per locale — all current translations are machine-drafted
-- [ ] Arabic (ar) — first RTL language; needs the layout audit, not just the strings
 
 ### Phase 5: Studio-Level Localization (Roadmap — 3-5 days)
 

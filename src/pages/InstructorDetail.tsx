@@ -111,7 +111,7 @@ const InstructorDetail = () => {
           to="/instructors"
           className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
         >
-          <ChevronLeft className="h-4 w-4 mr-1" />
+          <ChevronLeft className="h-4 w-4 me-1" />
           Back to instructors
         </Link>
 

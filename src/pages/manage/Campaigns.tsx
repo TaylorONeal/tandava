@@ -532,7 +532,7 @@ export default function CampaignsManage() {
             </p>
           </div>
           <Button onClick={() => { resetWizard(); setCreateOpen(true); }}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 me-2" />
             Create Campaign
           </Button>
         </div>
@@ -621,17 +621,17 @@ export default function CampaignsManage() {
           </Tabs>
           <div className="flex gap-2">
             <div className="relative flex-1 sm:flex-initial sm:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search campaigns..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="ps-10"
               />
             </div>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
               <SelectTrigger className="w-36">
-                <Filter className="h-4 w-4 mr-2" />
+                <Filter className="h-4 w-4 me-2" />
                 <SelectValue placeholder="Type" />
               </SelectTrigger>
               <SelectContent>
@@ -688,7 +688,7 @@ export default function CampaignsManage() {
                               </Badge>
                               {campaign.isAbTest && (
                                 <Badge variant="outline" className="text-[10px]">
-                                  <Beaker className="h-2.5 w-2.5 mr-1" />
+                                  <Beaker className="h-2.5 w-2.5 me-1" />
                                   A/B Test
                                 </Badge>
                               )}
@@ -710,14 +710,14 @@ export default function CampaignsManage() {
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end" className="w-44 rounded-xl">
                                 <DropdownMenuItem className="rounded-lg cursor-pointer" onClick={() => toast({ title: "Edit mode", description: "Campaign editor opened." })}>
-                                  <Edit className="h-4 w-4 mr-2" />
+                                  <Edit className="h-4 w-4 me-2" />
                                   Edit
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   className="rounded-lg cursor-pointer"
                                   onClick={() => handleDuplicate(campaign)}
                                 >
-                                  <Copy className="h-4 w-4 mr-2" />
+                                  <Copy className="h-4 w-4 me-2" />
                                   Duplicate
                                 </DropdownMenuItem>
                                 {(campaign.status === "active" || campaign.status === "paused") && (
@@ -727,12 +727,12 @@ export default function CampaignsManage() {
                                   >
                                     {campaign.status === "paused" ? (
                                       <>
-                                        <Play className="h-4 w-4 mr-2" />
+                                        <Play className="h-4 w-4 me-2" />
                                         Resume
                                       </>
                                     ) : (
                                       <>
-                                        <Pause className="h-4 w-4 mr-2" />
+                                        <Pause className="h-4 w-4 me-2" />
                                         Pause
                                       </>
                                     )}
@@ -743,7 +743,7 @@ export default function CampaignsManage() {
                                   className="rounded-lg cursor-pointer text-destructive"
                                   onClick={() => handleDelete(campaign)}
                                 >
-                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  <Trash2 className="h-4 w-4 me-2" />
                                   Delete
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
@@ -1501,7 +1501,7 @@ export default function CampaignsManage() {
                     variant="outline"
                     onClick={() => setWizardStep(wizardSteps[currentStepIndex - 1].key)}
                   >
-                    <ChevronLeft className="h-4 w-4 mr-1" />
+                    <ChevronLeft className="h-4 w-4 me-1" />
                     Back
                   </Button>
                 )}
@@ -1512,13 +1512,13 @@ export default function CampaignsManage() {
                 </Button>
                 {wizardStep === "review" ? (
                   <Button onClick={handleCreateCampaign}>
-                    <Send className="h-4 w-4 mr-2" />
+                    <Send className="h-4 w-4 me-2" />
                     {newCampaign.scheduleType === "now" ? "Launch Campaign" : "Schedule Campaign"}
                   </Button>
                 ) : (
                   <Button onClick={() => setWizardStep(wizardSteps[currentStepIndex + 1].key)} disabled={!canProceed()}>
                     Next
-                    <ChevronRight className="h-4 w-4 ml-1" />
+                    <ChevronRight className="h-4 w-4 ms-1" />
                   </Button>
                 )}
               </div>

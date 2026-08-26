@@ -541,7 +541,7 @@ export default function UtmBuilder() {
                 {/* Action Buttons */}
                 <div className="flex items-center gap-2 pt-2">
                   <Button onClick={handleCopyUrl} disabled={!isFormValid}>
-                    <Copy className="h-4 w-4 mr-2" />
+                    <Copy className="h-4 w-4 me-2" />
                     Copy URL
                   </Button>
                   <Button
@@ -549,7 +549,7 @@ export default function UtmBuilder() {
                     onClick={() => setQrDialogOpen(true)}
                     disabled={!isFormValid}
                   >
-                    <QrCode className="h-4 w-4 mr-2" />
+                    <QrCode className="h-4 w-4 me-2" />
                     QR Code
                   </Button>
                   <Button
@@ -557,7 +557,7 @@ export default function UtmBuilder() {
                     onClick={handleOpenSaveDialog}
                     disabled={!utmSource || !utmMedium}
                   >
-                    <Bookmark className="h-4 w-4 mr-2" />
+                    <Bookmark className="h-4 w-4 me-2" />
                     Save Template
                   </Button>
                   <Button variant="ghost" onClick={handleClearForm}>
@@ -581,7 +581,7 @@ export default function UtmBuilder() {
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-base">Saved Templates</CardTitle>
                       <Button size="sm" onClick={handleOpenSaveDialog}>
-                        <Plus className="h-4 w-4 mr-1" />
+                        <Plus className="h-4 w-4 me-1" />
                         New Template
                       </Button>
                     </div>
@@ -601,7 +601,7 @@ export default function UtmBuilder() {
                               <h4 className="text-sm font-medium">{template.name}</h4>
                               {template.is_default && (
                                 <Badge className="text-[10px] bg-accent-gold/20 text-accent-gold">
-                                  <Star className="h-2.5 w-2.5 mr-0.5" />
+                                  <Star className="h-2.5 w-2.5 me-0.5" />
                                   Default
                                 </Badge>
                               )}
@@ -702,7 +702,7 @@ export default function UtmBuilder() {
                           <TableHead>Short URL</TableHead>
                           <TableHead>Destination</TableHead>
                           <TableHead>Source / Medium</TableHead>
-                          <TableHead className="text-right">Clicks</TableHead>
+                          <TableHead className="text-end">Clicks</TableHead>
                           <TableHead>Created</TableHead>
                           <TableHead></TableHead>
                         </TableRow>
@@ -732,7 +732,7 @@ export default function UtmBuilder() {
                                 </code>
                               </div>
                             </TableCell>
-                            <TableCell className="text-right font-medium">
+                            <TableCell className="text-end font-medium">
                               {link.click_count}
                             </TableCell>
                             <TableCell className="text-xs text-muted-foreground">
@@ -812,7 +812,7 @@ export default function UtmBuilder() {
                           setUtmSource(combo.source);
                           setUtmMedium(combo.medium);
                         }}
-                        className="w-full flex items-center justify-between p-2 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors text-left"
+                        className="w-full flex items-center justify-between p-2 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors text-start"
                       >
                         <div>
                           <div className="flex items-center gap-1">

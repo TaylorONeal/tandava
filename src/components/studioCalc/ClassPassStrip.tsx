@@ -56,7 +56,7 @@ export function ClassPassStrip({ inputs, dilution }: Props) {
 
       <p className="mt-3 text-xs tabular-nums text-foreground">
         {money(dilution.delta, 2)} per visit
-        <span className="ml-1.5 text-muted-foreground">
+        <span className="ms-1.5 text-muted-foreground">
           ({pct(dilution.delta / (dilution.withoutAggregator || 1), 1)})
         </span>
       </p>

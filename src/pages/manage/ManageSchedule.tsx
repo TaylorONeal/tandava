@@ -16,7 +16,7 @@ export default function ManageSchedule() {
             <p className="text-muted-foreground">Create and manage your class schedule.</p>
           </div>
           <Button>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 me-2" />
             Add Class
           </Button>
         </div>

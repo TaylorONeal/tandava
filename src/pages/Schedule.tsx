@@ -356,12 +356,12 @@ const Schedule = () => {
           {/* Search and Filters */}
           <div className="flex flex-col sm:flex-row gap-3 mb-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search classes, teachers, studios..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
+                className="ps-9"
               />
             </div>
 
@@ -455,11 +455,11 @@ const Schedule = () => {
           {activeFilters.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
               {activeFilters.map((filter) => (
-                <Badge key={filter} variant="secondary" className="gap-1 pr-1">
+                <Badge key={filter} variant="secondary" className="gap-1 pe-1">
                   {filter}
                   <button
                     onClick={() => clearFilter(filter)}
-                    className="ml-1 rounded-full hover:bg-muted p-0.5"
+                    className="ms-1 rounded-full hover:bg-muted p-0.5"
                   >
                     <X className="h-3 w-3" />
                   </button>

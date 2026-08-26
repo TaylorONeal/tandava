@@ -23,6 +23,7 @@ import {
   ChevronLeft,
   HelpCircle,
   ArrowRight,
+  ArrowDown,
   Clock,
   Flame,
   Sun,
@@ -41,13 +42,13 @@ function InfoTip({ text }: { text: string }) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="ml-1 text-muted-foreground hover:text-foreground transition-colors"
+        className="ms-1 text-muted-foreground hover:text-foreground transition-colors"
         aria-label="More info"
       >
         <HelpCircle className="h-3.5 w-3.5" />
       </button>
       {open && (
-        <span className="absolute left-0 top-full mt-1 z-20 w-64 rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground shadow-lg">
+        <span className="absolute start-0 top-full mt-1 z-20 w-64 rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground shadow-lg">
           {text}
         </span>
       )}
@@ -280,7 +281,7 @@ export default function MemberAnalytics() {
               </SelectContent>
             </Select>
             <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="h-4 w-4 me-2" />
               Export
             </Button>
           </div>
@@ -368,7 +369,7 @@ export default function MemberAnalytics() {
                         </div>
                         {i < funnelSteps.length - 1 && (
                           <div className="flex justify-center py-0.5">
-                            <ArrowRight className="h-3 w-3 text-muted-foreground rotate-90" />
+                            <ArrowDown className="h-3 w-3 text-muted-foreground" />
                           </div>
                         )}
                       </div>
@@ -432,7 +433,7 @@ export default function MemberAnalytics() {
                     At-Risk Members
                   </CardTitle>
                   <Button variant="ghost" size="sm" className="text-xs">
-                    View All <ArrowRight className="h-3 w-3 ml-1" />
+                    View All <ArrowRight className="h-3 w-3 ms-1" />
                   </Button>
                 </div>
               </CardHeader>
@@ -441,25 +442,25 @@ export default function MemberAnalytics() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-border">
-                        <th className="text-left py-2 pr-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Name</th>
-                        <th className="text-left py-2 pr-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Last Visit</th>
-                        <th className="text-left py-2 pr-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Days Since</th>
-                        <th className="text-left py-2 pr-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Risk Level</th>
-                        <th className="text-left py-2 pr-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="text-start py-2 pe-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Name</th>
+                        <th className="text-start py-2 pe-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Last Visit</th>
+                        <th className="text-start py-2 pe-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Days Since</th>
+                        <th className="text-start py-2 pe-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">Risk Level</th>
+                        <th className="text-start py-2 pe-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Score
                           <InfoTip text="Engagement score (0-100) based on attendance frequency, recency, and booking patterns." />
                         </th>
-                        <th className="text-left py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">Suggested Action</th>
+                        <th className="text-start py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">Suggested Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {atRiskMembers.map((member, i) => (
                         <tr key={i} className="border-b border-border/50 last:border-0">
-                          <td className="py-2.5 pr-4 font-medium">{member.name}</td>
-                          <td className="py-2.5 pr-4 text-muted-foreground">{member.lastVisit}</td>
-                          <td className="py-2.5 pr-4 text-muted-foreground">{member.daysSince}</td>
-                          <td className="py-2.5 pr-4">{riskBadge(member.risk)}</td>
-                          <td className="py-2.5 pr-4">
+                          <td className="py-2.5 pe-4 font-medium">{member.name}</td>
+                          <td className="py-2.5 pe-4 text-muted-foreground">{member.lastVisit}</td>
+                          <td className="py-2.5 pe-4 text-muted-foreground">{member.daysSince}</td>
+                          <td className="py-2.5 pe-4">{riskBadge(member.risk)}</td>
+                          <td className="py-2.5 pe-4">
                             <span className={member.score < 30 ? "text-destructive font-semibold" : "text-accent-gold font-semibold"}>
                               {member.score}
                             </span>
@@ -490,7 +491,7 @@ export default function MemberAnalytics() {
                 <CardContent className="space-y-3">
                   {engagementDistribution.map((bucket) => (
                     <div key={bucket.range} className="flex items-center gap-3">
-                      <span className="text-xs font-medium w-12 text-right text-muted-foreground">
+                      <span className="text-xs font-medium w-12 text-end text-muted-foreground">
                         {bucket.range}
                       </span>
                       <div className="flex-1 h-6 rounded bg-secondary/50 overflow-hidden relative">
@@ -640,7 +641,7 @@ export default function MemberAnalytics() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-border">
-                        <th className="text-left py-2 pr-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="text-start py-2 pe-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Signup Month
                         </th>
                         {["Month 1", "Month 2", "Month 3", "Month 4", "Month 5", "Month 6"].map(
@@ -658,7 +659,7 @@ export default function MemberAnalytics() {
                     <tbody>
                       {monthlyCohorts.map((cohort, i) => (
                         <tr key={i} className="border-b border-border/50 last:border-0">
-                          <td className="py-2 pr-4 font-medium">{cohort.month}</td>
+                          <td className="py-2 pe-4 font-medium">{cohort.month}</td>
                           {cohort.sizes.map((val, j) => (
                             <td key={j} className="py-2 px-2 text-center">
                               <span
@@ -693,7 +694,7 @@ export default function MemberAnalytics() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-border">
-                        <th className="text-left py-2 pr-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="text-start py-2 pe-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Source
                         </th>
                         {["Month 1", "Month 2", "Month 3", "Month 4"].map((col) => (
@@ -709,7 +710,7 @@ export default function MemberAnalytics() {
                     <tbody>
                       {cohortBySource.map((row, i) => (
                         <tr key={i} className="border-b border-border/50 last:border-0">
-                          <td className="py-2 pr-4 font-medium">{row.source}</td>
+                          <td className="py-2 pe-4 font-medium">{row.source}</td>
                           {[row.m1, row.m2, row.m3, row.m4].map((val, j) => (
                             <td key={j} className="py-2 px-2 text-center">
                               <span
@@ -767,21 +768,21 @@ export default function MemberAnalytics() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b border-border">
-                          <th className="text-left py-2 pr-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Source</th>
-                          <th className="text-right py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Students</th>
-                          <th className="text-right py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Avg CLV</th>
-                          <th className="text-right py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Avg Classes</th>
-                          <th className="text-right py-2 pl-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Avg Months</th>
+                          <th className="text-start py-2 pe-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Source</th>
+                          <th className="text-end py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Students</th>
+                          <th className="text-end py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Avg CLV</th>
+                          <th className="text-end py-2 px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Avg Classes</th>
+                          <th className="text-end py-2 ps-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Avg Months</th>
                         </tr>
                       </thead>
                       <tbody>
                         {clvBySource.map((row, i) => (
                           <tr key={i} className="border-b border-border/50 last:border-0">
-                            <td className="py-2.5 pr-3 font-medium">{row.source}</td>
-                            <td className="py-2.5 px-3 text-right text-muted-foreground">{row.students}</td>
-                            <td className="py-2.5 px-3 text-right font-semibold">${row.avgClv.toLocaleString()}</td>
-                            <td className="py-2.5 px-3 text-right text-muted-foreground">{row.avgClasses}</td>
-                            <td className="py-2.5 pl-3 text-right text-muted-foreground">{row.avgMonths}</td>
+                            <td className="py-2.5 pe-3 font-medium">{row.source}</td>
+                            <td className="py-2.5 px-3 text-end text-muted-foreground">{row.students}</td>
+                            <td className="py-2.5 px-3 text-end font-semibold">${row.avgClv.toLocaleString()}</td>
+                            <td className="py-2.5 px-3 text-end text-muted-foreground">{row.avgClasses}</td>
+                            <td className="py-2.5 ps-3 text-end text-muted-foreground">{row.avgMonths}</td>
                           </tr>
                         ))}
                       </tbody>
