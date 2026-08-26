@@ -480,7 +480,7 @@ export default function TasksManage() {
 
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge className={`text-[10px] px-1.5 py-0 ${priority.bgColor} ${priority.color} border-0`}>
-                  <PriorityIcon className="h-2.5 w-2.5 mr-0.5" />
+                  <PriorityIcon className="h-2.5 w-2.5 me-0.5" />
                   {priority.label}
                 </Badge>
 
@@ -514,12 +514,12 @@ export default function TasksManage() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40">
                   <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleOpenEditDialog(task); }}>
-                    <Edit className="h-3.5 w-3.5 mr-2" /> Edit
+                    <Edit className="h-3.5 w-3.5 me-2" /> Edit
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   {task.status !== "completed" && (
                     <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleChangeStatus(task.id, "completed"); }}>
-                      <CheckCircle2 className="h-3.5 w-3.5 mr-2" /> Mark Complete
+                      <CheckCircle2 className="h-3.5 w-3.5 me-2" /> Mark Complete
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
@@ -527,7 +527,7 @@ export default function TasksManage() {
                     className="text-destructive focus:text-destructive"
                     onClick={(e) => { e.stopPropagation(); handleDeleteTask(task.id); }}
                   >
-                    <Trash2 className="h-3.5 w-3.5 mr-2" /> Delete
+                    <Trash2 className="h-3.5 w-3.5 me-2" /> Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -543,7 +543,7 @@ export default function TasksManage() {
           </div>
 
           {/* Drag indicator (visual only) */}
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-50 cursor-grab">
+          <div className="absolute start-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-50 cursor-grab">
             <GripVertical className="h-4 w-4 text-muted-foreground" />
           </div>
         </CardContent>
@@ -563,7 +563,7 @@ export default function TasksManage() {
             </p>
           </div>
           <Button onClick={handleOpenCreateDialog}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 me-2" />
             Create Task
           </Button>
         </div>
@@ -620,17 +620,17 @@ export default function TasksManage() {
         <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
           <div className="flex flex-wrap gap-2 items-center">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search tasks..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 w-48"
+                className="ps-9 w-48"
               />
             </div>
             <Select value={filterAssignee} onValueChange={setFilterAssignee}>
               <SelectTrigger className="w-36">
-                <User className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+                <User className="h-3.5 w-3.5 me-1.5 text-muted-foreground" />
                 <SelectValue placeholder="Assignee" />
               </SelectTrigger>
               <SelectContent>
@@ -644,7 +644,7 @@ export default function TasksManage() {
             </Select>
             <Select value={filterPriority} onValueChange={setFilterPriority}>
               <SelectTrigger className="w-32">
-                <AlertCircle className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+                <AlertCircle className="h-3.5 w-3.5 me-1.5 text-muted-foreground" />
                 <SelectValue placeholder="Priority" />
               </SelectTrigger>
               <SelectContent>
@@ -657,7 +657,7 @@ export default function TasksManage() {
             </Select>
             <Select value={filterCategory} onValueChange={setFilterCategory}>
               <SelectTrigger className="w-36">
-                <Filter className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+                <Filter className="h-3.5 w-3.5 me-1.5 text-muted-foreground" />
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
@@ -678,7 +678,7 @@ export default function TasksManage() {
               onClick={() => setShowOverdueOnly(!showOverdueOnly)}
               className={showOverdueOnly ? "bg-red-500 hover:bg-red-600" : ""}
             >
-              <AlertCircle className="h-3.5 w-3.5 mr-1.5" />
+              <AlertCircle className="h-3.5 w-3.5 me-1.5" />
               Overdue
             </Button>
           </div>
@@ -690,7 +690,7 @@ export default function TasksManage() {
               onClick={() => setViewMode("board")}
               className="h-8 px-3"
             >
-              <LayoutGrid className="h-4 w-4 mr-1.5" />
+              <LayoutGrid className="h-4 w-4 me-1.5" />
               Board
             </Button>
             <Button
@@ -699,7 +699,7 @@ export default function TasksManage() {
               onClick={() => setViewMode("list")}
               className="h-8 px-3"
             >
-              <List className="h-4 w-4 mr-1.5" />
+              <List className="h-4 w-4 me-1.5" />
               List
             </Button>
           </div>
@@ -809,7 +809,7 @@ export default function TasksManage() {
                       {task.due_date ? (
                         <span className={`text-sm ${taskIsOverdue ? "text-red-500 font-medium" : ""}`}>
                           {formatDate(task.due_date)}
-                          {task.due_time && <span className="text-muted-foreground ml-1">{task.due_time}</span>}
+                          {task.due_time && <span className="text-muted-foreground ms-1">{task.due_time}</span>}
                         </span>
                       ) : (
                         <span className="text-sm text-muted-foreground">No due date</span>
@@ -819,7 +819,7 @@ export default function TasksManage() {
                     {/* Priority */}
                     <div className="hidden md:block">
                       <Badge className={`text-[10px] ${priority.bgColor} ${priority.color} border-0`}>
-                        <PriorityIcon className="h-2.5 w-2.5 mr-0.5" />
+                        <PriorityIcon className="h-2.5 w-2.5 me-0.5" />
                         {priority.label}
                       </Badge>
                     </div>
@@ -847,7 +847,7 @@ export default function TasksManage() {
                       {task.category ? (
                         <Badge variant="outline" className="text-[10px]">
                           <div
-                            className="w-2 h-2 rounded-full mr-1"
+                            className="w-2 h-2 rounded-full me-1"
                             style={{ backgroundColor: task.category.color }}
                           />
                           {task.category.name}
@@ -867,14 +867,14 @@ export default function TasksManage() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-40">
                           <DropdownMenuItem onClick={() => handleOpenEditDialog(task)}>
-                            <Edit className="h-3.5 w-3.5 mr-2" /> Edit
+                            <Edit className="h-3.5 w-3.5 me-2" /> Edit
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
                             className="text-destructive focus:text-destructive"
                             onClick={() => handleDeleteTask(task.id)}
                           >
-                            <Trash2 className="h-3.5 w-3.5 mr-2" /> Delete
+                            <Trash2 className="h-3.5 w-3.5 me-2" /> Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -1139,10 +1139,10 @@ export default function TasksManage() {
                         style={{ backgroundColor: selectedTask.category.color }}
                       />
                     )}
-                    <SheetTitle className="text-left">{selectedTask.title}</SheetTitle>
+                    <SheetTitle className="text-start">{selectedTask.title}</SheetTitle>
                   </div>
                 </div>
-                <SheetDescription className="text-left">
+                <SheetDescription className="text-start">
                   {selectedTask.description || "No description provided."}
                 </SheetDescription>
               </SheetHeader>
@@ -1318,7 +1318,7 @@ export default function TasksManage() {
                     </div>
                   ) : (
                     <Button variant="outline" className="w-full" size="sm">
-                      <Plus className="h-3.5 w-3.5 mr-1.5" />
+                      <Plus className="h-3.5 w-3.5 me-1.5" />
                       Add Attachment
                     </Button>
                   )}
@@ -1334,7 +1334,7 @@ export default function TasksManage() {
                       setDetailPanelOpen(false);
                     }}
                   >
-                    <Edit className="h-3.5 w-3.5 mr-1.5" />
+                    <Edit className="h-3.5 w-3.5 me-1.5" />
                     Edit
                   </Button>
                   <Button

@@ -52,7 +52,7 @@ export function RetreatCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         
         {/* Overlay badges */}
-        <div className="absolute top-3 left-3 flex gap-2">
+        <div className="absolute top-3 start-3 flex gap-2">
           <Badge variant="retreat" className="gap-1">
             <Plane className="h-3 w-3" />
             Retreat
@@ -63,7 +63,7 @@ export function RetreatCard({
         </div>
 
         {/* Destination on image */}
-        <div className="absolute bottom-3 left-3 text-white">
+        <div className="absolute bottom-3 start-3 text-white">
           <p className="text-sm font-medium opacity-80">{country}</p>
           <h3 className="text-xl font-bold">{destination}</h3>
         </div>
@@ -86,7 +86,7 @@ export function RetreatCard({
 
         {/* Teachers */}
         <div className="flex items-center gap-2 mb-4">
-          <div className="flex -space-x-2">
+          <div className="flex -space-x-2 rtl:space-x-reverse">
             {teachers.slice(0, 3).map((teacher, i) => (
               <Avatar key={i} className="h-8 w-8 border-2 border-card">
                 <AvatarImage src={teacher.avatar} alt={teacher.name} />

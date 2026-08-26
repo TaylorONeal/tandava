@@ -286,7 +286,7 @@ export function EventRegistrationPanel({
               <p className="text-xs text-muted-foreground line-through">{fmt(price.regularCents)}</p>
             )}
           </div>
-          <div className="text-right">
+          <div className="text-end">
             <span className="text-2xl font-bold">{fmt(price.cents)}</span>
             {price.savingsCents > 0 && (
               <p className="text-xs text-accent-sage">Save {fmt(price.savingsCents)}</p>
@@ -313,7 +313,7 @@ export function EventRegistrationPanel({
                 <RadioGroupItem value="deposit" id="pay-deposit" />
                 Pay deposit
               </span>
-              <span className="text-right text-sm">
+              <span className="text-end text-sm">
                 <span className="font-medium">{fmt(deposit.dueNowCents)}</span>
                 <span className="block text-[11px] text-muted-foreground">
                   {fmt(deposit.balanceCents)} due later

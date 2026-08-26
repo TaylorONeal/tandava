@@ -139,7 +139,7 @@ export function QuickConfig({
               <InfoTip label="all-in rent per square foot">{GLOSSARY.rentPerSf}</InfoTip>
             </Label>
             <div className="relative mt-1">
-              <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+              <span className="pointer-events-none absolute start-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                 $
               </span>
               <Input
@@ -151,7 +151,7 @@ export function QuickConfig({
                 onChange={(e) =>
                   onPatchAssumptions({ rentPerSf: Math.max(0, Number(e.target.value) || 0) })
                 }
-                className="pl-6 tabular-nums"
+                className="ps-6 tabular-nums"
                 data-testid="rent-per-sf"
               />
             </div>
@@ -165,7 +165,7 @@ export function QuickConfig({
               <InfoTip label="base utilities">{GLOSSARY.utilities}</InfoTip>
             </Label>
             <div className="relative mt-1">
-              <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+              <span className="pointer-events-none absolute start-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                 $
               </span>
               <Input
@@ -177,7 +177,7 @@ export function QuickConfig({
                 onChange={(e) =>
                   onPatchAssumptions({ utilitiesBase: Math.max(0, Number(e.target.value) || 0) })
                 }
-                className="pl-6 tabular-nums"
+                className="ps-6 tabular-nums"
                 data-testid="utilities-base"
               />
             </div>
@@ -291,7 +291,7 @@ export function QuickConfig({
             {model.donationBased ? "Suggested monthly give" : "Membership price"}
           </Label>
           <div className="relative mt-1">
-            <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+            <span className="pointer-events-none absolute start-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
               $
             </span>
             <Input
@@ -300,7 +300,7 @@ export function QuickConfig({
               min={0}
               value={Math.round(inputs.membershipPrice)}
               onChange={(e) => onPatch({ membershipPrice: Math.max(0, Number(e.target.value) || 0) })}
-              className="pl-6 tabular-nums"
+              className="ps-6 tabular-nums"
               data-testid="membership-price"
             />
           </div>

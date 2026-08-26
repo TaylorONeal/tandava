@@ -287,11 +287,11 @@ export default function StaffWaitlist() {
               size="sm"
               onClick={() => setShowSettings(!showSettings)}
             >
-              <Settings2 className="h-4 w-4 mr-1.5" />
+              <Settings2 className="h-4 w-4 me-1.5" />
               Settings
             </Button>
             <Button size="sm" onClick={handleAutoPromoteAll}>
-              <Zap className="h-4 w-4 mr-1.5" />
+              <Zap className="h-4 w-4 me-1.5" />
               Auto-Promote Next
             </Button>
           </div>
@@ -397,7 +397,7 @@ export default function StaffWaitlist() {
                 {/* Class header — always visible */}
                 <button
                   onClick={() => setExpandedClass(isExpanded ? null : cls.id)}
-                  className="w-full text-left"
+                  className="w-full text-start"
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
@@ -419,7 +419,7 @@ export default function StaffWaitlist() {
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <div className="text-right">
+                        <div className="text-end">
                           <div className="flex items-center gap-1.5 text-sm">
                             <Users className="h-3.5 w-3.5 text-muted-foreground" />
                             <span className="font-medium text-red-500">{cls.bookedCount}/{cls.capacity}</span>
@@ -491,7 +491,7 @@ export default function StaffWaitlist() {
                                   variant="default"
                                   onClick={(e) => { e.stopPropagation(); handlePromote(cls.id, entry.id); }}
                                 >
-                                  <Bell className="h-3.5 w-3.5 mr-1" />
+                                  <Bell className="h-3.5 w-3.5 me-1" />
                                   Promote
                                 </Button>
                                 <Button
@@ -512,7 +512,7 @@ export default function StaffWaitlist() {
                                   className="bg-green-600 hover:bg-green-700"
                                   onClick={(e) => { e.stopPropagation(); handleConfirm(cls.id, entry.id); }}
                                 >
-                                  <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
+                                  <CheckCircle2 className="h-3.5 w-3.5 me-1" />
                                   Confirm
                                 </Button>
                                 <Button

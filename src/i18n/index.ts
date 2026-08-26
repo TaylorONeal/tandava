@@ -45,6 +45,7 @@ export const SUPPORTED_LANGUAGES = [
   { code: 'ja', name: 'Japanese', nativeName: '日本語', flag: '🇯🇵' },
   { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்', flag: '🇸🇬' },
   { code: 'vi', name: 'Vietnamese', nativeName: 'Tiếng Việt', flag: '🇻🇳' },
+  { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇸🇦' },
 ] as const;
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number]['code'];
@@ -111,6 +112,11 @@ i18n
         if (/^zh\b/i.test(lng)) {
           return /hant|tw|hk|mo/i.test(lng) ? 'zh-Hant' : 'zh';
         }
+        // Legacy/alias codes some browsers still report:
+        // 'tl' (Tagalog) → Filipino, 'in' (pre-1989 ISO code) → Indonesian.
+        const base = lng.split('-')[0].toLowerCase();
+        if (base === 'tl') return 'fil';
+        if (base === 'in') return 'id';
         return lng;
       },
     },
@@ -128,9 +134,10 @@ i18n
   });
 
 /**
- * Right-to-left languages, by base subtag. None are supported yet — this set
- * exists so adding one (e.g. Arabic) flips the document direction with no
- * further code changes.
+ * Right-to-left languages, by base subtag. Arabic is the first supported RTL
+ * locale; the rest are pre-listed so adding one flips the document direction
+ * with no further code changes. Layouts use logical Tailwind utilities
+ * (ms-/me-/ps-/pe-/start-/end-) so they mirror automatically under dir="rtl".
  */
 const RTL_LANGUAGES = new Set(['ar', 'he', 'fa', 'ur']);
 

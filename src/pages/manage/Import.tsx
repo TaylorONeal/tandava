@@ -288,7 +288,7 @@ export default function ImportManage() {
                   <button
                     key={source.value}
                     onClick={() => setSelectedSource(source.value)}
-                    className={`p-4 rounded-xl border text-left transition-all ${
+                    className={`p-4 rounded-xl border text-start transition-all ${
                       selectedSource === source.value
                         ? "border-primary bg-primary/5"
                         : "border-border hover:border-primary/30"
@@ -317,7 +317,7 @@ export default function ImportManage() {
                     <button
                       key={type.value}
                       onClick={() => setSelectedImportType(type.value)}
-                      className={`flex items-center gap-3 w-full p-4 rounded-xl border text-left transition-all ${
+                      className={`flex items-center gap-3 w-full p-4 rounded-xl border text-start transition-all ${
                         selectedImportType === type.value
                           ? "border-primary bg-primary/5"
                           : "border-border hover:border-primary/30"
@@ -339,7 +339,7 @@ export default function ImportManage() {
             {selectedSource && selectedImportType && (
               <div className="flex justify-end">
                 <Button onClick={() => setStep("upload")}>
-                  Continue <ArrowRight className="h-4 w-4 ml-2" />
+                  Continue <ArrowRight className="h-4 w-4 ms-2" />
                 </Button>
               </div>
             )}
@@ -488,7 +488,7 @@ export default function ImportManage() {
                 Back
               </Button>
               <Button onClick={() => setStep("preview")}>
-                Preview Import <ArrowRight className="h-4 w-4 ml-2" />
+                Preview Import <ArrowRight className="h-4 w-4 ms-2" />
               </Button>
             </div>
           </div>
@@ -535,7 +535,7 @@ export default function ImportManage() {
                       <thead>
                         <tr className="border-b border-border">
                           {columnMappings.filter((m) => m.targetField).slice(0, 4).map((m) => (
-                            <th key={m.sourceColumn} className="text-left p-2 text-xs font-medium text-muted-foreground">
+                            <th key={m.sourceColumn} className="text-start p-2 text-xs font-medium text-muted-foreground">
                               {m.targetField.replace(/_/g, " ")}
                             </th>
                           ))}
@@ -563,7 +563,7 @@ export default function ImportManage() {
                 Back
               </Button>
               <Button onClick={handleStartImport}>
-                Start Import <ArrowRight className="h-4 w-4 ml-2" />
+                Start Import <ArrowRight className="h-4 w-4 ms-2" />
               </Button>
             </div>
           </div>
@@ -646,7 +646,7 @@ export default function ImportManage() {
               </Button>
               <Button asChild>
                 <a href="/manage/students">
-                  View Imported Students <ArrowRight className="h-4 w-4 ml-2" />
+                  View Imported Students <ArrowRight className="h-4 w-4 ms-2" />
                 </a>
               </Button>
             </div>

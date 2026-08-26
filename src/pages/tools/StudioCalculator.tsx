@@ -217,7 +217,7 @@ export default function StudioCalculator() {
           {/* Preset selection sweeps a brief tint across the changed fields.
               Reduced motion drops the transition, so the tint never appears. */}
           <div
-            className={`space-y-4 rounded-xl lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-y-auto lg:overscroll-contain lg:pr-1 ${
+            className={`space-y-4 rounded-xl lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-y-auto lg:overscroll-contain lg:pe-1 ${
               reduced ? "" : "transition-colors duration-700"
             } ${highlight && !reduced ? "bg-primary/10" : "bg-transparent"}`}
           >

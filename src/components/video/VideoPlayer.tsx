@@ -179,7 +179,7 @@ export function VideoPlayer({
             onClick={togglePlay}
             className="h-20 w-20 rounded-full bg-primary flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
           >
-            <Play className="h-10 w-10 text-primary-foreground ml-1" />
+            <Play className="h-10 w-10 text-primary-foreground ms-1" />
           </button>
         </div>
       )}
@@ -225,7 +225,7 @@ export function VideoPlayer({
               {isPlaying ? (
                 <Pause className="h-5 w-5" />
               ) : (
-                <Play className="h-5 w-5 ml-0.5" />
+                <Play className="h-5 w-5 ms-0.5" />
               )}
             </Button>
 
@@ -240,7 +240,7 @@ export function VideoPlayer({
             </Button>
 
             {/* Volume */}
-            <div className="flex items-center gap-1 ml-2">
+            <div className="flex items-center gap-1 ms-2">
               <Button
                 variant="ghost"
                 size="icon-sm"
@@ -264,7 +264,7 @@ export function VideoPlayer({
             </div>
 
             {/* Time */}
-            <span className="text-xs text-background ml-3">
+            <span className="text-xs text-background ms-3">
               {formatTime(currentTime)} / {formatTime(duration)}
             </span>
           </div>

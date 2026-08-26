@@ -270,7 +270,7 @@ export default function TeachEarnings() {
             </p>
           </div>
           <Button variant="outline" size="sm" onClick={handleExportCSV}>
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="h-4 w-4 me-2" />
             Export CSV
           </Button>
         </div>
@@ -413,7 +413,7 @@ export default function TeachEarnings() {
               <span>Type</span>
               <span>Base Pay</span>
               <span>Tips</span>
-              <span className="text-right">Attendance</span>
+              <span className="text-end">Attendance</span>
             </div>
 
             {/* Class Rows */}
@@ -465,7 +465,7 @@ export default function TeachEarnings() {
                 </div>
 
                 {/* Attendance */}
-                <div className="text-right">
+                <div className="text-end">
                   <div className="flex items-center justify-end gap-1 text-sm">
                     <Users className="h-3 w-3 text-muted-foreground" />
                     <span>
@@ -514,7 +514,7 @@ export default function TeachEarnings() {
                       {period.classCount} classes
                     </p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-end">
                     <p className="text-sm font-semibold">
                       ${period.totalEarnings.toLocaleString()}
                     </p>

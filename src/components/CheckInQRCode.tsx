@@ -143,7 +143,7 @@ export function CheckInQRCode({
           </p>
           <div className="flex items-center gap-2 mt-2">
             <Badge variant="outline" className="text-xs">
-              <Clock className="h-3 w-3 mr-1" />
+              <Clock className="h-3 w-3 me-1" />
               {daysUntilExpiry}d left
             </Badge>
             <Button variant="ghost" size="sm" onClick={handleRefresh} disabled={isRefreshing}>
@@ -173,7 +173,7 @@ export function CheckInQRCode({
             <QRCodeDisplay data={qrData} size={200} />
             <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
               <Badge className="bg-accent-sage text-white">
-                <CheckCircle2 className="h-3 w-3 mr-1" />
+                <CheckCircle2 className="h-3 w-3 me-1" />
                 Active
               </Badge>
             </div>
@@ -191,11 +191,11 @@ export function CheckInQRCode({
         {/* Actions */}
         <div className="flex items-center justify-center gap-2">
           <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isRefreshing}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
+            <RefreshCw className={`h-4 w-4 me-2 ${isRefreshing ? "animate-spin" : ""}`} />
             Refresh
           </Button>
           <Button variant="outline" size="sm" onClick={handleCopyCode}>
-            <Copy className="h-4 w-4 mr-2" />
+            <Copy className="h-4 w-4 me-2" />
             Copy Code
           </Button>
         </div>
@@ -212,7 +212,7 @@ export function CheckInQRCode({
                 className="flex-1 max-w-[160px]"
                 onClick={() => handleAddToWallet("apple")}
               >
-                <Wallet className="h-4 w-4 mr-2" />
+                <Wallet className="h-4 w-4 me-2" />
                 Apple Wallet
               </Button>
               <Button
@@ -220,7 +220,7 @@ export function CheckInQRCode({
                 className="flex-1 max-w-[160px]"
                 onClick={() => handleAddToWallet("google")}
               >
-                <Smartphone className="h-4 w-4 mr-2" />
+                <Smartphone className="h-4 w-4 me-2" />
                 Google Wallet
               </Button>
             </div>

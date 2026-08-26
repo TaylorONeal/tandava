@@ -141,7 +141,7 @@ export default function ManageSettings() {
                   payment processing, and funds are deposited to your bank account on your Stripe payout schedule.
                 </p>
                 <Button variant="outline">
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="h-4 w-4 me-2" />
                   Connect Stripe Account
                 </Button>
                 <div className="text-xs text-muted-foreground space-y-1">

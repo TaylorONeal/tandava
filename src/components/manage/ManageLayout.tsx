@@ -116,7 +116,7 @@ export function ManageLayout({ children }: ManageLayoutProps) {
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
-              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-accent-coral text-[9px] font-bold text-white flex items-center justify-center">
+              <span className="absolute -top-0.5 -end-0.5 h-4 w-4 rounded-full bg-accent-coral text-[9px] font-bold text-white flex items-center justify-center">
                 5
               </span>
             </Button>
@@ -169,7 +169,7 @@ export function ManageLayout({ children }: ManageLayoutProps) {
         {/* Sidebar */}
         <aside
           className={cn(
-            "fixed inset-y-0 left-0 z-40 w-60 border-r border-border bg-card/95 backdrop-blur-md pt-14 transition-transform duration-200 lg:translate-x-0 lg:static lg:z-auto",
+            "fixed inset-y-0 start-0 z-40 w-60 border-e border-border bg-card/95 backdrop-blur-md pt-14 transition-transform duration-200 lg:translate-x-0 lg:static lg:z-auto",
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           )}
         >

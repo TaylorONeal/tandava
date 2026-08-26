@@ -56,7 +56,7 @@ export function MobileStatsBar({ results, members, watchRef }: Props) {
       className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-4 pb-[max(0.625rem,env(safe-area-inset-bottom))] pt-2.5 backdrop-blur-md lg:hidden"
       data-testid="mobile-stats-bar"
     >
-      <span className="mx-auto flex w-full max-w-md items-center justify-between gap-3 text-left">
+      <span className="mx-auto flex w-full max-w-md items-center justify-between gap-3 text-start">
         <span>
           <span className="block text-[10px] uppercase tracking-wide text-muted-foreground">
             EBITDA / mo
@@ -77,7 +77,7 @@ export function MobileStatsBar({ results, members, watchRef }: Props) {
               ? `${count(results.breakEvenMembers)} of ${count(members)}`
               : "unreachable"}
             <span
-              className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full align-middle"
+              className="ms-1.5 inline-block h-1.5 w-1.5 rounded-full align-middle"
               style={{ backgroundColor: past ? CHART.positive : CHART.negative }}
               aria-hidden
             />

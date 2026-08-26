@@ -138,19 +138,19 @@ export default function TeachersManage() {
             </p>
           </div>
           <Button size="sm">
-            <UserPlus className="h-4 w-4 mr-2" />
+            <UserPlus className="h-4 w-4 me-2" />
             Add Teacher
           </Button>
         </div>
 
         {/* Search */}
         <div className="relative max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search teachers or specialties..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="ps-9"
           />
         </div>
 
@@ -306,7 +306,7 @@ export default function TeachersManage() {
                       <Repeat2 className="h-4 w-4 text-accent-sage" />
                       <span className="text-sm">Student Return Rate</span>
                     </div>
-                    <div className="text-right">
+                    <div className="text-end">
                       <span className="text-sm font-bold text-accent-sage">{selectedTeacher.returnRate}%</span>
                       <p className="text-[10px] text-muted-foreground">of students return</p>
                     </div>
@@ -316,7 +316,7 @@ export default function TeachersManage() {
                       <Users className="h-4 w-4 text-primary" />
                       <span className="text-sm">Avg Students / Class</span>
                     </div>
-                    <div className="text-right">
+                    <div className="text-end">
                       <span className="text-sm font-bold">{selectedTeacher.avgStudentsPerClass}</span>
                       <p className="text-[10px] text-muted-foreground">per session</p>
                     </div>

@@ -133,7 +133,7 @@ const Index = () => {
             <div className="flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
                 <Link to="/schedule">
-                  <Calendar className="h-5 w-5 mr-2" />
+                  <Calendar className="h-5 w-5 me-2" />
                   Book a Class
                 </Link>
               </Button>
@@ -141,7 +141,7 @@ const Index = () => {
                 <Button asChild variant="outline" size="lg">
                   <Link to="/auth/register">
                     Get Started
-                    <ArrowRight className="h-4 w-4 ml-2" />
+                    <ArrowRight className="h-4 w-4 ms-2" />
                   </Link>
                 </Button>
               )}
@@ -205,7 +205,7 @@ const Index = () => {
             {/* Style filter */}
             <Select value={selectedStyle} onValueChange={setSelectedStyle}>
               <SelectTrigger className="w-[140px] h-8 text-xs">
-                <Filter className="h-3 w-3 mr-1" />
+                <Filter className="h-3 w-3 me-1" />
                 <SelectValue placeholder="Style" />
               </SelectTrigger>
               <SelectContent>
@@ -229,7 +229,7 @@ const Index = () => {
                       : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   )}
                 >
-                  {mode === "virtual" && <Monitor className="h-3 w-3 inline mr-1" />}
+                  {mode === "virtual" && <Monitor className="h-3 w-3 inline me-1" />}
                   {mode === "all" ? "All" : mode === "in-person" ? "In-Person" : "Virtual"}
                 </button>
               ))}
@@ -272,7 +272,7 @@ const Index = () => {
                         </p>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" asChild className="shrink-0 ml-2">
+                    <Button variant="outline" size="sm" asChild className="shrink-0 ms-2">
                       <Link to="/schedule">Book</Link>
                     </Button>
                   </CardContent>
@@ -471,13 +471,13 @@ const Index = () => {
             <div className="flex flex-wrap justify-center gap-3">
               <Button asChild size="lg">
                 <Link to="/schedule">
-                  <Calendar className="h-5 w-5 mr-2" />
+                  <Calendar className="h-5 w-5 me-2" />
                   Browse Classes
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg">
                 <a href={`mailto:${OXATL_STUDIO.email}`}>
-                  <Mail className="h-5 w-5 mr-2" />
+                  <Mail className="h-5 w-5 me-2" />
                   Contact Us
                 </a>
               </Button>
@@ -493,7 +493,7 @@ const Index = () => {
             </p>
             <Button asChild variant="outline">
               <a href={`mailto:${OXATL_STUDIO.email}`}>
-                <Mail className="h-4 w-4 mr-2" />
+                <Mail className="h-4 w-4 me-2" />
                 Contact {OXATL_STUDIO.name}
               </a>
             </Button>

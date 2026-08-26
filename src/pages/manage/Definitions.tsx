@@ -360,7 +360,7 @@ export default function Definitions() {
           </div>
           <Link to="/manage/data-dictionary">
             <Button variant="outline" size="sm">
-              <ArrowUpRight className="h-4 w-4 mr-1.5" />
+              <ArrowUpRight className="h-4 w-4 me-1.5" />
               Analytics Metrics
             </Button>
           </Link>
@@ -368,12 +368,12 @@ export default function Definitions() {
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search definitions..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="ps-10"
           />
         </div>
 
@@ -439,7 +439,7 @@ export default function Definitions() {
                           <h3 className="font-semibold text-lg">{item.term}</h3>
                           {cat && (
                             <Badge className={cat.color} variant="secondary">
-                              <cat.icon className="h-3 w-3 mr-1" />
+                              <cat.icon className="h-3 w-3 me-1" />
                               {cat.label}
                             </Badge>
                           )}

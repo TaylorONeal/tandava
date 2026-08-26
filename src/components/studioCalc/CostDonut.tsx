@@ -94,7 +94,7 @@ export function CostDonut({ results }: { results: StudioResults }) {
               aria-hidden
             />
             <span className="text-muted-foreground">{entry.name}</span>
-            <span className="ml-auto tabular-nums text-foreground">{money(entry.value)}</span>
+            <span className="ms-auto tabular-nums text-foreground">{money(entry.value)}</span>
           </li>
         ))}
       </ul>

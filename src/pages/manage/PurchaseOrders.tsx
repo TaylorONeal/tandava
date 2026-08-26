@@ -435,11 +435,11 @@ export default function PurchaseOrdersManage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="h-4 w-4 me-2" />
               Export
             </Button>
             <Button size="sm" onClick={() => setCreateOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-4 w-4 me-2" />
               New Purchase Order
             </Button>
           </div>
@@ -500,17 +500,17 @@ export default function PurchaseOrdersManage() {
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search by PO number or vendor..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="ps-10"
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-40">
-              <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
+              <Filter className="h-4 w-4 me-2 text-muted-foreground" />
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -526,7 +526,7 @@ export default function PurchaseOrdersManage() {
           </Select>
           <Select value={vendorFilter} onValueChange={setVendorFilter}>
             <SelectTrigger className="w-48">
-              <Building2 className="h-4 w-4 mr-2 text-muted-foreground" />
+              <Building2 className="h-4 w-4 me-2 text-muted-foreground" />
               <SelectValue placeholder="Vendor" />
             </SelectTrigger>
             <SelectContent>
@@ -603,7 +603,7 @@ export default function PurchaseOrdersManage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="text-right">
+                      <div className="text-end">
                         <p className="text-sm font-semibold">{formatPrice(po.total)}</p>
                         <p className="text-xs text-muted-foreground">Total</p>
                       </div>
@@ -619,7 +619,7 @@ export default function PurchaseOrdersManage() {
                               className="rounded-lg cursor-pointer"
                               onClick={() => handleViewDetail(po)}
                             >
-                              <Eye className="h-4 w-4 mr-2" />
+                              <Eye className="h-4 w-4 me-2" />
                               View Details
                             </DropdownMenuItem>
                             {["shipped", "partial", "confirmed"].includes(po.status) && (
@@ -627,19 +627,19 @@ export default function PurchaseOrdersManage() {
                                 className="rounded-lg cursor-pointer"
                                 onClick={() => handleReceive(po)}
                               >
-                                <PackageCheck className="h-4 w-4 mr-2" />
+                                <PackageCheck className="h-4 w-4 me-2" />
                                 Receive Items
                               </DropdownMenuItem>
                             )}
                             {po.status === "draft" && (
                               <>
                                 <DropdownMenuItem className="rounded-lg cursor-pointer">
-                                  <Send className="h-4 w-4 mr-2" />
+                                  <Send className="h-4 w-4 me-2" />
                                   Submit Order
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem className="rounded-lg cursor-pointer text-destructive">
-                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  <Trash2 className="h-4 w-4 me-2" />
                                   Delete Draft
                                 </DropdownMenuItem>
                               </>
@@ -648,7 +648,7 @@ export default function PurchaseOrdersManage() {
                               <>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem className="rounded-lg cursor-pointer text-destructive">
-                                  <XCircle className="h-4 w-4 mr-2" />
+                                  <XCircle className="h-4 w-4 me-2" />
                                   Cancel Order
                                 </DropdownMenuItem>
                               </>
@@ -703,12 +703,12 @@ export default function PurchaseOrdersManage() {
 
                 {/* Product Search */}
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search products to add..."
                     value={productSearch}
                     onChange={(e) => setProductSearch(e.target.value)}
-                    className="pl-10"
+                    className="ps-10"
                   />
                   {productSearch && (
                     <Card className="absolute z-10 w-full mt-1 max-h-48 overflow-y-auto">
@@ -757,7 +757,7 @@ export default function PurchaseOrdersManage() {
                             />
                             <span className="text-xs text-muted-foreground">x</span>
                             <div className="relative">
-                              <DollarSign className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                              <DollarSign className="absolute start-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                               <Input
                                 type="number"
                                 step="0.01"
@@ -768,10 +768,10 @@ export default function PurchaseOrdersManage() {
                                     Math.round(parseFloat(e.target.value) * 100) || 0
                                   )
                                 }
-                                className="w-24 pl-6"
+                                className="w-24 ps-6"
                               />
                             </div>
-                            <span className="text-sm font-medium w-20 text-right">
+                            <span className="text-sm font-medium w-20 text-end">
                               {formatPrice(item.quantity * item.unitCost)}
                             </span>
                             <Button
@@ -801,7 +801,7 @@ export default function PurchaseOrdersManage() {
                 <div className="space-y-2">
                   <Label htmlFor="shipping">Shipping Cost ($)</Label>
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <DollarSign className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="shipping"
                       type="number"
@@ -809,7 +809,7 @@ export default function PurchaseOrdersManage() {
                       min="0"
                       value={newPOShipping}
                       onChange={(e) => setNewPOShipping(parseFloat(e.target.value) || 0)}
-                      className="pl-10"
+                      className="ps-10"
                     />
                   </div>
                 </div>
@@ -858,7 +858,7 @@ export default function PurchaseOrdersManage() {
                 onClick={() => handleCreatePO(false)}
                 disabled={!newPOVendor || newPOLineItems.length === 0}
               >
-                <Send className="h-4 w-4 mr-2" />
+                <Send className="h-4 w-4 me-2" />
                 Submit Order
               </Button>
             </DialogFooter>
@@ -916,10 +916,10 @@ export default function PurchaseOrdersManage() {
                     <CardContent className="p-0">
                       <div className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr] gap-2 px-4 py-2 border-b border-border text-xs font-medium text-muted-foreground uppercase">
                         <span>Product</span>
-                        <span className="text-right">Qty</span>
-                        <span className="text-right">Received</span>
-                        <span className="text-right">Unit Cost</span>
-                        <span className="text-right">Total</span>
+                        <span className="text-end">Qty</span>
+                        <span className="text-end">Received</span>
+                        <span className="text-end">Unit Cost</span>
+                        <span className="text-end">Total</span>
                       </div>
                       {selectedPO.lineItems.map((item) => (
                         <div
@@ -930,9 +930,9 @@ export default function PurchaseOrdersManage() {
                             <p className="text-sm font-medium">{item.productName}</p>
                             <p className="text-xs text-muted-foreground">{item.sku}</p>
                           </div>
-                          <p className="text-sm text-right">{item.quantityOrdered}</p>
+                          <p className="text-sm text-end">{item.quantityOrdered}</p>
                           <p
-                            className={`text-sm text-right ${
+                            className={`text-sm text-end ${
                               item.quantityReceived < item.quantityOrdered
                                 ? "text-accent-gold"
                                 : "text-accent-sage"
@@ -940,8 +940,8 @@ export default function PurchaseOrdersManage() {
                           >
                             {item.quantityReceived}
                           </p>
-                          <p className="text-sm text-right">{formatPrice(item.unitCost)}</p>
-                          <p className="text-sm text-right font-medium">
+                          <p className="text-sm text-end">{formatPrice(item.unitCost)}</p>
+                          <p className="text-sm text-end font-medium">
                             {formatPrice(item.totalCost)}
                           </p>
                         </div>
@@ -998,7 +998,7 @@ export default function PurchaseOrdersManage() {
                       handleReceive(selectedPO);
                     }}
                   >
-                    <PackageCheck className="h-4 w-4 mr-2" />
+                    <PackageCheck className="h-4 w-4 me-2" />
                     Receive Items
                   </Button>
                 )}
@@ -1115,7 +1115,7 @@ export default function PurchaseOrdersManage() {
                   Object.values(receiveQuantities).reduce((sum, q) => sum + q, 0) === 0
                 }
               >
-                <PackageCheck className="h-4 w-4 mr-2" />
+                <PackageCheck className="h-4 w-4 me-2" />
                 Confirm Receipt
               </Button>
             </DialogFooter>

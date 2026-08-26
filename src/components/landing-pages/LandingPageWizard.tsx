@@ -316,7 +316,7 @@ export function LandingPageWizard({ open, onOpenChange, onComplete, initialTempl
             <p className="text-sm text-muted-foreground">
               Choose the template that best fits your goal. Each is optimized for different search intents.
             </p>
-            <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2">
+            <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pe-2">
               {TEMPLATES.map((template) => (
                 <button
                   key={template.id}
@@ -329,7 +329,7 @@ export function LandingPageWizard({ open, onOpenChange, onComplete, initialTempl
                     });
                   }}
                   className={cn(
-                    "p-3 rounded-xl border text-left transition-all",
+                    "p-3 rounded-xl border text-start transition-all",
                     data.template === template.id
                       ? "border-primary bg-primary/5 ring-1 ring-primary"
                       : "border-border hover:border-primary/30"
@@ -586,7 +586,7 @@ export function LandingPageWizard({ open, onOpenChange, onComplete, initialTempl
                         key={option.value}
                         onClick={() => updateData({ expiredBehavior: option.value })}
                         className={cn(
-                          "w-full p-3 rounded-xl border text-left transition-all",
+                          "w-full p-3 rounded-xl border text-start transition-all",
                           data.expiredBehavior === option.value
                             ? "border-primary bg-primary/5"
                             : "border-border hover:border-primary/30"
@@ -673,7 +673,7 @@ export function LandingPageWizard({ open, onOpenChange, onComplete, initialTempl
                 </p>
                 <Button className="mt-4">
                   {data.ctaText || "Call to Action"}
-                  <ArrowRight className="h-4 w-4 ml-2" />
+                  <ArrowRight className="h-4 w-4 ms-2" />
                 </Button>
               </div>
             </div>
@@ -782,19 +782,19 @@ export function LandingPageWizard({ open, onOpenChange, onComplete, initialTempl
             onClick={handleBack}
             disabled={currentStep === 0}
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="h-4 w-4 me-2" />
             Back
           </Button>
 
           {currentStep === WIZARD_STEPS.length - 1 ? (
             <Button onClick={handleComplete} disabled={!canProceed()}>
               Create Page
-              <Check className="h-4 w-4 ml-2" />
+              <Check className="h-4 w-4 ms-2" />
             </Button>
           ) : (
             <Button onClick={handleNext} disabled={!canProceed()}>
               Continue
-              <ArrowRight className="h-4 w-4 ml-2" />
+              <ArrowRight className="h-4 w-4 ms-2" />
             </Button>
           )}
         </div>

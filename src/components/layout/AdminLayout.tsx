@@ -39,7 +39,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <div className="min-h-screen bg-background flex">
       {/* Sidebar */}
-      <aside className="w-64 border-r border-border bg-card/50 p-4 flex flex-col">
+      <aside className="w-64 border-e border-border bg-card/50 p-4 flex flex-col">
         <div className="mb-6">
           <Link
             to="/"

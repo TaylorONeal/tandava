@@ -746,11 +746,11 @@
   .blog-content ul,
   .blog-content ol {
     margin: 0 0 1.25rem;
-    padding-left: 1.4rem;
+    padding-inline-start: 1.4rem;
   }
   .blog-content li {
     margin: 0.45rem 0;
-    padding-left: 0.2rem;
+    padding-inline-start: 0.2rem;
   }
   .blog-content li::marker {
     color: hsl(var(--primary));
@@ -760,8 +760,11 @@
   .blog-content blockquote {
     margin: 1.85rem 0;
     padding: 1rem 1.3rem;
-    border-left: 4px solid hsl(var(--primary));
-    border-radius: 0 0.85rem 0.85rem 0;
+    border-inline-start: 4px solid hsl(var(--primary));
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-start-end-radius: 0.85rem;
+    border-end-end-radius: 0.85rem;
     background: hsl(var(--primary) / 0.07);
     color: hsl(var(--foreground) / 0.9);
     font-style: normal;
@@ -819,7 +822,7 @@
   }
   .blog-content thead th {
     background: hsl(var(--muted) / 0.6);
-    text-align: left;
+    text-align: start;
     font-weight: 600;
     font-size: 0.74rem;
     text-transform: uppercase;
@@ -856,4 +859,23 @@
     border-radius: 0.75rem;
     border: 1px solid hsl(var(--border));
   }
+}
+
+/* ============================================================================
+   RTL support
+   Layout uses logical Tailwind utilities (ms-/me-/ps-/pe-/start-/end-), so it
+   mirrors automatically under dir="rtl". Directional affordance icons must
+   mirror too: "forward" points left in RTL.
+   ============================================================================ */
+[dir='rtl'] .lucide-arrow-right,
+[dir='rtl'] .lucide-arrow-left,
+[dir='rtl'] .lucide-chevron-right,
+[dir='rtl'] .lucide-chevron-left,
+[dir='rtl'] .lucide-chevrons-right,
+[dir='rtl'] .lucide-chevrons-left,
+[dir='rtl'] .lucide-arrow-up-right,
+[dir='rtl'] .lucide-external-link,
+[dir='rtl'] .lucide-log-out,
+[dir='rtl'] .lucide-log-in {
+  transform: scaleX(-1);
 }
