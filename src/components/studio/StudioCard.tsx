@@ -42,7 +42,7 @@ export function StudioCard({
           alt={name}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <div className="absolute top-3 left-3 flex gap-2">
+        <div className="absolute top-3 start-3 flex gap-2">
           {styles.slice(0, 2).map((style) => (
             <Badge key={style} variant="secondary" className="bg-background/90 backdrop-blur-sm">
               {style}

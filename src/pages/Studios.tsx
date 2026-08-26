@@ -224,12 +224,12 @@ const Events = () => {
         {/* Search and Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search events, teachers, topics..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
+              className="ps-9"
             />
           </div>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
@@ -328,15 +328,15 @@ function EventCard({ event, featured }: { event: StudioEvent; featured?: boolean
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
           {/* Type badge */}
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-3 start-3">
             <Badge className={`${cfg.color} border`}>
-              <TypeIcon className="h-3 w-3 mr-1" />
+              <TypeIcon className="h-3 w-3 me-1" />
               {cfg.label}
             </Badge>
           </div>
 
           {/* Date overlay */}
-          <div className="absolute bottom-3 left-3 text-white">
+          <div className="absolute bottom-3 start-3 text-white">
             <p className="text-xs opacity-80">
               {startDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
               {event.isMultiSession && ` — ${event.sessionCount} sessions`}
@@ -349,7 +349,7 @@ function EventCard({ event, featured }: { event: StudioEvent; featured?: boolean
 
           {/* Spots badge */}
           {spotsLow && (
-            <div className="absolute top-3 right-3">
+            <div className="absolute top-3 end-3">
               <Badge className="bg-accent-coral/90 text-white border-none text-[10px]">
                 {event.spotsLeft} spots left
               </Badge>

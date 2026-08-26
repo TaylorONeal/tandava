@@ -86,11 +86,11 @@ export default function StudentsManage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="h-4 w-4 me-2" />
               Export
             </Button>
             <Button size="sm">
-              <UserPlus className="h-4 w-4 mr-2" />
+              <UserPlus className="h-4 w-4 me-2" />
               Add Student
             </Button>
           </div>
@@ -99,12 +99,12 @@ export default function StudentsManage() {
         {/* Search & Filters */}
         <div className="flex gap-2">
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
+              className="ps-9"
             />
           </div>
           <Button variant="outline" size="icon">
@@ -205,15 +205,15 @@ export default function StudentsManage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-44 rounded-xl">
                       <DropdownMenuItem className="rounded-lg cursor-pointer">
-                        <Mail className="h-4 w-4 mr-2" />
+                        <Mail className="h-4 w-4 me-2" />
                         Send Email
                       </DropdownMenuItem>
                       <DropdownMenuItem className="rounded-lg cursor-pointer">
-                        <CreditCard className="h-4 w-4 mr-2" />
+                        <CreditCard className="h-4 w-4 me-2" />
                         Add Purchase
                       </DropdownMenuItem>
                       <DropdownMenuItem className="rounded-lg cursor-pointer">
-                        <Tag className="h-4 w-4 mr-2" />
+                        <Tag className="h-4 w-4 me-2" />
                         Add Tag
                       </DropdownMenuItem>
                     </DropdownMenuContent>

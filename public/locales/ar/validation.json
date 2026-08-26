@@ -1,0 +1,17 @@
+{
+  "emailRequired": "البريد الإلكتروني مطلوب",
+  "emailInvalid": "يرجى إدخال بريد إلكتروني صحيح",
+  "passwordMinLength": "يجب أن تكون كلمة المرور {{min}} أحرف على الأقل",
+  "phoneInvalid": "يرجى إدخال رقم هاتف صحيح",
+  "urlInvalid": "يرجى إدخال رابط صحيح",
+  "handleMinLength": "يجب أن يكون المعرّف {{min}} أحرف على الأقل",
+  "handleMaxLength": "يجب أن يكون المعرّف أقصر من {{max}} حرفًا",
+  "handleFormat": "يمكن أن يحتوي المعرّف على أحرف وأرقام وشرطات سفلية وشرطات فقط",
+  "fieldRequired": "{{field}} مطلوب",
+  "fieldInvalidUrl": "يرجى إدخال {{field}} صحيح",
+  "endTimeAfterStart": "يجب أن يكون وقت الانتهاء بعد وقت البدء",
+  "endDateAfterStart": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء",
+  "mustBePositive": "يجب أن يكون {{field}} أكبر من 0",
+  "mustBeValidAmount": "يجب أن يكون {{field}} مبلغًا صحيحًا",
+  "mustBePositiveNumber": "يجب أن يكون {{field}} رقمًا موجبًا"
+}

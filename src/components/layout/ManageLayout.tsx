@@ -42,7 +42,7 @@ export function ManageLayout({ children }: ManageLayoutProps) {
   return (
     <div className="min-h-screen bg-background flex">
       {/* Sidebar */}
-      <aside className="w-64 border-r border-border bg-card/50 p-4 flex flex-col">
+      <aside className="w-64 border-e border-border bg-card/50 p-4 flex flex-col">
         <div className="mb-6">
           <h2 className="text-lg font-bold tracking-tight">Studio Manager</h2>
           <p className="text-xs text-muted-foreground">Oxatl Yoga</p>

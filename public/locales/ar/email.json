@@ -1,0 +1,21 @@
+{
+  "bookingConfirmation": {
+    "youreBooked": "تم حجزك!",
+    "greeting": "مرحبًا {{name}}، تم تأكيد {{type}} الخاص بك. نتطلع لرؤيتك.",
+    "class": "حصة",
+    "workshop": "ورشة عمل",
+    "appointment": "موعد",
+    "instructor": "المدرّب",
+    "dateTime": "التاريخ والوقت",
+    "duration": "المدة",
+    "location": "الموقع",
+    "spotNumber": "رقم المكان",
+    "addToCalendar": "أضف إلى التقويم",
+    "getDirections": "احصل على الاتجاهات",
+    "whatToBring": "ما الذي تحضره",
+    "whatToBringText": "يرجى الوصول قبل 10-15 دقيقة لتسجيل الحضور. أحضر ماءً ومنشفة وارتدِ ملابس مريحة. السجادات متوفرة، ويمكنك إحضار سجادتك الخاصة.",
+    "cancellationPolicy": "سياسة الإلغاء:",
+    "manageBooking": "إدارة حجزك",
+    "needChanges": "هل تحتاج إلى إجراء تغييرات؟"
+  }
+}

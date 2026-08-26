@@ -23,7 +23,7 @@ See [LOCALIZATION_ANALYSIS.md](../LOCALIZATION_ANALYSIS.md) for the full i18n ar
 
    One trap worth knowing: `Intl.PluralRules` does **not** throw on a well-formed but unknown tag such as `ban`. It quietly negotiates down to the runtime's default locale, so a naive check would demand English plural forms for Balinese — and would demand something different on a build machine with a different default. The checker therefore resolves through `INTL_LOCALE_MAP` first and confirms Intl actually honoured the request before trusting its categories.
 4. **Script-aware Chinese.** `zh` (Simplified) and `zh-Hant` (Traditional) are separate locales with separate files. Browser codes are normalized in the language detector: `zh-TW`/`zh-HK`/`zh-MO`/`*-Hant` → `zh-Hant`, all other Chinese → `zh`. Missing `zh-Hant` strings fall back through `zh` before English (intelligible, if not script-pure).
-5. **Direction-ready.** `<html lang>` and `<html dir>` are synced centrally on every language change. RTL languages (Arabic, Hebrew, Farsi, Urdu) are pre-listed in `RTL_LANGUAGES`, so a future RTL locale is a data change plus a layout audit — not a plumbing change.
+5. **Direction-ready — and now direction-proven.** `<html lang>` and `<html dir>` are synced centrally on every language change, and Arabic ships as the first RTL locale. Layouts use logical Tailwind utilities (`ms-`/`me-`/`ps-`/`pe-`/`start-`/`end-`/`text-start`/`text-end`), which render identically in LTR and mirror automatically under `dir="rtl"`; directional affordance icons (arrows, chevrons) mirror via one CSS rule in `src/index.css`. **Convention: never add physical `ml-`/`mr-`/`pl-`/`pr-`/`text-left`/`text-right`/`left-N`/`right-N` utilities — use the logical equivalents.** The deliberate exceptions are direction-agnostic idioms: `left-1/2 -translate-x-1/2` centering, offscreen `left-[9999px]`, and explicit markdown alignment (`[align="right"]`). Adding Hebrew, Farsi, or Urdu is now genuinely a data change.
 6. **Machine-drafted, human-finished.** New locales launch with machine-drafted translations so the feature is usable immediately, and each locale should get a native-speaker review pass before being promoted to studios in that market. Track review status in the table below.
 
 ## Rollout order (and why)
@@ -67,6 +67,7 @@ Languages shipped in dependency order — each wave reused the freshest prior wo
 | Japanese | `ja` | 100% | 99% | pending |
 | Tamil | `ta` | 100% | 100% | pending |
 | Vietnamese | `vi` | 100% | 100% | pending |
+| Arabic | `ar` | 100% | 100% | pending |
 
 `text` below 100% is normal: brand names, loanwords and units that a language
 keeps verbatim in English count as untranslated by the string comparison.
@@ -78,17 +79,16 @@ Coverage numbers come from `npm run check:locales` — rerun it rather than trus
 
 1. `mkdir public/locales/<code>` and translate the seven namespace files from `public/locales/en/`, using the plural forms `Intl.PluralRules('<code>')` requires. For a language CLDR does not know, add it to `INTL_LOCALE_MAP` first (see principle 3) so both formatting and validation resolve it consistently.
 2. Register the language in `SUPPORTED_LANGUAGES` in `src/i18n/index.ts` (code, English name, native name, flag).
-3. If the language is written right-to-left, add its base subtag to `RTL_LANGUAGES` and audit layouts.
+3. If the language is written right-to-left, ensure its base subtag is in `RTL_LANGUAGES` (ar/he/fa/ur already are). Layouts mirror automatically — the RTL layout audit shipped with Arabic — but spot-check new screens for physical utilities.
 4. If browsers report regional variants that shouldn't language-only-fallback correctly (as with Chinese scripts), extend `convertDetectedLanguage` in the detector config.
 5. Run `npm run check:locales` — the new locale must reach 100% `keys`, and its `text` figure must reflect real translation rather than copied English.
 6. `npm run build` and verify the switcher, a booking flow, and a form-validation message in the new language.
 
 ## Future candidates
 
-- **Arabic (`ar`)** — next up, and the first RTL language. `RTL_LANGUAGES` and the
-  `dir` syncing are already in place, so the locale files are the easy half; the
-  work is the layout audit (directional padding/margin utilities, icon flipping,
-  chart and calendar axes). Treat it as its own wave, not an add-on.
+- **Hebrew (`he`), Farsi (`fa`), Urdu (`ur`)** — the RTL groundwork Arabic
+  established makes each of these a locale-files-only change; prioritize by
+  studio demand.
 - **Colloquial written Cantonese (`yue`)** — only if HK studios ask; `zh-Hant` covers standard HK usage
 - **Regional variants** (`es-MX`, `pt-PT`, `de-CH`, `fr-CA`) — only on demand; the base locales serve them via fallback
 - **Korean/Japanese honorific tiers** — if studios want a more formal register than the current 해요체 / です・ます

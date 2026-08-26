@@ -308,7 +308,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
               {(step === "confirm" || (step === "select" && canQuickBook)) && (
                 <button
                   onClick={handleBack}
-                  className="absolute left-4 top-4 p-1 text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
+                  className="absolute start-4 top-4 p-1 text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
@@ -406,7 +406,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
                         }
                       </p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-end">
                       {selectedSource?.priceCents ? (
                         <span className="font-semibold">
                           {formatPrice(selectedSource.priceCents)}

@@ -64,7 +64,7 @@ export default function TeachAvailability() {
             <p className="text-muted-foreground">Set your weekly teaching availability</p>
           </div>
           <Button onClick={handleSave}>
-            <Save className="h-4 w-4 mr-2" />
+            <Save className="h-4 w-4 me-2" />
             Save Changes
           </Button>
         </div>

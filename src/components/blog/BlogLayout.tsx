@@ -46,7 +46,7 @@ export function BlogLayout({ children, activeCategory }: BlogLayoutProps) {
     <div className="flex min-h-screen flex-col bg-background">
       <a
         href="#blog-main"
-        className="sr-only absolute left-4 top-4 z-[70] rounded-md bg-card px-3 py-2 text-sm font-medium shadow-md focus:not-sr-only focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="sr-only absolute start-4 top-4 z-[70] rounded-md bg-card px-3 py-2 text-sm font-medium shadow-md focus:not-sr-only focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
       >
         Skip to main content
       </a>

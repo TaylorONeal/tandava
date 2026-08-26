@@ -417,7 +417,7 @@ function LogEntryRow({ entry, onSelect, isSelected }: LogEntryRowProps) {
     <button
       onClick={() => onSelect(entry)}
       className={`
-        w-full text-left px-4 py-3 border-b border-stone-100 hover:bg-stone-50
+        w-full text-start px-4 py-3 border-b border-stone-100 hover:bg-stone-50
         transition-colors flex items-start gap-4
         ${isSelected ? 'bg-stone-100' : ''}
       `}
@@ -507,7 +507,7 @@ interface DetailPanelProps {
 
 function DetailPanel({ entry, onClose }: DetailPanelProps) {
   return (
-    <div className="bg-white border-l border-stone-200 w-96 h-full overflow-y-auto">
+    <div className="bg-white border-s border-stone-200 w-96 h-full overflow-y-auto">
       {/* Header */}
       <div className="sticky top-0 bg-white border-b border-stone-200 px-4 py-3 flex items-center justify-between">
         <h3 className="font-semibold text-stone-900">Event Details</h3>
@@ -551,7 +551,7 @@ function DetailPanel({ entry, onClose }: DetailPanelProps) {
           <div className="text-sm text-stone-900">
             {entry.actorEmail || (entry.actorType === 'system' ? 'System' : 'Unknown')}
             {entry.actorRole && (
-              <span className="text-stone-500 ml-1">({entry.actorRole})</span>
+              <span className="text-stone-500 ms-1">({entry.actorRole})</span>
             )}
           </div>
           {entry.impersonatorId && (
@@ -772,13 +772,13 @@ export default function AuditLogs() {
             <div className="p-4 border-b border-stone-200 space-y-4">
               {/* Search */}
               <div className="relative">
-                <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                <SearchIcon className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
                 <input
                   type="text"
                   placeholder="Search logs..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-500"
+                  className="w-full ps-10 pe-4 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-500"
                 />
               </div>
 

@@ -74,7 +74,7 @@ export function SoftwareSelect({ value, cost, fiveYear, onChangeChoice, onChange
           </SelectContent>
         </Select>
         <div className="relative w-28 shrink-0">
-          <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+          <span className="pointer-events-none absolute start-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
             $
           </span>
           <Input
@@ -84,7 +84,7 @@ export function SoftwareSelect({ value, cost, fiveYear, onChangeChoice, onChange
             value={Math.round(cost)}
             onChange={(e) => onChangeCost(Math.max(0, Number(e.target.value) || 0))}
             aria-label="Monthly software cost in dollars"
-            className="pl-6 tabular-nums"
+            className="ps-6 tabular-nums"
             data-testid="software-cost"
           />
         </div>

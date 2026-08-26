@@ -436,7 +436,7 @@ export default function TeachSchedule() {
 
                     {/* Booking Status */}
                     <div className="flex items-center gap-3 shrink-0">
-                      <div className="text-right">
+                      <div className="text-end">
                         <div className="flex items-center gap-1 text-sm">
                           <Users className="h-3 w-3 text-muted-foreground" />
                           <span className="font-semibold">
@@ -454,7 +454,7 @@ export default function TeachSchedule() {
                             setSubDialogOpen(true);
                           }}
                         >
-                          <Repeat2 className="h-3 w-3 mr-1" />
+                          <Repeat2 className="h-3 w-3 me-1" />
                           Request Sub
                         </Button>
                       )}

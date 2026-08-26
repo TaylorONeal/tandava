@@ -60,7 +60,7 @@ export default function TeachProfile() {
             <p className="text-muted-foreground">Manage your public instructor profile</p>
           </div>
           <Button onClick={handleSave}>
-            <Save className="h-4 w-4 mr-2" />
+            <Save className="h-4 w-4 me-2" />
             Save Profile
           </Button>
         </div>
@@ -115,11 +115,11 @@ export default function TeachProfile() {
           <CardContent className="space-y-3">
             <div className="flex flex-wrap gap-2">
               {specialties.map((s) => (
-                <Badge key={s} variant="secondary" className="gap-1 pr-1">
+                <Badge key={s} variant="secondary" className="gap-1 pe-1">
                   {s}
                   <button
                     onClick={() => removeSpecialty(s)}
-                    className="ml-1 rounded-full hover:bg-muted p-0.5 text-xs"
+                    className="ms-1 rounded-full hover:bg-muted p-0.5 text-xs"
                   >
                     ×
                   </button>

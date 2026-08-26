@@ -217,7 +217,7 @@ function FeatureCard({
     >
       {/* Core badge */}
       {feature.isCore && (
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-3 end-3">
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-stone-200 text-stone-600">
             <LockIcon className="w-3 h-3" />
             Core

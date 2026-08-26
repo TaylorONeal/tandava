@@ -241,7 +241,7 @@ const EventDetailPage = () => {
           to="/events"
           className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
         >
-          <ChevronLeft className="h-4 w-4 mr-1" />
+          <ChevronLeft className="h-4 w-4 me-1" />
           Back to events
         </Link>
 
@@ -255,7 +255,7 @@ const EventDetailPage = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
           {/* Actions overlay */}
-          <div className="absolute top-4 right-4 flex gap-2">
+          <div className="absolute top-4 end-4 flex gap-2">
             <Button
               variant="secondary"
               size="icon"
@@ -275,10 +275,10 @@ const EventDetailPage = () => {
           </div>
 
           {/* Event info overlay */}
-          <div className="absolute bottom-6 left-6 text-white">
+          <div className="absolute bottom-6 start-6 text-white">
             <div className="flex items-center gap-2 mb-2">
               <Badge className={`${cfg.color} border`}>
-                <TypeIcon className="h-3 w-3 mr-1" />
+                <TypeIcon className="h-3 w-3 me-1" />
                 {cfg.label}
               </Badge>
               {spotsLow && (
@@ -324,7 +324,7 @@ const EventDetailPage = () => {
                       </div>
                     ))}
                     {event.sessions.length < event.sessionCount && (
-                      <p className="text-xs text-muted-foreground pl-12">
+                      <p className="text-xs text-muted-foreground ps-12">
                         + {event.sessionCount - event.sessions.length} more sessions
                       </p>
                     )}

@@ -24,7 +24,7 @@ export function StaffLayout({ children }: StaffLayoutProps) {
         <div className="container flex h-14 items-center gap-6">
           <h2 className="text-sm font-bold tracking-tight">Front Desk</h2>
 
-          <nav className="flex items-center gap-1 ml-4">
+          <nav className="flex items-center gap-1 ms-4">
             {navigation.map((item) => (
               <Link
                 key={item.name}

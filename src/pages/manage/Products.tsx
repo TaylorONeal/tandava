@@ -331,11 +331,11 @@ export default function ProductsManage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => toast({ title: "Exported", description: "Product data exported to CSV." })}>
-              <DownloadIcon className="h-4 w-4 mr-2" />
+              <DownloadIcon className="h-4 w-4 me-2" />
               Export
             </Button>
             <Button size="sm" onClick={() => setCreateOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-4 w-4 me-2" />
               Add Product
             </Button>
           </div>
@@ -398,12 +398,12 @@ export default function ProductsManage() {
         {/* Search & Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search by name, SKU, or barcode..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="ps-10"
             />
           </div>
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
@@ -536,7 +536,7 @@ export default function ProductsManage() {
                     )}
                     <div className="flex gap-1 mt-3 pt-3 border-t border-border">
                       <Button variant="outline" size="sm" className="flex-1 h-8 text-xs" onClick={() => toast({ title: "Edit mode", description: "Product editor opened." })}>
-                        <Edit className="h-3 w-3 mr-1" />
+                        <Edit className="h-3 w-3 me-1" />
                         Edit
                       </Button>
                       <DropdownMenu>
@@ -551,12 +551,12 @@ export default function ProductsManage() {
                               className="rounded-lg cursor-pointer"
                               onClick={() => handleAdjustStock(product)}
                             >
-                              <Layers className="h-4 w-4 mr-2" />
+                              <Layers className="h-4 w-4 me-2" />
                               Adjust Stock
                             </DropdownMenuItem>
                           )}
                           <DropdownMenuItem className="rounded-lg cursor-pointer" onClick={() => toast({ title: "Edit tags", description: "Tag editor opened." })}>
-                            <Tag className="h-4 w-4 mr-2" />
+                            <Tag className="h-4 w-4 me-2" />
                             Edit Tags
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
@@ -564,7 +564,7 @@ export default function ProductsManage() {
                             className="rounded-lg cursor-pointer text-destructive"
                             onClick={() => handleDeactivate(product)}
                           >
-                            <Archive className="h-4 w-4 mr-2" />
+                            <Archive className="h-4 w-4 me-2" />
                             {product.status === "active" ? "Deactivate" : "Activate"}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -657,7 +657,7 @@ export default function ProductsManage() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-44 rounded-xl">
                           <DropdownMenuItem className="rounded-lg cursor-pointer" onClick={() => toast({ title: "Edit mode", description: "Product editor opened." })}>
-                            <Edit className="h-4 w-4 mr-2" />
+                            <Edit className="h-4 w-4 me-2" />
                             Edit Product
                           </DropdownMenuItem>
                           {product.trackInventory && (
@@ -665,7 +665,7 @@ export default function ProductsManage() {
                               className="rounded-lg cursor-pointer"
                               onClick={() => handleAdjustStock(product)}
                             >
-                              <Layers className="h-4 w-4 mr-2" />
+                              <Layers className="h-4 w-4 me-2" />
                               Adjust Stock
                             </DropdownMenuItem>
                           )}
@@ -674,7 +674,7 @@ export default function ProductsManage() {
                             className="rounded-lg cursor-pointer text-destructive"
                             onClick={() => handleDeactivate(product)}
                           >
-                            <Archive className="h-4 w-4 mr-2" />
+                            <Archive className="h-4 w-4 me-2" />
                             {product.status === "active" ? "Deactivate" : "Activate"}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -723,8 +723,8 @@ export default function ProductsManage() {
                   <div className="space-y-2">
                     <Label htmlFor="productBarcode">Barcode (optional)</Label>
                     <div className="relative">
-                      <Barcode className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input id="productBarcode" placeholder="UPC or EAN" className="pl-10" />
+                      <Barcode className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input id="productBarcode" placeholder="UPC or EAN" className="ps-10" />
                     </div>
                   </div>
                 </div>
@@ -780,26 +780,26 @@ export default function ProductsManage() {
                   <div className="space-y-2">
                     <Label htmlFor="productPrice">Retail Price ($)</Label>
                     <div className="relative">
-                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <DollarSign className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="productPrice"
                         type="number"
                         step="0.01"
                         placeholder="0.00"
-                        className="pl-10"
+                        className="ps-10"
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="productCost">Cost ($)</Label>
                     <div className="relative">
-                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <DollarSign className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="productCost"
                         type="number"
                         step="0.01"
                         placeholder="0.00"
-                        className="pl-10"
+                        className="ps-10"
                       />
                     </div>
                     <p className="text-xs text-muted-foreground">Used to calculate margin</p>

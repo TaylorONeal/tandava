@@ -80,7 +80,7 @@ export function OnDemandClassCard({
   return (
     <button
       onClick={onClick}
-      className="group relative rounded-2xl overflow-hidden bg-card border text-left transition-all hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
+      className="group relative rounded-2xl overflow-hidden bg-card border text-start transition-all hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
     >
       {/* Thumbnail */}
       <div className="relative aspect-video">
@@ -93,12 +93,12 @@ export function OnDemandClassCard({
         {/* Play overlay */}
         <div className="absolute inset-0 bg-foreground/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
           <div className="h-14 w-14 rounded-full bg-primary flex items-center justify-center shadow-lg">
-            <Play className="h-7 w-7 text-primary-foreground ml-1" />
+            <Play className="h-7 w-7 text-primary-foreground ms-1" />
           </div>
         </div>
 
         {/* Duration badge */}
-        <div className="absolute bottom-2 right-2 px-2 py-1 rounded-lg bg-foreground/80 text-background text-xs font-medium flex items-center gap-1">
+        <div className="absolute bottom-2 end-2 px-2 py-1 rounded-lg bg-foreground/80 text-background text-xs font-medium flex items-center gap-1">
           <Clock className="h-3 w-3" />
           {duration} min
         </div>
@@ -106,27 +106,27 @@ export function OnDemandClassCard({
         {/* Access type badge - top left */}
         {accessType !== "free" && (
           <div className={cn(
-            "absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 border backdrop-blur-sm",
+            "absolute top-2 start-2 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 border backdrop-blur-sm",
             access.className
           )}>
             <AccessIcon accessType={accessType} />
             {access.label}
             {price != null && (accessType === "purchase" || accessType === "rental") && (
-              <span className="ml-0.5">${price}</span>
+              <span className="ms-0.5">${price}</span>
             )}
           </div>
         )}
 
         {/* Free badge */}
         {accessType === "free" && (
-          <div className="absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 border backdrop-blur-sm bg-emerald-500/10 text-emerald-700 border-emerald-300">
+          <div className="absolute top-2 start-2 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 border backdrop-blur-sm bg-emerald-500/10 text-emerald-700 border-emerald-300">
             Free
           </div>
         )}
 
         {/* Progress bar */}
         {progress > 0 && !isCompleted && (
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-foreground/30">
+          <div className="absolute bottom-0 start-0 end-0 h-1 bg-foreground/30">
             <div
               className="h-full bg-primary transition-all"
               style={{ width: `${progress}%` }}
@@ -136,7 +136,7 @@ export function OnDemandClassCard({
 
         {/* Completed badge */}
         {isCompleted && (
-          <div className="absolute top-2 right-2 px-2 py-1 rounded-full bg-mint text-foreground text-xs font-medium flex items-center gap-1">
+          <div className="absolute top-2 end-2 px-2 py-1 rounded-full bg-mint text-foreground text-xs font-medium flex items-center gap-1">
             <CheckCircle className="h-3 w-3" />
             Completed
           </div>

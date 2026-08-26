@@ -164,7 +164,7 @@ const Community = () => {
               </Select>
 
               <Button variant="outline" size="sm" onClick={() => toast({ title: "Year in Review", description: "Your practice wrapped is being generated..." })}>
-                <Share2 className="h-4 w-4 mr-2" />
+                <Share2 className="h-4 w-4 me-2" />
                 View My Wrapped
               </Button>
             </div>
@@ -276,16 +276,16 @@ const Community = () => {
             {/* Search and add */}
             <div className="flex gap-3">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search by name or email..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9"
+                  className="ps-9"
                 />
               </div>
               <Button onClick={() => toast({ title: "Invite sent", description: "Friend request sent! They'll appear here once they accept." })}>
-                <UserPlus className="h-4 w-4 mr-2" />
+                <UserPlus className="h-4 w-4 me-2" />
                 Add Friend
               </Button>
             </div>
@@ -313,7 +313,7 @@ const Community = () => {
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => toast({ title: friend.name, description: `Viewing ${friend.name}'s profile.` })}>
                     View Profile
-                    <ChevronRight className="h-4 w-4 ml-1" />
+                    <ChevronRight className="h-4 w-4 ms-1" />
                   </Button>
                 </div>
               ))}
@@ -372,7 +372,7 @@ const Community = () => {
                       <p className={cn("font-medium", entry.isCurrentUser && "text-primary")}>
                         {entry.name}
                         {entry.isCurrentUser && (
-                          <Badge variant="default" className="ml-2 text-xs">You</Badge>
+                          <Badge variant="default" className="ms-2 text-xs">You</Badge>
                         )}
                       </p>
                     </div>
@@ -380,11 +380,11 @@ const Community = () => {
 
                   {/* Stats */}
                   <div className="flex items-center gap-6 text-sm">
-                    <div className="text-right">
+                    <div className="text-end">
                       <p className="font-semibold">{entry.classes}</p>
                       <p className="text-muted-foreground text-xs">classes</p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-end">
                       <p className="font-semibold">{formatMinutes(entry.minutes)}</p>
                       <p className="text-muted-foreground text-xs">practiced</p>
                     </div>

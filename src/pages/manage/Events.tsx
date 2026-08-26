@@ -174,7 +174,7 @@ export default function EventsManage() {
             </p>
           </div>
           <Button onClick={() => setCreateOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 me-2" />
             Create Event
           </Button>
         </div>
@@ -255,12 +255,12 @@ export default function EventsManage() {
         {/* Filters */}
         <div className="flex items-center gap-3">
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search events..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="ps-10"
             />
           </div>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
@@ -289,7 +289,7 @@ export default function EventsManage() {
                 <CardContent className="p-0">
                   <div className="flex">
                     {/* Date sidebar */}
-                    <div className="w-20 shrink-0 bg-primary/5 flex flex-col items-center justify-center p-3 border-r border-border">
+                    <div className="w-20 shrink-0 bg-primary/5 flex flex-col items-center justify-center p-3 border-e border-border">
                       <span className="text-xs text-muted-foreground uppercase">
                         {new Date(event.startsAt).toLocaleDateString("en-US", { month: "short" })}
                       </span>
@@ -316,7 +316,7 @@ export default function EventsManage() {
                             )}
                             {event.isVirtual && (
                               <Badge variant="outline" className="text-[10px]">
-                                <Video className="h-2.5 w-2.5 mr-1" /> Virtual
+                                <Video className="h-2.5 w-2.5 me-1" /> Virtual
                               </Badge>
                             )}
                           </div>

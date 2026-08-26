@@ -212,7 +212,7 @@ function BookingCard({
         <div className="flex sm:flex-col gap-2">
           {isPast && booking.status === "CHECKED_IN" ? (
             <Button variant="outline" size="sm" onClick={() => onRate(booking.id)}>
-              <Star className="h-4 w-4 mr-1" />
+              <Star className="h-4 w-4 me-1" />
               Rate
             </Button>
           ) : booking.canCancel ? (

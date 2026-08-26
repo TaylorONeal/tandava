@@ -10,10 +10,10 @@ import { Code2, Copy, Calendar, MousePointerClick, CalendarDays } from "lucide-r
 function Snippet({ code, onCopy }: { code: string; onCopy: () => void }) {
   return (
     <div className="relative">
-      <pre className="overflow-x-auto rounded-lg bg-secondary/50 p-3 pr-12 text-xs leading-relaxed">
+      <pre className="overflow-x-auto rounded-lg bg-secondary/50 p-3 pe-12 text-xs leading-relaxed">
         <code>{code}</code>
       </pre>
-      <Button variant="ghost" size="icon" className="absolute right-2 top-2 h-7 w-7" onClick={onCopy}>
+      <Button variant="ghost" size="icon" className="absolute end-2 top-2 h-7 w-7" onClick={onCopy}>
         <Copy className="h-3.5 w-3.5" />
       </Button>
     </div>

@@ -90,13 +90,13 @@ export default function ManageDashboard() {
           <div className="hidden sm:flex gap-2">
             <Button variant="outline" size="sm" asChild>
               <Link to="/manage/students">
-                <UserPlus className="h-4 w-4 mr-2" />
+                <UserPlus className="h-4 w-4 me-2" />
                 Add Student
               </Link>
             </Button>
             <Button size="sm" asChild>
               <Link to="/manage/schedule">
-                <CalendarPlus className="h-4 w-4 mr-2" />
+                <CalendarPlus className="h-4 w-4 me-2" />
                 Add Class
               </Link>
             </Button>
@@ -213,7 +213,7 @@ export default function ManageDashboard() {
                   <CardTitle className="text-lg">Today's Schedule</CardTitle>
                   <Button variant="ghost" size="sm" asChild>
                     <Link to="/manage/schedule" className="text-xs">
-                      View Full Schedule <ArrowRight className="h-3 w-3 ml-1" />
+                      View Full Schedule <ArrowRight className="h-3 w-3 ms-1" />
                     </Link>
                   </Button>
                 </div>
@@ -256,7 +256,7 @@ export default function ManageDashboard() {
                     <div className="flex items-center gap-2 shrink-0">
                       {cls.checkedIn > 0 && (
                         <Badge variant="outline" className="text-xs bg-accent-sage/10 text-accent-sage border-accent-sage/30 hidden sm:flex">
-                          <CheckCircle className="h-3 w-3 mr-1" />
+                          <CheckCircle className="h-3 w-3 me-1" />
                           {cls.checkedIn}
                         </Badge>
                       )}
