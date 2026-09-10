@@ -14,7 +14,12 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "dev:marketing": "VITE_BLOG_GAMES=true vite",
+    "build:marketing": "VITE_BLOG_GAMES=true npm run build",
+    "test:editorial": "vitest run --config editorial/vitest.config.ts",
+    "typecheck:editorial": "tsc -p editorial/tsconfig.json",
+    "check:blog-game-build": "node scripts/check-blog-game-build.mjs"
   },
   "dependencies": {
     "@fontsource/dm-sans": "^5.2.8",

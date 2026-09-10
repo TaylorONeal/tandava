@@ -39,6 +39,9 @@ self.addEventListener('fetch', (event) => {
 
   // Skip API requests and Supabase calls
   const url = new URL(event.request.url);
+  // Editorial games are online blog content, not part of the installed app cache.
+  if (url.pathname.startsWith('/page/studio-sprout') ||
+      url.pathname.startsWith('/assets/studioSprout-')) return;
   if (url.pathname.startsWith('/api/') || url.hostname.includes('supabase')) return;
 
   event.respondWith(

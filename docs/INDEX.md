@@ -19,6 +19,8 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 
 ## Quick Links
 
+- [Studio Sprout](developer/studio-sprout.md) — Blog-only studio-economics game, marketing build boundary, and verification
+
 - [README](../README.md) — Project overview, architecture, and getting started
 - [STATUS](STATUS.md) — Current project status and known limitations
 - [ROADMAP](ROADMAP.md) — Development phases and feature status

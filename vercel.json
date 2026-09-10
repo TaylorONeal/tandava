@@ -13,6 +13,8 @@
     }
   ],
   "rewrites": [
+    { "source": "/page/studio-sprout", "destination": "/page/studio-sprout/index.html" },
+    { "source": "/page/studio-sprout/", "destination": "/page/studio-sprout/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
