@@ -55,4 +55,4 @@ Artifact checks: after a normal build run `npm run check:blog-game-build -- prod
 - Standard and marketing production builds pass; both artifact boundary checks pass, including product source-map exclusion.
 - Production browser flow and active service-worker cache exclusion pass. Inspected intro, planning, reveal, article, and completion screenshots.
 - Repository-wide TypeScript still reports errors in untouched demo data, Supabase adapter, Community, Import, Tasks, teacher Schedule, and database types. These are outside this change; the build and runtime game checks pass.
-- No deployment, push, or product navigation changes were performed. Marketing deployment must explicitly use `npm run build:marketing` to publish this addition.
+- Product navigation is unchanged. The public marketing deployment must explicitly use `npm run build:marketing` to publish this addition; merging alone does not enable it in standard builds.
