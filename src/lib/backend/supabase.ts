@@ -24,11 +24,13 @@ import type {
   DataResult,
   MutationResult,
   CreateMessageInput,
+  BookClassInput,
+  MemberEntitlements,
   ApiProvider,
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, StudioStorefront } from "@/types/database";
 
 // ---------------------------------------------------------------------------
 // Supabase client singleton
@@ -89,12 +91,14 @@ const supabaseAuth: AuthProvider = {
   },
 
   async signUpWithEmail(email, password, metadata: SignUpMetadata) {
-    const { error } = await getClient().auth.signUp({
+    const { data, error } = await getClient().auth.signUp({
       email,
       password,
       options: { data: metadata },
     });
-    return { error: mapError(error) };
+    // A user without a session means Supabase is waiting for email confirmation.
+    const requiresEmailConfirmation = Boolean(data?.user && !data?.session);
+    return { error: mapError(error), requiresEmailConfirmation };
   },
 
   async signInWithOAuth(provider) {
@@ -135,13 +139,30 @@ const supabaseAuth: AuthProvider = {
 
 const supabaseData: DataProvider = {
   async getProfile(userId): Promise<DataResult<Profile>> {
-    const { data, error } = await getClient()
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single<Profile>();
+    const client = getClient();
+    // Roles live in studio_staff, not profiles. Resolve the caller's highest
+    // studio role server-side so permission gating works in production. The
+    // RPC always describes the *session* user, so only stamp it onto their
+    // own profile — never onto another user's row.
+    const [profileRes, sessionRes, roleRes] = await Promise.all([
+      client.from("profiles").select("*").eq("id", userId).single(),
+      client.auth.getSession(),
+      client.rpc("get_my_effective_role"),
+    ]);
 
-    return { data, error: error ? { message: error.message } : null };
+    const profile = profileRes.data as Profile | null;
+    if (profileRes.error || !profile) {
+      return { data: null, error: { message: profileRes.error?.message ?? "Profile not found" } };
+    }
+
+    if (roleRes.error) {
+      // Older deployments may not have the function yet — default to student.
+      console.warn("get_my_effective_role unavailable:", roleRes.error.message);
+    }
+
+    const isOwnProfile = sessionRes.data?.session?.user?.id === userId;
+    const role = isOwnProfile ? roleRes.data ?? "student" : profile.role;
+    return { data: { ...profile, role }, error: null };
   },
 
   async createMessage(input: CreateMessageInput): Promise<MutationResult> {
@@ -158,6 +179,92 @@ const supabaseData: DataProvider = {
     });
 
     return { error: error ? { message: error.message } : null };
+  },
+
+  async bookClass(input: BookClassInput): Promise<DataResult<Booking>> {
+    const { data, error } = await getClient().rpc("book_class", {
+      p_occurrence_id: input.occurrenceId,
+      p_source_type: input.sourceType,
+      p_source_id: input.sourceId,
+    });
+
+    return {
+      data: (data as Booking) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async cancelBooking(bookingId): Promise<DataResult<Booking>> {
+    const { data, error } = await getClient().rpc("cancel_booking", {
+      p_booking_id: bookingId,
+    });
+    return {
+      data: (data as Booking) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async getPublicSchedule(slug, limit = 12): Promise<DataResult<PublicScheduleRow[]>> {
+    const { data, error } = await getClient().rpc("get_public_schedule", {
+      p_slug: slug,
+      p_limit: limit,
+    });
+    return {
+      data: (data as PublicScheduleRow[]) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async getStudioStorefront(slug): Promise<DataResult<StudioStorefront>> {
+    // The hand-written Database type doesn't satisfy supabase-js's rpc generic,
+    // so args resolve to `never` (same as the other rpc calls here); assert.
+    const { data, error } = await getClient().rpc("get_studio_storefront", { p_slug: slug } as never);
+    return {
+      data: (data as StudioStorefront) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async getUpcomingClasses(studioId): Promise<DataResult<ClassOccurrence[]>> {
+    const { data, error } = await getClient()
+      .from("class_occurrences")
+      .select("*, offering:offerings(*), location:locations(*)")
+      .eq("studio_id", studioId)
+      .eq("is_cancelled", false)
+      .gte("starts_at", new Date().toISOString())
+      .order("starts_at", { ascending: true });
+
+    return {
+      data: (data as ClassOccurrence[]) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async getMemberEntitlements(profileId, studioId): Promise<DataResult<MemberEntitlements>> {
+    const client = getClient();
+    const [membershipsRes, packsRes] = await Promise.all([
+      client
+        .from("memberships")
+        .select("*, membership_type:membership_types(*)")
+        .eq("profile_id", profileId)
+        .eq("studio_id", studioId),
+      client
+        .from("class_packs")
+        .select("*, class_pack_type:class_pack_types(*)")
+        .eq("profile_id", profileId)
+        .eq("studio_id", studioId),
+    ]);
+
+    const error = membershipsRes.error || packsRes.error;
+    if (error) return { data: null, error: { message: error.message } };
+
+    return {
+      data: {
+        memberships: (membershipsRes.data as Membership[]) ?? [],
+        packs: (packsRes.data as ClassPack[]) ?? [],
+      },
+      error: null,
+    };
   },
 };
 

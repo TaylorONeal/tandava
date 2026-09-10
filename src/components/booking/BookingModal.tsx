@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { PaymentSourceSelector, PaymentSource } from "./PaymentSourceSelector";
 import { BookingConfirmation } from "./BookingConfirmation";
+import { pickRecommended } from "@/lib/booking/entitlements";
 import { Clock, MapPin, AlertCircle, Shield, ChevronLeft, Zap, Check } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -39,10 +40,22 @@ interface BookingModalProps {
   };
   // Enable instant booking mode (skip payment selection if user has membership)
   enableQuickBook?: boolean;
+  /**
+   * The member's payment sources for this class, already resolved against their
+   * entitlements via resolvePaymentSources() in @/lib/booking/entitlements.
+   * When omitted, a demo set is shown.
+   */
+  paymentSources?: PaymentSource[];
+  /**
+   * Perform the real booking. Covered sources should call data.bookClass();
+   * a DROP_IN source should start Stripe checkout. Return an error message to
+   * surface a failure. When omitted, the modal simulates success (demo).
+   */
+  onConfirm?: (selection: { source: PaymentSource; isWaitlist: boolean }) => Promise<{ error?: string }>;
 }
 
-// Mock user payment sources
-const mockPaymentSources: PaymentSource[] = [
+// Demo fallback when no resolved entitlements are provided.
+const demoPaymentSources: PaymentSource[] = [
   {
     id: "mem-1",
     type: "MEMBERSHIP",
@@ -60,17 +73,17 @@ const mockPaymentSources: PaymentSource[] = [
   },
 ];
 
-export function BookingModal({ open, onOpenChange, booking, enableQuickBook = true }: BookingModalProps) {
+export function BookingModal({ open, onOpenChange, booking, enableQuickBook = true, paymentSources, onConfirm }: BookingModalProps) {
   const { formatPrice } = useLocale();
   const { t } = useTranslation('booking');
 
-  // Determine if user can quick-book (has active membership that covers this class)
-  const primaryCoveringSource = useMemo(() => {
-    // Prioritize: membership > class pack > drop-in
-    return mockPaymentSources.find(s => s.type === "MEMBERSHIP" && s.covers) ||
-           mockPaymentSources.find(s => s.covers) ||
-           null;
-  }, []);
+  const sources = useMemo(
+    () => paymentSources ?? demoPaymentSources,
+    [paymentSources],
+  );
+
+  // Highest-preference covering source (tested logic in the entitlements engine).
+  const primaryCoveringSource = useMemo(() => pickRecommended(sources), [sources]);
 
   const canQuickBook = enableQuickBook && primaryCoveringSource !== null;
 
@@ -114,16 +127,31 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
     setStep("confirm");
   };
 
+  // Run the real booking (when wired) or simulate it (demo).
+  // Returns true on success.
+  const runBooking = async (simulateMs: number): Promise<boolean> => {
+    if (!selectedSource) return false;
+    if (onConfirm) {
+      const { error } = await onConfirm({ source: selectedSource, isWaitlist: isFull });
+      if (error) {
+        toast({ title: t('common:error', 'Something went wrong'), description: error, variant: "destructive" });
+        return false;
+      }
+      return true;
+    }
+    // Demo fallback — no backend wired.
+    await new Promise((resolve) => setTimeout(resolve, simulateMs));
+    return true;
+  };
+
   // Quick book - single tap instant confirmation
   const handleQuickBook = async () => {
     if (!selectedSource) return;
 
     setIsProcessing(true);
-
-    // Simulate API call - faster for quick book
-    await new Promise(resolve => setTimeout(resolve, 800));
-
+    const ok = await runBooking(800);
     setIsProcessing(false);
+    if (!ok) return;
     setStep("success");
 
     toast({
@@ -143,11 +171,9 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
     if (!selectedSource) return;
 
     setIsProcessing(true);
-
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1200));
-
+    const ok = await runBooking(1200);
     setIsProcessing(false);
+    if (!ok) return;
     setStep("success");
 
     toast({
@@ -282,7 +308,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
               {(step === "confirm" || (step === "select" && canQuickBook)) && (
                 <button
                   onClick={handleBack}
-                  className="absolute left-4 top-4 p-1 text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
+                  className="absolute start-4 top-4 p-1 text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
@@ -330,7 +356,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
                 
                 {/* Payment source selection */}
                 <PaymentSourceSelector
-                  sources={mockPaymentSources}
+                  sources={sources}
                   dropInPriceCents={booking.dropInPriceCents}
                   selectedId={selectedSource?.id || null}
                   onSelect={setSelectedSource}
@@ -380,7 +406,7 @@ export function BookingModal({ open, onOpenChange, booking, enableQuickBook = tr
                         }
                       </p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-end">
                       {selectedSource?.priceCents ? (
                         <span className="font-semibold">
                           {formatPrice(selectedSource.priceCents)}

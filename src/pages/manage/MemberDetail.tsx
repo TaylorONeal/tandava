@@ -157,13 +157,13 @@ export default function MemberDetail() {
           </div>
           <div className="flex gap-2 shrink-0">
             <Button variant="outline" size="sm" onClick={() => toast({ title: "Email opened", description: `Composing email to ${member.email}` })}>
-              <Mail className="h-4 w-4 mr-2" />Email
+              <Mail className="h-4 w-4 me-2" />Email
             </Button>
             <Button variant="outline" size="sm" onClick={() => toast({ title: "Checked in", description: `${member.firstName} checked in successfully.` })}>
-              <UserCheck className="h-4 w-4 mr-2" />Check In
+              <UserCheck className="h-4 w-4 me-2" />Check In
             </Button>
             <Button variant="outline" size="sm" onClick={() => toast({ title: "Note added" })}>
-              <StickyNote className="h-4 w-4 mr-2" />Add Note
+              <StickyNote className="h-4 w-4 me-2" />Add Note
             </Button>
           </div>
         </div>
@@ -273,13 +273,13 @@ export default function MemberDetail() {
                 <Separator />
                 <div className="flex flex-wrap gap-2">
                   {isPaused ? (
-                    <Button size="sm" onClick={handleResume}><RefreshCw className="h-4 w-4 mr-2" />Resume Membership</Button>
+                    <Button size="sm" onClick={handleResume}><RefreshCw className="h-4 w-4 me-2" />Resume Membership</Button>
                   ) : (
-                    <Button variant="outline" size="sm" onClick={() => setPauseOpen(true)}><PauseCircle className="h-4 w-4 mr-2" />Pause Membership</Button>
+                    <Button variant="outline" size="sm" onClick={() => setPauseOpen(true)}><PauseCircle className="h-4 w-4 me-2" />Pause Membership</Button>
                   )}
-                  <Button variant="outline" size="sm" onClick={() => setCancelOpen(true)}><XCircle className="h-4 w-4 mr-2" />Cancel Membership</Button>
+                  <Button variant="outline" size="sm" onClick={() => setCancelOpen(true)}><XCircle className="h-4 w-4 me-2" />Cancel Membership</Button>
                   <Button variant="outline" size="sm" onClick={() => toast({ title: "Change plan", description: "Plan selection would open here." })}>
-                    <RefreshCw className="h-4 w-4 mr-2" />Change Plan
+                    <RefreshCw className="h-4 w-4 me-2" />Change Plan
                   </Button>
                 </div>
               </CardContent>
@@ -297,7 +297,7 @@ export default function MemberDetail() {
                       <p className="text-sm font-medium">{pack.name}</p>
                       <p className="text-xs text-muted-foreground">Expires {fmtDate(pack.expires)}</p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-end">
                       <p className="text-sm font-semibold">{pack.remaining}/{pack.total} <span className="text-xs font-normal text-muted-foreground">remaining</span></p>
                       <Badge className={`text-[10px] mt-0.5 ${pack.remaining > 0 ? "bg-accent-sage/20 text-accent-sage" : "bg-muted text-muted-foreground"}`}>
                         {pack.remaining > 0 ? "active" : "used up"}
@@ -379,15 +379,15 @@ export default function MemberDetail() {
               <CardContent className="space-y-3">
                 <div className="flex flex-wrap gap-2">
                   {memberTags.map((tag) => (
-                    <Badge key={tag} variant="outline" className="text-xs flex items-center gap-1 pr-1">
+                    <Badge key={tag} variant="outline" className="text-xs flex items-center gap-1 pe-1">
                       {tag}
-                      <button onClick={() => handleRemoveTag(tag)} className="ml-1 hover:text-destructive transition-colors"><X className="h-3 w-3" /></button>
+                      <button onClick={() => handleRemoveTag(tag)} className="ms-1 hover:text-destructive transition-colors"><X className="h-3 w-3" /></button>
                     </Badge>
                   ))}
                 </div>
                 <div className="flex gap-2">
                   <Input value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder="Add a tag..." className="max-w-xs" onKeyDown={(e) => e.key === "Enter" && handleAddTag()} />
-                  <Button size="sm" variant="outline" onClick={handleAddTag}><Plus className="h-4 w-4 mr-1" />Add</Button>
+                  <Button size="sm" variant="outline" onClick={handleAddTag}><Plus className="h-4 w-4 me-1" />Add</Button>
                 </div>
               </CardContent>
             </Card>
@@ -437,7 +437,7 @@ export default function MemberDetail() {
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg">Payment Methods</CardTitle>
                   <Button variant="outline" size="sm" onClick={() => toast({ title: "Add payment method", description: "Payment form would open here." })}>
-                    <Plus className="h-4 w-4 mr-1" />Add
+                    <Plus className="h-4 w-4 me-1" />Add
                   </Button>
                 </div>
               </CardHeader>
@@ -519,7 +519,7 @@ export default function MemberDetail() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setPauseOpen(false)}>Cancel</Button>
-            <Button onClick={handlePause} disabled={!pauseDuration}><PauseCircle className="h-4 w-4 mr-2" />Pause Membership</Button>
+            <Button onClick={handlePause} disabled={!pauseDuration}><PauseCircle className="h-4 w-4 me-2" />Pause Membership</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -559,7 +559,7 @@ export default function MemberDetail() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setCancelOpen(false)}>Keep Membership</Button>
-            <Button variant="destructive" onClick={handleCancel}><XCircle className="h-4 w-4 mr-2" />Confirm Cancellation</Button>
+            <Button variant="destructive" onClick={handleCancel}><XCircle className="h-4 w-4 me-2" />Confirm Cancellation</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -203,13 +203,13 @@ function InfoTip({ text }: { text: string }) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="ml-1 text-muted-foreground hover:text-foreground transition-colors"
+        className="ms-1 text-muted-foreground hover:text-foreground transition-colors"
         aria-label="More info"
       >
         <HelpCircle className="h-3.5 w-3.5" />
       </button>
       {open && (
-        <span className="absolute left-0 top-full mt-1 z-20 w-64 rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground shadow-lg">
+        <span className="absolute start-0 top-full mt-1 z-20 w-64 rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground shadow-lg">
           {text}
         </span>
       )}
@@ -249,7 +249,7 @@ export default function AnalyticsHub() {
               </SelectContent>
             </Select>
             <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="h-4 w-4 me-2" />
               Export
             </Button>
           </div>
@@ -269,7 +269,7 @@ export default function AnalyticsHub() {
                         : "bg-destructive/10 text-destructive"
                     }`}
                   >
-                    <TrendingUp className="h-3 w-3 mr-1" />
+                    <TrendingUp className="h-3 w-3 me-1" />
                     {kpi.change}
                   </Badge>
                 </div>
@@ -366,9 +366,9 @@ export default function AnalyticsHub() {
             <Collapsible>
               <CollapsibleTrigger asChild>
                 <Button variant="ghost" size="sm" className="text-xs text-muted-foreground">
-                  <HelpCircle className="h-3.5 w-3.5 mr-1.5" />
+                  <HelpCircle className="h-3.5 w-3.5 me-1.5" />
                   How is this calculated?
-                  <ChevronDown className="h-3.5 w-3.5 ml-1" />
+                  <ChevronDown className="h-3.5 w-3.5 ms-1" />
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent>
@@ -463,7 +463,7 @@ export default function AnalyticsHub() {
                 Scheduled Reports
               </CardTitle>
               <Button variant="outline" size="sm">
-                <Plus className="h-4 w-4 mr-1.5" />
+                <Plus className="h-4 w-4 me-1.5" />
                 Schedule a Report
               </Button>
             </div>

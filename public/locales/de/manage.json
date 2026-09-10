@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "schedule": "Kursplan",
+    "events": "Events",
+    "students": "Mitglieder",
+    "teachers": "Lehrer:innen",
+    "offerings": "Angebote",
+    "promoCodes": "Promo-Codes",
+    "financials": "Finanzen",
+    "products": "Produkte",
+    "inventory": "Inventar",
+    "purchaseOrders": "Bestellungen",
+    "landingPages": "Landingpages",
+    "utmBuilder": "UTM-Builder",
+    "campaigns": "Kampagnen",
+    "tasks": "Aufgaben",
+    "reports": "Berichte",
+    "importData": "Daten importieren",
+    "smsInbox": "SMS-Posteingang",
+    "notifications": "Benachrichtigungen",
+    "settings": "Einstellungen"
+  },
+  "title": "Studio-Admin",
+  "studentView": "Mitgliederansicht",
+  "myAccount": "Mein Konto",
+  "studioSettings": "Studio-Einstellungen",
+  "signOut": "Abmelden",
+
+  "schedule": {
+    "title": "Kursplan",
+    "subtitle": "Erstelle und verwalte deinen Kursplan.",
+    "addClass": "Kurs hinzufügen",
+    "emptyState": "Noch keine Kurse geplant. Erstelle deinen ersten Kurs, um loszulegen."
+  },
+  "offerings": {
+    "title": "Angebote",
+    "subtitle": "Kurstypen und ihre Konfiguration — {{count}} aktiv",
+    "newOffering": "Neues Angebot",
+    "searchPlaceholder": "Angebote durchsuchen...",
+    "activeOfferings": "Aktive Angebote"
+  },
+
+  "admin": {
+    "platformAdmin": "Plattform-Admin",
+    "platformDashboard": "Plattform-Dashboard",
+    "overview": "Überblick über Zustand und Aktivität deiner Tandava-Instanz.",
+    "activeStudios": "Aktive Studios",
+    "totalUsers": "Nutzer gesamt",
+    "stripeStatus": "Stripe-Status",
+    "errorRate": "Fehlerrate",
+    "connectSupabase": "Verbinde Supabase, um Live-Daten zu sehen",
+    "acrossAllStudios": "Über alle Studios",
+    "webhookHealth": "Webhook-Zustand",
+    "connectSentry": "Verbinde Sentry für Monitoring",
+    "setupChecklist": "Einrichtungs-Checkliste",
+    "supabaseConnected": "Supabase verbunden",
+    "stripeConfigured": "Stripe konfiguriert",
+    "emailConfigured": "E-Mail-Anbieter konfiguriert",
+    "sentryConfigured": "Sentry-Fehlerüberwachung",
+    "setEnvVar": "Setze {{key}} in .env"
+  },
+
+  "studioManagement": "Studioverwaltung",
+  "owner": "Inhaber:in"
+}

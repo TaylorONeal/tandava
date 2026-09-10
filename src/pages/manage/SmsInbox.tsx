@@ -229,7 +229,7 @@ export default function SmsInbox() {
             </p>
           </div>
           <Button variant="outline" size="sm">
-            <RefreshCw className="h-4 w-4 mr-2" />
+            <RefreshCw className="h-4 w-4 me-2" />
             Refresh
           </Button>
         </div>
@@ -241,19 +241,19 @@ export default function SmsInbox() {
             <CardHeader className="pb-3 space-y-3">
               {/* Search */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search conversations..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9"
+                  className="ps-9"
                 />
               </div>
 
               {/* Filter */}
               <Select value={filter} onValueChange={(v) => setFilter(v as typeof filter)}>
                 <SelectTrigger className="w-full">
-                  <Filter className="h-4 w-4 mr-2" />
+                  <Filter className="h-4 w-4 me-2" />
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -277,7 +277,7 @@ export default function SmsInbox() {
                         key={conv.id}
                         onClick={() => setSelectedConversation(conv.id)}
                         className={cn(
-                          "w-full flex items-start gap-3 p-3 rounded-xl text-left transition-colors",
+                          "w-full flex items-start gap-3 p-3 rounded-xl text-start transition-colors",
                           selectedConversation === conv.id
                             ? "bg-primary/10"
                             : "hover:bg-secondary"
@@ -291,7 +291,7 @@ export default function SmsInbox() {
                             </AvatarFallback>
                           </Avatar>
                           {conv.unread && (
-                            <span className="absolute -top-0.5 -right-0.5 h-3 w-3 rounded-full bg-primary border-2 border-background" />
+                            <span className="absolute -top-0.5 -end-0.5 h-3 w-3 rounded-full bg-primary border-2 border-background" />
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -356,9 +356,9 @@ export default function SmsInbox() {
                     <div className="flex items-center gap-1">
                       <Button variant="ghost" size="sm" asChild>
                         <Link to={`/manage/members/${selectedConv.memberId}`}>
-                          <User className="h-4 w-4 mr-1" />
+                          <User className="h-4 w-4 me-1" />
                           Profile
-                          <ExternalLink className="h-3 w-3 ml-1" />
+                          <ExternalLink className="h-3 w-3 ms-1" />
                         </Link>
                       </Button>
                       <DropdownMenu>
@@ -369,11 +369,11 @@ export default function SmsInbox() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
                           <DropdownMenuItem onClick={() => handleMarkAsRead(selectedConv.id)}>
-                            <CheckCheck className="h-4 w-4 mr-2" />
+                            <CheckCheck className="h-4 w-4 me-2" />
                             Mark as read
                           </DropdownMenuItem>
                           <DropdownMenuItem>
-                            <Mail className="h-4 w-4 mr-2" />
+                            <Mail className="h-4 w-4 me-2" />
                             Send email
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
@@ -381,7 +381,7 @@ export default function SmsInbox() {
                             className="text-destructive"
                             onClick={() => handleArchive(selectedConv.id)}
                           >
-                            <Archive className="h-4 w-4 mr-2" />
+                            <Archive className="h-4 w-4 me-2" />
                             Archive conversation
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -406,8 +406,8 @@ export default function SmsInbox() {
                             className={cn(
                               "max-w-[80%] rounded-2xl px-4 py-2",
                               message.isOutbound
-                                ? "bg-primary text-primary-foreground rounded-br-md"
-                                : "bg-secondary rounded-bl-md"
+                                ? "bg-primary text-primary-foreground rounded-ee-md"
+                                : "bg-secondary rounded-es-md"
                             )}
                           >
                             <p className="text-sm">{message.content}</p>
@@ -445,7 +445,7 @@ export default function SmsInbox() {
                       <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="sm">
                           Quick replies
-                          <ChevronDown className="h-4 w-4 ml-1" />
+                          <ChevronDown className="h-4 w-4 ms-1" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="start" className="w-64">
@@ -489,7 +489,7 @@ export default function SmsInbox() {
                       disabled={!messageInput.trim()}
                       className="shrink-0"
                     >
-                      <Send className="h-4 w-4 mr-2" />
+                      <Send className="h-4 w-4 me-2" />
                       Send
                     </Button>
                   </div>

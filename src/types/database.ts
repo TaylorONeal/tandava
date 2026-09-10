@@ -763,9 +763,9 @@ export interface EventLogEntry {
 // ============================================================================
 
 // Enums
-export type EventType = 'workshop' | 'training' | 'retreat' | 'series' | 'immersion';
-export type EventStatus = 'draft' | 'published' | 'cancelled' | 'completed' | 'sold_out';
-export type EventRegistrationStatus = 'registered' | 'waitlisted' | 'cancelled' | 'refunded' | 'attended';
+export type EventType = 'workshop' | 'event' | 'training' | 'retreat' | 'immersion' | 'series';
+export type EventStatus = 'draft' | 'published' | 'sold_out' | 'cancelled' | 'completed';
+export type EventRegistrationStatus = 'registered' | 'waitlisted' | 'cancelled' | 'attended' | 'no_show';
 export type LandingPageStatus = 'draft' | 'published' | 'archived';
 export type ContentBlockType = 'hero' | 'text' | 'features' | 'testimonials' | 'cta' | 'faq' | 'gallery' | 'schedule' | 'pricing' | 'team';
 export type SeoSeverity = 'info' | 'warning' | 'critical';
@@ -779,36 +779,62 @@ export type NudgeChannel = 'in_app' | 'push' | 'email';
 export type EngagementEventName = 'app_open' | 'schedule_view' | 'class_detail_view' | 'booking_started' | 'booking_completed' | 'check_in' | 'review_submitted' | 'referral_sent' | 'event_viewed' | 'landing_page_viewed' | 'newsletter_signup' | 'promo_applied' | 'membership_page_viewed' | 'streak_shared';
 
 // Events / Workshops
+// Mirrors the `events` table (supabase/migrations/00003_workshops_landing_growth.sql,
+// extended by 00011). The DB is the source of truth — keep these in sync.
 export interface StudioEvent {
   id: string;
   studio_id: string;
   title: string;
   slug: string;
+  subtitle: string | null;
   description: string | null;
-  long_description: string | null;
-  event_type: EventType;
+  type: EventType;
   status: EventStatus;
-  image_url: string | null;
+  // Media
+  cover_image_url: string | null;
   gallery_urls: string[];
-  location_id: string | null;
-  venue_name: string | null;
-  venue_address: string | null;
+  video_url: string | null;
+  // Schedule
   starts_at: string;
   ends_at: string;
   timezone: string;
-  total_capacity: number | null;
+  // Multi-session (series, trainings, immersions)
+  is_multi_session: boolean;
+  session_count: number;
+  // Location
+  location_id: string | null;
+  room: string | null;
+  is_virtual: boolean;
+  virtual_url: string | null;
+  // Capacity
+  capacity: number;
   registered_count: number;
   waitlist_count: number;
+  waitlist_enabled: boolean;
+  // Pricing
+  price_cents: number;
+  early_bird_price_cents: number | null;
+  early_bird_ends_at: string | null;
+  member_price_cents: number | null;
+  // Registration window (added in 00011)
   registration_opens_at: string | null;
   registration_closes_at: string | null;
-  cancellation_policy: string | null;
-  refund_policy: string | null;
+  // Page content
+  what_to_expect: string | null;
+  who_its_for: string | null;
   what_to_bring: string[];
   prerequisites: string | null;
-  is_recurring: boolean;
-  series_id: string | null;
+  cancellation_policy: string | null;
+  // Teachers / discovery
+  primary_teacher_id: string | null;
   tags: string[];
+  style: string | null;
+  level: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
   discoverable: boolean;
+  featured: boolean;
+  // Metadata
   created_by: string | null;
   created_at: string;
   updated_at: string;
@@ -818,24 +844,23 @@ export interface EventSession {
   id: string;
   event_id: string;
   studio_id: string;
-  title: string | null;
+  title: string;
   description: string | null;
+  session_number: number;
   starts_at: string;
   ends_at: string;
+  location_id: string | null;
   room: string | null;
-  capacity_override: number | null;
-  sort_order: number;
+  teacher_id: string | null;
   created_at: string;
 }
 
 export interface EventTeacher {
   id: string;
   event_id: string;
-  studio_id: string;
   teacher_id: string;
   role: string;
-  sort_order: number;
-  created_at: string;
+  bio_override: string | null;
   // Joined
   teacher?: Profile;
 }
@@ -843,17 +868,16 @@ export interface EventTeacher {
 export interface EventPricingTier {
   id: string;
   event_id: string;
-  studio_id: string;
   name: string;
   description: string | null;
   price_cents: number;
-  capacity: number | null;
-  sold_count: number;
-  early_bird_price_cents: number | null;
-  early_bird_ends_at: string | null;
   member_price_cents: number | null;
-  is_active: boolean;
+  capacity: number | null;
+  registered_count: number;
+  /** Session numbers this tier covers (empty = all). Enables partial-series registration. */
+  includes_sessions: number[];
   sort_order: number;
+  is_active: boolean;
   created_at: string;
 }
 
@@ -863,19 +887,18 @@ export interface EventRegistration {
   studio_id: string;
   profile_id: string;
   pricing_tier_id: string | null;
-  session_ids: string[];
-  status: EventRegistrationStatus;
-  amount_paid_cents: number;
   transaction_id: string | null;
-  promo_code_id: string | null;
-  discount_cents: number;
+  status: EventRegistrationStatus;
   waitlist_position: number | null;
-  notes: string | null;
-  registered_at: string;
+  /** Session numbers attended (per-session check-in for multi-session events). */
+  sessions_attended: number[];
+  amount_paid_cents: number;
+  promo_code_id: string | null;
+  discount_amount_cents: number;
   cancelled_at: string | null;
-  attended_at: string | null;
+  refund_amount_cents: number;
+  registered_at: string;
   created_at: string;
-  updated_at: string;
   // Joined
   profile?: Profile;
   event?: StudioEvent;
@@ -2613,27 +2636,68 @@ export type EmailProvider = "resend" | "sendgrid" | "smtp" | "console";
  * Provides type safety for .from("table") queries.
  * Extend as tables are added to supabase/migrations/.
  */
-/** Row shape of classes in the alternative 001 schema; not ClassOccurrence. */
-export interface ClassDefinition {
+/** A row of the public embed schedule (from the get_public_schedule RPC). */
+/** Public storefront payload for a discoverable studio (from get_studio_storefront). */
+export interface StorefrontOffering {
   id: string;
-  studio_id: string;
-  instructor_id: string;
-  title: string;
+  name: string;
+  style: string | null;
+  level: string | null;
   description: string | null;
-  style: string;
-  level: 'beginner' | 'intermediate' | 'advanced' | 'all_levels';
-  is_heated: boolean;
   duration_minutes: number;
   capacity: number;
+  drop_in_price_cents: number | null;
+  is_heated: boolean;
+}
+
+export interface StorefrontMembership {
+  id: string;
+  name: string;
+  description: string | null;
+  billing_cycle: string;
+  price_cents: number;
+  classes_per_cycle: number | null;
+}
+
+export interface StorefrontPack {
+  id: string;
+  name: string;
+  description: string | null;
+  class_count: number;
+  price_cents: number;
+  validity_days: number;
+}
+
+export interface StudioStorefront {
+  studio: {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    primary_color: string | null;
+    secondary_color: string | null;
+    font: string | null;
+    timezone: string;
+    currency: string;
+  };
+  offerings: StorefrontOffering[];
+  memberships: StorefrontMembership[];
+  packs: StorefrontPack[];
+}
+
+export interface PublicScheduleRow {
+  occurrence_id: string;
   starts_at: string;
   ends_at: string;
-  recurrence_rule: string | null;
+  room: string | null;
+  offering_name: string;
   location_name: string | null;
-  price_cents: number | null;
-  drop_in_price_cents: number | null;
-  is_cancelled: boolean;
-  created_at: string;
-  updated_at: string;
+  teacher_name: string | null;
+  capacity: number;
+  booked_count: number;
+  studio_name: string;
+  studio_timezone: string;
+  studio_primary_color: string | null;
 }
 
 type DatabaseTable<Row, Insert = Partial<Row>> = {
@@ -2646,14 +2710,18 @@ type DatabaseTable<Row, Insert = Partial<Row>> = {
 export interface Database {
   public: {
     Views: Record<string, never>;
-    Functions: Record<string, never>;
     Tables: {
       profiles: DatabaseTable<Profile, Partial<Profile> & { id: string; email: string }>;
       studios: DatabaseTable<Studio>;
       studio_staff: DatabaseTable<StudioStaff>;
-      classes: DatabaseTable<ClassDefinition>;
       bookings: DatabaseTable<Booking>;
+      locations: DatabaseTable<Location>;
+      offerings: DatabaseTable<Offering>;
+      class_occurrences: DatabaseTable<ClassOccurrence>;
       memberships: DatabaseTable<Membership>;
+      membership_types: DatabaseTable<MembershipType>;
+      class_packs: DatabaseTable<ClassPack>;
+      class_pack_types: DatabaseTable<ClassPackType>;
       transactions: DatabaseTable<Transaction>;
       messages: {
         Row: {
@@ -2688,6 +2756,28 @@ export interface Database {
         Insert: Record<string, unknown>;
         Update: Record<string, unknown>;
         Relationships: [];
+      };
+    };
+    Functions: {
+      book_class: {
+        Args: { p_occurrence_id: string; p_source_type: string; p_source_id: string };
+        Returns: Booking;
+      };
+      cancel_booking: {
+        Args: { p_booking_id: string };
+        Returns: Booking;
+      };
+      get_public_schedule: {
+        Args: { p_slug: string; p_limit?: number };
+        Returns: PublicScheduleRow[];
+      };
+      get_my_effective_role: {
+        Args: Record<string, never>;
+        Returns: UserRole;
+      };
+      get_studio_storefront: {
+        Args: { p_slug: string };
+        Returns: StudioStorefront | null;
       };
     };
   };

@@ -16,11 +16,23 @@ Tandava is designed for 1-3 location studios with small teams -- the kind of stu
 
 ### Is Tandava free?
 
-Yes. Tandava is free and open-source under the AGPL-3.0 license. You can use, modify, and deploy it without paying a license fee. If you self-host, your only costs are infrastructure (database hosting, a static file host, and Stripe transaction fees). Managed hosting options may be offered in the future for studios that prefer not to handle infrastructure.
+Yes. Tandava is free and open-source under the AGPL-3.0 license. You can use, modify, and deploy it without paying a license fee. The **hosted version** ([tandavastudio.com](https://tandavastudio.com)) is also free to run — instead of a monthly or per-member fee, it takes a small percentage of the payments you process through Stripe, so it only earns when your studio does. If you **self-host**, there's no take-rate at all; your only costs are your own infrastructure (database hosting, a static file host, and Stripe's standard transaction fees).
 
-### What is the difference between self-hosted and managed hosting?
+### What is the difference between the hosted version and self-hosting?
 
-Self-hosted means you run Tandava on your own infrastructure -- your own Supabase instance, your own static hosting (Vercel, Netlify, Cloudflare Pages, or any web server). You have full control over the database, the code, and the deployment. Managed hosting means a hosted service handles the infrastructure for you, so you just log in and use it. Both options give you full data ownership and export capability.
+**Hosted** means you sign up at [tandavastudio.com](https://tandavastudio.com), complete the setup wizard, and use Tandava — we run the servers, database, and updates. There's nothing to install or maintain, and it's the right choice for most studio owners. **Self-hosted** means you run Tandava on your own infrastructure (your own Supabase instance and static hosting), which gives you total control and no take-rate but requires a developer to set up and maintain. It's the **same application** either way, and both give you full data ownership and CSV export. See [What web address will my studio have?](#what-web-address-will-my-studio-have) below for how each option affects your studio's URL.
+
+### Do I need to be technical to use Tandava?
+
+No — use the hosted version. Signing up at [tandavastudio.com](https://tandavastudio.com) and completing the setup wizard takes about 15 minutes and requires no coding, servers, or DNS. You only need technical help if you choose to self-host on your own infrastructure.
+
+### What web address will my studio have?
+
+On the hosted version, your studio runs on the shared Tandava address today — you sign in to manage it, and you can share a direct booking link or embed your live schedule on your existing website (Squarespace, Wix, WordPress, etc.) with a one-line snippet. Your own **subdomain** (e.g. `yourstudio.tandavastudio.com`) is on the near-term roadmap and will be set up for you automatically. If you self-host, your studio lives on whatever domain you deploy to, entirely under your control.
+
+### Can I use my own domain?
+
+If you **self-host**, yes — you deploy to any domain you own. On the **hosted version**, connecting your own domain (e.g. `book.yourstudio.com`) is a planned future option; until then, you'll get a Tandava subdomain and can embed booking on a site at your own domain. See the [multi-tenancy design notes](architecture/MULTI_TENANCY.md) for the technical roadmap.
 
 ### What do I need to get started?
 

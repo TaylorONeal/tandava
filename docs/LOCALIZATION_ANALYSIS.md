@@ -416,6 +416,106 @@ i18n.addResourceBundle('ban', 'common', balineseTranslations);
 
 **Recommendation:** Start with `pt-BR` (larger market), add `pt-PT` later.
 
+### Next Wave — Implemented
+
+All five next-wave languages are implemented (machine-drafted translations, pending native-speaker review — see the status table in [docs/roadmap/LANGUAGE_ROLLOUT_PLAN.md](roadmap/LANGUAGE_ROLLOUT_PLAN.md)). Per-language notes below are kept for translators and reviewers.
+
+#### Korean (ko) — Implemented
+
+| Consideration | Details |
+|---------------|---------|
+| Script | Hangul (한글) |
+| Text expansion | Compact — similar to or shorter than English |
+| Fonts | Noto Sans KR; default system stacks handle Hangul well |
+| Plural forms | 1 (other) — no grammatical plural |
+| Register | Korean has formality levels. Studio context = polite 해요체, not formal 합쇼체 |
+| Yoga terms | Sanskrit terms transliterated into Hangul; widely understood in Korea's large yoga/pilates market |
+
+#### Malay (ms) — Implemented (covers Singapore & Malaysia)
+
+"Singaporean" isn't a single language — Singapore's official languages are English, Mandarin, Malay, and Tamil. English and Mandarin are already supported, so Malay closes most of the remaining gap (and covers Malaysia). Singapore-specific formatting (SGD currency, date order) comes free from `Intl` regional locales like `en-SG`/`zh-SG`.
+
+| Consideration | Details |
+|---------------|---------|
+| Script | Latin |
+| CLDR support | Full |
+| Overlap with Indonesian | Very close to `id` — heavy shared vocabulary, but real differences in register and loanwords. Translate separately; do not alias to Indonesian |
+| Plural forms | 1 (other) |
+
+#### Cantonese (yue / zh-Hant) — Implemented as Traditional Chinese (Hong Kong & diaspora)
+
+| Consideration | Details |
+|---------------|---------|
+| Script | Traditional Chinese characters — our existing `zh` is Simplified, so this is a genuinely separate file set |
+| Written form | Most HK products ship standard written Chinese in Traditional script (`zh-HK`) rather than colloquial written Cantonese (`yue`) |
+| CLDR support | Both `yue` and `zh-Hant`/`zh-HK` supported by modern `Intl` |
+| Plural forms | 1 (other) |
+
+**Shipped as:** Traditional Chinese (`zh-Hant`, HK conventions). Browser codes `zh-TW`/`zh-HK`/`zh-MO` are mapped to `zh-Hant` via `convertDetectedLanguage` in the detector config; colloquial written Cantonese (`yue`) remains a future candidate if studios ask for it.
+
+#### Filipino (fil) — Implemented
+
+| Consideration | Details |
+|---------------|---------|
+| Script | Latin |
+| Text expansion | 20-30% longer than English |
+| CLDR support | Full (`fil`) |
+| English mixing | Taglish is normal in Philippine UI contexts — keeping English tech/booking terms is acceptable and often preferred |
+| Plural forms | 2 (one, other) |
+
+#### German (de) — Implemented
+
+| Consideration | Details |
+|---------------|---------|
+| Text expansion | 30-40% longer than English; long compound nouns stress narrow buttons and table columns |
+| Formality | Sie vs. du — yoga/wellness context conventionally uses informal "du" |
+| Capitalization | All nouns capitalized |
+| Currency | EUR (€), also CHF for Switzerland |
+| Plural forms | 2 (one, other) |
+
+#### French (fr) — Implemented
+
+| Consideration | Details |
+|---------------|---------|
+| Text expansion | 15-25% longer than English |
+| Formality | vous vs. tu — wellness apps conventionally use informal "tu", which is what we ship |
+| Typography | Narrow no-break space before `?` `!` `:` in strict French typography; we use ordinary spaces, which is standard for web UI |
+| Plural forms | 3 (one, many, other) — `many` is the compact-number form CLDR added in v42 |
+
+#### Italian (it) — Implemented
+
+| Consideration | Details |
+|---------------|---------|
+| Text expansion | 15-25% longer than English |
+| Formality | Lei vs. tu — informal "tu" for the wellness context |
+| Plural forms | 3 (one, many, other) — same shape as French |
+
+#### Japanese (ja) — Implemented
+
+| Consideration | Details |
+|---------------|---------|
+| Script | Mixed kanji/hiragana/katakana; no spaces between words, so line breaking is handled by the browser |
+| Register | Polite です・ます throughout; a more formal 敬語 tier is a future option |
+| Text expansion | Usually *shorter* than English in character count but visually denser |
+| Plural forms | 1 (other) |
+
+#### Tamil (ta) — Implemented
+
+| Consideration | Details |
+|---------------|---------|
+| Script | Tamil script (தமிழ் அரிச்சுவடி); long words, watch narrow buttons |
+| Market | Completes Singapore's four official languages (`en`, `zh`, `ms`, `ta`); also Tamil Nadu and the diaspora |
+| Fonts | System stacks include Noto Sans Tamil on all target platforms |
+| Plural forms | 2 (one, other) |
+
+#### Vietnamese (vi) — Implemented
+
+| Consideration | Details |
+|---------------|---------|
+| Script | Latin with extensive diacritics — stacked tone marks need adequate line-height |
+| Text expansion | 10-20% longer than English |
+| Plural forms | 1 (other) |
+
 ---
 
 ## Translation Workflow for Developers
@@ -472,18 +572,59 @@ npx i18next-parser
 
 ```bash
 # 1. Create the locale directory
-mkdir src/i18n/locales/ja
+mkdir public/locales/ja
 
 # 2. Copy English files as templates
-cp src/i18n/locales/en/*.json src/i18n/locales/ja/
+cp public/locales/en/*.json public/locales/ja/
 
-# 3. Register in i18n config
-# Add 'ja' to supportedLngs array
+# 3. Register in SUPPORTED_LANGUAGES (src/i18n/index.ts)
+# { code: 'ja', name: 'Japanese', nativeName: '日本語', flag: '🇯🇵' }
 
-# 4. Translate the JSON files (or send to translators)
+# 4. Translate the JSON files (or send to translators), using the plural
+#    forms Intl.PluralRules('ja') requires
 
-# 5. Test with ?lng=ja or browser language override
+# 5. Validate — also runs automatically before every build
+npm run check:locales
+
+# 6. Test with ?lng=ja or browser language override
 ```
+
+See [docs/roadmap/LANGUAGE_ROLLOUT_PLAN.md](roadmap/LANGUAGE_ROLLOUT_PLAN.md) for the full checklist (RTL, detection mapping, review status).
+
+### Locale validation (`scripts/check-locales.mjs`)
+
+`npm run check:locales` compares every locale against English and runs as a
+`prebuild` step, so CI and Vercel builds fail on structural drift:
+
+| Finding | Severity |
+|---------|----------|
+| Invalid JSON | error (fails build) |
+| Locale directory not registered in `SUPPORTED_LANGUAGES` (or vice versa) | error |
+| Namespace file that doesn't exist in `en/` | error |
+| `{{placeholder}}` set differs from English for the same key | error |
+| Missing keys (fall back to English) | warning + `keys` % |
+| Keys not present in English (dead keys) | warning |
+| Plural set doesn't match the locale's CLDR categories | warning |
+| Locale whose values are still verbatim English | warning + `text` % |
+
+The report prints two percentages per locale and they measure different things:
+
+- **`keys`** — how many English keys exist in the locale. Missing ones fall back
+  to English, so this is about completeness of the file.
+- **`text`** — how many of the present values are actually translated rather than
+  copied English. A locale can be 100% `keys` and 0% `text`: fully populated,
+  fully English. Below 50% `text` the checker names the locale as untranslated
+  scaffolding.
+
+Values that are legitimately identical across languages (brand names like
+Stripe or PayPal, and a small set of shared UI words) are allowlisted in the
+script so a correct locale isn't reported as untranslated.
+
+Plural validation resolves the locale through `INTL_LOCALE_MAP` and verifies
+that `Intl.PluralRules` honoured the request. This matters because Intl does not
+throw on an unknown-but-well-formed tag such as `ban` — it negotiates down to
+the runtime's default locale, which would otherwise make the required plural
+forms depend on the build machine.
 
 ### Extraction tooling (`i18next-parser`)
 
@@ -800,20 +941,31 @@ Each locale needs:
 - [ ] Replace reference data labels (levels, delivery modes, payment methods)
 - [ ] Set up `i18next-parser` config for automated key extraction
 
-### Phase 3: First Non-English Language — Thai (Roadmap — 3-5 days + translator)
+### Phase 3: First Non-English Language — Thai
 
-- [ ] Complete Thai translation of all namespace files
+- [x] Complete Thai translation of all namespace files
 - [ ] Test Thai rendering across all UI surfaces
 - [ ] Fix layout/overflow issues with Thai text (no word spaces)
 - [ ] Verify date/time/currency formatting with `th` locale
 - [ ] Test Thai input in forms
 
-### Phase 4: Additional Languages (Roadmap — 2-3 days each + translator)
+### Phase 4: Additional Languages
 
-- [ ] Spanish (es) — neutral Latin American first, regional variants later
-- [ ] Balinese (ban) — manual translation needed, no major MT support
-- [ ] Hindi (hi) — add Devanagari font to Tailwind font stack
-- [ ] Portuguese (pt-BR) — Brazilian Portuguese first
+Eighteen non-English locales now ship at 100% key coverage with real
+translations. See [the rollout plan](roadmap/LANGUAGE_ROLLOUT_PLAN.md) for the
+per-wave order, the current status table, and the add-a-language checklist.
+
+- [x] Spanish (es) — neutral Latin American
+- [x] Balinese (ban) — manual translation, no major MT support
+- [x] Hindi (hi)
+- [x] Portuguese (pt-BR) — Brazilian Portuguese
+- [x] Indonesian (id), Malay (ms), Chinese (zh, zh-Hant), Korean (ko), Filipino (fil), German (de)
+- [x] French (fr), Italian (it), Japanese (ja), Tamil (ta), Vietnamese (vi)
+- [x] Arabic (ar) — first RTL language, shipped with the RTL layout audit: layouts
+      converted to logical Tailwind utilities (`ms-`/`me-`/`ps-`/`pe-`/`start-`/`end-`),
+      directional icons mirror under `dir="rtl"`, full six-form CLDR plurals
+      (zero/one/two/few/many/other)
+- [ ] Native-speaker review pass per locale — all current translations are machine-drafted
 
 ### Phase 5: Studio-Level Localization (Roadmap — 3-5 days)
 
@@ -831,7 +983,7 @@ Each locale needs:
 - [ ] Screen reader testing in each language
 - [ ] SEO hreflang setup for landing pages
 - [ ] Translator documentation (style guide, glossary, process)
-- [ ] CI check for missing translation keys
+- [x] CI check for missing translation keys (`scripts/check-locales.mjs`, wired to `prebuild`)
 
 ---
 

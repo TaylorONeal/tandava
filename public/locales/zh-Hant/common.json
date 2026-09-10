@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "home": "首頁",
+    "schedule": "課程表",
+    "onDemand": "點播課程",
+    "events": "活動",
+    "instructors": "導師",
+    "mySchedule": "我的課程",
+    "community": "社群"
+  },
+  "userMenu": {
+    "account": "帳戶",
+    "studioManager": "場館管理",
+    "frontDesk": "前台",
+    "platformAdmin": "平台管理員",
+    "signOut": "登出"
+  },
+  "roles": {
+    "owner": "館主",
+    "admin": "管理員",
+    "teacher": "導師",
+    "front_desk": "前台",
+    "student": "會員",
+    "platform_admin": "平台管理員"
+  },
+  "status": {
+    "active": "有效",
+    "inactive": "停用",
+    "pending": "待處理",
+    "cancelled": "已取消",
+    "expired": "已過期",
+    "paused": "已暫停"
+  },
+  "actions": {
+    "save": "儲存",
+    "cancel": "取消",
+    "delete": "刪除",
+    "edit": "編輯",
+    "close": "關閉",
+    "confirm": "確認",
+    "submit": "提交",
+    "search": "搜尋",
+    "filter": "篩選",
+    "reset": "重設",
+    "back": "返回",
+    "next": "下一步",
+    "loading": "載入中...",
+    "sending": "傳送中...",
+    "processing": "處理中..."
+  },
+  "levels": {
+    "beginner": "初級",
+    "allLevels": "不限程度",
+    "intermediate": "中級",
+    "advanced": "高級"
+  },
+  "deliveryMode": {
+    "in_person": "實體",
+    "virtual": "線上",
+    "hybrid": "混合"
+  },
+  "paymentMethods": {
+    "card": "信用卡/扣賬卡",
+    "cash": "現金",
+    "venmo": "Venmo",
+    "cashapp": "Cash App",
+    "paypal": "PayPal",
+    "zelle": "Zelle",
+    "check": "支票",
+    "other": "其他"
+  },
+  "units": {
+    "min": "{{count}} 分鐘",
+    "hour_other": "{{count}} 小時",
+    "day_other": "{{count}} 天",
+    "week_other": "{{count}} 週",
+    "class_other": "{{count}} 節課",
+    "studio_other": "{{count}} 家場館",
+    "spot_other": "{{count}} 個名額",
+    "remaining": "剩餘 {{count}}"
+  },
+  "language": {
+    "label": "語言",
+    "changeLanguage": "切換語言"
+  },
+  "footer": {
+    "allRightsReserved": "版權所有。",
+    "poweredBy": "技術支援",
+    "openSourceStudio": "開源場館管理系統"
+  },
+  "type": {
+    "class": "課程",
+    "workshop": "工作坊",
+    "retreat": "靜修營",
+    "appointment": "預約"
+  },
+  "guest": "訪客",
+  "studioManagement": "場館管理",
+  "notFound": {
+    "title": "糟糕！找不到頁面",
+    "returnHome": "返回首頁"
+  },
+  "demo": {
+    "title": "Tandava 開源場館示範",
+    "switchRole": "切換：",
+    "studioOwner": "館主",
+    "demoMode": "（示範模式）"
+  },
+  "contact": {
+    "yourName": "您的姓名",
+    "namePlaceholder": "陳思雨",
+    "email": "電郵",
+    "emailPlaceholder": "you@example.com",
+    "subject": "主題",
+    "subjectPlaceholder": "想查詢什麼？",
+    "message": "留言",
+    "messagePlaceholder": "請詳細說明...",
+    "sendMessage": "傳送留言",
+    "messageSent": "留言已傳送！",
+    "thankYou": "感謝您的來信。",
+    "missingFields": "資料不完整",
+    "fillRequired": "請填寫主題和留言內容。",
+    "failedToSend": "傳送失敗",
+    "somethingWentWrong": "出了點問題，請重試。"
+  }
+}

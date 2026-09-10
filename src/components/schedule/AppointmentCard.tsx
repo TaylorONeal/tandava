@@ -78,7 +78,7 @@ export function AppointmentCard({
           {/* Right side - price and CTA */}
           <div className="flex sm:flex-col items-center sm:items-end gap-3">
             {/* Price */}
-            <div className="text-right">
+            <div className="text-end">
               <span className="text-2xl font-bold">${price}</span>
             </div>
 

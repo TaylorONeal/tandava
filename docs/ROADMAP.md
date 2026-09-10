@@ -19,12 +19,107 @@ Prioritize these release gates over the historical feature phases below:
 
 Start with one paid hosted plan, with price and support limits validated in the pilot. Self-hosting retains released core workflows without a Tandava subscription. Keep responsive web/PWA first; custom domains, a public discovery marketplace, and studio-branded native apps are later decisions.
 
-**Status correction:** Historical “completed,” “implemented,” and checked items below mix UI, schema and backend foundations. They are not verified production completion claims. The review found simulated booking/import/onboarding operations, missing checkout/portal functions, conflicting initial schemas, and a failing clean dependency install. Use demonstrated UI / backend foundation / verified end-to-end / planned labels for future updates.
+**Status correction:** Historical completion labels mix UI, schema and backend foundations. The initial review examined commit `0af1c00`; subsequent upstream work removed the duplicate migration and added booking/import/onboarding and checkout/portal implementations. Their presence does not establish verified production operation. Use the [current handoff](IMPLEMENTATION_HANDOFF.md) for remaining release gates.
 
 ## Historical feature backlog
 
 ## Vision
 Tandava aims to provide an open-source (AGPL-3.0) alternative to commercial studio platforms while remaining accessible, customizable, and community-driven. Commercial feature parity is a long-term aspiration, not the current release status.
+
+---
+
+## June 2026 Engineering Review & Hardening
+
+A full repo review (build/lint/typecheck/tests + feature audit vs Mindbody,
+Arketa, Momence) surfaced several "won't deploy / can't transact" gaps. These
+have now been addressed:
+
+**Shipped in this pass**
+- Removed a legacy `001_initial_schema.sql` that collided with the canonical
+  `00001–00010` migration series on `supabase db push`.
+- Added route-level RBAC guards to `/manage`, `/teach`, `/staff`, and member
+  routes (previously only `/admin` was guarded) + a `studio.teach` permission.
+- Implemented the `stripe-checkout` and `stripe-portal` Edge Functions the
+  frontend already called, and aligned `stripe-webhook` to the canonical schema.
+  Supports single-studio (direct) and Connect (destination charge) modes.
+- Added the email Edge Function HTTP entry point over the provider abstraction.
+- Reconciled the events types with the real schema and added a registration
+  window (`00011`).
+- Built a tested CSV import engine (parser, transforms, alias matching,
+  validation, dedupe) and wired the import wizard to real file data.
+- Added the booking **entitlement engine** (`src/lib/booking/entitlements.ts`,
+  19 tests) + an atomic `book_class()` RPC (`00012`) + a `data.bookClass()`
+  backend method. `BookingModal` now renders engine-resolved payment sources.
+- Added an **embeddable booking widget** (`public/embed.js` + `/embed/*` routes +
+  `/manage/embed` generator + `docs/guides/website-embed.md`) so studios can put
+  booking on their own website — the integration surface Mindbody/Arketa/Momence
+  lead with. See the guide for usage.
+
+**Remaining to be studio-ready (priority order)**
+1. **Booking loop — finish the data binding.** Core + plumbing done: entitlement
+   engine, `book_class` RPC, `data.bookClass`, backend reads
+   (`getUpcomingClasses`/`getMemberEntitlements`), React Query hooks
+   (`src/hooks/useBooking.ts`), and a pluggable `BookingModal.onConfirm`.
+   **Remaining:** swap `Schedule`/`MySchedule` from mock to `useUpcomingClasses`,
+   pass `useBookingSources(...)` + an `onConfirm` that calls `useBookClass()`
+   (covered) or `checkoutDropIn()` (drop-in); apply late-cancel fees on
+   cancellation (engine's `isLateCancel` + a `late_cancel_fee` transaction); send
+   the waitlist-promotion notification (the DB trigger already promotes).
+2. ~~Finish CSV import persistence~~ **Done** — `import-members` Edge Function
+   creates member profiles + `studio_members` and writes `import_jobs`; the
+   wizard calls it when a backend is configured. (Still to add: attendance &
+   transaction import types beyond clients.)
+3. Workshop/event registration UX. **Done:** pricing core
+   (`src/lib/events/pricing.ts`) + `EventRegistrationPanel` (tier picker,
+   early-bird/member auto-resolution, partial-series session display,
+   state-aware CTA, **deposit/pay-in-full**) + real **event checkout** (the
+   `workshop` Stripe type, `event_registrations` writes via webhook, deposits).
+   **Remaining:** balance-collection flow for deposits, add-to-cart, event
+   waitlist registration.
+4. ~~SMS + push notification providers~~ **Done** — `sms` (Twilio) and `push`
+   (Web Push/VAPID + `push_subscriptions`) Edge Functions + client dispatch
+   helpers. (Still to add: a client service worker + subscription UI for push,
+   and triggering these from booking/waitlist events.)
+5. ~~Make `/manage/onboarding` actually provision~~ **Done** — the `onboarding`
+   Edge Function creates the studio (+ owner link) and upserts location,
+   branding, a starter offering, and starter pricing per step; the wizard posts
+   each step when a backend is configured. (Still to add: Stripe Connect link
+   step + staff invites.)
+
+**Installable-by-non-technical-studios plan**
+- *Phase A:* one-click deploy buttons + `seed.sql` + guided env + first-run setup.
+- *Phase B:* provisioning onboarding (#5) + working import (#2) — "deploy it" and
+  "bring your data" together. **Done** — the onboarding wizard now provisions a
+  studio end to end (staff invites, schedule, waivers, Stripe Connect, launch)
+  and the CSV importer brings data over.
+- *Phase C:* **hosted service — chosen direction.** Rather than a per-studio
+  managed fork, Tandava runs as one multi-tenant hosted instance
+  (`tandavastudio.com`) that studios sign up for. Same open-source code as
+  self-host; monetized only by a Stripe Connect payment take-rate
+  (`PLATFORM_FEE_BPS`), no per-seat or subscription fees. Operator setup:
+  [OPERATOR_SETUP.md](OPERATOR_SETUP.md); one-shot deploy prompt:
+  [cowork-prompts/deploy-hosted.md](cowork-prompts/deploy-hosted.md).
+
+---
+
+## Hosted Platform & Host-Based Tenancy
+
+The hosted model (Phase C above) runs today on a **shared domain** with
+login-based studio resolution — one deployment, many studios, no per-studio
+infrastructure. Giving each studio its own web address is a separate, phased
+track. Full design: [architecture/MULTI_TENANCY.md](architecture/MULTI_TENANCY.md).
+
+| Phase | What | Effort | Status |
+|-------|------|--------|--------|
+| Shared domain | `tandavastudio.com`, studio resolved from login | Live | ✅ |
+| Slug-driven storefront | Real per-studio public page at `/s/:slug` (`get_studio_storefront` RPC + `StudioStorefront.tsx`) | Medium | ✅ |
+| Subdomains (Tier 1) | Host resolver (`studio-host.ts`) mounts the storefront for `slug.<root>`; enable via wildcard domain + `VITE_ROOT_DOMAIN`; zero per-studio ops | Medium | ✅ |
+| Custom domains (Tier 2) | `book.studio.com` via `studio_domains` + Vercel Domains API + verification UI | Large | 🔮 On demand |
+
+The storefront and the subdomain resolver are built (both gated on
+`studios.discoverable`); enabling subdomains is now a one-time operator step
+(wildcard domain + `VITE_ROOT_DOMAIN`). Custom per-studio domains remain the
+only on-demand piece.
 
 ---
 

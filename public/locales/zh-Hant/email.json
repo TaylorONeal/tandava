@@ -1,0 +1,21 @@
+{
+  "bookingConfirmation": {
+    "youreBooked": "預約成功！",
+    "greeting": "您好 {{name}}，您的{{type}}已確認。期待與您相見。",
+    "class": "課程",
+    "workshop": "工作坊",
+    "appointment": "預約",
+    "instructor": "導師",
+    "dateTime": "日期和時間",
+    "duration": "時長",
+    "location": "地點",
+    "spotNumber": "位置編號",
+    "addToCalendar": "加入日曆",
+    "getDirections": "取得路線",
+    "whatToBring": "需要攜帶",
+    "whatToBringText": "請提前 10-15 分鐘到達簽到。請攜帶水和毛巾，穿著舒適的服裝。場館提供瑜伽墊，您也可以自備。",
+    "cancellationPolicy": "取消政策：",
+    "manageBooking": "管理您的預約",
+    "needChanges": "需要更改？"
+  }
+}

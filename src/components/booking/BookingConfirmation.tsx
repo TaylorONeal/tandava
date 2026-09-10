@@ -110,11 +110,11 @@ export function BookingConfirmation({
 
           <div className="flex gap-2 pt-2">
             <Button variant="outline" size="sm" onClick={onAddToCalendar}>
-              <Calendar className="h-4 w-4 mr-1.5" />
+              <Calendar className="h-4 w-4 me-1.5" />
               {t('addToCalendar')}
             </Button>
             <Button variant="outline" size="sm" onClick={onInviteFriend}>
-              <Share2 className="h-4 w-4 mr-1.5" />
+              <Share2 className="h-4 w-4 me-1.5" />
               {t('inviteFriend')}
             </Button>
           </div>

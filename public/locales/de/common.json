@@ -1,0 +1,132 @@
+{
+  "nav": {
+    "home": "Start",
+    "schedule": "Kursplan",
+    "onDemand": "On-Demand",
+    "events": "Events",
+    "instructors": "Lehrer:innen",
+    "mySchedule": "Mein Plan",
+    "community": "Community"
+  },
+  "userMenu": {
+    "account": "Konto",
+    "studioManager": "Studio-Manager",
+    "frontDesk": "Empfang",
+    "platformAdmin": "Plattform-Admin",
+    "signOut": "Abmelden"
+  },
+  "roles": {
+    "owner": "Inhaber:in",
+    "admin": "Admin",
+    "teacher": "Lehrer:in",
+    "front_desk": "Empfang",
+    "student": "Mitglied",
+    "platform_admin": "Plattform-Admin"
+  },
+  "status": {
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "pending": "Ausstehend",
+    "cancelled": "Storniert",
+    "expired": "Abgelaufen",
+    "paused": "Pausiert"
+  },
+  "actions": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
+    "submit": "Absenden",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "reset": "Zurücksetzen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "loading": "Lädt...",
+    "sending": "Wird gesendet...",
+    "processing": "Wird verarbeitet..."
+  },
+  "levels": {
+    "beginner": "Anfänger",
+    "allLevels": "Alle Level",
+    "intermediate": "Mittelstufe",
+    "advanced": "Fortgeschritten"
+  },
+  "deliveryMode": {
+    "in_person": "Vor Ort",
+    "virtual": "Online",
+    "hybrid": "Hybrid"
+  },
+  "paymentMethods": {
+    "card": "Kredit-/Debitkarte",
+    "cash": "Bargeld",
+    "venmo": "Venmo",
+    "cashapp": "Cash App",
+    "paypal": "PayPal",
+    "zelle": "Zelle",
+    "check": "Scheck",
+    "other": "Sonstiges"
+  },
+  "units": {
+    "min": "{{count}} Min.",
+    "hour_one": "{{count}} Stunde",
+    "hour_other": "{{count}} Stunden",
+    "day_one": "{{count}} Tag",
+    "day_other": "{{count}} Tage",
+    "week_one": "{{count}} Woche",
+    "week_other": "{{count}} Wochen",
+    "class_one": "{{count}} Kurs",
+    "class_other": "{{count}} Kurse",
+    "studio_one": "{{count}} Studio",
+    "studio_other": "{{count}} Studios",
+    "spot_one": "{{count}} Platz",
+    "spot_other": "{{count}} Plätze",
+    "remaining": "noch {{count}}"
+  },
+  "language": {
+    "label": "Sprache",
+    "changeLanguage": "Sprache ändern"
+  },
+  "footer": {
+    "allRightsReserved": "Alle Rechte vorbehalten.",
+    "poweredBy": "Bereitgestellt von",
+    "openSourceStudio": "Open-Source-Studioverwaltung"
+  },
+  "type": {
+    "class": "Kurs",
+    "workshop": "Workshop",
+    "retreat": "Retreat",
+    "appointment": "Termin"
+  },
+  "guest": "Gast",
+  "studioManagement": "Studioverwaltung",
+  "notFound": {
+    "title": "Hoppla! Seite nicht gefunden",
+    "returnHome": "Zurück zur Startseite"
+  },
+  "demo": {
+    "title": "Tandava Open-Source-Studio-Demo",
+    "switchRole": "Wechseln:",
+    "studioOwner": "Studioinhaber:in",
+    "demoMode": "(Demo-Modus)"
+  },
+  "contact": {
+    "yourName": "Dein Name",
+    "namePlaceholder": "Anna Schmidt",
+    "email": "E-Mail",
+    "emailPlaceholder": "anna@beispiel.de",
+    "subject": "Betreff",
+    "subjectPlaceholder": "Worum geht es?",
+    "message": "Nachricht",
+    "messagePlaceholder": "Erzähl uns mehr...",
+    "sendMessage": "Nachricht senden",
+    "messageSent": "Nachricht gesendet!",
+    "thankYou": "Danke für deine Nachricht.",
+    "missingFields": "Fehlende Angaben",
+    "fillRequired": "Bitte fülle Betreff und Nachricht aus.",
+    "failedToSend": "Senden fehlgeschlagen",
+    "somethingWentWrong": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+  }
+}

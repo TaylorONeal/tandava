@@ -72,19 +72,19 @@ export default function OfferingsManage() {
             </p>
           </div>
           <Button size="sm" onClick={() => toast({ title: "New offering", description: "Offering creation form opened." })}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 me-2" />
             New Offering
           </Button>
         </div>
 
         {/* Search */}
         <div className="relative max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search offerings..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="ps-9"
           />
         </div>
 
@@ -145,7 +145,7 @@ export default function OfferingsManage() {
                       <span className="text-xs text-muted-foreground">Avg attendance</span>
                       <span className="text-xs font-semibold">
                         {offering.avgAttendance}/{offering.capacity}
-                        <span className="text-muted-foreground ml-1">
+                        <span className="text-muted-foreground ms-1">
                           ({Math.round((offering.avgAttendance / offering.capacity) * 100)}%)
                         </span>
                       </span>

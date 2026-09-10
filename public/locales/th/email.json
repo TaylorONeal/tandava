@@ -1,21 +1,21 @@
 {
   "bookingConfirmation": {
-    "youreBooked": "You're booked!",
-    "greeting": "Hi {{name}}, your {{type}} is confirmed. We look forward to seeing you.",
-    "class": "Class",
-    "workshop": "Workshop",
-    "appointment": "Appointment",
-    "instructor": "Instructor",
-    "dateTime": "Date & Time",
-    "duration": "Duration",
-    "location": "Location",
-    "spotNumber": "Spot Number",
-    "addToCalendar": "Add to Calendar",
-    "getDirections": "Get Directions",
-    "whatToBring": "What to Bring",
-    "whatToBringText": "Please arrive 10-15 minutes early for check-in. Bring water, a towel, and wear comfortable clothing. Mats are provided, but feel free to bring your own.",
-    "cancellationPolicy": "Cancellation Policy:",
-    "manageBooking": "Manage your booking",
-    "needChanges": "Need to make changes?"
+    "youreBooked": "จองสำเร็จแล้ว!",
+    "greeting": "สวัสดีคุณ {{name}} การจอง{{type}}ของคุณได้รับการยืนยันแล้ว แล้วพบกันนะคะ",
+    "class": "คลาส",
+    "workshop": "เวิร์กช็อป",
+    "appointment": "นัดหมายส่วนตัว",
+    "instructor": "ครูผู้สอน",
+    "dateTime": "วันและเวลา",
+    "duration": "ระยะเวลา",
+    "location": "สถานที่",
+    "spotNumber": "หมายเลขที่นั่ง",
+    "addToCalendar": "เพิ่มลงปฏิทิน",
+    "getDirections": "ดูเส้นทาง",
+    "whatToBring": "สิ่งที่ควรเตรียมมา",
+    "whatToBringText": "กรุณามาถึงก่อนเวลา 10-15 นาทีเพื่อเช็กอิน เตรียมน้ำดื่มและผ้าเช็ดตัวมาด้วย และสวมเสื้อผ้าที่เคลื่อนไหวสะดวก ทางสตูดิโอมีเสื่อให้ แต่คุณนำเสื่อส่วนตัวมาได้",
+    "cancellationPolicy": "นโยบายการยกเลิก:",
+    "manageBooking": "จัดการการจองของคุณ",
+    "needChanges": "ต้องการเปลี่ยนแปลงอะไรไหม?"
   }
 }

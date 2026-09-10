@@ -30,6 +30,8 @@ export type Permission =
   | "studio.manage_billing"
   | "studio.view_analytics"
   | "studio.view_inbox"
+  // Teacher portal
+  | "studio.teach"
   // Staff
   | "studio.checkin"
   | "studio.manage_waitlist"
@@ -59,6 +61,7 @@ const STUDIO_OWNER_PERMISSIONS: Permission[] = [
   "studio.manage_billing",
   "studio.view_analytics",
   "studio.view_inbox",
+  "studio.teach",
   "studio.checkin",
   "studio.manage_waitlist",
 ];
@@ -69,6 +72,7 @@ const STUDIO_ADMIN_PERMISSIONS: Permission[] = [
   "studio.manage_instructors",
   "studio.view_analytics",
   "studio.view_inbox",
+  "studio.teach",
   "studio.checkin",
   "studio.manage_waitlist",
 ];
@@ -80,6 +84,7 @@ const STUDIO_FRONT_DESK_PERMISSIONS: Permission[] = [
 ];
 
 const TEACHER_PERMISSIONS: Permission[] = [
+  "studio.teach",
   "studio.view_analytics", // own classes only
 ];
 
@@ -129,6 +134,7 @@ export const ROUTE_PERMISSIONS: Record<string, Permission> = {
   "/manage/billing": "studio.manage_billing",
   "/manage/analytics": "studio.view_analytics",
   "/manage/inbox": "studio.view_inbox",
+  "/teach": "studio.teach",
   "/staff/checkin": "studio.checkin",
   "/staff/waitlist": "studio.manage_waitlist",
 };

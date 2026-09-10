@@ -183,23 +183,23 @@ export default function NotificationSettings() {
         <Tabs defaultValue="email" className="space-y-6">
           <TabsList className="w-full justify-start overflow-x-auto">
             <TabsTrigger value="email" className="text-xs">
-              <Mail className="h-3.5 w-3.5 mr-1.5" />
+              <Mail className="h-3.5 w-3.5 me-1.5" />
               Email
             </TabsTrigger>
             <TabsTrigger value="sms" className="text-xs">
-              <MessageSquare className="h-3.5 w-3.5 mr-1.5" />
+              <MessageSquare className="h-3.5 w-3.5 me-1.5" />
               SMS
             </TabsTrigger>
             <TabsTrigger value="push" className="text-xs">
-              <Bell className="h-3.5 w-3.5 mr-1.5" />
+              <Bell className="h-3.5 w-3.5 me-1.5" />
               Push
             </TabsTrigger>
             <TabsTrigger value="reviews" className="text-xs">
-              <Star className="h-3.5 w-3.5 mr-1.5" />
+              <Star className="h-3.5 w-3.5 me-1.5" />
               Reviews
             </TabsTrigger>
             <TabsTrigger value="timing" className="text-xs">
-              <Clock className="h-3.5 w-3.5 mr-1.5" />
+              <Clock className="h-3.5 w-3.5 me-1.5" />
               Timing
             </TabsTrigger>
           </TabsList>
@@ -219,7 +219,7 @@ export default function NotificationSettings() {
                     </CardDescription>
                   </div>
                   <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                    <CheckCircle2 className="h-3 w-3 mr-1" />
+                    <CheckCircle2 className="h-3 w-3 me-1" />
                     Connected
                   </Badge>
                 </div>
@@ -283,11 +283,11 @@ export default function NotificationSettings() {
 
                 <div className="flex justify-between pt-2">
                   <Button variant="outline" onClick={() => handleTestNotification("email")}>
-                    <Send className="h-4 w-4 mr-2" />
+                    <Send className="h-4 w-4 me-2" />
                     Send Test Email
                   </Button>
                   <Button onClick={() => handleSave("Email provider")}>
-                    <Save className="h-4 w-4 mr-2" />
+                    <Save className="h-4 w-4 me-2" />
                     Save Configuration
                   </Button>
                 </div>
@@ -420,11 +420,11 @@ export default function NotificationSettings() {
 
                   <div className="flex justify-between pt-2">
                     <Button variant="outline" onClick={() => handleTestNotification("review request")}>
-                      <TestTube className="h-4 w-4 mr-2" />
+                      <TestTube className="h-4 w-4 me-2" />
                       Send Test Request
                     </Button>
                     <Button onClick={() => handleSave("Review automation")}>
-                      <Save className="h-4 w-4 mr-2" />
+                      <Save className="h-4 w-4 me-2" />
                       Save Settings
                     </Button>
                   </div>
@@ -462,12 +462,12 @@ export default function NotificationSettings() {
                           <h4 className="font-medium">{platform.name}</h4>
                           {platform.connected ? (
                             <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/30">
-                              <CheckCircle2 className="h-3 w-3 mr-1" />
+                              <CheckCircle2 className="h-3 w-3 me-1" />
                               Connected
                             </Badge>
                           ) : (
                             <Badge variant="outline" className="text-muted-foreground">
-                              <XCircle className="h-3 w-3 mr-1" />
+                              <XCircle className="h-3 w-3 me-1" />
                               Not connected
                             </Badge>
                           )}
@@ -486,7 +486,7 @@ export default function NotificationSettings() {
                     {platform.connected ? (
                       <div className="flex items-center gap-2">
                         <Button variant="ghost" size="sm">
-                          <ExternalLink className="h-4 w-4 mr-1" />
+                          <ExternalLink className="h-4 w-4 me-1" />
                           View
                         </Button>
                         <Button
@@ -596,11 +596,11 @@ export default function NotificationSettings() {
 
                   <div className="flex justify-between pt-2">
                     <Button variant="outline" onClick={() => handleTestNotification("SMS")}>
-                      <Send className="h-4 w-4 mr-2" />
+                      <Send className="h-4 w-4 me-2" />
                       Send Test SMS
                     </Button>
                     <Button onClick={() => handleSave("SMS provider")}>
-                      <Save className="h-4 w-4 mr-2" />
+                      <Save className="h-4 w-4 me-2" />
                       Save Configuration
                     </Button>
                   </div>
@@ -654,7 +654,7 @@ export default function NotificationSettings() {
 
                 <div className="flex justify-end pt-2">
                   <Button onClick={() => handleSave("SMS templates")}>
-                    <Save className="h-4 w-4 mr-2" />
+                    <Save className="h-4 w-4 me-2" />
                     Save Templates
                   </Button>
                 </div>
@@ -738,11 +738,11 @@ export default function NotificationSettings() {
 
                   <div className="flex justify-between pt-2">
                     <Button variant="outline" onClick={() => handleTestNotification("push")}>
-                      <Bell className="h-4 w-4 mr-2" />
+                      <Bell className="h-4 w-4 me-2" />
                       Send Test Push
                     </Button>
                     <Button onClick={() => handleSave("Push notification")}>
-                      <Save className="h-4 w-4 mr-2" />
+                      <Save className="h-4 w-4 me-2" />
                       Save Settings
                     </Button>
                   </div>
@@ -840,7 +840,7 @@ export default function NotificationSettings() {
 
                 <div className="flex justify-end pt-2">
                   <Button onClick={() => handleSave("Reminder timing")}>
-                    <Save className="h-4 w-4 mr-2" />
+                    <Save className="h-4 w-4 me-2" />
                     Save Timing Settings
                   </Button>
                 </div>

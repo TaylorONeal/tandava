@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js 18+ (or Bun)
+- Node.js 22.12+ (npm)
 - A Supabase account (free tier works)
 - (Optional) Stripe account for payment features
 - (Optional) Sentry account for error monitoring
@@ -186,7 +186,7 @@ npm run build
 npm run preview
 
 # Generate sitemap (after build)
-npx tsx scripts/generate-sitemap.ts
+node scripts/run-postbuild.mjs
 ```
 
 The `dist/` directory is a static site — deploy to:

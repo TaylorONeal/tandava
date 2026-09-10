@@ -41,7 +41,7 @@ export function PromoVisual({
             variant="ghost"
             size="icon-sm"
             onClick={handleReplay}
-            className="absolute bottom-2 right-2 bg-background/80 hover:bg-background text-foreground"
+            className="absolute bottom-2 end-2 bg-background/80 hover:bg-background text-foreground"
           >
             <RotateCcw className="h-3 w-3" />
           </Button>

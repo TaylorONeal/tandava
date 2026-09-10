@@ -1,0 +1,12 @@
+{
+  "title": "Calendario",
+  "classDetail": "Lezione",
+  "benefits": "Benefici",
+  "whatToBring": "Cosa portare",
+  "classesTaught": "lezioni tenute",
+  "heated": "Sala riscaldata",
+  "joinOnline": "Partecipa online",
+  "locationPlusOnline": "{{location}} + online",
+  "live": "In diretta",
+  "spotsLeft": "{{count}} posti rimasti"
+}

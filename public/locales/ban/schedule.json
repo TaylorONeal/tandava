@@ -1,10 +1,12 @@
 {
-  "title": "Schedule",
-  "classDetail": "Class",
-  "benefits": "Benefits",
-  "whatToBring": "What to Bring",
-  "classesTaught": "classes taught",
-  "heated": "Heated",
-  "joinOnline": "Join online",
-  "locationPlusOnline": "{{location}} + Online"
+  "title": "Jadwal",
+  "classDetail": "Kelas",
+  "benefits": "Pikenoh",
+  "whatToBring": "Sane Patut Kabakta",
+  "classesTaught": "kelas sane sampun kaicen",
+  "heated": "Ruangan Panes",
+  "joinOnline": "Nyarengin online",
+  "locationPlusOnline": "{{location}} + Online",
+  "live": "Langsung",
+  "spotsLeft": "kantun {{count}} genah"
 }

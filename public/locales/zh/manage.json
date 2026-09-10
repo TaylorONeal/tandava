@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "仪表盘",
+    "schedule": "课程表",
+    "events": "活动",
+    "students": "学员",
+    "teachers": "导师",
+    "offerings": "课程产品",
+    "promoCodes": "优惠码",
+    "financials": "财务",
+    "products": "商品",
+    "inventory": "库存",
+    "purchaseOrders": "采购订单",
+    "landingPages": "着陆页",
+    "utmBuilder": "UTM 生成器",
+    "campaigns": "营销活动",
+    "tasks": "任务",
+    "reports": "报表",
+    "importData": "导入数据",
+    "smsInbox": "短信收件箱",
+    "notifications": "通知",
+    "settings": "设置"
+  },
+  "title": "场馆管理后台",
+  "studentView": "学员视图",
+  "myAccount": "我的账户",
+  "studioSettings": "场馆设置",
+  "signOut": "退出登录",
+
+  "schedule": {
+    "title": "课程表",
+    "subtitle": "创建和管理您的课程安排。",
+    "addClass": "添加课程",
+    "emptyState": "尚未安排课程。创建您的第一节课开始吧。"
+  },
+  "offerings": {
+    "title": "课程产品",
+    "subtitle": "课程类型及其配置 — {{count}} 个已启用",
+    "newOffering": "新建课程产品",
+    "searchPlaceholder": "搜索课程产品...",
+    "activeOfferings": "已启用的课程产品"
+  },
+
+  "admin": {
+    "platformAdmin": "平台管理员",
+    "platformDashboard": "平台仪表盘",
+    "overview": "您的 Tandava 实例健康状况与活动概览。",
+    "activeStudios": "活跃场馆",
+    "totalUsers": "总用户数",
+    "stripeStatus": "Stripe 状态",
+    "errorRate": "错误率",
+    "connectSupabase": "连接 Supabase 查看实时数据",
+    "acrossAllStudios": "所有场馆合计",
+    "webhookHealth": "Webhook 健康状况",
+    "connectSentry": "连接 Sentry 进行监控",
+    "setupChecklist": "安装清单",
+    "supabaseConnected": "Supabase 已连接",
+    "stripeConfigured": "Stripe 已配置",
+    "emailConfigured": "邮件服务商已配置",
+    "sentryConfigured": "Sentry 错误监控",
+    "setEnvVar": "在 .env 中设置 {{key}}"
+  },
+
+  "studioManagement": "场馆管理",
+  "owner": "馆主"
+}

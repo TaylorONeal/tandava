@@ -1,0 +1,12 @@
+{
+  "title": "課程表",
+  "classDetail": "課程",
+  "benefits": "益處",
+  "whatToBring": "需要攜帶",
+  "classesTaught": "節課已授",
+  "heated": "高溫",
+  "joinOnline": "線上參加",
+  "locationPlusOnline": "{{location}} + 線上",
+  "live": "直播",
+  "spotsLeft": "剩餘 {{count}} 個名額"
+}

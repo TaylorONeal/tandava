@@ -7,7 +7,7 @@ describe('studio address boundaries', () => {
     expect(validateStudioSlug(' Lotus-Yoga ')).toEqual({ slug: 'lotus-yoga', error: null });
     expect(normalizeHostname(' LOTUS.example.com. ')).toBe('lotus.example.com');
   });
-  it.each(['admin', 'api', 'a', '-lotus', 'lotus-', 'lotus.yoga', 'lotus yoga', 'a'.repeat(64)])('rejects invalid or reserved slug %s', value => {
+  it.each(['admin', 'api', 'staging', 'preview', 'billing', 'a', '-lotus', 'lotus-', 'lotus.yoga', 'lotus yoga', 'a'.repeat(64)])('rejects invalid or reserved slug %s', value => {
     expect(validateStudioSlug(value).error).not.toBeNull();
   });
   it.each(['https://lotus.example.com', 'lotus.example.com/path', 'lotus.example.com:443', 'lotus.example.com,evil.com', 'lotus..com', '*.example.com'])('rejects malformed host %s', value => {

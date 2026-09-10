@@ -172,7 +172,7 @@ export default function FinancialsManage() {
             <p className="text-sm text-muted-foreground mt-1">Memberships, class packs, and transactions</p>
           </div>
           <Button variant="outline" size="sm" onClick={() => setExportOpen(true)}>
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="h-4 w-4 me-2" />
             Export
           </Button>
         </div>
@@ -235,7 +235,7 @@ export default function FinancialsManage() {
               <div className="flex justify-end gap-2 pt-2">
                 <Button variant="outline" size="sm" onClick={() => setExportOpen(false)}>Cancel</Button>
                 <Button size="sm" onClick={handleExport}>
-                  <Download className="h-4 w-4 mr-1.5" />
+                  <Download className="h-4 w-4 me-1.5" />
                   Download {mockRecentTransactions.length} Transactions
                 </Button>
               </div>
@@ -318,7 +318,7 @@ export default function FinancialsManage() {
           <TabsContent value="memberships" className="space-y-6">
             <div className="flex justify-end">
               <Button size="sm" onClick={() => toast({ title: "Coming soon", description: "Membership creation will be available with backend integration." })}>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="h-4 w-4 me-2" />
                 New Membership Type
               </Button>
             </div>
@@ -369,7 +369,7 @@ export default function FinancialsManage() {
           <TabsContent value="packs" className="space-y-6">
             <div className="flex justify-end">
               <Button size="sm" onClick={() => toast({ title: "Coming soon", description: "Pack creation will be available with backend integration." })}>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="h-4 w-4 me-2" />
                 New Pack Type
               </Button>
             </div>

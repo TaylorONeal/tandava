@@ -1,0 +1,12 @@
+{
+  "title": "அட்டவணை",
+  "classDetail": "வகுப்பு",
+  "benefits": "பயன்கள்",
+  "whatToBring": "என்ன கொண்டு வர வேண்டும்",
+  "classesTaught": "நடத்திய வகுப்புகள்",
+  "heated": "வெப்பப்படுத்தப்பட்டது",
+  "joinOnline": "ஆன்லைனில் சேர்",
+  "locationPlusOnline": "{{location}} + ஆன்லைன்",
+  "live": "நேரலை",
+  "spotsLeft": "{{count}} இடங்கள் மீதம்"
+}

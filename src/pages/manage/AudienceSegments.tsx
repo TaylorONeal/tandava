@@ -228,7 +228,7 @@ export default function AudienceSegments() {
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
               <Button>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="h-4 w-4 me-2" />
                 Create Segment
               </Button>
             </DialogTrigger>
@@ -277,7 +277,7 @@ export default function AudienceSegments() {
                   <div className="flex items-center justify-between">
                     <Label>Filters</Label>
                     <Button variant="outline" size="sm" onClick={addFilter}>
-                      <Plus className="h-3 w-3 mr-1" />
+                      <Plus className="h-3 w-3 me-1" />
                       Add Filter
                     </Button>
                   </div>
@@ -435,12 +435,12 @@ export default function AudienceSegments() {
         {/* Search */}
         <div className="flex items-center gap-4">
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search segments..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
+              className="ps-9"
             />
           </div>
         </div>
@@ -453,7 +453,7 @@ export default function AudienceSegments() {
                 <TableRow>
                   <TableHead>Segment</TableHead>
                   <TableHead>Filters</TableHead>
-                  <TableHead className="text-right">Members</TableHead>
+                  <TableHead className="text-end">Members</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Last Updated</TableHead>
                   <TableHead className="w-[50px]"></TableHead>
@@ -473,7 +473,7 @@ export default function AudienceSegments() {
                         {getFilterSummary(segment.filters)}
                       </p>
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-end">
                       <span className="font-semibold">{segment.member_count.toLocaleString()}</span>
                     </TableCell>
                     <TableCell>
@@ -495,15 +495,15 @@ export default function AudienceSegments() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => setSelectedSegment(segment)}>
-                            <Pencil className="h-4 w-4 mr-2" />
+                            <Pencil className="h-4 w-4 me-2" />
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleRefreshCount(segment.id)}>
-                            <RefreshCw className="h-4 w-4 mr-2" />
+                            <RefreshCw className="h-4 w-4 me-2" />
                             Refresh Count
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleDuplicate(segment)}>
-                            <Copy className="h-4 w-4 mr-2" />
+                            <Copy className="h-4 w-4 me-2" />
                             Duplicate
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
@@ -511,7 +511,7 @@ export default function AudienceSegments() {
                             className="text-destructive"
                             onClick={() => handleDelete(segment)}
                           >
-                            <Trash2 className="h-4 w-4 mr-2" />
+                            <Trash2 className="h-4 w-4 me-2" />
                             Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>

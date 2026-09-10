@@ -1,0 +1,12 @@
+{
+  "title": "Kursplan",
+  "classDetail": "Kurs",
+  "benefits": "Vorteile",
+  "whatToBring": "Was du mitbringen solltest",
+  "classesTaught": "Kurse unterrichtet",
+  "heated": "Beheizt",
+  "joinOnline": "Online teilnehmen",
+  "locationPlusOnline": "{{location}} + Online",
+  "live": "Live",
+  "spotsLeft": "noch {{count}} Plätze frei"
+}

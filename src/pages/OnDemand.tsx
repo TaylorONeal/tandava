@@ -439,7 +439,7 @@ const OnDemand = () => {
                 className="text-muted-foreground"
               >
                 Clear filter
-                <X className="h-4 w-4 ml-1" />
+                <X className="h-4 w-4 ms-1" />
               </Button>
             )}
           </div>
@@ -466,12 +466,12 @@ const OnDemand = () => {
 
             {/* Search */}
             <div className="relative w-full sm:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search classes..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
+                className="ps-9"
               />
             </div>
           </div>
@@ -561,7 +561,7 @@ const OnDemand = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
 
                   {/* Duration overlay */}
-                  <div className="absolute bottom-3 right-3 px-2 py-1 rounded-lg bg-foreground/80 text-background text-sm font-medium flex items-center gap-1.5">
+                  <div className="absolute bottom-3 end-3 px-2 py-1 rounded-lg bg-foreground/80 text-background text-sm font-medium flex items-center gap-1.5">
                     <Clock className="h-4 w-4" />
                     {selectedClass.duration} min
                   </div>
@@ -569,7 +569,7 @@ const OnDemand = () => {
                   {/* Play teaser overlay */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="h-16 w-16 rounded-full bg-background/90 flex items-center justify-center shadow-lg">
-                      <Play className="h-8 w-8 text-foreground ml-1" />
+                      <Play className="h-8 w-8 text-foreground ms-1" />
                     </div>
                   </div>
                 </div>
@@ -586,14 +586,14 @@ const OnDemand = () => {
                       {selectedClass.level === "ALL" ? "All Levels" : selectedClass.level.charAt(0) + selectedClass.level.slice(1).toLowerCase()}
                     </Badge>
                     {selectedClass.rating && (
-                      <span className="flex items-center gap-1 text-sm text-muted-foreground ml-auto">
+                      <span className="flex items-center gap-1 text-sm text-muted-foreground ms-auto">
                         <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                         {selectedClass.rating}
                       </span>
                     )}
                   </div>
 
-                  <DialogHeader className="text-left p-0">
+                  <DialogHeader className="text-start p-0">
                     <DialogTitle className="text-2xl">{selectedClass.title}</DialogTitle>
                   </DialogHeader>
 
@@ -606,7 +606,7 @@ const OnDemand = () => {
                       </AvatarFallback>
                     </Avatar>
                     <span className="text-sm font-medium">{selectedClass.teacher.name}</span>
-                    <span className="text-sm text-muted-foreground flex items-center gap-1 ml-auto">
+                    <span className="text-sm text-muted-foreground flex items-center gap-1 ms-auto">
                       <Eye className="h-3.5 w-3.5" />
                       {selectedClass.viewCount.toLocaleString()} views
                     </span>
@@ -710,9 +710,9 @@ const OnDemand = () => {
                     className="w-full text-base py-6"
                     size="lg"
                   >
-                    {cta.action === "play" && <Play className="h-5 w-5 mr-2" />}
+                    {cta.action === "play" && <Play className="h-5 w-5 me-2" />}
                     {cta.label}
-                    {cta.action !== "play" && <ChevronRight className="h-5 w-5 ml-2" />}
+                    {cta.action !== "play" && <ChevronRight className="h-5 w-5 ms-2" />}
                   </Button>
                 </DialogFooter>
               </div>
@@ -746,7 +746,7 @@ const OnDemand = () => {
                   Cancel
                 </Button>
                 <Button onClick={handleConfirm}>
-                  <Ticket className="h-4 w-4 mr-2" />
+                  <Ticket className="h-4 w-4 me-2" />
                   Use Class Pass
                 </Button>
               </DialogFooter>
@@ -782,7 +782,7 @@ const OnDemand = () => {
                   Cancel
                 </Button>
                 <Button onClick={handleConfirm}>
-                  <CreditCard className="h-4 w-4 mr-2" />
+                  <CreditCard className="h-4 w-4 me-2" />
                   {selectedClass.accessType === "rental" ? "Rent Now" : "Buy Now"}
                 </Button>
               </DialogFooter>

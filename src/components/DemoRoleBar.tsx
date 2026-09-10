@@ -93,6 +93,8 @@ function DemoRoleBarInner() {
 
   // Hide on landing page — role selection happens there
   if (location.pathname === "/" || location.pathname === "/demo") return null;
+  // Embeddable widget + kiosk are chrome-less public surfaces.
+  if (location.pathname.startsWith("/embed/") || location.pathname.startsWith("/kiosk/")) return null;
 
   const currentRole = ROLES.find((r) => r.role === activePersona.role) ?? ROLES[0];
   const CurrentIcon = currentRole.icon;
@@ -138,7 +140,7 @@ function DemoRoleBarInner() {
 
         {/* Role switcher buttons */}
         <div className="flex items-center gap-1">
-          <span className="text-[10px] text-white/30 uppercase tracking-wider mr-2 hidden sm:inline">
+          <span className="text-[10px] text-white/30 uppercase tracking-wider me-2 hidden sm:inline">
             {t('demo.switchRole')}
           </span>
           {tour && <button className="min-h-11 px-2 text-xs text-white/80" onClick={() => {

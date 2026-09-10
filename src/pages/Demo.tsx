@@ -8,7 +8,7 @@
  */
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useDemo } from "@/contexts/DemoContext";
 import type { UserRole } from "@/types/database";
 import {
@@ -34,13 +34,11 @@ import {
   Shield,
   CreditCard,
   BarChart3,
-  Globe,
   BookOpen,
   ExternalLink,
   Server,
   Lock,
   Zap,
-  Heart,
   ListChecks,
   Bell,
   Receipt,
@@ -359,6 +357,13 @@ const FEATURE_CATEGORIES = [
         demoRoute: "/manage/connectors",
         demoRole: "owner" as UserRole,
       },
+      {
+        icon: Code2,
+        name: "Website Embed",
+        description: "Put booking on your own site — one-line script widget",
+        demoRoute: "/manage/embed",
+        demoRole: "owner" as UserRole,
+      },
     ],
   },
 ];
@@ -375,9 +380,9 @@ function FAQAccordion({ item }: { item: FAQItem }) {
         type="button"
         aria-expanded={open}
         onClick={() => setOpen(!open)}
-        className="flex min-h-12 w-full items-center justify-between p-4 text-left transition-colors hover:bg-card/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
+        className="flex min-h-12 w-full items-center justify-between p-4 text-start transition-colors hover:bg-card/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
       >
-        <span className="font-medium text-sm pr-4">{item.question}</span>
+        <span className="font-medium text-sm pe-4">{item.question}</span>
         {open ? (
           <ChevronUp className="w-4 h-4 shrink-0 text-muted-foreground" />
         ) : (
@@ -434,6 +439,13 @@ export default function Demo() {
               <Github className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">GitHub</span>
             </a>
+            <Link
+              to="/blog"
+              className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Blog</span>
+            </Link>
             <a
               href="#explore"
               className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
@@ -450,7 +462,7 @@ export default function Demo() {
       {/* ================================================================ */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/5" />
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+        <div className="absolute top-0 end-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
 
         <div className="relative max-w-6xl mx-auto px-6 pt-16 pb-20">
           <div className="max-w-3xl">
@@ -563,7 +575,7 @@ export default function Demo() {
                     {item}
                   </li>
                 ))}
-                <li className="text-xs text-muted-foreground/70 pl-6 pt-1">
+                <li className="text-xs text-muted-foreground/70 ps-6 pt-1">
                   We aspire to make this more accessible over time, with the
                   community.
                 </li>
@@ -636,7 +648,7 @@ export default function Demo() {
                 <button
                   key={config.role}
                   onClick={() => handleRoleSelect(config)}
-                  className={`group relative min-h-[320px] text-left rounded-2xl border bg-gradient-to-br ${config.bg} p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 motion-reduce:transform-none`}
+                  className={`group relative min-h-[320px] text-start rounded-2xl border bg-gradient-to-br ${config.bg} p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 motion-reduce:transform-none`}
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <div
@@ -704,7 +716,7 @@ export default function Demo() {
                           switchPersona(feat.demoRole);
                           navigate(feat.demoRoute);
                         }}
-                        className="group rounded-xl border bg-card p-4 text-left transition-all hover:border-primary/30 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                        className="group rounded-xl border bg-card p-4 text-start transition-all hover:border-primary/30 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                       >
                         <div className="flex items-center gap-2.5 mb-2">
                           <Icon className="w-4 h-4 text-primary" />
@@ -794,6 +806,12 @@ export default function Demo() {
             </div>
 
             <div className="flex flex-wrap gap-3">
+              <Link
+                to="/blog"
+                className="inline-flex min-h-10 items-center gap-2 rounded-full border border-primary/20 bg-background px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              >
+                <BookOpen className="w-4 h-4" /> Blog
+              </Link>
               <a
                 href="https://github.com/TaylorONeal/tandava"
                 target="_blank"
@@ -847,78 +865,13 @@ export default function Demo() {
       </section>
 
       {/* ================================================================ */}
-      {/* ABOUT THE CREATOR                                                */}
+      {/* OPEN SOURCE                                                      */}
       {/* ================================================================ */}
       <section className="border-t border-border bg-card/30">
-        <div className="max-w-3xl mx-auto px-6 py-14">
-          <div className="flex items-start gap-5">
-            <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-lg font-display font-bold text-primary shrink-0">
-              TO
-            </div>
-            <div>
-              <h2 className="text-xl font-display font-semibold mb-1">
-                Taylor O'Neal
-              </h2>
-              <p className="text-sm text-muted-foreground mb-4">
-                Product Management, Yoga Practitioner
-              </p>
-              <div className="text-sm text-muted-foreground leading-relaxed space-y-3">
-                <p>
-                  I build digital products and practice yoga. Both require
-                  systems thinking, creative problem-solving, and respect for
-                  the people you serve.
-                </p>
-                <p>
-                  200-hour YTT in Seattle. Workshops in Thailand and Whidbey
-                  Island. That practitioner-first mindset led to{" "}
-                  <a
-                    href="https://cuecraftyoga.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                  >
-                    CueCraft Yoga
-                  </a>{" "}
-                  and now Tandava. I also teach Product Management and Digital
-                  Analytics at Miami University.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-4 mt-4">
-                <a
-                  href="https://tayloroneal.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-10 items-center gap-2 text-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                >
-                  <Globe className="w-4 h-4" /> tayloroneal.com
-                </a>
-                <a
-                  href="https://cuecraftyoga.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-10 items-center gap-2 text-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                >
-                  <Heart className="w-4 h-4" /> CueCraft Yoga
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/tayloroneal/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-10 items-center gap-2 text-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                >
-                  LinkedIn
-                </a>
-                <a
-                  href="https://github.com/TaylorONeal"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-10 items-center gap-2 text-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                >
-                  <Github className="w-4 h-4" /> GitHub
-                </a>
-              </div>
-            </div>
-          </div>
+        <div className="max-w-3xl mx-auto px-6 py-14 text-center">
+          <p className="text-sm text-muted-foreground">
+            Tandava is open-source software. Built by the community, for the community.
+          </p>
         </div>
       </section>
 

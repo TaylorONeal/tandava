@@ -229,7 +229,7 @@ export default function ScheduleManage() {
             <p className="text-sm text-muted-foreground mt-1">Manage classes, subs, and cancellations</p>
           </div>
           <Button size="sm" onClick={() => setAddClassDialogOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 me-2" />
             Add Class
           </Button>
         </div>
@@ -259,12 +259,12 @@ export default function ScheduleManage() {
 
         {/* Search */}
         <div className="relative max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search classes or teachers..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="ps-9"
           />
         </div>
 
@@ -314,7 +314,7 @@ export default function ScheduleManage() {
                             <Users className="h-3 w-3" />
                             {cls.teacher}
                             {cls.isSubbed && cls.originalTeacher && (
-                              <span className="line-through ml-1">({cls.originalTeacher})</span>
+                              <span className="line-through ms-1">({cls.originalTeacher})</span>
                             )}
                           </span>
                           <span className="flex items-center gap-1">
@@ -331,7 +331,7 @@ export default function ScheduleManage() {
 
                     {/* Booking Status + Actions */}
                     <div className="flex items-center gap-3 shrink-0">
-                      <div className="text-right">
+                      <div className="text-end">
                         <p className="text-sm font-semibold">
                           {cls.booked}/{cls.capacity}
                         </p>
@@ -352,7 +352,7 @@ export default function ScheduleManage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-48 rounded-xl">
                             <DropdownMenuItem className="rounded-lg cursor-pointer">
-                              <Users className="h-4 w-4 mr-2" />
+                              <Users className="h-4 w-4 me-2" />
                               View Roster
                             </DropdownMenuItem>
                             <DropdownMenuItem
@@ -362,11 +362,11 @@ export default function ScheduleManage() {
                                 setSubDialogOpen(true);
                               }}
                             >
-                              <UserMinus className="h-4 w-4 mr-2" />
+                              <UserMinus className="h-4 w-4 me-2" />
                               Find Sub
                             </DropdownMenuItem>
                             <DropdownMenuItem className="rounded-lg cursor-pointer">
-                              <Bell className="h-4 w-4 mr-2" />
+                              <Bell className="h-4 w-4 me-2" />
                               Notify Students
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
@@ -377,7 +377,7 @@ export default function ScheduleManage() {
                                 setCancelDialogOpen(true);
                               }}
                             >
-                              <Ban className="h-4 w-4 mr-2" />
+                              <Ban className="h-4 w-4 me-2" />
                               Cancel Class
                             </DropdownMenuItem>
                           </DropdownMenuContent>
@@ -419,7 +419,7 @@ export default function ScheduleManage() {
                       .map((teacher) => (
                         <SelectItem key={teacher.id} value={teacher.id}>
                           <span>{teacher.name}</span>
-                          <span className="text-xs text-muted-foreground ml-2">
+                          <span className="text-xs text-muted-foreground ms-2">
                             ({teacher.specialties.join(", ")})
                           </span>
                         </SelectItem>

@@ -1,15 +1,19 @@
 /** Pure routing rules. Authorization must still check studio membership on the server. */
 const reservedSlugs = new Set([
   'www', 'app', 'admin', 'api', 'demo', 'support', 'help', 'mail', 'status',
-  'billing', 'auth', 'login', 'signup', 'static', 'assets', 'cdn', 'docs',
+  'billing', 'auth', 'login', 'signup', 'static', 'assets', 'cdn', 'docs', 'staging', 'preview',
 ]);
+
+export function isReservedStudioSlug(slug: string): boolean {
+  return reservedSlugs.has(slug);
+}
 
 export function validateStudioSlug(input: string): { slug: string; error: string | null } {
   const slug = input.trim().toLowerCase();
   if (!/^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])$/.test(slug)) {
     return { slug, error: 'Use 3–63 lowercase letters, numbers or internal hyphens.' };
   }
-  if (reservedSlugs.has(slug)) return { slug, error: 'This address is reserved.' };
+  if (isReservedStudioSlug(slug)) return { slug, error: 'This address is reserved.' };
   return { slug, error: null };
 }
 

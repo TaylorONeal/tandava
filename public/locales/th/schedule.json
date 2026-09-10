@@ -1,10 +1,12 @@
 {
-  "title": "Schedule",
-  "classDetail": "Class",
-  "benefits": "Benefits",
-  "whatToBring": "What to Bring",
-  "classesTaught": "classes taught",
-  "heated": "Heated",
-  "joinOnline": "Join online",
-  "locationPlusOnline": "{{location}} + Online"
+  "title": "ตารางคลาส",
+  "classDetail": "คลาส",
+  "benefits": "ประโยชน์",
+  "whatToBring": "สิ่งที่ควรเตรียมมา",
+  "classesTaught": "คลาสที่สอนแล้ว",
+  "heated": "ห้องอุ่น",
+  "joinOnline": "เข้าร่วมออนไลน์",
+  "locationPlusOnline": "{{location}} + ออนไลน์",
+  "live": "ถ่ายทอดสด",
+  "spotsLeft": "เหลือ {{count}} ที่"
 }

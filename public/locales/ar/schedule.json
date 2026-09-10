@@ -1,0 +1,12 @@
+{
+  "title": "الجدول",
+  "classDetail": "الحصة",
+  "benefits": "الفوائد",
+  "whatToBring": "ما الذي تحضره",
+  "classesTaught": "حصة مُدرَّسة",
+  "heated": "مُدفأة",
+  "joinOnline": "انضم عبر الإنترنت",
+  "locationPlusOnline": "{{location}} + عبر الإنترنت",
+  "live": "مباشر",
+  "spotsLeft": "{{count}} أماكن متبقية"
+}

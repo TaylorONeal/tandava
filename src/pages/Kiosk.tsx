@@ -354,7 +354,7 @@ const Kiosk = () => {
             {/* Scanning animation */}
             {isScanning && (
               <div
-                className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent"
+                className="absolute start-0 end-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent"
                 style={{
                   top: `${scanProgress}%`,
                   transition: 'top 0.1s linear',
@@ -364,10 +364,10 @@ const Kiosk = () => {
             )}
 
             {/* Corner brackets */}
-            <div className="absolute top-4 left-4 w-12 h-12 border-t-4 border-l-4 border-primary rounded-tl-lg" />
-            <div className="absolute top-4 right-4 w-12 h-12 border-t-4 border-r-4 border-primary rounded-tr-lg" />
-            <div className="absolute bottom-4 left-4 w-12 h-12 border-b-4 border-l-4 border-primary rounded-bl-lg" />
-            <div className="absolute bottom-4 right-4 w-12 h-12 border-b-4 border-r-4 border-primary rounded-br-lg" />
+            <div className="absolute top-4 start-4 w-12 h-12 border-t-4 border-s-4 border-primary rounded-ss-lg" />
+            <div className="absolute top-4 end-4 w-12 h-12 border-t-4 border-e-4 border-primary rounded-se-lg" />
+            <div className="absolute bottom-4 start-4 w-12 h-12 border-b-4 border-s-4 border-primary rounded-es-lg" />
+            <div className="absolute bottom-4 end-4 w-12 h-12 border-b-4 border-e-4 border-primary rounded-ee-lg" />
 
             {/* Center crosshair */}
             <div className="absolute inset-0 flex items-center justify-center">
@@ -441,12 +441,12 @@ const Kiosk = () => {
 
       {/* Search input */}
       <div className="relative mb-6">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+        <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
         <Input
           placeholder="Search by name or phone number..."
           value={searchQuery}
           onChange={(e) => handleSearch(e.target.value)}
-          className="pl-12 h-14 text-lg"
+          className="ps-12 h-14 text-lg"
           autoFocus
         />
       </div>
@@ -476,7 +476,7 @@ const Kiosk = () => {
                     <p className="text-muted-foreground">{member.phone}</p>
                   </div>
                   {member.bookings.length > 0 ? (
-                    <div className="text-right">
+                    <div className="text-end">
                       <p className="font-medium">{member.bookings[0].className}</p>
                       <p className="text-sm text-muted-foreground">
                         {member.bookings[0].time}
@@ -578,7 +578,7 @@ const Kiosk = () => {
                   </div>
                   {isCheckedIn ? (
                     <Badge className="bg-success text-success-foreground">
-                      <Check className="w-3 h-3 mr-1" />
+                      <Check className="w-3 h-3 me-1" />
                       Checked In
                     </Badge>
                   ) : (
@@ -729,7 +729,7 @@ const Kiosk = () => {
   };
 
   const renderClassesSidebar = () => (
-    <div className="w-96 border-l border-border bg-card/50 flex flex-col">
+    <div className="w-96 border-s border-border bg-card/50 flex flex-col">
       <div className="p-6 border-b border-border">
         <h3 className="text-lg font-semibold">Today's Classes</h3>
         <p className="text-sm text-muted-foreground">{formatDate(currentTime)}</p>
@@ -823,7 +823,7 @@ const Kiosk = () => {
         </div>
 
         {/* Current time */}
-        <div className="text-right">
+        <div className="text-end">
           <p className="text-3xl font-bold gradient-text">{formatTime(currentTime)}</p>
           <p className="text-sm text-muted-foreground">{formatDate(currentTime)}</p>
         </div>

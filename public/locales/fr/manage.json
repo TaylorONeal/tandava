@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "schedule": "Planning",
+    "events": "Événements",
+    "students": "Élèves",
+    "teachers": "Professeurs",
+    "offerings": "Types de cours",
+    "promoCodes": "Codes promo",
+    "financials": "Finances",
+    "products": "Produits",
+    "inventory": "Stock",
+    "purchaseOrders": "Commandes fournisseurs",
+    "landingPages": "Pages d'atterrissage",
+    "utmBuilder": "Générateur UTM",
+    "campaigns": "Campagnes",
+    "tasks": "Tâches",
+    "reports": "Rapports",
+    "importData": "Importer des données",
+    "smsInbox": "Boîte SMS",
+    "notifications": "Notifications",
+    "settings": "Paramètres"
+  },
+  "title": "Administration du studio",
+  "studentView": "Vue élève",
+  "myAccount": "Mon compte",
+  "studioSettings": "Paramètres du studio",
+  "signOut": "Se déconnecter",
+
+  "schedule": {
+    "title": "Planning",
+    "subtitle": "Crée et gère le planning de tes cours.",
+    "addClass": "Ajouter un cours",
+    "emptyState": "Aucun cours programmé pour l'instant. Crée ton premier cours pour commencer."
+  },
+  "offerings": {
+    "title": "Types de cours",
+    "subtitle": "Types de cours et leurs réglages — {{count}} actifs",
+    "newOffering": "Nouveau type",
+    "searchPlaceholder": "Rechercher un type de cours...",
+    "activeOfferings": "Types actifs"
+  },
+
+  "admin": {
+    "platformAdmin": "Administration plateforme",
+    "platformDashboard": "Tableau de bord plateforme",
+    "overview": "Vue d'ensemble de l'état et de l'activité de ton instance Tandava.",
+    "activeStudios": "Studios actifs",
+    "totalUsers": "Utilisateurs au total",
+    "stripeStatus": "État de Stripe",
+    "errorRate": "Taux d'erreur",
+    "connectSupabase": "Connecte Supabase pour voir les données en direct",
+    "acrossAllStudios": "Tous studios confondus",
+    "webhookHealth": "État des webhooks",
+    "connectSentry": "Connecte Sentry pour la supervision",
+    "setupChecklist": "Liste de configuration",
+    "supabaseConnected": "Supabase connecté",
+    "stripeConfigured": "Stripe configuré",
+    "emailConfigured": "Fournisseur e-mail configuré",
+    "sentryConfigured": "Supervision des erreurs Sentry",
+    "setEnvVar": "Définis {{key}} dans .env"
+  },
+
+  "studioManagement": "Gestion de studio",
+  "owner": "Propriétaire"
+}

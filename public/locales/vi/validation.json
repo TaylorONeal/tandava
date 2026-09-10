@@ -1,0 +1,17 @@
+{
+  "emailRequired": "Vui lòng nhập email",
+  "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
+  "passwordMinLength": "Mật khẩu phải có ít nhất {{min}} ký tự",
+  "phoneInvalid": "Vui lòng nhập số điện thoại hợp lệ",
+  "urlInvalid": "Vui lòng nhập URL hợp lệ",
+  "handleMinLength": "Handle phải có ít nhất {{min}} ký tự",
+  "handleMaxLength": "Handle phải ngắn hơn {{max}} ký tự",
+  "handleFormat": "Handle chỉ được chứa chữ cái, chữ số, dấu gạch dưới và dấu gạch ngang",
+  "fieldRequired": "Vui lòng nhập {{field}}",
+  "fieldInvalidUrl": "Vui lòng nhập {{field}} hợp lệ",
+  "endTimeAfterStart": "Giờ kết thúc phải sau giờ bắt đầu",
+  "endDateAfterStart": "Ngày kết thúc phải sau ngày bắt đầu",
+  "mustBePositive": "{{field}} phải lớn hơn 0",
+  "mustBeValidAmount": "{{field}} phải là số tiền hợp lệ",
+  "mustBePositiveNumber": "{{field}} phải là số dương"
+}

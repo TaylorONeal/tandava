@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "schedule": "الجدول",
+    "events": "الفعاليات",
+    "students": "الأعضاء",
+    "teachers": "المدرّبون",
+    "offerings": "العروض",
+    "promoCodes": "رموز الخصم",
+    "financials": "الماليات",
+    "products": "المنتجات",
+    "inventory": "المخزون",
+    "purchaseOrders": "أوامر الشراء",
+    "landingPages": "صفحات الهبوط",
+    "utmBuilder": "منشئ UTM",
+    "campaigns": "الحملات",
+    "tasks": "المهام",
+    "reports": "التقارير",
+    "importData": "استيراد البيانات",
+    "smsInbox": "صندوق الرسائل النصية",
+    "notifications": "الإشعارات",
+    "settings": "الإعدادات"
+  },
+  "title": "إدارة الاستوديو",
+  "studentView": "عرض العضو",
+  "myAccount": "حسابي",
+  "studioSettings": "إعدادات الاستوديو",
+  "signOut": "تسجيل الخروج",
+
+  "schedule": {
+    "title": "الجدول",
+    "subtitle": "أنشئ جدول حصصك وأدره.",
+    "addClass": "أضف حصة",
+    "emptyState": "لا توجد حصص مجدولة بعد. أنشئ حصتك الأولى للبدء."
+  },
+  "offerings": {
+    "title": "العروض",
+    "subtitle": "أنواع الحصص وإعداداتها — {{count}} نشطة",
+    "newOffering": "عرض جديد",
+    "searchPlaceholder": "ابحث في العروض...",
+    "activeOfferings": "العروض النشطة"
+  },
+
+  "admin": {
+    "platformAdmin": "مشرف المنصة",
+    "platformDashboard": "لوحة تحكم المنصة",
+    "overview": "نظرة عامة على صحة ونشاط منصة تاندافا لديك.",
+    "activeStudios": "الاستوديوهات النشطة",
+    "totalUsers": "إجمالي المستخدمين",
+    "stripeStatus": "حالة Stripe",
+    "errorRate": "معدل الأخطاء",
+    "connectSupabase": "اربط Supabase لعرض البيانات الحية",
+    "acrossAllStudios": "عبر جميع الاستوديوهات",
+    "webhookHealth": "صحة Webhook",
+    "connectSentry": "اربط Sentry للمراقبة",
+    "setupChecklist": "قائمة الإعداد",
+    "supabaseConnected": "Supabase متصل",
+    "stripeConfigured": "Stripe مُهيأ",
+    "emailConfigured": "مزود البريد الإلكتروني مُهيأ",
+    "sentryConfigured": "مراقبة أخطاء Sentry",
+    "setEnvVar": "عيّن {{key}} في ‎.env"
+  },
+
+  "studioManagement": "إدارة الاستوديو",
+  "owner": "المالك"
+}

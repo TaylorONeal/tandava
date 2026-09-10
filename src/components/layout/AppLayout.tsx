@@ -80,7 +80,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     <div className="min-h-screen bg-background">
       <a
         href="#main-content"
-        className="sr-only absolute left-4 top-4 z-[70] rounded-md bg-background px-3 py-2 text-sm font-medium shadow-md focus:not-sr-only focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="sr-only absolute start-4 top-4 z-[70] rounded-md bg-background px-3 py-2 text-sm font-medium shadow-md focus:not-sr-only focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
       >
         Skip to main content
       </a>
@@ -91,7 +91,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           {/* Studio Brand */}
           <Link
             to="/home"
-            className="mr-4 flex items-center gap-2.5 rounded-xl px-1 py-1 transition-colors hover:bg-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            className="me-4 flex items-center gap-2.5 rounded-xl px-1 py-1 transition-colors hover:bg-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-accent-teal to-accent-sage shadow-md">
               <span className="text-lg font-bold text-white">O</span>
@@ -133,7 +133,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               className="relative h-10 w-10 rounded-full focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               <Bell className="h-5 w-5" />
-              <span className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-primary text-[10px] font-bold text-primary-foreground flex items-center justify-center shadow-sm">
+              <span className="absolute -top-0.5 -end-0.5 h-5 w-5 rounded-full bg-primary text-[10px] font-bold text-primary-foreground flex items-center justify-center shadow-sm">
                 3
               </span>
             </Button>
@@ -231,7 +231,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     navigate("/auth/login");
                   }}
                 >
-                  <LogOut className="h-4 w-4 mr-2" />
+                  <LogOut className="h-4 w-4 me-2" />
                   {t("userMenu.signOut")}
                 </DropdownMenuItem>
               </DropdownMenuContent>

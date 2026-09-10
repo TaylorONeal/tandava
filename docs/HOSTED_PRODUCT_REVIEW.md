@@ -1,5 +1,7 @@
 # Tandava Studio: product completeness and hosted launch plan
 
+> Historical code audit of `0af1c00`. Reconciliation with upstream `8d93c0d` found several blockers already implemented, including migration cleanup and booking/import/payment endpoints. See [current implementation status](IMPLEMENTATION_HANDOFF.md) before treating findings below as outstanding work. Product recommendations remain proposals.
+
 Reviewed September 10, 2026. Proposal, not a statement of shipped capabilities or approved pricing.
 
 ## Recommendation

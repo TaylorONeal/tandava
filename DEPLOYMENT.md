@@ -2,6 +2,10 @@
 
 How to deploy Tandava for a real studio. This guide assumes you are a developer or have one.
 
+> **Running the hosted service for many studios** (e.g. `tandavastudio.com`) instead of a single self-hosted studio? Use [docs/OPERATOR_SETUP.md](docs/OPERATOR_SETUP.md) — same building blocks, plus Stripe Connect take-rate and multi-tenant config, done once so studio owners can just sign up.
+
+Once deployed, see [docs/guides/DEVICE_INSTALLATION.md](docs/guides/DEVICE_INSTALLATION.md) for getting the app onto the studio's devices (Chromebook, Mac, iPad) — there are no native installers; Tandava installs as a PWA.
+
 ---
 
 ## Before You Start
@@ -161,7 +165,7 @@ supabase link --project-ref YOUR_PROJECT_REF
 supabase db push
 ```
 
-This runs `supabase/migrations/001_initial_schema.sql` which creates the full schema.
+This applies every migration in `supabase/migrations/` in order (`00001_initial_schema.sql` through the latest), creating the full schema, RLS policies, and triggers.
 
 ### 3. Configure Environment
 
@@ -209,9 +213,37 @@ Point your domain to your hosting provider. Each provider has its own DNS instru
 If accepting payments:
 
 1. Create a Stripe account
-2. Set up a webhook endpoint pointing to your Supabase Edge Function
-3. Configure Stripe secrets in Supabase
-4. Test with Stripe test mode before going live
+2. Deploy the payment Edge Functions:
+   ```bash
+   supabase functions deploy stripe-checkout
+   supabase functions deploy stripe-portal
+   supabase functions deploy stripe-webhook
+   supabase functions deploy email
+   supabase functions deploy sms
+   supabase functions deploy push
+   supabase functions deploy import-members
+   ```
+   (`sms` needs Twilio secrets; `push` needs VAPID keys — see `.env.example`.)
+   (`import-members` powers the data-migration importer; the others are for
+   payments + email. All use secrets/keys set below.)
+3. Configure secrets in Supabase:
+   ```bash
+   supabase secrets set STRIPE_SECRET_KEY=sk_live_...
+   supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...
+   supabase secrets set APP_URL=https://your-studio.com
+   ```
+4. Add a webhook endpoint in the Stripe Dashboard pointing to
+   `https://<project-ref>.supabase.co/functions/v1/stripe-webhook` and
+   subscribe to: `checkout.session.completed`, `customer.subscription.updated`,
+   `customer.subscription.deleted`, `invoice.payment_failed`. Copy its signing
+   secret into `STRIPE_WEBHOOK_SECRET`.
+5. Test with Stripe test mode before going live.
+
+**Single-studio vs platform mode:** if you self-host for one studio, leave
+`studios.stripe_account_id` null and the studio's own Stripe key handles
+everything directly. For a multi-studio platform, set each studio's
+`stripe_account_id` (Stripe Connect) and the functions automatically route
+funds via destination charges, with an optional `PLATFORM_FEE_BPS` fee.
 
 See [docs/developer/stripe-setup.md](docs/developer/stripe-setup.md) for detailed instructions.
 
@@ -227,7 +259,7 @@ See [docs/developer/stripe-setup.md](docs/developer/stripe-setup.md) for detaile
 | Stripe webhooks failing | Webhook secret mismatch or wrong endpoint URL | Verify webhook URL and signing secret |
 | Email not sending | Provider not configured or API key wrong | Check `EMAIL_PROVIDER` and corresponding API key |
 | 404 on page refresh | Static host not configured for SPA routing | Add rewrite rule: all paths -> `/index.html` |
-| Build fails | Node version mismatch | Use Node 18+ |
+| Build fails | Node version mismatch | Use Node 22.12+ |
 
 ### SPA Routing
 

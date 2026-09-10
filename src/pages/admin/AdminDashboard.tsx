@@ -99,7 +99,7 @@ export default function AdminDashboard() {
                       {item.label}
                     </span>
                     {!isConfigured && (
-                      <span className="text-xs text-muted-foreground ml-auto">
+                      <span className="text-xs text-muted-foreground ms-auto">
                         {t('admin.setEnvVar', { key: item.key })}
                       </span>
                     )}

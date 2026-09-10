@@ -92,31 +92,31 @@ export default function SettingsManage() {
         <Tabs defaultValue="general" className="space-y-6">
           <TabsList className="w-full justify-start overflow-x-auto">
             <TabsTrigger value="general" className="text-xs">
-              <Building2 className="h-3.5 w-3.5 mr-1.5" />
+              <Building2 className="h-3.5 w-3.5 me-1.5" />
               General
             </TabsTrigger>
             <TabsTrigger value="locations" className="text-xs">
-              <MapPin className="h-3.5 w-3.5 mr-1.5" />
+              <MapPin className="h-3.5 w-3.5 me-1.5" />
               Locations
             </TabsTrigger>
             <TabsTrigger value="policies" className="text-xs">
-              <Shield className="h-3.5 w-3.5 mr-1.5" />
+              <Shield className="h-3.5 w-3.5 me-1.5" />
               Policies
             </TabsTrigger>
             <TabsTrigger value="branding" className="text-xs">
-              <Palette className="h-3.5 w-3.5 mr-1.5" />
+              <Palette className="h-3.5 w-3.5 me-1.5" />
               Branding
             </TabsTrigger>
             <TabsTrigger value="billing" className="text-xs">
-              <CreditCard className="h-3.5 w-3.5 mr-1.5" />
+              <CreditCard className="h-3.5 w-3.5 me-1.5" />
               Billing
             </TabsTrigger>
             <TabsTrigger value="notifications" className="text-xs">
-              <Bell className="h-3.5 w-3.5 mr-1.5" />
+              <Bell className="h-3.5 w-3.5 me-1.5" />
               Notifications
             </TabsTrigger>
             <TabsTrigger value="seo" className="text-xs">
-              <Search className="h-3.5 w-3.5 mr-1.5" />
+              <Search className="h-3.5 w-3.5 me-1.5" />
               SEO
             </TabsTrigger>
           </TabsList>
@@ -186,7 +186,7 @@ export default function SettingsManage() {
                 </div>
                 <div className="flex justify-end pt-2">
                   <Button onClick={handleSave}>
-                    <Save className="h-4 w-4 mr-2" />
+                    <Save className="h-4 w-4 me-2" />
                     Save Changes
                   </Button>
                 </div>
@@ -204,7 +204,7 @@ export default function SettingsManage() {
                     <CardDescription>Manage your studio locations</CardDescription>
                   </div>
                   <Button size="sm" onClick={() => toast({ title: "Add location", description: "Location form opened. Configure with Supabase for persistence." })}>
-                    <MapPin className="h-4 w-4 mr-2" />
+                    <MapPin className="h-4 w-4 me-2" />
                     Add Location
                   </Button>
                 </div>
@@ -289,7 +289,7 @@ export default function SettingsManage() {
 
                 <div className="flex justify-end pt-2">
                   <Button onClick={handleSave}>
-                    <Save className="h-4 w-4 mr-2" />
+                    <Save className="h-4 w-4 me-2" />
                     Save Policies
                   </Button>
                 </div>
@@ -345,7 +345,7 @@ export default function SettingsManage() {
 
                 <div className="flex justify-end pt-2">
                   <Button onClick={handleSave}>
-                    <Save className="h-4 w-4 mr-2" />
+                    <Save className="h-4 w-4 me-2" />
                     Save Branding
                   </Button>
                 </div>
@@ -425,7 +425,7 @@ export default function SettingsManage() {
                 ))}
                 <div className="flex justify-end pt-2">
                   <Button onClick={handleSave}>
-                    <Save className="h-4 w-4 mr-2" />
+                    <Save className="h-4 w-4 me-2" />
                     Save Notifications
                   </Button>
                 </div>
@@ -536,7 +536,7 @@ export default function SettingsManage() {
 
                 <div className="flex justify-end pt-2">
                   <Button onClick={handleSave}>
-                    <Save className="h-4 w-4 mr-2" />
+                    <Save className="h-4 w-4 me-2" />
                     Save SEO Settings
                   </Button>
                 </div>
@@ -585,7 +585,7 @@ export default function SettingsManage() {
 
                 <div className="flex justify-end pt-2">
                   <Button onClick={handleSave}>
-                    <Save className="h-4 w-4 mr-2" />
+                    <Save className="h-4 w-4 me-2" />
                     Save Tracking
                   </Button>
                 </div>

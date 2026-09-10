@@ -9,7 +9,7 @@
  * See docs/developer/backend-flexibility.md for architecture details.
  */
 
-import type { Profile } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, StudioStorefront } from "@/types/database";
 import type { FeedbackType } from "@/types/database";
 
 // ---------------------------------------------------------------------------
@@ -36,8 +36,16 @@ export interface AuthProvider {
   /** Sign in with email and password */
   signInWithEmail(email: string, password: string): Promise<{ user: AuthUser | null; error: AuthError | null }>;
 
-  /** Create a new account with email and password */
-  signUpWithEmail(email: string, password: string, metadata: SignUpMetadata): Promise<{ error: AuthError | null }>;
+  /**
+   * Create a new account with email and password.
+   * `requiresEmailConfirmation` is true when the backend created the account
+   * but withheld a session until the user confirms their email address.
+   */
+  signUpWithEmail(
+    email: string,
+    password: string,
+    metadata: SignUpMetadata
+  ): Promise<{ error: AuthError | null; requiresEmailConfirmation?: boolean }>;
 
   /** Initiate OAuth flow (redirects the browser) */
   signInWithOAuth(provider: "google" | "apple"): Promise<{ error: AuthError | null }>;
@@ -86,12 +94,47 @@ export interface CreateMessageInput {
   honeypot?: string | null;
 }
 
+/** Book a class against a covered entitlement (membership or class pack). */
+export interface BookClassInput {
+  occurrenceId: string;
+  sourceType: "membership" | "class_pack";
+  sourceId: string;
+}
+
+/** A member's entitlements for resolving booking coverage. */
+export interface MemberEntitlements {
+  memberships: Membership[];
+  packs: ClassPack[];
+}
+
 export interface DataProvider {
   /** Fetch a user profile by ID */
   getProfile(userId: string): Promise<DataResult<Profile>>;
 
   /** Create a new message (contact form, feedback, etc.) */
   createMessage(input: CreateMessageInput): Promise<MutationResult>;
+
+  /**
+   * Atomically book a class against a membership or class pack via the
+   * book_class() RPC (server-side eligibility check + entitlement decrement).
+   * Drop-in/paid bookings use the Stripe checkout flow instead.
+   */
+  bookClass(input: BookClassInput): Promise<DataResult<Booking>>;
+
+  /** Cancel a booking via the cancel_booking() RPC (late-cancel detection + refund/fee). */
+  cancelBooking(bookingId: string): Promise<DataResult<Booking>>;
+
+  /** Public upcoming schedule for a discoverable studio (by slug) — used by the embed widget. */
+  getPublicSchedule(slug: string, limit?: number): Promise<DataResult<PublicScheduleRow[]>>;
+
+  /** Public storefront (profile + offerings + pricing) for a discoverable studio by slug. Null if not discoverable. */
+  getStudioStorefront(slug: string): Promise<DataResult<StudioStorefront>>;
+
+  /** Upcoming (non-cancelled, future) class occurrences for a studio, with offering + location joined. */
+  getUpcomingClasses(studioId: string): Promise<DataResult<ClassOccurrence[]>>;
+
+  /** A member's memberships + class packs (with their types joined) for entitlement resolution. */
+  getMemberEntitlements(profileId: string, studioId: string): Promise<DataResult<MemberEntitlements>>;
 }
 
 // ---------------------------------------------------------------------------

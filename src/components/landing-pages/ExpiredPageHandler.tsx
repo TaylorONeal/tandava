@@ -112,7 +112,7 @@ export function ExpiredPageHandler({
       <div className="bg-gradient-to-b from-primary/5 to-background py-12 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <Badge variant="secondary" className="mb-4">
-            <Clock className="h-3 w-3 mr-1" />
+            <Clock className="h-3 w-3 me-1" />
             This Promotion Has Ended
           </Badge>
           <h1 className="text-2xl md:text-3xl font-bold mb-3">{originalTitle}</h1>
@@ -166,7 +166,7 @@ export function ExpiredPageHandler({
                 <Button size="sm" className="w-full" asChild>
                   <Link to={program.url}>
                     Learn More
-                    <ArrowRight className="h-3 w-3 ml-2" />
+                    <ArrowRight className="h-3 w-3 ms-2" />
                   </Link>
                 </Button>
               </CardContent>

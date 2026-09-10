@@ -285,11 +285,11 @@ export default function InventoryManage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="h-4 w-4 me-2" />
               Export
             </Button>
             <Button variant="outline" size="sm">
-              <RefreshCw className="h-4 w-4 mr-2" />
+              <RefreshCw className="h-4 w-4 me-2" />
               Full Count
             </Button>
           </div>
@@ -384,17 +384,17 @@ export default function InventoryManage() {
         {/* Search & Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="ps-10"
             />
           </div>
           <Select value={locationFilter} onValueChange={setLocationFilter}>
             <SelectTrigger className="w-48">
-              <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
+              <MapPin className="h-4 w-4 me-2 text-muted-foreground" />
               <SelectValue placeholder="All Locations" />
             </SelectTrigger>
             <SelectContent>
@@ -408,7 +408,7 @@ export default function InventoryManage() {
           </Select>
           <Select value={stockFilter} onValueChange={setStockFilter}>
             <SelectTrigger className="w-40">
-              <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
+              <Filter className="h-4 w-4 me-2 text-muted-foreground" />
               <SelectValue placeholder="Stock Status" />
             </SelectTrigger>
             <SelectContent>
@@ -424,17 +424,17 @@ export default function InventoryManage() {
           <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20">
             <span className="text-sm font-medium">{selectedItems.length} selected</span>
             <Button variant="outline" size="sm">
-              <Plus className="h-4 w-4 mr-1" />
+              <Plus className="h-4 w-4 me-1" />
               Bulk Adjust
             </Button>
             <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-1" />
+              <Download className="h-4 w-4 me-1" />
               Export Selected
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className="ml-auto"
+              className="ms-auto"
               onClick={() => setSelectedItems([])}
             >
               Clear Selection
@@ -538,26 +538,26 @@ export default function InventoryManage() {
                           className="rounded-lg cursor-pointer"
                           onClick={() => handleAdjust(item)}
                         >
-                          <Plus className="h-4 w-4 mr-2" />
+                          <Plus className="h-4 w-4 me-2" />
                           Adjust Stock
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="rounded-lg cursor-pointer"
                           onClick={() => handleTransfer(item)}
                         >
-                          <ArrowRightLeft className="h-4 w-4 mr-2" />
+                          <ArrowRightLeft className="h-4 w-4 me-2" />
                           Transfer
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="rounded-lg cursor-pointer"
                           onClick={() => handleCount(item)}
                         >
-                          <ClipboardCheck className="h-4 w-4 mr-2" />
+                          <ClipboardCheck className="h-4 w-4 me-2" />
                           Count
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className="rounded-lg cursor-pointer">
-                          <History className="h-4 w-4 mr-2" />
+                          <History className="h-4 w-4 me-2" />
                           View History
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -594,7 +594,7 @@ export default function InventoryManage() {
                     </p>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-end">
                   <p
                     className={`text-sm font-semibold ${
                       movement.quantity > 0 ? "text-accent-sage" : "text-muted-foreground"
@@ -759,7 +759,7 @@ export default function InventoryManage() {
                 Cancel
               </Button>
               <Button onClick={confirmTransfer} disabled={!transferDestination}>
-                <ArrowRightLeft className="h-4 w-4 mr-2" />
+                <ArrowRightLeft className="h-4 w-4 me-2" />
                 Transfer
               </Button>
             </DialogFooter>
@@ -829,7 +829,7 @@ export default function InventoryManage() {
                 Cancel
               </Button>
               <Button onClick={confirmCount}>
-                <Check className="h-4 w-4 mr-2" />
+                <Check className="h-4 w-4 me-2" />
                 Record Count
               </Button>
             </DialogFooter>

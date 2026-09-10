@@ -1,0 +1,132 @@
+{
+  "nav": {
+    "home": "Home",
+    "schedule": "Iskedyul",
+    "onDemand": "On-Demand",
+    "events": "Mga Event",
+    "instructors": "Mga Instructor",
+    "mySchedule": "Aking Iskedyul",
+    "community": "Komunidad"
+  },
+  "userMenu": {
+    "account": "Account",
+    "studioManager": "Studio Manager",
+    "frontDesk": "Front Desk",
+    "platformAdmin": "Platform Admin",
+    "signOut": "Mag-sign out"
+  },
+  "roles": {
+    "owner": "May-ari",
+    "admin": "Admin",
+    "teacher": "Instructor",
+    "front_desk": "Front Desk",
+    "student": "Miyembro",
+    "platform_admin": "Platform Admin"
+  },
+  "status": {
+    "active": "Aktibo",
+    "inactive": "Hindi Aktibo",
+    "pending": "Nakabinbin",
+    "cancelled": "Kanselado",
+    "expired": "Lipas na",
+    "paused": "Naka-pause"
+  },
+  "actions": {
+    "save": "I-save",
+    "cancel": "Kanselahin",
+    "delete": "Burahin",
+    "edit": "I-edit",
+    "close": "Isara",
+    "confirm": "Kumpirmahin",
+    "submit": "Isumite",
+    "search": "Maghanap",
+    "filter": "I-filter",
+    "reset": "I-reset",
+    "back": "Bumalik",
+    "next": "Susunod",
+    "loading": "Naglo-load...",
+    "sending": "Nagpapadala...",
+    "processing": "Pinoproseso..."
+  },
+  "levels": {
+    "beginner": "Baguhan",
+    "allLevels": "Lahat ng Level",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced"
+  },
+  "deliveryMode": {
+    "in_person": "Personal",
+    "virtual": "Virtual",
+    "hybrid": "Hybrid"
+  },
+  "paymentMethods": {
+    "card": "Credit/Debit Card",
+    "cash": "Cash",
+    "venmo": "Venmo",
+    "cashapp": "Cash App",
+    "paypal": "PayPal",
+    "zelle": "Zelle",
+    "check": "Tseke",
+    "other": "Iba pa"
+  },
+  "units": {
+    "min": "{{count}} min",
+    "hour_one": "{{count}} oras",
+    "hour_other": "{{count}} oras",
+    "day_one": "{{count}} araw",
+    "day_other": "{{count}} araw",
+    "week_one": "{{count}} linggo",
+    "week_other": "{{count}} linggo",
+    "class_one": "{{count}} klase",
+    "class_other": "{{count}} klase",
+    "studio_one": "{{count}} studio",
+    "studio_other": "{{count}} studio",
+    "spot_one": "{{count}} puwesto",
+    "spot_other": "{{count}} puwesto",
+    "remaining": "{{count}} na lang"
+  },
+  "language": {
+    "label": "Wika",
+    "changeLanguage": "Palitan ang wika"
+  },
+  "footer": {
+    "allRightsReserved": "Lahat ng karapatan ay nakalaan.",
+    "poweredBy": "Pinapagana ng",
+    "openSourceStudio": "Open Source na Pamamahala ng Studio"
+  },
+  "type": {
+    "class": "Klase",
+    "workshop": "Workshop",
+    "retreat": "Retreat",
+    "appointment": "Appointment"
+  },
+  "guest": "Bisita",
+  "studioManagement": "Pamamahala ng Studio",
+  "notFound": {
+    "title": "Naku! Hindi mahanap ang pahina",
+    "returnHome": "Bumalik sa Home"
+  },
+  "demo": {
+    "title": "Tandava Open Source Studio Demo",
+    "switchRole": "Palitan:",
+    "studioOwner": "May-ari ng Studio",
+    "demoMode": "(Demo mode)"
+  },
+  "contact": {
+    "yourName": "Iyong Pangalan",
+    "namePlaceholder": "Maria Santos",
+    "email": "Email",
+    "emailPlaceholder": "maria@example.com",
+    "subject": "Paksa",
+    "subjectPlaceholder": "Tungkol saan ito?",
+    "message": "Mensahe",
+    "messagePlaceholder": "Ikuwento pa sa amin...",
+    "sendMessage": "Ipadala ang Mensahe",
+    "messageSent": "Naipadala na ang mensahe!",
+    "thankYou": "Salamat sa pag-message.",
+    "missingFields": "May kulang na field",
+    "fillRequired": "Pakipunan ang paksa at mensahe.",
+    "failedToSend": "Hindi naipadala",
+    "somethingWentWrong": "May nangyaring mali. Pakisubukang muli."
+  }
+}

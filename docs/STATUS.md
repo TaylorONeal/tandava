@@ -1,6 +1,6 @@
 # Project Status
 
-> **September 10, 2026 review:** The [product completeness and hosted launch review](HOSTED_PRODUCT_REVIEW.md) supersedes conflicting readiness claims in this February snapshot. Current code includes real auth adapters, lazy routes and registered staff routes, but core booking/import/onboarding remain simulated. Clean dependency installation failed, and two incompatible initial schema tracks require reconciliation. Hosted production readiness has not been established.
+> **September 10, 2026:** This February snapshot is historical. Current main includes persisted booking/cancellation RPCs, imports, onboarding and payment endpoints, and has removed the duplicate initial migration. See the [current implementation handoff](IMPLEMENTATION_HANDOFF.md) for verified fixes and remaining hosted launch gates. Production readiness still requires database, isolation, payment replay and restore verification.
 
 See [implementation follow-up](IMPLEMENTATION_HANDOFF.md) for repaired installation, tour/check-in bugs, dependency updates, and tested hosted-domain/readiness foundations.
 

@@ -43,6 +43,7 @@ import {
   Lock,
   Zap,
   ArrowRight,
+  ArrowLeft,
   FileSpreadsheet,
   Database,
   Shield,
@@ -611,7 +612,7 @@ function ConnectorCard({ connector, onConfigure }: ConnectorCardProps) {
           {isConfigured ? (
             <>
               <Button size="sm" variant="outline" className="flex-1">
-                <Settings2 className="h-3.5 w-3.5 mr-1.5" />
+                <Settings2 className="h-3.5 w-3.5 me-1.5" />
                 Settings
               </Button>
               {connector.status === "active" ? (
@@ -630,7 +631,7 @@ function ConnectorCard({ connector, onConfigure }: ConnectorCardProps) {
           ) : (
             <Button size="sm" className="w-full" onClick={onConfigure}>
               Connect
-              <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
+              <ArrowRight className="h-3.5 w-3.5 ms-1.5" />
             </Button>
           )}
         </div>
@@ -675,14 +676,14 @@ export default function DataConnectors() {
           <div className="flex items-center gap-2">
             <Button variant="outline" asChild>
               <a href="/manage/import">
-                <Upload className="h-4 w-4 mr-2" />
+                <Upload className="h-4 w-4 me-2" />
                 Quick Import
               </a>
             </Button>
             <Dialog>
               <DialogTrigger asChild>
                 <Button>
-                  <Download className="h-4 w-4 mr-2" />
+                  <Download className="h-4 w-4 me-2" />
                   Export Data
                 </Button>
               </DialogTrigger>
@@ -731,7 +732,7 @@ export default function DataConnectors() {
                     </div>
                   </div>
                   <Button className="w-full">
-                    <Download className="h-4 w-4 mr-2" />
+                    <Download className="h-4 w-4 me-2" />
                     Generate Export
                   </Button>
                 </div>
@@ -864,7 +865,7 @@ export default function DataConnectors() {
                         {sync.direction === "outbound" ? (
                           <ArrowRight className="h-4 w-4 text-muted-foreground" />
                         ) : (
-                          <ArrowRight className="h-4 w-4 text-muted-foreground rotate-180" />
+                          <ArrowLeft className="h-4 w-4 text-muted-foreground" />
                         )}
                         <div>
                           <p className="text-sm font-medium">{sync.connector}</p>
@@ -889,7 +890,7 @@ export default function DataConnectors() {
                 <div className="grid sm:grid-cols-3 gap-4">
                   <button
                     onClick={() => setActiveTab("migration")}
-                    className="p-4 rounded-xl border border-border hover:border-primary/30 transition-all text-left"
+                    className="p-4 rounded-xl border border-border hover:border-primary/30 transition-all text-start"
                   >
                     <Upload className="h-6 w-6 text-primary mb-2" />
                     <h3 className="font-semibold text-sm">Migrate from Another Platform</h3>
@@ -899,7 +900,7 @@ export default function DataConnectors() {
                   </button>
                   <button
                     onClick={() => setActiveTab("integrations")}
-                    className="p-4 rounded-xl border border-border hover:border-primary/30 transition-all text-left"
+                    className="p-4 rounded-xl border border-border hover:border-primary/30 transition-all text-start"
                   >
                     <Zap className="h-6 w-6 text-accent-gold mb-2" />
                     <h3 className="font-semibold text-sm">Connect Marketing Tools</h3>
@@ -909,7 +910,7 @@ export default function DataConnectors() {
                   </button>
                   <button
                     onClick={() => setActiveTab("exports")}
-                    className="p-4 rounded-xl border border-border hover:border-primary/30 transition-all text-left"
+                    className="p-4 rounded-xl border border-border hover:border-primary/30 transition-all text-start"
                   >
                     <CreditCard className="h-6 w-6 text-accent-sage mb-2" />
                     <h3 className="font-semibold text-sm">Export to Accounting</h3>
@@ -957,7 +958,7 @@ export default function DataConnectors() {
                     <Button className="mt-4" asChild>
                       <a href="/manage/import">
                         Start Migration
-                        <ArrowRight className="h-4 w-4 ml-2" />
+                        <ArrowRight className="h-4 w-4 ms-2" />
                       </a>
                     </Button>
                   </div>
@@ -1014,12 +1015,12 @@ export default function DataConnectors() {
             {/* Search and Filter */}
             <div className="flex items-center gap-4">
               <div className="relative flex-1 max-w-sm">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search integrations..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9"
+                  className="ps-9"
                 />
               </div>
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
@@ -1078,7 +1079,7 @@ export default function DataConnectors() {
                     ].map(item => (
                       <button
                         key={item.label}
-                        className="p-4 rounded-xl border border-border hover:border-primary/30 transition-all text-left"
+                        className="p-4 rounded-xl border border-border hover:border-primary/30 transition-all text-start"
                       >
                         <item.icon className="h-5 w-5 text-primary mb-2" />
                         <p className="text-sm font-medium">{item.label}</p>
@@ -1087,7 +1088,7 @@ export default function DataConnectors() {
                     ))}
                   </div>
                   <Button variant="outline" className="w-full">
-                    <Database className="h-4 w-4 mr-2" />
+                    <Database className="h-4 w-4 me-2" />
                     Full Data Backup
                   </Button>
                 </CardContent>
@@ -1201,7 +1202,7 @@ export default function DataConnectors() {
                   ].map(item => (
                     <button
                       key={item.type}
-                      className="flex items-center gap-3 w-full p-3 rounded-xl border border-border hover:border-primary/30 transition-all text-left"
+                      className="flex items-center gap-3 w-full p-3 rounded-xl border border-border hover:border-primary/30 transition-all text-start"
                     >
                       <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                         <item.icon className="h-4 w-4 text-primary" />
@@ -1210,7 +1211,7 @@ export default function DataConnectors() {
                         <p className="text-sm font-medium">{item.type}</p>
                         <p className="text-xs text-muted-foreground">{item.desc}</p>
                       </div>
-                      <ChevronRight className="h-4 w-4 text-muted-foreground ml-auto" />
+                      <ChevronRight className="h-4 w-4 text-muted-foreground ms-auto" />
                     </button>
                   ))}
                 </CardContent>
@@ -1224,7 +1225,7 @@ export default function DataConnectors() {
                     <CardDescription>Track all data access and changes</CardDescription>
                   </div>
                   <Button variant="outline" size="sm">
-                    <Download className="h-3.5 w-3.5 mr-1.5" />
+                    <Download className="h-3.5 w-3.5 me-1.5" />
                     Export Log
                   </Button>
                 </CardHeader>

@@ -1,0 +1,12 @@
+{
+  "title": "Lịch lớp",
+  "classDetail": "Lớp học",
+  "benefits": "Lợi ích",
+  "whatToBring": "Cần mang theo",
+  "classesTaught": "lớp đã dạy",
+  "heated": "Phòng nóng",
+  "joinOnline": "Tham gia trực tuyến",
+  "locationPlusOnline": "{{location}} + Trực tuyến",
+  "live": "Trực tiếp",
+  "spotsLeft": "còn {{count}} chỗ"
+}
