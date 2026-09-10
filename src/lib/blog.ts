@@ -25,7 +25,20 @@ const rawModules = import.meta.glob("/src/content/blog/*.md", {
   eager: true,
 }) as Record<string, string>;
 
-const ALL_POSTS: BlogPost[] = Object.entries(rawModules)
+// These posts link to standalone editorial experiences, never to product features.
+const editorialModules =
+  import.meta.env.VITE_BLOG_GAMES === "true"
+    ? (import.meta.glob("/editorial/posts/*.md", {
+        query: "?raw",
+        import: "default",
+        eager: true,
+      }) as Record<string, string>)
+    : {};
+
+const ALL_POSTS: BlogPost[] = Object.entries({
+  ...rawModules,
+  ...editorialModules,
+})
   // Skip the authoring guide that lives alongside the posts.
   .filter(([fileId]) => !/\/README\.md$/i.test(fileId))
   .map(([fileId, raw]) => parsePost(raw, fileId))

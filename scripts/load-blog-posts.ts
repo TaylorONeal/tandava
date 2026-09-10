@@ -8,7 +8,11 @@
 
 import { readFileSync, readdirSync, existsSync } from "fs";
 import { resolve, join } from "path";
-import { parsePost, sortByDateDesc, type BlogPost } from "../src/lib/blog-parse";
+import {
+  parsePost,
+  sortByDateDesc,
+  type BlogPost,
+} from "../src/lib/blog-parse";
 
 const CONTENT_DIR = resolve(process.cwd(), "src", "content", "blog");
 
@@ -16,10 +20,18 @@ const CONTENT_DIR = resolve(process.cwd(), "src", "content", "blog");
 export function loadPublishedPosts(): BlogPost[] {
   if (!existsSync(CONTENT_DIR)) return [];
 
-  return readdirSync(CONTENT_DIR)
-    .filter((f) => /\.mdx?$/i.test(f) && !/^README\.md$/i.test(f))
+  const directories = [CONTENT_DIR];
+  if (process.env.VITE_BLOG_GAMES === "true") {
+    directories.push(resolve(process.cwd(), "editorial", "posts"));
+  }
+  return directories
+    .filter(existsSync)
+    .flatMap((directory) =>
+      readdirSync(directory).map((file) => join(directory, file)),
+    )
+    .filter((f) => /\.mdx?$/i.test(f) && !/[/\\]README\.md$/i.test(f))
     .map((file) => {
-      const raw = readFileSync(join(CONTENT_DIR, file), "utf-8");
+      const raw = readFileSync(file, "utf-8");
       return parsePost(raw, file);
     })
     .filter((post) => !post.draft)
