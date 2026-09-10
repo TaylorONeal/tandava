@@ -2,18 +2,18 @@
 
 The blog is a markdown-driven, SEO/AEO-oriented content section that lives
 alongside the app but uses its own brand-level layout (not the studio app
-chrome). It is **built but not yet launched** — see "Going live" below.
+chrome). It is live at `https://tandavastudio.com/blog`.
 
 ## Status
 
 `BLOG_PUBLISHED` in [`src/config/blog.ts`](../../src/config/blog.ts) is the
-master switch. While it is `false`:
+master switch and is currently `true`. Setting it to `false` has these effects:
 
 - every blog page renders `<meta name="robots" content="noindex, nofollow">`,
 - the blog is excluded from `sitemap.xml`,
 - the blog is **not** linked from the main app navigation.
 
-The routes and pages still work, so the section can be previewed before launch.
+The routes and pages remain available when indexing is disabled.
 
 ## How content flows
 
@@ -79,3 +79,7 @@ dev` but hidden in production builds.
 3. `npm run build` — this adds `/blog` URLs to `sitemap.xml` and drops `noindex`
    from the prerendered snapshots.
 4. Submit the updated sitemap and validate a post in Google's Rich Results Test.
+
+## Blog-only interactive stories
+
+`editorial/posts/*.md` is included only when `VITE_BLOG_GAMES=true`, via `npm run build:marketing` (or `dev:marketing`). The browser and Node loaders use the same gate. These posts and their standalone game assets are omitted from standard product builds. See [Studio Sprout](studio-sprout.md) for routing, economics and verification.
