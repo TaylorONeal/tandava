@@ -251,7 +251,7 @@ export default function TeachSchedule() {
     if (!selectedClass) return;
     toast({
       title: "Sub request sent",
-      description: `Sub request for ${selectedClass.className} has been submitted.`,
+      description: `Sub request for ${selectedClass.name} has been submitted.`,
     });
     setSubDialogOpen(false);
     setSelectedClass(null);

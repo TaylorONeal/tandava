@@ -43,7 +43,8 @@ export const OXATL_STUDIO: Studio = {
   default_cancellation_minutes: 720, // 12 hours
   late_cancel_fee_cents: 1500,
   no_show_fee_cents: 2000,
-  waitlist_limit: 5,
+  waitlist_enabled: true,
+  max_waitlist_size: 5,
   created_at: '2022-03-15T00:00:00Z',
   updated_at: '2025-01-01T00:00:00Z',
 };

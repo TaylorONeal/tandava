@@ -8,6 +8,8 @@
  * Only renders when VITE_DEMO_MODE=true.
  */
 
+import { useState } from "react";
+import { GuidedTour, ROLE_TOURS } from "@/components/tour/GuidedTour";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDemo, DEMO_MODE_ENABLED } from "@/contexts/DemoContext";
 import type { UserRole } from "@/types/database";
@@ -72,6 +74,8 @@ function DemoRoleBarInner() {
   const location = useLocation();
   const { activePersona, switchPersona } = useDemo();
   const { t } = useTranslation('common');
+  const [tourState, setTourState] = useState<{ role: string; step: number } | null>(null);
+  const tour = ROLE_TOURS[activePersona.role];
 
   // Resolve role labels from i18n
   const roleLabelMap: Record<string, string> = {
@@ -96,19 +100,20 @@ function DemoRoleBarInner() {
   const CurrentIcon = currentRole.icon;
 
   const handleSwitch = (option: typeof ROLES[number]) => {
+    setTourState(null);
     if (option.role === activePersona.role) {
       // Already this role — navigate to its home (refresh effect)
       navigate(option.destination);
       return;
     }
     switchPersona(option.role);
-    // Small delay to let context update, then navigate
-    setTimeout(() => navigate(option.destination), 0);
+    navigate(option.destination);
   };
 
   return (
+    <>
     <div className="sticky top-0 z-[110] bg-[#0a0712]/95 backdrop-blur-md border-b border-white/10">
-      <div className="max-w-screen-2xl mx-auto px-4 py-1.5 flex items-center justify-between gap-4">
+      <div className="max-w-screen-2xl mx-auto px-4 py-1.5 flex flex-wrap items-center justify-between gap-2">
         {/* Tandava demo branding */}
         <div className="flex items-center gap-2 min-w-0">
           <span className="relative flex h-2 w-2 shrink-0">
@@ -117,9 +122,11 @@ function DemoRoleBarInner() {
           </span>
           <button
             onClick={() => navigate("/")}
-            className="text-xs text-white/50 hover:text-white/80 transition-colors hidden sm:inline"
+            className="min-h-11 text-xs text-white/70 hover:text-white transition-colors"
+            aria-label="Return to demo home"
           >
-            {t('demo.title')}
+            <span className="hidden sm:inline">{t('demo.title')}</span>
+            <span className="sm:hidden">Demo home</span>
           </button>
           <span className="text-white/20 hidden sm:inline">|</span>
           <div className={cn("flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-semibold", currentRole.activeBg)}>
@@ -136,6 +143,10 @@ function DemoRoleBarInner() {
           <span className="text-[10px] text-white/30 uppercase tracking-wider me-2 hidden sm:inline">
             {t('demo.switchRole')}
           </span>
+          {tour && <button className="min-h-11 px-2 text-xs text-white/80" onClick={() => {
+            setTourState({ role: activePersona.role, step: 0 });
+            navigate(tour.steps[0].route);
+          }}>Take tour</button>}
           {ROLES.map((option) => {
             const Icon = option.icon;
             const isActive = option.role === activePersona.role;
@@ -143,8 +154,10 @@ function DemoRoleBarInner() {
               <button
                 key={option.role}
                 onClick={() => handleSwitch(option)}
+                aria-label={`Switch to ${roleLabelMap[option.role]}`}
+                aria-pressed={isActive}
                 className={cn(
-                  "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all",
+                  "min-h-11 min-w-11 justify-center flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all",
                   isActive
                     ? cn("border", option.activeBg)
                     : "text-white/40 hover:text-white/80 hover:bg-white/5"
@@ -158,5 +171,11 @@ function DemoRoleBarInner() {
         </div>
       </div>
     </div>
+    {tour && tourState?.role === activePersona.role && (
+      <GuidedTour tour={tour} currentStep={tourState.step}
+        onStepChange={(step) => setTourState({ role: activePersona.role, step })}
+        onDismiss={() => setTourState(null)} />
+    )}
+    </>
   );
 }

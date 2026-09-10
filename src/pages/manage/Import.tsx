@@ -121,10 +121,10 @@ export default function ImportManage() {
 
       // Surface the detected provider (purely informational).
       const detected = detectProviderFormat(result.headers);
-      if (detected && detected !== selectedSource) {
+      if (detected && detected.providerId !== selectedSource) {
         toast({
           title: "Format detected",
-          description: `Looks like a ${getProviderDisplayName(detected)} export.`,
+          description: `Looks like a ${getProviderDisplayName(detected.providerId)} export.`,
         });
       }
 

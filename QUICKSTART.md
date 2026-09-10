@@ -6,7 +6,7 @@ Get Tandava running locally in under 2 minutes.
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 22.12+
 - npm 9+
 
 ---

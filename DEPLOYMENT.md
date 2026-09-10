@@ -259,7 +259,7 @@ See [docs/developer/stripe-setup.md](docs/developer/stripe-setup.md) for detaile
 | Stripe webhooks failing | Webhook secret mismatch or wrong endpoint URL | Verify webhook URL and signing secret |
 | Email not sending | Provider not configured or API key wrong | Check `EMAIL_PROVIDER` and corresponding API key |
 | 404 on page refresh | Static host not configured for SPA routing | Add rewrite rule: all paths -> `/index.html` |
-| Build fails | Node version mismatch | Use Node 18+ |
+| Build fails | Node version mismatch | Use Node 22.12+ |
 
 ### SPA Routing
 

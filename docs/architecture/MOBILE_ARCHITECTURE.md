@@ -1,5 +1,7 @@
 # Mobile Architecture
 
+> **September 2026 planning update:** This document describes a future architecture, not shipped native apps. The [hosted product review](../HOSTED_PRODUCT_REVIEW.md#8-app-choices-by-phase) proposes responsive web/PWA first, a shared member app after demand validation, and studio-branded apps as a later paid service. App-store policies and deployment costs must be rechecked before implementation.
+
 Technical architecture for iOS and Android native applications.
 
 ---
@@ -521,4 +523,3 @@ https://[studio].tandava.app/book/{id}
 - [APP_STORE_COMPLIANCE.md](APP_STORE_COMPLIANCE.md) — Store submission requirements
 - [../design/06-cross-platform.md](../design/06-cross-platform.md) — Design token exports
 - [../developer/04-integrations.md](../developer/04-integrations.md) — API integration patterns
-

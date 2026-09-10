@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 interface NewsletterSignupProps {
   /** Where this signup appears — used for source tracking */
-  source: "footer" | "popup" | "checkout" | "event_page" | "landing_page" | "booking_confirmation";
+  source: "footer" | "popup" | "checkout" | "event_page" | "landing_page" | "booking_confirmation" | "community_page";
   /** Compact single-line or expanded card style */
   variant?: "inline" | "card";
   /** Optional class name */

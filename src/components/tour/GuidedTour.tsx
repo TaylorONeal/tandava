@@ -9,7 +9,7 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   ChevronRight,
@@ -66,7 +66,7 @@ export const OWNER_TOUR: TourConfig = {
       hint: "Try adding a new class or editing an existing one.",
     },
     {
-      route: "/manage/members",
+      route: "/manage/students",
       title: "Member Management",
       body: "Every member's profile, visit history, membership status, and waivers in one place. Filter by status, search by name, and click any member for their full record.",
       hint: "Try searching for a member or filtering by membership type.",
@@ -200,7 +200,14 @@ interface GuidedTourProps {
 
 export function GuidedTour({ tour, currentStep, onStepChange, onDismiss }: GuidedTourProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const step = tour.steps[currentStep];
+  const goToStep = (index: number) => {
+    const destination = tour.steps[index];
+    if (!destination) return;
+    onStepChange(index);
+    navigate(destination.route);
+  };
 
   if (!step) return null;
 
@@ -209,7 +216,7 @@ export function GuidedTour({ tour, currentStep, onStepChange, onDismiss }: Guide
   const isOnCorrectPage = location.pathname === step.route || location.pathname.startsWith(step.route + "/");
 
   return (
-    <div className="fixed bottom-6 start-6 z-[60] w-[380px] max-w-[calc(100vw-3rem)]">
+    <div className="fixed bottom-6 start-6 z-[120] w-[380px] max-w-[calc(100vw-3rem)]">
       <div className="bg-card border border-border rounded-2xl shadow-xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-2.5 bg-primary/5 border-b border-border">
@@ -222,6 +229,7 @@ export function GuidedTour({ tour, currentStep, onStepChange, onDismiss }: Guide
               {currentStep + 1} / {tour.steps.length}
             </span>
             <button
+              aria-label="Close guided tour"
               onClick={onDismiss}
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
@@ -239,7 +247,8 @@ export function GuidedTour({ tour, currentStep, onStepChange, onDismiss }: Guide
         </div>
 
         {/* Content */}
-        <div className="p-4">
+        <div className="p-4 max-h-[50dvh] overflow-y-auto">
+          <p className="text-xs text-muted-foreground mb-2">Sample data · Payments and messages are simulated.</p>
           <h3 className="font-semibold mb-1.5">{step.title}</h3>
           <p className="text-sm text-muted-foreground leading-relaxed mb-3">{step.body}</p>
 
@@ -252,7 +261,7 @@ export function GuidedTour({ tour, currentStep, onStepChange, onDismiss }: Guide
 
           {!isOnCorrectPage && (
             <p className="text-xs text-amber-600 mb-3">
-              Navigate to this page to explore this feature.
+              <button className="underline min-h-11" onClick={() => navigate(step.route)}>Open this page to explore this feature.</button>
             </p>
           )}
         </div>
@@ -262,7 +271,7 @@ export function GuidedTour({ tour, currentStep, onStepChange, onDismiss }: Guide
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => onStepChange(currentStep - 1)}
+            onClick={() => goToStep(currentStep - 1)}
             disabled={isFirst}
             className="text-xs"
           >
@@ -277,7 +286,7 @@ export function GuidedTour({ tour, currentStep, onStepChange, onDismiss }: Guide
           ) : (
             <Button
               size="sm"
-              onClick={() => onStepChange(currentStep + 1)}
+              onClick={() => goToStep(currentStep + 1)}
               className="text-xs"
             >
               Next
