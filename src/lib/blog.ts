@@ -19,7 +19,7 @@ import {
 export type { BlogPost } from "@/lib/blog-parse";
 
 // Eagerly import raw markdown so posts are available synchronously at render.
-const rawModules = import.meta.glob("/src/content/blog/*.md", {
+const rawModules = import.meta.glob(["/src/content/blog/*.md", "!/src/content/blog/README.md"], {
   query: "?raw",
   import: "default",
   eager: true,
@@ -28,7 +28,7 @@ const rawModules = import.meta.glob("/src/content/blog/*.md", {
 // These posts link to standalone editorial experiences, never to product features.
 const editorialModules =
   import.meta.env.VITE_BLOG_GAMES === "true"
-    ? (import.meta.glob("/editorial/posts/*.md", {
+    ? (import.meta.glob(["/editorial/posts/*.md", "!/editorial/posts/README.md"], {
         query: "?raw",
         import: "default",
         eager: true,
