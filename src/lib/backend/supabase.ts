@@ -139,7 +139,7 @@ const supabaseData: DataProvider = {
       .from("profiles")
       .select("*")
       .eq("id", userId)
-      .single();
+      .single<Profile>();
 
     return { data, error: error ? { message: error.message } : null };
   },

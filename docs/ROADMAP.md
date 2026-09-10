@@ -1,7 +1,30 @@
 # Tandava Development Roadmap
 
+See [implementation status and three remaining decisions](IMPLEMENTATION_HANDOFF.md) for the follow-up work.
+
+## Hosted launch sequence — September 2026 proposal
+
+The proposed product model is **Tandava Studio**, the open-source product, with **Tandava Cloud**, optional paid hosting and support. Hosted service is not yet production-ready. See the [product completeness and hosted launch review](HOSTED_PRODUCT_REVIEW.md) for code evidence, competitor sources, demo/navigation fixes, pricing hypotheses, onboarding, infrastructure costs, and app decisions.
+
+Prioritize these release gates over the historical feature phases below:
+
+| Phase | Outcome | Release gate |
+|-------|---------|--------------|
+| 0 | Truthful demo and reproducible foundation | Accurate status labels, clean install/build, canonical database migrations/types, explicit demo isolation |
+| 1 | Operable open-source studio core | Independent installation; persistent booking, payment, attendance and cancellation loop; tested tenant isolation, reconciliation and restore |
+| 2 | Assisted hosted pilot | Shared deployment/database, studio subdomains, resumable provisioning, separate platform billing; 3–5 studios complete real operations and a billing cycle |
+| 3 | Self-service hosted launch | Public pricing, no-code onboarding, standard import and support; target owners launch without developer intervention |
+| 4 | Brand and retention expansion | Custom domains, proven retention automations, multi-location packaging |
+| 5 | App expansion | Shared member app after validated demand; separately priced branded apps later |
+
+Start with one paid hosted plan, with price and support limits validated in the pilot. Self-hosting retains released core workflows without a Tandava subscription. Keep responsive web/PWA first; custom domains, a public discovery marketplace, and studio-branded native apps are later decisions.
+
+**Status correction:** Historical “completed,” “implemented,” and checked items below mix UI, schema and backend foundations. They are not verified production completion claims. The review found simulated booking/import/onboarding operations, missing checkout/portal functions, conflicting initial schemas, and a failing clean dependency install. Use demonstrated UI / backend foundation / verified end-to-end / planned labels for future updates.
+
+## Historical feature backlog
+
 ## Vision
-Tandava is an open-source (AGPL-3.0) studio management platform that provides feature parity with commercial solutions (MindBody, Momence, Walla, WellnessLiving, Arketa) while remaining accessible, customizable, and community-driven.
+Tandava aims to provide an open-source (AGPL-3.0) alternative to commercial studio platforms while remaining accessible, customizable, and community-driven. Commercial feature parity is a long-term aspiration, not the current release status.
 
 ---
 

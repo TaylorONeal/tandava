@@ -1,5 +1,9 @@
 # Project Status
 
+> **September 10, 2026 review:** The [product completeness and hosted launch review](HOSTED_PRODUCT_REVIEW.md) supersedes conflicting readiness claims in this February snapshot. Current code includes real auth adapters, lazy routes and registered staff routes, but core booking/import/onboarding remain simulated. Clean dependency installation failed, and two incompatible initial schema tracks require reconciliation. Hosted production readiness has not been established.
+
+See [implementation follow-up](IMPLEMENTATION_HANDOFF.md) for repaired installation, tour/check-in bugs, dependency updates, and tested hosted-domain/readiness foundations.
+
 Current state of Tandava for evaluators, contributors, and potential users.
 
 **Last Updated:** February 2026

@@ -19,6 +19,9 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 
 ## Quick Links
 
+- [Implementation Handoff](IMPLEMENTATION_HANDOFF.md) — Bug fixes, tested hosted foundations, remaining blockers and three product decisions
+
+- [Hosted Product Review](HOSTED_PRODUCT_REVIEW.md) — September 2026 completeness audit, competitor comparison, demo fixes, hosted onboarding/pricing proposal, costs and phased app strategy
 - [README](../README.md) — Project overview, architecture, and getting started
 - [STATUS](STATUS.md) — Current project status and known limitations
 - [ROADMAP](ROADMAP.md) — Development phases and feature status

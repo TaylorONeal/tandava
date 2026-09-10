@@ -1,5 +1,7 @@
 # PRD: Interactive Demo Experience
 
+> **September 2026 proposal:** See the [demo and navigation review](../HOSTED_PRODUCT_REVIEW.md#3-demo-and-navigation-fixes). The follow-up implementation restores an optional tour from the demo bar, and the feature statuses below describe simulated UI, not production workflows. The proposed acquisition path supports both self-hosting and a future hosted service, using optional task-based guidance and explicit simulation labels.
+
 **Last Updated:** February 2026
 **Status:** Implemented
 

@@ -2008,7 +2008,6 @@ export interface MembershipAddonSubscription {
 // ============================================================================
 
 // Notification Enums
-export type NotificationChannel = 'push' | 'sms' | 'email' | 'in_app';
 export type NotificationDeliveryStatus = 'pending' | 'sent' | 'delivered' | 'opened' | 'clicked' | 'failed' | 'bounced';
 export type SmsMessageStatus = 'queued' | 'sending' | 'sent' | 'delivered' | 'failed' | 'undelivered';
 export type ReviewRequestStatus = 'pending' | 'sent' | 'clicked' | 'reviewed' | 'skipped' | 'suppressed';
@@ -2614,16 +2613,48 @@ export type EmailProvider = "resend" | "sendgrid" | "smtp" | "console";
  * Provides type safety for .from("table") queries.
  * Extend as tables are added to supabase/migrations/.
  */
+/** Row shape of classes in the alternative 001 schema; not ClassOccurrence. */
+export interface ClassDefinition {
+  id: string;
+  studio_id: string;
+  instructor_id: string;
+  title: string;
+  description: string | null;
+  style: string;
+  level: 'beginner' | 'intermediate' | 'advanced' | 'all_levels';
+  is_heated: boolean;
+  duration_minutes: number;
+  capacity: number;
+  starts_at: string;
+  ends_at: string;
+  recurrence_rule: string | null;
+  location_name: string | null;
+  price_cents: number | null;
+  drop_in_price_cents: number | null;
+  is_cancelled: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+type DatabaseTable<Row, Insert = Partial<Row>> = {
+  Row: { [Key in keyof Row]: Row[Key] };
+  Insert: { [Key in keyof Insert]: Insert[Key] };
+  Update: Partial<{ [Key in keyof Row]: Row[Key] }>;
+  Relationships: [];
+};
+
 export interface Database {
   public: {
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
     Tables: {
-      profiles: { Row: Profile; Insert: Partial<Profile> & { id: string; email: string }; Update: Partial<Profile> };
-      studios: { Row: Studio; Insert: Partial<Studio>; Update: Partial<Studio> };
-      studio_staff: { Row: StudioStaff; Insert: Partial<StudioStaff>; Update: Partial<StudioStaff> };
-      classes: { Row: ClassDefinition; Insert: Partial<ClassDefinition>; Update: Partial<ClassDefinition> };
-      bookings: { Row: Booking; Insert: Partial<Booking>; Update: Partial<Booking> };
-      memberships: { Row: Membership; Insert: Partial<Membership>; Update: Partial<Membership> };
-      transactions: { Row: Transaction; Insert: Partial<Transaction>; Update: Partial<Transaction> };
+      profiles: DatabaseTable<Profile, Partial<Profile> & { id: string; email: string }>;
+      studios: DatabaseTable<Studio>;
+      studio_staff: DatabaseTable<StudioStaff>;
+      classes: DatabaseTable<ClassDefinition>;
+      bookings: DatabaseTable<Booking>;
+      memberships: DatabaseTable<Membership>;
+      transactions: DatabaseTable<Transaction>;
       messages: {
         Row: {
           id: string;
@@ -2642,6 +2673,7 @@ export interface Database {
         };
         Insert: Record<string, unknown>;
         Update: Record<string, unknown>;
+        Relationships: [];
       };
       email_log: {
         Row: {
@@ -2655,6 +2687,7 @@ export interface Database {
         };
         Insert: Record<string, unknown>;
         Update: Record<string, unknown>;
+        Relationships: [];
       };
     };
   };

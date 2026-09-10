@@ -27,7 +27,7 @@ const waitingMembers = [
 export default function StaffCheckin() {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
-  const [checkedInIds, setCheckedInIds] = useState<Set<string>>(new Set());
+  const [checkedInIds, setCheckedInIds] = useState<Record<string, string[]>>({});
   const [selectedClass, setSelectedClass] = useState(todaysClasses[0]);
 
   const filteredMembers = waitingMembers.filter(
@@ -37,7 +37,10 @@ export default function StaffCheckin() {
   );
 
   const handleCheckIn = (memberId: string, memberName: string) => {
-    setCheckedInIds((prev) => new Set(prev).add(memberId));
+    setCheckedInIds((prev) => ({
+      ...prev,
+      [selectedClass.id]: [...new Set([...(prev[selectedClass.id] ?? []), memberId])],
+    }));
     toast({ title: "Checked in", description: `${memberName} has been checked in.` });
   };
 
@@ -48,14 +51,15 @@ export default function StaffCheckin() {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Class Check-in</h1>
-          <p className="text-muted-foreground">Search members by name or scan to check in.</p>
+          <p className="text-muted-foreground">Search the sample roster by name to simulate check-in.</p>
         </div>
 
         {/* Search */}
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
-            placeholder="Search by name or email..."
+            aria-label="Search members by name"
+            placeholder="Search by name..."
             className="pl-10 h-12"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -91,7 +95,7 @@ export default function StaffCheckin() {
                   <p className="text-xs text-muted-foreground">{cls.time} • {cls.teacher}</p>
                   <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
                     <Users className="h-3 w-3" />
-                    {cls.checkedIn + (selectedClass.id === cls.id ? checkedInIds.size : 0)}/{cls.capacity}
+                    {cls.checkedIn + (checkedInIds[cls.id]?.length ?? 0)}/{cls.capacity}
                   </div>
                 </button>
               ))}
@@ -109,7 +113,7 @@ export default function StaffCheckin() {
           <CardContent>
             <div className="space-y-2">
               {filteredMembers.map((member) => {
-                const isCheckedIn = checkedInIds.has(member.id);
+                const isCheckedIn = (checkedInIds[selectedClass.id] ?? []).includes(member.id);
                 return (
                   <div key={member.id} className="flex items-center justify-between p-3 rounded-xl border">
                     <div className="flex items-center gap-3">
