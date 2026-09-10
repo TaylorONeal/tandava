@@ -410,7 +410,7 @@ const Community = () => {
           variant="inline"
           source="community_page"
           heading="Get community updates"
-          subheading="Events, challenges, and what's new at the studio."
+          description="Events, challenges, and what's new at the studio."
           className="mt-6"
         />
       </div>

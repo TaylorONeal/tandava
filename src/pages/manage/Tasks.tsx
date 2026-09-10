@@ -493,7 +493,7 @@ export default function TasksManage() {
                 )}
 
                 {task.is_recurring && (
-                  <RefreshCw className="h-3 w-3 text-muted-foreground" title="Recurring" />
+                  <RefreshCw className="h-3 w-3 text-muted-foreground" aria-label="Recurring" />
                 )}
 
                 {checklistProgress !== null && (

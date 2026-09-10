@@ -11,11 +11,7 @@
  * opts in (and points a wildcard domain at the app).
  */
 
-// Subdomain labels reserved for the platform — never a studio.
-const RESERVED_SUBDOMAINS = new Set([
-  "www", "app", "api", "admin", "docs", "staging",
-  "preview", "demo", "static", "assets", "cdn", "mail",
-]);
+import { isReservedStudioSlug, normalizeHostname } from "./hosted/domains";
 
 // A studio slug is a single DNS label: lowercase alphanumerics and hyphens,
 // not starting/ending with a hyphen.
@@ -35,8 +31,8 @@ export function getStudioSlugFromHost(
 ): string | null {
   if (!hostname || !rootDomain) return null;
 
-  const host = hostname.trim().toLowerCase().replace(/\.+$/, "");
-  const root = rootDomain.trim().toLowerCase().replace(/^\.+|\.+$/g, "");
+  const host = normalizeHostname(hostname);
+  const root = normalizeHostname(rootDomain.trim().replace(/^\.+|\.+$/g, ""));
   if (!host || !root) return null;
 
   if (host === root) return null;               // apex
@@ -44,7 +40,7 @@ export function getStudioSlugFromHost(
 
   const sub = host.slice(0, host.length - root.length - 1);
   if (!sub || sub.includes(".")) return null;   // only single-label subdomains
-  if (RESERVED_SUBDOMAINS.has(sub)) return null;
+  if (isReservedStudioSlug(sub)) return null;
   if (!SLUG_RE.test(sub)) return null;
 
   return sub;

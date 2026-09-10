@@ -20,7 +20,7 @@ describe("getStudioSlugFromHost", () => {
   });
 
   it("returns null for reserved platform labels", () => {
-    for (const label of ["app", "api", "admin", "docs", "demo", "preview"]) {
+    for (const label of ["app", "api", "admin", "docs", "demo", "preview", "billing", "auth", "support"]) {
       expect(getStudioSlugFromHost(`${label}.tandavastudio.com`, ROOT)).toBeNull();
     }
   });
@@ -40,6 +40,13 @@ describe("getStudioSlugFromHost", () => {
     expect(getStudioSlugFromHost("_bad.tandavastudio.com", ROOT)).toBeNull();
     expect(getStudioSlugFromHost("-lead.tandavastudio.com", ROOT)).toBeNull();
     expect(getStudioSlugFromHost("trail-.tandavastudio.com", ROOT)).toBeNull();
+  });
+
+  it("rejects overlong labels and malformed configured hosts", () => {
+    expect(getStudioSlugFromHost(`${"a".repeat(64)}.${ROOT}`, ROOT)).toBeNull();
+    expect(getStudioSlugFromHost(`lotus.${ROOT}..`, ROOT)).toBeNull();
+    expect(getStudioSlugFromHost(`lotus.${ROOT}:443`, `${ROOT}:443`)).toBeNull();
+    expect(getStudioSlugFromHost(`a.${ROOT}`, ROOT)).toBe("a"); // preserve existing short slugs
   });
 
   it("is off (null) when no root domain is configured", () => {

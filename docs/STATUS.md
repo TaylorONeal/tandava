@@ -1,5 +1,9 @@
 # Project Status
 
+> **September 10, 2026:** This February snapshot is historical. Current main includes persisted booking/cancellation RPCs, imports, onboarding and payment endpoints, and has removed the duplicate initial migration. See the [current implementation handoff](IMPLEMENTATION_HANDOFF.md) for verified fixes and remaining hosted launch gates. Production readiness still requires database, isolation, payment replay and restore verification.
+
+See [implementation follow-up](IMPLEMENTATION_HANDOFF.md) for repaired installation, tour/check-in bugs, dependency updates, and tested hosted-domain/readiness foundations.
+
 Current state of Tandava for evaluators, contributors, and potential users.
 
 **Last Updated:** February 2026

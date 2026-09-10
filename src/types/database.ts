@@ -2031,7 +2031,6 @@ export interface MembershipAddonSubscription {
 // ============================================================================
 
 // Notification Enums
-export type NotificationChannel = 'push' | 'sms' | 'email' | 'in_app';
 export type NotificationDeliveryStatus = 'pending' | 'sent' | 'delivered' | 'opened' | 'clicked' | 'failed' | 'bounced';
 export type SmsMessageStatus = 'queued' | 'sending' | 'sent' | 'delivered' | 'failed' | 'undelivered';
 export type ReviewRequestStatus = 'pending' | 'sent' | 'clicked' | 'reviewed' | 'skipped' | 'suppressed';
@@ -2701,22 +2700,29 @@ export interface PublicScheduleRow {
   studio_primary_color: string | null;
 }
 
+type DatabaseTable<Row, Insert = Partial<Row>> = {
+  Row: { [Key in keyof Row]: Row[Key] };
+  Insert: { [Key in keyof Insert]: Insert[Key] };
+  Update: Partial<{ [Key in keyof Row]: Row[Key] }>;
+  Relationships: [];
+};
+
 export interface Database {
   public: {
+    Views: Record<string, never>;
     Tables: {
-      profiles: { Row: Profile; Insert: Partial<Profile> & { id: string; email: string }; Update: Partial<Profile> };
-      studios: { Row: Studio; Insert: Partial<Studio>; Update: Partial<Studio> };
-      studio_staff: { Row: StudioStaff; Insert: Partial<StudioStaff>; Update: Partial<StudioStaff> };
-      classes: { Row: ClassDefinition; Insert: Partial<ClassDefinition>; Update: Partial<ClassDefinition> };
-      bookings: { Row: Booking; Insert: Partial<Booking>; Update: Partial<Booking> };
-      locations: { Row: Location; Insert: Partial<Location>; Update: Partial<Location> };
-      offerings: { Row: Offering; Insert: Partial<Offering>; Update: Partial<Offering> };
-      class_occurrences: { Row: ClassOccurrence; Insert: Partial<ClassOccurrence>; Update: Partial<ClassOccurrence> };
-      memberships: { Row: Membership; Insert: Partial<Membership>; Update: Partial<Membership> };
-      membership_types: { Row: MembershipType; Insert: Partial<MembershipType>; Update: Partial<MembershipType> };
-      class_packs: { Row: ClassPack; Insert: Partial<ClassPack>; Update: Partial<ClassPack> };
-      class_pack_types: { Row: ClassPackType; Insert: Partial<ClassPackType>; Update: Partial<ClassPackType> };
-      transactions: { Row: Transaction; Insert: Partial<Transaction>; Update: Partial<Transaction> };
+      profiles: DatabaseTable<Profile, Partial<Profile> & { id: string; email: string }>;
+      studios: DatabaseTable<Studio>;
+      studio_staff: DatabaseTable<StudioStaff>;
+      bookings: DatabaseTable<Booking>;
+      locations: DatabaseTable<Location>;
+      offerings: DatabaseTable<Offering>;
+      class_occurrences: DatabaseTable<ClassOccurrence>;
+      memberships: DatabaseTable<Membership>;
+      membership_types: DatabaseTable<MembershipType>;
+      class_packs: DatabaseTable<ClassPack>;
+      class_pack_types: DatabaseTable<ClassPackType>;
+      transactions: DatabaseTable<Transaction>;
       messages: {
         Row: {
           id: string;
@@ -2735,6 +2741,7 @@ export interface Database {
         };
         Insert: Record<string, unknown>;
         Update: Record<string, unknown>;
+        Relationships: [];
       };
       email_log: {
         Row: {
@@ -2748,6 +2755,7 @@ export interface Database {
         };
         Insert: Record<string, unknown>;
         Update: Record<string, unknown>;
+        Relationships: [];
       };
     };
     Functions: {
