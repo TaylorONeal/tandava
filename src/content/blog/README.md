@@ -4,10 +4,7 @@ Each `.md` file in this folder is one blog post. Posts are loaded at build time
 (`src/lib/blog.ts`), rendered from markdown, and surfaced at `/blog`,
 `/blog/category/:category`, and `/blog/:slug`.
 
-> The blog is **built but not live**. While `BLOG_PUBLISHED` is `false` in
-> [`src/config/blog.ts`](../../config/blog.ts), every blog page renders with
-> `noindex`, is excluded from the sitemap, and is not linked from the main app
-> nav. Flip that flag to `true` and rebuild to launch.
+> The public blog is live (`BLOG_PUBLISHED = true`). Blog-only interactive posts live in `editorial/posts/` and are included only by `npm run build:marketing`; see [Studio Sprout](../../../docs/developer/studio-sprout.md).
 
 ## Frontmatter contract
 
