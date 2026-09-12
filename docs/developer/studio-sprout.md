@@ -60,3 +60,5 @@ Artifact checks: after a normal build run `npm run check:blog-game-build -- prod
 ### Publishing
 
 Merge to main to publish through the existing Vercel GitHub integration. The repository build command scopes editorial content to the public domain using [Vercel system metadata](https://vercel.com/docs/environment-variables/system-environment-variables#vercel_project_production_url), without requiring a dashboard override. Verify `/blog` → `/blog/a-little-room-to-grow` → `/page/studio-sprout/` after deployment. Run `node --test scripts/build-vercel.test.mjs` to check deployment selection.
+
+The blog and calculator prerenderers use replacement callbacks so literal dollar amounts are never treated as JavaScript replacement tokens (`$1`, `$&`, etc.). The marketing artifact check verifies the article’s example amounts survive in static HTML, before React loads.
