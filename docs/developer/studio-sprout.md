@@ -55,4 +55,8 @@ Artifact checks: after a normal build run `npm run check:blog-game-build -- prod
 - Standard and marketing production builds pass; both artifact boundary checks pass, including product source-map exclusion.
 - Production browser flow and active service-worker cache exclusion pass. Inspected intro, planning, reveal, article, and completion screenshots.
 - Repository-wide TypeScript still reports errors in untouched demo data, Supabase adapter, Community, Import, Tasks, teacher Schedule, and database types. These are outside this change; the build and runtime game checks pass.
-- Product navigation is unchanged. The public marketing deployment must explicitly use `npm run build:marketing` to publish this addition; merging alone does not enable it in standard builds.
+- Product navigation is unchanged. Vercel uses `scripts/build-vercel.mjs`: only `VERCEL=1` with `VERCEL_PROJECT_PRODUCTION_URL=tandavastudio.com` enables the marketing build (including that project’s previews). Other projects and missing metadata default to product-only, even if a stale game flag is present. The script verifies the resulting artifact boundary before deployment succeeds. Normal local builds remain unchanged.
+
+### Publishing
+
+Merge to main to publish through the existing Vercel GitHub integration. The repository build command scopes editorial content to the public domain using [Vercel system metadata](https://vercel.com/docs/environment-variables/system-environment-variables#vercel_project_production_url), without requiring a dashboard override. Verify `/blog` → `/blog/a-little-room-to-grow` → `/page/studio-sprout/` after deployment. Run `node --test scripts/build-vercel.test.mjs` to check deployment selection.
