@@ -18,7 +18,11 @@ assert.equal(sitemap.includes('/page/studio-sprout'), false, 'Game must not be d
 assert.equal(sitemap.includes('/blog/a-little-room-to-grow'), marketing, 'Article sitemap boundary');
 if (marketing) {
   assert.match(readFileSync(game, 'utf8'), /noindex, nofollow/, 'Game must not be indexed');
-  assert.match(readFileSync(article, 'utf8'), /\/page\/studio-sprout/, 'Post must link to the game');
+  const articleHtml = readFileSync(article, 'utf8');
+  assert.match(articleHtml, /\/page\/studio-sprout/, 'Post must link to the game');
+  for (const amount of ['$18', '$180', '$55', '$125', '$1,450']) {
+    assert.ok(articleHtml.includes(amount), `Prerender must preserve literal currency ${amount}`);
+  }
 } else {
   for (const name of assets.filter(name => /\.(js|css|map)$/.test(name))) {
     assert.doesNotMatch(readFileSync(join(root, 'assets', name), 'utf8'), /Studio Sprout|Plant the first seed/, `Game content leaked into ${name}`);
