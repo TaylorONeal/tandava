@@ -85,12 +85,12 @@ function buildHead(meta: HeadMeta): string {
 
 function render(template: string, meta: HeadMeta, bodyHtml: string): string {
   let html = stripDefaultHead(template);
-  html = html.replace(/<\/head>/i, `    ${buildHead(meta)}\n  </head>`);
+  html = html.replace(/<\/head>/i, () => `    ${buildHead(meta)}\n  </head>`);
   // Replace the #root placeholder content (lazy match stops at the </div>
   // immediately followed by the module <script> Vite injects).
   html = html.replace(
     /<div id="root">[\s\S]*?<\/div>(\s*<script)/i,
-    `<div id="root">${bodyHtml}</div>$1`,
+    (_match, scriptPrefix: string) => `<div id="root">${bodyHtml}</div>${scriptPrefix}`,
   );
   return html;
 }
