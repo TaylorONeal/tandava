@@ -2,6 +2,10 @@
 
 See [implementation status and three remaining decisions](IMPLEMENTATION_HANDOFF.md) for the follow-up work.
 
+## Demo language correction (2026-09-22)
+
+[PRD-020](prd/PRD-020-language-preferences.md) tracks LANG-01–06: normalized device-language priority, explicit-only preference persistence, isolated demo cache, and a visible resettable language control. Implementation is on the fix branch; release verification remains open. Remaining hardcoded demo/tour copy is a separate localization task.
+
 ## Hosted launch sequence — September 2026 proposal
 
 The proposed product model is **Tandava Studio**, the open-source product, with **Tandava Cloud**, optional paid hosting and support. Hosted service is not yet production-ready. See the [product completeness and hosted launch review](HOSTED_PRODUCT_REVIEW.md) for code evidence, competitor sources, demo/navigation fixes, pricing hypotheses, onboarding, infrastructure costs, and app decisions.

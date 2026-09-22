@@ -4,6 +4,10 @@
 
 ---
 
+## Current implementation notice (2026-09-22)
+
+The architectural examples below include historical proposals. Current runtime behavior is defined by [PRD-020](prd/PRD-020-language-preferences.md) and `src/i18n/index.ts`: explicit choice → normalized ordered device languages → English. Only deliberate selections persist. Demo preferences are isolated from the legacy automatic cache; non-demo preferences retain compatibility. The shared language menu can reset to the device language. See [Language Rollout Plan](roadmap/LANGUAGE_ROLLOUT_PLAN.md) for translation coverage and remaining work.
+
 ## Table of Contents
 
 1. [Current State](#current-state)
@@ -25,7 +29,7 @@
 
 ## Current State
 
-Tandava has **zero i18n infrastructure** today. Every user-facing string is hardcoded in English directly in JSX/TSX components. Here's what we're working with:
+Historical baseline (before the shipped i18n implementation): Tandava had **zero i18n infrastructure**. Every user-facing string is hardcoded in English directly in JSX/TSX components. Here's what we're working with:
 
 | Category | Approximate Count | Examples |
 |----------|-------------------|----------|
