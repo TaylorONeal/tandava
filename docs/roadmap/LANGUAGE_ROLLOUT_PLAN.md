@@ -6,6 +6,12 @@ See [LOCALIZATION_ANALYSIS.md](../LOCALIZATION_ANALYSIS.md) for the full i18n ar
 
 ---
 
+## September 2026: language-selection correction
+
+See [PRD-020](../prd/PRD-020-language-preferences.md) for the decision, acceptance criteria, and LANG-01 through LANG-06 tasks. Selection is explicit choice → ordered device languages → English. Normalize regional codes before matching; `en-US, es` must choose English. Detection does not persist a preference. Demo choices use a separate versioned key so historical automatic Spanish values do not stick. Non-demo preferences remain compatible. “Use device language” clears the explicit choice.
+
+The status table below describes translation files, not full-page localization. Hardcoded demo/tour copy and the new reset label remain tracked under LANG-06.
+
 ## Principles
 
 1. **One registration point.** A language exists when it appears in `SUPPORTED_LANGUAGES` (`src/i18n/index.ts`) and has a matching `public/locales/<code>/` directory. The switcher UI, the i18next config, and the `SupportedLanguage` type all derive from that array — adding a language never touches component code.

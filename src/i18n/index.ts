@@ -3,7 +3,7 @@
  *
  * Configures react-i18next with:
  * - Lazy-loaded translation files from /locales/{lng}/{ns}.json
- * - Browser language detection with localStorage persistence
+ * - Browser language detection; only explicit choices persist
  * - Namespace splitting per UI area (common, booking, schedule, manage, auth, validation, email)
  * - Fallback chain: user preference → browser language → English
  *
@@ -80,7 +80,33 @@ export function getIntlLocale(language: string): string {
   return INTL_LOCALE_MAP[language] ?? language;
 }
 
-i18n
+export const LANGUAGE_STORAGE_KEY = import.meta.env.VITE_DEMO_MODE === 'true'
+  ? 'tandava-demo-language-choice-v1'
+  : 'tandava-language';
+
+export const LANGUAGE_DETECTION = {
+  order: ['localStorage', 'navigator'],
+  lookupLocalStorage: LANGUAGE_STORAGE_KEY,
+  // Automatic detection must never become an explicit preference.
+  caches: [] as string[],
+  // Chinese needs script-aware mapping: default language-only fallback
+  // would send zh-TW/zh-HK users to Simplified Chinese. Route Traditional
+  // regions/scripts to zh-Hant, everything else Chinese to zh (Simplified).
+  convertDetectedLanguage: (lng: string) => {
+    if (/^zh\b/i.test(lng)) {
+      return /hant|tw|hk|mo/i.test(lng) ? 'zh-Hant' : 'zh';
+    }
+    // Legacy/alias codes some browsers still report:
+    // 'tl' (Tagalog) → Filipino, 'in' (pre-1989 ISO code) → Indonesian.
+    const base = lng.split('-')[0].toLowerCase();
+    if (base === 'tl') return 'fil';
+    if (base === 'in') return 'id';
+    // Normalize before negotiation: a later exact 'es' must not outrank 'en-US'.
+    return base;
+  },
+};
+
+export const i18nReady = i18n
   .use(HttpBackend)
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -100,26 +126,7 @@ i18n
       loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
 
-    // Language detection: check localStorage first, then browser, then HTML tag
-    detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
-      lookupLocalStorage: 'tandava-language',
-      caches: ['localStorage'],
-      // Chinese needs script-aware mapping: default language-only fallback
-      // would send zh-TW/zh-HK users to Simplified Chinese. Route Traditional
-      // regions/scripts to zh-Hant, everything else Chinese to zh (Simplified).
-      convertDetectedLanguage: (lng: string) => {
-        if (/^zh\b/i.test(lng)) {
-          return /hant|tw|hk|mo/i.test(lng) ? 'zh-Hant' : 'zh';
-        }
-        // Legacy/alias codes some browsers still report:
-        // 'tl' (Tagalog) → Filipino, 'in' (pre-1989 ISO code) → Indonesian.
-        const base = lng.split('-')[0].toLowerCase();
-        if (base === 'tl') return 'fil';
-        if (base === 'in') return 'id';
-        return lng;
-      },
-    },
+    detection: LANGUAGE_DETECTION,
 
     interpolation: {
       // React already escapes values — no double-escaping
@@ -150,5 +157,15 @@ i18n.on('languageChanged', (lng) => {
     document.documentElement.dir = RTL_LANGUAGES.has(lng.split('-')[0]) ? 'rtl' : 'ltr';
   }
 });
+
+export async function setLanguagePreference(code?: SupportedLanguage): Promise<void> {
+  try {
+    if (code) window.localStorage.setItem(LANGUAGE_STORAGE_KEY, code);
+    else window.localStorage.removeItem(LANGUAGE_STORAGE_KEY);
+  } catch {
+    // Storage may be disabled; the current session can still switch languages.
+  }
+  await i18n.changeLanguage(code);
+}
 
 export default i18n;
