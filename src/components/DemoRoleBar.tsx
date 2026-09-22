@@ -8,6 +8,7 @@
  * Only renders when VITE_DEMO_MODE=true.
  */
 
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useState } from "react";
 import { GuidedTour, ROLE_TOURS } from "@/components/tour/GuidedTour";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -137,6 +138,8 @@ function DemoRoleBarInner() {
             {activePersona.name}
           </span>
         </div>
+
+        <LanguageSwitcher compact={false} />
 
         {/* Role switcher buttons */}
         <div className="flex items-center gap-1">

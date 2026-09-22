@@ -2,7 +2,7 @@
  * Language Switcher
  *
  * A dropdown that lets users change their display language.
- * Saves preference to localStorage via i18next-browser-languagedetector.
+ * Persists explicit choices; automatic detection is never cached.
  * Also updates <html lang="..."> for accessibility/SEO.
  *
  * Appears in:
@@ -12,13 +12,14 @@
  */
 
 import { useTranslation } from 'react-i18next';
-import { SUPPORTED_LANGUAGES } from '@/i18n';
+import { SUPPORTED_LANGUAGES, setLanguagePreference, type SupportedLanguage } from '@/i18n';
 import { Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
@@ -28,14 +29,14 @@ interface LanguageSwitcherProps {
 }
 
 export function LanguageSwitcher({ compact = true }: LanguageSwitcherProps) {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
-  const currentLang = SUPPORTED_LANGUAGES.find(l => l.code === i18n.language)
+  const currentLang = SUPPORTED_LANGUAGES.find(l => l.code === (i18n.resolvedLanguage ?? i18n.language))
     ?? SUPPORTED_LANGUAGES[0];
 
-  const handleLanguageChange = (code: string) => {
+  const handleLanguageChange = (code: SupportedLanguage) => {
     // <html lang> and dir are synced by the languageChanged listener in src/i18n
-    i18n.changeLanguage(code);
+    void setLanguagePreference(code);
   };
 
   return (
@@ -46,6 +47,7 @@ export function LanguageSwitcher({ compact = true }: LanguageSwitcherProps) {
           size={compact ? 'icon' : 'default'}
           className={compact ? '' : 'gap-2'}
           title={`Language: ${currentLang.nativeName}`}
+          aria-label={`Language: ${currentLang.nativeName}`}
         >
           <Globe className="h-5 w-5" />
           {!compact && (
@@ -57,8 +59,12 @@ export function LanguageSwitcher({ compact = true }: LanguageSwitcherProps) {
           scrolls inside the menu instead of running off the viewport. */}
       <DropdownMenuContent
         align="end"
-        className="min-w-[180px] max-h-[60vh] overflow-y-auto rounded-2xl p-2"
+        className="z-[120] min-w-[180px] max-h-[60vh] overflow-y-auto rounded-2xl p-2"
       >
+        <DropdownMenuItem onClick={() => void setLanguagePreference()} className="rounded-xl cursor-pointer">
+          {t('language.useDevice', 'Use device language')}
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         {SUPPORTED_LANGUAGES.map((lang) => (
           <DropdownMenuItem
             key={lang.code}

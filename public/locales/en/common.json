@@ -87,7 +87,8 @@
   },
   "language": {
     "label": "Language",
-    "changeLanguage": "Change language"
+    "changeLanguage": "Change language",
+    "useDevice": "Use device language"
   },
   "footer": {
     "allRightsReserved": "All rights reserved.",
