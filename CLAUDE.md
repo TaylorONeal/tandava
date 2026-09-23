@@ -1,5 +1,17 @@
 # Claude Code Instructions
 
+
+## Model-Aware Execution Policy
+
+Use **native reasoning by default** on current frontier models and coding agents. Repo instructions should define goals, hard constraints, sources of truth, and acceptance criteria without forcing a ritualized reasoning process.
+
+- Do not add "think step by step", scratchpad, chain-of-thought, or fixed reasoning templates unless a specific legacy/lightweight model demonstrably needs them.
+- Emphasis words such as **CRITICAL**, **ALWAYS**, and **MANDATORY** are not requests for extra narration, repeated checks, or extra tool calls. Reserve them for genuine invariants such as security, data integrity, irreversible operations, release gates, or consent/privacy boundaries.
+- Keep ordered procedures where order is operationally meaningful: migrations, auth/payment changes, destructive actions, release work, and evidence/provenance checks.
+- Prefer direct execution followed by verification against acceptance criteria. Do not restate routine plans or expose internal reasoning unless asked.
+- If the runtime is explicitly a smaller/legacy model, a concise checklist scaffold may be used. Keep that compatibility path separate from the frontier-model default.
+- If instructions conflict, follow the more specific repo/task contract and the higher-risk invariant; surface a genuine unresolved conflict instead of trying to satisfy both literally.
+
 Context for AI assistants working on this codebase.
 
 ---
@@ -46,6 +58,10 @@ tandava/
 ```
 
 ---
+
+## Active Agent Memory
+
+Search `AGENT_LEARNINGS.md` for task-relevant verified lessons before non-trivial work. Treat `docs/ai-agents/LESSONS_LEARNED.md` as a deeper archive, not universal startup context. Promote mature lessons into tests, scripts, migrations, or canonical docs and prune duplicates from memory.
 
 ## Key Documentation
 
@@ -109,10 +125,10 @@ Opens at http://localhost:8080 with demo data.
 
 ## When Making Changes
 
-1. **Read relevant docs first** — especially domain model and flows
-2. **Check for existing patterns** — components, hooks, utilities
-3. **Run build before committing** — `npm run build`
-4. **Keep PRs focused** — one concern per PR
+- Read only the docs relevant to the touched domain or flow.
+- Check existing components, hooks, utilities, and types before creating new patterns.
+- Run the validation appropriate to the changed surface before committing.
+- Keep PRs focused on one concern.
 
 ---
 
