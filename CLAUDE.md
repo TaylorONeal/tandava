@@ -59,6 +59,10 @@ tandava/
 
 ---
 
+## Active Agent Memory
+
+Search `AGENT_LEARNINGS.md` for task-relevant verified lessons before non-trivial work. Treat `docs/ai-agents/LESSONS_LEARNED.md` as a deeper archive, not universal startup context. Promote mature lessons into tests, scripts, migrations, or canonical docs and prune duplicates from memory.
+
 ## Key Documentation
 
 | Document | Purpose |
@@ -121,10 +125,10 @@ Opens at http://localhost:8080 with demo data.
 
 ## When Making Changes
 
-1. **Read relevant docs first** — especially domain model and flows
-2. **Check for existing patterns** — components, hooks, utilities
-3. **Run build before committing** — `npm run build`
-4. **Keep PRs focused** — one concern per PR
+- Read only the docs relevant to the touched domain or flow.
+- Check existing components, hooks, utilities, and types before creating new patterns.
+- Run the validation appropriate to the changed surface before committing.
+- Keep PRs focused on one concern.
 
 ---
 
