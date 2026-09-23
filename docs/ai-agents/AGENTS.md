@@ -14,13 +14,15 @@ Use **native reasoning by default** on current frontier models and coding agents
 
 How AI coding assistants (Claude, Cursor, Copilot, etc.) should work with the Tandava codebase.
 
-## Quick Start
+## Context Loading
 
-When starting work on Tandava, read these files first:
-1. **This file** - Understand how to work here
-2. `docs/ai-agents/KEY_FILES.md` - Find what you need
-3. `docs/ai-agents/LESSONS_LEARNED.md` - Avoid known pitfalls
-4. `docs/ai-agents/DESIGN_SYSTEM.md` - UI consistency
+Use this file as the stable agent contract. Load supporting context just in time:
+- Use `docs/ai-agents/KEY_FILES.md` when locating an unfamiliar area.
+- Search `AGENT_LEARNINGS.md` for task-relevant verified lessons before non-trivial work.
+- Load matching sections of `docs/ai-agents/LESSONS_LEARNED.md` only when deeper historical detail is needed.
+- Load `docs/ai-agents/DESIGN_SYSTEM.md` for UI/design work, not backend-only tasks.
+
+Do not preload all four files for every task.
 
 ---
 
