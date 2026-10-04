@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, CheckCircle2, Sparkles, MailCheck, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { authHref, resolveAfterAuth, safeNext, stashReturn } from "@/lib/authReturn";
 
 type RegistrationStep = "info" | "complete";
 
@@ -19,6 +20,12 @@ const Register = () => {
   const { toast } = useToast();
   const { t } = useTranslation('auth');
   const { signUpWithEmail, signInWithGoogle, isDemoMode } = useAuth();
+  // Where the visitor was headed (e.g. the class they tapped Book on) before being asked to sign up.
+  const nextParam = safeNext(searchParams.get("next"));
+  useEffect(() => {
+    // Survives the Google redirect and a confirmation email opened in another tab.
+    if (nextParam) stashReturn(nextParam);
+  }, [nextParam]);
   const [step, setStep] = useState<RegistrationStep>("info");
   const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -84,6 +91,11 @@ const Register = () => {
     }
 
     setNeedsEmailConfirmation(Boolean(requiresEmailConfirmation));
+    // Signed in straight away and we know what they came for: take them back to it.
+    if (!requiresEmailConfirmation && nextParam) {
+      navigate(resolveAfterAuth({ next: nextParam }), { replace: true });
+      return;
+    }
     setStep("complete");
   };
 
@@ -108,7 +120,7 @@ const Register = () => {
 
             <div className="space-y-3 pt-4">
               <Button
-                onClick={() => navigate("/auth/login")}
+                onClick={() => navigate(authHref("/auth/login", nextParam))}
                 className="w-full h-14 text-lg"
                 size="lg"
               >
@@ -462,7 +474,7 @@ const Register = () => {
               {t('hasAccount')}{" "}
             </p>
             <Link
-              to="/auth/login"
+              to={authHref("/auth/login", nextParam)}
               className="inline-block mt-1 px-4 py-2 text-primary hover:underline font-medium touch-manipulation"
             >
               {t('signIn')}

@@ -18,6 +18,9 @@ import { useStudioStorefront, usePublicSchedule } from "@/hooks/useBooking";
 import { isBackendConfigured } from "@/lib/backend";
 import { formatPrice } from "@/lib/reference-data";
 import { SEOHead } from "@/components/seo/SEOHead";
+import { BookClassButton } from "@/components/booking/BookClassButton";
+import { PurchaseButton } from "@/components/booking/PurchaseButton";
+import { authHref } from "@/lib/authReturn";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -102,10 +105,10 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
         )}
         <div className="mt-6 flex flex-wrap gap-3">
           <Button asChild size="lg" style={accent ? { backgroundColor: accent } : undefined}>
-            <Link to="/auth/register">Sign up to book<ArrowRight className="ms-2 h-4 w-4" /></Link>
+            <Link to={authHref("/auth/register", `/s/${studio.slug}`)}>Sign up to book<ArrowRight className="ms-2 h-4 w-4" /></Link>
           </Button>
           <Button asChild variant="outline" size="lg">
-            <Link to="/auth/login">Sign in</Link>
+            <Link to={authHref("/auth/login", `/s/${studio.slug}`)}>Sign in</Link>
           </Button>
         </div>
       </section>
@@ -166,9 +169,7 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
                         {c.location_name ? ` · ${c.location_name}` : ""}
                       </p>
                     </div>
-                    <Button asChild variant="outline" size="sm" className="shrink-0">
-                      <Link to={`/auth/register?studio=${studio.slug}&class=${c.occurrence_id}`}>Book</Link>
-                    </Button>
+                    <BookClassButton occurrenceId={c.occurrence_id} studioSlug={studio.slug} className="shrink-0" />
                   </CardContent>
                 </Card>
               );
@@ -194,9 +195,14 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
                   <p className="mt-1 text-xs text-muted-foreground">
                     {m.classes_per_cycle == null ? "Unlimited classes" : `${m.classes_per_cycle} classes / cycle`}
                   </p>
-                  <Button asChild size="sm" className="mt-3 w-full" style={accent ? { backgroundColor: accent } : undefined}>
-                    <Link to="/auth/register">Get started</Link>
-                  </Button>
+                  <PurchaseButton
+                    kind="membership"
+                    studioId={studio.id}
+                    studioSlug={studio.slug}
+                    itemId={m.id}
+                    label="Get started"
+                    style={accent ? { backgroundColor: accent } : undefined}
+                  />
                 </CardContent>
               </Card>
             ))}
@@ -208,9 +214,14 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
                   <p className="mt-1 text-xs text-muted-foreground">
                     {p.class_count} classes · valid {p.validity_days} days
                   </p>
-                  <Button asChild variant="outline" size="sm" className="mt-3 w-full">
-                    <Link to="/auth/register">Buy pack</Link>
-                  </Button>
+                  <PurchaseButton
+                    kind="class_pack"
+                    studioId={studio.id}
+                    studioSlug={studio.slug}
+                    itemId={p.id}
+                    label="Buy pack"
+                    variant="outline"
+                  />
                 </CardContent>
               </Card>
             ))}

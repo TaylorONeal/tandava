@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,9 +9,19 @@ import { useAuth } from "@/contexts/AuthContext";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { authHref, resolveAfterAuth, safeNext, stashReturn } from "@/lib/authReturn";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  // Destination to resume after signing in: explicit ?next=, or the page a ProtectedRoute bounced from.
+  const nextParam = safeNext(searchParams.get("next"));
+  const from = (location.state as { from?: { pathname?: string; search?: string } } | null)?.from ?? null;
+  const resumePath = nextParam ?? safeNext(from?.pathname ? `${from.pathname}${from.search ?? ""}` : null);
+  useEffect(() => {
+    if (resumePath) stashReturn(resumePath); // survives the Google redirect
+  }, [resumePath]);
   const { toast } = useToast();
   const { signInWithEmail, signInWithGoogle } = useAuth();
   const { t } = useTranslation('auth');
@@ -48,7 +58,7 @@ const Login = () => {
       description: t('signInSuccess'),
     });
 
-    navigate("/");
+    navigate(resolveAfterAuth({ next: nextParam, from }), { replace: true });
     setIsLoading(false);
   };
 
@@ -204,7 +214,7 @@ const Login = () => {
           {/* Sign up link */}
           <p className="text-center text-sm text-muted-foreground">
             {t('noAccount')}{" "}
-            <Link to="/auth/register" className="text-primary hover:underline font-medium">
+            <Link to={authHref("/auth/register", resumePath)} className="text-primary hover:underline font-medium">
               {t('signUp')}
             </Link>
           </p>

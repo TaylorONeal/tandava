@@ -30,7 +30,7 @@ import type {
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 
 // ---------------------------------------------------------------------------
 // Supabase client singleton
@@ -190,6 +190,14 @@ const supabaseData: DataProvider = {
 
     return {
       data: (data as Booking) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async bookClassAuto(occurrenceId: string): Promise<DataResult<BookClassAutoResult>> {
+    const { data, error } = await getClient().rpc("book_class_auto", { p_occurrence_id: occurrenceId } as never);
+    return {
+      data: (data as BookClassAutoResult) ?? null,
       error: error ? { message: error.message } : null,
     };
   },

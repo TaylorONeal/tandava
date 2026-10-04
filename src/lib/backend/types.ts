@@ -9,7 +9,7 @@
  * See docs/developer/backend-flexibility.md for architecture details.
  */
 
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { FeedbackType } from "@/types/database";
 
 // ---------------------------------------------------------------------------
@@ -120,6 +120,8 @@ export interface DataProvider {
    * Drop-in/paid bookings use the Stripe checkout flow instead.
    */
   bookClass(input: BookClassInput): Promise<DataResult<Booking>>;
+  /** Book with the best available source, or report that payment is needed. */
+  bookClassAuto(occurrenceId: string): Promise<DataResult<BookClassAutoResult>>;
 
   /** Cancel a booking via the cancel_booking() RPC (late-cancel detection + refund/fee). */
   cancelBooking(bookingId: string): Promise<DataResult<Booking>>;

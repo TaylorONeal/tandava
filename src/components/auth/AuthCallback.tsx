@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "@/lib/backend";
+import { resolveAfterAuth } from "@/lib/authReturn";
 
 /**
  * Handles the OAuth redirect callback.
@@ -13,7 +14,7 @@ export function AuthCallback() {
   useEffect(() => {
     auth.getSession().then(({ user }) => {
       if (user) {
-        navigate("/", { replace: true });
+        navigate(resolveAfterAuth({}), { replace: true });
       } else {
         navigate("/auth/login", { replace: true });
       }

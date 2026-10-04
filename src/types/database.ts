@@ -2701,6 +2701,27 @@ export interface PublicScheduleRow {
   studio_primary_color: string | null;
 }
 
+/**
+ * book_class_auto(): membership first, then class pack, else the student pays.
+ * `type` (not interface) so it stays assignable to Record<string, unknown> for supabase rpc().
+ */
+export type BookClassAutoArgs = { p_occurrence_id: string };
+
+export type BookClassAutoResult =
+  | {
+      result: "booked";
+      booking_id: string;
+      /** 'waitlisted' when the class was full and the student holds an entitlement. */
+      status: "confirmed" | "waitlisted";
+      source_type: "membership" | "class_pack";
+      source_id: string;
+    }
+  | {
+      result: "needs_payment";
+      drop_in_price_cents: number | null;
+      currency: string;
+    };
+
 /** One upcoming class from the public discover_classes() RPC (safe public columns only). */
 export interface DiscoverClassRow {
   occurrence_id: string;
@@ -2800,6 +2821,10 @@ export interface Database {
       cancel_booking: {
         Args: { p_booking_id: string };
         Returns: Booking;
+      };
+      book_class_auto: {
+        Args: BookClassAutoArgs;
+        Returns: BookClassAutoResult;
       };
       get_public_schedule: {
         Args: { p_slug: string; p_limit?: number };
