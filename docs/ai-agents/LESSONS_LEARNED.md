@@ -570,6 +570,7 @@ Found by the launch-v1 audit. Each has a test in `supabase/tests/`.
 | Payments routed to platform account when studio not onboarded | Money to wrong account | Gate on `stripe_charges_enabled` |
 | `interface` for Supabase rpc Args | Not assignable to Record<string, unknown> | Use `type` |
 | A test that never failed proves nothing | Easy to write vacuous tests | Revert the fix, watch the test fail, then restore |
+| Charge before reserving | A paid drop-in could land on a full class and only be flagged for refund | Take the seat first (`hold_spot`), count live holds in every capacity check |
 | Docs drift from code | `.env.example` missed vars, STATUS was 8 months stale | W0-3 and W0-4: update docs in the same PR |
 
 ## Quick Reference: Prevention Patterns

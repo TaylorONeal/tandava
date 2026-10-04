@@ -28,7 +28,7 @@ Student (guest then member), Studio owner/admin, Front desk, Teacher. Platform o
 | "Marketplace is just a page" | The page was real but every write behind it was mock or unsafe. Audit found 10 tables with no RLS, studio rows readable by anon, free classes via waitlist, double refunds | W1 to W3 built first, before any new UI |
 | "Fix bugs as found" | Bugs clustered by root cause (no ledger, two waitlist paths, no idempotency). Patching leaves the cause | One entitlement ledger, one waitlist path, one fulfilment path |
 | "White label the studio app" | Two builds double the support surface before there are 5 customers | Decision D2: one app, studio-branded storefront at `/s/:slug` and custom domains later |
-| "Guest checkout is easy" | Paying before a seat is held can charge for a full class | Today: flagged for refund. Planned: hold_spot before checkout (W4-3) |
+| "Guest checkout is easy" | Paying before a seat is held can charge for a full class | Built: `hold_spot` takes the seat before checkout (00027). Edge: a hold that lapses before payment still flags a refund |
 | "Tests exist" | They did not run anywhere | CI runs web and database jobs (W0) |
 | "Take rate model" | Not decided and drives Stripe Connect design | D1 open; code supports `platform_fee_cents` either way |
 
@@ -62,7 +62,7 @@ Waves are ordered by dependency, not by visibility. A later wave may not start o
 |---|---|---|---|
 | Edge functions never executed in tests (no Deno) | Webhook bugs reach Stripe test mode first | Fulfilment logic is in SQL and tested; run Stripe CLI replay before pilot | W7 |
 | No UI E2E | Booking UI regressions invisible | Decide Playwright (D6) | W4 |
-| Paid drop-in for a now-full class | Charge without a seat | hold_spot, then checkout | W4-3 |
+| Hold lapses before payment and class fills | Charge without a seat (rare) | 35 min hold vs 31 min Stripe session; refund flag remains | W4-3 done |
 | `FOR ALL` staff policies without role filter, 42 write policies skipping is_active | Deactivated staff keep write access | Tightening migration | W5-4 |
 | ~128 bare `auth.uid()` in old policies, ~25 missing FK indexes | Slow at scale | Perf migration | W5-5 |
 | Edited applied migrations 00005/00008/00009 | Prod drift | Taylor confirms, D5 | W0 |

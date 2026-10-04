@@ -43,7 +43,8 @@ Rules: one slice per commit (`W4-2a`), a test lands with the code, a DB change i
 |---|---|---|---|---|
 | W4-1 | `book_class_auto` | W3 | AUTO-01..06 | DONE (00026) |
 | W4-2 | Return-to-intent auth, storefront Book and Buy buttons | W4-1 | authReturn unit tests | DONE |
-| W4-3 | `hold_spot` then checkout so a paid drop-in cannot hit a full class | W4-1, D7 | PAY + race test | NEXT |
+| W4-3 | `hold_spot` then checkout so a paid drop-in cannot hit a full class | W4-1 | HOLD-01..11 | DONE (00027, checkout calls it) |
+| W4-6 | Turnstile on sign-up (Supabase Auth captcha). Needs `frame-src https://challenges.cloudflare.com` in vercel.json CSP and a site key env var | D7 | E2E | NEXT |
 | W4-4 | Playwright E2E-01 guest to booked | W4-2, D6 | E2E-01 | UI half DONE (`npm run test:e2e`, mocked Supabase, in CI). Full stack half needs local Supabase |
 | W4-5 | Wire real data into Schedule, MySchedule, Account (replace mocks) | W4-1 | E2E | LATER |
 

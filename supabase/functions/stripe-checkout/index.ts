@@ -150,14 +150,11 @@ serve(async (req) => {
 
       const { data: occ } = await db
         .from("class_occurrences")
-        .select("id, studio_id, offering_id, capacity, booked_count, checked_in_count, is_cancelled")
+        .select("id, studio_id, offering_id, is_cancelled")
         .eq("id", occurrenceId)
         .single();
       if (!occ) return json({ error: "Class not found" }, 404);
       if (occ.is_cancelled) return json({ error: "Class is cancelled" }, 409);
-      if ((occ.booked_count ?? 0) + (occ.checked_in_count ?? 0) >= (occ.capacity ?? 0)) {
-        return json({ error: "Class is full" }, 409);
-      }
 
       // Prevent a duplicate booking. Past cancelled rows are allowed (a student may re-book).
       const { data: existing } = await db
@@ -181,7 +178,18 @@ serve(async (req) => {
 
       const { currency, connected } = await connectFor(occ.studio_id as string);
 
+      // Take the seat BEFORE the student pays (migration 00027). Runs as the caller, so
+      // hold_spot sees auth.uid(). It refuses full classes, which closes the paid-but-full gap.
+      const { error: holdError } = await userClient.rpc("hold_spot", { p_occurrence_id: occurrenceId });
+      if (holdError) {
+        const full = /full/i.test(holdError.message);
+        const status = full || /already|too many|started|cancelled/i.test(holdError.message) ? 409 : 500;
+        return json({ error: holdError.message }, status);
+      }
+
       const session = await stripe.checkout.sessions.create({
+        // Stripe requires >= 30 minutes; the 35 minute hold outlives the session by design.
+        expires_at: Math.floor(Date.now() / 1000) + 31 * 60,
         mode: "payment",
         line_items: [
           {

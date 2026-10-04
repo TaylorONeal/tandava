@@ -20,7 +20,7 @@ cleanup() { q -c "$CLEAN" >/dev/null 2>&1 || true; }
 trap cleanup EXIT
 
 failed=0
-for f in 010_isolation 015_baseline 020_discover 030_booking 035_booking_integrity 037_book_auto 060_payments; do
+for f in 010_isolation 015_baseline 020_discover 030_booking 035_booking_integrity 037_book_auto 038_seat_holds 060_payments; do
   echo "== $f"
   cleanup
   q -f fixtures.sql >/dev/null || { echo "fixtures failed"; exit 2; }

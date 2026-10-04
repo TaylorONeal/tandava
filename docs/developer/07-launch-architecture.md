@@ -60,7 +60,8 @@ sequenceDiagram
   else needs payment
     DB-->>UI: needs_payment
     UI->>CO: drop-in checkout
-    CO->>ST: session (idempotency key)
+    CO->>DB: hold_spot (35 min, refuses if full)
+    CO->>ST: session (idempotency key, expires in 31 min)
     ST-->>WH: checkout.session.completed
     WH->>DB: fulfill_stripe_checkout (dedupe by event id)
     DB-->>G: booking confirmed
