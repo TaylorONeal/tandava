@@ -5,7 +5,7 @@
 -- work from the app. This migration gives every one of them an explicit,
 -- least-privilege policy so the next feature does not start by guessing.
 --
--- Policy classes (see docs/developer/06-launch-architecture.md):
+-- Policy classes (see docs/developer/07-launch-architecture.md):
 --   A  studio config      staff read, owner/admin write       (studio_id column)
 --   B  member activity    member reads own, staff read        (studio_id + profile_id)
 --   C  child of a parent  tenant reached through the parent
