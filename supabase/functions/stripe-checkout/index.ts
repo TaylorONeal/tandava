@@ -11,12 +11,19 @@
  * supabase-js `functions.invoke`). All prices are read server-side from the
  * database so the client can never set its own amount.
  *
- * Connect modes (auto-detected per studio):
- *   - Single studio self-host: the deploying studio's own Stripe key is the
- *     platform key, `studios.stripe_account_id` is null → charge directly.
- *   - Platform / multi-studio: `studios.stripe_account_id` is set → use
- *     destination charges (transfer_data) so funds land in the studio's
- *     connected account, with an optional platform fee (PLATFORM_FEE_BPS).
+ * Connect modes (STRIPE_CONNECT_MODE):
+ *   - "platform" (default, hosted multi-studio): a studio can only be paid
+ *     once Stripe reports `charges_enabled` for its connected account
+ *     (studios.stripe_charges_enabled, kept current by the webhook). Money is
+ *     routed with destination charges (transfer_data) and an optional platform
+ *     fee (PLATFORM_FEE_BPS). A studio that is not ready gets a 409 rather
+ *     than silently charging the platform account.
+ *   - "direct" (single-studio self-host): the deploying studio's own Stripe
+ *     key is the platform key; charge directly with no transfer.
+ *
+ * Return URLs are restricted to APP_URL and its subdomains (see _shared/urls.ts).
+ * Every session is created with an idempotency key so a double click or a
+ * retry reuses the same Checkout Session instead of opening a second one.
  *
  * Deploy: supabase functions deploy stripe-checkout
  * Secrets:
@@ -28,6 +35,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import Stripe from "https://esm.sh/stripe@14?target=deno";
+import { safeReturnUrl } from "../_shared/urls.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
   apiVersion: "2024-06-20",
@@ -38,6 +46,9 @@ const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 const appUrl = Deno.env.get("APP_URL") ?? "http://localhost:8080";
 const platformFeeBps = parseInt(Deno.env.get("PLATFORM_FEE_BPS") ?? "0", 10);
+const connectMode = (Deno.env.get("STRIPE_CONNECT_MODE") ?? "platform").toLowerCase();
+
+class PaymentsUnavailable extends Error {}
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -102,25 +113,35 @@ serve(async (req) => {
   }
 
   const type = String(payload.type ?? "");
-  const successUrl =
-    (payload.successUrl as string) ?? `${appUrl}/account?checkout=success`;
-  const cancelUrl =
-    (payload.cancelUrl as string) ?? `${appUrl}/schedule?checkout=cancelled`;
+  const successUrl = safeReturnUrl(
+    payload.successUrl,
+    `${appUrl}/account?checkout=success`,
+    appUrl,
+  );
+  const cancelUrl = safeReturnUrl(
+    payload.cancelUrl,
+    `${appUrl}/schedule?checkout=cancelled`,
+    appUrl,
+  );
+  // Same buyer + same item within a minute = same Checkout Session.
+  const idem = (target: string) => ({
+    idempotencyKey: `${profileId}:${type}:${target}:${Math.floor(Date.now() / 60000)}`,
+  });
 
   try {
     // Resolve studio + Stripe Connect routing once we know the studio id.
     const connectFor = async (studioId: string) => {
       const { data: studio } = await db
         .from("studios")
-        .select("stripe_account_id, stripe_onboarding_complete, currency")
+        .select("stripe_account_id, stripe_charges_enabled, currency")
         .eq("id", studioId)
         .single();
       const currency = (studio?.currency ?? "USD").toLowerCase();
-      const connected =
-        studio?.stripe_account_id && studio?.stripe_onboarding_complete
-          ? (studio.stripe_account_id as string)
-          : null;
-      return { currency, connected };
+      if (connectMode === "direct") return { currency, connected: null };
+      if (!studio?.stripe_account_id || !studio?.stripe_charges_enabled) {
+        throw new PaymentsUnavailable("This studio cannot accept online payments yet.");
+      }
+      return { currency, connected: studio.stripe_account_id as string };
     };
 
     if (type === "drop_in") {
@@ -129,23 +150,24 @@ serve(async (req) => {
 
       const { data: occ } = await db
         .from("class_occurrences")
-        .select("id, studio_id, offering_id, capacity, booked_count, is_cancelled")
+        .select("id, studio_id, offering_id, capacity, booked_count, checked_in_count, is_cancelled")
         .eq("id", occurrenceId)
         .single();
       if (!occ) return json({ error: "Class not found" }, 404);
       if (occ.is_cancelled) return json({ error: "Class is cancelled" }, 409);
-      if ((occ.booked_count ?? 0) >= (occ.capacity ?? 0)) {
+      if ((occ.booked_count ?? 0) + (occ.checked_in_count ?? 0) >= (occ.capacity ?? 0)) {
         return json({ error: "Class is full" }, 409);
       }
 
-      // Prevent a duplicate booking (mirrors the UNIQUE constraint).
+      // Prevent a duplicate booking. Past cancelled rows are allowed (a student may re-book).
       const { data: existing } = await db
         .from("bookings")
-        .select("id, status")
+        .select("id")
         .eq("class_occurrence_id", occurrenceId)
         .eq("profile_id", profileId)
-        .maybeSingle();
-      if (existing && existing.status !== "cancelled" && existing.status !== "late_cancel") {
+        .not("status", "in", "(cancelled,late_cancel)")
+        .limit(1);
+      if (existing && existing.length > 0) {
         return json({ error: "You are already booked for this class" }, 409);
       }
 
@@ -180,6 +202,7 @@ serve(async (req) => {
           profile_id: profileId,
           studio_id: occ.studio_id as string,
           amount_cents: String(amount),
+          platform_fee_cents: String(Math.round((amount * platformFeeBps) / 10000)),
         },
         ...(connected
           ? {
@@ -189,7 +212,7 @@ serve(async (req) => {
               },
             }
           : {}),
-      });
+      }, idem(occurrenceId));
 
       return json({ url: session.url });
     }
@@ -247,7 +270,7 @@ serve(async (req) => {
           profile_id: profileId,
           studio_id: mt.studio_id as string,
         },
-      });
+      }, idem(membershipTypeId));
 
       return json({ url: session.url });
     }
@@ -290,6 +313,7 @@ serve(async (req) => {
           class_pack_type_id: classPackTypeId,
           profile_id: profileId,
           studio_id: pt.studio_id as string,
+          platform_fee_cents: String(Math.round((amount * platformFeeBps) / 10000)),
         },
         ...(connected
           ? {
@@ -299,7 +323,7 @@ serve(async (req) => {
               },
             }
           : {}),
-      });
+      }, idem(classPackTypeId));
 
       return json({ url: session.url });
     }
@@ -424,13 +448,14 @@ serve(async (req) => {
               },
             }
           : {}),
-      });
+      }, idem(`${eventId}:${tierId ?? ""}:${paymentOption}`));
 
       return json({ url: session.url });
     }
 
     return json({ error: `Unknown checkout type: ${type}` }, 400);
   } catch (err) {
+    if (err instanceof PaymentsUnavailable) return json({ error: err.message }, 409);
     console.error("[stripe-checkout] error:", err);
     return json({ error: (err as Error).message ?? "Checkout failed" }, 500);
   }

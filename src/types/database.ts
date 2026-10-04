@@ -43,6 +43,7 @@ export interface Studio {
   currency: string;
   stripe_account_id: string | null;
   stripe_onboarding_complete: boolean;
+  stripe_charges_enabled?: boolean;
   discoverable: boolean;
   brand_primary_color: string;
   brand_secondary_color: string;
