@@ -132,3 +132,48 @@ BEGIN
   SELECT count(*) INTO n FROM messages; EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(n = 0, 'SEC-06', 'other studio staff cannot read it');
 END $$;
+
+DO $$
+DECLARE bare text; n bigint; msg text; rid uuid;
+BEGIN
+  -- SEC-07: RLS on with zero policies means the feature behind the table cannot work from
+  -- the app. New tables must ship with a policy (or be added to an explicit allowlist here).
+  SELECT string_agg(c.relname, ', ') INTO bare FROM pg_class c
+  WHERE c.relnamespace = 'public'::regnamespace AND c.relkind = 'r' AND c.relrowsecurity
+    AND NOT EXISTS (SELECT 1 FROM pg_policy p WHERE p.polrelid = c.oid);
+  PERFORM pg_temp.ok(bare IS NULL, 'SEC-07', 'every RLS table has at least one policy' || COALESCE(': ' || bare, ''));
+
+  -- SEC-08 (class A, studio config): staff read, owner writes, others see nothing.
+  INSERT INTO nudge_rules (studio_id, nudge_type, trigger_condition, title_template, body_template)
+    SELECT pg_temp.id('studio_a'), e.enumlabel::nudge_type, '{}'::jsonb, 't', 'b'
+    FROM pg_enum e JOIN pg_type ty ON ty.oid = e.enumtypid WHERE ty.typname = 'nudge_type' LIMIT 1
+    RETURNING id INTO rid;
+
+  PERFORM pg_temp.as_anon();
+  SELECT count(*) INTO n FROM nudge_rules; EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(n = 0, 'SEC-08', 'anon cannot read studio config');
+
+  PERFORM pg_temp.as_user(pg_temp.id('student_a1'));
+  SELECT count(*) INTO n FROM nudge_rules; EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(n = 0, 'SEC-08', 'a student cannot read studio config');
+
+  PERFORM pg_temp.as_user(pg_temp.id('staff_b'));
+  SELECT count(*) INTO n FROM nudge_rules; EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(n = 0, 'SEC-08', 'other studio staff cannot read it');
+
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  SELECT count(*) INTO n FROM nudge_rules; EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(n = 1, 'SEC-08', 'owner reads their studio config');
+
+  PERFORM pg_temp.as_user(pg_temp.id('staff_b'));
+  BEGIN
+    UPDATE nudge_rules SET title_template = 'hijack' WHERE id = rid; GET DIAGNOSTICS n = ROW_COUNT;
+  EXCEPTION WHEN OTHERS THEN n := 0; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(n = 0, 'SEC-08', 'other studio owner cannot edit it');
+
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  UPDATE nudge_rules SET title_template = 'mine' WHERE id = rid; GET DIAGNOSTICS n = ROW_COUNT;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(n = 1, 'SEC-08', 'owner can edit their studio config');
+END $$;
