@@ -12,6 +12,7 @@ Common issues, their solutions, and competitor mistakes to avoid. This document 
 5. [Frontend Gotchas](#frontend-gotchas)
 6. [Mobile-Specific Issues](#mobile-specific-issues)
 7. [Payment & Billing Edge Cases](#payment--billing-edge-cases)
+8. [Launch v1 Lessons](#launch-v1-lessons-october-2026)
 
 ---
 
@@ -550,6 +551,27 @@ if (existingPromo && newPromo) {
 
 ---
 
+## Launch v1 Lessons (October 2026)
+
+Found by the launch-v1 audit. Each has a test in `supabase/tests/`.
+
+| Lesson | Why | Prevention |
+|---|---|---|
+| Supabase grants anon full rights on new public tables | 10 tables were readable and writable with the public key, including Zoom host passwords | RLS plus at least one policy on every table; SEC tests list tables without RLS |
+| SECURITY DEFINER functions are executable by anon by default | Three lacked `search_path`, some trusted client ids | Pin `search_path`; `REVOKE ... FROM PUBLIC, anon` explicitly |
+| Policies that reference each other recurse | households and household_members hit infinite recursion | Use definer helpers (`my_household_ids()`) |
+| Counters kept in two places drift | Pack and membership counts disagreed with bookings | One ledger column and one trigger |
+| Two triggers for one job | Waitlist promoted free classes and minted credits | One path, one function |
+| A UNIQUE on (occurrence, profile) blocks rebooking | Cancel then book failed forever | Partial unique index on active statuses |
+| Last credit race | Two sessions both consumed one credit | Row lock on pack or membership; test with two psql sessions |
+| Sync Stripe `constructEvent` fails on Deno | Webhook rejected every event | `constructEventAsync` with SubtleCryptoProvider |
+| Webhook that returns 200 on error loses events | No retry | 5xx on error plus `stripe_events` dedupe |
+| Open redirect via success_url | Attacker-controlled return | Allowlist in `_shared/urls.ts` |
+| Payments routed to platform account when studio not onboarded | Money to wrong account | Gate on `stripe_charges_enabled` |
+| `interface` for Supabase rpc Args | Not assignable to Record<string, unknown> | Use `type` |
+| A test that never failed proves nothing | Easy to write vacuous tests | Revert the fix, watch the test fail, then restore |
+| Docs drift from code | `.env.example` missed vars, STATUS was 8 months stale | W0-3 and W0-4: update docs in the same PR |
+
 ## Quick Reference: Prevention Patterns
 
 | Issue Type | Prevention Pattern |
@@ -560,6 +582,9 @@ if (existingPromo && newPromo) {
 | Double actions | Disable buttons, idempotency keys |
 | Stale data | React Query, optimistic updates |
 | Mobile UX | Test on real devices, large touch targets |
+| New table | RLS + policy + test in same migration |
+| Definer fn | search_path pinned, revoke anon |
+| Money event | Idempotent by event id, 5xx on failure |
 | Offline | Service worker, queue actions |
 | Errors | Specific messages, recovery actions |
 
