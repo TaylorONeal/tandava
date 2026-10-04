@@ -128,6 +128,12 @@ Opens at http://localhost:8080 with demo data.
 
 ---
 
+## Launch work in flight
+
+See `docs/plans/PROGRESS.md` for status and next steps. Verify with
+`npm run typecheck && npm test && npm run build`. DB tests: `./supabase/tests/run.sh`
+against a local Supabase only. Home page mode is `VITE_HOME_MODE` (platform|discover).
+
 ## Database
 
 - Migrations in `supabase/migrations/`
