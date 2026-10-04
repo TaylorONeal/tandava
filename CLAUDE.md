@@ -36,11 +36,14 @@ tandava/
 │   ├── pages/          # Route components
 │   └── types/          # TypeScript types
 ├── supabase/
-│   └── migrations/     # Database migrations
+│   ├── migrations/     # Database migrations
+│   ├── functions/      # Edge functions (stripe-checkout, stripe-webhook, stripe-connect)
+│   └── tests/          # Plain-SQL DB tests (run via npm run test:db)
 ├── docs/
 │   ├── architecture/   # Domain model, RBAC, compliance
 │   ├── developer/      # Visual docs with Mermaid diagrams
 │   ├── guides/         # User-facing guides
+│   ├── plans/          # Launch PRD, backlog, progress
 │   └── prd/            # Product requirements
 └── public/             # Static assets
 ```
@@ -130,9 +133,17 @@ Opens at http://localhost:8080 with demo data.
 
 ## Launch work in flight
 
-See `docs/plans/PROGRESS.md` for status and next steps. Verify with
-`npm run typecheck && npm test && npm run build`. DB tests: `./supabase/tests/run.sh`
-against a local Supabase only. Home page mode is `VITE_HOME_MODE` (platform|discover).
+Start at `docs/plans/PRD-launch-v1.md` (why), `docs/plans/BACKLOG.md` (ordered tasks, pick the first NEXT
+whose Needs are DONE) and `docs/plans/PROGRESS.md` (state). Diagrams: `docs/developer/07-launch-architecture.md`.
+Verify with `npm run typecheck && npm test && npm run build && npm run test:db` (CI runs the same).
+`test:db` builds a throwaway local Postgres; never point it at production.
+
+Rules learned the hard way (full list in `docs/ai-agents/LESSONS_LEARNED.md`):
+- Every new table: RLS + policy + test in the same migration. Use `(SELECT auth.uid())` and `my_staff_studio_ids()`.
+- Every SECURITY DEFINER function: pin `search_path`, `REVOKE` from PUBLIC and anon.
+- Money events are idempotent by Stripe event id; entitlement changes go through the ledger trigger only.
+- Prove a new test fails without the fix before trusting it.
+- Update docs and `.env.example` in the same PR. Home page mode is `VITE_HOME_MODE` (platform|discover).
 
 ## Database
 

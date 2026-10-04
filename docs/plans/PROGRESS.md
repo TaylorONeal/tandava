@@ -1,5 +1,7 @@
 # Launch v1 progress and continuation
 
+Branch: `codex/launch-v1`. Why: [PRD-launch-v1.md](PRD-launch-v1.md). Ordered tasks and IDs: [BACKLOG.md](BACKLOG.md). Diagrams: [07-launch-architecture](../developer/07-launch-architecture.md). Pick the first NEXT task whose Needs are DONE.
+
 Branch: `codex/launch-v1`. Plan docs (Taylor's machine / Claude project "Tandava Studio - Launch"):
 `docs/plans/2026-10-04-launch-v1.md`, `docs/plans/2026-10-04-test-plan.md`.
 
@@ -12,7 +14,14 @@ Branch: `codex/launch-v1`. Plan docs (Taylor's machine / Claude project "Tandava
 - LV1-3a  Embed framing allowed only under `/embed/*` (vercel.json + test)
 - LV1-4a  SQL tests: `supabase/tests/` (isolation, discover, booking, last-spot race)
 
-## Not done (next, in order)
+- LV1-5a  W1 security: RLS on 10 tables, policies for 26 more (00022, 00023), SEC tests
+- LV1-5b  W3 booking integrity: entitlement ledger, one waitlist path, check_in_booking (00024)
+- LV1-5c  W2 payments: stripe_events, SQL fulfilment, thin webhook, checkout hardening (00025)
+- LV1-5d  W4 book_class_auto (00026), return-to-intent auth, storefront Book/Buy buttons
+- LV1-5e  W0 CI (`.github/workflows/ci.yml`) and `npm run test:db`
+- LV1-6a  Docs: PRD, backlog, diagrams, lessons, env drift
+
+## Not done: see BACKLOG.md (the list below is the older, pre-audit view)
 1. Storefront: honor `?class=`, let a guest pick a class and sign up after selection (E2E-01)
 2. `/for-studios` page; move open-source pitch under `/open-source` copy
 3. Policies for 26 tables with RLS on and no policy (client sees nothing)
@@ -23,7 +32,7 @@ Branch: `codex/launch-v1`. Plan docs (Taylor's machine / Claude project "Tandava
 ## Run it
 ```
 npm run typecheck && npm test && npm run build
-supabase start && supabase db reset && ./supabase/tests/run.sh   # never against production
+supabase start && supabase db reset && npm run test:db   # throwaway local DB, never production
 ```
 
 ## Flags for review
