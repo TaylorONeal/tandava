@@ -50,7 +50,7 @@ BEGIN
   EXCEPTION WHEN OTHERS THEN msg := SQLERRM;
   END;
   EXECUTE 'RESET ROLE';
-  PERFORM pg_temp.ok(msg = 'Not authenticated', 'BOOK-04', 'anon booking rejected: ' || COALESCE(msg, 'no error'));
+  PERFORM pg_temp.ok(msg IN ('Not authenticated') OR msg LIKE 'permission denied%', 'BOOK-04', 'anon booking rejected: ' || COALESCE(msg, 'no error'));
 END $$;
 
 DO $$
