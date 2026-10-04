@@ -32,7 +32,7 @@ STABLE
 SECURITY DEFINER
 SET search_path = public
 AS $$
-  SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid();
+  SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active;
 $$;
 
 CREATE OR REPLACE FUNCTION my_admin_studio_ids()

@@ -53,7 +53,7 @@ AS $$
     o.duration_minutes,
     o.drop_in_price_cents,
     s.currency,
-    GREATEST(co.capacity - COALESCE(co.booked_count, 0), 0),
+    GREATEST(co.capacity - COALESCE(co.booked_count, 0) - COALESCE(co.checked_in_count, 0), 0),
     p.display_name,
     l.name,
     l.city,

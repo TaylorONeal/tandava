@@ -60,7 +60,7 @@ BEGIN
   END IF;
 
   -- Capacity decides confirmed vs waitlisted.
-  IF v_occ.booked_count < v_occ.capacity THEN
+  IF COALESCE(v_occ.booked_count, 0) + COALESCE(v_occ.checked_in_count, 0) < v_occ.capacity THEN
     v_status := 'confirmed';
   ELSE
     v_status := 'waitlisted';

@@ -13,7 +13,7 @@
  * private or unknown slug lands on the neutral "not available" state below.
  */
 
-import { useParams, Link } from "react-router-dom";
+import { useParams, useSearchParams, Link } from "react-router-dom";
 import { useStudioStorefront, usePublicSchedule } from "@/hooks/useBooking";
 import { isBackendConfigured } from "@/lib/backend";
 import { formatPrice } from "@/lib/reference-data";
@@ -32,6 +32,7 @@ const CYCLE_LABEL: Record<string, string> = {
 
 export default function StudioStorefront({ slug: slugProp }: { slug?: string } = {}) {
   const params = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
   // Slug comes from the route (/s/:slug) or, on a studio subdomain, the host.
   const slug = slugProp ?? params.slug;
   const { data: storefront, isLoading, isError } = useStudioStorefront(slug);
@@ -74,7 +75,13 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
   const { studio, offerings, memberships, packs } = storefront;
   const accent = studio.primary_color || undefined;
   const currency = studio.currency || "USD";
-  const upcoming = (schedule ?? []).slice(0, 6);
+  const all = schedule ?? [];
+  const selectedId = searchParams.get("class");
+  const selected = selectedId ? all.find((c) => String(c.occurrence_id) === selectedId) : undefined;
+  // Keep the class the visitor picked on Discover visible, even past the first six.
+  const upcoming = selected
+    ? [selected, ...all.filter((c) => c !== selected).slice(0, 5)]
+    : all.slice(0, 6);
 
   return (
     <Shell studioName={studio.name} accent={accent}>
@@ -144,7 +151,10 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
             {upcoming.map((c) => {
               const when = new Date(c.starts_at);
               return (
-                <Card key={c.occurrence_id}>
+                <Card
+                  key={c.occurrence_id}
+                  className={c === selected ? "ring-2 ring-primary" : undefined}
+                >
                   <CardContent className="p-3 sm:p-4 flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <p className="font-medium text-sm truncate">{c.offering_name}</p>
@@ -157,7 +167,7 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
                       </p>
                     </div>
                     <Button asChild variant="outline" size="sm" className="shrink-0">
-                      <Link to="/auth/register">Book</Link>
+                      <Link to={`/auth/register?studio=${studio.slug}&class=${c.occurrence_id}`}>Book</Link>
                     </Button>
                   </CardContent>
                 </Card>

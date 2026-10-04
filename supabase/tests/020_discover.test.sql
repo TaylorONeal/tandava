@@ -63,6 +63,10 @@ BEGIN
   INSERT INTO bookings (studio_id, class_occurrence_id, profile_id, status)
     VALUES (pg_temp.id('studio_a'), pg_temp.id('occ_a_open'), pg_temp.id('student_a1'), 'confirmed');
   PERFORM pg_temp.ok((SELECT spots_left FROM discover_classes() WHERE studio_slug = 'studio-a') = 0, 'DISC-06', 'full class shows 0 spots');
+  -- DISC-08: a checked-in attendee still occupies a seat
+  UPDATE bookings SET status = 'checked_in'
+    WHERE class_occurrence_id = pg_temp.id('occ_a_open') AND profile_id = pg_temp.id('student_a1');
+  PERFORM pg_temp.ok((SELECT spots_left FROM discover_classes() WHERE studio_slug = 'studio-a') = 0, 'DISC-08', 'checked-in attendee still counts as a taken seat');
 END $$;
 
 DO $$
