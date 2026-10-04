@@ -88,9 +88,10 @@ serve(async (req) => {
   try {
     const result = await handle(event);
     console.log(`[stripe-webhook] ${event.id} ${event.type}:`, JSON.stringify(result ?? "ok"));
-    if (result && typeof result === "object" && result.note) {
+    const note = result && typeof result === "object" && "note" in result ? result.note : undefined;
+    if (note) {
       // e.g. "class full: refund needed" - surfaces in the function logs for the studio to act on.
-      console.warn(`[stripe-webhook] ${event.id} needs attention: ${result.note}`);
+      console.warn(`[stripe-webhook] ${event.id} needs attention: ${note}`);
     }
     return new Response(JSON.stringify({ received: true }), {
       status: 200,

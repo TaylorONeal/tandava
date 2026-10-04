@@ -45,3 +45,14 @@ jobs:
         run: bash scripts/db-test.sh
         env:
           ADMIN_URL: postgresql://postgres:postgres@127.0.0.1:5432/postgres
+
+  edge:
+    name: edge functions typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      # push/ is excluded: its esm.sh web-push types have no default export (pre-existing, works at runtime).
+      - run: deno check supabase/functions/stripe-webhook/index.ts supabase/functions/stripe-checkout/index.ts supabase/functions/stripe-connect/index.ts

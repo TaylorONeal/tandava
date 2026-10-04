@@ -145,6 +145,19 @@ Rules learned the hard way (full list in `docs/ai-agents/LESSONS_LEARNED.md`):
 - Prove a new test fails without the fix before trusting it.
 - Update docs and `.env.example` in the same PR. Home page mode is `VITE_HOME_MODE` (platform|discover).
 
+## Access and tooling (cloud sessions)
+
+Set up once, so nobody rediscovers it:
+
+| Need | Works | Does not | Use |
+|---|---|---|---|
+| GitHub PRs, checks, comments | `gh api repos/TaylorONeal/tandava/...` (REST) | `gh pr ...` and `gh auth status` (GraphQL blocked, GH_TOKEN reported invalid but REST is authenticated) | `gh api .../pulls/N`, `.../commits/SHA/check-runs`, `.../pulls/N/ccr/review_threads` |
+| Git push | `git push` | | Branch tracking needs `remote.origin.fetch` for the branch |
+| Edge function typecheck | `npm i -g deno`, `npm run check:edge` | github.com release downloads (403) | Install CLIs via npm, not release tarballs |
+| Supabase CLI | `npm i -g supabase` | | Local DB tests use `npm run test:db` (plain Postgres, no Docker needed) |
+| Browser tests | Playwright + Chromium preinstalled at `/opt/pw-browsers` | `playwright install` | Launch with `executablePath: '/opt/pw-browsers/chromium'` |
+| Stripe CLI | not installable (release download blocked) | | Replay events by POSTing signed payloads, or run from Taylor's machine |
+
 ## Database
 
 - Migrations in `supabase/migrations/`
