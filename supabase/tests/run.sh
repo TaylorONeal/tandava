@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Database tests: tenant isolation, discovery, booking, and the last-spot race.
+#
+# Usage:
+#   supabase start && supabase db reset      # applies every migration
+#   ./supabase/tests/run.sh
+#
+# Override the target with DATABASE_URL (default: the local Supabase database).
+# Needs psql and a role that may SET ROLE anon/authenticated (the local
+# `postgres` user can). Fixtures use fixed UUIDs and are removed afterwards.
+# Do NOT point this at a production database.
+set -uo pipefail
+cd "$(dirname "$0")"
+
+DB_URL="${DATABASE_URL:-postgresql://postgres:postgres@127.0.0.1:54322/postgres}"
+q() { psql "$DB_URL" -v ON_ERROR_STOP=1 -q "$@"; }
+
+CLEAN="DELETE FROM studios WHERE id IN ('aaaaaaaa-0000-0000-0000-000000000001','bbbbbbbb-0000-0000-0000-000000000002','cccccccc-0000-0000-0000-000000000003'); DELETE FROM auth.users WHERE email LIKE '%@test.dev';"
+cleanup() { q -c "$CLEAN" >/dev/null 2>&1 || true; }
+trap cleanup EXIT
+
+failed=0
+for f in 010_isolation 020_discover 030_booking; do
+  echo "== $f"
+  cleanup
+  q -f fixtures.sql >/dev/null || { echo "fixtures failed"; exit 2; }
+  out=$(q -f "$f.test.sql" 2>&1); rc=$?
+  echo "$out" | grep -E "PASS|FAIL|INFO|ERROR" | sed -E 's/^psql:[^ ]+ //; s/^NOTICE:  //'
+  [ $rc -ne 0 ] && failed=1
+done
+
+echo "== 040_booking_race (two concurrent sessions, one seat)"
+cleanup
+q -f fixtures.sql >/dev/null || { echo "fixtures failed"; exit 2; }
+( q -t -A -f race_a.sql 2>&1 | grep RESULT ) &
+pid=$!
+q -t -A -f race_b.sql 2>&1 | grep RESULT
+wait $pid
+confirmed=$(q -t -A -c "SELECT count(*) FROM bookings WHERE class_occurrence_id='aaaaaaaa-3000-0000-0000-000000000001' AND status='confirmed'")
+if [ "$confirmed" = "1" ]; then echo "PASS BOOK-08  exactly one confirmed booking for the last spot"; else echo "FAIL BOOK-08  $confirmed confirmed bookings for a 1-seat class"; failed=1; fi
+
+if [ $failed -ne 0 ]; then echo "RESULT: FAILED"; exit 1; fi
+echo "RESULT: all database tests passed"

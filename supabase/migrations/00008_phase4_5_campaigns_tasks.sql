@@ -599,63 +599,63 @@ ALTER TABLE task_templates ENABLE ROW LEVEL SECURITY;
 -- Studio staff can manage campaigns
 CREATE POLICY "Studio staff can manage campaigns"
   ON campaigns FOR ALL
-  USING (studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid()));
+  USING (studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE));
 
 CREATE POLICY "Studio staff can manage campaign messages"
   ON campaign_messages FOR ALL
-  USING (campaign_id IN (SELECT id FROM campaigns WHERE studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid())));
+  USING (campaign_id IN (SELECT id FROM campaigns WHERE studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE)));
 
 CREATE POLICY "Studio staff can view campaign sends"
   ON campaign_sends FOR SELECT
-  USING (campaign_id IN (SELECT id FROM campaigns WHERE studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid())));
+  USING (campaign_id IN (SELECT id FROM campaigns WHERE studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE)));
 
 CREATE POLICY "Studio staff can manage audience segments"
   ON audience_segments FOR ALL
-  USING (studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid()));
+  USING (studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE));
 
 CREATE POLICY "Studio staff can manage audience members"
   ON audience_segment_members FOR ALL
-  USING (segment_id IN (SELECT id FROM audience_segments WHERE studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid())));
+  USING (segment_id IN (SELECT id FROM audience_segments WHERE studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE)));
 
 CREATE POLICY "Studio staff can manage UTM templates"
   ON utm_templates FOR ALL
-  USING (studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid()));
+  USING (studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE));
 
 CREATE POLICY "Studio staff can view link clicks"
   ON link_clicks FOR SELECT
-  USING (studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid()));
+  USING (studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE));
 
 CREATE POLICY "Studio staff can manage email templates"
   ON email_templates FOR ALL
-  USING (studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid()));
+  USING (studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE));
 
 CREATE POLICY "Studio staff can manage task categories"
   ON task_categories FOR ALL
-  USING (studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid()));
+  USING (studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE));
 
 CREATE POLICY "Studio staff can manage tasks"
   ON staff_tasks FOR ALL
-  USING (studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid()));
+  USING (studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE));
 
 CREATE POLICY "Studio staff can manage task recurrence"
   ON task_recurrence_rules FOR ALL
-  USING (studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid()));
+  USING (studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE));
 
 CREATE POLICY "Studio staff can manage task attachments"
   ON task_attachments FOR ALL
-  USING (task_id IN (SELECT id FROM staff_tasks WHERE studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid())));
+  USING (task_id IN (SELECT id FROM staff_tasks WHERE studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE)));
 
 CREATE POLICY "Studio staff can manage task comments"
   ON task_comments FOR ALL
-  USING (task_id IN (SELECT id FROM staff_tasks WHERE studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid())));
+  USING (task_id IN (SELECT id FROM staff_tasks WHERE studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE)));
 
 CREATE POLICY "Studio staff can view task activity"
   ON task_activity FOR SELECT
-  USING (task_id IN (SELECT id FROM staff_tasks WHERE studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid())));
+  USING (task_id IN (SELECT id FROM staff_tasks WHERE studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE)));
 
 CREATE POLICY "Studio staff can manage task templates"
   ON task_templates FOR ALL
-  USING (studio_id IN (SELECT studio_id FROM staff_roles WHERE profile_id = auth.uid()));
+  USING (studio_id IN (SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE));
 
 -- ============================================================================
 -- SEED DEFAULT TASK CATEGORIES
