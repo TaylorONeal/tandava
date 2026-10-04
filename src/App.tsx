@@ -125,6 +125,7 @@ const StaffWaitlist = lazy(() => import("./pages/staff/StaffWaitlist"));
 
 const Kiosk = lazy(() => import("./pages/Kiosk"));
 
+const Discover = lazy(() => import("./pages/Discover"));
 const EmbedSchedule = lazy(() => import("./pages/embed/EmbedSchedule"));
 const EmbedEvent = lazy(() => import("./pages/embed/EmbedEvent"));
 
@@ -168,6 +169,7 @@ const App = () => (
 
                   {/* ---- Public studio storefront (slug-driven; what per-studio
                        subdomains will render). Gated on studios.discoverable. ---- */}
+                  <Route path="/discover" element={<Discover />} />
                   <Route path="/s/:slug" element={<StudioStorefront />} />
 
                   {/* ---- Blog (built but not yet linked in nav; noindex until

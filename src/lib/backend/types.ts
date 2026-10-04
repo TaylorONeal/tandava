@@ -9,7 +9,7 @@
  * See docs/developer/backend-flexibility.md for architecture details.
  */
 
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, StudioStorefront } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs } from "@/types/database";
 import type { FeedbackType } from "@/types/database";
 
 // ---------------------------------------------------------------------------
@@ -129,6 +129,9 @@ export interface DataProvider {
 
   /** Public storefront (profile + offerings + pricing) for a discoverable studio by slug. Null if not discoverable. */
   getStudioStorefront(slug: string): Promise<DataResult<StudioStorefront>>;
+
+  /** Upcoming classes across all discoverable studios, with optional city/style/date filters. */
+  discoverClasses(args?: DiscoverClassesArgs): Promise<DataResult<DiscoverClassRow[]>>;
 
   /** Upcoming (non-cancelled, future) class occurrences for a studio, with offering + location joined. */
   getUpcomingClasses(studioId: string): Promise<DataResult<ClassOccurrence[]>>;

@@ -2700,6 +2700,39 @@ export interface PublicScheduleRow {
   studio_primary_color: string | null;
 }
 
+/** One upcoming class from the public discover_classes() RPC (safe public columns only). */
+export interface DiscoverClassRow {
+  occurrence_id: string;
+  starts_at: string;
+  ends_at: string;
+  offering_name: string;
+  style: string | null;
+  level: string | null;
+  is_heated: boolean | null;
+  duration_minutes: number;
+  drop_in_price_cents: number | null;
+  currency: string;
+  spots_left: number;
+  teacher_name: string | null;
+  location_name: string | null;
+  city: string | null;
+  state: string | null;
+  studio_slug: string;
+  studio_name: string;
+  studio_timezone: string;
+  studio_primary_color: string | null;
+}
+
+// `type`, not `interface`: rpc Args must be assignable to Record<string, unknown>,
+// which interfaces are not (they have no implicit index signature).
+export type DiscoverClassesArgs = {
+  p_city?: string | null;
+  p_style?: string | null;
+  p_from?: string | null;
+  p_to?: string | null;
+  p_limit?: number;
+};
+
 type DatabaseTable<Row, Insert = Partial<Row>> = {
   Row: { [Key in keyof Row]: Row[Key] };
   Insert: { [Key in keyof Insert]: Insert[Key] };
@@ -2778,6 +2811,10 @@ export interface Database {
       get_studio_storefront: {
         Args: { p_slug: string };
         Returns: StudioStorefront | null;
+      };
+      discover_classes: {
+        Args: DiscoverClassesArgs;
+        Returns: DiscoverClassRow[];
       };
     };
   };

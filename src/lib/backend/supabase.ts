@@ -30,7 +30,7 @@ import type {
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, StudioStorefront } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs } from "@/types/database";
 
 // ---------------------------------------------------------------------------
 // Supabase client singleton
@@ -221,6 +221,14 @@ const supabaseData: DataProvider = {
     const { data, error } = await getClient().rpc("get_studio_storefront", { p_slug: slug } as never);
     return {
       data: (data as StudioStorefront) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async discoverClasses(args = {}): Promise<DataResult<DiscoverClassRow[]>> {
+    const { data, error } = await getClient().rpc("discover_classes", args as never);
+    return {
+      data: (data as DiscoverClassRow[]) ?? null,
       error: error ? { message: error.message } : null,
     };
   },
