@@ -80,6 +80,8 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
   const currency = studio.currency || "USD";
   const all = schedule ?? [];
   const selectedId = searchParams.get("class");
+  // Hero sign-up links return the visitor to the class they came for, not just the studio.
+  const returnTo = selectedId ? `/s/${slug}?class=${encodeURIComponent(selectedId)}` : `/s/${slug}`;
   const selected = selectedId ? all.find((c) => String(c.occurrence_id) === selectedId) : undefined;
   // Keep the class the visitor picked on Discover visible, even past the first six.
   const upcoming = selected
@@ -105,10 +107,10 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
         )}
         <div className="mt-6 flex flex-wrap gap-3">
           <Button asChild size="lg" style={accent ? { backgroundColor: accent } : undefined}>
-            <Link to={authHref("/auth/register", `/s/${studio.slug}`)}>Sign up to book<ArrowRight className="ms-2 h-4 w-4" /></Link>
+            <Link to={authHref("/auth/register", returnTo)}>Sign up to book<ArrowRight className="ms-2 h-4 w-4" /></Link>
           </Button>
           <Button asChild variant="outline" size="lg">
-            <Link to={authHref("/auth/login", `/s/${studio.slug}`)}>Sign in</Link>
+            <Link to={authHref("/auth/login", returnTo)}>Sign in</Link>
           </Button>
         </div>
       </section>

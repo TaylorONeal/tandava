@@ -67,7 +67,10 @@ Waves are ordered by dependency, not by visibility. A later wave may not start o
 | ~128 bare `auth.uid()` in old policies, ~25 missing FK indexes | Slow at scale | Perf migration | W5-5 |
 | Edited applied migrations 00005/00008/00009 | Prod drift | Taylor confirms, D5 | W0 |
 
-## 8. Open decisions
+## 8. Decisions
+
+Answered 2026-10-04: D5 keep edits after a prod schema diff (blocked: no Tandava project in the connected Supabase account), D6 Playwright yes, D7 Turnstile yes, D9 preview bypass yes (done). D1 and D2 stay at the defaults below until Taylor says otherwise.
+
 
 | ID | Decision | Default I would take |
 |---|---|---|

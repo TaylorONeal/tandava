@@ -155,7 +155,8 @@ Set up once, so nobody rediscovers it:
 | Git push | `git push` | | Branch tracking needs `remote.origin.fetch` for the branch |
 | Edge function typecheck | `npm i -g deno`, `npm run check:edge` | github.com release downloads (403) | Install CLIs via npm, not release tarballs |
 | Supabase CLI | `npm i -g supabase` | | Local DB tests use `npm run test:db` (plain Postgres, no Docker needed) |
-| Browser tests | Playwright + Chromium preinstalled at `/opt/pw-browsers` | `playwright install` | Launch with `executablePath: '/opt/pw-browsers/chromium'` |
+| Browser tests | `npm run test:e2e` (Playwright, Supabase mocked). Locally: `PW_CHROMIUM_PATH=/opt/pw-browsers/chromium-1194/chrome-linux/chrome` | `playwright install` (no network) | CI installs its own Chromium |
+| Vercel preview | Vercel MCP `web_fetch_vercel_url` (bypass built in, returns headers) | plain curl (SSO 401) | Use it to verify headers and pages |
 | Stripe CLI | not installable (release download blocked) | | Replay events by POSTing signed payloads, or run from Taylor's machine |
 
 ## Database

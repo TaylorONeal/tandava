@@ -6,7 +6,7 @@ Rules: one slice per commit (`W4-2a`), a test lands with the code, a DB change i
 
 | ID | Task | Needs | Acceptance | Status |
 |---|---|---|---|---|
-| W0-1 | CI: web and database jobs | none | `.github/workflows/ci.yml` green on PR | DONE (confirm first run) |
+| W0-1 | CI: web and database jobs | none | `.github/workflows/ci.yml` green on PR | DONE (green on PR #64) |
 | W0-2 | `npm run test:db` builds a throwaway DB, applies all migrations, runs tests | none | exits 0 on clean DB | DONE |
 | W0-3 | `.env.example` matches code | none | every `Deno.env.get`/`import.meta.env` var listed | DONE in this PR |
 | W0-4 | Doc reconcile (STATUS, HANDOFF, ROADMAP, INDEX, CLAUDE.md) | none | banners point to PRD | DONE in this PR |
@@ -44,7 +44,7 @@ Rules: one slice per commit (`W4-2a`), a test lands with the code, a DB change i
 | W4-1 | `book_class_auto` | W3 | AUTO-01..06 | DONE (00026) |
 | W4-2 | Return-to-intent auth, storefront Book and Buy buttons | W4-1 | authReturn unit tests | DONE |
 | W4-3 | `hold_spot` then checkout so a paid drop-in cannot hit a full class | W4-1, D7 | PAY + race test | NEXT |
-| W4-4 | Playwright E2E-01 guest to booked | W4-2, D6 | E2E-01 | NEXT |
+| W4-4 | Playwright E2E-01 guest to booked | W4-2, D6 | E2E-01 | UI half DONE (`npm run test:e2e`, mocked Supabase, in CI). Full stack half needs local Supabase |
 | W4-5 | Wire real data into Schedule, MySchedule, Account (replace mocks) | W4-1 | E2E | LATER |
 
 ## W5 Studio supply
@@ -71,7 +71,7 @@ Rules: one slice per commit (`W4-2a`), a test lands with the code, a DB change i
 | ID | Task | Needs | Status |
 |---|---|---|---|
 | W7-1 | Stripe CLI replay of every handled event | W2-2 | LATER |
-| W7-2 | Verify embed headers on a real preview | D9 | LATER |
+| W7-2 | Verify embed headers on a real preview | D9 | DONE: /embed/* has frame-ancestors * and no X-Frame-Options; /discover has frame-ancestors none and DENY. Re-check on prod domain |
 | W7-3 | 3 pilot studios, support loop | W5-3, W7-1 | LATER |
 | W7-4 | Flip `VITE_HOME_MODE=discover` | W7-3, D4 | LATER |
 
