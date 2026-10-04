@@ -16,7 +16,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:db": "bash scripts/db-test.sh",
-    "check:edge": "deno check supabase/functions/stripe-webhook/index.ts supabase/functions/stripe-checkout/index.ts supabase/functions/stripe-connect/index.ts",
+    "check:edge": "deno check --config supabase/functions/deno.json supabase/functions/stripe-webhook/index.ts supabase/functions/stripe-checkout/index.ts supabase/functions/stripe-connect/index.ts",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "dev:marketing": "VITE_BLOG_GAMES=true vite",
     "build:marketing": "VITE_BLOG_GAMES=true npm run build",
