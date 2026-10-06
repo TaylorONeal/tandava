@@ -60,6 +60,10 @@ Waves are ordered by dependency, not by visibility. A later wave may not start o
 
 | Risk | Why it matters | Mitigation | Owner wave |
 |---|---|---|---|
+| Production has no backend (placeholder Supabase) and no Tandava DB exists | Nothing built in W1 to W4 has run against a live Supabase | W0.5 provisioning, see LAUNCH_RUNBOOK | W0.5 |
+| Supabase built-in mail is 2 emails/hour | Guest sign-up at the last step dies on confirmation mail | Custom SMTP (Resend) before any real user | INF-4, INF-6 |
+| Vercel Hobby team hosting a paid product | Against Hobby terms; risk of suspension | Vercel Pro | INF-3 |
+| Stripe platform verification lead time | Live payments wait on entity + bank verification | Start now in test mode | INF-4 |
 | Edge functions never executed in tests (no Deno) | Webhook bugs reach Stripe test mode first | Fulfilment logic is in SQL and tested; run Stripe CLI replay before pilot | W7 |
 | No UI E2E | Booking UI regressions invisible | Decide Playwright (D6) | W4 |
 | Hold lapses before payment and class fills | Charge without a seat (rare) | 35 min hold vs 31 min Stripe session; refund flag remains | W4-3 done |

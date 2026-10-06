@@ -11,6 +11,22 @@ Rules: one slice per commit (`W4-2a`), a test lands with the code, a DB change i
 | W0-3 | `.env.example` matches code | none | every `Deno.env.get`/`import.meta.env` var listed | DONE in this PR |
 | W0-4 | Doc reconcile (STATUS, HANDOFF, ROADMAP, INDEX, CLAUDE.md) | none | banners point to PRD | DONE in this PR |
 
+## W0.5 Infrastructure provisioning (new 2026-10-06)
+
+Found: production is a demo build (`placeholder.supabase.co`); no Tandava database exists. Steps and
+commands in [LAUNCH_RUNBOOK.md](LAUNCH_RUNBOOK.md).
+
+| ID | Task | Needs | Owner | Status |
+|---|---|---|---|---|
+| INF-1 | Operating identity decided (Purafield Studio) | none | Taylor | NEXT |
+| INF-2 | Supabase Pro org under Purafield email; connector re-authorized to it | INF-1 | Taylor | NEXT |
+| INF-3 | Vercel team to Pro; connector with env access | INF-1 | Taylor | NEXT |
+| INF-4 | Stripe platform account (test mode), Resend domain, Turnstile keys | INF-1 | Taylor | NEXT |
+| INF-5 | Create `tandava-prod`, apply 00001..00027, deploy edge functions, advisors clean | INF-2 | Claude | blocked |
+| INF-6 | Secrets set (Supabase, Vercel, Auth SMTP and captcha, Stripe webhook) | INF-3, INF-4, INF-5 | Taylor | blocked |
+| INF-7 | Seed first tenant; E2E and Stripe test-mode pass against prod DB | INF-6 | Claude | blocked |
+| INF-8 | Merge PR #64; production on real backend | INF-7 | both | blocked |
+
 ## W1 Security baseline
 
 | ID | Task | Needs | Test | Status |
