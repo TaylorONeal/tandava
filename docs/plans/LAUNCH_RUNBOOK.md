@@ -7,22 +7,23 @@ ordered by dependency. "Taylor" steps need a human (account creation, cards, sec
 
 ## 0. Decide the operating identity (Taylor, 2 min)
 
-One entity owns Supabase, Vercel, Stripe, Resend and Cloudflare. Recommended: **Purafield Studio**
-with the Purafield email. Reason: billing, Stripe platform verification and support mail all show
+One entity owns Supabase, Vercel, Stripe, Resend and Cloudflare. Decided 2026-10-07: **Purafield Studio**,
+email **purafieldstudio@gmail.com**, operator and first tenant. Reason: billing, Stripe platform verification and support mail all show
 one business name, and Taylor's personal account stays a member, not the owner.
 
 | Service | Why it must be this identity |
 |---|---|
-| Supabase | Free-project limit is per person (2), not per org. A new org under the same login cannot hold a free project. Pro ($25/mo) removes the limit and the 7-day inactivity pause |
+| Supabase | Free-project limit is per account holder (2), not per org. Taylor's login already uses both (ThinkerMetrics, CueCraft). A separate Supabase account signed up as purafieldstudio@gmail.com gets its own 2 free projects. Pro ($25/mo) is optional later: removes the 7-day inactivity pause and adds backups. Do NOT host Tandava inside the CueCraft or ThinkerMetrics projects (shared auth, colliding `stripe_events`, `waitlist`, `sessions`, `users`/`profiles` tables) |
 | Vercel | Hobby teams are for non-commercial use. A paid booking product needs Pro ($20/mo) |
 | Stripe | The Connect platform account is verified against a legal entity (EIN or SSN) and a bank account. Longest lead time |
 | Resend | Supabase's built-in mail is 2 emails per hour. Sign-up confirmations need custom SMTP from a verified domain |
 
 ## 1. Accounts (Taylor, ~20 min)
 
-1. Supabase: sign up with the Purafield email. Create org "Purafield Studio" on **Pro**, add card.
-   Invite `taylor.oneal@gmail.com` as Owner. In Claude, re-authorize the Supabase connector and pick
-   the Purafield org (the connector is scoped to one org).
+1. Supabase: sign up a NEW account with purafieldstudio@gmail.com (Free, no card). Org "Purafield Studio".
+   Invite `taylor.oneal@gmail.com` as Owner only if the connector needs it; otherwise re-authorize the
+   Supabase connector while signed in as the Purafield account (connector is scoped to one login).
+   Upgrade to Pro only when the first paying studio is live.
 2. Vercel: upgrade team `tayloroneal_austin` to Pro (keeps the verified domain and deploy history).
    Rename the team later if wanted. Re-authorize the Vercel connector with env-var access
    (today it returns 403 on environment variables).
@@ -77,10 +78,10 @@ Stripe webhook endpoint: `https://<ref>.supabase.co/functions/v1/stripe-webhook`
 
 | Item | Monthly |
 |---|---|
-| Supabase Pro (one project, micro compute included) | $25 |
-| Vercel Pro | $20 |
+| Supabase Free (separate Purafield account; Pro later) | $0 |
+| Vercel Pro (verify Hobby commercial-use rule first) | $0 to $20 |
 | Resend, Cloudflare Turnstile | $0 |
 | Stripe | per transaction only |
-| Total | about $45 |
+| Total | $0 to $20 |
 
 One studio at $99/month covers it.

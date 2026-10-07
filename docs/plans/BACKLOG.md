@@ -19,7 +19,7 @@ commands in [LAUNCH_RUNBOOK.md](LAUNCH_RUNBOOK.md).
 | ID | Task | Needs | Owner | Status |
 |---|---|---|---|---|
 | INF-1 | Operating identity decided (Purafield Studio) | none | Taylor | NEXT |
-| INF-2 | Supabase Pro org under Purafield email; connector re-authorized to it | INF-1 | Taylor | NEXT |
+| INF-2 | Supabase Free account under purafieldstudio@gmail.com (separate person = own free projects); connector re-authorized to it | INF-1 | Taylor | NEXT |
 | INF-3 | Vercel team to Pro; connector with env access | INF-1 | Taylor | NEXT |
 | INF-4 | Stripe platform account (test mode), Resend domain, Turnstile keys | INF-1 | Taylor | NEXT |
 | INF-5 | Create `tandava-prod`, apply 00001..00027, deploy edge functions, advisors clean | INF-2 | Claude | blocked |
