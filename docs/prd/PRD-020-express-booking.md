@@ -264,8 +264,22 @@ feature requires, not an unrelated cleanup.
 9. **Confirm the Stripe success path end to end.** The booking is created by the webhook, so a guest
    who closes the tab after paying must still end up booked.
 
-Until 1 through 9 are done this is **demonstrated UI plus backend foundation**, not verified end to
+10. **Wire the waiver to `waiver_templates`** with a versioned, auditable acceptance before any studio
+    runs this on real traffic. See the decisions section. A studio can launch with
+    `express_waiver_required = false` and collect waivers at the door in the meantime.
+
+Until 1 through 10 are done this is **demonstrated UI plus backend foundation**, not verified end to
 end, in the labels `HOSTED_PRODUCT_REVIEW.md` uses. The feature index reflects that.
+
+### Safe to merge before any of them
+
+Storefront and embed "Book" buttons now point at this page, so a deployment where migration 00019 has
+not been applied must not be a dead end for someone trying to book. It is not: when
+`get_public_occurrence()` is missing or returns nothing, the page offers "Book with an account" and
+the schedule, which is the path that existed before this feature. A studio that never applies the
+migration and never flips `express_booking_enabled` sees no behaviour change beyond one extra hop.
+
+That is what makes this mergeable ahead of its launch gates. Without that fallback it would not be.
 
 ---
 
@@ -285,15 +299,87 @@ means we built a drop-in machine, not a funnel.
 
 ---
 
+## Decisions taken, and the one that is not mine
+
+Each of these was an open question. Four are now decided with a stated default and a rationale, so
+work can proceed; one needs a call that is not a product call.
+
+### Decided: returning members get a sign-in shortcut, not just an email
+
+**The question was** whether to divert a known email to an emailed link at all, given the conversion
+cost.
+
+**Decision: keep the diversion, and make signing in the primary action on that screen.** The safety
+reason is unchanged: anyone can type anyone's email into a public form, so nothing may happen to a
+real account without proof of mailbox control. But the first version treated the email as the only way
+through, which was a dead end in practice, because nothing redeems the continue token yet. The screen
+now leads with "Sign in and book now."
+
+This is strictly better than both alternatives. It is as safe as the email-only version, it is faster
+for the member (one tap versus waiting on mail), and it steers them to the path where their membership
+or class pack actually applies, which the guest path can never do. The emailed link stays as the
+fallback for someone who does not remember having an account.
+
+**Consequence:** redeeming the continue token (launch gate 6) drops from blocking to nice-to-have,
+because sign-in now covers the case.
+
+### Decided: phone stays optional, with a per-studio switch later
+
+Every required field costs bookings, and the studio can reach the guest by email on the only thing
+that matters at booking time. Studios that text their rosters will want it required, so this becomes
+a per-studio setting alongside the other `express_booking_*` columns rather than a global choice.
+Deferred, not forgotten.
+
+### Decided: guest bookings get a signed manage link in the confirmation email
+
+A guest who cannot cancel without creating an account will phone the studio instead, which moves the
+work to the front desk and makes a cancellation less likely inside the window. That is worse for
+everyone than one more token surface.
+
+Reuses the `continue_token_hash` pattern already in `express_booking_claims`: hash stored, raw token
+only in the email, scoped to one booking, expiring at class start. Scheduled with the confirmation
+email template (launch gate 5), since both land in the same place.
+
+### Decided: unclaimed guest profiles expire after 24 months, pending a legal read
+
+This holds an email address for someone who never agreed to an account, so it needs a retention rule
+rather than living forever by default. 24 months from the last booking is the working default:
+long enough that a once-a-year visitor is still recognised and does not get a duplicate record, short
+enough to be defensible. Claiming the account resets it; `gdpr_requests` already exists for an
+earlier deletion on request.
+
+**Flagged, not blocking:** the specific number is a legal and jurisdictional question, not a product
+one. 24 months is the default until someone with an opinion about GDPR and state privacy law replaces
+it. The mechanism is what matters; the constant is cheap to change.
+
+### Decided: the waiver checkbox is not sufficient, and blocks pilot
+
+`waiver_templates` exists and this flow does not use it. A bare checkbox records that someone ticked
+a box, not *which version of what text* they accepted, which is exactly what a waiver has to prove.
+For a studio relying on it for liability, an unversioned checkbox may be worth nothing.
+
+**Decision: wire the express form to `waiver_templates` with a versioned, auditable acceptance before
+any studio uses this on real traffic.** Added as launch gate 10. Until then a studio can run express
+booking with `express_waiver_required = false` and collect waivers at the door, which is what most
+studios do today anyway.
+
+### Not mine to decide: is guest booking acceptable to the studio at all?
+
+Express booking lets anyone on the internet create a record in a studio's member list. That is the
+point, and some owners will find it alarming. The feature is opt-in and off by default precisely
+because this is their call, not ours.
+
+Worth asking two or three pilot studios directly, because the answer changes the default: if owners
+want it on, the default should flip and onboarding should enable it; if they hesitate, it stays off
+and becomes a thing we teach rather than a thing we ship on.
+
+---
+
 ## Open questions
 
-1. **Should a guest see their booking without an account?** A signed "manage this booking" link in
-   the confirmation email would let them cancel without signing up. That is friction removed, and
-   another token surface to secure.
-2. **Phone: required or optional?** Optional here, because every required field costs bookings.
-   Studios that text their rosters will want it required, which argues for a per-studio switch.
-3. **How long does an unclaimed guest profile live?** It holds an email address for someone who never
-   agreed to an account. A GDPR-shaped retention rule belongs here (`gdpr_requests` exists).
-4. **Does the waiver checkbox satisfy the studio's legal need?** `waiver_templates` exists and is
-   unused by this flow; a checkbox may not be enough where a versioned, auditable acceptance is
-   required.
+Only one remains, and it is a research question rather than a design one:
+
+1. **Does a guest who books once ever come back?** The success metrics assume express booking builds a
+   member base. If guests book once and never claim an account, we built a drop-in machine, and the
+   right response is to invest in the post-first-class funnel (PRD-007) rather than in more booking
+   surface. No amount of design reasoning answers this; it needs 90 days of data from a real studio.

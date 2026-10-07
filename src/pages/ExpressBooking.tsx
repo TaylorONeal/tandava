@@ -269,14 +269,23 @@ export default function ExpressBooking() {
     );
   }
 
+  // Failing to load must never be a dead end for someone who wants to book.
+  //
+  // This branch covers a stale link, a class the studio removed, AND a
+  // deployment where migration 00019 has not been applied yet, so
+  // get_public_occurrence() does not exist. Storefront and embed "Book" buttons
+  // now point here, so without a booking route out of this state a studio that
+  // has not run the migration would have a *worse* path than before the feature
+  // landed. The account route always works, so it is always offered.
   if (live && (isError || !row)) {
     return (
       <Shell>
         <Notice
           tone="error"
-          title="We couldn't find that class"
-          body="The link may be out of date, or the studio may have taken it down. Browse the schedule for another time."
-          action={slug ? { to: `/s/${slug}`, label: "See the schedule" } : undefined}
+          title="We couldn't load that class"
+          body="The link may be out of date, or this studio may not have instant booking turned on. You can still book with an account, or pick another time from the schedule."
+          action={{ to: `/auth/register${slug ? `?studio=${encodeURIComponent(slug)}` : ""}`, label: "Book with an account" }}
+          secondaryAction={slug ? { to: `/s/${slug}`, label: "See the schedule" } : undefined}
         />
       </Shell>
     );
@@ -335,12 +344,14 @@ export default function ExpressBooking() {
         <Notice
           tone="info"
           icon={<Mail className="h-5 w-5" aria-hidden="true" />}
-          title="Check your email"
+          title="This email already has an account"
           body={
             result.message ??
             "We sent you a link to finish booking this class. It expires in 30 minutes."
           }
-          footnote="We email a link rather than booking straight away, because this address already has an account and we won't act on it without confirming it's you."
+          action={{ to: "/auth/login", label: "Sign in and book now" }}
+          secondaryAction={slug ? { to: `/s/${slug}`, label: "See the schedule" } : undefined}
+          footnote="We don't book straight away from a public form when the address already has an account, because anyone can type anyone's email. Signing in is the fastest way through, and it also lets you use a membership or class pack."
         />
       </Shell>
     );
@@ -652,6 +663,7 @@ function Notice({
   title,
   body,
   action,
+  secondaryAction,
   footnote,
   icon,
   inline,
@@ -660,6 +672,7 @@ function Notice({
   title: string;
   body: string;
   action?: { to: string; label: string };
+  secondaryAction?: { to: string; label: string };
   footnote?: string;
   icon?: React.ReactNode;
   inline?: boolean;
@@ -690,10 +703,19 @@ function Notice({
             <h2 className="font-semibold leading-tight">{title}</h2>
             <p className="text-sm text-muted-foreground">{body}</p>
             {footnote && <p className="text-xs text-muted-foreground">{footnote}</p>}
-            {action && (
-              <Button asChild variant="outline" size="sm" className="mt-1">
-                <Link to={action.to}>{action.label}</Link>
-              </Button>
+            {(action || secondaryAction) && (
+              <div className="flex flex-wrap gap-2 pt-1">
+                {action && (
+                  <Button asChild variant="outline" size="sm">
+                    <Link to={action.to}>{action.label}</Link>
+                  </Button>
+                )}
+                {secondaryAction && (
+                  <Button asChild variant="ghost" size="sm">
+                    <Link to={secondaryAction.to}>{secondaryAction.label}</Link>
+                  </Button>
+                )}
+              </div>
             )}
           </div>
         </div>
