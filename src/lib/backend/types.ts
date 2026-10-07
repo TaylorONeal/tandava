@@ -56,6 +56,9 @@ export interface AuthProvider {
   /** Send a password reset email */
   resetPassword(email: string): Promise<{ error: AuthError | null }>;
 
+  /** Set a new password for the signed-in user (used after a recovery link) */
+  updatePassword(password: string): Promise<{ error: AuthError | null }>;
+
   /** Get the currently authenticated user (from persisted session) */
   getSession(): Promise<{ user: AuthUser | null }>;
 

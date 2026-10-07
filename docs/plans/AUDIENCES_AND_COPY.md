@@ -14,6 +14,8 @@ Rules:
 - A page serves one audience. Cross-links are one line, not a second pitch.
 - `/open-source` never sells the hosted product. `/for-studios` never explains the stack.
 - Hosted pages state no price until decision D1 is made. Pilot wording: "Pricing is agreed with you before you take a single payment."
+- Stripe: hosted owners "set up payouts" (Stripe is named once, as the payments partner). "Bring your own Stripe account/keys" is self-host language and lives only on `/open-source` and in DEPLOYMENT.md. The manage app serves both, so it uses the neutral "payments / payouts" wording.
+- Footers and shared chrome never lead with "open source"; that is the self-hoster door's job.
 - No claim ships unless the code does it today. "Demo", "mock data" and "in active development" language lives only on `/demo` and in docs.
 
 ## Flows
@@ -30,10 +32,12 @@ Code: `src/lib/audience.ts` (intent), `src/components/layout/MarketingShell.tsx`
 
 | ID | Item |
 |---|---|
-| C-1 | `/demo` page copy still pitches open source to everyone. Retarget: owners evaluating the product |
+| C-1 | `/demo` page and `DemoPanel` still pitch open source, AGPL, self-host and "Run your own" to everyone. Retarget to owners evaluating the hosted product; link `/open-source` once |
 | C-2 | `/schedule`, `/events`, `/instructors` still show mock data and student-facing copy. Gate or noindex (W6-3) |
 | C-3 | Translate new `auth.json` keys (other locales fall back to English) |
 | C-4 | Post-confirmation landing: email link returns to `/` with an error fragment if expired. Add a friendly `/auth/callback` expired state and resend |
 | C-5 | Onboarding wizard copy pass for owners (hosted vs self-host assumptions) |
 | C-6 | Blog and tools footers say "open source" first; point to `/for-studios` for owners |
 | C-7 | Hosted-only config: hide self-host/demo notices when `VITE_DEMO_MODE` is off |
+| C-8 | Full string audit of `src/pages/manage/*`, emails and `public/locales/*` for hosted vs self-host assumptions (Stripe, SMTP, "your server") |
+| C-9 | Auth: `/auth/reset` and `/auth/reset-confirm` added 2026-10-07; confirm Supabase redirect allow-list includes `/auth/reset-confirm` on prod and previews |

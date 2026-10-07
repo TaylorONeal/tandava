@@ -33,6 +33,7 @@ interface AuthContextValue extends AuthState {
   signInWithGoogle: () => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
+  updatePassword: (password: string) => Promise<{ error: AuthError | null }>;
   refreshProfile: () => Promise<void>;
 }
 
@@ -205,6 +206,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error };
   };
 
+  const updatePassword = async (password: string) => {
+    if (isDemoMode) return { error: null };
+    const { error } = await auth.updatePassword(password);
+    return { error };
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -214,6 +221,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signInWithGoogle,
         signOut,
         resetPassword,
+        updatePassword,
         refreshProfile,
       }}
     >

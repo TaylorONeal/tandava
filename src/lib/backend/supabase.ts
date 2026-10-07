@@ -120,6 +120,11 @@ const supabaseAuth: AuthProvider = {
     return { error: mapError(error) };
   },
 
+  async updatePassword(password) {
+    const { error } = await getClient().auth.updateUser({ password });
+    return { error: mapError(error) };
+  },
+
   async getSession() {
     const { data } = await getClient().auth.getSession();
     return { user: mapUser(data?.session?.user ?? null) };

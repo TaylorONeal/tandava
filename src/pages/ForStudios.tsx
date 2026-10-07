@@ -15,7 +15,7 @@ import { STUDIO_SIGNUP_HREF } from "@/lib/audience";
 
 const STEPS = [
   { title: "Create your studio", body: "Add your name, location, teachers and class types. The setup wizard saves as you go, so you can stop and pick it up later." },
-  { title: "Connect Stripe", body: "Students pay by card. Payouts go to your bank through your own Stripe account, and you see every charge and refund in your Stripe dashboard." },
+  { title: "Set up payouts", body: "Students pay by card when they book. You add your bank details once, in a short form run by our payments partner Stripe, and payouts go to your account." },
   { title: "Publish your schedule", body: "You get a booking page you can share, and a schedule you can embed on your own website. Opt in to Discover and students searching for a class can find you." },
 ];
 
@@ -50,7 +50,7 @@ export default function ForStudios() {
         </p>
         <div className="mt-8 flex flex-col sm:flex-row gap-3">
           <Button asChild size="lg">
-            <Link to={STUDIO_SIGNUP_HREF}>Start your studio <ArrowRight className="ms-2 h-4 w-4" /></Link>
+            <Link to={STUDIO_SIGNUP_HREF}>Set up your studio <ArrowRight className="ms-2 h-4 w-4" /></Link>
           </Button>
           <Button asChild size="lg" variant="outline">
             <Link to="/demo">Look around a demo studio</Link>
@@ -92,7 +92,7 @@ export default function ForStudios() {
             take a single payment.
           </p>
           <Button asChild className="mt-5">
-            <Link to={STUDIO_SIGNUP_HREF}>Start your studio</Link>
+            <Link to={STUDIO_SIGNUP_HREF}>Set up your studio</Link>
           </Button>
         </div>
       </section>

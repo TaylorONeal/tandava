@@ -71,6 +71,8 @@ const Register = lazy(() => import("./pages/auth/Register"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Demo = lazy(() => import("./pages/Demo"));
 const OpenSource = lazy(() => import("./pages/OpenSource"));
+const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
+const ResetConfirm = lazy(() => import("./pages/auth/ResetConfirm"));
 const ForStudios = lazy(() => import("./pages/ForStudios"));
 const StudioCalculator = lazy(() => import("./pages/tools/StudioCalculator"));
 const Blog = lazy(() => import("./pages/Blog"));
@@ -192,6 +194,8 @@ const App = () => (
                   {/* ---- Auth routes ---- */}
                   <Route path="/auth/login" element={<Login />} />
                   <Route path="/auth/register" element={<Register />} />
+                  <Route path="/auth/reset" element={<ResetPassword />} />
+                  <Route path="/auth/reset-confirm" element={<ResetConfirm />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
 
                   {/* ---- Authenticated member routes ---- */}
