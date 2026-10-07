@@ -19,6 +19,8 @@ const Login = () => {
   const nextParam = safeNext(searchParams.get("next"));
   const from = (location.state as { from?: { pathname?: string; search?: string } } | null)?.from ?? null;
   const resumePath = nextParam ?? safeNext(from?.pathname ? `${from.pathname}${from.search ?? ""}` : null);
+  // Coming back to finish studio setup (from /for-studios or the onboarding gate).
+  const isOwnerFlow = Boolean(resumePath?.startsWith("/manage/onboarding"));
   useEffect(() => {
     if (resumePath) stashReturn(resumePath); // survives the Google redirect
   }, [resumePath]);
@@ -229,9 +231,9 @@ const Login = () => {
               <span className="text-4xl font-bold text-primary-foreground">T</span>
             </div>
           </div>
-          <h2 className="text-3xl font-bold mb-4">{t('practiceAwaits')}</h2>
+          <h2 className="text-3xl font-bold mb-4">{isOwnerFlow ? t('studioPracticeTitle') : t('practiceAwaits')}</h2>
           <p className="text-muted-foreground text-lg">
-            {t('practiceAwaitsDesc')}
+            {isOwnerFlow ? t('studioPracticeDesc') : t('practiceAwaitsDesc')}
           </p>
         </div>
       </div>

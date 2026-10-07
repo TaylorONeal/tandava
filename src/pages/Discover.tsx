@@ -5,14 +5,15 @@
  * and go straight to that studio's storefront to book. No account needed to
  * browse. Data: public discover_classes() RPC (migration 00019).
  *
- * Studio owners and open-source visitors are not forgotten: the header and
- * footer link to /open-source and the hosted offer.
+ * Studio owners and open-source visitors have their own doors (/for-studios,
+ * /open-source), linked from the shared header and footer.
  */
 
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Calendar, Clock, Flame, Loader2, MapPin, Search } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
+import { MarketingShell } from "@/components/layout/MarketingShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -134,6 +135,7 @@ export default function Discover() {
                   ? "Studios will appear here as soon as they publish their schedule."
                   : "Try a different style or clear the search."
               }
+              cta={rows.length === 0 ? { to: "/for-studios", label: "Own a studio? Get listed" } : undefined}
             />
           ) : (
             groups.map((g) => (
@@ -241,30 +243,8 @@ function Notice({
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">T</span>
-            <span className="font-semibold tracking-tight">Tandava</span>
-          </Link>
-          <nav className="flex items-center gap-1" aria-label="Primary">
-            <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-              <Link to="/open-source">For studios</Link>
-            </Button>
-            <Button asChild variant="ghost" size="sm"><Link to="/auth/login">Sign in</Link></Button>
-            <Button asChild size="sm"><Link to="/auth/register">Sign up</Link></Button>
-          </nav>
-        </div>
-      </header>
-      <main id="main-content" className="max-w-5xl mx-auto px-6 py-8">{children}</main>
-      <footer className="border-t border-border mt-16">
-        <div className="max-w-5xl mx-auto px-6 py-6 text-xs text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-2">
-          <span className="inline-flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" aria-hidden /> Powered by Tandava</span>
-          <Link to="/open-source" className="hover:underline">Open source project</Link>
-          <Link to="/blog" className="hover:underline">Blog</Link>
-        </div>
-      </footer>
-    </div>
+    <MarketingShell>
+      <div className="max-w-5xl mx-auto px-6 py-8">{children}</div>
+    </MarketingShell>
   );
 }

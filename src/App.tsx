@@ -71,6 +71,7 @@ const Register = lazy(() => import("./pages/auth/Register"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Demo = lazy(() => import("./pages/Demo"));
 const OpenSource = lazy(() => import("./pages/OpenSource"));
+const ForStudios = lazy(() => import("./pages/ForStudios"));
 const StudioCalculator = lazy(() => import("./pages/tools/StudioCalculator"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogCategory = lazy(() => import("./pages/blog/BlogCategory"));
@@ -165,6 +166,7 @@ const App = () => (
                   <Route path="/" element={<Home />} />
                   <Route path="/demo" element={<Demo />} />
                   <Route path="/open-source" element={<OpenSource />} />
+                  <Route path="/for-studios" element={<ForStudios />} />
                   <Route path="/tools/studio-calculator" element={<StudioCalculator />} />
 
                   {/* ---- Public studio storefront (slug-driven; what per-studio

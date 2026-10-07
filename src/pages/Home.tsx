@@ -6,7 +6,7 @@ import { resolveStudioSlug } from "@/lib/studio-host";
 import { parseHomeMode, resolveHomeTarget } from "@/lib/homeMode";
 
 const Demo = lazy(() => import("./Demo"));
-const OpenSource = lazy(() => import("./OpenSource"));
+const ForStudios = lazy(() => import("./ForStudios"));
 const StudioStorefront = lazy(() => import("./StudioStorefront"));
 const Discover = lazy(() => import("./Discover"));
 
@@ -19,7 +19,7 @@ const Discover = lazy(() => import("./Discover"));
  * a fictional studio's personas instead of a real entry point.
  *
  *   demo / no backend  → the demo landing (unchanged showcase behavior)
- *   production, guest  → the platform landing ("start your studio" / try demo)
+ *   production, guest  → the hosted-product landing for studio owners (/for-studios)
  *   production, signed in → their workspace (studio admin or member schedule)
  */
 export default function Home() {
@@ -57,7 +57,7 @@ export default function Home() {
     case "discover":
       return <Discover />;
     case "platform":
-      return <OpenSource />;
+      return <ForStudios />;
     case "workspace-manage":
       return <Navigate to="/manage" replace />;
     case "workspace-member":
