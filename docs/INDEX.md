@@ -30,6 +30,7 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 - [FEATURE_INDEX](FEATURE_INDEX.md) — Complete feature status reference
 - [DEMO_MODE](DEMO_MODE.md) — Demo mode setup and customization
 - [NEXT_STEPS](NEXT_STEPS.md) — Prioritized task list for development
+- [Competitive Analysis](competitive/README.md) — Competitor briefs, index, and the shared brief structure
 - [General FAQ](FAQ.md) — Common questions answered quickly
 - [Detailed FAQ](FAQ-detailed.md) — In-depth answers for complex scenarios
 
