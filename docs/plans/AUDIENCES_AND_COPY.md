@@ -41,3 +41,4 @@ Code: `src/lib/audience.ts` (intent), `src/components/layout/MarketingShell.tsx`
 | C-7 | Hosted-only config: hide self-host/demo notices when `VITE_DEMO_MODE` is off |
 | C-8 | Full string audit of `src/pages/manage/*`, emails and `public/locales/*` for hosted vs self-host assumptions (Stripe, SMTP, "your server") |
 | C-9 | Auth: `/auth/reset` and `/auth/reset-confirm` added 2026-10-07; confirm Supabase redirect allow-list includes `/auth/reset-confirm` on prod and previews |
+| C-10 | Auth emails: branded templates in `supabase/templates/`, pushed with `scripts/set-auth-emails.sh`. Still needs Resend SMTP (built-in mail is 2/hour and unbranded sender) and an expired-link resend on `/auth/reset-confirm` is in; consider token-hash links if mail scanners burn single-use links |
