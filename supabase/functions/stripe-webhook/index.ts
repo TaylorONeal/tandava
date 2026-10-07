@@ -111,12 +111,16 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         return;
       }
 
-      const { error: bookingError } = await supabase.from("bookings").insert({
-        studio_id: metadata.studio_id,
-        class_occurrence_id: metadata.occurrence_id,
-        profile_id: metadata.profile_id,
-        status: "confirmed",
-        transaction_id: txn.id,
+      // create_guest_booking() re-checks capacity under a row lock and is
+      // idempotent per (occurrence, profile), so a replayed webhook does not
+      // double-book and a class that filled while the payer was in Checkout
+      // lands them on the waitlist instead of overselling the room. A raw
+      // insert here could do neither. It consumes no entitlement, which is
+      // correct for a drop-in: the payment IS the entitlement.
+      const { error: bookingError } = await supabase.rpc("create_guest_booking", {
+        p_occurrence_id: metadata.occurrence_id,
+        p_profile_id: metadata.profile_id,
+        p_transaction_id: txn.id,
       });
       if (bookingError) console.error("Failed to create booking:", bookingError);
       break;

@@ -9,7 +9,7 @@
  * See docs/developer/backend-flexibility.md for architecture details.
  */
 
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, StudioStorefront } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, StudioStorefront } from "@/types/database";
 import type { FeedbackType } from "@/types/database";
 
 // ---------------------------------------------------------------------------
@@ -101,6 +101,37 @@ export interface BookClassInput {
   sourceId: string;
 }
 
+/**
+ * Guest-form submission for the login-free booking path (PRD-020).
+ * Posted to the `express-book` Edge Function, which owns every write.
+ */
+export interface ExpressBookInput {
+  slug: string;
+  occurrenceId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  marketingConsent?: boolean;
+  waiverAccepted?: boolean;
+  utm?: { source?: string; medium?: string; campaign?: string };
+}
+
+/** What the `express-book` function answers with. */
+export interface ExpressBookResult {
+  outcome: "booked" | "waitlisted" | "pending_payment" | "continue_link_sent" | "rejected" | "rate_limited";
+  bookingId?: string | null;
+  waitlistPosition?: number | null;
+  /** Present for `pending_payment`: redirect the visitor here to pay. */
+  checkoutUrl?: string | null;
+  /** Machine-readable rejection code (ExpressRejectReason). */
+  reason?: string;
+  /** Visitor-facing message. Always render this rather than `reason`. */
+  message?: string;
+  /** Per-field validation errors for a 400. */
+  fields?: { code: string; message: string }[];
+}
+
 /** A member's entitlements for resolving booking coverage. */
 export interface MemberEntitlements {
   memberships: Membership[];
@@ -129,6 +160,13 @@ export interface DataProvider {
 
   /** Public storefront (profile + offerings + pricing) for a discoverable studio by slug. Null if not discoverable. */
   getStudioStorefront(slug: string): Promise<DataResult<StudioStorefront>>;
+
+  /**
+   * Public booking-relevant facts for ONE occurrence of a discoverable studio —
+   * what the express booking page renders. Returns the row even when the class
+   * is cancelled or past, so the page can say why it cannot be booked.
+   */
+  getPublicOccurrence(slug: string, occurrenceId: string): Promise<DataResult<PublicOccurrenceRow>>;
 
   /** Upcoming (non-cancelled, future) class occurrences for a studio, with offering + location joined. */
   getUpcomingClasses(studioId: string): Promise<DataResult<ClassOccurrence[]>>;

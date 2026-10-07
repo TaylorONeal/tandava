@@ -12,6 +12,8 @@ Quick reference for all features, their status, and locations in the codebase.
 | **UI Only** | UI exists but uses mock data |
 | **Schema** | Database schema exists, no UI |
 | **Planned** | Designed, not yet implemented |
+| **Demonstrated UI + backend foundation** | Screens, migrations and functions exist; NOT verified end to end against a live database. Uses the release labels from `HOSTED_PRODUCT_REVIEW.md`. |
+| **Backend foundation** | Migration and/or function exists; no UI, not verified end to end |
 
 ---
 
@@ -42,6 +44,11 @@ Quick reference for all features, their status, and locations in the codebase.
 | Spot/asset selection | Planned | - | - | Phase 7 |
 | Recurring booking | Planned | - | - | Phase 7 |
 | Reserve with Google | Planned | - | - | Phase 7 |
+| Express (login-free) booking | Demonstrated UI + backend foundation | `/s/:slug/book/:occurrenceId` | `express_booking_claims`, `get_public_occurrence`, `create_guest_booking` | PRD-020 |
+| Guest identity (passwordless profile) | Backend foundation | - | `profiles.is_guest` | PRD-020 |
+| Express booking rate limiting | Backend foundation | - | `count_recent_express_claims` | PRD-020 |
+| Continue link for existing accounts | Partial (token issued, not yet redeemed) | - | `express_booking_claims.continue_token_hash` | PRD-020 |
+| Privates / 1:1 appointments | Planned | - | - | PRD-021 |
 
 ### Members & Students
 
@@ -381,4 +388,4 @@ docs/
 
 ---
 
-*Last updated: 2026-02-06*
+*Last updated: 2026-10-07*

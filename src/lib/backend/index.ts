@@ -22,6 +22,8 @@ export type {
   MutationResult,
   CreateMessageInput,
   BookClassInput,
+  ExpressBookInput,
+  ExpressBookResult,
   MemberEntitlements,
   ApiProvider,
   ApiResult,
