@@ -1,0 +1,703 @@
+/**
+ * Express Booking — /s/:slug/book/:occurrenceId (PRD-020)
+ *
+ * The login-free booking page. One screen, three fields, no password, no email
+ * round-trip: the single highest-conversion pattern in this category and the one
+ * Tandava did not have (docs/competitive/MANGOMINT.md section 6, and
+ * docs/roadmap/COMPETITOR_ISSUES_PRIORITY.md #3 "5-7 taps to 1-2 taps").
+ *
+ * Deliberate choices:
+ *   - Class details render above the form, so the visitor confirms what they are
+ *     booking before they type anything.
+ *   - Price, cancellation deadline and waitlist status are stated before the
+ *     button, not after it. Nobody should learn the policy from a receipt.
+ *   - Every error names what happened and what to do next
+ *     (COMPETITOR_ISSUES_PRIORITY #5), using the copy in
+ *     `src/lib/booking/express.ts` so the page and the server cannot drift.
+ *   - Times render in the STUDIO's timezone, labelled as such
+ *     (COMPETITOR_ISSUES_PRIORITY #1).
+ *
+ * Eligibility shown here is advisory. The authoritative checks run server-side
+ * in the `express-book` function and `create_guest_booking`, so a class that
+ * fills between page load and submit is handled by the response, not by this
+ * component's optimism.
+ */
+
+import { useEffect, useMemo, useState } from "react";
+import { useParams, useSearchParams, Link } from "react-router-dom";
+import { usePublicOccurrence, useExpressBook } from "@/hooks/useBooking";
+import { isBackendConfigured } from "@/lib/backend";
+import {
+  checkOccurrenceEligibility,
+  rejectMessage,
+  type ExpressOccurrence,
+} from "@/lib/booking/express";
+import { SEOHead } from "@/components/seo/SEOHead";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  CalendarCheck,
+  Clock,
+  Loader2,
+  MapPin,
+  Mail,
+  CheckCircle2,
+  AlertCircle,
+  User,
+} from "lucide-react";
+import type { PublicOccurrenceRow } from "@/types/database";
+
+// ---------------------------------------------------------------------------
+// Demo fixture
+// ---------------------------------------------------------------------------
+
+/**
+ * Demo mode has no backend, and this page is the clearest thing to show a studio
+ * owner evaluating Tandava, so it renders against a fixture rather than an empty
+ * state. The submit path is simulated and says so.
+ */
+function demoOccurrence(occurrenceId: string): PublicOccurrenceRow {
+  const starts = new Date(Date.now() + 5 * 60 * 60 * 1000);
+  const ends = new Date(starts.getTime() + 60 * 60 * 1000);
+  return {
+    occurrence_id: occurrenceId,
+    starts_at: starts.toISOString(),
+    ends_at: ends.toISOString(),
+    room: "Main Studio",
+    is_cancelled: false,
+    capacity: 20,
+    booked_count: 16,
+    offering_name: "Power Vinyasa Flow",
+    offering_description: "A strong, breath-led flow. All levels welcome; bring water.",
+    drop_in_price_cents: 2200,
+    location_name: "Oxatl Yoga, East Austin",
+    location_city: "Austin",
+    teacher_name: "Daniella Cruz",
+    studio_name: "Oxatl Yoga",
+    studio_slug: "oxatl",
+    studio_timezone: "America/Chicago",
+    studio_currency: "USD",
+    studio_primary_color: "#4fd1c5",
+    express_booking_enabled: true,
+    express_booking_cutoff_minutes: 0,
+    express_waitlist_enabled: true,
+    express_waiver_required: true,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Formatting
+// ---------------------------------------------------------------------------
+
+/** Render a class time in the STUDIO's timezone, never the visitor's. */
+function formatWhen(iso: string, timeZone: string): string {
+  try {
+    return new Date(iso).toLocaleString(undefined, {
+      timeZone,
+      weekday: "long",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  } catch {
+    return new Date(iso).toLocaleString();
+  }
+}
+
+/** Short timezone label ("CDT") so the visitor can tell whose clock this is. */
+function zoneLabel(iso: string, timeZone: string): string {
+  try {
+    const parts = new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName: "short" }).formatToParts(
+      new Date(iso),
+    );
+    return parts.find((p) => p.type === "timeZoneName")?.value ?? timeZone;
+  } catch {
+    return timeZone;
+  }
+}
+
+function formatMoney(cents: number, currency: string): string {
+  try {
+    return new Intl.NumberFormat(undefined, { style: "currency", currency }).format(cents / 100);
+  } catch {
+    return `$${(cents / 100).toFixed(2)}`;
+  }
+}
+
+/** Map the public row onto the shape the (tested) rules module expects. */
+function toExpressOccurrence(row: PublicOccurrenceRow): ExpressOccurrence {
+  return {
+    occurrenceId: row.occurrence_id,
+    startsAt: row.starts_at,
+    endsAt: row.ends_at,
+    isCancelled: Boolean(row.is_cancelled),
+    capacity: row.capacity ?? 0,
+    bookedCount: row.booked_count ?? 0,
+    dropInPriceCents: row.drop_in_price_cents ?? null,
+    expressBookingEnabled: Boolean(row.express_booking_enabled),
+    waiverRequired: Boolean(row.express_waiver_required),
+    bookingCutoffMinutes: row.express_booking_cutoff_minutes ?? 0,
+    waitlistEnabled: Boolean(row.express_waitlist_enabled),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+
+type Form = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  marketingConsent: boolean;
+  waiverAccepted: boolean;
+};
+
+const EMPTY_FORM: Form = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  marketingConsent: false,
+  waiverAccepted: false,
+};
+
+export default function ExpressBooking() {
+  const { slug, occurrenceId } = useParams<{ slug: string; occurrenceId: string }>();
+  const [searchParams] = useSearchParams();
+  const live = isBackendConfigured();
+
+  const { data: fetched, isLoading, isError } = usePublicOccurrence(slug, occurrenceId);
+  const expressBook = useExpressBook();
+
+  const [form, setForm] = useState<Form>(EMPTY_FORM);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [demoResult, setDemoResult] = useState<"booked" | "waitlisted" | null>(null);
+
+  // Stripe returns here with ?booked=1 after a successful drop-in payment. The
+  // booking itself is created by the webhook, so this flag only drives the copy.
+  const returnedFromPayment = searchParams.get("booked") === "1";
+  const paymentCancelled = searchParams.get("cancelled") === "1";
+
+  const row = live ? fetched : demoOccurrence(occurrenceId ?? "demo-occurrence");
+
+  const eligibility = useMemo(() => {
+    if (!row) return null;
+    return checkOccurrenceEligibility(toExpressOccurrence(row), new Date());
+  }, [row]);
+
+  // Keep the UTM parameters that brought the visitor here, so a studio can tell
+  // which post or ad produced the booking (PRD-011 attribution).
+  const utm = useMemo(
+    () => ({
+      source: searchParams.get("utm_source") ?? undefined,
+      medium: searchParams.get("utm_medium") ?? undefined,
+      campaign: searchParams.get("utm_campaign") ?? undefined,
+    }),
+    [searchParams],
+  );
+
+  // A pending_payment outcome hands back a Checkout URL to follow.
+  useEffect(() => {
+    const url = expressBook.data?.outcome === "pending_payment" ? expressBook.data.checkoutUrl : null;
+    if (url) window.location.assign(url);
+  }, [expressBook.data]);
+
+  const set = <K extends keyof Form>(key: K, value: Form[K]) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    setFieldErrors((prev) => {
+      if (!prev[key as string]) return prev;
+      const next = { ...prev };
+      delete next[key as string];
+      return next;
+    });
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setFieldErrors({});
+
+    if (!live) {
+      // Demo mode: no backend to post to. Show the outcome the real flow would
+      // produce, labelled as simulated.
+      setDemoResult(eligibility?.placement === "waitlisted" ? "waitlisted" : "booked");
+      return;
+    }
+    if (!slug || !occurrenceId) return;
+
+    const result = await expressBook.mutateAsync({
+      slug,
+      occurrenceId,
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      phone: form.phone || undefined,
+      marketingConsent: form.marketingConsent,
+      waiverAccepted: form.waiverAccepted,
+      utm,
+    });
+
+    if (result.fields?.length) {
+      // Field codes are `first_name_required` etc.; map them back to form keys.
+      const next: Record<string, string> = {};
+      for (const f of result.fields) {
+        if (f.code.startsWith("first_name")) next.firstName = f.message;
+        else if (f.code.startsWith("last_name")) next.lastName = f.message;
+        else if (f.code.startsWith("email")) next.email = f.message;
+        else if (f.code.startsWith("phone")) next.phone = f.message;
+      }
+      setFieldErrors(next);
+    }
+  };
+
+  // --- Shell states -----------------------------------------------------
+
+  if (live && isLoading) {
+    return (
+      <Shell>
+        <div className="flex items-center justify-center py-32 text-muted-foreground">
+          <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+          <span className="sr-only">Loading class details</span>
+        </div>
+      </Shell>
+    );
+  }
+
+  if (live && (isError || !row)) {
+    return (
+      <Shell>
+        <Notice
+          tone="error"
+          title="We couldn't find that class"
+          body="The link may be out of date, or the studio may have taken it down. Browse the schedule for another time."
+          action={slug ? { to: `/s/${slug}`, label: "See the schedule" } : undefined}
+        />
+      </Shell>
+    );
+  }
+
+  if (!row) return null;
+
+  const zone = zoneLabel(row.starts_at, row.studio_timezone);
+  const price = row.drop_in_price_cents;
+  const result = expressBook.data;
+
+  // --- Terminal states --------------------------------------------------
+
+  if (returnedFromPayment) {
+    return (
+      <Shell>
+        <Notice
+          tone="success"
+          title="You're booked"
+          body={`Your spot in ${row.offering_name} is confirmed. We emailed your confirmation and the studio's cancellation policy.`}
+          action={slug ? { to: `/s/${slug}`, label: `Back to ${row.studio_name}` } : undefined}
+        />
+      </Shell>
+    );
+  }
+
+  if (result?.outcome === "booked" || result?.outcome === "waitlisted" || demoResult) {
+    const placement = demoResult ?? result!.outcome;
+    const waitlisted = placement === "waitlisted";
+    return (
+      <Shell>
+        <Notice
+          tone="success"
+          title={waitlisted ? "You're on the waitlist" : "You're booked"}
+          body={
+            waitlisted
+              ? `${row.offering_name} is full, so you're on the waitlist${
+                  result?.waitlistPosition ? ` at position ${result.waitlistPosition}` : ""
+                }. We'll email you the moment a spot opens, and you won't be charged unless you get in.`
+              : `Your spot in ${row.offering_name} is confirmed. We emailed your confirmation and the studio's cancellation policy.`
+          }
+          action={slug ? { to: `/s/${slug}`, label: `Back to ${row.studio_name}` } : undefined}
+          footnote={
+            demoResult
+              ? "Demo mode: this confirmation is simulated. No booking was created and no email was sent."
+              : "Want to manage bookings and buy a pass? Set a password on this email any time to turn this into a full account."
+          }
+        />
+      </Shell>
+    );
+  }
+
+  if (result?.outcome === "continue_link_sent") {
+    return (
+      <Shell>
+        <Notice
+          tone="info"
+          icon={<Mail className="h-5 w-5" aria-hidden="true" />}
+          title="Check your email"
+          body={
+            result.message ??
+            "We sent you a link to finish booking this class. It expires in 30 minutes."
+          }
+          footnote="We email a link rather than booking straight away, because this address already has an account and we won't act on it without confirming it's you."
+        />
+      </Shell>
+    );
+  }
+
+  // --- Blocked before the form -------------------------------------------
+
+  if (eligibility && !eligibility.eligible) {
+    return (
+      <Shell>
+        <ClassSummary row={row} zone={zone} spotsLeft={eligibility.spotsLeft} />
+        <Notice
+          tone="error"
+          title="This class can't be booked"
+          body={rejectMessage(eligibility.reason!)}
+          action={slug ? { to: `/s/${slug}`, label: "See other times" } : undefined}
+        />
+      </Shell>
+    );
+  }
+
+  // --- The form ---------------------------------------------------------
+
+  const waitlisting = eligibility?.placement === "waitlisted";
+  const submitting = expressBook.isPending;
+  const rejection = result?.outcome === "rejected" || result?.outcome === "rate_limited" ? result : null;
+
+  return (
+    <Shell>
+      <SEOHead
+        title={`Book ${row.offering_name} · ${row.studio_name}`}
+        description={`Reserve your spot in ${row.offering_name} at ${row.studio_name}. No account needed.`}
+      />
+
+      <ClassSummary row={row} zone={zone} spotsLeft={eligibility?.spotsLeft ?? 0} />
+
+      {paymentCancelled && (
+        <Notice
+          tone="info"
+          title="Payment cancelled"
+          body="Nothing was charged and your spot was not held. Fill in the form again when you're ready."
+          inline
+        />
+      )}
+
+      <Card>
+        <CardContent className="pt-6">
+          <div className="mb-5">
+            <h2 className="text-lg font-semibold">
+              {waitlisting ? "Join the waitlist" : "Reserve your spot"}
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              No account or password needed. We only need enough to hold your spot and reach you if
+              anything changes.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field
+                id="firstName"
+                label="First name"
+                value={form.firstName}
+                onChange={(v) => set("firstName", v)}
+                error={fieldErrors.firstName}
+                autoComplete="given-name"
+                required
+              />
+              <Field
+                id="lastName"
+                label="Last name"
+                value={form.lastName}
+                onChange={(v) => set("lastName", v)}
+                error={fieldErrors.lastName}
+                autoComplete="family-name"
+                required
+              />
+            </div>
+
+            <Field
+              id="email"
+              label="Email"
+              type="email"
+              value={form.email}
+              onChange={(v) => set("email", v)}
+              error={fieldErrors.email}
+              autoComplete="email"
+              hint="Your confirmation goes here."
+              required
+            />
+
+            <Field
+              id="phone"
+              label="Phone"
+              type="tel"
+              value={form.phone}
+              onChange={(v) => set("phone", v)}
+              error={fieldErrors.phone}
+              autoComplete="tel"
+              hint="Optional. Used only if the studio needs to reach you about this class."
+            />
+
+            {row.express_waiver_required && (
+              <label className="flex items-start gap-3 rounded-md border bg-muted/30 p-3 text-sm">
+                <Checkbox
+                  checked={form.waiverAccepted}
+                  onCheckedChange={(v) => set("waiverAccepted", v === true)}
+                  aria-describedby="waiver-text"
+                />
+                <span id="waiver-text">
+                  I accept {row.studio_name}'s liability waiver and studio policies.
+                </span>
+              </label>
+            )}
+
+            <label className="flex items-start gap-3 text-sm text-muted-foreground">
+              <Checkbox
+                checked={form.marketingConsent}
+                onCheckedChange={(v) => set("marketingConsent", v === true)}
+              />
+              <span>Email me about new classes and offers from {row.studio_name}.</span>
+            </label>
+
+            {/* State the commitment before the button, not after it. */}
+            <div className="rounded-md bg-muted/40 p-3 text-sm">
+              {waitlisting ? (
+                <p>
+                  This class is full. Joining the waitlist is free, and you'll only be charged if a
+                  spot opens and you take it.
+                </p>
+              ) : price && price > 0 ? (
+                <p>
+                  You'll pay{" "}
+                  <strong>{formatMoney(price, row.studio_currency || "USD")}</strong> on the next
+                  screen. Already have a membership or class pack?{" "}
+                  <Link to="/auth/login" className="underline">
+                    Sign in instead
+                  </Link>
+                  .
+                </p>
+              ) : (
+                <p>This class is free. No payment needed.</p>
+              )}
+            </div>
+
+            {rejection && (
+              <div
+                className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive"
+                role="alert"
+              >
+                <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" aria-hidden="true" />
+                <span>{rejection.message}</span>
+              </div>
+            )}
+
+            <Button type="submit" className="w-full" size="lg" disabled={submitting}>
+              {submitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" aria-hidden="true" />
+                  Holding your spot
+                </>
+              ) : waitlisting ? (
+                "Join the waitlist"
+              ) : price && price > 0 ? (
+                `Book and pay ${formatMoney(price, row.studio_currency || "USD")}`
+              ) : (
+                "Book this class"
+              )}
+            </Button>
+
+            {!live && (
+              <p className="text-xs text-muted-foreground text-center">
+                Demo mode: submitting simulates the confirmation. No booking is created.
+              </p>
+            )}
+          </form>
+        </CardContent>
+      </Card>
+    </Shell>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Pieces
+// ---------------------------------------------------------------------------
+
+function Shell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto w-full max-w-lg px-4 py-10 space-y-5">{children}</div>
+    </div>
+  );
+}
+
+function ClassSummary({
+  row,
+  zone,
+  spotsLeft,
+}: {
+  row: PublicOccurrenceRow;
+  zone: string;
+  spotsLeft: number;
+}) {
+  return (
+    <Card>
+      <CardContent className="pt-6 space-y-3">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">{row.studio_name}</p>
+            <h1 className="text-xl font-semibold leading-tight mt-0.5">{row.offering_name}</h1>
+          </div>
+          {spotsLeft > 0 ? (
+            <Badge variant="secondary" className="shrink-0">
+              {spotsLeft} {spotsLeft === 1 ? "spot" : "spots"} left
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="shrink-0">
+              Full
+            </Badge>
+          )}
+        </div>
+
+        {row.offering_description && (
+          <p className="text-sm text-muted-foreground">{row.offering_description}</p>
+        )}
+
+        <div className="space-y-1.5 text-sm">
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
+            <span>
+              {formatWhen(row.starts_at, row.studio_timezone)}{" "}
+              <span className="text-muted-foreground">({zone})</span>
+            </span>
+          </div>
+          {row.teacher_name && (
+            <div className="flex items-center gap-2">
+              <User className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
+              <span>{row.teacher_name}</span>
+            </div>
+          )}
+          {(row.location_name || row.room) && (
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
+              <span>{[row.location_name, row.room].filter(Boolean).join(" · ")}</span>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function Field({
+  id,
+  label,
+  value,
+  onChange,
+  error,
+  hint,
+  type = "text",
+  autoComplete,
+  required,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  error?: string;
+  hint?: string;
+  type?: string;
+  autoComplete?: string;
+  required?: boolean;
+}) {
+  const describedBy = [error ? `${id}-error` : null, hint ? `${id}-hint` : null]
+    .filter(Boolean)
+    .join(" ");
+  return (
+    <div className="space-y-1.5">
+      <Label htmlFor={id}>
+        {label}
+        {!required && <span className="text-muted-foreground font-normal"> (optional)</span>}
+      </Label>
+      <Input
+        id={id}
+        type={type}
+        value={value}
+        autoComplete={autoComplete}
+        onChange={(e) => onChange(e.target.value)}
+        aria-invalid={Boolean(error)}
+        aria-describedby={describedBy || undefined}
+        className={error ? "border-destructive" : undefined}
+      />
+      {hint && !error && (
+        <p id={`${id}-hint`} className="text-xs text-muted-foreground">
+          {hint}
+        </p>
+      )}
+      {error && (
+        <p id={`${id}-error`} className="text-xs text-destructive">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function Notice({
+  tone,
+  title,
+  body,
+  action,
+  footnote,
+  icon,
+  inline,
+}: {
+  tone: "success" | "error" | "info";
+  title: string;
+  body: string;
+  action?: { to: string; label: string };
+  footnote?: string;
+  icon?: React.ReactNode;
+  inline?: boolean;
+}) {
+  const toneIcon =
+    icon ??
+    (tone === "success" ? (
+      <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
+    ) : tone === "error" ? (
+      <AlertCircle className="h-5 w-5" aria-hidden="true" />
+    ) : (
+      <CalendarCheck className="h-5 w-5" aria-hidden="true" />
+    ));
+
+  const toneClass =
+    tone === "success"
+      ? "border-emerald-500/40 bg-emerald-500/5"
+      : tone === "error"
+        ? "border-destructive/40 bg-destructive/5"
+        : "border-border bg-muted/40";
+
+  return (
+    <Card className={toneClass}>
+      <CardContent className={inline ? "py-4" : "pt-6"}>
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 shrink-0">{toneIcon}</span>
+          <div className="space-y-2">
+            <h2 className="font-semibold leading-tight">{title}</h2>
+            <p className="text-sm text-muted-foreground">{body}</p>
+            {footnote && <p className="text-xs text-muted-foreground">{footnote}</p>}
+            {action && (
+              <Button asChild variant="outline" size="sm" className="mt-1">
+                <Link to={action.to}>{action.label}</Link>
+              </Button>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

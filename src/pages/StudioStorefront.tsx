@@ -156,8 +156,13 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
                         {c.location_name ? ` · ${c.location_name}` : ""}
                       </p>
                     </div>
+                    {/* Express Booking (PRD-020): straight to a one-step form,
+                        not to registration. Asking a first-time visitor to make
+                        an account before they can book is the drop-off this
+                        feature exists to remove. The page explains itself when a
+                        studio has express booking turned off. */}
                     <Button asChild variant="outline" size="sm" className="shrink-0">
-                      <Link to="/auth/register">Book</Link>
+                      <Link to={`/s/${slug}/book/${c.occurrence_id}`}>Book</Link>
                     </Button>
                   </CardContent>
                 </Card>

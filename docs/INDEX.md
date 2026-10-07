@@ -31,6 +31,8 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 - [DEMO_MODE](DEMO_MODE.md) — Demo mode setup and customization
 - [NEXT_STEPS](NEXT_STEPS.md) — Prioritized task list for development
 - [Competitive Analysis](competitive/README.md) — Competitor briefs, index, and the shared brief structure
+- [Positioning by Audience](positioning/AUDIENCES.md) — Which message belongs to which product and audience
+- [Pricing Models](roadmap/PRICING_MODELS.md) — Flat vs per-location vs seat models for Tandava Cloud
 - [General FAQ](FAQ.md) — Common questions answered quickly
 - [Detailed FAQ](FAQ-detailed.md) — In-depth answers for complex scenarios
 

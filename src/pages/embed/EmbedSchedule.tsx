@@ -34,6 +34,19 @@ function formatWhen(iso: string, timeZone: string): string {
   }
 }
 
+/**
+ * Where the widget's Book button goes.
+ *
+ * Express Booking (PRD-020) means one tap from an embedded widget to a form that
+ * can complete the booking, instead of dumping the visitor on a generic
+ * schedule page to find the class again. Falls back to the schedule when there
+ * is no slug to build a studio-scoped link from.
+ */
+function bookPath(slug: string | undefined, occurrenceId: string): string {
+  if (!slug) return "/schedule";
+  return `/s/${encodeURIComponent(slug)}/book/${encodeURIComponent(occurrenceId)}`;
+}
+
 export default function EmbedSchedule() {
   const { slug } = useParams();
   const live = isBackendConfigured();
@@ -87,7 +100,7 @@ export default function EmbedSchedule() {
                 </p>
               </div>
               <button
-                onClick={() => openHosted("/schedule")}
+                onClick={() => openHosted(bookPath(slug, r.id))}
                 className="shrink-0 rounded-md px-3 py-1.5 text-xs font-semibold text-white"
                 style={{ background: full ? "#9ca3af" : "var(--embed-primary, #4fd1c5)" }}
               >

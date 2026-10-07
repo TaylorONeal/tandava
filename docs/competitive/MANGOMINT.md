@@ -5,6 +5,16 @@
 **Decision this informs:** Feature prioritization and positioning for Tandava Studio / Tandava Cloud
 **Shelf life:** Pricing and feature claims go stale fast. Mangomint repriced on 2026-08-01. Re-verify before any external use.
 
+> **Acted on, 2026-10-07.** Four recommendations below have since been taken up:
+> login-free booking is specified and built in [PRD-020](../prd/PRD-020-express-booking.md);
+> appointments are specified in [PRD-021](../prd/PRD-021-privates-and-appointments.md);
+> the per-audience messaging split that sections 2 and 8 call for is now
+> [docs/positioning/AUDIENCES.md](../positioning/AUDIENCES.md), which narrows section 8's blanket
+> "stop leading with open source" to the hosted and consumer surfaces only — the open-source
+> project's own surfaces should and do lead with it;
+> and section 3's pricing analysis, including the per-location part Mangomint gets right, is carried
+> forward in [docs/roadmap/PRICING_MODELS.md](../roadmap/PRICING_MODELS.md).
+
 ---
 
 ## 0. Verification limits (read this first)

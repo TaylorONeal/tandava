@@ -51,6 +51,17 @@ Every brief uses the same sections so they stay comparable:
   in cloud sessions. Say so in section 0 rather than quietly working around it.
 - **The "so what" is the point.** Section 8 is the deliverable. Everything above it is evidence.
 
+## What came out of the Mangomint brief
+
+Competitive briefs are only worth the decisions they produce. These are the Mangomint brief's:
+
+| Recommendation | Where it went |
+|---|---|
+| Separate messaging per product and audience; stop leading with open source everywhere | [docs/positioning/AUDIENCES.md](../positioning/AUDIENCES.md) |
+| Promote login-free booking to Tier 1 and build it | [PRD-020](../prd/PRD-020-express-booking.md), implemented (Phase 1) |
+| Own the class-native-plus-appointment-capable position | [PRD-021](../prd/PRD-021-privates-and-appointments.md) |
+| Per-seat pricing is the enemy, but the per-location part is worth borrowing | [docs/roadmap/PRICING_MODELS.md](../roadmap/PRICING_MODELS.md) |
+
 ## Related
 
 - `docs/roadmap/COMPETITOR_ISSUES_PRIORITY.md` — prioritized competitor pain points driving roadmap
