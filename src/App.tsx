@@ -56,6 +56,7 @@ class AppErrorBoundary extends Component<
 
 const Home = lazy(() => import("./pages/Home"));
 const StudioStorefront = lazy(() => import("./pages/StudioStorefront"));
+const ExpressBooking = lazy(() => import("./pages/ExpressBooking"));
 const Index = lazy(() => import("./pages/Index"));
 const Schedule = lazy(() => import("./pages/Schedule"));
 const MySchedule = lazy(() => import("./pages/MySchedule"));
@@ -169,6 +170,11 @@ const App = () => (
                   {/* ---- Public studio storefront (slug-driven; what per-studio
                        subdomains will render). Gated on studios.discoverable. ---- */}
                   <Route path="/s/:slug" element={<StudioStorefront />} />
+
+                  {/* ---- Express Booking: login-free booking of one class
+                       (PRD-020). Public by design — no ProtectedRoute. The
+                       express-book Edge Function owns every write. ---- */}
+                  <Route path="/s/:slug/book/:occurrenceId" element={<ExpressBooking />} />
 
                   {/* ---- Blog (built but not yet linked in nav; noindex until
                        BLOG_PUBLISHED is flipped on in src/config/blog.ts) ---- */}

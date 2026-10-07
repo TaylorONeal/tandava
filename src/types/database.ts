@@ -2700,6 +2700,39 @@ export interface PublicScheduleRow {
   studio_primary_color: string | null;
 }
 
+/**
+ * One occurrence's public, booking-relevant facts (`get_public_occurrence`).
+ *
+ * Superset of PublicScheduleRow for a single class: adds the drop-in price and
+ * the studio's express booking policy, which the express booking page needs and
+ * the schedule list does not. Carries cancelled and past occurrences so the page
+ * can explain why they are unbookable rather than 404.
+ */
+export interface PublicOccurrenceRow {
+  occurrence_id: string;
+  starts_at: string;
+  ends_at: string;
+  room: string | null;
+  is_cancelled: boolean;
+  capacity: number;
+  booked_count: number;
+  offering_name: string;
+  offering_description: string | null;
+  drop_in_price_cents: number | null;
+  location_name: string | null;
+  location_city: string | null;
+  teacher_name: string | null;
+  studio_name: string;
+  studio_slug: string;
+  studio_timezone: string;
+  studio_currency: string;
+  studio_primary_color: string | null;
+  express_booking_enabled: boolean;
+  express_booking_cutoff_minutes: number;
+  express_waitlist_enabled: boolean;
+  express_waiver_required: boolean;
+}
+
 type DatabaseTable<Row, Insert = Partial<Row>> = {
   Row: { [Key in keyof Row]: Row[Key] };
   Insert: { [Key in keyof Insert]: Insert[Key] };
@@ -2770,6 +2803,10 @@ export interface Database {
       get_public_schedule: {
         Args: { p_slug: string; p_limit?: number };
         Returns: PublicScheduleRow[];
+      };
+      get_public_occurrence: {
+        Args: { p_slug: string; p_occurrence_id: string };
+        Returns: PublicOccurrenceRow[];
       };
       get_my_effective_role: {
         Args: Record<string, never>;

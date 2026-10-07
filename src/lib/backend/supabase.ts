@@ -30,7 +30,7 @@ import type {
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, StudioStorefront } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, StudioStorefront } from "@/types/database";
 
 // ---------------------------------------------------------------------------
 // Supabase client singleton
@@ -221,6 +221,20 @@ const supabaseData: DataProvider = {
     const { data, error } = await getClient().rpc("get_studio_storefront", { p_slug: slug } as never);
     return {
       data: (data as StudioStorefront) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async getPublicOccurrence(slug, occurrenceId): Promise<DataResult<PublicOccurrenceRow>> {
+    // The hand-written Database type doesn't satisfy supabase-js's rpc generic,
+    // so args resolve to `never` (same as the other rpc calls here); assert.
+    const { data, error } = await getClient().rpc("get_public_occurrence", {
+      p_slug: slug,
+      p_occurrence_id: occurrenceId,
+    } as never);
+    const rows = (data as PublicOccurrenceRow[] | null) ?? [];
+    return {
+      data: rows[0] ?? null,
       error: error ? { message: error.message } : null,
     };
   },
