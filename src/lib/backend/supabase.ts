@@ -31,7 +31,7 @@ import type {
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, StudioStorefront } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront } from "@/types/database";
 
 // ---------------------------------------------------------------------------
 // Supabase client singleton
@@ -262,6 +262,15 @@ const supabaseData: DataProvider = {
       p_occurrence_id: occurrenceId,
     } as never);
     const rows = (data as PublicOccurrenceRow[] | null) ?? [];
+    return {
+      data: rows[0] ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async getMyStudio(): Promise<DataResult<MyStudioRow>> {
+    const { data, error } = await getClient().rpc("get_my_studio");
+    const rows = (data as MyStudioRow[] | null) ?? [];
     return {
       data: rows[0] ?? null,
       error: error ? { message: error.message } : null,

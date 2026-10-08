@@ -34,6 +34,8 @@ import {
   ClipboardList,
   MessageSquare,
   Link2,
+  Share2,
+  Code2,
   Megaphone,
   CheckSquare,
 } from "lucide-react";
@@ -56,6 +58,8 @@ const manageNavigation = [
   { nameKey: "products", href: "/manage/products", icon: Package },
   { nameKey: "inventory", href: "/manage/inventory", icon: Warehouse },
   { nameKey: "purchaseOrders", href: "/manage/purchase-orders", icon: ClipboardList },
+  { nameKey: "shareLinks", href: "/manage/share", icon: Share2 },
+  { nameKey: "websiteEmbed", href: "/manage/embed", icon: Code2 },
   { nameKey: "landingPages", href: "/manage/landing-pages", icon: Globe },
   { nameKey: "utmBuilder", href: "/manage/utm-builder", icon: Link2 },
   { nameKey: "campaigns", href: "/manage/campaigns", icon: Megaphone },
