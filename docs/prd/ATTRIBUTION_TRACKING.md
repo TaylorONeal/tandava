@@ -2,6 +2,13 @@
 
 Technical specification for tracking student acquisition journeys across multiple touchpoints.
 
+> **Status (Oct 8 2026):** design only. None of the tables below exist as written; migration 00003 has
+> `analytics_sessions` / `analytics_daily` with different names and no visitor id, and nothing in the
+> app writes to them. The product contract, the per-surface capture table and the build order are in
+> [PRD-024](PRD-024-attribution-everywhere.md); this file is the implementation reference and will be
+> reconciled to it (table names to the 00003 ones, `member_profiles` → `profiles`) when step 1 of that
+> build order starts.
+
 ---
 
 ## Overview

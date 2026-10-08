@@ -10,16 +10,27 @@
 ## 1. Home studio, with room for several
 
 ### The tension to design around
-A member wants one tap into their studio and an easy way to book elsewhere when they travel. A studio owner shares their link so members book with *them*. If a studio's own page or embed shows other studios' classes, owners stop sharing it, and the deep link (STORE-APPS.md) loses its reason to exist. So: **studio surfaces are single-studio, always. Discovery lives only in member-owned surfaces** (app home, the studio switcher, "Explore").
+A member wants one tap into their studio and an easy way to book elsewhere when they travel. A studio owner shares their link so members book with *them*. If a studio's own page or embed shows other studios' classes, owners stop sharing it, and the deep link (STORE-APPS.md) loses its reason to exist.
+
+### The rule: the chrome is ours, the canvas is theirs
+Every screen has two layers. The **canvas** (studio page, schedule, class, booking form, confirmation, emails) belongs to the studio: its name, colors, classes, passes, and nothing from any other business. The **chrome** (the app's header and tab bar, the member's own profile area, the studio switcher) belongs to Tandava and to the member. The rest of the app is always reachable from the chrome, never from inside the canvas. Nothing on a studio's canvas ever says "find another studio".
+
+| Surface | Canvas (studio's) | Chrome (member's) |
+|---|---|---|
+| Member app, any studio screen | Studio header, schedule, booking | Tab bar: **Studio · Bookings · Passes · Me**; studio name with a chevron in the header (switcher) |
+| Web studio page `/s/:slug` | Everything on the page | Signed in: avatar menu top right (My bookings, Passes, Explore, Account). Signed out: a small "Booking by Tandava" wordmark in the footer, no call to action |
+| Embed on the studio's own site | Schedule and Book buttons | Nothing. The embed is the studio's site |
+| Booking confirmation, emails | Studio, class, calendar, save-your-details | Nothing |
+
+"Explore" (never "find another studio") lives in exactly two places: the last row of the studio switcher, and the **Me** tab. Two taps from anywhere, zero taps on a studio's canvas. Explore shows studios on Tandava near the member, with the network classes from PRD-023 when that ships. Until there are enough studios in a city to make browsing useful, Explore shows the member's own studios plus a search box, and nothing else.
 
 ### Rules
 1. **Home studio is automatic at first, chosen after that.** Someone with one studio has it as home without being asked. The first time they book at a second studio, the confirmation asks once: "Make Ubud Yoga your home studio?" (default no). Never auto-switch home.
 2. **Deep link sets the studio for this visit, not the home.** Opening `/s/aloha-yoga` from Instagram shows Aloha Yoga; home stays where it was. Back in the app later, the member lands on home again.
-3. **Switcher, not a marketplace.** The member app header shows the current studio's name with a chevron (the Slack-workspace pattern). The sheet lists: Home (starred), other studios they belong to or favorited (most recent first), then a quieter "Find another studio" row. One tap to switch.
-4. **Favorite ≠ home.** Star any studio to keep it in the switcher. Home is the one starred studio the app opens to. Unstar removes it from the list, not the bookings.
-5. **Discovery is present but quiet.** "Find another studio" appears in the switcher sheet and on the member's own schedule when it's empty, never on a studio page, embed, booking confirmation or email.
-6. **Travelling is detected, not configured.** When the device time zone differs from home's at app open, show one dismissible line on the member's home: "You're on Hawaii time. Classes near you?" Tapping it opens Explore filtered to studios in that zone. No location permission needed; zone is enough to suggest, and the person picks.
-7. **Passes stay with their studio.** A pack from Oxatl doesn't work at Aloha; the booking screen says so before checkout ("Your Oxatl pass doesn't apply here"), not after.
+3. **Switcher, not a marketplace.** The header shows the current studio's name with a chevron (the Slack-workspace pattern). The sheet lists: Home (starred), other studios they belong to or starred (most recent first), then a quieter "Explore" row. One tap to switch.
+4. **Favorite is not home.** Star any studio to keep it in the switcher. Home is the one starred studio the app opens to. Unstar removes it from the list, not the bookings.
+5. **Travelling is detected, not configured.** When the device time zone differs from home's at app open, show one dismissible line on the member's own home tab: "You're on Hawaii time. Studios near you?" Tapping it opens Explore filtered to that zone. No location permission needed. Never repeated the same day.
+6. **Passes: say what works, link to the rest, quietly.** On a booking screen the options shown are the ones that apply here: a covering pass or membership, a network credit (PRD-023), or the drop-in price. Passes from other studios are not listed as "doesn't apply here"; a muted "Your passes" link under the options opens the Passes tab, where every pass is grouped by the studio it belongs to and shows where it works. The studio's screen stays about the studio; the member can still find everything they own in one tap.
 
 ### Data (migration when built)
 - `studio_members.is_favorite BOOLEAN DEFAULT FALSE`, `studio_members.last_visited_at TIMESTAMPTZ`
@@ -30,7 +41,9 @@ A member wants one tap into their studio and an easy way to book elsewhere when 
 ### Acceptance
 - One-studio member: app opens straight to that studio's schedule, no switcher prompt.
 - Deep link to another studio: shows that studio, home unchanged, switcher shows both after booking.
-- Studio page, embed and confirmation contain no link to other studios.
+- Studio page, embed, confirmation and emails contain no link to other studios and no "explore" wording.
+- From any studio screen: Explore is reachable in two taps through the chrome.
+- Booking screen at a studio where the member holds no pass: drop-in (and network credit when live) shown, "Your passes" link present, no "doesn't apply" message.
 - Device zone differs from home: one line, dismissible, never repeated the same day.
 
 ---
@@ -100,5 +113,10 @@ Validated: unit tests (escaping, 75-octet folding, CRLF, UTC, GEO, Google params
 ---
 
 ## Open questions
-1. Should Explore be in v1 of the member app, or only the switcher (studios you already belong to)? Recommendation: switcher in v1, Explore once there are enough studios to make it worth a tap.
+1. Explore in v1 of the member app is the "your studios + search" version. The browsable version waits for PRD-023 supply. Decided Oct 8: Explore exists from v1 but only in the chrome.
 2. Guests have no account, so no home studio. Fine: Express Booking is per-studio by design.
+
+## Related
+- PRD-023 Studio Network (cross-studio credits, the thing Explore eventually shows)
+- PRD-024 Attribution everywhere (deep links, switcher and Explore are all attribution sources)
+- `docs/app-store/STORE-APPS.md` (deep links open the member app on the studio)

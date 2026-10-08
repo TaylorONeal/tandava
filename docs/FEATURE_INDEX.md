@@ -48,7 +48,10 @@ Quick reference for all features, their status, and locations in the codebase.
 | Guest identity (passwordless profile) | Backend foundation | - | `profiles.is_guest` | PRD-020 |
 | Express booking rate limiting | Backend foundation | - | `count_recent_express_claims` | PRD-020 |
 | Continue link for existing accounts | Partial (token issued, not yet redeemed) | - | `express_booking_claims.continue_token_hash` | PRD-020 |
-| Privates / 1:1 appointments | Planned | - | - | PRD-021 |
+| Privates / 1:1 appointments (instant + request/approve, rooms, alternatives) | Planned | - | `instructor_availability` only | PRD-021 |
+| Class times in studio zone + viewer's time; add to calendar | Built (web) | `/s/:slug`, `/s/:slug/book/:id`, embed | `get_public_occurrence` (00021) | PRD-022 |
+| Home studio, switcher, Explore in the chrome, passes by studio | Planned | - | - | PRD-022 |
+| Studio Network (cross-studio credits, studio-controlled, ROI view) | Planned | - | - | PRD-023 |
 
 ### Members & Students
 
@@ -176,7 +179,7 @@ Quick reference for all features, their status, and locations in the codebase.
 | Landing page A/B | Schema | - | `landing_page_variants` | PRD-011 |
 | Meta Ads integration | Future | - | - | PRD-011 |
 | Google Ads integration | Future | - | - | PRD-011 |
-| Attribution tracking | Future | - | - | PRD-011 |
+| Attribution tracking (every surface, one linked view) | Planned; only Express Booking captures UTMs today | `/manage/analytics/attribution` (planned) | `analytics_sessions` (unused), `express_booking_claims.utm_*` | PRD-024 |
 
 ### Engagement & Retention
 

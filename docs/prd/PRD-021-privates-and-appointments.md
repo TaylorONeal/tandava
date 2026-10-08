@@ -3,7 +3,7 @@
 ## Overview
 **Phase:** 7
 **Priority:** P1
-**Status:** Planned (not started)
+**Status:** Planned (not started). Oct 8 2026 answer to "how are private bookings working?": they are not, yet. No `appointments` table, no request workflow, no room check. `instructor_availability` exists (migration 00006) and drives a display-only screen. This revision adds the request-and-approve flow, room handling, and the rule that no request ends in a bare "no".
 **Owner:** TBD
 **Origin:** [docs/competitive/MANGOMINT.md](../competitive/MANGOMINT.md) sections 1 and 6
 
@@ -118,7 +118,9 @@ created *by* the booking. Capacity-1 is an accident of the shape, not the essenc
 | `appointment_types` | What can be booked 1:1: name, duration, price, which teachers offer it, location/room needs |
 | `appointments` | One booked session: teacher, student profile, type, start/end, status, transaction |
 | `instructor_availability` | **Already exists** (migration 00006, PRD-001). Currently drives the `/teach/availability` screen. Would become the source of bookable windows. |
+| `appointment_requests` | A request before it becomes an appointment: student profile (guest or member), type, teacher or "any", up to three proposed times, note, status (requested, proposed, accepted, expired, handed_off), Stripe authorisation id, expiry. Proposed alternatives live on the same row as a JSON list with who proposed them. |
 | `appointment_packs` | Privates sold in bundles. Likely reuses the `class_packs` pattern rather than a new one. |
+| `appointment_types.booking_mode`, `room_requirements` | `instant` or `request`; which rooms (or none) the type needs |
 | `studios.private_revenue_split_bps` | Studio's share, default 0 |
 
 Note what already exists and is reusable: `instructor_availability`, the entitlement engine's
@@ -148,6 +150,48 @@ scope-by-offering pattern, `express_booking_claims` and the whole PRD-020 guest 
 - [ ] Pick type, see honest availability, pick a slot, pay or deposit
 - [ ] Cancellation policy stated before the button (per PRD-020's rules)
 - [ ] Reschedule within policy without contacting anyone
+- [ ] Add to calendar on confirmation (PRD-022 calendar module), with the room and the teacher's name
+
+### US-21.8: Request a time that isn't published (Oct 8 2026)
+Instant booking against published windows is the fast path. Most real private requests are "could we do Thursday around 4?" and the answer from the software must never be a dead end. Every path either books, proposes, or holds; nothing just declines.
+
+**Two booking modes per appointment type, set by the teacher (studio can set a default):**
+- **Instant:** published windows book immediately (US-21.1 to 21.3).
+- **Request:** the student proposes up to three times; the teacher confirms one or proposes others. Default for a teacher who has not published windows yet, so the feature works on day one with zero setup.
+
+**The request form (student, no account required via PRD-020):**
+- [ ] Type, preferred teacher (or "any teacher who offers this"), up to three preferred times, a note
+- [ ] Before submit, each preferred time is checked against teacher availability, the teacher's classes, existing appointments and **room** availability. A time that can't work is marked, with the nearest two times that can, so the student fixes it before asking: "Thu 4:00 PM: Daniella is teaching. Thu 5:30 PM and Fri 4:00 PM are open."
+- [ ] A card or deposit is authorised at request time and **captured only on acceptance** (Stripe manual capture; authorisations last 7 days, so requests expire at 6 days unanswered). Nobody is charged for a request that was not accepted.
+- [ ] Requested times are soft-held for 24 hours against other requests, not against member class bookings (a hold never blocks a class).
+
+**The teacher's side (`/teach/requests`, push + email):**
+- [ ] One screen per request: student, type, the three times with conflicts already shown, the note
+- [ ] Three buttons, all positive: **Accept** (picks one of the times), **Propose other times** (teacher taps two or three slots from their own calendar; the student gets a link and accepts with one tap, no account), **Hand to the studio** (front desk takes it: another teacher, another room, a package)
+- [ ] No "Decline" button. A teacher who cannot do it proposes or hands off. If every path is exhausted, the studio replies with the waitlist option below. The copy the student sees is always "here's what we can do", never "no".
+- [ ] Unanswered after 12 hours: reminder to the teacher. After 24 hours: front desk sees it in `/manage/inbox` and can act. After 6 days: request expires, authorisation released, student told and offered the teacher's next published windows.
+
+**Rooms:**
+- [ ] `appointment_types.room_requirements` (any room / specific rooms / no room, e.g. outdoor or online)
+- [ ] Room assignment at acceptance; conflicts with classes and other appointments checked under the same lock discipline as `create_guest_booking`
+- [ ] A teacher can accept with a different room than requested; the student sees the room on the confirmation and the calendar event
+
+**Alternatives are generated, not typed:**
+- [ ] Same teacher, nearest open slots (two before, two after the asked time)
+- [ ] Same time, another teacher who offers the type (only if the student picked "any teacher")
+- [ ] Notify-me: hold the student's interest in a slot that is taken; if it opens (cancellation), they get first refusal for 2 hours
+- [ ] Each alternative is one tap to accept from the message or the app
+
+**Studio controls (`/manage/settings/privates`):**
+- [ ] Default mode (instant / request) for new appointment types
+- [ ] Response-time targets and who gets the escalation
+- [ ] Whether front desk can accept on a teacher's behalf
+- [ ] Deposit amount or full payment at request
+
+### US-21.9: What the student sees while waiting
+- [ ] A status page (`/s/:slug/requests/:id`, signed link): requested, teacher looking, proposed times (accept here), confirmed, expired
+- [ ] Every status message says the next step and when: "Daniella usually replies within a few hours. If you don't hear by tomorrow 4 PM, the studio will step in."
+- [ ] Confirmation adds the appointment to the calendar (PRD-022) and tells the student how to reschedule
 
 ### US-21.4: It appears on the studio calendar
 - [ ] `/manage/schedule` shows privates alongside classes, visually distinct
@@ -174,11 +218,20 @@ This is the part that makes privates a growth lever rather than a calendar featu
 
 ---
 
+## Customer-service rules this PRD commits to
+1. The software never says no. It books, proposes, holds, or hands to a person.
+2. Nobody is charged for something that did not happen. Authorise at request, capture at acceptance.
+3. Every waiting state names the next step and the time it will happen by.
+4. The student never has to repeat themselves: a hand-off carries the whole request.
+5. A proposal from the teacher is one tap to accept, without an account.
+
 ## Dependencies
 
 | Depends on | Why |
 |---|---|
 | PRD-020 Express Booking | The guest identity and public-booking path is the same. Do not build a second one. |
+| PRD-022 Calendar and time zones | Confirmations use the calendar module; request times are shown in studio time with the zone named |
+| PRD-024 Attribution | "Private intro after first class" (US-21.6) is a conversion the attribution model has to credit |
 | PRD-001 Staff portal | `instructor_availability` already lives there |
 | PRD-002 Tips and commission | The split and earnings model overlaps |
 | Verified payments core | This adds a second thing to charge for. Doing it before the first is reliable multiplies an unsolved problem. |
