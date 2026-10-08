@@ -19,7 +19,7 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 
 ## Quick Links
 
-- **Growth specs (Oct 2026):** [PRD-020 Express Booking](prd/PRD-020-express-booking.md) · [PRD-021 Privates](prd/PRD-021-privates-and-appointments.md) · [PRD-022 Home studio, time zones, calendar](prd/PRD-022-home-studio-time-zones-calendar.md) · [PRD-023 Studio Network](prd/PRD-023-studio-network.md) · [PRD-024 Attribution everywhere](prd/PRD-024-attribution-everywhere.md) · [Store apps](app-store/STORE-APPS.md)
+- **Growth specs (Oct 2026):** [PRD-020 Express Booking](prd/PRD-020-express-booking.md) · [PRD-021 Privates](prd/PRD-021-privates-and-appointments.md) · [PRD-022 Home studio, time zones, calendar](prd/PRD-022-home-studio-time-zones-calendar.md) · [PRD-023 Studio Network](prd/PRD-023-studio-network.md) · [PRD-024 Attribution everywhere](prd/PRD-024-attribution-everywhere.md) · [PRD-025 Off-site privates and private events](prd/PRD-025-offsite-privates-and-private-events.md) · [Store apps](app-store/STORE-APPS.md) · [Help and FAQ rule](HELP-AND-FAQ.md)
 
 - [Implementation Handoff](IMPLEMENTATION_HANDOFF.md) — Bug fixes, tested hosted foundations, remaining blockers and three product decisions
 

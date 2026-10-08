@@ -254,6 +254,7 @@ only on-demand piece.
 | Recurring Booking ("book me every week") | P1 |
 | Family/Group Booking (single transaction) | P1 |
 | Privates: request/approve with generated alternatives, rooms (PRD-021) | P1 |
+| Off-site privates, corporate classes, parties, room rental, quotes (PRD-025) | P1 |
 | Home studio, switcher, Explore in the chrome, passes by studio (PRD-022) | P1 |
 | Attribution on every surface, one linked view (PRD-024) | P0 (pilot gate) |
 

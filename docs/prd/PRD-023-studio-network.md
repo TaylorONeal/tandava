@@ -9,6 +9,21 @@
 
 ---
 
+## Two different things, named differently everywhere
+
+| | **Marketplace connectors** (ClassPass, Gympass) | **Studio Network** (this PRD) |
+|---|---|---|
+| What it is | A connector that lists the studio's classes on a third party's marketplace and accepts their members' bookings | Tandava's own cross-studio credits between studios on Tandava |
+| Who sets the terms | The marketplace: its payout, its caps, its rules on contacting their members | The studio: floor price, seats, windows, caps, who is excluded |
+| Who owns the visitor | The marketplace | The studio (member record, consent, conversion with no fee) |
+| Where it lives in the app | `/manage/connectors` → "Marketplaces" | `/manage/settings/network` |
+| State today | A placeholder card ("ClassPass: accept bookings from ClassPass members") in `DataConnectors`. No API, no commercial agreement. Real integration needs ClassPass's partner program and their terms, which Tandava does not have | Spec |
+| Our stance | Available only if a studio asks and the terms exist. Never recommended by default; the help text says why | The default recommendation when there are enough studios in a city |
+
+A studio can run both. The settings pages say so in one line each: on the Marketplaces card, "This sends your seats to ClassPass on ClassPass's terms. For a version you control, see Studio Network." On the Network page, "This is not ClassPass. You set the price, the seats and the rules, and the visitor becomes your member."
+
+Why the words matter: owners already have a feeling about "ClassPass", good or bad. If the Network reads as "our ClassPass", the owners who dislike aggregators will skip it without reading the controls, and the ones who like aggregators will expect the volume ClassPass has. It is neither. In copy, "Studio Network" never appears in the same sentence as a marketplace name except in the two contrast lines above.
+
 ## What we are not building
 Not an aggregator that sits between the studio and the student. ClassPass's model, as studio owners commonly describe it: a per-visit payout well below the studio's own drop-in price, visitors the studio cannot contact or convert, no control over which classes or how many seats, and existing members who move their spend to the aggregator because it is cheaper. Whether every one of those complaints is fair is beside the point. They are the reasons owners say no, and each one is a design constraint here.
 
@@ -65,7 +80,22 @@ The job is the opposite: a studio with empty seats tonight fills them with peopl
 5. After the second visit, the studio's intro offer appears on the confirmation. After the cap, booking says: "You've used your 3 network visits at Aloha Yoga this month. Join Aloha Yoga from $X." The studio's own offer, not ours.
 
 ### Studio side
-- `/manage/settings/network`: on/off; offerings and time windows; seats per class; release window; floor price per offering; member lookback; per-visitor cap; contact consent copy. Each setting shows what it changes in plain words.
+- `/manage/settings/network`: on/off; offerings and time windows; seats per class; release window; floor price per offering; member lookback; per-visitor cap; contact consent copy.
+- **Every setting ships with a smart default computed from the studio's own data, an info icon that explains the choice in one sentence, and a "why this default" line.** The owner should be able to turn the Network on without changing anything and get a sane result; the settings exist for the owners who want to tune, not as homework for everyone.
+
+| Setting | Smart default | How the default is computed | Info icon text |
+|---|---|---|---|
+| Network on/off | Off | Always off until the owner reads the page | "When on, unsold seats in the classes you pick are offered to people on Tandava who aren't your members, at a price you set. Turn it off any time; nothing already booked changes." |
+| Offerings included | All class types with at least 2 empty seats on average over the last 8 weeks | `class_occurrences.capacity - booked_count`, by offering | "We suggest the classes that usually have room. Workshops, trainings and privates are never included." |
+| Days and times | The time slots where the included offerings averaged 2+ empty seats | Same history, by weekday and hour | "Your 6 AM Tuesday is in because it averaged 7 empty seats. Your Saturday 9 AM is out because it fills." |
+| Seats per class | Half the average empty seats, rounded down, minimum 1, maximum 6 | History per offering and slot | "How many seats can go to the Network in one class. Your members always come first: a released seat is withdrawn the moment a member books it." |
+| Release window | From 24 hours before class until your booking cutoff | Fixed default; shortened automatically to 12 hours for offerings where 30%+ of drop-ins historically booked inside 24 hours | "Seats are offered only inside this window and only if still unsold, so you never give away a seat that would have sold." |
+| Floor price | The offering's drop-in price | `offerings.drop_in_price_cents` | "The least a Network visitor pays for a seat. You can set it higher than drop-in. We never sell below it." |
+| Member lookback | 90 days | Fixed | "People who bought from you in this period can't use Network credits here, so your members don't move their spend to the Network." |
+| Visitor cap | 3 visits per month | Fixed | "After this many visits, a visitor can only keep coming by joining you. The confirmation shows them your intro offer." |
+| Contact consent copy | "Let {studio} email me about classes and offers" | Studio name filled in | "Asked once, at a visitor's first booking. Opt-in, so what you collect is usable." |
+
+The page's top shows the numbers behind the defaults before the switch: "Last 8 weeks: 214 empty seats in the suggested classes. At your floor prices that's up to $X. Tandava keeps 20%; you keep the rest." Same numbers the ROI page will report, so the promise and the result are measured the same way.
 - `/manage/schedule`: released seats are visible on each class ("3 network seats released, 1 taken").
 - `/manage/analytics/network`: the ROI view (below).
 - Payouts: Stripe Connect transfer per network booking at the floor price minus the Tandava fee, on the same schedule as other payouts, itemised.
@@ -112,6 +142,11 @@ Monthly owner email with the same numbers (PRD-007 lifecycle automation carries 
 Scheduled job: every 15 minutes, for each enabled studio, compute releasable seats for occurrences inside the window and upsert `network_releases`; withdraw releases for occurrences that filled.
 
 ---
+
+## Help and FAQ (content lives in `docs/FAQ.md` and `src/content/help.ts`)
+Before sign-up (landing page FAQ): "Is this ClassPass?" (no: you set the price, seats and rules, and the visitor becomes your member), "Do I have to join the Network?" (no, off by default), "Will my members use it instead of paying me?" (they can't: lookback exclusion).
+In app: the info icons above; a "How the Network works" help panel on the settings page with the same three answers plus "How the ROI numbers are calculated"; a "Why am I seeing this?" link on the member's intro-offer nudge.
+In the ROI page: each tile's info icon states its formula and its counterfactual in one sentence.
 
 ## Gates (in order)
 1. Pilot studio live on the web with verified payments (hosted product review gates). A network on an unverified payment core is two unverified things.

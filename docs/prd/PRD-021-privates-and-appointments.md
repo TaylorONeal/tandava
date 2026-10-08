@@ -225,6 +225,9 @@ This is the part that makes privates a growth lever rather than a calendar featu
 4. The student never has to repeat themselves: a hand-off carries the whole request.
 5. A proposal from the teacher is one tap to accept, without an account.
 
+## Smart defaults, info icons, help (docs/HELP-AND-FAQ.md)
+Studio settings for privates ship with defaults an owner never has to touch: default mode `request` until a teacher publishes windows (then `instant` for that teacher), deposit 30% min $25, response target 12 h, escalation 24 h, expiry 6 days, front desk may accept on a teacher's behalf = on, revenue split 0%. Each has an info icon with one sentence on what it changes and why the default. Help entries: `privates-requests` (landing, booking page, teacher app). Off-site and group bookings: PRD-025.
+
 ## Dependencies
 
 | Depends on | Why |

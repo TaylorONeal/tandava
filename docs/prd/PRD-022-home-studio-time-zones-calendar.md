@@ -112,6 +112,9 @@ Validated: unit tests (escaping, 75-octet folding, CRLF, UTC, GEO, Google params
 
 ---
 
+## Help entries (src/content/help.ts)
+`class-time-zone`, `add-to-calendar`, `explore-on-studio-page`, `save-your-details`, `existing-account-booking`. The home-studio prompt ("Make Ubud Yoga your home studio?") carries an info icon explaining that home is where the app opens and nothing else changes.
+
 ## Open questions
 1. Explore in v1 of the member app is the "your studios + search" version. The browsable version waits for PRD-023 supply. Decided Oct 8: Explore exists from v1 but only in the chrome.
 2. Guests have no account, so no home studio. Fine: Express Booking is per-studio by design.

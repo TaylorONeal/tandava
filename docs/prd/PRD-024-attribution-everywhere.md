@@ -113,6 +113,9 @@ Definitions live in `/manage/definitions` (exists) so "first touch" means the sa
 
 ---
 
+## Help, definitions and info icons
+Every tile on the attribution page carries an info icon with its formula and its counterfactual in one sentence; `/manage/definitions` holds the same text. Help entries: `attribution` (landing, owner), `tracking-privacy` (landing, booking page, member app). The FAQ answer "What analytics does Tandava provide?" states what is live and what is planned, and is updated with each build step.
+
 ## Privacy posture (part of the product, not a footnote)
 - First-party only. No Meta pixel, no Google Ads tag by default. A studio that wants one adds it knowingly in settings, and the page states it.
 - No IP stored; coarse geo computed at the edge and dropped.
