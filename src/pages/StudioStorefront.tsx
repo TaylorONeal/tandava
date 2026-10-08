@@ -13,6 +13,7 @@
  * private or unknown slug lands on the neutral "not available" state below.
  */
 
+import { ClassTime } from "@/components/time/ClassTime";
 import { useParams, Link } from "react-router-dom";
 import { useStudioStorefront, usePublicSchedule } from "@/hooks/useBooking";
 import { isBackendConfigured } from "@/lib/backend";
@@ -142,19 +143,23 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
         <Section title="Upcoming classes">
           <div className="grid gap-2">
             {upcoming.map((c) => {
-              const when = new Date(c.starts_at);
               return (
                 <Card key={c.occurrence_id}>
                   <CardContent className="p-3 sm:p-4 flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <p className="font-medium text-sm truncate">{c.offering_name}</p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {when.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })}
-                        {" · "}
-                        {when.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
-                        {c.teacher_name ? ` · ${c.teacher_name}` : ""}
-                        {c.location_name ? ` · ${c.location_name}` : ""}
+                      {/* Studio time with the zone named, never the viewer's
+                          device clock (a Hawaii class viewed from Austin was
+                          showing Austin times). The visitor's own time shows
+                          underneath when it differs. */}
+                      <p className="text-xs text-muted-foreground">
+                        <ClassTime compact startsAt={c.starts_at} endsAt={c.ends_at} studioTimeZone={c.studio_timezone} />
                       </p>
+                      {(c.teacher_name || c.location_name) && (
+                        <p className="text-xs text-muted-foreground truncate">
+                          {[c.teacher_name, c.location_name].filter(Boolean).join(" · ")}
+                        </p>
+                      )}
                     </div>
                     {/* Express Booking (PRD-020): straight to a one-step form,
                         not to registration. Asking a first-time visitor to make

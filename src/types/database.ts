@@ -2739,6 +2739,15 @@ export interface PublicOccurrenceRow {
   studio_id?: string | null;
   offering_id?: string | null;
   location_id?: string | null;
+  /** For add-to-calendar (map-resolvable address, cancellation window). */
+  location_address_line1?: string | null;
+  location_address_line2?: string | null;
+  location_state?: string | null;
+  location_zip?: string | null;
+  location_country?: string | null;
+  location_latitude?: number | null;
+  location_longitude?: number | null;
+  cancellation_minutes?: number | null;
 }
 
 /**
@@ -2820,6 +2829,11 @@ export interface Database {
     Functions: {
       book_class: {
         Args: { p_occurrence_id: string; p_source_type: string; p_source_id: string };
+        Returns: Booking;
+      };
+      /** Signed-in caller books a zero-price class (migration 00022). */
+      book_free_class: {
+        Args: { p_occurrence_id: string };
         Returns: Booking;
       };
       cancel_booking: {

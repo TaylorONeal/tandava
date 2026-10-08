@@ -173,6 +173,9 @@ export interface DataProvider {
    */
   bookClass(input: BookClassInput): Promise<DataResult<Booking>>;
 
+  /** Book the signed-in user into a zero-price class (book_free_class() RPC, migration 00022). */
+  bookFreeClass(occurrenceId: string): Promise<DataResult<Booking>>;
+
   /** Cancel a booking via the cancel_booking() RPC (late-cancel detection + refund/fee). */
   cancelBooking(bookingId: string): Promise<DataResult<Booking>>;
 

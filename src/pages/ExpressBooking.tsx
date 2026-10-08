@@ -28,6 +28,9 @@ import { useParams, useSearchParams, Link } from "react-router-dom";
 import { usePublicOccurrence, useExpressBook } from "@/hooks/useBooking";
 import { useAuth } from "@/contexts/AuthContext";
 import { MemberBookingPanel } from "@/components/booking/MemberBookingPanel";
+import { ClassTime } from "@/components/time/ClassTime";
+import { AddToCalendar } from "@/components/calendar/AddToCalendar";
+import type { ClassEventInput } from "@/lib/calendar/classEvent";
 import { expressBookingPath, loginHref } from "@/lib/auth/next";
 import { isBackendConfigured } from "@/lib/backend";
 import {
@@ -44,7 +47,6 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   CalendarCheck,
-  Clock,
   Loader2,
   MapPin,
   Mail,
@@ -65,6 +67,7 @@ import type { PublicOccurrenceRow } from "@/types/database";
  */
 function demoOccurrence(occurrenceId: string): PublicOccurrenceRow {
   const starts = new Date(Date.now() + 5 * 60 * 60 * 1000);
+  starts.setMinutes(0, 0, 0); // a realistic on-the-hour class time
   const ends = new Date(starts.getTime() + 60 * 60 * 1000);
   return {
     occurrence_id: occurrenceId,
@@ -95,34 +98,6 @@ function demoOccurrence(occurrenceId: string): PublicOccurrenceRow {
 // ---------------------------------------------------------------------------
 // Formatting
 // ---------------------------------------------------------------------------
-
-/** Render a class time in the STUDIO's timezone, never the visitor's. */
-function formatWhen(iso: string, timeZone: string): string {
-  try {
-    return new Date(iso).toLocaleString(undefined, {
-      timeZone,
-      weekday: "long",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    });
-  } catch {
-    return new Date(iso).toLocaleString();
-  }
-}
-
-/** Short timezone label ("CDT") so the visitor can tell whose clock this is. */
-function zoneLabel(iso: string, timeZone: string): string {
-  try {
-    const parts = new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName: "short" }).formatToParts(
-      new Date(iso),
-    );
-    return parts.find((p) => p.type === "timeZoneName")?.value ?? timeZone;
-  } catch {
-    return timeZone;
-  }
-}
 
 function formatMoney(cents: number, currency: string): string {
   try {
@@ -340,7 +315,7 @@ export default function ExpressBooking() {
 
   if (!row) return null;
 
-  const zone = zoneLabel(row.starts_at, row.studio_timezone);
+  const calendarEvent = toCalendarEvent(row, occurrenceId ?? row.occurrence_id, signedIn);
   const price = row.drop_in_price_cents;
   const result = expressBook.data;
 
@@ -355,6 +330,11 @@ export default function ExpressBooking() {
           body={`Your payment went through and your spot in ${row.offering_name} is held. Stripe emails your receipt.`}
           action={slug ? { to: `/s/${slug}`, label: `Back to ${row.studio_name}` } : undefined}
         />
+        <Card>
+          <CardContent className="pt-6">
+            <AddToCalendar event={calendarEvent} />
+          </CardContent>
+        </Card>
         {live && !signedIn && (
           <SaveAccountCard
             studioName={row.studio_name}
@@ -390,6 +370,13 @@ export default function ExpressBooking() {
               : undefined
           }
         />
+        {!waitlisted && (
+          <Card>
+            <CardContent className="pt-6">
+              <AddToCalendar event={calendarEvent} />
+            </CardContent>
+          </Card>
+        )}
         {live && !demoResult && (
           <SaveAccountCard
             studioName={row.studio_name}
@@ -422,11 +409,19 @@ export default function ExpressBooking() {
   }
 
   // --- Blocked before the form -------------------------------------------
+  //
+  // Express policy (express_booking_enabled, the guest cutoff, "full" for
+  // guests) governs the guest form only. A signed-in member books through
+  // their own path, so for them only universal blockers apply: cancelled or
+  // already started. express_disabled is the database default and must not
+  // hide the member panel.
+  const universalBlock =
+    eligibility && !eligibility.eligible && (eligibility.reason === "cancelled" || eligibility.reason === "already_started");
 
-  if (eligibility && !eligibility.eligible) {
+  if (eligibility && !eligibility.eligible && (!signedIn || universalBlock)) {
     return (
       <Shell>
-        <ClassSummary row={row} zone={zone} spotsLeft={eligibility.spotsLeft} />
+        <ClassSummary row={row} spotsLeft={eligibility.spotsLeft} />
         <Notice
           tone="error"
           title="This class can't be booked"
@@ -442,7 +437,7 @@ export default function ExpressBooking() {
   if (signedIn && occurrenceId) {
     return (
       <Shell>
-        <ClassSummary row={row} zone={zone} spotsLeft={eligibility?.spotsLeft ?? 0} />
+        <ClassSummary row={row} spotsLeft={eligibility?.spotsLeft ?? 0} />
         {paymentCancelled && (
           <Notice
             tone="info"
@@ -456,6 +451,7 @@ export default function ExpressBooking() {
           occurrenceId={occurrenceId}
           returnPath={bookingPath}
           priceLabel={price && price > 0 ? formatMoney(price, row.studio_currency || "USD") : null}
+          calendarEvent={calendarEvent}
         />
       </Shell>
     );
@@ -474,7 +470,7 @@ export default function ExpressBooking() {
         description={`Reserve your spot in ${row.offering_name} at ${row.studio_name}. No account needed.`}
       />
 
-      <ClassSummary row={row} zone={zone} spotsLeft={eligibility?.spotsLeft ?? 0} />
+      <ClassSummary row={row} spotsLeft={eligibility?.spotsLeft ?? 0} />
 
       {paymentCancelled && (
         <Notice
@@ -748,6 +744,36 @@ function SaveAccountCard({
   );
 }
 
+/** Calendar event for this class from the public row (address, studio zone, policy). */
+function toCalendarEvent(row: PublicOccurrenceRow, occurrenceId: string, signedIn: boolean): ClassEventInput {
+  const origin = typeof window === "undefined" ? "" : window.location.origin;
+  return {
+    occurrenceId,
+    className: row.offering_name,
+    studioName: row.studio_name,
+    startsAt: row.starts_at,
+    endsAt: row.ends_at,
+    studioTimeZone: row.studio_timezone,
+    teacherName: row.teacher_name,
+    room: row.room,
+    locationName: row.location_name,
+    addressLine1: row.location_address_line1 ?? null,
+    addressLine2: row.location_address_line2 ?? null,
+    city: row.location_city,
+    region: row.location_state ?? null,
+    postalCode: row.location_zip ?? null,
+    country: row.location_country ?? null,
+    latitude: row.location_latitude ?? null,
+    longitude: row.location_longitude ?? null,
+    cancellationMinutes: row.cancellation_minutes ?? null,
+    // Only a page that can actually show or cancel the booking is a "manage"
+    // link. Guests get the studio page as plain info until the signed guest
+    // manage link (PRD-020) exists.
+    manageUrl: signedIn && origin ? `${origin}/my-schedule` : null,
+    studioUrl: origin ? `${origin}/s/${encodeURIComponent(row.studio_slug)}` : null,
+  };
+}
+
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
@@ -758,11 +784,9 @@ function Shell({ children }: { children: React.ReactNode }) {
 
 function ClassSummary({
   row,
-  zone,
   spotsLeft,
 }: {
   row: PublicOccurrenceRow;
-  zone: string;
   spotsLeft: number;
 }) {
   return (
@@ -789,13 +813,7 @@ function ClassSummary({
         )}
 
         <div className="space-y-1.5 text-sm">
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
-            <span>
-              {formatWhen(row.starts_at, row.studio_timezone)}{" "}
-              <span className="text-muted-foreground">({zone})</span>
-            </span>
-          </div>
+          <ClassTime startsAt={row.starts_at} endsAt={row.ends_at} studioTimeZone={row.studio_timezone} />
           {row.teacher_name && (
             <div className="flex items-center gap-2">
               <User className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
