@@ -20,12 +20,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import type { PublicOccurrenceRow } from "@/types/database";
+import { AddToCalendar } from "@/components/calendar/AddToCalendar";
+import type { ClassEventInput } from "@/lib/calendar/classEvent";
 
 export function MemberBookingPanel({
   row,
   occurrenceId,
   returnPath,
   priceLabel,
+  calendarEvent,
 }: {
   row: PublicOccurrenceRow;
   occurrenceId: string;
@@ -33,6 +36,7 @@ export function MemberBookingPanel({
   returnPath: string;
   /** Formatted drop-in price, when there is one. */
   priceLabel: string | null;
+  calendarEvent: ClassEventInput;
 }) {
   const { user, profile, signOut } = useAuth();
   const studioId = row.studio_id ?? undefined;
@@ -102,6 +106,9 @@ export function MemberBookingPanel({
             <p className="text-sm text-muted-foreground mt-1">
               Your spot in {row.offering_name} is confirmed. It's in My Schedule.
             </p>
+            <div className="mt-4">
+              <AddToCalendar event={{ ...calendarEvent, manageUrl: `${window.location.origin}/my-schedule` }} />
+            </div>
           </div>
         </CardContent>
       </Card>

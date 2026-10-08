@@ -3,6 +3,7 @@ import { EmbedLayout, openHosted } from "./EmbedLayout";
 import { usePublicSchedule } from "@/hooks/useBooking";
 import { isBackendConfigured } from "@/lib/backend";
 import { Clock, MapPin } from "lucide-react";
+import { describeClassTime } from "@/lib/time/classTime";
 
 interface Row {
   id: string;
@@ -20,15 +21,12 @@ const DEMO_ROWS: Row[] = [
   { id: "d4", name: "Sunrise Flow", when: "Wed · 6:30 AM", location: "Main Studio", spotsLeft: 8 },
 ];
 
-// Render class times in the STUDIO's timezone, not the visitor's browser zone.
+// Studio time with the zone named in plain words (PRD-022), e.g.
+// "Sat, Oct 10 · 6:00 AM Hawaii time". The widget sits on the studio's own site,
+// but visitors may be anywhere.
 function formatWhen(iso: string, timeZone: string): string {
   try {
-    return new Date(iso).toLocaleString(undefined, {
-      timeZone,
-      weekday: "short",
-      hour: "numeric",
-      minute: "2-digit",
-    });
+    return describeClassTime({ startsAt: iso, studioTimeZone: timeZone }).short;
   } catch {
     return new Date(iso).toLocaleString(undefined, { weekday: "short", hour: "numeric", minute: "2-digit" });
   }

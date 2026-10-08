@@ -124,7 +124,17 @@ RETURNS TABLE (
   -- (membership / pack scope by offering and location). Not sensitive.
   studio_id UUID,
   offering_id UUID,
-  location_id UUID
+  location_id UUID,
+  -- Add-to-calendar needs a map-resolvable address and the cancellation
+  -- window. Public already: it is the studio's own business address.
+  location_address_line1 TEXT,
+  location_address_line2 TEXT,
+  location_state TEXT,
+  location_zip TEXT,
+  location_country TEXT,
+  location_latitude DOUBLE PRECISION,
+  location_longitude DOUBLE PRECISION,
+  cancellation_minutes INTEGER
 )
 LANGUAGE sql
 STABLE
@@ -143,7 +153,10 @@ AS $$
     -- A guest waitlist requires BOTH the studio waitlist and the guest switch.
     (s.waitlist_enabled AND s.express_waitlist_enabled),
     s.express_waiver_required,
-    s.id, co.offering_id, co.location_id
+    s.id, co.offering_id, co.location_id,
+    l.address_line1, l.address_line2, l.state, l.zip, l.country,
+    l.latitude::DOUBLE PRECISION, l.longitude::DOUBLE PRECISION,
+    s.default_cancellation_minutes
   FROM studios s
   JOIN class_occurrences co ON co.studio_id = s.id
   JOIN offerings o ON o.id = co.offering_id
