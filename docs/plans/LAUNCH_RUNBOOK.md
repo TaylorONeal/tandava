@@ -54,7 +54,7 @@ supabase secrets set STRIPE_SECRET_KEY=sk_test_... STRIPE_WEBHOOK_SECRET=whsec_.
 
 Vercel project `tandava`, Production and Preview: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`,
 `VITE_TURNSTILE_SITE_KEY`, `VITE_HOME_MODE=platform`. Supabase Auth: custom SMTP (Resend),
-captcha provider Turnstile with the secret key, Site URL `https://tandavastudio.com`, redirect
+captcha provider Turnstile with the secret key (ONLY after a deploy with `VITE_TURNSTILE_SITE_KEY` set is live; captcha on without the widget locks everyone out), Site URL `https://tandavastudio.com`, redirect
 allowlist `https://tandavastudio.com/**` and `https://*-tayloroneal-1467s-projects.vercel.app/**`.
 Stripe webhook endpoint: `https://<ref>.supabase.co/functions/v1/stripe-webhook`, events listed in
 `supabase/functions/stripe-webhook/index.ts`.
