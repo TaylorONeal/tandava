@@ -312,7 +312,9 @@ AS $$
     JOIN my ON my.studio_id = m.studio_id
     LEFT JOIN analytics_sessions s ON s.id = m.first_touch_session_id
     WHERE m.acquired_at >= p_from AND m.acquired_at < p_to
-      AND m.source IS DISTINCT FROM 'import'   -- moved over from another system, not acquired
+      -- Moved over from another system, or already a member before tracking
+      -- began: not newly acquired.
+      AND COALESCE(m.source, '') NOT IN ('import', 'pre_tracking')
     GROUP BY 1, 2, 3
   )
   SELECT k.channel, NULLIF(k.utm_source, ''), NULLIF(k.utm_campaign, ''),
@@ -515,7 +517,9 @@ AS $$
     has_consent(p_studio_id, p.id, 'email_marketing'),
     (SELECT min(created_at) FROM b WHERE b.profile_id = p.id),
     -- Latest guest booking: the follow-up is about the visit that just happened.
-    CASE WHEN COALESCE(p.is_guest, FALSE) THEN (SELECT max(created_at) FROM b WHERE b.profile_id = p.id) END,
+    -- Confirmed (or attended) seats only: a guest still on the waitlist was never booked.
+    CASE WHEN COALESCE(p.is_guest, FALSE) THEN (SELECT max(created_at) FROM b WHERE b.profile_id = p.id
+      AND b.status IN ('confirmed', 'checked_in', 'no_show')) END,
     (SELECT min(checked_in_at) FROM visits v WHERE v.profile_id = p.id),
     (SELECT max(checked_in_at) FROM visits v WHERE v.profile_id = p.id),
     (SELECT count(*) FROM visits v WHERE v.profile_id = p.id),
@@ -695,4 +699,10 @@ ALTER TABLE stripe_webhook_events ENABLE ROW LEVEL SECURITY;
 -- after deploy would stamp them as acquired today. New rows default to their
 -- creation time; record_conversion() only fills a still-null value.
 UPDATE studio_members SET acquired_at = created_at WHERE acquired_at IS NULL;
+-- Relationships that existed before this migration (including imports made
+-- before import-members tagged them) were not acquired through anything this
+-- report can see; mark them so "new people" counts only acquisitions since
+-- tracking began. Runs once, at migration time; new rows keep NULL until a
+-- conversion sets their real source.
+UPDATE studio_members SET source = 'pre_tracking' WHERE source IS NULL;
 ALTER TABLE studio_members ALTER COLUMN acquired_at SET DEFAULT NOW();

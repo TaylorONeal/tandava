@@ -289,5 +289,29 @@ DO $$ BEGIN
 END $$;
 RESET ROLE;
 
+-- 16. A guest only on the waitlist has no guest follow-up yet; members from
+--     before tracking are not counted as new.
+DO $$
+DECLARE occ UUID := gen_random_uuid(); n BIGINT;
+BEGIN
+  INSERT INTO auth.users (id, email) VALUES ('00000000-0000-0000-0000-0000000000e4', 'wai@example.com');
+  UPDATE profiles SET is_guest = TRUE WHERE id = '00000000-0000-0000-0000-0000000000e4';
+  INSERT INTO studio_members (studio_id, profile_id, source)
+  VALUES ('00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000e4', 'pre_tracking');
+  INSERT INTO class_occurrences (id, studio_id, offering_id, location_id, starts_at, ends_at) VALUES
+    (occ, '00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000c1', NOW() + interval '4 day', NOW() + interval '4 day 1 hour');
+  PERFORM set_config('request.jwt.claim.sub', '', true);
+  INSERT INTO bookings (studio_id, class_occurrence_id, profile_id, status)
+  VALUES ('00000000-0000-0000-0000-00000000005a', occ, '00000000-0000-0000-0000-0000000000e4', 'waitlisted');
+  IF (SELECT guest_booking_at FROM get_automation_candidates('00000000-0000-0000-0000-00000000005a')
+      WHERE profile_id = '00000000-0000-0000-0000-0000000000e4') IS NOT NULL
+    THEN RAISE EXCEPTION 'waitlisted guest started a follow-up'; END IF;
+
+  PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000a1', true);
+  SELECT COALESCE(sum(new_people), 0) INTO n FROM get_attribution_sources(NOW() - interval '1 day', NOW() + interval '1 day', 'first');
+  -- Ana, lei and noa; not the import (block 11) and not the pre-tracking member.
+  IF n <> 3 THEN RAISE EXCEPTION 'new people should be 3, got %', n; END IF;
+END $$;
+
 SELECT 'attribution tests passed' AS result;
 ROLLBACK;
