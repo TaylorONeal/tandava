@@ -194,7 +194,7 @@ supabase secrets set AUTOMATIONS_UNSUBSCRIBE_SECRET=<a different long random str
 supabase secrets set AUTOMATIONS_ENABLED=true
 ```
 
-`AUTOMATIONS_ENABLED=true` also needs a real `EMAIL_PROVIDER` (`resend`, `sendgrid` or `smtp`). With the default `console` provider a run only plans and returns `"blocked": "email_provider_not_configured"`, because console "sends" deliver nothing and would otherwise be recorded as sent.
+`AUTOMATIONS_ENABLED=true` also needs a real `EMAIL_PROVIDER` (`resend`, `sendgrid` or `smtp`) with its secret (`RESEND_API_KEY`, `SENDGRID_API_KEY` or `SMTP_RELAY_URL`). Without them a run only plans and returns `"blocked": "<reason>"` (`email_provider_not_configured`, or e.g. `resend_api_key_missing`): a claimed send can't be retried, so nothing is claimed until the provider can deliver.
 
 Never rotate `AUTOMATIONS_UNSUBSCRIBE_SECRET` casually: it signs the unsubscribe links in emails already sent, and rotating it breaks them. It also signs the opt-in confirmation links, so `express-book` needs it too (Supabase secrets are shared by all functions).
 

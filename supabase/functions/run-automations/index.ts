@@ -26,7 +26,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { emailProviderName, sendEmail } from "../email/provider.ts";
+import { emailProviderReady, sendEmail } from "../email/provider.ts";
 import { planStudio, formatAddress, type CandidateRow } from "../../../src/lib/marketing/runner.ts";
 import { isAutomationTemplate, renderAutomationEmail, withCampaignTags } from "../../../src/lib/marketing/automationEmails.ts";
 import { signUnsubscribe } from "../../../src/lib/marketing/unsubscribeToken.ts";
@@ -65,12 +65,14 @@ serve(async (req) => {
   if (!appUrl || !unsubscribeSecret) return json({ error: "APP_URL and AUTOMATIONS_UNSUBSCRIBE_SECRET must be set" }, 500);
 
   const body = (await req.json().catch(() => ({}))) as { studioId?: string; dryRun?: boolean };
-  // The console provider "succeeds" without delivering. Marking those claims
-  // sent would advance sequences and dedupe emails nobody received, so a live
-  // run without a real provider plans only (and says why).
-  const noRealProvider = enabled && emailProviderName() === "console";
-  if (noRealProvider) console.error("run-automations: AUTOMATIONS_ENABLED=true but EMAIL_PROVIDER is not a real provider; nothing sent");
-  const dryRun = !enabled || body.dryRun === true || noRealProvider;
+  // A claimed send can't be retried (its episode key is unique), so check the
+  // provider can deliver before claiming anything. The console provider
+  // "succeeds" without delivering, and a real one without its secret fails
+  // every send: either way a live run plans only and says why.
+  const provider = emailProviderReady();
+  const blocked = enabled && !provider.ready ? provider.reason : undefined;
+  if (blocked) console.error(`run-automations: AUTOMATIONS_ENABLED=true but the email provider can't deliver (${blocked}); nothing sent`);
+  const dryRun = !enabled || body.dryRun === true || Boolean(blocked);
   const db = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
 
   // Booking conversions a trigger couldn't write (transient errors) are
@@ -198,6 +200,6 @@ serve(async (req) => {
 
   return json({
     ok: true, enabled, conversionsRetried: retried ?? 0, report,
-    ...(noRealProvider ? { blocked: "email_provider_not_configured" } : {}),
+    ...(blocked ? { blocked } : {}),
   });
 });

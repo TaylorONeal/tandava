@@ -225,6 +225,21 @@ export function emailProviderName(): string {
 }
 
 /**
+ * Whether the configured provider can deliver at all: a real provider with
+ * its credential set. Callers that claim a send before delivering (and can't
+ * retry a claimed send) check this first, so a missing secret fails the run,
+ * not every email in it.
+ */
+export function emailProviderReady(): { ready: boolean; reason?: string } {
+  const name = emailProviderName();
+  const required: Record<string, string> = { resend: "RESEND_API_KEY", sendgrid: "SENDGRID_API_KEY", smtp: "SMTP_RELAY_URL" };
+  const key = required[name];
+  if (!key) return { ready: false, reason: "email_provider_not_configured" };
+  if (!Deno.env.get(key)) return { ready: false, reason: `${key.toLowerCase()}_missing` };
+  return { ready: true };
+}
+
+/**
  * Send an email using the configured provider.
  * Errors are caught and returned — never thrown — so email failures
  * don't block the calling operation (fire-and-forget pattern).

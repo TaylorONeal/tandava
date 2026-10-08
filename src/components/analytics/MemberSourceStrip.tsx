@@ -2,8 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { HelpTip } from "@/components/help/HelpTip";
 import { Compass } from "lucide-react";
 import { isBackendConfigured } from "@/lib/backend";
-import { useMemberAttribution } from "@/hooks/useAttribution";
-import { useMyStudio } from "@/hooks/useBooking";
+import { useMemberAttribution, useMyAdminStudio } from "@/hooks/useAttribution";
 import { channelLabel } from "@/lib/analytics/sources";
 import { formatPrice } from "@/lib/reference-data";
 import type { MemberAttribution, TouchSnapshot } from "@/types/attribution";
@@ -36,7 +35,8 @@ function describeTouch(t: TouchSnapshot | null | undefined): string {
 /** "How they found you" on the member page (PRD-024 phase 1). Staff only. */
 export function MemberSourceStrip({ profileId }: { profileId: string | undefined }) {
   const live = isBackendConfigured();
-  const { data: studio } = useMyStudio();
+  // The studio this person runs, not the first one they teach at.
+  const { data: studio } = useMyAdminStudio();
   const { data, isLoading } = useMemberAttribution(studio?.studio_id, live ? profileId : undefined);
   const a = live ? data : SAMPLE;
   if (live && (isLoading || !a)) return null;
