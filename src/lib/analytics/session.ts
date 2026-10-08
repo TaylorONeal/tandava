@@ -259,7 +259,15 @@ const CAPTURE_RETRY_MS = [300, 800];
 
 export function trackVisit(slug: string, surface: Surface, opts?: { studioSiteHost?: string | null }): Promise<void> {
   lastCapture.set(slug, { surface, opts });
-  const p = trackVisitInner(slug, surface, opts).finally(() => {
+  // One capture per studio at a time: a second page view waits for the one in
+  // flight, so the promise captureSettled() awaits covers both. Otherwise a
+  // tagged arrival still in flight could be overtaken by an untagged view and
+  // a booking would freeze the untagged touch.
+  const prev = inFlight.get(slug);
+  const run = prev
+    ? prev.catch(() => undefined).then(() => trackVisitInner(slug, surface, opts))
+    : trackVisitInner(slug, surface, opts);
+  const p = run.finally(() => {
     if (inFlight.get(slug) === p) inFlight.delete(slug);
   });
   inFlight.set(slug, p);

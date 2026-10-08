@@ -463,3 +463,34 @@ describe("cold load with an id owned by a signed-out account", () => {
     expect(body.visitorId).not.toBe(owned);
   });
 });
+
+describe("overlapping captures for one studio", () => {
+  it("a second page view waits for the tagged one in flight, and captureSettled covers both", async () => {
+    vi.stubGlobal("window", {
+      localStorage: memoryStorage(),
+      sessionStorage: memoryStorage(),
+      location: { href: "https://app.example.com/s/oxatl?utm_source=ig" },
+    });
+    vi.stubGlobal("document", { referrer: "" });
+    vi.stubGlobal("navigator", { userAgent: "test" });
+    const { api } = await import("@/lib/backend");
+    const invoke = vi.mocked(api.invoke);
+    invoke.mockReset();
+    let releaseTagged: (v: unknown) => void = () => {};
+    invoke.mockImplementationOnce(() => new Promise((r) => (releaseTagged = r)) as never);
+    invoke.mockResolvedValue({ data: { sessionId: "88888888-8888-4888-8888-888888888888" }, error: null } as never);
+    const s = await import("./session");
+    void s.trackVisit("oxatl", "storefront" as never); // tagged, hangs
+    (window as unknown as { location: { href: string } }).location.href = "https://app.example.com/s/oxatl/book";
+    void s.trackVisit("oxatl", "booking" as never); // untagged
+    await new Promise((r) => setTimeout(r, 20));
+    expect(invoke).toHaveBeenCalledTimes(1); // the second waits
+    let settled = false;
+    const wait = s.captureSettled("oxatl", 5000).then(() => (settled = true));
+    await new Promise((r) => setTimeout(r, 20));
+    expect(settled).toBe(false);
+    releaseTagged({ data: { sessionId: "88888888-8888-4888-8888-888888888888" }, error: null });
+    await wait;
+    expect(invoke).toHaveBeenCalledTimes(2);
+  });
+});
