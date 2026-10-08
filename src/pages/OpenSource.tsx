@@ -11,6 +11,7 @@
  */
 
 import { Link } from "react-router-dom";
+import { FaqSection } from "@/components/help/FaqSection";
 
 // ============================================================================
 // ICONS
@@ -570,6 +571,25 @@ export default function OpenSource() {
             </div>
           </div>
         </section>
+
+        {/* FAQ: the questions owners ask before signing up, from the shared
+            help content (src/content/help.ts), so the landing, the in-app
+            info icons and docs/FAQ.md never disagree. */}
+        <FaqSection
+          audience="owner"
+          ids={[
+            "express-booking",
+            "explore-on-studio-page",
+            "class-time-zone",
+            "studio-network-vs-classpass",
+            "studio-network-cannibalisation",
+            "privates-requests",
+            "offsite-and-events",
+            "attribution",
+            "tracking-privacy",
+          ]}
+          className="max-w-6xl mx-auto px-6 pb-20 text-slate-900"
+        />
 
         {/* CTA */}
         <section className="max-w-6xl mx-auto px-6 pb-20">

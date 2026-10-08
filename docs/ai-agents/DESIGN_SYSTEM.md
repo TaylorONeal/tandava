@@ -428,6 +428,13 @@ import {
 
 ---
 
+## Settings, defaults and help (rule, Oct 2026)
+
+- Every setting ships with a **smart default**: computed from the studio's own data where there is data (class fill history, drop-in prices), a stated fixed value otherwise. A settings page must work untouched.
+- Every setting gets an **info icon** (`<HelpTip id="…" />` from `src/components/help/HelpTip.tsx`): a tap-to-open popover, never hover-only, with one plain sentence on what the setting changes and one on why the default is what it is.
+- Help text lives in **one place**, `src/content/help.ts`; the landing FAQ, in-app popovers and `docs/FAQ.md` read from or agree with it. See `docs/HELP-AND-FAQ.md`.
+- Never describe a planned feature as live. Entries carry `status: "planned"`, and the UI shows it.
+
 ## Accessibility
 
 ### Color Contrast

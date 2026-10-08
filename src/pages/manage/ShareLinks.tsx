@@ -1,5 +1,5 @@
 /**
- * Your booking links — /manage/share (PRD-022)
+ * Your booking links — /manage/share (PRD-026)
  *
  * The branded storefront (`/s/:slug`) and the one-tap class booking page
  * (`/s/:slug/book/:occurrenceId`, PRD-020) both already worked. Nothing in the
