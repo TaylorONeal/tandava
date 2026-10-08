@@ -48,3 +48,14 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - Next: edge functions (stripe-checkout, stripe-webhook, stripe-connect, email) need a Supabase access token or dashboard deploy; set secrets; Vercel env vars; Auth SMTP and captcha; seed first tenant.
 
 2026-10-07 (later): edge functions deployed (6, ACTIVE), Stripe sandbox webhook `tandava-prod` created (7 events, Your-account scope), Supabase secrets set via scripts/set-secrets.sh, Auth site URL + redirect allowlist set, Vercel env vars VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY / VITE_TURNSTILE_SITE_KEY / VITE_HOME_MODE saved (Production + Preview). Vercel team is already Pro. Do NOT redeploy production from main: it predates the launch code. Test on the PR preview. Open: Stripe Connected-accounts webhook for account.updated, Resend + SMTP, Turnstile secret in Supabase Auth, audit the old Vercel "_MODE" variable.
+
+## 2026-10-08: launch day state
+- Merged to main and live on tandavastudio.com: #64 (launch v1), #74 (owner-first copy, expired-link resend, robots fix), #75 (Turnstile widget), #76 (captcha on resend). Prod DB matches main: main's 00019..00024 plus 00034 applied by hand 2026-10-08; ours are 00025..00033 (renumbered files, already applied 2026-10-07).
+- Email: Resend verified purafieldstudio.com; Supabase Auth SMTP via the Resend integration; six branded auth templates live; reset email delivered. Edge secret EMAIL_FROM = hello@purafieldstudio.com.
+- Edge functions on prod: stripe-checkout, stripe-connect, stripe-portal, onboarding, email, stripe-webhook (all match main) plus express-book (deployed 2026-10-08 via Supabase MCP, verify_jwt off, smoke-tested 400/404). Not deployed: import-members, push, sms (not used at launch).
+- Open:
+  - `EXPRESS_IP_SALT` secret unset: express-book skips per-IP limiting and keeps the per-email limit. Set it in Supabase > Edge Functions > Secrets with any long random value.
+  - Captcha: `VITE_TURNSTILE_SITE_KEY` is already set in Vercel, so the widget is live. Last step is the Turnstile secret key in Supabase Auth > Attack Protection.
+  - Seed Purafield Studio as a hidden test studio (Taylor resets the purafieldstudio@gmail.com app password via /auth/reset, signs in, onboarding), then Stripe sandbox purchase, refund and webhook replay.
+  - #72 (attribution phase 1) edits stripe-webhook and adds migration 00035: check it keeps fulfill_stripe_checkout before merging, and apply 00035 by hand.
+  - Copy audit C-3 (translations) and C-5 (onboarding copy). `www.tandavastudio.com` missing from the Supabase redirect allow-list.
