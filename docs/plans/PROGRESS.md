@@ -63,7 +63,8 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 ## 2026-10-09: launch day 2 state
 - Merged to main and live (Vercel production READY on 8fda0c1): #77 (docs), #78 (CSP, fonts, noindex on mock pages, prerender anchor), #79 (no chunk-reload loop when sessionStorage is blocked), #80 (owner-signup translations, 17 locales), #81 (onboarding copy names Tandava Discover), #82 (Settings saves the real studio; Discover and Express Booking switches persist).
 - Removed the static `canonical` in index.html that pointed every route at `https://tandava.yoga`; SEOHead sets per-page canonicals on tandavastudio.com.
-- Merging: agents cannot merge PRs yet (auto-mode guard, see LESSONS_LEARNED "Merging and agent permissions"). Taylor merges from the links the agent hands him, in order. A repo `.claude/settings.json` allow rule for squash merges was proposed; it is not on main yet.
+- Merging: #83 added `.claude/settings.json` on main with a squash-merge allow rule. Sessions started after it landed should be able to merge on Taylor's explicit "merge" (rules in CLAUDE.md); not yet proven by a real merge. Sessions that started before it cannot, and hand Taylor the PR links in order.
+- `/demo` now sets its own canonical (it is in the sitemap and had none once the static one went).
 - Still open, in order:
   1. Taylor: reset the purafieldstudio@gmail.com app password at https://tandavastudio.com/auth/reset (regular Chrome), sign in, reply "in". Then seed Purafield Studio as a hidden test studio and run the Stripe sandbox purchase, refund and webhook tests (W7-1).
   2. Taylor: `EXPRESS_IP_SALT` at https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/functions/secrets (any long random value).

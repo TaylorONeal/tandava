@@ -606,7 +606,8 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 | Mistake | Cost | Fix |
 |---|---|---|
 | Assuming a blocked merge was a login problem | Taylor asked for GitHub MCP, CLI login or browser login; none would help | Agent GitHub REST is already authenticated. The block is the Claude Code auto-mode guard, which stops merges to main even after chat approval. Say so in one line and hand over the PR links in order |
-| Trying to grant the agent merge rights from inside the session | Writing `.claude/settings.json` is blocked as [Self-Modification]; so is fetching a main that contains it | Only Taylor adds permission rules (GitHub web editor, commit to main). They load when a session starts, so the next session gets them. Never route around the guard via auto_merge or the PR page |
+| Trying to grant the agent merge rights from inside the session | Writing `.claude/settings.json` is blocked as [Self-Modification]; so is fetching a main that contains it | Only Taylor adds permission rules (GitHub web editor, commit to main; done in #83). They load when a session starts, so the next session gets them. Never route around the guard via auto_merge or the PR page |
+| Saying a commit was not on main after checking only the newest commits | Told Taylor his #83 had not landed when it had merged before #79 | Check a file's history (`git log origin/main -- <path>`), not the top of the log |
 | Asking Taylor to merge PRs that touch the same file in one batch | A later PR could conflict after an earlier merge | Give the order, say which pair shares a file, and re-check mergeability after each |
 
 ## Frontend launch bugs (October 2026)

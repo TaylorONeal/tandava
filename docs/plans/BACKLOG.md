@@ -80,7 +80,7 @@ commands in [LAUNCH_RUNBOOK.md](LAUNCH_RUNBOOK.md).
 |---|---|---|---|
 | W6-1 | `setFunnelSink` at main.tsx next to initSentry | W4-2 | NEXT |
 | W6-2 | Prerender `/discover` and `/s/:slug`, sitemap, fix robots vs sitemap domain | none | Robots and sitemap on tandavastudio.com DONE (#74, #78). Prerender of `/discover` and `/s/:slug` LATER |
-| W6-3 | noindex on mock pages (/schedule, /events, /instructors, /my-schedule) | W4-5 | DONE (#78, `DemoDataPage` wrapper) |
+| W6-3 | noindex on mock pages (/schedule, /events, /instructors, /my-schedule) | W4-5 | DONE for /schedule, /events, /instructors, /on-demand (#78, `DemoDataPage` wrapper). /my-schedule open: it sits behind ProtectedRoute, so crawlers get the sign-in redirect; add `noindex` when W4-5 wires its real data |
 | W6-4 | `/for-studios` page, open source pitch under `/open-source` | none | DONE (pages live, in sitemap) |
 
 ## W7 Pilot ops
