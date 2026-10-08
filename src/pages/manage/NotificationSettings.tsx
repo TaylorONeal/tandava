@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import type { EmailProviderType, SmsProviderType, PushProviderType } from "@/lib/notifications/types";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Mock review platform connections
 const reviewPlatforms = [
@@ -94,6 +95,7 @@ const defaultSmsTemplates = [
 ];
 
 export default function NotificationSettings() {
+  const { isDemoMode } = useAuth();
   const { toast } = useToast();
 
   // Review request automation settings
@@ -206,6 +208,20 @@ export default function NotificationSettings() {
 
           {/* Email Provider Tab */}
           <TabsContent value="email" className="space-y-6">
+            {!isDemoMode ? (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Mail className="h-5 w-5" />
+                  Email delivery
+                </CardTitle>
+                <CardDescription>
+                  Tandava sends booking confirmations, receipts and reminders for you. There is nothing to set up.
+                  Self-hosting? Email is configured with Edge Function secrets (EMAIL_PROVIDER, RESEND_API_KEY, EMAIL_FROM).
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            ) : (
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -293,6 +309,7 @@ export default function NotificationSettings() {
                 </div>
               </CardContent>
             </Card>
+            )}
 
             {/* Email Notification Types */}
             <Card>
@@ -511,6 +528,19 @@ export default function NotificationSettings() {
           {/* SMS Settings Tab */}
           <TabsContent value="sms" className="space-y-6">
             {/* SMS Provider Configuration */}
+            {!isDemoMode ? (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings2 className="h-5 w-5" />
+                  Text messages
+                </CardTitle>
+                <CardDescription>
+                  Text reminders are not switched on for hosted studios yet. Email confirmations and reminders work today.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            ) : (
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -607,6 +637,7 @@ export default function NotificationSettings() {
                 </CardContent>
               )}
             </Card>
+            )}
 
             {/* SMS Templates */}
             <Card>

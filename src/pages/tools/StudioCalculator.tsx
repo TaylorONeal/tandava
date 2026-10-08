@@ -344,8 +344,11 @@ export default function StudioCalculator() {
             <a href={ENGINE_SOURCE_URL} className="text-primary hover:underline" rel="noreferrer">
               Read the model
             </a>
+            <Link to="/for-studios" className="text-primary hover:underline">
+              Run your studio on Tandava
+            </Link>
             <Link to="/open-source" className="text-primary hover:underline">
-              About the project
+              Open source
             </Link>
             <a
               href="https://github.com/TaylorONeal/tandava/blob/main/DEPLOYMENT.md"

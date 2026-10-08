@@ -655,7 +655,7 @@ export function LandingPageWizard({ open, onOpenChange, onComplete, initialTempl
                   {data.title || "Page Title"} | Your Studio Name
                 </p>
                 <p className="text-[#006621] text-xs mt-0.5">
-                  yourstudio.tandava.yoga/s/{data.slug || "page-url"}
+                  tandavastudio.com/s/{data.slug || "page-url"}
                 </p>
                 <p className="text-[#545454] text-sm mt-1 line-clamp-2">
                   {data.metaDescription || "Your meta description will appear here..."}
