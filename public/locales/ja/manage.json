@@ -19,14 +19,15 @@
     "importData": "データ取り込み",
     "smsInbox": "SMS受信箱",
     "notifications": "通知",
-    "settings": "設定"
+    "settings": "設定",
+    "shareLinks": "予約リンク",
+    "websiteEmbed": "ウェブサイト埋め込み"
   },
   "title": "スタジオ管理",
   "studentView": "メンバー画面",
   "myAccount": "マイアカウント",
   "studioSettings": "スタジオ設定",
   "signOut": "ログアウト",
-
   "schedule": {
     "title": "スケジュール",
     "subtitle": "クラススケジュールを作成・管理します。",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "クラス種別を検索...",
     "activeOfferings": "有効なクラス種別"
   },
-
   "admin": {
     "platformAdmin": "プラットフォーム管理",
     "platformDashboard": "プラットフォーム ダッシュボード",
@@ -60,7 +60,6 @@
     "sentryConfigured": "Sentryエラー監視",
     "setEnvVar": ".envに{{key}}を設定してください"
   },
-
   "studioManagement": "スタジオ管理",
   "owner": "オーナー"
 }

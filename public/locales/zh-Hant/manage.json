@@ -19,14 +19,15 @@
     "importData": "匯入資料",
     "smsInbox": "短訊收件匣",
     "notifications": "通知",
-    "settings": "設定"
+    "settings": "設定",
+    "shareLinks": "預約連結",
+    "websiteEmbed": "網站嵌入"
   },
   "title": "場館管理後台",
   "studentView": "學員檢視",
   "myAccount": "我的帳戶",
   "studioSettings": "場館設定",
   "signOut": "登出",
-
   "schedule": {
     "title": "課程表",
     "subtitle": "建立和管理您的課程安排。",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "搜尋課程產品...",
     "activeOfferings": "已啟用的課程產品"
   },
-
   "admin": {
     "platformAdmin": "平台管理員",
     "platformDashboard": "平台儀表板",
@@ -60,7 +60,6 @@
     "sentryConfigured": "Sentry 錯誤監控",
     "setEnvVar": "在 .env 中設定 {{key}}"
   },
-
   "studioManagement": "場館管理",
   "owner": "館主"
 }
