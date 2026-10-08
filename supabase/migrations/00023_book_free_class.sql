@@ -1,4 +1,4 @@
--- 00022: a signed-in member books a free class (PRD-020 member path)
+-- 00023: a signed-in member books a free class (PRD-020 member path)
 --
 -- book_class() (00012) needs a membership or a class pack, and express-book
 -- diverts any claimed account to an emailed link. So a signed-in member with

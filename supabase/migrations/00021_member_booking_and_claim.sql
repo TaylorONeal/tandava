@@ -1,4 +1,4 @@
--- 00020: member booking path + server-truthful guest status (PRD-020, PR #67)
+-- 00021: member booking path + server-truthful guest status (PRD-020, PR #67)
 --
 -- Separate from 00019 so a database that already applied 00019 receives these
 -- changes; editing an applied migration would silently skip them.

@@ -586,6 +586,9 @@ export default function OpenSource() {
             "privates-requests",
             "offsite-and-events",
             "attribution",
+            "marketing-automation",
+            "measure-ads",
+            "switching",
             "tracking-privacy",
           ]}
           className="max-w-6xl mx-auto px-6 pb-20 text-slate-900"

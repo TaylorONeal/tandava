@@ -257,6 +257,7 @@ only on-demand piece.
 | Off-site privates, corporate classes, parties, room rental, quotes (PRD-025) | P1 |
 | Home studio, switcher, Explore in the chrome, passes by studio (PRD-022) | P1 |
 | Attribution on every surface, one linked view (PRD-024) | P0 (pilot gate) |
+| Lifecycle automation, measured ads, switching from other systems (PRD-027; schema 00024 now) | P1 |
 
 #### Phase 8: Payment Enhancements
 | Feature | Priority | PRD |
