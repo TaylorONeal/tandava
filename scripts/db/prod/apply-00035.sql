@@ -134,6 +134,25 @@ WHERE pv.visitor_id = older.visitor_id
   AND (pv.linked_at, pv.profile_id) > (older.linked_at, older.profile_id);
 CREATE UNIQUE INDEX IF NOT EXISTS uq_profile_visitors_visitor ON profile_visitors (visitor_id);
 
+-- Linking fills analytics_sessions.profile_id, whose foreign key (00003) has
+-- no ON DELETE rule: deleting a profile with linked visits would fail. Keep
+-- the anonymous visit, drop the link (PR #72 review).
+DO $$
+DECLARE c TEXT;
+BEGIN
+  FOR c IN
+    SELECT con.conname FROM pg_constraint con
+    JOIN pg_attribute a ON a.attrelid = con.conrelid AND a.attnum = ANY (con.conkey)
+    WHERE con.conrelid = 'public.analytics_sessions'::regclass AND con.contype = 'f'
+      AND con.confrelid = 'public.profiles'::regclass AND a.attname = 'profile_id'
+  LOOP
+    EXECUTE format('ALTER TABLE analytics_sessions DROP CONSTRAINT %I', c);
+  END LOOP;
+END $$;
+ALTER TABLE analytics_sessions
+  ADD CONSTRAINT analytics_sessions_profile_id_fkey
+  FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE SET NULL;
+
 CREATE OR REPLACE FUNCTION link_visitor(p_profile_id UUID, p_visitor_id UUID, p_via TEXT)
 RETURNS VOID
 LANGUAGE plpgsql

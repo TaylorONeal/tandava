@@ -289,3 +289,12 @@ describe("failed and stuck claims close their step (PR #72 review)", () => {
     expect(decideNext(f, NOW, TZ)).toMatchObject({ decision: { key: "guest_to_member", step: 0 } });
   });
 });
+
+describe("isValidTimeZone", () => {
+  it("accepts IANA zones and rejects junk", async () => {
+    const { isValidTimeZone } = await import("./automations");
+    expect(isValidTimeZone("America/Chicago")).toBe(true);
+    expect(isValidTimeZone("UTC")).toBe(true);
+    expect(isValidTimeZone("Not/AZone")).toBe(false);
+  });
+});

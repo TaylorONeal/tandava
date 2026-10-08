@@ -28,6 +28,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { emailProviderReady, sendEmail } from "../email/provider.ts";
 import { planStudio, formatAddress, type CandidateRow } from "../../../src/lib/marketing/runner.ts";
+import { isValidTimeZone } from "../../../src/lib/marketing/automations.ts";
 import { isAutomationTemplate, renderAutomationEmail, withCampaignTags } from "../../../src/lib/marketing/automationEmails.ts";
 import { signUnsubscribe } from "../../../src/lib/marketing/unsubscribeToken.ts";
 
@@ -144,7 +145,21 @@ serve(async (req) => {
       continue;
     }
 
-    const plan = planStudio((candidates ?? []) as CandidateRow[], settings, now, studio.timezone || "UTC");
+    // One studio's bad time zone (onboarding stores what it is sent) must not
+    // stop the run for every studio after it, and without a valid zone quiet
+    // hours can't be honored: skip it and say why.
+    const timeZone = studio.timezone || "UTC";
+    if (!isValidTimeZone(timeZone)) {
+      report.push({ studio: studio.slug, error: `invalid time zone: ${String(timeZone).slice(0, 64)}` });
+      continue;
+    }
+    let plan: ReturnType<typeof planStudio>;
+    try {
+      plan = planStudio((candidates ?? []) as CandidateRow[], settings, now, timeZone);
+    } catch (e) {
+      report.push({ studio: studio.slug, error: `planning failed: ${(e as Error).message}` });
+      continue;
+    }
     const result = { studio: studio.slug, planned: plan.sends.length, skipped: plan.skipped, sent: 0, failed: 0, dryRun };
     report.push(result);
     const scheduleUrl = `${appUrl}/s/${encodeURIComponent(studio.slug)}`;

@@ -93,6 +93,16 @@ export function localHour(now: Date, timeZone: string): number {
   return Number(h);
 }
 
+/** True when the runtime knows this IANA zone (a bad one makes Intl throw). */
+export function isValidTimeZone(timeZone: string): boolean {
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function inQuietHours(now: Date, timeZone: string): boolean {
   const h = localHour(now, timeZone);
   return h >= 21 || h < 8;

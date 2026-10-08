@@ -755,5 +755,20 @@ BEGIN
     THEN RAISE EXCEPTION 'other studio failure leaked: %', sends; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (38 blocks)'; END $$;
+-- 39. A profile with linked visits can be deleted (account erasure): the
+--     visit stays, anonymous.
+DO $$
+DECLARE v UUID := gen_random_uuid(); sid UUID;
+BEGIN
+  INSERT INTO auth.users (id, email) VALUES ('00000000-0000-0000-0000-0000000000f9', 'gone@example.com');
+  sid := record_session('aloha', v, 'tok-erase', 'storefront', 'https://x/s/aloha', NULL, '{}', '{}', 'direct', 'mobile');
+  PERFORM link_visitor('00000000-0000-0000-0000-0000000000f9', v, 'sign_in');
+  IF (SELECT profile_id FROM analytics_sessions WHERE id = sid) IS DISTINCT FROM '00000000-0000-0000-0000-0000000000f9'
+    THEN RAISE EXCEPTION 'visit was not linked'; END IF;
+  DELETE FROM profiles WHERE id = '00000000-0000-0000-0000-0000000000f9';
+  IF NOT EXISTS (SELECT 1 FROM analytics_sessions WHERE id = sid AND profile_id IS NULL)
+    THEN RAISE EXCEPTION 'visit should survive, unlinked'; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (39 blocks)'; END $$;
 ROLLBACK;
