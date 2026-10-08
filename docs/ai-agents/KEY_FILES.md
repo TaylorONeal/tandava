@@ -176,7 +176,7 @@ Located in `supabase/migrations/`:
 | `docs/architecture/VERSION_MANAGEMENT.md` | Upgrade strategy |
 | `docs/architecture/RELIABILITY.md` | SLA, monitoring |
 | `docs/architecture/MAINTAINABILITY.md` | Code quality |
-| `docs/app-store/SUBMISSION_GUIDE.md` | iOS/Android submission |
+| `docs/app-store/STORE-APPS.md` | iOS/Android submission |
 
 ---
 

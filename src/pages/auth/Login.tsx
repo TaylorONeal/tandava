@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,9 +9,18 @@ import { useAuth } from "@/contexts/AuthContext";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { safeNextPath } from "@/lib/auth/next";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  // Return to where the person was (a class they were booking, or a protected
+  // page that bounced them here), never to an arbitrary URL.
+  const fromState = (location.state as { from?: { pathname?: string; search?: string } } | null)?.from;
+  const next = safeNextPath(
+    searchParams.get("next") ?? (fromState?.pathname ? `${fromState.pathname}${fromState.search ?? ""}` : null),
+  );
   const { toast } = useToast();
   const { signInWithEmail, signInWithGoogle } = useAuth();
   const { t } = useTranslation('auth');
@@ -48,13 +57,13 @@ const Login = () => {
       description: t('signInSuccess'),
     });
 
-    navigate("/");
+    navigate(next, { replace: true });
     setIsLoading(false);
   };
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
-    const { error } = await signInWithGoogle();
+    const { error } = await signInWithGoogle(next);
     if (error) {
       toast({
         title: t('signInFailed'),
@@ -204,7 +213,10 @@ const Login = () => {
           {/* Sign up link */}
           <p className="text-center text-sm text-muted-foreground">
             {t('noAccount')}{" "}
-            <Link to="/auth/register" className="text-primary hover:underline font-medium">
+            <Link
+              to={next === "/" ? "/auth/register" : `/auth/register?next=${encodeURIComponent(next)}`}
+              className="text-primary hover:underline font-medium"
+            >
               {t('signUp')}
             </Link>
           </p>

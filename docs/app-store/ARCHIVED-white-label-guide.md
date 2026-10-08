@@ -1,3 +1,5 @@
+> **ARCHIVED Oct 8, 2026.** Superseded by [STORE-APPS.md](STORE-APPS.md). Tandava ships two apps (Tandava for members, Tandava Studio for owners), not one branded app per studio. Kept for history only.
+
 # App Store Submission Guide
 
 Complete guide for studios to submit their branded Tandava apps to Apple App Store and Google Play Store.

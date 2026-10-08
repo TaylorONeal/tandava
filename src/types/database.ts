@@ -98,6 +98,10 @@ export interface Profile {
   role?: UserRole;
   marketing_consent?: boolean;
   onboarding_completed?: boolean;
+  /** Created by express booking with no password yet (migration 00019). */
+  is_guest?: boolean;
+  /** When a guest set a password on the same email (migration 00019). */
+  claimed_at?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -2731,6 +2735,10 @@ export interface PublicOccurrenceRow {
   express_booking_cutoff_minutes: number;
   express_waitlist_enabled: boolean;
   express_waiver_required: boolean;
+  /** For the signed-in member path (coverage resolution). */
+  studio_id?: string | null;
+  offering_id?: string | null;
+  location_id?: string | null;
 }
 
 /**

@@ -26,7 +26,7 @@ Tandava is an **open-source yoga studio management platform** competing with Min
 **Tech Stack:**
 - Frontend: React + TypeScript + Tailwind CSS + shadcn/ui
 - Backend: Supabase (PostgreSQL + Auth + Storage + Edge Functions)
-- Mobile: Capacitor wrapper for iOS/Android
+- Mobile: PWA today; two store apps planned (Tandava + Tandava Studio), see docs/app-store/STORE-APPS.md. No native code exists yet.
 - Hosting: Vercel (web) + Supabase (backend)
 
 ---
