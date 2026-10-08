@@ -1,5 +1,7 @@
 # Project Status
 
+> **October 4, 2026:** Launch v1 work (security baseline, booking integrity, payments, guest-first booking) is tracked in [PRD-launch-v1](plans/PRD-launch-v1.md) and [BACKLOG](plans/BACKLOG.md). The demo-mode tables below remain accurate for demo mode only.
+>
 > **September 10, 2026:** This February snapshot is historical. Current main includes persisted booking/cancellation RPCs, imports, onboarding and payment endpoints, and has removed the duplicate initial migration. See the [current implementation handoff](IMPLEMENTATION_HANDOFF.md) for verified fixes and remaining hosted launch gates. Production readiness still requires database, isolation, payment replay and restore verification.
 
 See [implementation follow-up](IMPLEMENTATION_HANDOFF.md) for repaired installation, tour/check-in bugs, dependency updates, and tested hosted-domain/readiness foundations.

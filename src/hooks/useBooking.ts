@@ -109,6 +109,31 @@ export function useBookClass() {
   });
 }
 
+/**
+ * Book from a storefront or Discover card: the server tries the student's
+ * membership, then a class pack, and otherwise answers `needs_payment` so the
+ * caller can start a drop-in checkout.
+ */
+export function useBookClassAuto() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (occurrenceId: string) => {
+      const { data, error } = await backendData.bookClassAuto(occurrenceId);
+      if (error) throw new Error(error.message);
+      if (!data) throw new Error("Booking failed");
+      return data;
+    },
+    onSuccess: (data) => {
+      if (data.result === "booked") {
+        queryClient.invalidateQueries({ queryKey: ["entitlements"] });
+        queryClient.invalidateQueries({ queryKey: ["upcoming-classes"] });
+        queryClient.invalidateQueries({ queryKey: ["my-bookings"] });
+        queryClient.invalidateQueries({ queryKey: ["public-schedule"] });
+      }
+    },
+  });
+}
+
 /** Cancel a booking (late-cancel fee + entitlement refund handled server-side). */
 export function useCancelBooking() {
   const queryClient = useQueryClient();

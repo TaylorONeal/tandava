@@ -14,11 +14,13 @@
  */
 
 import { ClassTime } from "@/components/time/ClassTime";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useSearchParams, Link } from "react-router-dom";
 import { useStudioStorefront, usePublicSchedule } from "@/hooks/useBooking";
 import { isBackendConfigured } from "@/lib/backend";
 import { formatPrice } from "@/lib/reference-data";
 import { SEOHead } from "@/components/seo/SEOHead";
+import { PurchaseButton } from "@/components/booking/PurchaseButton";
+import { authHref } from "@/lib/authReturn";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +35,7 @@ const CYCLE_LABEL: Record<string, string> = {
 
 export default function StudioStorefront({ slug: slugProp }: { slug?: string } = {}) {
   const params = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
   // Slug comes from the route (/s/:slug) or, on a studio subdomain, the host.
   const slug = slugProp ?? params.slug;
   const { data: storefront, isLoading, isError } = useStudioStorefront(slug);
@@ -75,7 +78,15 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
   const { studio, offerings, memberships, packs } = storefront;
   const accent = studio.primary_color || undefined;
   const currency = studio.currency || "USD";
-  const upcoming = (schedule ?? []).slice(0, 6);
+  const all = schedule ?? [];
+  const selectedId = searchParams.get("class");
+  // Hero sign-up links return the visitor to the class they came for, not just the studio.
+  const returnTo = selectedId ? `/s/${slug}?class=${encodeURIComponent(selectedId)}` : `/s/${slug}`;
+  const selected = selectedId ? all.find((c) => String(c.occurrence_id) === selectedId) : undefined;
+  // Keep the class the visitor picked on Discover visible, even past the first six.
+  const upcoming = selected
+    ? [selected, ...all.filter((c) => c !== selected).slice(0, 5)]
+    : all.slice(0, 6);
 
   return (
     <Shell studioName={studio.name} accent={accent}>
@@ -96,10 +107,10 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
         )}
         <div className="mt-6 flex flex-wrap gap-3">
           <Button asChild size="lg" style={accent ? { backgroundColor: accent } : undefined}>
-            <Link to="/auth/register">Sign up to book<ArrowRight className="ms-2 h-4 w-4" /></Link>
+            <Link to={authHref("/auth/register", returnTo)}>Sign up to book<ArrowRight className="ms-2 h-4 w-4" /></Link>
           </Button>
           <Button asChild variant="outline" size="lg">
-            <Link to="/auth/login">Sign in</Link>
+            <Link to={authHref("/auth/login", returnTo)}>Sign in</Link>
           </Button>
         </div>
       </section>
@@ -144,7 +155,10 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
           <div className="grid gap-2">
             {upcoming.map((c) => {
               return (
-                <Card key={c.occurrence_id}>
+                <Card
+                  key={c.occurrence_id}
+                  className={c === selected ? "ring-2 ring-primary" : undefined}
+                >
                   <CardContent className="p-3 sm:p-4 flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <p className="font-medium text-sm truncate">{c.offering_name}</p>
@@ -194,9 +208,14 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
                   <p className="mt-1 text-xs text-muted-foreground">
                     {m.classes_per_cycle == null ? "Unlimited classes" : `${m.classes_per_cycle} classes / cycle`}
                   </p>
-                  <Button asChild size="sm" className="mt-3 w-full" style={accent ? { backgroundColor: accent } : undefined}>
-                    <Link to="/auth/register">Get started</Link>
-                  </Button>
+                  <PurchaseButton
+                    kind="membership"
+                    studioId={studio.id}
+                    studioSlug={studio.slug}
+                    itemId={m.id}
+                    label="Get started"
+                    style={accent ? { backgroundColor: accent } : undefined}
+                  />
                 </CardContent>
               </Card>
             ))}
@@ -208,9 +227,14 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
                   <p className="mt-1 text-xs text-muted-foreground">
                     {p.class_count} classes · valid {p.validity_days} days
                   </p>
-                  <Button asChild variant="outline" size="sm" className="mt-3 w-full">
-                    <Link to="/auth/register">Buy pack</Link>
-                  </Button>
+                  <PurchaseButton
+                    kind="class_pack"
+                    studioId={studio.id}
+                    studioSlug={studio.slug}
+                    itemId={p.id}
+                    label="Buy pack"
+                    variant="outline"
+                  />
                 </CardContent>
               </Card>
             ))}

@@ -379,19 +379,19 @@ export default function SettingsManage() {
           <TabsContent value="billing" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Payment Processing</CardTitle>
-                <CardDescription>Connect your Stripe account to accept payments</CardDescription>
+                <CardTitle>Payments</CardTitle>
+                <CardDescription>Set up payouts so students can pay you online</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="p-4 rounded-xl border-2 border-dashed border-border text-center">
                   <CreditCard className="h-8 w-8 text-muted-foreground mx-auto" />
-                  <h3 className="text-sm font-semibold mt-3">Connect Stripe</h3>
+                  <h3 className="text-sm font-semibold mt-3">Set up payouts</h3>
                   <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
-                    Connect your Stripe account to process memberships, class packs, and drop-in payments.
-                    Powered by Stripe Connect for secure, PCI-compliant payment processing.
+                    Students pay by card for memberships, class packs and drop-ins, and the money is paid out to your bank.
+                    Payments are processed by Stripe.
                   </p>
-                  <Button className="mt-4" onClick={() => toast({ title: "Stripe Connect", description: "Stripe integration requires backend configuration." })}>
-                    Connect with Stripe
+                  <Button className="mt-4" onClick={() => toast({ title: "Payments", description: "Payout setup is available once a backend is configured." })}>
+                    Set up payouts
                   </Button>
                 </div>
               </CardContent>

@@ -1,0 +1,8 @@
+{
+  "confirmation": "Confirm your email",
+  "recovery": "Reset your password",
+  "magic_link": "Your sign-in link",
+  "invite": "You are invited",
+  "email_change": "Confirm your new email",
+  "reauthentication": "Your confirmation code"
+}

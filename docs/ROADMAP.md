@@ -1,5 +1,7 @@
 # Tandava Development Roadmap
 
+**October 2026:** the active launch sequence is the wave plan in [PRD-launch-v1](plans/PRD-launch-v1.md) and [BACKLOG](plans/BACKLOG.md). The phases below are historical context.
+
 See [implementation status and three remaining decisions](IMPLEMENTATION_HANDOFF.md) for the follow-up work.
 
 ## Hosted launch sequence — September 2026 proposal

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,18 +10,26 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, CheckCircle2, Sparkles, MailCheck, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
-import { safeNextPath } from "@/lib/auth/next";
+import { parseIntent, STUDIO_ONBOARDING_PATH } from "@/lib/audience";
+import { authHref, resolveAfterAuth, safeNext, stashReturn } from "@/lib/authReturn";
 
 type RegistrationStep = "info" | "complete";
 
 const Register = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  // Set when someone arrives from a class they were booking; send them back there.
-  const next = safeNextPath(searchParams.get("next"));
   const { toast } = useToast();
   const { t } = useTranslation('auth');
   const { signUpWithEmail, signInWithGoogle, isDemoMode } = useAuth();
+  // Where the visitor was headed (e.g. the class they tapped Book on) before being asked to sign up.
+  const nextParam = safeNext(searchParams.get("next"));
+  const next = nextParam ?? "/"; // carried through email confirmation and Google
+  // Studio owners arrive from /for-studios with ?intent=studio; everyone else is a student.
+  const isOwner = parseIntent(searchParams.get("intent")) === "studio";
+  useEffect(() => {
+    // Survives the Google redirect and a confirmation email opened in another tab.
+    if (nextParam) stashReturn(nextParam);
+  }, [nextParam]);
   const [step, setStep] = useState<RegistrationStep>("info");
   const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -87,12 +95,12 @@ const Register = () => {
       return;
     }
 
-    if (!requiresEmailConfirmation && next !== "/") {
-      navigate(next, { replace: true });
+    setNeedsEmailConfirmation(Boolean(requiresEmailConfirmation));
+    // Signed in straight away and we know what they came for: take them back to it.
+    if (!requiresEmailConfirmation && nextParam) {
+      navigate(resolveAfterAuth({ next: nextParam }), { replace: true });
       return;
     }
-
-    setNeedsEmailConfirmation(Boolean(requiresEmailConfirmation));
     setStep("complete");
   };
 
@@ -117,7 +125,7 @@ const Register = () => {
 
             <div className="space-y-3 pt-4">
               <Button
-                onClick={() => navigate(next === "/" ? "/auth/login" : `/auth/login?next=${encodeURIComponent(next)}`)}
+                onClick={() => navigate(authHref("/auth/login", nextParam))}
                 className="w-full h-14 text-lg"
                 size="lg"
               >
@@ -145,53 +153,57 @@ const Register = () => {
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold">{t('register.welcomeUser', { firstName: formData.firstName })}</h1>
+            <h1 className="text-2xl font-bold">
+              {isOwner
+                ? t('register.studioReadyTitle', { firstName: formData.firstName })
+                : t('register.welcomeUser', { firstName: formData.firstName })}
+            </h1>
             <p className="text-muted-foreground">
-              {t('register.accountReady')}
+              {isOwner ? t('register.studioReadyBody') : t('register.accountReady')}
             </p>
           </div>
 
           {/* Quick actions - large touch targets for mobile */}
-          <div className="space-y-3 pt-4">
-            <Button
-              onClick={() => navigate("/schedule")}
-              className="w-full h-14 text-lg"
-              size="lg"
-            >
-              {t('register.browseClasses')}
-              <ArrowRight className="ms-2 h-5 w-5" />
-            </Button>
+          {isOwner ? (
+            <div className="space-y-3 pt-4">
+              <Button
+                onClick={() => navigate(STUDIO_ONBOARDING_PATH)}
+                className="w-full h-14 text-lg"
+                size="lg"
+              >
+                <Store className="me-2 h-5 w-5" />
+                {t('register.studioContinue')}
+                <ArrowRight className="ms-2 h-5 w-5" />
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-3 pt-4">
+              <Button
+                onClick={() => navigate("/discover")}
+                className="w-full h-14 text-lg"
+                size="lg"
+              >
+                {t('register.browseClasses')}
+                <ArrowRight className="ms-2 h-5 w-5" />
+              </Button>
 
-            <Button
-              variant="outline"
-              onClick={() => navigate("/account")}
-              className="w-full h-12"
-            >
-              {t('register.completeProfile')}
-            </Button>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/account")}
+                className="w-full h-12"
+              >
+                {t('register.completeProfile')}
+              </Button>
 
-            <Button
-              variant="outline"
-              onClick={() => navigate("/manage/onboarding")}
-              className="w-full h-12"
-            >
-              <Store className="me-2 h-4 w-4" />
-              {t('register.setupStudio')}
-            </Button>
-
-            <Button
-              variant="ghost"
-              onClick={() => navigate("/")}
-              className="w-full"
-            >
-              {t('register.goHome')}
-            </Button>
-          </div>
-
-          {/* First-time member benefits hint */}
-          <div className="pt-4 text-sm text-muted-foreground">
-            <p>{t('register.introPricing')}</p>
-          </div>
+              <Button
+                variant="ghost"
+                onClick={() => navigate("/for-studios")}
+                className="w-full text-muted-foreground"
+              >
+                {t('register.ownAStudio')}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -233,9 +245,9 @@ const Register = () => {
               <span className="text-4xl font-bold text-primary-foreground">T</span>
             </div>
           </div>
-          <h2 className="text-3xl font-bold mb-4">{t('register.title')}</h2>
+          <h2 className="text-3xl font-bold mb-4">{isOwner ? t('register.studioTitle') : t('register.title')}</h2>
           <p className="text-muted-foreground text-lg">
-            {t('register.subtitle')}
+            {isOwner ? t('register.studioSubtitle') : t('register.subtitle')}
           </p>
         </div>
       </div>
@@ -251,9 +263,9 @@ const Register = () => {
               </div>
               <span className="text-xl sm:text-2xl font-semibold tracking-tight">Tandava</span>
             </Link>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{t('register.createAccount')}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{isOwner ? t('register.studioCreateAccount') : t('register.createAccount')}</h1>
             <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-2">
-              {t('register.startJourney')}
+              {isOwner ? t('register.studioStartJourney') : t('register.startJourney')}
             </p>
           </div>
 
@@ -379,10 +391,14 @@ const Register = () => {
                   <Link to="/terms" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
                     {t('register.termsOfService')}
                   </Link>{" "}
-                  {t('register.and')}{" "}
-                  <Link to="/waiver" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                    {t('register.studioWaiver')}
-                  </Link>
+                  {!isOwner && (
+                    <>
+                      {t('register.and')}{" "}
+                      <Link to="/waiver" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
+                        {t('register.studioWaiver')}
+                      </Link>
+                    </>
+                  )}
                 </span>
               </label>
               <label className="flex items-start gap-3 p-3 -mx-3 rounded-xl hover:bg-muted/50 cursor-pointer touch-manipulation">
@@ -395,7 +411,7 @@ const Register = () => {
                   className="mt-0.5 h-5 w-5"
                 />
                 <span className="text-sm leading-tight">
-                  {t('register.marketingConsent')}
+                  {isOwner ? t('register.studioMarketing') : t('register.marketingConsent')}
                 </span>
               </label>
             </div>
@@ -471,7 +487,7 @@ const Register = () => {
               {t('hasAccount')}{" "}
             </p>
             <Link
-              to="/auth/login"
+              to={authHref("/auth/login", nextParam)}
               className="inline-block mt-1 px-4 py-2 text-primary hover:underline font-medium touch-manipulation"
             >
               {t('signIn')}

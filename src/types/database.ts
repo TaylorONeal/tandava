@@ -43,6 +43,7 @@ export interface Studio {
   currency: string;
   stripe_account_id: string | null;
   stripe_onboarding_complete: boolean;
+  stripe_charges_enabled?: boolean;
   discoverable: boolean;
   brand_primary_color: string;
   brand_secondary_color: string;
@@ -2705,6 +2706,60 @@ export interface PublicScheduleRow {
 }
 
 /**
+ * book_class_auto(): membership first, then class pack, else the student pays.
+ * `type` (not interface) so it stays assignable to Record<string, unknown> for supabase rpc().
+ */
+export type BookClassAutoArgs = { p_occurrence_id: string };
+
+export type BookClassAutoResult =
+  | {
+      result: "booked";
+      booking_id: string;
+      /** 'waitlisted' when the class was full and the student holds an entitlement. */
+      status: "confirmed" | "waitlisted";
+      source_type: "membership" | "class_pack";
+      source_id: string;
+    }
+  | {
+      result: "needs_payment";
+      drop_in_price_cents: number | null;
+      currency: string;
+    };
+
+/** One upcoming class from the public discover_classes() RPC (safe public columns only). */
+export interface DiscoverClassRow {
+  occurrence_id: string;
+  starts_at: string;
+  ends_at: string;
+  offering_name: string;
+  style: string | null;
+  level: string | null;
+  is_heated: boolean | null;
+  duration_minutes: number;
+  drop_in_price_cents: number | null;
+  currency: string;
+  spots_left: number;
+  teacher_name: string | null;
+  location_name: string | null;
+  city: string | null;
+  state: string | null;
+  studio_slug: string;
+  studio_name: string;
+  studio_timezone: string;
+  studio_primary_color: string | null;
+}
+
+// `type`, not `interface`: rpc Args must be assignable to Record<string, unknown>,
+// which interfaces are not (they have no implicit index signature).
+export type DiscoverClassesArgs = {
+  p_city?: string | null;
+  p_style?: string | null;
+  p_from?: string | null;
+  p_to?: string | null;
+  p_limit?: number;
+};
+
+/**
  * One occurrence's public, booking-relevant facts (`get_public_occurrence`).
  *
  * Superset of PublicScheduleRow for a single class: adds the drop-in price and
@@ -2840,6 +2895,10 @@ export interface Database {
         Args: { p_booking_id: string };
         Returns: Booking;
       };
+      book_class_auto: {
+        Args: BookClassAutoArgs;
+        Returns: BookClassAutoResult;
+      };
       get_public_schedule: {
         Args: { p_slug: string; p_limit?: number };
         Returns: PublicScheduleRow[];
@@ -2859,6 +2918,10 @@ export interface Database {
       get_studio_storefront: {
         Args: { p_slug: string };
         Returns: StudioStorefront | null;
+      };
+      discover_classes: {
+        Args: DiscoverClassesArgs;
+        Returns: DiscoverClassRow[];
       };
     };
   };

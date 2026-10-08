@@ -12,6 +12,7 @@ Common issues, their solutions, and competitor mistakes to avoid. This document 
 5. [Frontend Gotchas](#frontend-gotchas)
 6. [Mobile-Specific Issues](#mobile-specific-issues)
 7. [Payment & Billing Edge Cases](#payment--billing-edge-cases)
+8. [Launch v1 Lessons](#launch-v1-lessons-october-2026)
 
 ---
 
@@ -550,6 +551,47 @@ if (existingPromo && newPromo) {
 
 ---
 
+## Launch v1 Lessons (October 2026)
+
+Found by the launch-v1 audit. Each has a test in `supabase/tests/`.
+
+| Lesson | Why | Prevention |
+|---|---|---|
+| Supabase grants anon full rights on new public tables | 10 tables were readable and writable with the public key, including Zoom host passwords | RLS plus at least one policy on every table; SEC tests list tables without RLS |
+| SECURITY DEFINER functions are executable by anon by default | Three lacked `search_path`, some trusted client ids | Pin `search_path`; `REVOKE ... FROM PUBLIC, anon` explicitly |
+| Policies that reference each other recurse | households and household_members hit infinite recursion | Use definer helpers (`my_household_ids()`) |
+| Counters kept in two places drift | Pack and membership counts disagreed with bookings | One ledger column and one trigger |
+| Two triggers for one job | Waitlist promoted free classes and minted credits | One path, one function |
+| A UNIQUE on (occurrence, profile) blocks rebooking | Cancel then book failed forever | Partial unique index on active statuses |
+| Last credit race | Two sessions both consumed one credit | Row lock on pack or membership; test with two psql sessions |
+| Sync Stripe `constructEvent` fails on Deno | Webhook rejected every event | `constructEventAsync` with SubtleCryptoProvider |
+| Webhook that returns 200 on error loses events | No retry | 5xx on error plus `stripe_events` dedupe |
+| Open redirect via success_url | Attacker-controlled return | Allowlist in `_shared/urls.ts` |
+| Payments routed to platform account when studio not onboarded | Money to wrong account | Gate on `stripe_charges_enabled` |
+| `interface` for Supabase rpc Args | Not assignable to Record<string, unknown> | Use `type` |
+| A test that never failed proves nothing | Easy to write vacuous tests | Revert the fix, watch the test fail, then restore |
+| Charge before reserving | A paid drop-in could land on a full class and only be flagged for refund | Take the seat first (`hold_spot`), count live holds in every capacity check |
+| Docs drift from code | `.env.example` missed vars, STATUS was 8 months stale | W0-3 and W0-4: update docs in the same PR |
+
+## Production database changes (October 2026)
+
+How a merge that touches migrations should go. Followed on PR #64; it worked.
+
+1. **Look at prod first, read-only.** `mcp__Supabase__list_migrations` returned nothing because prod was never migrated with the CLI, so it proves nothing. Ask the schema instead (`execute_sql`: `to_regclass` for tables, `pg_proc` for functions, column checks). Compare against each migration file to learn which are applied.
+2. **Two branches, same migration numbers.** Rename OUR unapplied or already-hand-applied files to follow main's, in the same relative order. Prod has no tracking table, so renaming is free. Grep docs and scripts for the old names.
+3. **Rehearse in prod order.** Build a throwaway local DB (`pg_ctlcluster 16 main start`, then a scratch database with `supabase/tests/support/supabase_stub.sql`), apply what prod already has, then the pending files, with `ON_ERROR_STOP`. Then run `npm run test:db` on the fresh order too.
+4. **Check prod data against new constraints.** A unique index or NOT NULL on a live table fails on dirty rows. Count duplicates before proposing it.
+5. **The auto-mode guard blocks `apply_migration` and DDL via `execute_sql` on prod, even after the user says approve in chat.** Do not retry or shrink the payload to get past it. Bundle the pending files into one `BEGIN; ... COMMIT;` file, send it with SendUserFile, and open the dashboard SQL editor for the user:
+   `https://supabase.com/dashboard/project/<ref>/sql/new` (Browser pane `navigate`). Always open the exact page; never make the user hunt for it.
+6. **Verify after, read-only.** Check functions, tables, columns, `pv_policies`, "RLS tables without a policy = 0", and that service-role-only functions are not executable by `anon`.
+
+| Mistake | Fix |
+|---|---|
+| `schema_migrations` missing, assumed prod was empty | Query the real schema |
+| Test stub lacked a column main's migration reads (`auth.users.encrypted_password`) | Keep the stub in step with the columns migrations touch |
+| New RLS table with no policy fails SEC-07 | Add an explicit policy, even deny-all (`USING (false)`) |
+| Two auth return helpers after a merge (`authReturn`, `auth/next`) | Keep both, point the pages at one, do not delete the other side's callers |
+
 ## Quick Reference: Prevention Patterns
 
 | Issue Type | Prevention Pattern |
@@ -560,6 +602,10 @@ if (existingPromo && newPromo) {
 | Double actions | Disable buttons, idempotency keys |
 | Stale data | React Query, optimistic updates |
 | Mobile UX | Test on real devices, large touch targets |
+| New table | RLS + policy + test in same migration |
+| Definer fn | search_path pinned, revoke anon |
+| Money event | Idempotent by event id, 5xx on failure |
+| Prod migrations | Query schema, rehearse in prod order, hand over one transactional SQL file plus the dashboard link |
 | Offline | Service worker, queue actions |
 | Errors | Specific messages, recovery actions |
 

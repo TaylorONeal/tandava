@@ -30,7 +30,7 @@ const STEPS = [
   { key: "staff", label: "Staff", icon: Users },
   { key: "waivers", label: "Waivers", icon: ShieldCheck },
   { key: "import", label: "Import", icon: Upload },
-  { key: "stripe", label: "Stripe Connect", icon: CreditCard },
+  { key: "stripe", label: "Payments", icon: CreditCard },
   { key: "launch", label: "Launch", icon: Rocket },
 ] as const;
 
@@ -278,7 +278,7 @@ export default function Onboarding() {
       if (data?.connected) {
         setStripeConnected(true);
         setDone((prev) => new Set([...prev, STEPS.findIndex((s) => s.key === "stripe")]));
-        toast({ title: "Stripe connected", description: "Your studio can now accept payments." });
+        toast({ title: "Payments set up", description: "Your studio can now take payments." });
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -345,14 +345,14 @@ export default function Onboarding() {
 
   const handleConnectStripe = async () => {
     if (!isBackendConfigured()) {
-      toast({ title: "Demo mode", description: "Stripe Connect is available once a backend is configured." });
+      toast({ title: "Demo mode", description: "Payout setup is available once a backend is configured." });
       return;
     }
     setStripeBusy(true);
     const { data, error } = await api.invoke<{ url?: string }>("stripe-connect", { action: "start" });
     setStripeBusy(false);
     if (error || !data?.url) {
-      toast({ title: "Couldn't start Stripe onboarding", description: error?.message ?? "No URL returned", variant: "destructive" });
+      toast({ title: "Couldn't start payout setup", description: error?.message ?? "No URL returned", variant: "destructive" });
       return;
     }
     window.location.href = data.url;
@@ -536,21 +536,21 @@ export default function Onboarding() {
         </StepCard>
       );
       case 9: return (
-        <StepCard title="Connect Stripe" desc="Enable payment processing for your studio">
+        <StepCard title="Set up payments" desc="So students can pay you online and you get paid out">
           {stripeConnected ? (
             <div className="p-6 rounded-xl border-2 border-primary/30 bg-primary/5 text-center">
               <CheckCircle2 className="h-10 w-10 text-primary mx-auto" />
-              <h3 className="text-sm font-semibold mt-3">Stripe is connected</h3>
+              <h3 className="text-sm font-semibold mt-3">Payments are set up</h3>
               <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">Your studio can accept memberships, class packs, and drop-in payments.</p>
             </div>
           ) : (
             <div className="p-6 rounded-xl border-2 border-dashed border-border text-center">
               <CreditCard className="h-10 w-10 text-muted-foreground mx-auto" />
-              <h3 className="text-sm font-semibold mt-3">Connect your Stripe account</h3>
-              <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">Securely process memberships, class packs, and drop-in payments with Stripe Connect. You'll be redirected to Stripe and brought back here.</p>
+              <h3 className="text-sm font-semibold mt-3">Set up your payouts</h3>
+              <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">Students pay by card when they book, and the money is paid out to your bank. Payments are processed by Stripe: you'll fill in a short form on their site (bank details and identity check), then come back here.</p>
               <Button className="mt-4" onClick={handleConnectStripe} disabled={stripeBusy}>
                 {stripeBusy ? <Loader2 className="h-4 w-4 me-2 animate-spin" /> : null}
-                Connect with Stripe
+                Set up payouts
               </Button>
             </div>
           )}

@@ -1,6 +1,6 @@
 # Implementation status and remaining decisions
 
-Updated September 10, 2026. Complements the [product review](HOSTED_PRODUCT_REVIEW.md) and [roadmap](ROADMAP.md).
+Updated September 10, 2026. Launch v1 status (October 2026) lives in [PRD-launch-v1](plans/PRD-launch-v1.md) and [BACKLOG](plans/BACKLOG.md); this file stays as the earlier handoff. Complements the [product review](HOSTED_PRODUCT_REVIEW.md) and [roadmap](ROADMAP.md).
 
 ## Changes in this work
 

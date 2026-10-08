@@ -118,6 +118,12 @@ serve(async (req) => {
       const account = await stripe.accounts.retrieve(studio.stripe_account_id);
       const connected = Boolean(account.details_submitted);
 
+      // Always mirror Stripe's own answer: checkout only routes money to a studio
+      // whose account has charges_enabled (the account.updated webhook keeps it fresh).
+      await db.from("studios")
+        .update({ stripe_charges_enabled: Boolean(account.charges_enabled) })
+        .eq("id", studioId);
+
       if (connected && !studio.stripe_onboarding_complete) {
         await db.from("studios")
           .update({ stripe_onboarding_complete: true })

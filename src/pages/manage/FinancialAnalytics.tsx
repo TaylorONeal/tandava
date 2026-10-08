@@ -121,7 +121,7 @@ const forecastAssumptions = [
   { label: "Avg revenue per student", value: "$113" },
   { label: "Payment processing fee", value: "2.9%" },
   { label: "Expected pause rate", value: "4%" },
-  { label: "App store cut", value: "0% (self-hosted)" },
+  { label: "App store cut", value: "0%" },
 ];
 
 const forecastTable = [

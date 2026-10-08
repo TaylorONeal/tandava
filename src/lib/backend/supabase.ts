@@ -31,7 +31,7 @@ import type {
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 
 // ---------------------------------------------------------------------------
 // Supabase client singleton
@@ -223,6 +223,14 @@ const supabaseData: DataProvider = {
     };
   },
 
+  async bookClassAuto(occurrenceId: string): Promise<DataResult<BookClassAutoResult>> {
+    const { data, error } = await getClient().rpc("book_class_auto", { p_occurrence_id: occurrenceId } as never);
+    return {
+      data: (data as BookClassAutoResult) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
   async bookFreeClass(occurrenceId): Promise<DataResult<Booking>> {
     const { data, error } = await getClient().rpc("book_free_class", {
       p_occurrence_id: occurrenceId,
@@ -260,6 +268,14 @@ const supabaseData: DataProvider = {
     const { data, error } = await getClient().rpc("get_studio_storefront", { p_slug: slug } as never);
     return {
       data: (data as StudioStorefront) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async discoverClasses(args = {}): Promise<DataResult<DiscoverClassRow[]>> {
+    const { data, error } = await getClient().rpc("discover_classes", args as never);
+    return {
+      data: (data as DiscoverClassRow[]) ?? null,
       error: error ? { message: error.message } : null,
     };
   },

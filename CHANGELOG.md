@@ -5,7 +5,23 @@ on [Keep a Changelog](https://keepachangelog.com/), and the project follows
 [SemVer](https://semver.org/) (pre-1.0, so minor versions may include breaking
 schema changes).
 
-## [Unreleased] — Deploy & transaction hardening
+## [Unreleased] — Launch v1
+
+### Added
+- Discover marketplace (`/discover`, `discover_classes` RPC), `VITE_HOME_MODE`, funnel events.
+- `book_class_auto` (membership, then pack, else pay), return-to-intent auth, storefront Book and Buy buttons.
+- `check_in_booking` RPC, `stripe_events` ledger, transactional Stripe fulfilment, refund and renewal handling.
+- DB test suite and runner (`npm run test:db`), GitHub Actions CI.
+- Launch PRD, ordered backlog and architecture diagrams under `docs/plans` and `docs/developer/07-launch-architecture.md`.
+
+### Security
+- RLS and policies on every public table (migrations 00022, 00023); anon no longer reads studio rows; definer functions pinned and revoked from anon.
+- Checkout validates return URLs and requires `stripe_charges_enabled`; webhook verifies asynchronously and returns 5xx on failure.
+
+### Fixed
+- Rebooking after cancel, waitlist promotion that gave free classes, double refund on double cancel, last-credit race.
+
+## Deploy & transaction hardening
 
 ### Added
 - **Web Component embed** (`public/widget.js`, `<tandava-schedule>`): a
