@@ -84,6 +84,9 @@ export default function SettingsManage() {
   const studioId = myStudio?.studio_id ?? null;
   const [expressEnabled, setExpressEnabled] = useState(false);
   const [saving, setSaving] = useState(false);
+  // True once the real row has replaced the sample values. Saving before that
+  // would write the demo defaults over the owner's studio.
+  const [loaded, setLoaded] = useState(false);
 
   const applyRow = (row: StudioSettingsRow) => {
     const f = toForm(row);
@@ -115,6 +118,7 @@ export default function SettingsManage() {
         return;
       }
       applyRow(data);
+      setLoaded(true);
     });
     return () => {
       cancelled = true;
@@ -130,6 +134,10 @@ export default function SettingsManage() {
     }
     if (!studioId) {
       toast({ title: "No studio yet", description: "Finish studio setup first, then come back to settings.", variant: "destructive" });
+      return;
+    }
+    if (!loaded) {
+      toast({ title: "Still loading", description: "Your studio settings have not loaded yet. Try again in a moment.", variant: "destructive" });
       return;
     }
     const result = toPatch({
@@ -179,7 +187,9 @@ export default function SettingsManage() {
       toast({ title: "Not saved", description: error?.message ?? "Try again in a moment.", variant: "destructive" });
       return;
     }
-    applyRow(data);
+    // Only the switches: unsaved edits elsewhere in the form stay as typed.
+    setDiscoverable(Boolean(data.discoverable));
+    setExpressEnabled(Boolean(data.express_booking_enabled));
     toast({ title: "Saved" });
   };
 
@@ -294,7 +304,7 @@ export default function SettingsManage() {
                   </div>
                 </div>
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSave} disabled={saving}>
+                  <Button onClick={handleSave} disabled={saving || (live && !loaded)}>
                     <Save className="h-4 w-4 me-2" />
                     Save Changes
                   </Button>
@@ -397,7 +407,7 @@ export default function SettingsManage() {
                 )}
 
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSave} disabled={saving}>
+                  <Button onClick={handleSave} disabled={saving || (live && !loaded)}>
                     <Save className="h-4 w-4 me-2" />
                     Save Policies
                   </Button>
@@ -453,7 +463,7 @@ export default function SettingsManage() {
                 </div>
 
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSave} disabled={saving}>
+                  <Button onClick={handleSave} disabled={saving || (live && !loaded)}>
                     <Save className="h-4 w-4 me-2" />
                     Save Branding
                   </Button>
@@ -478,7 +488,7 @@ export default function SettingsManage() {
                     <p className="text-sm font-medium">List on Tandava Discover</p>
                     <p className="text-xs text-muted-foreground">Your public classes appear where students search for a class. Turn off to unlist.</p>
                   </div>
-                  <Switch checked={discoverable} onCheckedChange={(v) => saveSwitch({ discoverable: v })} disabled={live && studioLoading} />
+                  <Switch checked={discoverable} onCheckedChange={(v) => saveSwitch({ discoverable: v })} disabled={live && (studioLoading || !loaded)} />
                 </div>
                 <Separator className="my-4" />
                 <div className="flex items-center justify-between">
@@ -486,7 +496,7 @@ export default function SettingsManage() {
                     <p className="text-sm font-medium">Guest booking (no account needed)</p>
                     <p className="text-xs text-muted-foreground">New students book a class with name and email in one step. Needs the listing above.</p>
                   </div>
-                  <Switch checked={expressEnabled} onCheckedChange={(v) => saveSwitch({ express_booking_enabled: v })} disabled={live && studioLoading} />
+                  <Switch checked={expressEnabled} onCheckedChange={(v) => saveSwitch({ express_booking_enabled: v })} disabled={live && (studioLoading || !loaded)} />
                 </div>
               </CardContent>
             </Card>
@@ -541,7 +551,7 @@ export default function SettingsManage() {
                   </div>
                 ))}
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSave} disabled={saving}>
+                  <Button onClick={handleSave} disabled={saving || (live && !loaded)}>
                     <Save className="h-4 w-4 me-2" />
                     Save Notifications
                   </Button>
@@ -652,7 +662,7 @@ export default function SettingsManage() {
                 </div>
 
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSave} disabled={saving}>
+                  <Button onClick={handleSave} disabled={saving || (live && !loaded)}>
                     <Save className="h-4 w-4 me-2" />
                     Save SEO Settings
                   </Button>
@@ -701,7 +711,7 @@ export default function SettingsManage() {
                 </div>
 
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSave} disabled={saving}>
+                  <Button onClick={handleSave} disabled={saving || (live && !loaded)}>
                     <Save className="h-4 w-4 me-2" />
                     Save Tracking
                   </Button>
