@@ -8,6 +8,7 @@ import { readAuthLinkError, type AuthLinkError } from "@/lib/auth/linkError";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Turnstile, useCaptchaReady } from "@/components/auth/Turnstile";
 
 /**
  * Landing page for OAuth redirects and emailed sign-up links.
@@ -75,6 +76,7 @@ function LinkFailed({ error, next }: { error: AuthLinkError; next: string }) {
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "failed">("idle");
   const [message, setMessage] = useState<string | null>(null);
+  const captchaReady = useCaptchaReady();
 
   const resend = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -120,7 +122,8 @@ function LinkFailed({ error, next }: { error: AuthLinkError; next: string }) {
               />
             </div>
             {state === "failed" && message && <p className="text-sm text-destructive">{message}</p>}
-            <Button type="submit" className="w-full" disabled={state === "sending"}>
+            <Turnstile />
+            <Button type="submit" className="w-full" disabled={state === "sending" || !captchaReady}>
               {state === "sending" ? "Sending..." : "Send a new link"}
             </Button>
           </form>

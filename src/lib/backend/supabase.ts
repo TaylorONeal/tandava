@@ -155,6 +155,7 @@ const supabaseAuth: AuthProvider = {
       email,
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback${path === "/" ? "" : `?next=${encodeURIComponent(path)}`}`,
+        ...captchaOption(),
       },
     });
     return { error: mapError(error) };

@@ -160,6 +160,7 @@ Set up once, so nobody rediscovers it:
 | Supabase CLI | `npm i -g supabase` | | Local DB tests use `npm run test:db` (plain Postgres, no Docker needed) |
 | Browser tests | `npm run test:e2e` (Playwright, Supabase mocked). Locally: `PW_CHROMIUM_PATH=/opt/pw-browsers/chromium-1194/chrome-linux/chrome` | `playwright install` (no network) | CI installs its own Chromium |
 | Vercel preview | Vercel MCP `web_fetch_vercel_url` (bypass built in, returns headers) | plain curl (SSO 401) | Use it to verify headers and pages |
+| Edge function deploy | Supabase MCP `deploy_edge_function` (Taylor approved prod deploys 2026-10-08). Bundle cross-folder imports as sibling files (express-book ships `./express.ts`, a copy of `src/lib/booking/express.ts`). `verify_jwt=false` only for express-book and stripe-webhook | Taylor's Mac CLI: his `supabase login` defaults to a personal account with no access to the Purafield org (403 on secrets) | Smoke test with `curl -X POST https://mkaixgjwakfufmmwembn.supabase.co/functions/v1/<fn>` |
 | Stripe CLI | not installable (release download blocked) | | Replay events by POSTing signed payloads, or run from Taylor's machine |
 
 ## Database
