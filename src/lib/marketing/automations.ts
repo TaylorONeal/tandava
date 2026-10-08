@@ -39,6 +39,11 @@ export interface PriorSend {
    * intro-offer rule, but it never advances a sequence.
    */
   pending?: boolean;
+  /**
+   * Sent by another studio. Counts only for the one-per-person daily cap;
+   * sequences, recency windows and the intro offer are per studio.
+   */
+  otherStudio?: boolean;
 }
 
 export interface PersonFacts {
@@ -98,20 +103,25 @@ export function lapsedThresholdDays(medianGapDays: number | null | undefined, ov
   return Math.min(45, Math.max(14, Math.round(medianGapDays * 2)));
 }
 
+/** This studio's sends; another studio's only matter for the daily cap. */
+function own(f: PersonFacts): PriorSend[] {
+  return f.sends.filter((s) => !s.otherStudio);
+}
+
 function sent(f: PersonFacts, key: AutomationKey, step: number, episode: string): boolean {
-  return f.sends.some((s) => !s.pending && s.key === key && s.step === step && s.episode === episode);
+  return own(f).some((s) => !s.pending && s.key === key && s.step === step && s.episode === episode);
 }
 
 /** True when this automation step went out to the person in the last `days`, any episode. */
 function sentWithin(f: PersonFacts, key: AutomationKey, step: number, days: number, now: Date): boolean {
-  return f.sends.some(
+  return own(f).some(
     (s) => s.key === key && s.step === step && now.getTime() - new Date(s.sentAt).getTime() < days * DAY,
   );
 }
 
 /** Both sequences end in the same intro offer; a person gets it once. */
 function introOfferSent(f: PersonFacts): boolean {
-  return f.sends.some((s) => (s.key === "guest_to_member" || s.key === "first_visit") && s.step === 1);
+  return own(f).some((s) => (s.key === "guest_to_member" || s.key === "first_visit") && s.step === 1);
 }
 
 function since(iso: string | null | undefined, now: Date): number {
@@ -138,7 +148,7 @@ export function dueStep(f: PersonFacts, key: AutomationKey, now: Date, settings:
       // Step 1 follows the step 0 that actually went out, not the latest
       // booking: a guest who books again in between still gets the intro
       // offer (only claiming the account or buying stops the sequence).
-      const lastStep0 = f.sends
+      const lastStep0 = own(f)
         .filter((x) => x.key === key && x.step === 0 && !x.pending)
         .sort((a, b) => b.sentAt.localeCompare(a.sentAt))[0];
       if (lastStep0 && !introOfferSent(f) && !sent(f, key, 1, lastStep0.episode)) {

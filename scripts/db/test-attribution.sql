@@ -598,5 +598,21 @@ BEGIN
   IF link_my_visitor(v, 'x') IS NOT NULL THEN RAISE EXCEPTION 'anonymous call should return null'; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (29 blocks)'; END $$;
+-- 30. Daily cap is per person across studios: another studio's send from the
+--     last day comes back flagged other_studio; its older sends do not.
+DO $$
+DECLARE sends JSONB;
+BEGIN
+  INSERT INTO automation_sends (studio_id, profile_id, automation_key, step, episode_key, status, sent_at) VALUES
+    ('00000000-0000-0000-0000-00000000005b', '00000000-0000-0000-0000-0000000000b1', 'lapsed', 0, 'x-recent', 'sent', NOW() - interval '2 hours'),
+    ('00000000-0000-0000-0000-00000000005b', '00000000-0000-0000-0000-0000000000b1', 'lapsed', 0, 'x-old', 'sent', NOW() - interval '3 days');
+  SELECT c.sends INTO sends FROM get_automation_candidates('00000000-0000-0000-0000-00000000005a') c
+    WHERE c.profile_id = '00000000-0000-0000-0000-0000000000b1';
+  IF NOT EXISTS (SELECT 1 FROM jsonb_array_elements(sends) e WHERE e->>'episode' = 'x-recent' AND (e->>'other_studio')::boolean)
+    THEN RAISE EXCEPTION 'recent other-studio send missing: %', sends; END IF;
+  IF EXISTS (SELECT 1 FROM jsonb_array_elements(sends) e WHERE e->>'episode' = 'x-old')
+    THEN RAISE EXCEPTION 'old other-studio send leaked: %', sends; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (30 blocks)'; END $$;
 ROLLBACK;

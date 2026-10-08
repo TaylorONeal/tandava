@@ -38,6 +38,16 @@ describe("guards", () => {
     };
     expect(decideNext(f, NOW, TZ)).toEqual({ skip: "daily_cap" });
   });
+  it("another studio's send today blocks the email but never advances this studio's sequence", () => {
+    const episode = daysAgo(5).slice(0, 10);
+    const other = { key: "guest_to_member" as const, step: 0, episode, sentAt: daysAgo(0, 5), otherStudio: true };
+    const f = { ...base, isGuest: true, guestBookingAt: daysAgo(5), sends: [other] };
+    expect(decideNext(f, NOW, TZ)).toEqual({ skip: "daily_cap" });
+    // A day later the cap is clear and this studio still owes its own step 0.
+    const later = new Date(NOW.getTime() + 86400_000);
+    const g = { ...f, guestBookingAt: daysAgo(4) };
+    expect(decideNext(g, later, TZ)).toMatchObject({ decision: { key: "guest_to_member", step: 0 } });
+  });
   it("nothing due for someone with no activity", () => {
     expect(decideNext(base, NOW, TZ)).toEqual({ skip: "nothing_due" });
   });

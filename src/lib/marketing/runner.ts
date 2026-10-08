@@ -26,7 +26,7 @@ export interface CandidateRow {
   has_active_membership: boolean | null;
   has_active_pack: boolean | null;
   has_upcoming_booking?: boolean | null;
-  sends: { key: string; step: number; episode: string; sent_at: string; pending?: boolean | null }[] | null;
+  sends: { key: string; step: number; episode: string; sent_at: string; pending?: boolean | null; other_studio?: boolean | null }[] | null;
 }
 
 export interface SettingsRow {
@@ -67,6 +67,7 @@ export function factsFromCandidate(r: CandidateRow): PersonFacts {
         episode: s.episode,
         sentAt: s.sent_at,
         pending: Boolean(s.pending),
+        otherStudio: Boolean(s.other_studio),
       })),
   };
 }

@@ -164,6 +164,7 @@ function rotateAwayFrom(id: string) {
     // Memory fallbacks are cleared below.
   }
   memorySessions.clear();
+  inFlight.clear(); // a pending capture belongs to the previous visitor id
   linkedInMemory.clear();
 }
 
@@ -331,6 +332,7 @@ export function claimVisitorFor(userId: string) {
       // In-memory fallbacks (used when a storage write failed) go too: they
       // would otherwise outrank the cleared storage and keep A's visit.
       memorySessions.clear();
+      inFlight.clear(); // a pending capture belongs to the previous visitor id
       linkedInMemory.clear();
       setVisitor(randomId());
       window.localStorage.removeItem(PREVIOUS_KEY);
@@ -347,6 +349,7 @@ export function claimVisitorFor(userId: string) {
     if (memoryOwner && memoryOwner !== userId) {
       setVisitor(randomId());
       memorySessions.clear();
+      inFlight.clear(); // a pending capture belongs to the previous visitor id
       linkedInMemory.clear();
     }
     memoryOwner = userId;
@@ -572,6 +575,7 @@ export async function applyOAuthSignupConsent(userId: string, nonce?: string | n
 export function forgetVisitor() {
   linkUser = null;
   memorySessions.clear();
+  inFlight.clear(); // a pending capture belongs to the previous visitor id
   linkedInMemory.clear();
   try {
     setVisitor(randomId());
@@ -587,6 +591,7 @@ export function forgetVisitor() {
     setVisitor(randomId());
     memoryOwner = null;
     memorySessions.clear();
+    inFlight.clear(); // a pending capture belongs to the previous visitor id
     linkedInMemory.clear();
   }
 }

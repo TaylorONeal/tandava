@@ -299,3 +299,30 @@ describe("visitor id write failures", () => {
     expect(getVisitorId()).not.toBe(first);
   });
 });
+
+describe("capture in flight during an account switch", () => {
+  it("captureSettled does not settle for the previous person's pending request", async () => {
+    vi.stubGlobal("window", {
+      localStorage: memoryStorage(),
+      sessionStorage: memoryStorage(),
+      location: { href: "https://app.example.com/s/oxatl" },
+    });
+    vi.stubGlobal("document", { referrer: "" });
+    vi.stubGlobal("navigator", { userAgent: "test" });
+    const { api } = await import("@/lib/backend");
+    const invoke = vi.mocked(api.invoke);
+    invoke.mockReset();
+    let releaseA: (v: unknown) => void = () => {};
+    invoke.mockImplementationOnce(() => new Promise((r) => (releaseA = r)) as never);
+    const s = await import("./session");
+    s.claimVisitorFor("user-a");
+    void s.trackVisit("oxatl", "storefront" as never); // A's request hangs
+    s.claimVisitorFor("user-b");
+    invoke.mockResolvedValue({ data: { sessionId: "77777777-7777-4777-8777-777777777777" }, error: null } as never);
+    await s.captureSettled("oxatl", 200);
+    expect(s.currentSessionId("oxatl")).toBe("77777777-7777-4777-8777-777777777777");
+    releaseA({ data: { sessionId: "55555555-5555-4555-8555-555555555555" }, error: null });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(s.currentSessionId("oxatl")).toBe("77777777-7777-4777-8777-777777777777");
+  });
+});
