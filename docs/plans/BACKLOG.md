@@ -95,3 +95,5 @@ commands in [LAUNCH_RUNBOOK.md](LAUNCH_RUNBOOK.md).
 ## Critical path
 
 W1 -> W3 -> W4-1 -> W4-3 -> W4-4 -> W5-2 -> W7-3 -> W7-4. W2 gates W4-3 and W5-2. W6 can run beside W5.
+
+- NEXT: Settings > Discover toggle does not persist. `src/pages/manage/Settings.tsx` keeps `discoverable` in local state and the save handler only toasts, so an owner cannot unlist a studio after onboarding. Wire it to update `studios.discoverable` (found in #81 review, 2026-10-08).
