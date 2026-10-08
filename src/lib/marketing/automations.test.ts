@@ -66,7 +66,11 @@ describe("guest to member", () => {
     const f = {
       ...guest,
       guestBookingAt: daysAgo(1, 1),
-      sends: [{ key: "guest_to_member" as const, step: 0, episode: daysAgo(10).slice(0, 10), sentAt: daysAgo(10) }],
+      // The earlier episode ran its course (both emails went out).
+      sends: [
+        { key: "guest_to_member" as const, step: 0, episode: daysAgo(10).slice(0, 10), sentAt: daysAgo(10) },
+        { key: "guest_to_member" as const, step: 1, episode: daysAgo(10).slice(0, 10), sentAt: daysAgo(7) },
+      ],
     };
     expect(decideNext(f, NOW, TZ)).toEqual({ skip: "nothing_due" });
     const later = { ...f, sends: [{ ...f.sends[0], episode: daysAgo(35).slice(0, 10), sentAt: daysAgo(35) }] };
@@ -193,5 +197,18 @@ describe("unconfirmed sends (claimed, provider result not recorded)", () => {
       ],
     };
     expect(decideNext(f, NOW, TZ)).toEqual({ skip: "nothing_due" });
+  });
+});
+
+describe("guest follow-up survives a repeat booking", () => {
+  it("still sends the intro offer when the guest books again after the first email", () => {
+    const f = {
+      ...base,
+      isGuest: true,
+      // Booked again yesterday; the first email went out 3 days ago for the earlier booking.
+      guestBookingAt: daysAgo(1, 2),
+      sends: [{ key: "guest_to_member" as const, step: 0, episode: daysAgo(4).slice(0, 10), sentAt: daysAgo(3) }],
+    };
+    expect(decideNext(f, NOW, TZ)).toMatchObject({ decision: { step: 1, episode: daysAgo(4).slice(0, 10) } });
   });
 });

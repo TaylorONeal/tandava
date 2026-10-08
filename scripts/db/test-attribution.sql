@@ -564,5 +564,23 @@ BEGIN
   IF r.converting_touch_session_id IS DISTINCT FROM early THEN RAISE EXCEPTION 'promotion credited a later visit'; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (27 blocks)'; END $$;
+-- 28. Two page views of one visit arriving out of order keep the campaign:
+--     an untagged view that lands first is filled in by the tagged one.
+DO $$
+DECLARE v UUID := gen_random_uuid(); a UUID; b UUID; r analytics_sessions%ROWTYPE;
+BEGIN
+  a := record_session('aloha', v, 'race-1', 'storefront', 'https://x/s/aloha/classes', NULL, '{}'::jsonb, '{}'::jsonb, 'direct', 'mobile');
+  b := record_session('aloha', v, 'race-1', 'storefront', 'https://x/s/aloha?utm_source=ig&utm_campaign=fall', NULL,
+    '{"source":"ig","campaign":"fall"}'::jsonb, '{}'::jsonb, 'organic_social', 'mobile');
+  SELECT * INTO r FROM analytics_sessions WHERE id = a;
+  IF a <> b OR r.page_views <> 2 OR r.utm_source IS DISTINCT FROM 'ig' OR r.channel <> 'organic_social'
+     OR r.landing_page_url NOT LIKE '%utm_source=ig%'
+    THEN RAISE EXCEPTION 'tagged view lost: % % %', r.utm_source, r.channel, r.landing_page_url; END IF;
+  -- Tags already on a row are never replaced.
+  PERFORM record_session('aloha', v, 'race-1', 'storefront', 'https://x/s/aloha?utm_source=tiktok', NULL,
+    '{"source":"tiktok"}'::jsonb, '{}'::jsonb, 'organic_social', 'mobile');
+  IF (SELECT utm_source FROM analytics_sessions WHERE id = a) <> 'ig' THEN RAISE EXCEPTION 'existing tags overwritten'; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (28 blocks)'; END $$;
 ROLLBACK;

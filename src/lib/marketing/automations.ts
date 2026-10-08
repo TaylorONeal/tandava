@@ -135,8 +135,18 @@ export function dueStep(f: PersonFacts, key: AutomationKey, now: Date, settings:
       const age = since(f.guestBookingAt, now);
       if (age >= 1 * DAY && age < 7 * DAY && !sent(f, key, 0, episode) && !sentWithin(f, key, 0, 30, now))
         return { key, step: 0, episode, template: "automation_guest_save_details" };
-      if (age >= 3 * DAY && age < 14 * DAY && sent(f, key, 0, episode) && !introOfferSent(f))
-        return { key, step: 1, episode, template: "automation_guest_intro_offer" };
+      // Step 1 follows the step 0 that actually went out, not the latest
+      // booking: a guest who books again in between still gets the intro
+      // offer (only claiming the account or buying stops the sequence).
+      const lastStep0 = f.sends
+        .filter((x) => x.key === key && x.step === 0 && !x.pending)
+        .sort((a, b) => b.sentAt.localeCompare(a.sentAt))[0];
+      if (lastStep0 && !introOfferSent(f) && !sent(f, key, 1, lastStep0.episode)) {
+        // Same timing as before, counted from that episode's booking date.
+        const episodeAge = since(`${lastStep0.episode}T00:00:00Z`, now);
+        if (episodeAge >= 3 * DAY && episodeAge < 14 * DAY)
+          return { key, step: 1, episode: lastStep0.episode, template: "automation_guest_intro_offer" };
+      }
       return null;
     }
     case "first_visit": {
