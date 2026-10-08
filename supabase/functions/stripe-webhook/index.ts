@@ -458,12 +458,16 @@ async function uuidFromStripeId(id: string): Promise<string> {
 async function handlePaymentSucceeded(invoice: Stripe.Invoice): Promise<boolean> {
   if (!invoice.subscription || invoice.billing_reason !== "subscription_cycle") return true;
   if (!invoice.amount_paid) return true;
-  const { data: membership } = await supabase
+  const { data: membership, error: lookupError } = await supabase
     .from("memberships")
     .select("id, studio_id, profile_id")
     .eq("stripe_subscription_id", invoice.subscription as string)
     .maybeSingle();
-  if (!membership) return true;
+  if (lookupError) {
+    console.error("[stripe-webhook] renewal membership lookup failed:", lookupError.message);
+    return false; // retry
+  }
+  if (!membership) return true; // not ours
   const { error } = await supabase.rpc("record_conversion", {
     p_studio_id: membership.studio_id,
     p_profile_id: membership.profile_id,

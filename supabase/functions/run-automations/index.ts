@@ -80,7 +80,7 @@ serve(async (req) => {
   const report: Record<string, unknown>[] = [];
 
   for (const studio of (studios ?? []) as StudioRow[]) {
-    const [{ data: settings }, { data: candidates, error: candError }, { data: loc }] = await Promise.all([
+    const [{ data: settings, error: settingsError }, { data: candidates, error: candError }, { data: loc }] = await Promise.all([
       db.from("automation_settings").select("*").eq("studio_id", studio.id).maybeSingle(),
       db.rpc("get_automation_candidates", { p_studio_id: studio.id }),
       db
@@ -92,8 +92,10 @@ serve(async (req) => {
         .limit(1)
         .maybeSingle(),
     ]);
-    if (candError) {
-      report.push({ studio: studio.slug, error: candError.message });
+    // A failed settings read is not "no settings": defaults would switch on
+    // automations the studio turned off. Skip the studio this run.
+    if (settingsError || candError) {
+      report.push({ studio: studio.slug, error: (settingsError ?? candError)!.message });
       continue;
     }
 

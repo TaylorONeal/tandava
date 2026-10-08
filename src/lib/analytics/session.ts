@@ -44,6 +44,11 @@ export function getVisitorId(handoff?: string): string {
       // Keep the displaced id so sign-in links its earlier visits too.
       if (stored) rememberPreviousVisitor(stored);
       window.localStorage.setItem(VISITOR_KEY, handoff);
+      // Someone already signed in gets no new auth event; link it now (a
+      // no-op on the server for anonymous visitors).
+      void Promise.resolve()
+        .then(() => data.linkMyVisitor(handoff, "embed_handoff"))
+        .catch(() => undefined);
       return handoff;
     }
     if (stored) return stored;
@@ -152,7 +157,11 @@ export async function trackVisit(slug: string, surface: Surface, opts?: { studio
       channel,
       deviceType: deviceType(navigator.userAgent),
     });
-    if (data?.sessionId) writeSession(slug, { ...session, id: data.sessionId });
+    // Attach the id only if this is still the current session: a slower
+    // response from an earlier page must not restore an older campaign.
+    if (data?.sessionId && readSession(slug)?.token === session.token) {
+      writeSession(slug, { ...readSession(slug)!, id: data.sessionId });
+    }
   } catch {
     // Capture must never break the page.
   }
@@ -211,16 +220,21 @@ export async function linkVisitorOnce(userId: string, via = "sign_in") {
   if (!done) {
     try {
       const { error } = await data.linkMyVisitor(getVisitorId(), via);
-      // Ids an embed handoff displaced belong to the same person on this browser.
-      const previous = previousVisitorIds();
-      for (const id of previous) await data.linkMyVisitor(id, `${via}_previous`);
-      // Mark only on success, so a failed link is retried on the next auth event.
-      if (!error) {
-        try {
-          window.localStorage.removeItem(PREVIOUS_KEY);
-        } catch {
-          // ignore
-        }
+      // Ids an embed handoff displaced belong to the same person on this
+      // browser; each is dropped only once its own link succeeded.
+      const failed: string[] = [];
+      for (const id of previousVisitorIds()) {
+        const r = await data.linkMyVisitor(id, `${via}_previous`).catch(() => ({ error: { message: "failed" } }));
+        if (r.error) failed.push(id);
+      }
+      try {
+        if (failed.length) window.localStorage.setItem(PREVIOUS_KEY, JSON.stringify(failed));
+        else window.localStorage.removeItem(PREVIOUS_KEY);
+      } catch {
+        // ignore
+      }
+      // Mark only when everything linked, so failures retry on the next auth event.
+      if (!error && failed.length === 0) {
         try {
           window.sessionStorage.setItem(key, "1");
         } catch {
