@@ -306,8 +306,9 @@ const supabaseData: DataProvider = {
     return { error: error ? { message: error.message } : null };
   },
 
-  async getAttributionSources(from, to, model): Promise<DataResult<AttributionSourceRow[]>> {
+  async getAttributionSources(studioId, from, to, model): Promise<DataResult<AttributionSourceRow[]>> {
     const { data, error } = await getClient().rpc("get_attribution_sources", {
+      p_studio_id: studioId,
       p_from: from.toISOString(),
       p_to: to.toISOString(),
       p_model: model,
@@ -324,8 +325,9 @@ const supabaseData: DataProvider = {
     return { data: rows, error: error ? { message: error.message } : null };
   },
 
-  async getMemberAttribution(profileId): Promise<DataResult<MemberAttribution>> {
+  async getMemberAttribution(studioId, profileId): Promise<DataResult<MemberAttribution>> {
     const { data, error } = await getClient().rpc("get_member_attribution", {
+      p_studio_id: studioId,
       p_profile_id: profileId,
     } as never);
     const rows = (data as MemberAttribution[] | null) ?? [];

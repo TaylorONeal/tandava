@@ -289,8 +289,12 @@ GRANT EXECUTE ON FUNCTION has_consent(UUID, UUID, TEXT) TO service_role;
 -- ===========================================================================
 -- Owner reports
 -- ===========================================================================
+-- Takes the studio the manage UI is showing (p_studio_id). Without it the
+-- function would pick a studio on its own, which for multi-studio staff can
+-- differ from the one on screen. Drop the old three-argument form.
+DROP FUNCTION IF EXISTS get_attribution_sources(TIMESTAMPTZ, TIMESTAMPTZ, TEXT);
 CREATE OR REPLACE FUNCTION get_attribution_sources(
-  p_from TIMESTAMPTZ, p_to TIMESTAMPTZ, p_model TEXT DEFAULT 'first'
+  p_from TIMESTAMPTZ, p_to TIMESTAMPTZ, p_model TEXT DEFAULT 'first', p_studio_id UUID DEFAULT NULL
 )
 RETURNS TABLE (
   channel TEXT, utm_source TEXT, utm_campaign TEXT,
@@ -302,9 +306,11 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
   WITH my AS (
+    -- Only a studio the caller is an active owner/admin of; nothing otherwise.
     SELECT ss.studio_id FROM studio_staff ss
     WHERE ss.profile_id = auth.uid() AND ss.is_active = TRUE
       AND ss.role IN ('owner', 'admin')
+      AND (p_studio_id IS NULL OR ss.studio_id = p_studio_id)
     ORDER BY ss.created_at ASC LIMIT 1
   ),
   sess AS (
@@ -352,10 +358,11 @@ AS $$
   LEFT JOIN people USING (channel, utm_source, utm_campaign)
   ORDER BY COALESCE(conv.revenue_cents, 0) DESC, COALESCE(sess.sessions, 0) DESC;
 $$;
-REVOKE ALL ON FUNCTION get_attribution_sources(TIMESTAMPTZ, TIMESTAMPTZ, TEXT) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION get_attribution_sources(TIMESTAMPTZ, TIMESTAMPTZ, TEXT) TO authenticated;
+REVOKE ALL ON FUNCTION get_attribution_sources(TIMESTAMPTZ, TIMESTAMPTZ, TEXT, UUID) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION get_attribution_sources(TIMESTAMPTZ, TIMESTAMPTZ, TEXT, UUID) TO authenticated;
 
-CREATE OR REPLACE FUNCTION get_member_attribution(p_profile_id UUID)
+DROP FUNCTION IF EXISTS get_member_attribution(UUID);
+CREATE OR REPLACE FUNCTION get_member_attribution(p_profile_id UUID, p_studio_id UUID DEFAULT NULL)
 RETURNS TABLE (
   source TEXT, acquired_at TIMESTAMPTZ, first_touch JSONB,
   conversions JSONB
@@ -368,6 +375,7 @@ AS $$
   WITH my AS (
     SELECT ss.studio_id FROM studio_staff ss
     WHERE ss.profile_id = auth.uid() AND ss.is_active = TRUE
+      AND (p_studio_id IS NULL OR ss.studio_id = p_studio_id)
     ORDER BY ss.created_at ASC LIMIT 1
   )
   SELECT m.source, m.acquired_at, session_touch(m.first_touch_session_id),
@@ -382,8 +390,8 @@ AS $$
   FROM studio_members m JOIN my ON my.studio_id = m.studio_id
   WHERE m.profile_id = p_profile_id;
 $$;
-REVOKE ALL ON FUNCTION get_member_attribution(UUID) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION get_member_attribution(UUID) TO authenticated;
+REVOKE ALL ON FUNCTION get_member_attribution(UUID, UUID) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION get_member_attribution(UUID, UUID) TO authenticated;
 
 -- ===========================================================================
 -- Staff authorization without RLS recursion (PR #72 review)

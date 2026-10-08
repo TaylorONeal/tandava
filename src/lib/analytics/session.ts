@@ -70,17 +70,22 @@ interface StoredSession {
 }
 
 function readSession(slug: string): StoredSession | null {
+  // A write that fell back to memory (quota, privacy mode) is the newest copy,
+  // even when reading storage itself still works.
+  const inMemory = memorySessions.get(slug);
+  if (inMemory) return inMemory;
   try {
     const raw = window.sessionStorage.getItem(SESSION_PREFIX + slug);
     return raw ? (JSON.parse(raw) as StoredSession) : null;
   } catch {
-    return memorySessions.get(slug) ?? null;
+    return null;
   }
 }
 
 function writeSession(slug: string, s: StoredSession) {
   try {
     window.sessionStorage.setItem(SESSION_PREFIX + slug, JSON.stringify(s));
+    memorySessions.delete(slug);
   } catch {
     memorySessions.set(slug, s);
   }

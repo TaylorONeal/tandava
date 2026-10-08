@@ -228,10 +228,10 @@ export interface DataProvider {
   applyMySignupConsent(pending?: { slug: string; granted: boolean; startedAt: string }): Promise<MutationResult>;
 
   /** Owner/admin report: sessions, new people, bookings and revenue by channel + source + campaign. */
-  getAttributionSources(from: Date, to: Date, model: AttributionModel): Promise<DataResult<AttributionSourceRow[]>>;
+  getAttributionSources(studioId: string, from: Date, to: Date, model: AttributionModel): Promise<DataResult<AttributionSourceRow[]>>;
 
   /** How one person found the studio (staff only; null when they are not a member of the caller's studio). */
-  getMemberAttribution(profileId: string): Promise<DataResult<MemberAttribution>>;
+  getMemberAttribution(studioId: string, profileId: string): Promise<DataResult<MemberAttribution>>;
 
   /** The studio's automation switches; null data means no row yet (defaults apply). */
   getAutomationSettings(studioId: string): Promise<DataResult<AutomationSettingsRow>>;

@@ -177,3 +177,30 @@ describe("embed handoff retry before booking", () => {
     expect(window.localStorage.getItem("tandava.vid.relink")).toBeNull();
   });
 });
+
+describe("session storage write failures", () => {
+  it("reads the in-memory session when setItem fails but getItem works", async () => {
+    const ss = memoryStorage();
+    ss.setItem = () => {
+      throw new Error("quota");
+    };
+    vi.stubGlobal("window", {
+      localStorage: memoryStorage(),
+      sessionStorage: ss,
+      location: { href: "https://app.example.com/s/oxatl" },
+    });
+    vi.stubGlobal("document", { referrer: "" });
+    vi.stubGlobal("navigator", { userAgent: "test" });
+    const { api } = await import("@/lib/backend");
+    const invoke = vi.mocked(api.invoke);
+    invoke.mockReset();
+    invoke.mockResolvedValue({ data: { sessionId: "44444444-4444-4444-8444-444444444444" }, error: null } as never);
+    const s = await import("./session");
+    await s.trackVisit("oxatl", "storefront" as never);
+    expect(s.currentSessionId("oxatl")).toBe("44444444-4444-4444-8444-444444444444");
+    await s.trackVisit("oxatl", "storefront" as never);
+    // Same visit: the second page view reuses the token instead of starting a new session.
+    const tokens = invoke.mock.calls.map((c) => (c[1] as { sessionToken: string }).sessionToken);
+    expect(new Set(tokens).size).toBe(1);
+  });
+});

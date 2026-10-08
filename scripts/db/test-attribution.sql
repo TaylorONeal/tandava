@@ -390,5 +390,25 @@ BEGIN
   IF r.occurred_at > NOW() - interval '47 hours' THEN RAISE EXCEPTION 'retry moved the conversion to %', r.occurred_at; END IF;
 END $$;
 
+-- 21. Reports follow the studio the UI asks for: an owner gets their studio's
+--     rows, and a studio they don't manage returns nothing.
+DO $$
+DECLARE n BIGINT;
+BEGIN
+  INSERT INTO studios (id, name, slug, timezone, currency, discoverable)
+  VALUES ('00000000-0000-0000-0000-00000000005b', 'Other Studio', 'other', 'UTC', 'EUR', TRUE);
+  PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000a1', true);
+  SELECT count(*) INTO n FROM get_attribution_sources(NOW() - interval '60 days', NOW() + interval '1 day', 'first',
+    '00000000-0000-0000-0000-00000000005a');
+  IF n = 0 THEN RAISE EXCEPTION 'owner got no rows for their own studio'; END IF;
+  SELECT count(*) INTO n FROM get_attribution_sources(NOW() - interval '60 days', NOW() + interval '1 day', 'first',
+    '00000000-0000-0000-0000-00000000005b');
+  IF n <> 0 THEN RAISE EXCEPTION 'report returned rows for a studio the caller does not manage'; END IF;
+  IF EXISTS (SELECT 1 FROM get_member_attribution('00000000-0000-0000-0000-0000000000b1', '00000000-0000-0000-0000-00000000005b'))
+    THEN RAISE EXCEPTION 'member attribution leaked across studios'; END IF;
+  IF NOT EXISTS (SELECT 1 FROM get_member_attribution('00000000-0000-0000-0000-0000000000b1', '00000000-0000-0000-0000-00000000005a'))
+    THEN RAISE EXCEPTION 'member attribution missing for the selected studio'; END IF;
+END $$;
+
 SELECT 'attribution tests passed' AS result;
 ROLLBACK;

@@ -2869,11 +2869,11 @@ export interface Database {
         Returns: undefined;
       };
       get_attribution_sources: {
-        Args: { p_from: string; p_to: string; p_model: string };
+        Args: { p_from: string; p_to: string; p_model?: string; p_studio_id?: string };
         Returns: import("./attribution").AttributionSourceRow[];
       };
       get_member_attribution: {
-        Args: { p_profile_id: string };
+        Args: { p_profile_id: string; p_studio_id?: string };
         Returns: import("./attribution").MemberAttribution[];
       };
     };

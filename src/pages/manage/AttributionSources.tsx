@@ -38,7 +38,7 @@ export default function AttributionSources() {
   const [model, setModel] = useState<AttributionModel>("first");
   const [open, setOpen] = useState<string | null>(null);
   const { data: studio } = useMyStudio();
-  const query = useAttributionSources(days, model);
+  const query = useAttributionSources(studio?.studio_id, days, model);
   const rows = live ? (query.data ?? []) : SAMPLE_ROWS;
   const { totals, channels } = summariseSources(rows);
   const currency = studio?.currency ?? "USD";
