@@ -395,3 +395,41 @@ describe("sessionStorage reads work but removes fail", () => {
     expect(s.currentSessionId("oxatl")).toBe("66666666-6666-4666-8666-666666666666");
   });
 });
+
+describe("expired session before booking", () => {
+  it("captureSettled starts a new visit when the stored one timed out", async () => {
+    vi.stubGlobal("window", {
+      localStorage: memoryStorage(),
+      sessionStorage: memoryStorage(),
+      location: { href: "https://app.example.com/s/oxatl" },
+    });
+    vi.stubGlobal("document", { referrer: "" });
+    vi.stubGlobal("navigator", { userAgent: "test" });
+    const { api } = await import("@/lib/backend");
+    const invoke = vi.mocked(api.invoke);
+    invoke.mockReset();
+    invoke.mockResolvedValue({ data: { sessionId: "55555555-5555-4555-8555-555555555555" }, error: null } as never);
+    const s = await import("./session");
+    await s.trackVisit("oxatl", "storefront" as never);
+    const key = "tandava.sess.oxatl";
+    const stored = JSON.parse(window.sessionStorage.getItem(key)!);
+    window.sessionStorage.setItem(key, JSON.stringify({ ...stored, last: Date.now() - 31 * 60_000 }));
+    invoke.mockResolvedValue({ data: { sessionId: "66666666-6666-4666-8666-666666666666" }, error: null } as never);
+    await s.captureSettled("oxatl");
+    expect(s.currentSessionId("oxatl")).toBe("66666666-6666-4666-8666-666666666666");
+  });
+});
+
+describe("signed-out cold load", () => {
+  it("rotates an id still owned by the previous account, but not a plain anonymous one", async () => {
+    const s = await import("./session");
+    const anon = s.getVisitorId();
+    s.forgetVisitorIfOwned();
+    expect(s.getVisitorId()).toBe(anon);
+    s.claimVisitorFor("user-a");
+    const owned = s.getVisitorId();
+    s.forgetVisitorIfOwned();
+    expect(s.getVisitorId()).not.toBe(owned);
+    expect(window.localStorage.getItem("tandava.vid.owner")).toBeNull();
+  });
+});

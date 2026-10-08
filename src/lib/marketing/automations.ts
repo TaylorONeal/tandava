@@ -112,6 +112,14 @@ function sent(f: PersonFacts, key: AutomationKey, step: number, episode: string)
   return own(f).some((s) => !s.pending && s.key === key && s.step === step && s.episode === episode);
 }
 
+/** Minimum gap between a sequence's first email and its intro offer. */
+const STEP_GAP = 2 * DAY;
+
+/** When this studio's delivered send for that step and episode went out. */
+function sentAtOf(f: PersonFacts, key: AutomationKey, step: number, episode: string): string | null {
+  return own(f).find((s) => !s.pending && s.key === key && s.step === step && s.episode === episode)?.sentAt ?? null;
+}
+
 /** True when this automation step went out to the person in the last `days`, any episode. */
 function sentWithin(f: PersonFacts, key: AutomationKey, step: number, days: number, now: Date): boolean {
   return own(f).some(
@@ -152,9 +160,11 @@ export function dueStep(f: PersonFacts, key: AutomationKey, now: Date, settings:
         .filter((x) => x.key === key && x.step === 0 && !x.pending)
         .sort((a, b) => b.sentAt.localeCompare(a.sentAt))[0];
       if (lastStep0 && !introOfferSent(f) && !sent(f, key, 1, lastStep0.episode)) {
-        // Same timing as before, counted from that episode's booking date.
+        // Same window as before, counted from that episode's booking date,
+        // and never sooner than two days after step 0 actually went out (it
+        // can be delayed by consent, quiet hours or the daily cap).
         const episodeAge = since(`${lastStep0.episode}T00:00:00Z`, now);
-        if (episodeAge >= 3 * DAY && episodeAge < 14 * DAY)
+        if (episodeAge >= 3 * DAY && episodeAge < 14 * DAY && since(lastStep0.sentAt, now) >= STEP_GAP)
           return { key, step: 1, episode: lastStep0.episode, template: "automation_guest_intro_offer" };
       }
       return null;
@@ -174,6 +184,7 @@ export function dueStep(f: PersonFacts, key: AutomationKey, now: Date, settings:
         age >= 3 * DAY &&
         age < 14 * DAY &&
         sent(f, key, 0, episode) &&
+        since(sentAtOf(f, key, 0, episode), now) >= STEP_GAP &&
         !introOfferSent(f)
       )
         return { key, step: 1, episode, template: "automation_first_visit_intro_offer" };

@@ -34,7 +34,10 @@ describe("guards", () => {
       ...base,
       isGuest: true,
       guestBookingAt: daysAgo(5),
-      sends: [{ key: "guest_to_member" as const, step: 0, episode: daysAgo(5).slice(0, 10), sentAt: daysAgo(0, 5) }],
+      sends: [
+        { key: "guest_to_member" as const, step: 0, episode: daysAgo(5).slice(0, 10), sentAt: daysAgo(3) },
+        { key: "lapsed" as const, step: 0, episode: "x", sentAt: daysAgo(0, 5) },
+      ],
     };
     expect(decideNext(f, NOW, TZ)).toEqual({ skip: "daily_cap" });
   });
@@ -47,6 +50,23 @@ describe("guards", () => {
     const later = new Date(NOW.getTime() + 86400_000);
     const g = { ...f, guestBookingAt: daysAgo(4) };
     expect(decideNext(g, later, TZ)).toMatchObject({ decision: { key: "guest_to_member", step: 0 } });
+  });
+  it("the intro offer waits two days after a late step 0", () => {
+    const episode = daysAgo(7).slice(0, 10);
+    // Booked a week ago, but step 0 only went out a day ago (delayed).
+    const late = { key: "guest_to_member" as const, step: 0, episode, sentAt: daysAgo(1) };
+    const f = { ...base, isGuest: true, guestBookingAt: daysAgo(7), sends: [late] };
+    expect(decideNext(f, NOW, TZ)).toEqual({ skip: "nothing_due" });
+    const later = new Date(NOW.getTime() + 86400_000 + 3600_000);
+    expect(decideNext(f, later, TZ)).toMatchObject({ decision: { key: "guest_to_member", step: 1 } });
+  });
+  it("first-visit intro offer waits two days after a late welcome", () => {
+    const episode = daysAgo(6).slice(0, 10);
+    const f = {
+      ...base, firstCheckInAt: daysAgo(6), visitCount: 1, bookingCount: 1,
+      sends: [{ key: "first_visit" as const, step: 0, episode, sentAt: daysAgo(1) }],
+    };
+    expect(decideNext(f, NOW, TZ)).toEqual({ skip: "nothing_due" });
   });
   it("nothing due for someone with no activity", () => {
     expect(decideNext(base, NOW, TZ)).toEqual({ skip: "nothing_due" });

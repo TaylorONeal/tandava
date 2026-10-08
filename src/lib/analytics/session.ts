@@ -240,7 +240,9 @@ export async function captureSettled(slug?: string, ms = 2000): Promise<void> {
     // No server id yet, or no session at all (an account switch in another
     // tab cleared it while this page stayed open): capture again.
     const stored = readSession(slug);
-    if (!stored || !stored.id) {
+    // Also when the stored session timed out while the page sat open: it
+    // must not be sent as the converting touch.
+    if (!stored || !stored.id || Date.now() - stored.last > SESSION_TTL_MS) {
       const args = lastCapture.get(slug)!;
       void trackVisit(slug, args.surface, args.opts);
     }
@@ -539,6 +541,16 @@ export async function applyOAuthSignupConsent(userId: string, nonce?: string | n
  * sessions, so browsing after sign-out is not added to the signed-out
  * person's journey (and the next person starts clean).
  */
+/**
+ * A load that starts signed out while this browser's id still belongs to a
+ * signed-in person (their session expired or was cleared while the tab was
+ * closed): rotate, so anonymous visits don't join their journey. A plain
+ * anonymous browser (no owner recorded) keeps its id across reloads.
+ */
+export function forgetVisitorIfOwned() {
+  if (lsGet(OWNER_KEY)) forgetVisitor();
+}
+
 export function forgetVisitor() {
   linkUser = null;
   inFlight.clear(); // a pending capture belongs to the previous visitor id
