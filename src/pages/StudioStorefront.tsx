@@ -39,6 +39,11 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
   const slug = slugProp ?? params.slug;
   const { data: storefront, isLoading, isError } = useStudioStorefront(slug);
   const { data: schedule } = usePublicSchedule(slug);
+  // Sign-ups from this page come back here and carry the studio, so the
+  // marketing choice on the form is recorded for this studio (PRD-027).
+  const studioHome = slug ? `/s/${encodeURIComponent(slug)}` : "/";
+  const registerHref = slug ? `/auth/register?next=${encodeURIComponent(studioHome)}` : "/auth/register";
+  const loginHref = slug ? `/auth/login?next=${encodeURIComponent(studioHome)}` : "/auth/login";
 
   // First-party visit capture (PRD-024): which link, post or site sent them here.
   useEffect(() => {
@@ -85,7 +90,7 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
   const upcoming = (schedule ?? []).slice(0, 6);
 
   return (
-    <Shell studioName={studio.name} accent={accent}>
+    <Shell studioName={studio.name} accent={accent} registerHref={registerHref} loginHref={loginHref}>
       <SEOHead
         title={`${studio.name} — Classes & Membership`}
         description={studio.description ?? `Book classes and memberships at ${studio.name}.`}
@@ -103,7 +108,7 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
         )}
         <div className="mt-6 flex flex-wrap gap-3">
           <Button asChild size="lg" style={accent ? { backgroundColor: accent } : undefined}>
-            <Link to="/auth/register">Sign up to book<ArrowRight className="ms-2 h-4 w-4" /></Link>
+            <Link to={registerHref}>Sign up to book<ArrowRight className="ms-2 h-4 w-4" /></Link>
           </Button>
           <Button asChild variant="outline" size="lg">
             <Link to="/auth/login">Sign in</Link>
@@ -202,7 +207,7 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
                     {m.classes_per_cycle == null ? "Unlimited classes" : `${m.classes_per_cycle} classes / cycle`}
                   </p>
                   <Button asChild size="sm" className="mt-3 w-full" style={accent ? { backgroundColor: accent } : undefined}>
-                    <Link to="/auth/register">Get started</Link>
+                    <Link to={registerHref}>Get started</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -216,7 +221,7 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
                     {p.class_count} classes · valid {p.validity_days} days
                   </p>
                   <Button asChild variant="outline" size="sm" className="mt-3 w-full">
-                    <Link to="/auth/register">Buy pack</Link>
+                    <Link to={registerHref}>Buy pack</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -232,7 +237,19 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
   );
 }
 
-function Shell({ children, studioName, accent }: { children: React.ReactNode; studioName?: string; accent?: string }) {
+function Shell({
+  children,
+  studioName,
+  accent,
+  registerHref = "/auth/register",
+  loginHref = "/auth/login",
+}: {
+  children: React.ReactNode;
+  studioName?: string;
+  accent?: string;
+  registerHref?: string;
+  loginHref?: string;
+}) {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border">
@@ -247,9 +264,9 @@ function Shell({ children, studioName, accent }: { children: React.ReactNode; st
             <span className="font-semibold tracking-tight">{studioName ?? "Tandava"}</span>
           </Link>
           <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm"><Link to="/auth/login">Sign in</Link></Button>
+            <Button asChild variant="ghost" size="sm"><Link to={loginHref}>Sign in</Link></Button>
             <Button asChild size="sm" style={accent ? { backgroundColor: accent } : undefined}>
-              <Link to="/auth/register">Sign up</Link>
+              <Link to={registerHref}>Sign up</Link>
             </Button>
           </div>
         </div>

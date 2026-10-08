@@ -181,5 +181,39 @@ BEGIN
   END;
 END $$;
 
+-- 10. A browser id belongs to the first person linked to it; a second person
+--     signing in on the same browser gets no share of its history.
+DO $$
+DECLARE v UUID := gen_random_uuid(); c UUID; r RECORD;
+BEGIN
+  PERFORM record_session('aloha', v, 'shared-1', 'storefront', 'https://x/s/aloha?utm_source=instagram', NULL,
+    '{"source":"instagram"}'::jsonb, '{}'::jsonb, 'organic_social', 'desktop');
+  PERFORM link_visitor('00000000-0000-0000-0000-0000000000e1', v, 'sign_in');
+  PERFORM link_visitor('00000000-0000-0000-0000-0000000000e2', v, 'sign_in');
+  IF EXISTS (SELECT 1 FROM profile_visitors WHERE visitor_id = v AND profile_id = '00000000-0000-0000-0000-0000000000e2')
+    THEN RAISE EXCEPTION 'second person linked to a claimed browser'; END IF;
+  c := record_conversion('00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000e2', v,
+    'member_booking', 0, 'USD', 'booking', gen_random_uuid(), NULL, 'signup');
+  SELECT * INTO r FROM conversion_events WHERE id = c;
+  IF r.first_touch_session_id IS NOT NULL OR r.touch_count <> 0
+    THEN RAISE EXCEPTION 'second person inherited the first person''s journey: %', r.first_touch; END IF;
+END $$;
+
+-- 11. Acquisition dates: new members default to their creation time; imports
+--     are not counted as newly acquired people.
+DO $$
+DECLARE n BIGINT;
+BEGIN
+  INSERT INTO studio_members (studio_id, profile_id, source) VALUES
+    ('00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000e1', 'import');
+  IF (SELECT acquired_at FROM studio_members WHERE profile_id = '00000000-0000-0000-0000-0000000000e1'
+        AND studio_id = '00000000-0000-0000-0000-00000000005a') IS NULL
+    THEN RAISE EXCEPTION 'acquired_at has no default'; END IF;
+  PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000a1', true);
+  SELECT COALESCE(sum(new_people), 0) INTO n FROM get_attribution_sources(NOW() - interval '1 day', NOW() + interval '1 day', 'first');
+  -- Only Ana (express guest, fixture) is a new person; the import is not.
+  IF n <> 1 THEN RAISE EXCEPTION 'new people should be 1 (import excluded), got %', n; END IF;
+END $$;
+
 SELECT 'attribution tests passed' AS result;
 ROLLBACK;

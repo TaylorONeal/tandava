@@ -53,22 +53,24 @@ serve(async (req) => {
   try {
     switch (event.type) {
       case "checkout.session.completed": {
-        // Stripe redelivers events. Claim the event id first; a replay finds
-        // it and stops, so transactions, memberships, packs and conversions
-        // are written once. (Handler errors are already swallowed below, so
-        // claiming before handling loses no retry that would have happened.)
-        const { error: claimError } = await supabase
-          .from("stripe_webhook_events")
-          .insert({ event_id: event.id, event_type: event.type });
-        if (claimError) {
-          if (claimError.code === "23505") {
-            console.log(`[stripe-webhook] ${event.id} already processed; skipping`);
-            break;
-          }
-          // Table missing or another failure: process anyway rather than drop a payment.
-          console.error("[stripe-webhook] could not claim event:", claimError.message);
+        // Stripe redelivers events. Fulfil each checkout once: claim the event
+        // (processing), fulfil, mark completed. See migration 00025.
+        const claim = await claimEvent(event);
+        if (claim === "done") {
+          console.log(`[stripe-webhook] ${event.id} already fulfilled; skipping`);
+          break;
+        }
+        if (claim === "busy") {
+          // Another delivery is fulfilling it right now; let Stripe retry later.
+          return new Response("Event in progress", { status: 503 });
         }
         await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+        if (claim === "claimed") {
+          await supabase
+            .from("stripe_webhook_events")
+            .update({ status: "completed", completed_at: new Date().toISOString() })
+            .eq("event_id", event.id);
+        }
         break;
       }
 
@@ -98,6 +100,47 @@ serve(async (req) => {
     headers: { "Content-Type": "application/json" },
   });
 });
+
+// ---------------------------------------------------------------------------
+// Idempotency
+// ---------------------------------------------------------------------------
+
+const STALE_CLAIM_MS = 10 * 60 * 1000;
+
+/**
+ * claimed: this delivery owns the event. done: already fulfilled.
+ * busy: another delivery claimed it under 10 minutes ago.
+ * untracked: the ledger is unavailable; fulfil anyway rather than drop a payment.
+ * A claim older than 10 minutes that never completed (the function was killed
+ * mid-fulfilment) is taken over, so a paid checkout is never stranded.
+ */
+async function claimEvent(event: Stripe.Event): Promise<"claimed" | "done" | "busy" | "untracked"> {
+  const { error } = await supabase
+    .from("stripe_webhook_events")
+    .insert({ event_id: event.id, event_type: event.type, status: "processing" });
+  if (!error) return "claimed";
+  if (error.code !== "23505") {
+    console.error("[stripe-webhook] could not claim event:", error.message);
+    return "untracked";
+  }
+  const { data: row } = await supabase
+    .from("stripe_webhook_events")
+    .select("status, received_at")
+    .eq("event_id", event.id)
+    .maybeSingle();
+  if (row?.status === "completed") return "done";
+  const age = row?.received_at ? Date.now() - new Date(row.received_at).getTime() : Infinity;
+  if (age < STALE_CLAIM_MS) return "busy";
+  // Take over a stale claim, guarded on the old timestamp so only one retry wins.
+  const { data: taken } = await supabase
+    .from("stripe_webhook_events")
+    .update({ received_at: new Date().toISOString() })
+    .eq("event_id", event.id)
+    .eq("status", "processing")
+    .eq("received_at", row?.received_at ?? "")
+    .select("event_id");
+  return taken?.length ? "claimed" : "busy";
+}
 
 // ---------------------------------------------------------------------------
 // Event handlers
@@ -140,9 +183,13 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       });
       if (bookingError) console.error("Failed to create booking:", bookingError);
       const booking = Array.isArray(bookingRow) ? bookingRow[0] : bookingRow;
+      // Only a confirmed seat is a booking. A payment that ended on the
+      // waitlist (the class filled during Checkout) or failed to book still
+      // counts as money in, under its own type, so booking rates stay honest.
+      const confirmed = !bookingError && booking && booking.status === "confirmed";
       await recordPurchaseConversion(
         metadata,
-        metadata.express === "1" ? "guest_booking" : "member_booking",
+        confirmed ? (metadata.express === "1" ? "guest_booking" : "member_booking") : "drop_in_payment",
         "transaction",
         txn.id,
         session.amount_total,

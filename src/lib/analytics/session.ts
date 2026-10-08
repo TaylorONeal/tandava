@@ -127,8 +127,39 @@ const linkedInMemory = new Set<string>();
  * session, so the visits they made before signing in count toward their
  * journey. Safe to call on every auth event.
  */
+const OWNER_KEY = "tandava.vid.owner";
+
+/**
+ * A browser id belongs to one person. When a different account signs in on
+ * this browser (a shared laptop, a front desk), start a fresh visitor id and
+ * drop the current sessions, so the next person's visits are not added to
+ * the previous person's journey. The server enforces the same rule.
+ */
+export function claimVisitorFor(userId: string) {
+  try {
+    const owner = window.localStorage.getItem(OWNER_KEY);
+    if (owner && owner !== userId) {
+      window.localStorage.setItem(VISITOR_KEY, randomId());
+      for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
+        const k = window.sessionStorage.key(i);
+        if (k?.startsWith(SESSION_PREFIX)) window.sessionStorage.removeItem(k);
+      }
+    }
+    window.localStorage.setItem(OWNER_KEY, userId);
+  } catch {
+    if (memoryOwner && memoryOwner !== userId) {
+      memoryVisitor = randomId();
+      memorySessions.clear();
+    }
+    memoryOwner = userId;
+  }
+}
+
+let memoryOwner: string | null = null;
+
 export async function linkVisitorOnce(userId: string, via = "sign_in") {
   if (typeof window === "undefined" || !userId) return;
+  claimVisitorFor(userId);
   const key = LINKED_PREFIX + userId;
   try {
     if (window.sessionStorage.getItem(key)) return;

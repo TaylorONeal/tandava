@@ -86,6 +86,12 @@ SET search_path = public
 AS $$
 BEGIN
   IF p_profile_id IS NULL OR p_visitor_id IS NULL THEN RETURN; END IF;
+  -- A browser id belongs to the first person who signed in on it. A shared
+  -- household or front-desk browser must not merge two people's journeys;
+  -- the client also starts a fresh visitor id when the account changes.
+  IF EXISTS (SELECT 1 FROM profile_visitors WHERE visitor_id = p_visitor_id AND profile_id <> p_profile_id) THEN
+    RETURN;
+  END IF;
   INSERT INTO profile_visitors (profile_id, visitor_id, linked_via)
   VALUES (p_profile_id, p_visitor_id, left(COALESCE(p_via, 'unknown'), 32))
   ON CONFLICT (profile_id, visitor_id) DO NOTHING;
@@ -169,6 +175,8 @@ BEGIN
     SELECT visitor_id FROM profile_visitors WHERE profile_id = p_profile_id
     UNION
     SELECT p_visitor_id WHERE p_visitor_id IS NOT NULL
+      AND NOT EXISTS (SELECT 1 FROM profile_visitors pv
+                      WHERE pv.visitor_id = p_visitor_id AND pv.profile_id IS DISTINCT FROM p_profile_id)
   ), journey AS (
     SELECT s.id, s.started_at FROM analytics_sessions s
     WHERE s.visitor_id IN (SELECT visitor_id FROM visitors)
@@ -300,6 +308,7 @@ AS $$
     JOIN my ON my.studio_id = m.studio_id
     LEFT JOIN analytics_sessions s ON s.id = m.first_touch_session_id
     WHERE m.acquired_at >= p_from AND m.acquired_at < p_to
+      AND m.source IS DISTINCT FROM 'import'   -- moved over from another system, not acquired
     GROUP BY 1, 2, 3
   )
   SELECT k.channel, NULLIF(k.utm_source, ''), NULLIF(k.utm_campaign, ''),
@@ -531,12 +540,27 @@ GRANT EXECUTE ON FUNCTION apply_my_signup_consent() TO authenticated;
 -- Stripe webhook idempotency (PR #72 review)
 -- ===========================================================================
 -- Stripe redelivers events. The webhook claims each checkout event id here
--- before doing anything; a replay finds the row and stops, so transactions,
--- memberships, packs and conversions are written once.
+-- (processing), fulfils, then marks it completed. A redelivery of a completed
+-- event stops; one still processing within 10 minutes gets a 503 so Stripe
+-- retries later; an older processing claim (the function died) is taken over
+-- and fulfilled again.
 CREATE TABLE IF NOT EXISTS stripe_webhook_events (
   event_id TEXT PRIMARY KEY,
   event_type TEXT NOT NULL,
-  received_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  -- processing: claimed, fulfilment under way (or the function died mid-way);
+  -- completed: fulfilled. Only completed events are skipped on redelivery.
+  status TEXT NOT NULL DEFAULT 'processing' CHECK (status IN ('processing', 'completed')),
+  received_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  completed_at TIMESTAMPTZ
 );
 ALTER TABLE stripe_webhook_events ENABLE ROW LEVEL SECURITY;
 -- No policies: service role only.
+
+-- ===========================================================================
+-- Acquisition dates (PR #72 review)
+-- ===========================================================================
+-- Existing members keep the date they joined; without this the first booking
+-- after deploy would stamp them as acquired today. New rows default to their
+-- creation time; record_conversion() only fills a still-null value.
+UPDATE studio_members SET acquired_at = created_at WHERE acquired_at IS NULL;
+ALTER TABLE studio_members ALTER COLUMN acquired_at SET DEFAULT NOW();
