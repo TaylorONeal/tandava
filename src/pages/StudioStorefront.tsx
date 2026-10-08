@@ -148,14 +148,18 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
                   <CardContent className="p-3 sm:p-4 flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <p className="font-medium text-sm truncate">{c.offering_name}</p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {/* Studio time with the zone named, never the viewer's
-                            device clock (a Hawaii class viewed from Austin was
-                            showing Austin times). */}
+                      {/* Studio time with the zone named, never the viewer's
+                          device clock (a Hawaii class viewed from Austin was
+                          showing Austin times). The visitor's own time shows
+                          underneath when it differs. */}
+                      <p className="text-xs text-muted-foreground">
                         <ClassTime compact startsAt={c.starts_at} endsAt={c.ends_at} studioTimeZone={c.studio_timezone} />
-                        {c.teacher_name ? ` · ${c.teacher_name}` : ""}
-                        {c.location_name ? ` · ${c.location_name}` : ""}
                       </p>
+                      {(c.teacher_name || c.location_name) && (
+                        <p className="text-xs text-muted-foreground truncate">
+                          {[c.teacher_name, c.location_name].filter(Boolean).join(" · ")}
+                        </p>
+                      )}
                     </div>
                     {/* Express Booking (PRD-020): straight to a one-step form,
                         not to registration. Asking a first-time visitor to make

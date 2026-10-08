@@ -315,7 +315,7 @@ export default function ExpressBooking() {
 
   if (!row) return null;
 
-  const calendarEvent = toCalendarEvent(row, occurrenceId ?? row.occurrence_id);
+  const calendarEvent = toCalendarEvent(row, occurrenceId ?? row.occurrence_id, signedIn);
   const price = row.drop_in_price_cents;
   const result = expressBook.data;
 
@@ -737,7 +737,7 @@ function SaveAccountCard({
 }
 
 /** Calendar event for this class from the public row (address, studio zone, policy). */
-function toCalendarEvent(row: PublicOccurrenceRow, occurrenceId: string): ClassEventInput {
+function toCalendarEvent(row: PublicOccurrenceRow, occurrenceId: string, signedIn: boolean): ClassEventInput {
   const origin = typeof window === "undefined" ? "" : window.location.origin;
   return {
     occurrenceId,
@@ -758,7 +758,11 @@ function toCalendarEvent(row: PublicOccurrenceRow, occurrenceId: string): ClassE
     latitude: row.location_latitude ?? null,
     longitude: row.location_longitude ?? null,
     cancellationMinutes: row.cancellation_minutes ?? null,
-    manageUrl: origin ? `${origin}/s/${encodeURIComponent(row.studio_slug)}` : null,
+    // Only a page that can actually show or cancel the booking is a "manage"
+    // link. Guests get the studio page as plain info until the signed guest
+    // manage link (PRD-020) exists.
+    manageUrl: signedIn && origin ? `${origin}/my-schedule` : null,
+    studioUrl: origin ? `${origin}/s/${encodeURIComponent(row.studio_slug)}` : null,
   };
 }
 

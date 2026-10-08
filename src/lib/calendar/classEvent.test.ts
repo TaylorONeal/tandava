@@ -106,6 +106,17 @@ describe("ics", () => {
   });
 });
 
+describe("manage link", () => {
+  it("never labels the studio page as a cancel link", () => {
+    const guest = eventDescription({ ...hawaii, manageUrl: null, studioUrl: "https://tandavastudio.com/s/aloha" });
+    expect(guest).toContain("Studio: https://tandavastudio.com/s/aloha");
+    expect(guest).not.toContain("View or cancel");
+    expect(buildIcs({ ...hawaii, manageUrl: null, studioUrl: "https://tandavastudio.com/s/aloha" })).toContain(
+      "URL:https://tandavastudio.com/s/aloha",
+    );
+  });
+});
+
 describe("google calendar link", () => {
   it("carries UTC dates, the studio zone, title and location", () => {
     const url = new URL(googleCalendarUrl(hawaii));

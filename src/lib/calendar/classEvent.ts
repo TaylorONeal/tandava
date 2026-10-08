@@ -48,8 +48,14 @@ export interface ClassEventInput {
   longitude?: number | null;
   /** Join link for a livestream (only for the booked person). */
   joinUrl?: string | null;
-  /** Where to view or cancel the booking. */
+  /**
+   * Where the person can view or cancel THIS booking (signed-in members:
+   * /my-schedule; guests: a signed manage link once it exists). Omit when there
+   * is none: a link labelled "cancel" that can't cancel is worse than no link.
+   */
   manageUrl?: string | null;
+  /** The studio's public page, shown as "Studio:" (never as a cancel link). */
+  studioUrl?: string | null;
   /** Free cancellation until this many minutes before start. */
   cancellationMinutes?: number | null;
   /** Domain for UIDs. */
@@ -101,6 +107,7 @@ export function eventDescription(e: ClassEventInput): string {
   }
   if (e.joinUrl) lines.push(`Join: ${e.joinUrl}`);
   if (e.manageUrl) lines.push(`View or cancel: ${e.manageUrl}`);
+  else if (e.studioUrl) lines.push(`Studio: ${e.studioUrl}`);
   lines.push(`Booked with ${e.studioName} on Tandava.`);
   return lines.join("\n");
 }
@@ -159,7 +166,7 @@ export function buildIcs(e: ClassEventInput): string {
   if (e.latitude != null && e.longitude != null && e.delivery !== "virtual") {
     lines.push(`GEO:${e.latitude.toFixed(6)};${e.longitude.toFixed(6)}`);
   }
-  const url = e.joinUrl ?? e.manageUrl;
+  const url = e.joinUrl ?? e.manageUrl ?? e.studioUrl;
   if (url) lines.push(`URL:${url}`);
   lines.push(
     "STATUS:CONFIRMED",

@@ -18,7 +18,7 @@ export function ClassTime({
   endsAt?: string | null;
   studioTimeZone: string;
   delivery?: ClassDelivery;
-  /** One line ("Sat, Oct 10 · 6:00 AM Hawaii time"), viewer note as a tooltip. */
+  /** One line ("Sat, Oct 10 · 6:00 AM Hawaii time"), viewer line below when it differs. */
   compact?: boolean;
   showIcon?: boolean;
 }) {
@@ -35,7 +35,13 @@ export function ClassTime({
   );
 
   if (compact) {
-    return <span title={t.viewerNote ?? undefined}>{t.short}</span>;
+    // The viewer line is visible text, not a tooltip: touch devices can't hover.
+    return (
+      <span>
+        {t.short}
+        {t.viewerNote && <span className="block">{t.viewerNote}</span>}
+      </span>
+    );
   }
 
   return (
