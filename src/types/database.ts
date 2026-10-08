@@ -2861,7 +2861,7 @@ export interface Database {
         Returns: StudioStorefront | null;
       };
       apply_my_signup_consent: {
-        Args: Record<string, never>;
+        Args: { p_studio_slug: string | null; p_granted: boolean | null };
         Returns: boolean;
       };
       link_my_visitor: {

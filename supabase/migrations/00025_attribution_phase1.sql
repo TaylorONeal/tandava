@@ -286,7 +286,7 @@ AS $$
     ORDER BY ss.created_at ASC LIMIT 1
   ),
   sess AS (
-    SELECT COALESCE(s.channel, 'direct') AS channel, COALESCE(s.utm_source, '') AS utm_source,
+    SELECT COALESCE(s.channel, 'direct') AS channel, COALESCE(s.utm_source, s.referrer_domain, '') AS utm_source,
            COALESCE(s.utm_campaign, '') AS utm_campaign, count(*) AS sessions
     FROM analytics_sessions s, my
     WHERE s.studio_id = my.studio_id AND s.started_at >= p_from AND s.started_at < p_to
@@ -295,7 +295,7 @@ AS $$
   conv AS (
     SELECT
       COALESCE(t->>'channel', 'unknown') AS channel,
-      COALESCE(t->>'utm_source', '') AS utm_source,
+      COALESCE(t->>'utm_source', t->>'referrer_domain', '') AS utm_source,
       COALESCE(t->>'utm_campaign', '') AS utm_campaign,
       count(*) FILTER (WHERE c.conversion_type IN ('guest_booking', 'member_booking')) AS bookings,
       count(*) FILTER (WHERE COALESCE(c.value_cents, 0) > 0) AS purchases,
@@ -306,7 +306,7 @@ AS $$
     GROUP BY 1, 2, 3
   ),
   people AS (
-    SELECT COALESCE(s.channel, 'unknown') AS channel, COALESCE(s.utm_source, '') AS utm_source,
+    SELECT COALESCE(s.channel, 'unknown') AS channel, COALESCE(s.utm_source, s.referrer_domain, '') AS utm_source,
            COALESCE(s.utm_campaign, '') AS utm_campaign, count(*) AS new_people
     FROM studio_members m
     JOIN my ON my.studio_id = m.studio_id
@@ -543,7 +543,9 @@ CREATE TRIGGER trg_promoted_booking_conversion
 -- a later change of mind is recorded by the unsubscribe link or a settings
 -- toggle and is never overwritten by this. A sign-up from no studio page
 -- records nothing: consent is to a sender, not to Tandava in general.
-CREATE OR REPLACE FUNCTION apply_my_signup_consent()
+CREATE OR REPLACE FUNCTION apply_my_signup_consent(
+  p_studio_slug TEXT DEFAULT NULL, p_granted BOOLEAN DEFAULT NULL
+)
 RETURNS BOOLEAN
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -551,12 +553,25 @@ SET search_path = public
 AS $$
 DECLARE
   v_meta JSONB;
+  v_slug TEXT;
+  v_granted BOOLEAN;
   v_studio UUID;
 BEGIN
   IF auth.uid() IS NULL THEN RETURN FALSE; END IF;
   SELECT raw_user_meta_data INTO v_meta FROM auth.users WHERE id = auth.uid();
-  IF v_meta IS NULL OR COALESCE(v_meta->>'marketing_consent_studio', '') = '' THEN RETURN FALSE; END IF;
-  SELECT id INTO v_studio FROM studios WHERE slug = v_meta->>'marketing_consent_studio';
+  -- Email sign-ups carry the choice in metadata; OAuth sign-ups (no metadata)
+  -- pass the choice the browser kept across the redirect. Either way it is
+  -- the person's own choice about their own email.
+  IF COALESCE(v_meta->>'marketing_consent_studio', '') <> '' THEN
+    v_slug := v_meta->>'marketing_consent_studio';
+    v_granted := COALESCE((v_meta->>'marketing_consent')::boolean, FALSE);
+  ELSIF p_studio_slug IS NOT NULL AND p_granted IS NOT NULL THEN
+    v_slug := p_studio_slug;
+    v_granted := p_granted;
+  ELSE
+    RETURN FALSE;
+  END IF;
+  SELECT id INTO v_studio FROM studios WHERE slug = v_slug;
   IF v_studio IS NULL THEN RETURN FALSE; END IF;
   IF EXISTS (
     SELECT 1 FROM consent_records
@@ -565,13 +580,12 @@ BEGIN
     RETURN FALSE;
   END IF;
   INSERT INTO consent_records (studio_id, profile_id, purpose, granted, source, policy_version)
-  VALUES (v_studio, auth.uid(), 'email_marketing', COALESCE((v_meta->>'marketing_consent')::boolean, FALSE),
-          'signup_form', '2026-10');
+  VALUES (v_studio, auth.uid(), 'email_marketing', v_granted, 'signup_form', '2026-10');
   RETURN TRUE;
 END;
 $$;
-REVOKE ALL ON FUNCTION apply_my_signup_consent() FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION apply_my_signup_consent() TO authenticated;
+REVOKE ALL ON FUNCTION apply_my_signup_consent(TEXT, BOOLEAN) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION apply_my_signup_consent(TEXT, BOOLEAN) TO authenticated;
 
 -- ===========================================================================
 -- Stripe webhook idempotency (PR #72 review)

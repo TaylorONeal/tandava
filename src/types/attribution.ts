@@ -25,7 +25,7 @@ export interface TouchSnapshot {
   utm_source?: string | null;
   utm_medium?: string | null;
   utm_campaign?: string | null;
-  referrer_host?: string | null;
+  referrer_domain?: string | null;
   surface?: string | null;
   started_at?: string | null;
 }

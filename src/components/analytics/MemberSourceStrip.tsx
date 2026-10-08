@@ -28,7 +28,7 @@ const TYPE_LABEL: Record<string, string> = {
 
 function describeTouch(t: TouchSnapshot | null | undefined): string {
   if (!t?.channel) return "Before tracking started";
-  const detail = [t.utm_source ?? t.referrer_host, t.utm_campaign].filter(Boolean).join(" · ");
+  const detail = [t.utm_source ?? t.referrer_domain, t.utm_campaign].filter(Boolean).join(" · ");
   return detail ? `${channelLabel(t.channel)} (${detail})` : channelLabel(t.channel);
 }
 

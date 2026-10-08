@@ -217,8 +217,12 @@ export interface DataProvider {
    */
   linkMyVisitor(visitorId: string, via: string): Promise<MutationResult>;
 
-  /** Record the sign-up marketing choice for the studio the person signed up from, once (migration 00025). */
-  applyMySignupConsent(): Promise<MutationResult>;
+  /**
+   * Record the sign-up marketing choice for the studio the person signed up
+   * from, once (migration 00025). Email sign-ups carry it in auth metadata;
+   * OAuth sign-ups pass the choice kept in the browser across the redirect.
+   */
+  applyMySignupConsent(slug?: string, granted?: boolean): Promise<MutationResult>;
 
   /** Owner/admin report: sessions, new people, bookings and revenue by channel + source + campaign. */
   getAttributionSources(from: Date, to: Date, model: AttributionModel): Promise<DataResult<AttributionSourceRow[]>>;

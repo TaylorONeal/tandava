@@ -11,6 +11,7 @@ import { Eye, EyeOff, Mail, Lock, User, ArrowRight, CheckCircle2, Sparkles, Mail
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { safeNextPath, studioSlugFromPath } from "@/lib/auth/next";
+import { rememberSignupConsent } from "@/lib/analytics/session";
 
 type RegistrationStep = "info" | "complete";
 
@@ -213,6 +214,9 @@ const Register = () => {
       return;
     }
 
+    // OAuth carries no sign-up metadata: keep the marketing choice in this
+    // browser and apply it for this studio after the redirect signs them in.
+    rememberSignupConsent(studioSlugFromPath(next), formData.marketingConsent);
     const { error } = await signInWithGoogle(next);
     if (error) {
       toast({

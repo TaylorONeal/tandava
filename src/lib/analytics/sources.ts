@@ -104,7 +104,7 @@ export function lastDays(days: number, now: Date = new Date()): { from: Date; to
   return { from: new Date(now.getTime() - days * 86_400_000), to: now };
 }
 
-/** Plain words for a source/campaign row: "instagram · fall_intro", or a fallback. */
+/** Plain words for a source/campaign row: "instagram · fall_intro" (source falls back to the referring site), or a fallback. */
 export function sourceLine(r: Pick<AttributionSourceRow, "utm_source" | "utm_campaign">): string {
   const parts = [r.utm_source, r.utm_campaign].filter(Boolean);
   return parts.length ? parts.join(" · ") : "No campaign tags";

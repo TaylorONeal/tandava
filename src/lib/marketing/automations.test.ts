@@ -78,6 +78,26 @@ describe("guest to member", () => {
   });
 });
 
+describe("one intro offer per person", () => {
+  it("a guest who got the guest intro offer doesn't get the first-visit one too", () => {
+    const f = {
+      ...base,
+      isGuest: true,
+      guestBookingAt: daysAgo(6),
+      firstCheckInAt: daysAgo(4),
+      lastVisitAt: daysAgo(4),
+      visitCount: 1,
+      bookingCount: 1,
+      sends: [
+        { key: "guest_to_member" as const, step: 0, episode: daysAgo(6).slice(0, 10), sentAt: daysAgo(5) },
+        { key: "guest_to_member" as const, step: 1, episode: daysAgo(6).slice(0, 10), sentAt: daysAgo(3) },
+        { key: "first_visit" as const, step: 0, episode: daysAgo(4).slice(0, 10), sentAt: daysAgo(2) },
+      ],
+    };
+    expect(decideNext(f, NOW, TZ)).toEqual({ skip: "nothing_due" });
+  });
+});
+
 describe("first visit", () => {
   const fresh = { ...base, firstCheckInAt: daysAgo(0, 3), lastVisitAt: daysAgo(0, 3), visitCount: 1, bookingCount: 1 };
   it("welcome a few hours after the first check-in", () => {

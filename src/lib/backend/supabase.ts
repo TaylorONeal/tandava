@@ -287,8 +287,11 @@ const supabaseData: DataProvider = {
     return { error: error ? { message: error.message } : null };
   },
 
-  async applyMySignupConsent(): Promise<MutationResult> {
-    const { error } = await getClient().rpc("apply_my_signup_consent" as never);
+  async applyMySignupConsent(slug, granted): Promise<MutationResult> {
+    const { error } = await getClient().rpc("apply_my_signup_consent", {
+      p_studio_slug: slug ?? null,
+      p_granted: granted ?? null,
+    } as never);
     return { error: error ? { message: error.message } : null };
   },
 

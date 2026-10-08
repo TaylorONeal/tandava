@@ -101,6 +101,11 @@ function sentWithin(f: PersonFacts, key: AutomationKey, step: number, days: numb
   );
 }
 
+/** Both sequences end in the same intro offer; a person gets it once. */
+function introOfferSent(f: PersonFacts): boolean {
+  return f.sends.some((s) => (s.key === "guest_to_member" || s.key === "first_visit") && s.step === 1);
+}
+
 function since(iso: string | null | undefined, now: Date): number {
   return iso ? now.getTime() - new Date(iso).getTime() : -Infinity;
 }
@@ -122,7 +127,7 @@ export function dueStep(f: PersonFacts, key: AutomationKey, now: Date, settings:
       const age = since(f.guestBookingAt, now);
       if (age >= 1 * DAY && age < 7 * DAY && !sent(f, key, 0, episode) && !sentWithin(f, key, 0, 30, now))
         return { key, step: 0, episode, template: "automation_guest_save_details" };
-      if (age >= 3 * DAY && age < 14 * DAY && sent(f, key, 0, episode) && !sent(f, key, 1, episode))
+      if (age >= 3 * DAY && age < 14 * DAY && sent(f, key, 0, episode) && !introOfferSent(f))
         return { key, step: 1, episode, template: "automation_guest_intro_offer" };
       return null;
     }
@@ -139,7 +144,7 @@ export function dueStep(f: PersonFacts, key: AutomationKey, now: Date, settings:
         age >= 3 * DAY &&
         age < 14 * DAY &&
         sent(f, key, 0, episode) &&
-        !sent(f, key, 1, episode)
+        !introOfferSent(f)
       )
         return { key, step: 1, episode, template: "automation_first_visit_intro_offer" };
       return null;

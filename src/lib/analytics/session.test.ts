@@ -46,3 +46,14 @@ describe("getVisitorId", () => {
     expect(stored).not.toBe(handoff);
   });
 });
+
+describe("signup consent across OAuth", () => {
+  it("keeps the choice once and only for a studio sign-up", async () => {
+    const { rememberSignupConsent, takeSignupConsent } = await import("./session");
+    rememberSignupConsent(undefined, true);
+    expect(takeSignupConsent()).toBeNull();
+    rememberSignupConsent("aloha", true);
+    expect(takeSignupConsent()).toEqual({ slug: "aloha", granted: true });
+    expect(takeSignupConsent()).toBeNull();
+  });
+});

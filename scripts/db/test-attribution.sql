@@ -168,6 +168,11 @@ BEGIN
 
   PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000e2', true);
   IF apply_my_signup_consent() IS NOT FALSE THEN RAISE EXCEPTION 'consent without a studio should record nothing'; END IF;
+  -- OAuth sign-up: no metadata, the browser passes the kept choice.
+  IF apply_my_signup_consent('aloha', TRUE) IS NOT TRUE THEN RAISE EXCEPTION 'oauth signup consent not applied'; END IF;
+  IF NOT has_consent('00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000e2', 'email_marketing')
+    THEN RAISE EXCEPTION 'oauth signup consent not visible'; END IF;
+  IF apply_my_signup_consent('aloha', TRUE) IS NOT FALSE THEN RAISE EXCEPTION 'oauth consent applied twice'; END IF;
 END $$;
 
 -- 9. Stripe events are claimed once.
