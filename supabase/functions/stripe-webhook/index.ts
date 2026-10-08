@@ -254,7 +254,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
         stripe_payment_intent_id: paymentIntentId,
         membership_id: membership.id,
       });
-      if (txnError) console.error("Failed to record membership transaction:", txnError);
+      if (txnError) {
+        console.error("Failed to record membership transaction:", txnError);
+        return false;
+      }
       await recordPurchaseConversion(metadata, "membership_start", "membership", membership.id, session.amount_total, session.currency, "signup");
       break;
     }
@@ -263,7 +266,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
       const balanceDue = parseInt(metadata.balance_due_cents || "0", 10);
       const paid = session.amount_total ?? 0;
 
-      const { data: txn } = await supabase
+      const { data: txn, error: wsTxnError } = await supabase
         .from("transactions")
         .insert({
           studio_id: metadata.studio_id,
@@ -275,6 +278,11 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
         })
         .select("id")
         .single();
+
+      if (wsTxnError || !txn) {
+        console.error("Failed to record workshop transaction:", wsTxnError);
+        return false;
+      }
 
       const { error: regErr } = await supabase.from("event_registrations").insert({
         event_id: metadata.event_id,
@@ -346,7 +354,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
         stripe_payment_intent_id: paymentIntentId,
         class_pack_id: pack.id,
       });
-      if (txnError) console.error("Failed to record class pack transaction:", txnError);
+      if (txnError) {
+        console.error("Failed to record class pack transaction:", txnError);
+        return false;
+      }
       await recordPurchaseConversion(metadata, "pack_purchase", "class_pack", pack.id, session.amount_total, session.currency, "signup");
       break;
     }

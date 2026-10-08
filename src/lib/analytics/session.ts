@@ -135,6 +135,7 @@ export async function trackVisit(slug: string, surface: Surface, opts?: { studio
 }
 
 const LINKED_PREFIX = "tandava.linked.";
+const CONSENT_PREFIX = "tandava.consent.";
 const linkedInMemory = new Set<string>();
 
 /**
@@ -197,15 +198,33 @@ export async function linkVisitorOnce(userId: string, via = "sign_in") {
       // Retried on the next auth event.
     }
   }
+  // Email sign-ups: metadata (idempotent server side), with its own marker so
+  // a failed save is retried on the next auth event even if linking worked.
+  // OAuth sign-ups are applied by the callback (applyOAuthSignupConsent),
+  // which can prove which attempt it was; a bound choice whose save failed is
+  // retried here.
+  const consentKey = CONSENT_PREFIX + userId;
+  let consentDone = false;
   try {
-    // Email sign-ups: metadata (idempotent server side). OAuth sign-ups are
-    // applied by the callback (applyOAuthSignupConsent), which can prove which
-    // attempt it was; a bound choice whose save failed is retried here.
-    if (!done) await data.applyMySignupConsent();
-    await applyOAuthSignupConsent(userId);
+    consentDone = Boolean(window.sessionStorage.getItem(consentKey));
   } catch {
-    // Best effort; the person can still opt in later.
+    consentDone = linkedInMemory.has(consentKey);
   }
+  if (!consentDone) {
+    try {
+      const { error } = await data.applyMySignupConsent();
+      if (!error) {
+        try {
+          window.sessionStorage.setItem(consentKey, "1");
+        } catch {
+          linkedInMemory.add(consentKey);
+        }
+      }
+    } catch {
+      // Retried on the next auth event.
+    }
+  }
+  await applyOAuthSignupConsent(userId);
 }
 
 const PENDING_CONSENT_KEY = "tandava.pendingConsent";
@@ -323,7 +342,7 @@ export function forgetVisitor() {
     window.localStorage.removeItem(PENDING_CONSENT_KEY);
     for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
       const k = window.sessionStorage.key(i);
-      if (k?.startsWith(SESSION_PREFIX) || k?.startsWith(LINKED_PREFIX)) window.sessionStorage.removeItem(k);
+      if (k?.startsWith(SESSION_PREFIX) || k?.startsWith(LINKED_PREFIX) || k?.startsWith(CONSENT_PREFIX)) window.sessionStorage.removeItem(k);
     }
   } catch {
     memoryVisitor = randomId();

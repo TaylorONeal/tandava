@@ -111,6 +111,9 @@ describe("first visit", () => {
   it("welcome a few hours after the first check-in", () => {
     expect(decideNext(fresh, NOW, TZ)).toMatchObject({ decision: { key: "first_visit", step: 0 } });
   });
+  it("no welcome for someone who already booked their next class", () => {
+    expect(decideNext({ ...fresh, bookingCount: 2, hasUpcomingBooking: true }, NOW, TZ)).toEqual({ skip: "nothing_due" });
+  });
   it("intro-offer follow-up on day 3 if they haven't rebooked", () => {
     const f = {
       ...fresh,

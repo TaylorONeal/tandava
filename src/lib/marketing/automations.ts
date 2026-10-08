@@ -138,7 +138,9 @@ export function dueStep(f: PersonFacts, key: AutomationKey, now: Date, settings:
       const episode = f.firstCheckInAt.slice(0, 10);
       const age = since(f.firstCheckInAt, now);
       // Welcome only in the first week; never for someone with real history.
-      if (f.visitCount === 1 && age >= 2 * HOUR && age < 7 * DAY && !sent(f, key, 0, episode))
+      // Not for someone who already booked their next class: the welcome's
+      // whole ask is "book your next class".
+      if (f.visitCount === 1 && f.bookingCount <= 1 && !f.hasUpcomingBooking && age >= 2 * HOUR && age < 7 * DAY && !sent(f, key, 0, episode))
         return { key, step: 0, episode, template: "automation_first_visit_welcome" };
       if (
         f.bookingCount <= 1 &&

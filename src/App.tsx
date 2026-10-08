@@ -246,8 +246,8 @@ const App = () => (
                   <Route path="/manage/analytics/sales" element={<ProtectedRoute permission="studio.manage_settings"><SalesAnalyticsManage /></ProtectedRoute>} />
                   <Route path="/manage/analytics/financials" element={<ProtectedRoute permission="studio.manage_settings"><FinancialAnalyticsManage /></ProtectedRoute>} />
                   <Route path="/manage/analytics/site" element={<ProtectedRoute permission="studio.manage_schedule"><SiteAnalyticsManage /></ProtectedRoute>} />
-                  <Route path="/manage/analytics/sources" element={<ProtectedRoute permission="studio.manage_settings"><AttributionSourcesManage /></ProtectedRoute>} />
-                  <Route path="/manage/automations" element={<ProtectedRoute permission="studio.manage_settings"><AutomationsManage /></ProtectedRoute>} />
+                  <Route path="/manage/analytics/sources" element={<ProtectedRoute permission="studio.manage_members"><AttributionSourcesManage /></ProtectedRoute>} />
+                  <Route path="/manage/automations" element={<ProtectedRoute permission="studio.manage_members"><AutomationsManage /></ProtectedRoute>} />
                   <Route path="/manage/connectors" element={<ProtectedRoute permission="studio.manage_settings"><DataConnectorsManage /></ProtectedRoute>} />
                   <Route path="/manage/products" element={<ProtectedRoute permission="studio.manage_schedule"><ProductsManage /></ProtectedRoute>} />
                   <Route path="/manage/inventory" element={<ProtectedRoute permission="studio.manage_schedule"><InventoryManage /></ProtectedRoute>} />
