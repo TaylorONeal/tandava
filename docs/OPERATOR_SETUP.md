@@ -201,7 +201,7 @@ supabase secrets set AUTOMATIONS_ENABLED=true
 
 Never rotate `AUTOMATIONS_UNSUBSCRIBE_SECRET` casually: it signs the unsubscribe links in emails already sent, and rotating it breaks them. It also signs the opt-in confirmation links, so `express-book` needs it too (Supabase secrets are shared by all functions).
 
-Confirmed opt-in: a ticked marketing box on the public booking form does not record consent. `express-book` emails a confirm link (`/email-updates?c=...`, valid 14 days); consent is recorded (source `email_confirmation`) only when the person taps "Yes, send me updates" on that page. An unticked box records an opt-out immediately. Logs saying `opt-in confirmation email failed` or `timed out` (the booking waits at most 3 seconds for it) mean that person simply isn't opted in.
+Confirmed opt-in: a ticked marketing box on the public booking form does not record consent. `express-book` emails a confirm link (`/email-updates?c=...`, valid 14 days); consent is recorded (source `email_confirmation`) only when the person taps "Yes, send me updates" on that page. An unticked box records an opt-out immediately. Logs saying `opt-in confirmation email failed`, `timed out` or `email provider can't deliver` (the booking waits at most 3 seconds for it) mean that person simply isn't opted in.
 
 Dry run first (returns the plan per studio, sends nothing):
 

@@ -52,7 +52,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { sendEmail } from "../email/provider.ts";
+import { emailProviderReady, sendEmail } from "../email/provider.ts";
 import { signOptInConfirm } from "../../../src/lib/marketing/unsubscribeToken.ts";
 import { renderOptInConfirmEmail } from "../../../src/lib/marketing/optInEmail.ts";
 import Stripe from "https://esm.sh/stripe@14?target=deno";
@@ -365,6 +365,13 @@ serve(async (req) => {
     const requestOptInConfirmation = async (profileId: string) => {
       if (!optInSecret) {
         console.error("express-book: AUTOMATIONS_UNSUBSCRIBE_SECRET not set; opt-in confirmation not sent");
+        return;
+      }
+      // The console provider "succeeds" without delivering: say so instead of
+      // silently leaving the guest unable to confirm.
+      const provider = emailProviderReady();
+      if (!provider.ready) {
+        console.error(`express-book: email provider can't deliver (${provider.reason}); opt-in confirmation not sent`);
         return;
       }
       try {
