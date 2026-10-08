@@ -52,6 +52,9 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { sendEmail } from "../email/provider.ts";
+import { signOptInConfirm } from "../../../src/lib/marketing/unsubscribeToken.ts";
+import { renderOptInConfirmEmail } from "../../../src/lib/marketing/optInEmail.ts";
 import Stripe from "https://esm.sh/stripe@14?target=deno";
 
 import {
@@ -67,6 +70,8 @@ const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const appUrl = Deno.env.get("APP_URL") ?? "http://localhost:8080";
 const ipSalt = Deno.env.get("EXPRESS_IP_SALT") ?? "";
+// Signs the opt-in confirmation link (same secret as the unsubscribe links).
+const optInSecret = Deno.env.get("AUTOMATIONS_UNSUBSCRIBE_SECRET") ?? "";
 const platformFeeBps = parseInt(Deno.env.get("PLATFORM_FEE_BPS") ?? "0", 10);
 
 const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
@@ -310,8 +315,9 @@ serve(async (req) => {
       waitlistEnabled: Boolean(row.express_waitlist_enabled),
     };
 
-    const { data: studioRow } = await db.from("studios").select("id").eq("slug", slug).single();
+    const { data: studioRow } = await db.from("studios").select("id, name").eq("slug", slug).single();
     const studioId = studioRow?.id as string | undefined;
+    const studioName = (studioRow?.name as string | undefined) ?? "the studio";
     if (!studioId) return json({ error: "Class not found" }, 404);
 
     const ipHash = await hashIp(req);
@@ -348,21 +354,49 @@ serve(async (req) => {
     };
 
     /**
+     * Confirmed opt-in: a public form can't prove the address is the
+     * booker's, so a ticked box is only a request. It sends a confirmation
+     * email, and consent is recorded only when someone with that mailbox
+     * confirms (unsubscribe function, action "confirm"). An unticked box is an
+     * opt-out and applies at once: it must replace any older opt-in.
+     */
+    const requestOptInConfirmation = async (profileId: string) => {
+      if (!optInSecret) {
+        console.error("express-book: AUTOMATIONS_UNSUBSCRIBE_SECRET not set; opt-in confirmation not sent");
+        return;
+      }
+      try {
+        const token = await signOptInConfirm(studioId, profileId, optInSecret);
+        const email = renderOptInConfirmEmail({
+          studioName,
+          confirmUrl: `${appUrl.replace(/\/+$/, "")}/email-updates?c=${encodeURIComponent(token)}`,
+        });
+        const sent = await sendEmail({ to: guest.email, subject: email.subject, html: email.html, text: email.text, fromName: studioName });
+        if (!sent.success) console.error("express-book: opt-in confirmation email failed", sent.error);
+      } catch (err) {
+        console.error("express-book: opt-in confirmation failed", err);
+      }
+    };
+
+    /**
      * Attribution and consent never fail a booking, but they are checked and
-     * retried. Consent goes first: the choice on this form is the newest one
-     * and must replace an older opt-in.
+     * retried.
      */
     const recordAttribution = async (profileId: string, bookingId: string | null, valueCents: number) => {
       try {
-        const consentSaved = await rpcChecked("record_consent", {
-          p_studio_id: studioId, p_profile_id: profileId, p_visitor_id: visitorId,
-          p_purpose: "email_marketing", p_granted: guest.marketingConsent, p_source: "express_booking_form",
-          p_policy_version: "2026-10",
-        });
-        if (!consentSaved) {
-          // Loud on purpose: an unsaved opt-out must be fixed by hand before
-          // the next automation run (docs/OPERATOR_SETUP.md, automations).
-          console.error("express-book: CONSENT NOT SAVED", { studioId, profileId, granted: guest.marketingConsent });
+        if (guest.marketingConsent) {
+          await requestOptInConfirmation(profileId);
+        } else {
+          const consentSaved = await rpcChecked("record_consent", {
+            p_studio_id: studioId, p_profile_id: profileId, p_visitor_id: visitorId,
+            p_purpose: "email_marketing", p_granted: false, p_source: "express_booking_form",
+            p_policy_version: "2026-10",
+          });
+          if (!consentSaved) {
+            // Loud on purpose: an unsaved opt-out must be fixed by hand before
+            // the next automation run (docs/OPERATOR_SETUP.md, automations).
+            console.error("express-book: CONSENT NOT SAVED", { studioId, profileId, granted: false });
+          }
         }
         if (visitorId) {
           await rpcChecked("link_visitor", { p_profile_id: profileId, p_visitor_id: visitorId, p_via: "express_booking" });

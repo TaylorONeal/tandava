@@ -569,7 +569,7 @@ export default function ExpressBooking() {
                 checked={form.marketingConsent}
                 onCheckedChange={(v) => set("marketingConsent", v === true)}
               />
-              <span>Email me about new classes and offers from {row.studio_name}.</span>
+              <span>Email me about new classes and offers from {row.studio_name}. We'll send one email to confirm.</span>
             </label>
 
             {live && (

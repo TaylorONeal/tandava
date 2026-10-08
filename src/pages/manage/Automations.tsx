@@ -114,7 +114,7 @@ export default function Automations() {
             <p className="flex items-center gap-2 text-foreground font-medium">
               <Mail className="h-4 w-4" aria-hidden="true" /> Rules every automation follows
             </p>
-            <p>Only people who said yes to your emails. Never between 9pm and 8am your time. At most one a day per person.</p>
+            <p>Only people who said yes to your emails and confirmed it from their inbox. Never between 9pm and 8am your time. At most one a day per person.</p>
             <p>Every email has a one-click unsubscribe, and replies go to the email on your studio profile.</p>
             <p>Each email carries your studio's postal address, as the law requires for marketing email. Nothing sends until your location has a street address and city.</p>
           </CardContent>

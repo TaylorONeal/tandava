@@ -55,3 +55,48 @@ export async function verifyUnsubscribe(
     return null;
   }
 }
+
+// ---------------------------------------------------------------------------
+// Opt-in confirmation (confirmed opt-in, PR #72 review)
+// ---------------------------------------------------------------------------
+// A box ticked on a public form doesn't prove the address belongs to the
+// person ticking it. The opt-in only counts once someone with access to that
+// mailbox confirms through this link. The payload carries an "optin" prefix
+// and an issue time, so an unsubscribe token can never pass as a confirm token
+// (or the reverse), and an old confirm link stops working.
+
+export const OPT_IN_LINK_TTL_MS = 14 * 24 * 60 * 60 * 1000;
+
+export async function signOptInConfirm(
+  studioId: string,
+  profileId: string,
+  secret: string,
+  now: number = Date.now(),
+): Promise<string> {
+  if (!secret) throw new Error("unsubscribe secret missing");
+  const payload = enc.encode(`optin:${studioId}:${profileId}:${now}`);
+  const sig = new Uint8Array(await crypto.subtle.sign("HMAC", await key(secret), payload));
+  return `${b64url(payload)}.${b64url(sig)}`;
+}
+
+export async function verifyOptInConfirm(
+  token: string,
+  secret: string,
+  now: number = Date.now(),
+): Promise<{ studioId: string; profileId: string } | null> {
+  if (!secret || !token || token.length > 400) return null;
+  const [p, s] = token.split(".");
+  if (!p || !s) return null;
+  try {
+    const payload = fromB64url(p);
+    const ok = await crypto.subtle.verify("HMAC", await key(secret), fromB64url(s), payload);
+    if (!ok) return null;
+    const [kind, studioId, profileId, issued] = new TextDecoder().decode(payload).split(":");
+    if (kind !== "optin" || !UUID.test(studioId ?? "") || !UUID.test(profileId ?? "")) return null;
+    const at = Number(issued);
+    if (!Number.isFinite(at) || at > now + 60_000 || now - at > OPT_IN_LINK_TTL_MS) return null;
+    return { studioId, profileId };
+  } catch {
+    return null;
+  }
+}

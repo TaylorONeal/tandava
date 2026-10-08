@@ -74,6 +74,7 @@ const StudioStorefront = lazy(() => import("./pages/StudioStorefront"));
 const ExpressBooking = lazy(() => import("./pages/ExpressBooking"));
 const SaveDetails = lazy(() => import("./pages/SaveDetails"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
+const EmailUpdatesConfirm = lazy(() => import("./pages/EmailUpdatesConfirm"));
 const Index = lazy(() => import("./pages/Index"));
 const Schedule = lazy(() => import("./pages/Schedule"));
 const MySchedule = lazy(() => import("./pages/MySchedule"));
@@ -203,6 +204,7 @@ const App = () => (
                   <Route path="/s/:slug/book/:occurrenceId" element={<ExpressBooking />} />
                   <Route path="/s/:slug/save-details" element={<SaveDetails />} />
                   <Route path="/unsubscribe" element={<Unsubscribe />} />
+                  <Route path="/email-updates" element={<EmailUpdatesConfirm />} />
 
                   {/* ---- Blog (built but not yet linked in nav; noindex until
                        BLOG_PUBLISHED is flipped on in src/config/blog.ts) ---- */}

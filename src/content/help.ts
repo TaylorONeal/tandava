@@ -148,7 +148,7 @@ export const HELP: HelpEntry[] = [
     status: "planned",
     question: "Does Tandava send marketing for me?",
     answer:
-      "Three automatic emails, on by default and switchable under Automations in the studio menu: a guest who booked without an account gets a nudge to save their details and then your intro offer; a first-timer gets a welcome and then the intro offer; a regular who stops coming gets one check-in.\nOnly to people who said yes to emails, never between 9pm and 8am in your studio's time, never more than one a day, and every email has a one-click unsubscribe and your studio's postal address (the law requires it for marketing email), so they don't send until your location has a street address and city. Birthdays, milestones, pack-running-low and texts are planned.",
+      "Three automatic emails, on by default and switchable under Automations in the studio menu: a guest who booked without an account gets a nudge to save their details and then your intro offer; a first-timer gets a welcome and then the intro offer; a regular who stops coming gets one check-in.\nOnly to people who said yes to emails (a yes on the booking form counts once they confirm it from the email we send them), never between 9pm and 8am in your studio's time, never more than one a day, and every email has a one-click unsubscribe and your studio's postal address (the law requires it for marketing email), so they don't send until your location has a street address and city. Birthdays, milestones, pack-running-low and texts are planned.",
     learnMore: "docs/prd/PRD-027-crm-marketing-ads-and-migration.md",
   },
   {
