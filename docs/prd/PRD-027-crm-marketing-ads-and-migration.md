@@ -3,7 +3,7 @@
 ## Overview
 **Phase:** foundation now (tables, migration 00024); features after the pilot (PRD-024 build steps 1 to 3 first).
 **Priority:** P1 strategic. Automated marketing is a large part of why studios pay for Mindbody's top tier; the switching path is what lets them leave.
-**Status:** Spec, schema foundation (00024) and phase 1 built (00025, branch `feat/attribution-phase1`; not yet deployed). Phase 1 build notes are under "Phase 1: pilot". Research: `docs/competitive/MARKETING-AUTOMATION-AND-ADS-2026-10.md` (sources there).
+**Status:** Spec, schema foundation (00024) and phase 1 built (00035, branch `feat/attribution-phase1`; not yet deployed). Phase 1 build notes are under "Phase 1: pilot". Research: `docs/competitive/MARKETING-AUTOMATION-AND-ADS-2026-10.md` (sources there).
 **Builds on:** PRD-007 lifecycle automation (planned), PRD-011 campaign hub (schema in 00008: `campaigns`, `campaign_messages`, `campaign_sends`, `audience_segments`, `utm_templates`, `link_clicks`), PRD-024 attribution, PRD-026 booking links, connector/import infrastructure (00005: `import_jobs_v2`, `entity_sync_mappings`, `studio_connectors`).
 
 ---

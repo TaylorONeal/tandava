@@ -82,7 +82,7 @@ Estimated time: a couple of focused hours.
    ```
 4. Create a webhook (**Developers → Webhooks**) pointing at:
    `https://<project-ref>.supabase.co/functions/v1/stripe-webhook`
-   Subscribe to `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`, `invoice.payment_succeeded` (renewals in the Sources report). Copy its signing secret:
+   Subscribe to `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `charge.refunded`, `invoice.paid` (renewals: usage reset and the Sources report), `invoice.payment_failed`, `customer.subscription.updated`, `customer.subscription.deleted` (and `account.updated` on the Connect endpoint). The list in `supabase/functions/stripe-webhook/index.ts` is the source of truth. Copy its signing secret:
    ```bash
    supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...
    ```
@@ -154,6 +154,35 @@ If all five pass, the hosted service is live and self-serve.
 Email and SMS are provider-agnostic edge functions. To turn them on, set the relevant secrets (see [docs/developer/email-system.md](developer/email-system.md) and the SMS function) — e.g. `EMAIL_PROVIDER=resend` + `RESEND_API_KEY=…`, and VAPID keys for web push. The app runs fine without them; studios just won't get automated messages until they're configured.
 
 ### Attribution and automations (PRD-024 / PRD-027 phase 1)
+
+**Upgrading an existing project (tandava-prod) to migration 00035.** Production was
+built from main's migrations 00001 to 00034 and has no migration tracking table, so
+`supabase db push` is not used. Order matters:
+
+1. Apply the database change first, in one transaction. Open the SQL editor
+   (https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new), paste the
+   whole of [`scripts/db/prod/apply-00035.sql`](../scripts/db/prod/apply-00035.sql)
+   and run it once. It checks that 00024, 00031 and 00033 are in place and that
+   `analytics_sessions` has no duplicate visits, then applies 00035; any error rolls
+   everything back. Re-running it is harmless. (Regenerate it with
+   `scripts/db/prod-bundle.sh 00035 > scripts/db/prod/apply-00035.sql` if 00035
+   changes.)
+2. Verify, read-only, in the same editor:
+   ```sql
+   select to_regprocedure('public.record_checkout_conversion(jsonb,timestamptz)') is not null as checkout_fn,
+          to_regprocedure('public.record_renewal_conversion(text,text,integer,text,timestamptz)') is not null as renewal_fn,
+          to_regclass('public.automation_settings') is not null as automations,
+          (select count(*) from pg_tables t where schemaname = 'public' and rowsecurity
+             and not exists (select 1 from pg_policies p where p.schemaname = 'public' and p.tablename = t.tablename)) as rls_tables_without_policy,
+          has_function_privilege('anon', 'public.record_conversion(uuid,uuid,uuid,text,integer,text,text,uuid,uuid,text,timestamptz)', 'EXECUTE') as anon_can_write_conversions;
+   ```
+   Expect `true, true, true, 0, false`.
+3. Only then deploy the functions: `stripe-webhook` and `stripe-checkout` (they call
+   the new SQL functions; deployed before step 1, every paid checkout would answer
+   500 and Stripe would retry until the SQL exists), then `express-book`,
+   `analytics-session`, `unsubscribe`, `run-automations` (all `--no-verify-jwt`).
+4. Then the frontend (Vercel), so visit capture and sign-in linking start.
+
 
 Visit capture (`analytics-session`) and conversion recording need no secrets beyond `APP_URL`. The automation emails need:
 

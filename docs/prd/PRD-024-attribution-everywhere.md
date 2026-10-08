@@ -2,7 +2,7 @@
 
 ## Overview
 **Priority:** P0 for the pilot. Every other growth feature (Express Booking, the Network, privates, campaigns, landing pages) is judged by numbers this produces. Without it, a studio owner cannot tell what works, and neither can we.
-**Status:** Phase 1 built (branch `feat/attribution-phase1`, migration 00025), not yet deployed or verified on a live database. See "Phase 1 as built" below and "What exists today" for the inventory before it.
+**Status:** Phase 1 built (branch `feat/attribution-phase1`, migration 00035; built as 00025, renumbered after main's 00025 to 00034), not yet deployed or verified on a live database. See "Phase 1 as built" below and "What exists today" for the inventory before it.
 **Origin:** Taylor, Oct 8 2026: attribution analytics is very important; check it for all the pages and apps and create a comprehensive interlinked view.
 **Relationship to `ATTRIBUTION_TRACKING.md`:** that file is the technical design for sessions, touchpoints, models and queries. This PRD is the product contract: what gets captured on every surface, how it links into one journey, what the owner sees, and what is true today. Where they disagree, this file wins and the other gets updated.
 
@@ -15,11 +15,11 @@
 | Visit capture on storefront, booking page and embed (visitor id in localStorage, 30-minute session per studio, new session on tagged arrival); channel computed server side; no IP or user agent stored | `src/lib/analytics/session.ts`, `landing.ts`, `supabase/functions/analytics-session`, `record_session()` |
 | Embed handoff: the Book link carries the visitor id (`tv`) and tags the parent site as the source | `withEmbedHandoff()` in `landing.ts`, `EmbedSchedule.tsx` |
 | One person, many browsers: `link_visitor()` from express-book, `link_my_visitor()` on every sign-in (once per browser session) | `AuthContext.tsx`, `linkVisitorOnce()` |
-| Conversions with frozen first and converting touches, deduped per entity: guest and member bookings, drop-ins, memberships, packs, event registrations; `studio_members.source` and acquisition set once | `record_conversion()`, `express-book`, `stripe-webhook` |
+| Conversions with frozen first and converting touches, deduped per entity: guest and member bookings, drop-ins, memberships, packs, event registrations; `studio_members.source` and acquisition set once | `record_conversion()`, `express-book`; paid ones by `stripe-webhook` after main's SQL fulfilment (`record_checkout_conversion()`, `record_renewal_conversion()` on `invoice.paid`); member bookings by a bookings trigger reading the page's session header (`book_class`, `book_class_auto`, `book_free_class`) |
 | Consent from the booking form's marketing checkbox, append-only, latest wins | `record_consent()`, `has_consent()` |
 | Owner report: channel → source/campaign, first or last visit, 30/90 days | `/manage/analytics/sources`, `get_attribution_sources()` |
 | "How they found you" on member detail | `MemberSourceStrip`, `get_member_attribution()` |
-| Tests | `scripts/db/test-attribution.sql` (SQL behaviour), `src/lib/analytics/*.test.ts` |
+| Tests | `scripts/db/test-attribution.sql` (SQL behaviour, run by `npm run test:db`), `src/lib/analytics/*.test.ts` |
 
 Not in phase 1: landing pages, blog, emails' own clicks beyond UTM tags, the apps, journeys and funnel views, the per-feature channel pages.
 

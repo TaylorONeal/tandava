@@ -1,4 +1,6 @@
--- Behaviour tests for 00024/00025 (run after verify-migrations.sh):
+-- Behaviour tests for 00024/00035 (attribution, consent, automations).
+-- Run by `npm run test:db` (supabase/tests/run.sh), or by hand after
+-- scripts/db/verify-migrations.sh:
 --   psql -v ON_ERROR_STOP=1 -d tandava_verify -f scripts/db/test-attribution.sql
 -- Each block raises on failure. Runs inside a transaction and rolls back.
 BEGIN;
@@ -178,16 +180,8 @@ BEGIN
   IF apply_my_signup_consent('aloha', TRUE, NOW()) IS NOT FALSE THEN RAISE EXCEPTION 'oauth consent applied twice'; END IF;
 END $$;
 
--- 9. Stripe events are claimed once.
-DO $$
-BEGIN
-  INSERT INTO stripe_webhook_events (event_id, event_type) VALUES ('evt_test_1', 'checkout.session.completed');
-  BEGIN
-    INSERT INTO stripe_webhook_events (event_id, event_type) VALUES ('evt_test_1', 'checkout.session.completed');
-    RAISE EXCEPTION 'replayed event was accepted';
-  EXCEPTION WHEN unique_violation THEN NULL;
-  END;
-END $$;
+-- 9. (Stripe event idempotency is main's stripe_events ledger, 00031; tested
+--    in supabase/tests/060_payments.test.sql. Paid conversions: block 22.)
 
 -- 10. A browser id belongs to the first person linked to it; a second person
 --     signing in on the same browser gets no share of its history.
@@ -410,5 +404,76 @@ BEGIN
     THEN RAISE EXCEPTION 'member attribution missing for the selected studio'; END IF;
 END $$;
 
-SELECT 'attribution tests passed' AS result;
+-- 22. Paid checkouts are credited after main's SQL fulfilment (00031):
+--     the type follows what fulfilment wrote, the converting visit and
+--     Stripe's event time are kept, and a duplicate delivery adds nothing.
+DO $$
+DECLARE occ UUID := gen_random_uuid(); v UUID := gen_random_uuid(); sess UUID; s JSONB; r conversion_events%ROWTYPE;
+        txn UUID; at TIMESTAMPTZ := date_trunc('second', NOW() - interval '2 hours');
+BEGIN
+  UPDATE offerings SET drop_in_price_cents = 2500 WHERE id = '00000000-0000-0000-0000-0000000000d1';
+  INSERT INTO class_occurrences (id, studio_id, offering_id, location_id, starts_at, ends_at, capacity) VALUES
+    (occ, '00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000c1', NOW() + interval '7 day', NOW() + interval '7 day 1 hour', 5);
+  sess := record_session('aloha', v, 'paid-1', 'booking', 'https://x/s/aloha/book/1?utm_source=newsletter', NULL,
+    '{"source":"newsletter"}'::jsonb, '{}'::jsonb, 'email', 'mobile');
+  UPDATE analytics_sessions SET started_at = at - interval '1 hour' WHERE id = sess;
+  -- A later visit in another tab: the checkout's own visit must still win.
+  PERFORM record_session('aloha', v, 'paid-2', 'storefront', 'https://x/s/aloha', NULL, '{}'::jsonb, '{}'::jsonb, 'direct', 'mobile');
+  UPDATE analytics_sessions SET started_at = at - interval '30 minutes' WHERE session_token = 'paid-2';
+  PERFORM set_config('request.jwt.claim.sub', '', true);
+  s := jsonb_build_object('id', 'cs_attr_1', 'payment_intent', 'pi_attr_1', 'amount_total', 2500, 'currency', 'usd',
+    'metadata', jsonb_build_object('type', 'drop_in', 'occurrence_id', occ, 'studio_id', '00000000-0000-0000-0000-00000000005a',
+      'profile_id', '00000000-0000-0000-0000-0000000000b1', 'visitor_id', v, 'session_id', sess));
+  PERFORM fulfill_stripe_checkout('evt_attr_1', 'checkout.session.completed', s);
+  PERFORM record_checkout_conversion(s, at);
+  SELECT id INTO txn FROM transactions WHERE stripe_checkout_session_id = 'cs_attr_1';
+  SELECT * INTO r FROM conversion_events WHERE entity_type = 'transaction' AND entity_id = txn;
+  IF r.conversion_type IS DISTINCT FROM 'member_booking' OR r.value_cents <> 2500 OR r.currency <> 'USD'
+    THEN RAISE EXCEPTION 'paid drop-in conversion wrong: % % %', r.conversion_type, r.value_cents, r.currency; END IF;
+  IF r.converting_touch_session_id IS DISTINCT FROM sess THEN RAISE EXCEPTION 'checkout visit not credited'; END IF;
+  IF r.occurred_at <> at THEN RAISE EXCEPTION 'conversion time should be the Stripe event time, got %', r.occurred_at; END IF;
+  -- Stripe redelivers: fulfilment is a duplicate and the conversion is not repeated.
+  PERFORM fulfill_stripe_checkout('evt_attr_1', 'checkout.session.completed', s);
+  PERFORM record_checkout_conversion(s, NOW());
+  IF (SELECT count(*) FROM conversion_events WHERE entity_id = txn) <> 1 THEN RAISE EXCEPTION 'duplicate delivery recorded twice'; END IF;
+  -- An ignored or unfulfilled session credits nothing.
+  IF record_checkout_conversion('{"id":"cs_nothing","metadata":{"type":"drop_in"}}'::jsonb, NOW()) IS NOT NULL
+    THEN RAISE EXCEPTION 'a session with no fulfilment was credited'; END IF;
+  -- A renewal is keyed by the invoice id.
+  INSERT INTO membership_types (id, studio_id, name, price_cents, billing_cycle)
+    VALUES ('00000000-0000-0000-0000-0000000000a7', '00000000-0000-0000-0000-00000000005a', 'Unlimited', 12000, 'monthly');
+  INSERT INTO memberships (studio_id, profile_id, membership_type_id, status, current_period_start, current_period_end, stripe_subscription_id)
+    VALUES ('00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000b1', '00000000-0000-0000-0000-0000000000a7',
+            'active', NOW(), NOW() + interval '1 month', 'sub_attr_1');
+  PERFORM record_renewal_conversion('sub_attr_1', 'in_attr_1', 12000, 'usd', at);
+  PERFORM record_renewal_conversion('sub_attr_1', 'in_attr_1', 12000, 'usd', at);
+  IF (SELECT count(*) FROM conversion_events WHERE conversion_type = 'membership_renewal' AND value_cents = 12000) <> 1
+    THEN RAISE EXCEPTION 'renewal not recorded exactly once'; END IF;
+END $$;
+
+-- 23. Writers and internal helpers are service-role only; member functions
+--     are closed to anon (Supabase grants EXECUTE to anon by default).
+DO $$
+DECLARE f TEXT; bad TEXT := '';
+BEGIN
+  FOREACH f IN ARRAY ARRAY[
+    'record_session(text,uuid,text,text,text,text,jsonb,jsonb,text,text)', 'link_visitor(uuid,uuid,text)',
+    'session_touch(uuid)', 'record_conversion(uuid,uuid,uuid,text,integer,text,text,uuid,uuid,text,timestamptz)',
+    'record_consent(uuid,uuid,uuid,text,boolean,text,text)', 'has_consent(uuid,uuid,text)',
+    'get_automation_candidates(uuid)', 'record_booking_conversion_or_queue(uuid,uuid,text,uuid,uuid,text)',
+    'retry_queued_conversions(integer)', 'record_conversion_or_queue(jsonb)',
+    'record_checkout_conversion(jsonb,timestamptz)', 'record_renewal_conversion(text,text,integer,text,timestamptz)',
+    'booking_session_from_request(uuid,uuid)'] LOOP
+    IF has_function_privilege('anon', f, 'EXECUTE') OR has_function_privilege('authenticated', f, 'EXECUTE') THEN bad := bad || ' ' || f; END IF;
+  END LOOP;
+  FOREACH f IN ARRAY ARRAY[
+    'link_my_visitor(uuid,text)', 'apply_my_signup_consent(text,boolean,timestamptz)',
+    'get_attribution_sources(timestamptz,timestamptz,text,uuid)', 'get_member_attribution(uuid,uuid)',
+    'is_studio_staff(uuid)', 'is_studio_admin(uuid)'] LOOP
+    IF has_function_privilege('anon', f, 'EXECUTE') THEN bad := bad || ' anon:' || f; END IF;
+  END LOOP;
+  IF bad <> '' THEN RAISE EXCEPTION 'functions open to clients:%', bad; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (23 blocks)'; END $$;
 ROLLBACK;

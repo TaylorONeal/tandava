@@ -36,11 +36,14 @@ tandava/
 │   ├── pages/          # Route components
 │   └── types/          # TypeScript types
 ├── supabase/
-│   └── migrations/     # Database migrations
+│   ├── migrations/     # Database migrations
+│   ├── functions/      # Edge functions (stripe-checkout, stripe-webhook, stripe-connect)
+│   └── tests/          # Plain-SQL DB tests (run via npm run test:db)
 ├── docs/
 │   ├── architecture/   # Domain model, RBAC, compliance
 │   ├── developer/      # Visual docs with Mermaid diagrams
 │   ├── guides/         # User-facing guides
+│   ├── plans/          # Launch PRD, backlog, progress
 │   └── prd/            # Product requirements
 └── public/             # Static assets
 ```
@@ -127,6 +130,37 @@ Opens at http://localhost:8080 with demo data.
 | Type | PascalCase | `Booking.ts` |
 
 ---
+
+## Launch work in flight
+
+Start at `docs/plans/PRD-launch-v1.md` (why), `docs/plans/BACKLOG.md` (ordered tasks, pick the first NEXT
+whose Needs are DONE) and `docs/plans/PROGRESS.md` (state). Diagrams: `docs/developer/07-launch-architecture.md`.
+Verify with `npm run typecheck && npm test && npm run build && npm run test:db` (CI runs the same).
+`test:db` builds a throwaway local Postgres; never point it at production.
+
+Rules learned the hard way (full list in `docs/ai-agents/LESSONS_LEARNED.md`):
+- Every new table: RLS + policy + test in the same migration. Use `(SELECT auth.uid())` and `my_staff_studio_ids()`.
+- Every SECURITY DEFINER function: pin `search_path`, `REVOKE` from PUBLIC and anon.
+- Money events are idempotent by Stripe event id; entitlement changes go through the ledger trigger only.
+- Prod DB changes: see "Production database changes" in LESSONS_LEARNED. Prod has no migration tracking table, so inspect the schema with read-only SQL. The auto-mode guard blocks DDL on prod even after chat approval: give the user ONE transactional SQL file and open `https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new` for them, then verify read-only.
+- Merging main: renumber our migrations after main's, rehearse in prod order locally (`pg_ctlcluster 16 main start`), run all four verify commands before pushing.
+- Always hand the user the exact page or link for any step they must do. Switching cost is the thing to minimise.
+- Prove a new test fails without the fix before trusting it.
+- Update docs and `.env.example` in the same PR. Home page mode is `VITE_HOME_MODE` (platform|discover).
+
+## Access and tooling (cloud sessions)
+
+Set up once, so nobody rediscovers it:
+
+| Need | Works | Does not | Use |
+|---|---|---|---|
+| GitHub PRs, checks, comments | `gh api repos/TaylorONeal/tandava/...` (REST) | `gh pr ...` and `gh auth status` (GraphQL blocked, GH_TOKEN reported invalid but REST is authenticated) | `gh api .../pulls/N`, `.../commits/SHA/check-runs`, `.../pulls/N/ccr/review_threads` |
+| Git push | `git push` | | Branch tracking needs `remote.origin.fetch` for the branch |
+| Edge function typecheck | `npm i -g deno`, `npm run check:edge` | github.com release downloads (403) | Install CLIs via npm, not release tarballs |
+| Supabase CLI | `npm i -g supabase` | | Local DB tests use `npm run test:db` (plain Postgres, no Docker needed) |
+| Browser tests | `npm run test:e2e` (Playwright, Supabase mocked). Locally: `PW_CHROMIUM_PATH=/opt/pw-browsers/chromium-1194/chrome-linux/chrome` | `playwright install` (no network) | CI installs its own Chromium |
+| Vercel preview | Vercel MCP `web_fetch_vercel_url` (bypass built in, returns headers) | plain curl (SSO 401) | Use it to verify headers and pages |
+| Stripe CLI | not installable (release download blocked) | | Replay events by POSTing signed payloads, or run from Taylor's machine |
 
 ## Database
 

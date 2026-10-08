@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { auth } from "@/lib/backend";
+import { resolveAfterAuth } from "@/lib/authReturn";
 import { safeNextPath } from "@/lib/auth/next";
 import { applyOAuthSignupConsent } from "@/lib/analytics/session";
 
@@ -20,7 +21,7 @@ export function AuthCallback() {
       if (user) {
         // A Google sign-up's marketing choice, only for this exact attempt.
         await applyOAuthSignupConsent(user.id, consentNonce);
-        navigate(next, { replace: true });
+        navigate(resolveAfterAuth({ next: next === "/" ? null : next }), { replace: true });
       } else {
         navigate("/auth/login", { replace: true });
       }

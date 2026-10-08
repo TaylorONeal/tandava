@@ -1,7 +1,7 @@
 {
   "version": "5",
   "redirects": {
-    "https://esm.sh/@supabase/supabase-js@2": "https://esm.sh/@supabase/supabase-js@2.117.3",
+    "https://esm.sh/@supabase/supabase-js@2": "https://esm.sh/@supabase/supabase-js@2.117.2",
     "https://esm.sh/stripe@14?target=deno": "https://esm.sh/stripe@14.25.0?target=deno"
   },
   "remote": {
@@ -16,7 +16,7 @@
     "https://deno.land/std@0.168.0/async/retry.ts": "e8e5173623915bbc0ddc537698fa418cf875456c347eda1ed453528645b42e67",
     "https://deno.land/std@0.168.0/async/tee.ts": "3a47cc4e9a940904fd4341f0224907e199121c80b831faa5ec2b054c6d2eff5e",
     "https://deno.land/std@0.168.0/http/server.ts": "e99c1bee8a3f6571ee4cdeb2966efad465b8f6fe62bec1bdb59c1f007cc4d155",
-    "https://esm.sh/@supabase/supabase-js@2.117.3": "614f9e550b12b4be7054f947cc4949ebcc0eceeb8e83f7e226cc875356e9b126",
+    "https://esm.sh/@supabase/supabase-js@2.117.2": "6da4477d96ad4392b5a8be8f423384a3812cdd651df483e433ba422a69ff879b",
     "https://esm.sh/stripe@14.25.0?target=deno": "d51f866ea5a2e00948bbd0fbcd10e389f0a74811d5320874d08fde4ff54e6ccc"
   },
   "workspace": {
@@ -60,7 +60,6 @@
         "npm:@tanstack/react-query@^5.83.0",
         "npm:@types/js-yaml@^4.0.9",
         "npm:@types/node@^22.16.5",
-        "npm:@types/qrcode@^1.5.6",
         "npm:@types/react-dom@^18.3.7",
         "npm:@types/react@^18.3.23",
         "npm:@vitejs/plugin-react-swc@^4.2.3",
@@ -86,7 +85,6 @@
         "npm:marked@^14.1.4",
         "npm:next-themes@0.3",
         "npm:postcss@^8.5.6",
-        "npm:qrcode@^1.5.4",
         "npm:react-day-picker@^8.10.1",
         "npm:react-dom@^18.3.1",
         "npm:react-helmet-async@^2.0.5",

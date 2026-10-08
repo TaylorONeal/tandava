@@ -307,7 +307,7 @@ CREATE TABLE on_demand_videos (
 
   -- Classification
   instructor_id UUID REFERENCES studio_staff(id),
-  class_type_id UUID REFERENCES offerings(id),  -- the offering (class type); "class_types" never existed
+  class_type_id UUID REFERENCES offerings(id),
   style TEXT,
   level TEXT CHECK (level IN ('beginner', 'intermediate', 'advanced', 'all_levels')),
   equipment TEXT[],

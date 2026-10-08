@@ -76,11 +76,11 @@ export function ToolLayout({ children }: { children: ReactNode }) {
       <footer className="border-t border-border bg-card/50 py-10">
         <div className="container flex flex-col items-center justify-between gap-2 text-xs text-muted-foreground sm:flex-row">
           <span>
-            &copy; {new Date().getFullYear()} Tandava. Open source studio software.
+            &copy; {new Date().getFullYear()} Tandava. Studio software for yoga, pilates, and movement.
           </span>
           <nav aria-label="Tool footer" className="flex gap-5">
-            <Link to="/open-source" className="transition-colors hover:text-foreground">
-              About Tandava
+            <Link to="/for-studios" className="transition-colors hover:text-foreground">
+              For studios
             </Link>
             <a
               href="https://github.com/TaylorONeal/tandava"

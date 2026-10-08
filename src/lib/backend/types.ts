@@ -9,7 +9,7 @@
  * See docs/developer/backend-flexibility.md for architecture details.
  */
 
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { FeedbackType } from "@/types/database";
 import type { AttributionModel, AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
 
@@ -181,6 +181,8 @@ export interface DataProvider {
    * Drop-in/paid bookings use the Stripe checkout flow instead.
    */
   bookClass(input: BookClassInput): Promise<DataResult<Booking>>;
+  /** Book with the best available source, or report that payment is needed. */
+  bookClassAuto(occurrenceId: string, sessionId?: string): Promise<DataResult<BookClassAutoResult>>;
 
   /** Book the signed-in user into a zero-price class (book_free_class() RPC, migration 00023). */
   bookFreeClass(occurrenceId: string, sessionId?: string): Promise<DataResult<Booking>>;
@@ -194,6 +196,8 @@ export interface DataProvider {
   /** Public storefront (profile + offerings + pricing) for a discoverable studio by slug. Null if not discoverable. */
   getStudioStorefront(slug: string): Promise<DataResult<StudioStorefront>>;
 
+  /** Upcoming classes across all discoverable studios, with optional city/style/date filters. */
+  discoverClasses(args?: DiscoverClassesArgs): Promise<DataResult<DiscoverClassRow[]>>;
   /**
    * Public booking-relevant facts for ONE occurrence of a discoverable studio —
    * what the express booking page renders. Returns the row even when the class
@@ -215,14 +219,14 @@ export interface DataProvider {
 
   /**
    * Join this browser's anonymous visitor id to the signed-in person
-   * (link_my_visitor RPC, migration 00025), so visits before sign-in count
+   * (link_my_visitor RPC, migration 00035), so visits before sign-in count
    * toward their journey. Best effort; never rewrites another person's link.
    */
   linkMyVisitor(visitorId: string, via: string): Promise<MutationResult>;
 
   /**
    * Record the sign-up marketing choice for the studio the person signed up
-   * from, once (migration 00025). Email sign-ups carry it in auth metadata;
+   * from, once (migration 00035). Email sign-ups carry it in auth metadata;
    * OAuth sign-ups pass the choice kept in the browser across the redirect.
    */
   applyMySignupConsent(pending?: { slug: string; granted: boolean; startedAt: string }): Promise<MutationResult>;

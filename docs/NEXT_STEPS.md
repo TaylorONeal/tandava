@@ -1,5 +1,7 @@
 # Tandava: What's Next
 
+> Historical. Current launch status lives in [plans/PROGRESS.md](plans/PROGRESS.md).
+
 A prioritized task list for continuing development. Updated as phases complete.
 
 ---

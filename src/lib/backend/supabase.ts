@@ -31,10 +31,10 @@ import type {
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
 
-/** Request header carrying the analytics session into booking RPCs (read by the bookings trigger, migration 00025). */
+/** Request header carrying the analytics session into booking RPCs (read by the bookings trigger, migration 00035). */
 const SESSION_HEADER = "x-tandava-session";
 
 // ---------------------------------------------------------------------------
@@ -233,6 +233,15 @@ const supabaseData: DataProvider = {
     };
   },
 
+  async bookClassAuto(occurrenceId, sessionId): Promise<DataResult<BookClassAutoResult>> {
+    const call = getClient().rpc("book_class_auto", { p_occurrence_id: occurrenceId } as never);
+    const { data, error } = await (sessionId ? call.setHeader(SESSION_HEADER, sessionId) : call);
+    return {
+      data: (data as BookClassAutoResult) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
   async bookFreeClass(occurrenceId, sessionId): Promise<DataResult<Booking>> {
     const call = getClient().rpc("book_free_class", {
       p_occurrence_id: occurrenceId,
@@ -271,6 +280,14 @@ const supabaseData: DataProvider = {
     const { data, error } = await getClient().rpc("get_studio_storefront", { p_slug: slug } as never);
     return {
       data: (data as StudioStorefront) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async discoverClasses(args = {}): Promise<DataResult<DiscoverClassRow[]>> {
+    const { data, error } = await getClient().rpc("discover_classes", args as never);
+    return {
+      data: (data as DiscoverClassRow[]) ?? null,
       error: error ? { message: error.message } : null,
     };
   },

@@ -1,6 +1,6 @@
 # Implementation status and remaining decisions
 
-Updated September 10, 2026. Complements the [product review](HOSTED_PRODUCT_REVIEW.md) and [roadmap](ROADMAP.md).
+Updated September 10, 2026. Launch v1 status (October 2026) lives in [PRD-launch-v1](plans/PRD-launch-v1.md) and [BACKLOG](plans/BACKLOG.md); this file stays as the earlier handoff. Complements the [product review](HOSTED_PRODUCT_REVIEW.md) and [roadmap](ROADMAP.md).
 
 ## Changes in this work
 
@@ -29,7 +29,7 @@ Everything else can follow these defaults until evidence justifies a change: sha
 
 ## Technical blockers are work, not product decisions
 
-1. ~~Verify the canonical migration series on a clean database~~ Done Oct 8 2026: `scripts/db/verify-migrations.sh` applies 00001 to 00025 to a fresh Postgres 16 with a Supabase stub (`scripts/db/supabase-stub.sql`). It found and fixed three real bugs (00005 untyped empty array, 00008 a non-existent `staff_roles` table, 00009 a reference to `class_types` instead of `offerings`). Still open: upgrading an existing installation, and a run against a real Supabase project (the stub covers `auth.uid()`, roles and storage, not every extension).
+1. ~~Verify the canonical migration series on a clean database~~ Done Oct 8 2026: `scripts/db/verify-migrations.sh` applies every migration (00001 to 00035 after the merge with main) to a fresh Postgres 16 with a Supabase stub (`scripts/db/supabase-stub.sql`). It found and fixed three real bugs (00005 untyped empty array, 00008 a non-existent `staff_roles` table, 00009 a reference to `class_types` instead of `offerings`). Still open: upgrading an existing installation, and a run against a real Supabase project (the stub covers `auth.uid()`, roles and storage, not every extension).
 2. Verify persisted operations and two-studio authorization against a real test database. Upstream now includes booking/cancellation RPCs, imports, onboarding, storefront and effective-role resolution.
 3. Harden Stripe webhook processing with durable event deduplication and atomic effects. Checkout/portal/Connect endpoints now exist, but the webhook still acknowledges some database failures and lacks demonstrated replay safety. This is a payment launch blocker.
 4. Connect hosted rules to authenticated provisioning, domain registration, separate platform billing, notifications and persisted readiness. Existing `studio-host.ts` handles storefront host parsing; the new hosted domain registry rules require server-side integration.

@@ -1,6 +1,6 @@
 /**
  * Row shapes for the PRD-024/027 phase-1 attribution and automation RPCs
- * (migration 00025). Kept apart from the large database.ts so the analytics
+ * (migration 00035). Kept apart from the large database.ts so the analytics
  * code has one obvious place to look.
  */
 

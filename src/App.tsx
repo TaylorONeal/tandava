@@ -75,6 +75,8 @@ const ResetConfirm = lazy(() => import("./pages/auth/ResetConfirm"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Demo = lazy(() => import("./pages/Demo"));
 const OpenSource = lazy(() => import("./pages/OpenSource"));
+const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
+const ForStudios = lazy(() => import("./pages/ForStudios"));
 const StudioCalculator = lazy(() => import("./pages/tools/StudioCalculator"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogCategory = lazy(() => import("./pages/blog/BlogCategory"));
@@ -132,6 +134,7 @@ const StaffWaitlist = lazy(() => import("./pages/staff/StaffWaitlist"));
 
 const Kiosk = lazy(() => import("./pages/Kiosk"));
 
+const Discover = lazy(() => import("./pages/Discover"));
 const EmbedSchedule = lazy(() => import("./pages/embed/EmbedSchedule"));
 const EmbedEvent = lazy(() => import("./pages/embed/EmbedEvent"));
 
@@ -171,10 +174,12 @@ const App = () => (
                   <Route path="/" element={<Home />} />
                   <Route path="/demo" element={<Demo />} />
                   <Route path="/open-source" element={<OpenSource />} />
+                  <Route path="/for-studios" element={<ForStudios />} />
                   <Route path="/tools/studio-calculator" element={<StudioCalculator />} />
 
                   {/* ---- Public studio storefront (slug-driven; what per-studio
                        subdomains will render). Gated on studios.discoverable. ---- */}
+                  <Route path="/discover" element={<Discover />} />
                   <Route path="/s/:slug" element={<StudioStorefront />} />
 
                   {/* ---- Express Booking: login-free booking of one class
@@ -202,9 +207,10 @@ const App = () => (
                   {/* ---- Auth routes ---- */}
                   <Route path="/auth/login" element={<Login />} />
                   <Route path="/auth/register" element={<Register />} />
+                  <Route path="/auth/reset" element={<ResetPassword />} />
+                  <Route path="/auth/reset-confirm" element={<ResetConfirm />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
                   {/* Password reset AND guest-to-account claim (PRD-020, ?claim=1). */}
-                  <Route path="/auth/reset-confirm" element={<ResetConfirm />} />
 
                   {/* ---- Authenticated member routes ---- */}
                   <Route path="/my-schedule" element={<ProtectedRoute permission="member.view_profile"><MySchedule /></ProtectedRoute>} />
