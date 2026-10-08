@@ -167,10 +167,18 @@ const PREVIOUS_KEY = "tandava.vid.prev";
 const RELINK_KEY = "tandava.vid.relink";
 
 /** Link a pending embed handoff id for a signed-in person; cleared only on success. */
-let handoffInFlight: Promise<void> | null = null;
+let handoffInFlight: Promise<HandoffStatus> | null = null;
+
+/**
+ * Outcome of a handoff link attempt. "settled": the server answered for a
+ * signed-in person (the id is now owned or was rotated away). "anonymous":
+ * nobody is signed in, so there is no one else's journey to land in.
+ * "error": no answer; ownership is unknown.
+ */
+export type HandoffStatus = "none" | "settled" | "anonymous" | "error";
 
 /** Link a pending embed handoff id; bookings wait on this (captureSettled). */
-export function retryHandoffLink(): Promise<void> {
+export function retryHandoffLink(): Promise<HandoffStatus> {
   if (handoffInFlight) return handoffInFlight;
   const p = retryHandoffLinkInner().finally(() => {
     if (handoffInFlight === p) handoffInFlight = null;
@@ -179,19 +187,21 @@ export function retryHandoffLink(): Promise<void> {
   return p;
 }
 
-async function retryHandoffLinkInner() {
+async function retryHandoffLinkInner(): Promise<HandoffStatus> {
   const id = lsGet(RELINK_KEY);
-  if (!id) return;
+  if (!id) return "none";
   try {
     const { error, owned } = await linkMyVisitorBounded(id, "embed_handoff");
+    if (error) return "error";
     // null: not signed in yet, keep it for later. false: the id belongs to
     // someone else (a copied embed link), so stop using it on this browser.
-    if (!error && owned !== null) {
-      lsRemove(RELINK_KEY);
-      if (owned === false) rotateAwayFrom(id);
-    }
+    if (owned === null) return "anonymous";
+    lsRemove(RELINK_KEY);
+    if (owned === false) rotateAwayFrom(id);
+    return "settled";
   } catch {
     // Retried on the next page view.
+    return "error";
   }
 }
 
@@ -314,19 +324,21 @@ async function trackVisitInner(slug: string, surface: Surface, opts?: { studioSi
     // the id belongs to someone else. Wait (briefly) for that answer and use
     // whatever id survives, so this visit never lands in the other person's
     // journey. Anonymous visitors get an immediate null and keep the id.
-    const settled = await Promise.race([
-      retryHandoffLink().then(() => true),
-      new Promise<false>((r) => setTimeout(() => r(false), HANDOFF_WAIT_MS)),
+    const status = await Promise.race([
+      retryHandoffLink(),
+      new Promise<"timeout">((r) => setTimeout(() => r("timeout"), HANDOFF_WAIT_MS)),
     ]);
-    // No answer in time: skip this capture rather than risk writing it under
-    // someone else's id. Capture once the answer arrives (only if it settled
-    // the question; an error leaves it to captureSettled before a booking).
-    if (!settled) {
-      void retryHandoffLink().then(() => {
-        if (!lsGet(RELINK_KEY)) void trackVisit(slug, surface, opts);
+    // Ownership unknown (no answer in time, or an error): skip this capture
+    // rather than risk writing it under someone else's id. A late answer
+    // that settles it triggers the capture; an error leaves it to the next
+    // page view or captureSettled before a booking.
+    if (status === "timeout") {
+      void retryHandoffLink().then((late) => {
+        if (late === "settled" || late === "anonymous" || late === "none") void trackVisit(slug, surface, opts);
       });
       return;
     }
+    if (status === "error") return;
     visitorId = getVisitorId();
   } else {
     void retryHandoffLink();

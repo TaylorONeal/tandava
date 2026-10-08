@@ -669,3 +669,46 @@ describe("handoff answer arriving after the wait (PR #72 review)", () => {
     }
   });
 });
+
+describe("handoff ownership check that errors (PR #72 review)", () => {
+  it("does not capture under the unverified handoff id", async () => {
+    const foreign = "13131313-1313-4313-8313-131313131313";
+    vi.stubGlobal("window", {
+      localStorage: memoryStorage(),
+      sessionStorage: memoryStorage(),
+      location: { href: `https://app.example.com/s/oxatl?tv=${foreign}` },
+    });
+    vi.stubGlobal("document", { referrer: "" });
+    vi.stubGlobal("navigator", { userAgent: "test" });
+    const { api, data } = await import("@/lib/backend");
+    const link = vi.mocked(data.linkMyVisitor);
+    link.mockReset();
+    link.mockResolvedValue({ error: { message: "network" }, owned: null } as never);
+    const invoke = vi.mocked(api.invoke);
+    invoke.mockReset();
+    const s = await import("./session");
+    await s.trackVisit("oxatl", "storefront" as never);
+    expect(invoke).not.toHaveBeenCalled();
+  });
+
+  it("still captures for an anonymous visitor (nobody signed in)", async () => {
+    const handoff = "24242424-2424-4424-8424-242424242424";
+    vi.stubGlobal("window", {
+      localStorage: memoryStorage(),
+      sessionStorage: memoryStorage(),
+      location: { href: `https://app.example.com/s/oxatl?tv=${handoff}` },
+    });
+    vi.stubGlobal("document", { referrer: "" });
+    vi.stubGlobal("navigator", { userAgent: "test" });
+    const { api, data } = await import("@/lib/backend");
+    const link = vi.mocked(data.linkMyVisitor);
+    link.mockReset();
+    link.mockResolvedValue({ error: null, owned: null } as never);
+    const invoke = vi.mocked(api.invoke);
+    invoke.mockReset();
+    invoke.mockResolvedValue({ data: { sessionId: "35353535-3535-4535-8535-353535353535" }, error: null } as never);
+    const s = await import("./session");
+    await s.trackVisit("oxatl", "storefront" as never);
+    expect((invoke.mock.calls.at(-1)?.[1] as { visitorId: string }).visitorId).toBe(handoff);
+  });
+});
