@@ -19,7 +19,6 @@ import {
   Plus, X, Gift, FileText, CheckCircle2, AlertCircle, Filter,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import { MemberSourceStrip } from "@/components/analytics/MemberSourceStrip";
 
 // --- Mock Data ---
 const member = {
@@ -226,7 +225,9 @@ export default function MemberDetail() {
           </Card>
         </div>
 
-        <MemberSourceStrip profileId={routeId} />
+        {/* MemberSourceStrip waits for this page to load the routed member's
+            real details (backlog W7-11): next to the fixture member it would
+            show a real person's source under someone else's name. */}
 
         {/* Tabs */}
         <Tabs defaultValue="membership" className="space-y-6">
