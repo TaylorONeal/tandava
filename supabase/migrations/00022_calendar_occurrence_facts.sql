@@ -1,4 +1,4 @@
--- 00021: add-to-calendar facts on get_public_occurrence (PRD-022, PR #68)
+-- 00022: add-to-calendar facts on get_public_occurrence (PRD-022, PR #68)
 --
 -- A booking confirmation builds a calendar event (.ics, Google, Outlook) whose
 -- location must resolve in Apple and Google Maps and whose description states
@@ -79,7 +79,7 @@ AS $$
 $$;
 
 COMMENT ON FUNCTION get_public_occurrence(TEXT, UUID) IS
-  'Public, read-only booking-relevant facts for ONE class occurrence of a discoverable studio: member booking ids (00020) plus calendar address and cancellation window (00021).';
+  'Public, read-only booking-relevant facts for ONE class occurrence of a discoverable studio: member booking ids (00021) plus calendar address and cancellation window (00022).';
 
 -- express-book calls this with the service role; no REVOKE FROM PUBLIC here,
 -- which would also strip the grant service_role inherits.

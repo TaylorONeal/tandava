@@ -127,6 +127,33 @@ export const HELP: HelpEntry[] = [
     answer:
       "First-party only: which page, where the link came from, campaign tags, and the kind of device. No advertising pixels unless a studio adds one knowingly, no IP addresses stored, no fingerprinting. A studio sees that someone came from its own Instagram link, which is what a front desk would notice anyway.",
   },
+  {
+    id: "marketing-automation",
+    audience: ["owner"],
+    status: "planned",
+    question: "Does Tandava send marketing for me?",
+    answer:
+      "Planned. Lifecycle messages with defaults that work untouched: welcome after a first visit, intro-offer follow-ups, one class left on a pack, lapsed and win-back, birthdays and milestones, review requests. Only to people who opted in, never in quiet hours, and each automation reports the memberships and revenue it produced, not open rates.",
+    learnMore: "docs/prd/PRD-027-crm-marketing-ads-and-migration.md",
+  },
+  {
+    id: "measure-ads",
+    audience: ["owner"],
+    status: "planned",
+    question: "How will I measure my Instagram and Google ads?",
+    answer:
+      "Planned. You keep running ads in your own accounts. Connect them in Settings and Tandava sends real bookings and purchases back to Meta and Google from the server, deduplicated with your pixel and only for people who consented, so the ad platforms optimise for paying students and your report shows return on money that actually arrived.",
+    learnMore: "docs/prd/PRD-027-crm-marketing-ads-and-migration.md",
+  },
+  {
+    id: "switching",
+    audience: ["owner"],
+    status: "planned",
+    question: "Can I switch from Mindbody or another system?",
+    answer:
+      "Today: client lists, attendance and transactions import from CSV exports of Mindbody, Momence, Walla, Arketa, WellnessLiving or any spreadsheet. Planned: class pack balances, active memberships with their renewal dates, marketing opt-ins, and cards on file through Stripe's card import, with a dated cutover plan. Your old provider may charge for exports or need notice to release cards; we list what each one requires.",
+    learnMore: "docs/prd/PRD-027-crm-marketing-ads-and-migration.md",
+  },
 ];
 
 export function helpById(id: string): HelpEntry | undefined {
