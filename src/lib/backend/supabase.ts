@@ -32,6 +32,7 @@ import type {
   Backend,
 } from "./types";
 import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront } from "@/types/database";
+import type { AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
 
 // ---------------------------------------------------------------------------
 // Supabase client singleton
@@ -276,6 +277,59 @@ const supabaseData: DataProvider = {
       data: rows[0] ?? null,
       error: error ? { message: error.message } : null,
     };
+  },
+
+  async linkMyVisitor(visitorId, via): Promise<MutationResult> {
+    const { error } = await getClient().rpc("link_my_visitor", {
+      p_visitor_id: visitorId,
+      p_via: via,
+    } as never);
+    return { error: error ? { message: error.message } : null };
+  },
+
+  async getAttributionSources(from, to, model): Promise<DataResult<AttributionSourceRow[]>> {
+    const { data, error } = await getClient().rpc("get_attribution_sources", {
+      p_from: from.toISOString(),
+      p_to: to.toISOString(),
+      p_model: model,
+    } as never);
+    const rows = ((data as AttributionSourceRow[] | null) ?? []).map((r) => ({
+      ...r,
+      // bigint columns arrive as numbers or numeric strings depending on size.
+      sessions: Number(r.sessions),
+      new_people: Number(r.new_people),
+      bookings: Number(r.bookings),
+      purchases: Number(r.purchases),
+      revenue_cents: Number(r.revenue_cents),
+    }));
+    return { data: rows, error: error ? { message: error.message } : null };
+  },
+
+  async getMemberAttribution(profileId): Promise<DataResult<MemberAttribution>> {
+    const { data, error } = await getClient().rpc("get_member_attribution", {
+      p_profile_id: profileId,
+    } as never);
+    const rows = (data as MemberAttribution[] | null) ?? [];
+    return { data: rows[0] ?? null, error: error ? { message: error.message } : null };
+  },
+
+  async getAutomationSettings(studioId): Promise<DataResult<AutomationSettingsRow>> {
+    const { data, error } = await getClient()
+      .from("automation_settings" as never)
+      .select("studio_id, guest_to_member_enabled, first_visit_enabled, lapsed_enabled, lapsed_days_override, intro_offer_url")
+      .eq("studio_id", studioId)
+      .maybeSingle();
+    return {
+      data: (data as AutomationSettingsRow | null) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async saveAutomationSettings(row): Promise<MutationResult> {
+    const { error } = await getClient()
+      .from("automation_settings" as never)
+      .upsert({ ...row, updated_at: new Date().toISOString() } as never, { onConflict: "studio_id" });
+    return { error: error ? { message: error.message } : null };
   },
 
   async getMyStudio(): Promise<DataResult<MyStudioRow>> {

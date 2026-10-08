@@ -294,6 +294,12 @@ Today: operational reports from your real data (bookings, attendance, membership
 
 Planned, and a condition of the hosted pilot: attribution on every surface, as one linked view. Each visitor gets a first-party id on your booking page, embedded schedule, landing pages, blog, emails and the app; when they book or sign up, their first touch and converting touch are frozen onto that conversion. You then see sources, campaigns and landing pages by bookings, new people, members and revenue; the common journeys; the funnel per surface; and each feature (instant booking, the Network, privates) as a channel with its own results. First-party only, no advertising pixels unless you add one, no IP addresses stored. See [PRD-024](prd/PRD-024-attribution-everywhere.md).
 
+Phase 1 is built and waiting to be deployed and checked against a live database: visits to your booking page, embedded schedule and instant-booking links are recorded; bookings, memberships, packs and event purchases are credited to the visit that started the journey and the one that closed it; and **Analytics → Where students come from** shows it by channel, source and campaign, with a "How they found you" line on each member. Landing pages, emails and the apps come next.
+
+### Does Tandava send marketing emails for me?
+
+Planned for the pilot, and built: three automatic emails in your studio's name, on by default and switchable under **Automations**. A guest who booked without an account gets a nudge to save their details and then your intro offer; a first-timer gets a welcome and then the intro offer; a regular who stops coming gets one check-in, timed from their own usual gap between classes (14 to 45 days). Only to people who said yes to your emails, never between 9pm and 8am your time, at most one a day, and every email has a one-click unsubscribe. Birthdays, milestones, pack-running-low and text messages come later. See [PRD-027](prd/PRD-027-crm-marketing-ads-and-migration.md).
+
 ### How do referral programs work?
 
 You configure a referral program with rewards for both the referrer and the referred student. Reward types include account credits, free classes, and discounts. You can require that the referred student make a purchase before either reward is granted, and you can cap the number of referrals per student. Each referral generates a unique code, and the system tracks the full lifecycle from referral sent to reward granted.

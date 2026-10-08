@@ -316,6 +316,32 @@ serve(async (req) => {
 
     const ipHash = await hashIp(req);
     const utm = (payload.utm ?? {}) as Record<string, string | undefined>;
+    // First-party attribution (PRD-024). Both optional; both validated.
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const visitorId = typeof payload.visitorId === "string" && UUID_RE.test(payload.visitorId) ? payload.visitorId : null;
+    const sessionId = typeof payload.sessionId === "string" && UUID_RE.test(payload.sessionId) ? payload.sessionId : null;
+
+    /** Attribution and consent are best effort: they must never fail a booking. */
+    const recordAttribution = async (profileId: string, bookingId: string | null, valueCents: number) => {
+      try {
+        if (visitorId) await db.rpc("link_visitor", { p_profile_id: profileId, p_visitor_id: visitorId, p_via: "express_booking" });
+        await db.rpc("record_consent", {
+          p_studio_id: studioId, p_profile_id: profileId, p_visitor_id: visitorId,
+          p_purpose: "email_marketing", p_granted: guest.marketingConsent, p_source: "express_booking_form",
+          p_policy_version: "2026-10",
+        });
+        if (bookingId) {
+          await db.rpc("record_conversion", {
+            p_studio_id: studioId, p_profile_id: profileId, p_visitor_id: visitorId,
+            p_conversion_type: "guest_booking", p_value_cents: valueCents, p_currency: row.studio_currency ?? "USD",
+            p_entity_type: "booking", p_entity_id: bookingId, p_converting_session_id: sessionId,
+            p_member_source: "express",
+          });
+        }
+      } catch (err) {
+        console.error("express-book: attribution failed", err);
+      }
+    };
 
     /** Record the attempt. Every exit path writes exactly one claim row. */
     const recordClaim = async (fields: Record<string, unknown>) => {
@@ -464,6 +490,9 @@ serve(async (req) => {
           studio_id: studioId,
           amount_cents: String(decision.amountCents),
           express: "1",
+          // Carried to stripe-webhook, which records the paid conversion.
+          ...(visitorId ? { visitor_id: visitorId } : {}),
+          ...(sessionId ? { session_id: sessionId } : {}),
         },
         ...(connected
           ? {
@@ -475,6 +504,7 @@ serve(async (req) => {
           : {}),
       });
 
+      await recordAttribution(profileId, null, 0);
       await recordClaim({
         outcome: "pending_payment",
         profile_id: profileId,
@@ -501,6 +531,7 @@ serve(async (req) => {
     const outcome = created?.status === "waitlisted" ? "waitlisted" : "booked";
 
     await recordClaim({ outcome, profile_id: profileId, booking_id: created?.id ?? null });
+    await recordAttribution(profileId, outcome === "booked" ? created?.id ?? null : null, 0);
 
     return json({
       outcome,

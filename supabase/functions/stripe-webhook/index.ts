@@ -117,12 +117,23 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       // lands them on the waitlist instead of overselling the room. A raw
       // insert here could do neither. It consumes no entitlement, which is
       // correct for a drop-in: the payment IS the entitlement.
-      const { error: bookingError } = await supabase.rpc("create_guest_booking", {
+      const { data: bookingRow, error: bookingError } = await supabase.rpc("create_guest_booking", {
         p_occurrence_id: metadata.occurrence_id,
         p_profile_id: metadata.profile_id,
         p_transaction_id: txn.id,
       });
       if (bookingError) console.error("Failed to create booking:", bookingError);
+      const booking = Array.isArray(bookingRow) ? bookingRow[0] : bookingRow;
+      await recordPurchaseConversion(
+        metadata,
+        metadata.express === "1" ? "guest_booking" : "member_booking",
+        "transaction",
+        txn.id,
+        session.amount_total,
+        session.currency,
+        metadata.express === "1" ? "express" : "signup",
+      );
+      if (!booking) console.warn("[stripe-webhook] drop-in booking row not returned");
       break;
     }
 
@@ -171,6 +182,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         membership_id: membership.id,
       });
       if (txnError) console.error("Failed to record membership transaction:", txnError);
+      await recordPurchaseConversion(metadata, "membership_start", "membership", membership.id, session.amount_total, session.currency, "signup");
       break;
     }
 
@@ -205,6 +217,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       if (regErr) {
         console.error("Failed to create event registration:", regErr);
         break;
+      }
+
+      if (txn?.id) {
+        await recordPurchaseConversion(metadata, "event_registration", "transaction", txn.id, paid, session.currency, "signup");
       }
 
       // Bump denormalized registration counts (no trigger for events).
@@ -258,8 +274,46 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         class_pack_id: pack.id,
       });
       if (txnError) console.error("Failed to record class pack transaction:", txnError);
+      await recordPurchaseConversion(metadata, "pack_purchase", "class_pack", pack.id, session.amount_total, session.currency, "signup");
       break;
     }
+  }
+}
+
+/**
+ * Attribution for a completed purchase (PRD-024): writes conversion_events with
+ * frozen first/converting touches via record_conversion(). Idempotent per
+ * (type, entity), so a replayed webhook records nothing new. Best effort: a
+ * failure is logged and never affects the purchase itself.
+ */
+async function recordPurchaseConversion(
+  metadata: Record<string, string>,
+  conversionType: string,
+  entityType: string,
+  entityId: string | null,
+  amountCents: number | null,
+  currency: string | null,
+  memberSource: string,
+) {
+  try {
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const visitorId = metadata.visitor_id && UUID_RE.test(metadata.visitor_id) ? metadata.visitor_id : null;
+    const sessionId = metadata.session_id && UUID_RE.test(metadata.session_id) ? metadata.session_id : null;
+    const { error } = await supabase.rpc("record_conversion", {
+      p_studio_id: metadata.studio_id,
+      p_profile_id: metadata.profile_id,
+      p_visitor_id: visitorId,
+      p_conversion_type: conversionType,
+      p_value_cents: amountCents ?? 0,
+      p_currency: (currency ?? "usd").toUpperCase(),
+      p_entity_type: entityType,
+      p_entity_id: entityId,
+      p_converting_session_id: sessionId,
+      p_member_source: memberSource,
+    });
+    if (error) console.error("[stripe-webhook] record_conversion failed:", error.message);
+  } catch (err) {
+    console.error("[stripe-webhook] record_conversion threw:", err);
   }
 }
 

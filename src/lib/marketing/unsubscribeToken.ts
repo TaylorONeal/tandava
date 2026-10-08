@@ -1,0 +1,57 @@
+/**
+ * Signed one-click unsubscribe tokens for automation email (PRD-027).
+ *
+ * token = base64url("<studioId>:<profileId>") + "." + base64url(HMAC-SHA256)
+ *
+ * No expiry: an unsubscribe link has to keep working in an old email. The
+ * token only lets its holder turn email marketing OFF for one person at one
+ * studio, which is the safe direction. WebCrypto, so the same code runs in
+ * the Deno Edge Functions and in vitest.
+ */
+
+const enc = new TextEncoder();
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function b64url(bytes: Uint8Array): string {
+  let s = "";
+  for (const b of bytes) s += String.fromCharCode(b);
+  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function fromB64url(s: string): Uint8Array<ArrayBuffer> {
+  const pad = s.length % 4 === 0 ? "" : "=".repeat(4 - (s.length % 4));
+  const bin = atob(s.replace(/-/g, "+").replace(/_/g, "/") + pad);
+  const out = new Uint8Array(new ArrayBuffer(bin.length));
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+async function key(secret: string): Promise<CryptoKey> {
+  return crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign", "verify"]);
+}
+
+export async function signUnsubscribe(studioId: string, profileId: string, secret: string): Promise<string> {
+  if (!secret) throw new Error("unsubscribe secret missing");
+  const payload = enc.encode(`${studioId}:${profileId}`);
+  const sig = new Uint8Array(await crypto.subtle.sign("HMAC", await key(secret), payload));
+  return `${b64url(payload)}.${b64url(sig)}`;
+}
+
+export async function verifyUnsubscribe(
+  token: string,
+  secret: string,
+): Promise<{ studioId: string; profileId: string } | null> {
+  if (!secret || !token || token.length > 400) return null;
+  const [p, s] = token.split(".");
+  if (!p || !s) return null;
+  try {
+    const payload = fromB64url(p);
+    const ok = await crypto.subtle.verify("HMAC", await key(secret), fromB64url(s), payload);
+    if (!ok) return null;
+    const [studioId, profileId] = new TextDecoder().decode(payload).split(":");
+    if (!UUID.test(studioId ?? "") || !UUID.test(profileId ?? "")) return null;
+    return { studioId, profileId };
+  } catch {
+    return null;
+  }
+}

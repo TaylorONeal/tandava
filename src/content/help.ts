@@ -117,8 +117,23 @@ export const HELP: HelpEntry[] = [
     status: "planned",
     question: "Can I see which post, link or ad brought me a paying member?",
     answer:
-      "That is the goal: one view from the first click to the purchase, by source, campaign and landing page, for your booking page, your embedded schedule, your landing pages, your emails and the app. Today only instant bookings record the campaign tags on the link; the full view is being built and is a condition of the hosted pilot.",
+      "Yes, for visits that start on your Tandava booking page, your embedded schedule or an instant-booking link: each visit records the campaign tags on the link, the site it came from and the kind of device, and each booking, membership, pack or event purchase is credited to the visit that started the journey and the one that closed it. Analytics, Where students come from, shows it by channel, source and campaign.\nNot yet: landing pages, emails sent from Tandava and the mobile apps. People who joined before tracking started show as \"Before tracking started\".",
     learnMore: "docs/prd/PRD-024-attribution-everywhere.md",
+  },
+  {
+    id: "attribution-model",
+    audience: ["owner"],
+    question: "First visit or last visit: which should I look at?",
+    answer:
+      "First visit (the default) credits whatever first brought the person to you, so it shows which posts and links find new students. Last visit credits the visit where they actually booked or bought, so it shows what closes the sale, often an email or a direct visit.\nMost studios decide where to post with first visit and check last visit when an email or offer goes out.",
+  },
+  {
+    id: "attribution-tags",
+    audience: ["owner"],
+    question: "How do I make my own links show up by name?",
+    answer:
+      "Add campaign tags to the links you share. The UTM Builder in the studio menu makes them: source is where the link lives (instagram, newsletter, flyer), campaign is what it is for (fall_intro). Untagged visits still show by the site they came from, but Instagram's app often hides that, so tag your bio link.",
+    learnMore: "/manage/utm-builder",
   },
   {
     id: "tracking-privacy",
@@ -133,8 +148,40 @@ export const HELP: HelpEntry[] = [
     status: "planned",
     question: "Does Tandava send marketing for me?",
     answer:
-      "Planned. Lifecycle messages with defaults that work untouched: welcome after a first visit, intro-offer follow-ups, one class left on a pack, lapsed and win-back, birthdays and milestones, review requests. Only to people who opted in, never in quiet hours, and each automation reports the memberships and revenue it produced, not open rates.",
+      "Three automatic emails, on by default and switchable under Automations in the studio menu: a guest who booked without an account gets a nudge to save their details and then your intro offer; a first-timer gets a welcome and then the intro offer; a regular who stops coming gets one check-in.\nOnly to people who said yes to emails, never between 9pm and 8am in your studio's time, never more than one a day, and every email has a one-click unsubscribe. Birthdays, milestones, pack-running-low and texts are planned.",
     learnMore: "docs/prd/PRD-027-crm-marketing-ads-and-migration.md",
+  },
+  {
+    id: "automation-guest-to-member",
+    audience: ["owner"],
+    status: "planned",
+    question: "What does the guest follow-up send?",
+    answer:
+      "Someone who booked as a guest gets an email a day later suggesting they save their details (so they don't retype them next time), and two days after that your intro offer, or an invitation back to your schedule if you haven't set one. It stops as soon as they create an account, buy a pack or membership, or unsubscribe.",
+  },
+  {
+    id: "automation-first-visit",
+    audience: ["owner"],
+    status: "planned",
+    question: "What does the first-visit welcome send?",
+    answer:
+      "A few hours after someone checks in to their first class: a short welcome from your studio. Three days after the class: your intro offer, or an invitation back to your schedule if you haven't set one. It stops if they buy a pack or membership or book again.",
+  },
+  {
+    id: "automation-lapsed",
+    audience: ["owner"],
+    status: "planned",
+    question: "When is a regular counted as lapsed?",
+    answer:
+      "Smart default: twice the person's usual gap between classes, never less than 14 days or more than 45 (21 when there isn't enough history yet). Someone who comes weekly is checked on after two weeks, a once-a-month regular after 45 days. They get one email per lapse, not a series. Set a fixed number of days if you prefer.",
+  },
+  {
+    id: "automation-intro-offer",
+    audience: ["owner"],
+    status: "planned",
+    question: "What should the intro offer link be?",
+    answer:
+      "The page where a newcomer buys your intro offer, usually your intro pack on your Tandava pricing page. Leave it empty and the follow-ups invite people back to your schedule instead of naming an offer.",
   },
   {
     id: "measure-ads",

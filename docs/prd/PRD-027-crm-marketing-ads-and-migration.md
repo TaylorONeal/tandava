@@ -3,7 +3,7 @@
 ## Overview
 **Phase:** foundation now (tables, migration 00024); features after the pilot (PRD-024 build steps 1 to 3 first).
 **Priority:** P1 strategic. Automated marketing is a large part of why studios pay for Mindbody's top tier; the switching path is what lets them leave.
-**Status:** Spec plus schema foundation. Research: `docs/competitive/MARKETING-AUTOMATION-AND-ADS-2026-10.md` (sources there).
+**Status:** Spec, schema foundation (00024) and phase 1 built (00025, branch `feat/attribution-phase1`; not yet deployed). Phase 1 build notes are under "Phase 1: pilot". Research: `docs/competitive/MARKETING-AUTOMATION-AND-ADS-2026-10.md` (sources there).
 **Builds on:** PRD-007 lifecycle automation (planned), PRD-011 campaign hub (schema in 00008: `campaigns`, `campaign_messages`, `campaign_sends`, `audience_segments`, `utm_templates`, `link_clicks`), PRD-024 attribution, PRD-026 booking links, connector/import infrastructure (00005: `import_jobs_v2`, `entity_sync_mappings`, `studio_connectors`).
 
 ---
@@ -107,6 +107,8 @@ The rule: phase 1 needs no third-party approval, no per-studio registration and 
 | Paid ads | Click ids and UTMs captured, so paid traffic shows up in Sources by campaign with real revenue. No pixel, no API | The owner sees what their ads returned without us touching their ad accounts |
 
 Not in phase 1: SMS, custom sending domains, short links, browser pixels, any ad-platform connection.
+
+**Phase 1 as built (Oct 8 2026).** Decisions: `src/lib/marketing/automations.ts` (quiet hours, daily cap, consent, episodes, lapsed threshold) and `runner.ts`; emails: `automationEmails.ts` (studio name as sender, reply-to the studio email, postal address from the primary location, unsubscribe in footer and List-Unsubscribe one-click header); runner: `supabase/functions/run-automations` (hourly via pg_cron, shared secret, dry run unless `AUTOMATIONS_ENABLED=true`, claims each send before sending so overlapping runs can't double-send, failed sends are recorded and not retried); unsubscribe: HMAC token (`unsubscribeToken.ts`), `supabase/functions/unsubscribe` plus the `/unsubscribe` page (GET never changes anything); the save-your-details email lands on `/s/:slug/save-details`, which sends a fresh claim link because password links expire within the hour. Owner settings: `/manage/automations` with smart defaults and an info icon per choice. Operator steps: `docs/OPERATOR_SETUP.md`. Each automation's own conversions show in Sources as channel Email with `utm_campaign` = the automation key.
 
 ### Phase 2: after the pilot proves the reports match the money
 - SMS automations (per-studio 10DLC registration, explicit opt-in, keyword opt-out)

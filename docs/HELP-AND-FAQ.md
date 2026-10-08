@@ -14,9 +14,10 @@ Written Oct 8 2026. Taylor: "all of this needs to be in in-app help, FAQs on the
 | Demo page `/demo` | Its own developer FAQ (self-hosting); keep separate, it answers a different reader | developer | Exists |
 | Booking page, confirmation | `<HelpTip>` next to the save-your-details choice; "Why did it ask me to sign in?" on the existing-account screen | member | Partly built |
 | Studio settings (`/manage/settings/*`) | Info icon per setting + a "How this works" panel per feature (Network, privates, Express Booking, attribution) | owner | Planned with each feature |
-| Analytics tiles | Info icon with the formula and the counterfactual in one sentence (PRD-023 ROI page, PRD-024) | owner | Planned |
+| Analytics tiles | Info icon with the formula and the counterfactual in one sentence (PRD-023 ROI page, PRD-024). Sources report and member strip have theirs (`attribution`, `attribution-model`, `attribution-tags`) | owner | Sources built; ROI planned |
 | Teacher opt-ins (`/teach/availability`) | Off-site safety defaults and the insurance note (PRD-025) | teacher | Planned |
 | Member app | Same `help.ts` content, member audience, in the Me tab under Help | member | Planned (STORE-APPS.md) |
+| Automations (`/manage/automations`) | One info icon per automation plus the lapsed threshold and intro offer link (`automation-*`) | owner | Built; entries stay `planned` until deployed and verified |
 | Emails | One line and a link, never the full answer | all | Planned |
 | `docs/FAQ.md`, `docs/FAQ-detailed.md` | Long form for owners and search engines | owner | Exists; updated Oct 8 |
 

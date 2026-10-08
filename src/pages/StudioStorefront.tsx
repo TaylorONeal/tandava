@@ -15,6 +15,8 @@
 
 import { ClassTime } from "@/components/time/ClassTime";
 import { useParams, Link } from "react-router-dom";
+import { useEffect } from "react";
+import { trackVisit } from "@/lib/analytics/session";
 import { useStudioStorefront, usePublicSchedule } from "@/hooks/useBooking";
 import { isBackendConfigured } from "@/lib/backend";
 import { formatPrice } from "@/lib/reference-data";
@@ -37,6 +39,11 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
   const slug = slugProp ?? params.slug;
   const { data: storefront, isLoading, isError } = useStudioStorefront(slug);
   const { data: schedule } = usePublicSchedule(slug);
+
+  // First-party visit capture (PRD-024): which link, post or site sent them here.
+  useEffect(() => {
+    if (slug && isBackendConfigured()) void trackVisit(slug, "storefront");
+  }, [slug]);
 
   // Storefronts read from the live backend; the demo build has none.
   if (!isBackendConfigured()) {

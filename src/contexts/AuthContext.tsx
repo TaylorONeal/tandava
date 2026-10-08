@@ -5,6 +5,7 @@ import type { Profile } from "@/types/database";
 import type { Permission } from "@/types/roles";
 import { getPermissionsForUserRole } from "@/types/roles";
 import { useDemo } from "@/contexts/DemoContext";
+import { linkVisitorOnce } from "@/lib/analytics/session";
 import {
   checkLoginRateLimit,
   clearLoginRateLimit,
@@ -113,6 +114,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       let permissions: Permission[] = [];
 
       if (user) {
+        void linkVisitorOnce(user.id);
         profile = await fetchProfile(user.id);
         if (profile) {
           permissions = getPermissionsForUserRole(profile.role);

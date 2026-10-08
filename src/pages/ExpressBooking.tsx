@@ -31,6 +31,7 @@ import { MemberBookingPanel } from "@/components/booking/MemberBookingPanel";
 import { ClassTime } from "@/components/time/ClassTime";
 import { AddToCalendar } from "@/components/calendar/AddToCalendar";
 import { HelpTip } from "@/components/help/HelpTip";
+import { currentSessionId, getVisitorId, trackVisit } from "@/lib/analytics/session";
 import type { ClassEventInput } from "@/lib/calendar/classEvent";
 import { expressBookingPath, loginHref } from "@/lib/auth/next";
 import { isBackendConfigured } from "@/lib/backend";
@@ -189,6 +190,12 @@ export default function ExpressBooking() {
   const signedIn = live && Boolean(user);
 
   const { data: fetched, isLoading, isError } = usePublicOccurrence(slug, occurrenceId);
+
+  // First-party visit capture (PRD-024). Adopts a visitor id handed over from
+  // the embed widget (tv) so the widget visit and this booking join.
+  useEffect(() => {
+    if (slug && live) void trackVisit(slug, "booking");
+  }, [slug, live]);
   const expressBook = useExpressBook();
 
   const [form, setForm] = useState<Form>(EMPTY_FORM);
@@ -264,6 +271,8 @@ export default function ExpressBooking() {
       marketingConsent: form.marketingConsent,
       waiverAccepted: form.waiverAccepted,
       utm,
+      visitorId: live ? getVisitorId() : undefined,
+      sessionId: live && slug ? currentSessionId(slug) : undefined,
     });
 
     if (result.fields?.length) {

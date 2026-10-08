@@ -53,7 +53,13 @@ Estimated time: a couple of focused hours.
    supabase functions deploy email
    supabase functions deploy push
    supabase functions deploy sms
+   # Public, no user session; each validates its own input or secret:
+   supabase functions deploy express-book --no-verify-jwt
+   supabase functions deploy analytics-session --no-verify-jwt
+   supabase functions deploy unsubscribe --no-verify-jwt
+   supabase functions deploy run-automations --no-verify-jwt
    ```
+   Before `db push` on an existing project, check the migrations build a clean database locally: `scripts/db/verify-migrations.sh` (needs a local Postgres 16; see the script header).
 4. **Auth config** (**Authentication → URL Configuration**):
    - **Site URL:** `https://tandavastudio.com`
    - **Redirect URLs:** add `https://tandavastudio.com/**`
@@ -146,6 +152,46 @@ If all five pass, the hosted service is live and self-serve.
 ## Optional: notifications
 
 Email and SMS are provider-agnostic edge functions. To turn them on, set the relevant secrets (see [docs/developer/email-system.md](developer/email-system.md) and the SMS function) — e.g. `EMAIL_PROVIDER=resend` + `RESEND_API_KEY=…`, and VAPID keys for web push. The app runs fine without them; studios just won't get automated messages until they're configured.
+
+### Attribution and automations (PRD-024 / PRD-027 phase 1)
+
+Visit capture (`analytics-session`) and conversion recording need no secrets beyond `APP_URL`. The automation emails need:
+
+```bash
+supabase secrets set APP_URL=https://tandavastudio.com
+supabase secrets set AUTOMATIONS_CRON_SECRET=<long random string>
+supabase secrets set AUTOMATIONS_UNSUBSCRIBE_SECRET=<a different long random string>
+# Leave this unset until a dry run looks right; without it every run only reports.
+supabase secrets set AUTOMATIONS_ENABLED=true
+```
+
+Never rotate `AUTOMATIONS_UNSUBSCRIBE_SECRET` casually: it signs the unsubscribe links in emails already sent, and rotating it breaks them.
+
+Dry run first (returns the plan per studio, sends nothing):
+
+```bash
+curl -s -X POST "https://<project-ref>.supabase.co/functions/v1/run-automations" \
+  -H "x-cron-secret: $AUTOMATIONS_CRON_SECRET" -H "content-type: application/json" \
+  -d '{"dryRun": true}'
+```
+
+Then schedule it hourly with pg_cron + pg_net (**Database → Extensions**: enable both; store the secret in Vault rather than in the job text):
+
+```sql
+select vault.create_secret('<the cron secret>', 'automations_cron_secret');
+select cron.schedule('run-automations', '7 * * * *', $$
+  select net.http_post(
+    url := 'https://<project-ref>.supabase.co/functions/v1/run-automations',
+    headers := jsonb_build_object(
+      'content-type', 'application/json',
+      'x-cron-secret', (select decrypted_secret from vault.decrypted_secrets where name = 'automations_cron_secret')
+    ),
+    body := '{}'::jsonb
+  );
+$$);
+```
+
+Quiet hours, the daily cap and consent are enforced per person in code, so an hourly schedule is safe in every time zone.
 
 ---
 

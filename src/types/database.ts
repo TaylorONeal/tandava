@@ -2860,6 +2860,18 @@ export interface Database {
         Args: { p_slug: string };
         Returns: StudioStorefront | null;
       };
+      link_my_visitor: {
+        Args: { p_visitor_id: string; p_via: string };
+        Returns: undefined;
+      };
+      get_attribution_sources: {
+        Args: { p_from: string; p_to: string; p_model: string };
+        Returns: import("./attribution").AttributionSourceRow[];
+      };
+      get_member_attribution: {
+        Args: { p_profile_id: string };
+        Returns: import("./attribution").MemberAttribution[];
+      };
     };
   };
 }

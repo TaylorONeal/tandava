@@ -37,6 +37,7 @@ import {
   Share2,
   Code2,
   Megaphone,
+  Workflow,
   CheckSquare,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -63,6 +64,7 @@ const manageNavigation = [
   { nameKey: "landingPages", href: "/manage/landing-pages", icon: Globe },
   { nameKey: "utmBuilder", href: "/manage/utm-builder", icon: Link2 },
   { nameKey: "campaigns", href: "/manage/campaigns", icon: Megaphone },
+  { nameKey: "automations", href: "/manage/automations", icon: Workflow },
   { nameKey: "tasks", href: "/manage/tasks", icon: CheckSquare },
   { nameKey: "reports", href: "/manage/reports", icon: BarChart3 },
   { nameKey: "importData", href: "/manage/import", icon: Upload },

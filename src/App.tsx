@@ -57,6 +57,8 @@ class AppErrorBoundary extends Component<
 const Home = lazy(() => import("./pages/Home"));
 const StudioStorefront = lazy(() => import("./pages/StudioStorefront"));
 const ExpressBooking = lazy(() => import("./pages/ExpressBooking"));
+const SaveDetails = lazy(() => import("./pages/SaveDetails"));
+const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const Index = lazy(() => import("./pages/Index"));
 const Schedule = lazy(() => import("./pages/Schedule"));
 const MySchedule = lazy(() => import("./pages/MySchedule"));
@@ -97,6 +99,8 @@ const MemberAnalyticsManage = lazy(() => import("./pages/manage/MemberAnalytics"
 const SalesAnalyticsManage = lazy(() => import("./pages/manage/SalesAnalytics"));
 const FinancialAnalyticsManage = lazy(() => import("./pages/manage/FinancialAnalytics"));
 const SiteAnalyticsManage = lazy(() => import("./pages/manage/SiteAnalytics"));
+const AttributionSourcesManage = lazy(() => import("./pages/manage/AttributionSources"));
+const AutomationsManage = lazy(() => import("./pages/manage/Automations"));
 const DataConnectorsManage = lazy(() => import("./pages/manage/DataConnectors"));
 const ProductsManage = lazy(() => import("./pages/manage/Products"));
 const InventoryManage = lazy(() => import("./pages/manage/Inventory"));
@@ -177,6 +181,8 @@ const App = () => (
                        (PRD-020). Public by design — no ProtectedRoute. The
                        express-book Edge Function owns every write. ---- */}
                   <Route path="/s/:slug/book/:occurrenceId" element={<ExpressBooking />} />
+                  <Route path="/s/:slug/save-details" element={<SaveDetails />} />
+                  <Route path="/unsubscribe" element={<Unsubscribe />} />
 
                   {/* ---- Blog (built but not yet linked in nav; noindex until
                        BLOG_PUBLISHED is flipped on in src/config/blog.ts) ---- */}
@@ -240,6 +246,8 @@ const App = () => (
                   <Route path="/manage/analytics/sales" element={<ProtectedRoute permission="studio.manage_settings"><SalesAnalyticsManage /></ProtectedRoute>} />
                   <Route path="/manage/analytics/financials" element={<ProtectedRoute permission="studio.manage_settings"><FinancialAnalyticsManage /></ProtectedRoute>} />
                   <Route path="/manage/analytics/site" element={<ProtectedRoute permission="studio.manage_schedule"><SiteAnalyticsManage /></ProtectedRoute>} />
+                  <Route path="/manage/analytics/sources" element={<ProtectedRoute permission="studio.manage_settings"><AttributionSourcesManage /></ProtectedRoute>} />
+                  <Route path="/manage/automations" element={<ProtectedRoute permission="studio.manage_settings"><AutomationsManage /></ProtectedRoute>} />
                   <Route path="/manage/connectors" element={<ProtectedRoute permission="studio.manage_settings"><DataConnectorsManage /></ProtectedRoute>} />
                   <Route path="/manage/products" element={<ProtectedRoute permission="studio.manage_schedule"><ProductsManage /></ProtectedRoute>} />
                   <Route path="/manage/inventory" element={<ProtectedRoute permission="studio.manage_schedule"><InventoryManage /></ProtectedRoute>} />

@@ -11,6 +11,7 @@
 
 import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront } from "@/types/database";
 import type { FeedbackType } from "@/types/database";
+import type { AttributionModel, AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
 
 // ---------------------------------------------------------------------------
 // Auth Provider
@@ -129,6 +130,9 @@ export interface ExpressBookInput {
   marketingConsent?: boolean;
   waiverAccepted?: boolean;
   utm?: { source?: string; medium?: string; campaign?: string };
+  /** First-party visitor id and the current analytics session (PRD-024). */
+  visitorId?: string;
+  sessionId?: string;
 }
 
 /** What the `express-book` function answers with. */
@@ -203,6 +207,25 @@ export interface DataProvider {
 
   /** A member's memberships + class packs (with their types joined) for entitlement resolution. */
   getMemberEntitlements(profileId: string, studioId: string): Promise<DataResult<MemberEntitlements>>;
+
+  /**
+   * Join this browser's anonymous visitor id to the signed-in person
+   * (link_my_visitor RPC, migration 00025), so visits before sign-in count
+   * toward their journey. Best effort; never rewrites another person's link.
+   */
+  linkMyVisitor(visitorId: string, via: string): Promise<MutationResult>;
+
+  /** Owner/admin report: sessions, new people, bookings and revenue by channel + source + campaign. */
+  getAttributionSources(from: Date, to: Date, model: AttributionModel): Promise<DataResult<AttributionSourceRow[]>>;
+
+  /** How one person found the studio (staff only; null when they are not a member of the caller's studio). */
+  getMemberAttribution(profileId: string): Promise<DataResult<MemberAttribution>>;
+
+  /** The studio's automation switches; null data means no row yet (defaults apply). */
+  getAutomationSettings(studioId: string): Promise<DataResult<AutomationSettingsRow>>;
+
+  /** Create or update the studio's automation switches (owner/admin by RLS). */
+  saveAutomationSettings(row: AutomationSettingsRow): Promise<MutationResult>;
 }
 
 // ---------------------------------------------------------------------------

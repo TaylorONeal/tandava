@@ -26,6 +26,15 @@ export interface EmailMessage {
   text?: string;
   replyTo?: string;
   tags?: Record<string, string>;
+  /** Extra headers, e.g. List-Unsubscribe for marketing email (RFC 8058). */
+  headers?: Record<string, string>;
+  /** Display name override, e.g. the studio's name on its own automations. */
+  fromName?: string;
+}
+
+/** Strip characters that would break a From display name. */
+function displayName(name: string): string {
+  return name.replace(/["<>\r\n]/g, "").slice(0, 80);
 }
 
 export interface EmailResult {
@@ -60,12 +69,13 @@ function createResendProvider(): EmailProviderAdapter {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: `${fromName} <${from}>`,
+          from: `${displayName(message.fromName ?? fromName)} <${from}>`,
           to: message.to,
           subject: message.subject,
           html: message.html,
           text: message.text,
           reply_to: message.replyTo,
+          headers: message.headers,
           tags: message.tags
             ? Object.entries(message.tags).map(([name, value]) => ({ name, value }))
             : undefined,
@@ -104,7 +114,8 @@ function createSendGridProvider(): EmailProviderAdapter {
         },
         body: JSON.stringify({
           personalizations: [{ to: [{ email: message.to }] }],
-          from: { email: from, name: fromName },
+          from: { email: from, name: displayName(message.fromName ?? fromName) },
+          headers: message.headers,
           reply_to: message.replyTo ? { email: message.replyTo } : undefined,
           subject: message.subject,
           content: [
@@ -152,6 +163,7 @@ function createSMTPProvider(): EmailProviderAdapter {
           html: message.html,
           text: message.text,
           replyTo: message.replyTo,
+          headers: message.headers,
         }),
       });
 

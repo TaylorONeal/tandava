@@ -2,11 +2,26 @@
 
 ## Overview
 **Priority:** P0 for the pilot. Every other growth feature (Express Booking, the Network, privates, campaigns, landing pages) is judged by numbers this produces. Without it, a studio owner cannot tell what works, and neither can we.
-**Status:** Spec. See "What exists today" for the honest inventory.
+**Status:** Phase 1 built (branch `feat/attribution-phase1`, migration 00025), not yet deployed or verified on a live database. See "Phase 1 as built" below and "What exists today" for the inventory before it.
 **Origin:** Taylor, Oct 8 2026: attribution analytics is very important; check it for all the pages and apps and create a comprehensive interlinked view.
 **Relationship to `ATTRIBUTION_TRACKING.md`:** that file is the technical design for sessions, touchpoints, models and queries. This PRD is the product contract: what gets captured on every surface, how it links into one journey, what the owner sees, and what is true today. Where they disagree, this file wins and the other gets updated.
 
 ---
+
+## Phase 1 as built (Oct 8 2026)
+
+| Piece | Where |
+|---|---|
+| Visit capture on storefront, booking page and embed (visitor id in localStorage, 30-minute session per studio, new session on tagged arrival); channel computed server side; no IP or user agent stored | `src/lib/analytics/session.ts`, `landing.ts`, `supabase/functions/analytics-session`, `record_session()` |
+| Embed handoff: the Book link carries the visitor id (`tv`) and tags the parent site as the source | `withEmbedHandoff()` in `landing.ts`, `EmbedSchedule.tsx` |
+| One person, many browsers: `link_visitor()` from express-book, `link_my_visitor()` on every sign-in (once per browser session) | `AuthContext.tsx`, `linkVisitorOnce()` |
+| Conversions with frozen first and converting touches, deduped per entity: guest and member bookings, drop-ins, memberships, packs, event registrations; `studio_members.source` and acquisition set once | `record_conversion()`, `express-book`, `stripe-webhook` |
+| Consent from the booking form's marketing checkbox, append-only, latest wins | `record_consent()`, `has_consent()` |
+| Owner report: channel → source/campaign, first or last visit, 30/90 days | `/manage/analytics/sources`, `get_attribution_sources()` |
+| "How they found you" on member detail | `MemberSourceStrip`, `get_member_attribution()` |
+| Tests | `scripts/db/test-attribution.sql` (SQL behaviour), `src/lib/analytics/*.test.ts` |
+
+Not in phase 1: landing pages, blog, emails' own clicks beyond UTM tags, the apps, journeys and funnel views, the per-feature channel pages.
 
 ## What exists today (checked Oct 8 2026, main at b47daf3 plus PRs #67/#68)
 

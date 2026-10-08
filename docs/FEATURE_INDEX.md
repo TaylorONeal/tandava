@@ -54,8 +54,8 @@ Quick reference for all features, their status, and locations in the codebase.
 | Studio Network (cross-studio credits, studio-controlled, ROI view) | Planned | - | - | PRD-023 |
 | Off-site privates (client address, travel) and private events (corporate, parties, room rental, quotes, invoices) | Planned | - | `events` (reused) | PRD-025 |
 | Help content, landing FAQ, info icons (one source) | Built | `/` FAQ, `HelpTip` | `src/content/help.ts` | docs/HELP-AND-FAQ.md |
-| Attribution + consent + ad-measurement tables (visitor ids, click ids, conversions with event ids, consent per purpose, ad connections, delivery outbox) | Schema only (00024) | - | `profile_visitors`, `conversion_events`, `consent_records`, `ad_integrations`, `conversion_deliveries` | PRD-024, PRD-027 |
-| Lifecycle automation, measured ads (Meta CAPI, Google Data Manager), switching from other systems | Planned | - | 00008 campaigns, 00005 import | PRD-027 |
+| Attribution + consent + ad-measurement tables (visitor ids, click ids, conversions with event ids, consent per purpose, ad connections, delivery outbox) | Schema (00024); capture, conversions, consent and reports built in 00025, not deployed | - | `profile_visitors`, `conversion_events`, `consent_records`, `ad_integrations`, `conversion_deliveries` | PRD-024, PRD-027 |
+| Lifecycle automation (3 emails built: guest to member, first visit, lapsed; `/manage/automations`), measured ads (Meta CAPI, Google Data Manager), switching from other systems | Automations built, not deployed; ads and migration planned | `/manage/automations` | 00008 campaigns, 00005 import | PRD-027 |
 
 ### Members & Students
 
@@ -187,7 +187,7 @@ Quick reference for all features, their status, and locations in the codebase.
 | Landing page A/B | Schema | - | `landing_page_variants` | PRD-011 |
 | Meta Ads integration | Future | - | - | PRD-011 |
 | Google Ads integration | Future | - | - | PRD-011 |
-| Attribution tracking (every surface, one linked view) | Planned; only Express Booking captures UTMs today | `/manage/analytics/attribution` (planned) | `analytics_sessions` (unused), `express_booking_claims.utm_*` | PRD-024 |
+| Attribution tracking (every surface, one linked view) | Phase 1 built, not deployed: storefront, booking page, embed; landing pages, emails, apps planned | `/manage/analytics/sources`, member detail strip | `analytics_sessions` (unused), `express_booking_claims.utm_*` | PRD-024 |
 
 ### Engagement & Retention
 
