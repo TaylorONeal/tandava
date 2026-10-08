@@ -18,45 +18,78 @@ const SESSION_PREFIX = "tandava.sess.";
 const SESSION_TTL_MS = 30 * 60 * 1000;
 
 /**
- * localStorage behind an in-memory overlay. A write or remove that throws
- * (quota, privacy mode) lands in the overlay, which outranks storage for that
- * key, so a failed write never leaves an older stored value (the previous
- * person's id, owner or pending link) in charge. A later write that succeeds
- * clears the overlay entry. Every localStorage access in this file goes
- * through these three.
+ * Web storage behind an in-memory overlay. A write or remove that throws
+ * (quota, privacy mode, storage blocked) lands in the overlay, which outranks
+ * storage for that key: a value, or a tombstone (null) for a failed remove.
+ * So a failed write never leaves an older stored value (the previous person's
+ * id, owner, session or link marker) in charge, and a page that cannot use
+ * storage at all still works from memory. A later write that succeeds clears
+ * the overlay entry. Every storage access in this file goes through these.
  */
-const overlay = new Map<string, string | null>();
+class OverlayStorage {
+  private overlay = new Map<string, string | null>();
+  constructor(private readonly store: () => Storage) {}
 
-function lsGet(key: string): string | null {
-  if (overlay.has(key)) return overlay.get(key) ?? null;
-  try {
-    return window.localStorage.getItem(key);
-  } catch {
-    return null;
+  get(key: string): string | null {
+    if (this.overlay.has(key)) return this.overlay.get(key) ?? null;
+    try {
+      return this.store().getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  /** True when the value reached real storage (it survives a reload). */
+  set(key: string, value: string): boolean {
+    try {
+      this.store().setItem(key, value);
+      this.overlay.delete(key);
+      return true;
+    } catch {
+      this.overlay.set(key, value);
+      return false;
+    }
+  }
+
+  remove(key: string) {
+    try {
+      this.store().removeItem(key);
+      this.overlay.delete(key);
+    } catch {
+      this.overlay.set(key, null);
+    }
+  }
+
+  /** Live keys: storage plus overlay values, minus tombstones. */
+  keys(): string[] {
+    const out = new Set<string>();
+    try {
+      const st = this.store();
+      for (let i = 0; i < st.length; i++) {
+        const k = st.key(i);
+        if (k) out.add(k);
+      }
+    } catch {
+      // Overlay only.
+    }
+    for (const [k, v] of this.overlay) {
+      if (v === null) out.delete(k);
+      else out.add(k);
+    }
+    return [...out];
+  }
+
+  removePrefixed(prefixes: string[]) {
+    for (const k of this.keys()) if (prefixes.some((p) => k.startsWith(p))) this.remove(k);
   }
 }
 
-/** True when the value reached real storage (it survives a reload). */
-function lsSet(key: string, value: string): boolean {
-  try {
-    window.localStorage.setItem(key, value);
-    overlay.delete(key);
-    return true;
-  } catch {
-    overlay.set(key, value);
-    return false;
-  }
-}
+const local = new OverlayStorage(() => window.localStorage);
+const session = new OverlayStorage(() => window.sessionStorage);
+const lsGet = (k: string) => local.get(k);
+const lsSet = (k: string, v: string) => local.set(k, v);
+const lsRemove = (k: string) => local.remove(k);
 
-function lsRemove(key: string) {
-  try {
-    window.localStorage.removeItem(key);
-    overlay.delete(key);
-  } catch {
-    overlay.set(key, null);
-  }
-}
-const memorySessions = new Map<string, { token: string; id?: string; last: number }>();
 
 function randomId(): string {
   try {
@@ -104,12 +137,8 @@ interface StoredSession {
 }
 
 function readSession(slug: string): StoredSession | null {
-  // A write that fell back to memory (quota, privacy mode) is the newest copy,
-  // even when reading storage itself still works.
-  const inMemory = memorySessions.get(slug);
-  if (inMemory) return inMemory;
   try {
-    const raw = window.sessionStorage.getItem(SESSION_PREFIX + slug);
+    const raw = session.get(SESSION_PREFIX + slug);
     return raw ? (JSON.parse(raw) as StoredSession) : null;
   } catch {
     return null;
@@ -117,12 +146,7 @@ function readSession(slug: string): StoredSession | null {
 }
 
 function writeSession(slug: string, s: StoredSession) {
-  try {
-    window.sessionStorage.setItem(SESSION_PREFIX + slug, JSON.stringify(s));
-    memorySessions.delete(slug);
-  } catch {
-    memorySessions.set(slug, s);
-  }
+  session.set(SESSION_PREFIX + slug, JSON.stringify(s));
 }
 
 const PREVIOUS_KEY = "tandava.vid.prev";
@@ -166,9 +190,7 @@ function rotateAwayFrom(id: string) {
   if (lsGet(VISITOR_KEY) !== id) return;
   lsSet(VISITOR_KEY, randomId());
   clearSessionKeys([SESSION_PREFIX, LINKED_PREFIX]);
-  memorySessions.clear();
   inFlight.clear(); // a pending capture belongs to the previous visitor id
-  linkedInMemory.clear();
 }
 
 function rememberPreviousVisitor(id: string) {
@@ -308,7 +330,6 @@ async function trackVisitInner(slug: string, surface: Surface, opts?: { studioSi
 
 const LINKED_PREFIX = "tandava.linked.";
 const CONSENT_PREFIX = "tandava.consent.";
-const linkedInMemory = new Set<string>();
 
 /**
  * After sign-in, join this browser's visitor id to the person once per browser
@@ -326,11 +347,7 @@ const OWNER_KEY = "tandava.vid.owner";
 export function claimVisitorFor(userId: string) {
   const owner = lsGet(OWNER_KEY);
   if (owner && owner !== userId) {
-    // In-memory fallbacks go too: they would otherwise outrank the cleared
-    // storage and keep A's visit.
-    memorySessions.clear();
     inFlight.clear(); // a pending capture belongs to the previous visitor id
-    linkedInMemory.clear();
     lsSet(VISITOR_KEY, randomId());
     lsRemove(PREVIOUS_KEY);
     lsRemove(RELINK_KEY);
@@ -340,16 +357,9 @@ export function claimVisitorFor(userId: string) {
   lsSet(OWNER_KEY, userId);
 }
 
-/** Drop sessionStorage keys with these prefixes (best effort). */
+/** Drop sessionStorage keys with these prefixes; a failed remove leaves a tombstone. */
 function clearSessionKeys(prefixes: string[]) {
-  try {
-    for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
-      const k = window.sessionStorage.key(i);
-      if (k && prefixes.some((p) => k.startsWith(p))) window.sessionStorage.removeItem(k);
-    }
-  } catch {
-    // Memory fallbacks are cleared by the caller.
-  }
+  session.removePrefixed(prefixes);
 }
 
 let linkInFlight: Promise<void> | null = null;
@@ -357,12 +367,7 @@ let linkInFlight: Promise<void> | null = null;
 let linkUser: string | null = null;
 
 function linkMarked(userId: string): boolean {
-  const key = LINKED_PREFIX + userId;
-  try {
-    return Boolean(window.sessionStorage.getItem(key));
-  } catch {
-    return linkedInMemory.has(key);
-  }
+  return Boolean(session.get(LINKED_PREFIX + userId));
 }
 
 /**
@@ -388,12 +393,7 @@ async function linkVisitorOnceInner(userId: string, via = "sign_in") {
   if (typeof window === "undefined" || !userId) return;
   claimVisitorFor(userId);
   const key = LINKED_PREFIX + userId;
-  let done = false;
-  try {
-    done = Boolean(window.sessionStorage.getItem(key));
-  } catch {
-    done = linkedInMemory.has(key);
-  }
+  const done = Boolean(session.get(key));
   if (!done) {
     try {
       const current = getVisitorId();
@@ -415,11 +415,7 @@ async function linkVisitorOnceInner(userId: string, via = "sign_in") {
       else lsRemove(PREVIOUS_KEY);
       // Mark only when everything linked, so failures retry on the next auth event.
       if (!error && failed.length === 0) {
-        try {
-          window.sessionStorage.setItem(key, "1");
-        } catch {
-          linkedInMemory.add(key);
-        }
+        session.set(key, "1");
       }
     } catch {
       // Retried on the next auth event.
@@ -431,21 +427,12 @@ async function linkVisitorOnceInner(userId: string, via = "sign_in") {
   // which can prove which attempt it was; a bound choice whose save failed is
   // retried here.
   const consentKey = CONSENT_PREFIX + userId;
-  let consentDone = false;
-  try {
-    consentDone = Boolean(window.sessionStorage.getItem(consentKey));
-  } catch {
-    consentDone = linkedInMemory.has(consentKey);
-  }
+  const consentDone = Boolean(session.get(consentKey));
   if (!consentDone) {
     try {
       const { error } = await data.applyMySignupConsent();
       if (!error) {
-        try {
-          window.sessionStorage.setItem(consentKey, "1");
-        } catch {
-          linkedInMemory.add(consentKey);
-        }
+        session.set(consentKey, "1");
       }
     } catch {
       // Retried on the next auth event.
@@ -554,9 +541,7 @@ export async function applyOAuthSignupConsent(userId: string, nonce?: string | n
  */
 export function forgetVisitor() {
   linkUser = null;
-  memorySessions.clear();
   inFlight.clear(); // a pending capture belongs to the previous visitor id
-  linkedInMemory.clear();
   lsSet(VISITOR_KEY, randomId());
   lsRemove(OWNER_KEY);
   lsRemove(PENDING_CONSENT_KEY);
@@ -575,15 +560,14 @@ export function checkoutAttribution(slug?: string): { visitorId?: string; sessio
   const visitorId = getVisitorId();
   if (slug) return { visitorId, sessionId: currentSessionId(slug) };
   let latest: StoredSession | null = null;
-  try {
-    for (let i = 0; i < window.sessionStorage.length; i++) {
-      const k = window.sessionStorage.key(i);
-      if (!k?.startsWith(SESSION_PREFIX)) continue;
-      const v = JSON.parse(window.sessionStorage.getItem(k) ?? "null") as StoredSession | null;
+  for (const k of session.keys()) {
+    if (!k.startsWith(SESSION_PREFIX)) continue;
+    try {
+      const v = JSON.parse(session.get(k) ?? "null") as StoredSession | null;
       if (v?.id && (!latest || v.last > latest.last)) latest = v;
+    } catch {
+      // Skip a malformed entry.
     }
-  } catch {
-    for (const v of memorySessions.values()) if (v.id && (!latest || v.last > latest.last)) latest = v;
   }
   return { visitorId, sessionId: latest?.id };
 }

@@ -366,3 +366,32 @@ describe("localStorage reads work but writes fail", () => {
     expect(s.getVisitorId()).toBe(b);
   });
 });
+
+describe("sessionStorage reads work but removes fail", () => {
+  it("an account switch does not reuse the previous person's stored session", async () => {
+    vi.stubGlobal("window", {
+      localStorage: memoryStorage(),
+      sessionStorage: memoryStorage(),
+      location: { href: "https://app.example.com/s/oxatl" },
+    });
+    vi.stubGlobal("document", { referrer: "" });
+    vi.stubGlobal("navigator", { userAgent: "test" });
+    const { api } = await import("@/lib/backend");
+    const invoke = vi.mocked(api.invoke);
+    invoke.mockReset();
+    invoke.mockResolvedValue({ data: { sessionId: "55555555-5555-4555-8555-555555555555" }, error: null } as never);
+    const s = await import("./session");
+    s.claimVisitorFor("user-a");
+    await s.trackVisit("oxatl", "storefront" as never);
+    expect(s.currentSessionId("oxatl")).toBe("55555555-5555-4555-8555-555555555555");
+    window.sessionStorage.removeItem = () => {
+      throw new Error("blocked");
+    };
+    s.claimVisitorFor("user-b");
+    expect(s.currentSessionId("oxatl")).toBeFalsy();
+    expect(s.checkoutAttribution().sessionId).toBeUndefined();
+    invoke.mockResolvedValue({ data: { sessionId: "66666666-6666-4666-8666-666666666666" }, error: null } as never);
+    await s.captureSettled("oxatl");
+    expect(s.currentSessionId("oxatl")).toBe("66666666-6666-4666-8666-666666666666");
+  });
+});
