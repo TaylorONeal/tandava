@@ -10,7 +10,7 @@ describe("opt-in confirm tokens", () => {
   it("round-trips and expires after 14 days", async () => {
     const now = Date.UTC(2026, 9, 8);
     const t = await signOptInConfirm(S, P, SECRET, now);
-    expect(await verifyOptInConfirm(t, SECRET, now + 1000)).toEqual({ studioId: S, profileId: P });
+    expect(await verifyOptInConfirm(t, SECRET, now + 1000)).toEqual({ studioId: S, profileId: P, issuedAt: now });
     expect(await verifyOptInConfirm(t, SECRET, now + OPT_IN_LINK_TTL_MS + 1)).toBeNull();
     expect(await verifyOptInConfirm(t, "other", now)).toBeNull();
   });

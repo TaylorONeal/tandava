@@ -19,7 +19,7 @@ export default function EmailUpdatesConfirm() {
   const [params] = useSearchParams();
   const token = params.get("c") ?? "";
   const [studioName, setStudioName] = useState<string | null>(null);
-  const [state, setState] = useState<"loading" | "ready" | "saving" | "done" | "invalid" | "error">("loading");
+  const [state, setState] = useState<"loading" | "ready" | "saving" | "done" | "invalid" | "superseded" | "error">("loading");
 
   useEffect(() => {
     if (!token || !isBackendConfigured()) {
@@ -27,6 +27,7 @@ export default function EmailUpdatesConfirm() {
       return;
     }
     void api.invoke<Result>("unsubscribe", { c: token, preview: true }).then(({ data, error }) => {
+      if (!error && data?.error === "superseded") return setState("superseded");
       if (error || !data?.ok) return setState("invalid");
       setStudioName(data.studioName ?? null);
       setState("ready");
@@ -36,6 +37,7 @@ export default function EmailUpdatesConfirm() {
   const confirm = async () => {
     setState("saving");
     const { data, error } = await api.invoke<Result>("unsubscribe", { c: token });
+    if (!error && data?.error === "superseded") return setState("superseded");
     setState(!error && data?.ok ? "done" : "error");
   };
 
@@ -54,6 +56,15 @@ export default function EmailUpdatesConfirm() {
                 <p className="text-sm text-muted-foreground">
                   It may be older than 14 days or incomplete. Tick the email box next time you book and we'll send a new
                   one.
+                </p>
+              </>
+            )}
+            {state === "superseded" && (
+              <>
+                <h1 className="text-xl font-semibold">You unsubscribed after this email</h1>
+                <p className="text-sm text-muted-foreground">
+                  We kept your unsubscribe, so this older link no longer turns updates on. Tick the email box next time you
+                  book if you want them again.
                 </p>
               </>
             )}

@@ -83,7 +83,7 @@ export async function verifyOptInConfirm(
   token: string,
   secret: string,
   now: number = Date.now(),
-): Promise<{ studioId: string; profileId: string } | null> {
+): Promise<{ studioId: string; profileId: string; issuedAt: number } | null> {
   if (!secret || !token || token.length > 400) return null;
   const [p, s] = token.split(".");
   if (!p || !s) return null;
@@ -95,7 +95,8 @@ export async function verifyOptInConfirm(
     if (kind !== "optin" || !UUID.test(studioId ?? "") || !UUID.test(profileId ?? "")) return null;
     const at = Number(issued);
     if (!Number.isFinite(at) || at > now + 60_000 || now - at > OPT_IN_LINK_TTL_MS) return null;
-    return { studioId, profileId };
+    // The issue time lets the caller refuse a link older than a later opt-out.
+    return { studioId, profileId, issuedAt: at };
   } catch {
     return null;
   }

@@ -88,6 +88,23 @@ serve(async (req) => {
     const db = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
     const { data: studio } = await db.from("studios").select("name").eq("id", who.studioId).maybeSingle();
     const studioName = studio?.name ?? null;
+    // A confirmation email older than the person's latest opt-out must not
+    // resubscribe them (they confirmed, unsubscribed, then clicked the old
+    // link again).
+    const { data: latest, error: latestError } = await db
+      .from("consent_records")
+      .select("granted, captured_at")
+      .eq("studio_id", who.studioId)
+      .eq("profile_id", who.profileId)
+      .eq("purpose", "email_marketing")
+      .order("captured_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (latestError) return json({ ok: false, error: "save_failed" }, 500);
+    if (latest && latest.granted === false && new Date(latest.captured_at).getTime() > who.issuedAt) {
+      // 200 so the page can read the reason (functions.invoke drops non-2xx bodies).
+      return json({ ok: false, error: "superseded", studioName });
+    }
     if (preview) return json({ ok: true, studioName });
     const { error } = await db.rpc("record_consent", {
       p_studio_id: who.studioId,

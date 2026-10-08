@@ -324,7 +324,7 @@ serve(async (req) => {
     const utm = (payload.utm ?? {}) as Record<string, string | undefined>;
     // First-party attribution (PRD-024). Both optional; both validated.
     const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    const visitorId = typeof payload.visitorId === "string" && UUID_RE.test(payload.visitorId) ? payload.visitorId : null;
+    let visitorId = typeof payload.visitorId === "string" && UUID_RE.test(payload.visitorId) ? payload.visitorId : null;
     const claimedSessionId = typeof payload.sessionId === "string" && UUID_RE.test(payload.sessionId) ? payload.sessionId : null;
     // Only this browser's own visit at this studio may be credited.
     let sessionId: string | null = null;
@@ -524,6 +524,21 @@ serve(async (req) => {
         return json({ error: "Could not complete your booking. Try again in a moment." }, 500);
       }
       profileId = identity.profileId;
+    }
+
+    // A browser id that already belongs to another person (a copied embed
+    // link) must not credit this booking with their visit. Drop both the id
+    // and its session; the booking itself is unaffected.
+    if (visitorId) {
+      const { data: owner, error: ownerError } = await db
+        .from("profile_visitors")
+        .select("profile_id")
+        .eq("visitor_id", visitorId)
+        .maybeSingle();
+      if (ownerError || (owner && owner.profile_id !== profileId)) {
+        visitorId = null;
+        sessionId = null;
+      }
     }
 
     // Paid drop-in: the booking is created by the existing stripe-webhook when
