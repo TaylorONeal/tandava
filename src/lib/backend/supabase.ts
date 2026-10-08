@@ -13,6 +13,7 @@
  * All in one SDK with zero custom backend code.
  */
 
+import { captchaOption } from "@/lib/auth/captcha";
 import { safeNextPath } from "@/lib/auth/next";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
@@ -87,7 +88,7 @@ function mapError(err: unknown): AuthError | null {
 
 const supabaseAuth: AuthProvider = {
   async signInWithEmail(email, password) {
-    const { data, error } = await getClient().auth.signInWithPassword({ email, password });
+    const { data, error } = await getClient().auth.signInWithPassword({ email, password, options: captchaOption() });
     return { user: mapUser(data?.user ?? null), error: mapError(error) };
   },
 
@@ -98,6 +99,7 @@ const supabaseAuth: AuthProvider = {
       password,
       options: {
         data: metadata,
+        ...captchaOption(),
         // The confirmation link lands on the callback, which forwards to `next`
         // (e.g. the class someone was booking when they registered).
         emailRedirectTo: `${window.location.origin}/auth/callback${path === "/" ? "" : `?next=${encodeURIComponent(path)}`}`,
@@ -129,6 +131,7 @@ const supabaseAuth: AuthProvider = {
     const query = params.toString();
     const { error } = await getClient().auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth/reset-confirm${query ? `?${query}` : ""}`,
+      ...captchaOption(),
     });
     return { error: mapError(error) };
   },

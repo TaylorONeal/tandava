@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { parseIntent, STUDIO_ONBOARDING_PATH } from "@/lib/audience";
 import { authHref, resolveAfterAuth, safeNext, stashReturn } from "@/lib/authReturn";
+import { Turnstile, useCaptchaReady } from "@/components/auth/Turnstile";
 
 type RegistrationStep = "info" | "complete";
 
@@ -19,6 +20,7 @@ const Register = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
+  const captchaReady = useCaptchaReady();
   const { t } = useTranslation('auth');
   const { signUpWithEmail, signInWithGoogle, isDemoMode } = useAuth();
   // Where the visitor was headed (e.g. the class they tapped Book on) before being asked to sign up.
@@ -417,11 +419,12 @@ const Register = () => {
             </div>
 
             {/* Submit - large touch target */}
+            <Turnstile />
             <Button
               type="submit"
               className="w-full h-14 text-base font-semibold"
               size="lg"
-              disabled={isLoading || !isFormValid}
+              disabled={isLoading || !isFormValid || !captchaReady}
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
