@@ -19,14 +19,15 @@
     "importData": "Importa dati",
     "smsInbox": "Posta SMS",
     "notifications": "Notifiche",
-    "settings": "Impostazioni"
+    "settings": "Impostazioni",
+    "shareLinks": "Link di prenotazione",
+    "websiteEmbed": "Widget sito web"
   },
   "title": "Amministrazione studio",
   "studentView": "Vista allievo",
   "myAccount": "Il mio account",
   "studioSettings": "Impostazioni studio",
   "signOut": "Esci",
-
   "schedule": {
     "title": "Calendario",
     "subtitle": "Crea e gestisci il calendario delle lezioni.",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "Cerca tipi di lezione...",
     "activeOfferings": "Tipi attivi"
   },
-
   "admin": {
     "platformAdmin": "Amministrazione piattaforma",
     "platformDashboard": "Dashboard piattaforma",
@@ -60,7 +60,6 @@
     "sentryConfigured": "Monitoraggio errori Sentry",
     "setEnvVar": "Imposta {{key}} in .env"
   },
-
   "studioManagement": "Gestione studio",
   "owner": "Titolare"
 }

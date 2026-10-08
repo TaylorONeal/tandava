@@ -9,7 +9,7 @@
  * See docs/developer/backend-flexibility.md for architecture details.
  */
 
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, StudioStorefront } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront } from "@/types/database";
 import type { FeedbackType } from "@/types/database";
 
 // ---------------------------------------------------------------------------
@@ -167,6 +167,12 @@ export interface DataProvider {
    * is cancelled or past, so the page can say why it cannot be booked.
    */
   getPublicOccurrence(slug: string, occurrenceId: string): Promise<DataResult<PublicOccurrenceRow>>;
+
+  /**
+   * The signed-in staff member's own studio — slug, branding and flags for
+   * owner-facing screens. Null when the caller has no active staff record.
+   */
+  getMyStudio(): Promise<DataResult<MyStudioRow>>;
 
   /** Upcoming (non-cancelled, future) class occurrences for a studio, with offering + location joined. */
   getUpcomingClasses(studioId: string): Promise<DataResult<ClassOccurrence[]>>;

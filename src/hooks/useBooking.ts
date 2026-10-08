@@ -11,7 +11,7 @@ import { useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { data as backendData, api as backendApi, isBackendConfigured } from "@/lib/backend";
 import type { BookClassInput, ExpressBookInput, ExpressBookResult } from "@/lib/backend";
-import type { ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, StudioStorefront } from "@/types/database";
+import type { ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront } from "@/types/database";
 import { resolvePaymentSources } from "@/lib/booking/entitlements";
 import type { PaymentSource } from "@/components/booking/PaymentSourceSelector";
 
@@ -182,6 +182,32 @@ export function useExpressBook() {
           "Could not complete your booking. Try again in a moment.",
         fields: asRecord.fields,
       };
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Share links (PRD-022)
+// ---------------------------------------------------------------------------
+
+/**
+ * The signed-in staff member's own studio.
+ *
+ * Exists so owner-facing screens can fill in the studio's slug and brand color
+ * themselves. Asking an owner to type their own slug (as `/manage/embed` did)
+ * assumes they know what a slug is, which is the wrong assumption for the only
+ * person who will ever install this.
+ */
+export function useMyStudio() {
+  return useQuery({
+    queryKey: ["my-studio"],
+    enabled: enabled(),
+    // Branding and slug change rarely; no reason to refetch on every mount.
+    staleTime: 5 * 60_000,
+    queryFn: async (): Promise<MyStudioRow | null> => {
+      const { data, error } = await backendData.getMyStudio();
+      if (error) throw new Error(error.message);
+      return data;
     },
   });
 }

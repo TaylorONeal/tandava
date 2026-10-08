@@ -19,14 +19,15 @@
     "importData": "Importar dados",
     "smsInbox": "Caixa de SMS",
     "notifications": "Notificações",
-    "settings": "Configurações"
+    "settings": "Configurações",
+    "shareLinks": "Links de reserva",
+    "websiteEmbed": "Widget do site"
   },
   "title": "Administração do estúdio",
   "studentView": "Visão do aluno",
   "myAccount": "Minha conta",
   "studioSettings": "Configurações do estúdio",
   "signOut": "Sair",
-
   "schedule": {
     "title": "Agenda",
     "subtitle": "Crie e gerencie a agenda das suas aulas.",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "Buscar tipos de aula...",
     "activeOfferings": "Tipos ativos"
   },
-
   "admin": {
     "platformAdmin": "Administração da plataforma",
     "platformDashboard": "Painel da plataforma",
@@ -60,7 +60,6 @@
     "sentryConfigured": "Monitoramento de erros com Sentry",
     "setEnvVar": "Defina {{key}} no .env"
   },
-
   "studioManagement": "Gestão de estúdios",
   "owner": "Proprietário"
 }
