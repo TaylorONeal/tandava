@@ -433,3 +433,33 @@ describe("signed-out cold load", () => {
     expect(window.localStorage.getItem("tandava.vid.owner")).toBeNull();
   });
 });
+
+describe("cold load with an id owned by a signed-out account", () => {
+  it("holds the first page view until auth resolves, then records it under a fresh id", async () => {
+    vi.stubGlobal("window", {
+      localStorage: memoryStorage(),
+      sessionStorage: memoryStorage(),
+      location: { href: "https://app.example.com/s/oxatl" },
+    });
+    vi.stubGlobal("document", { referrer: "" });
+    vi.stubGlobal("navigator", { userAgent: "test" });
+    const first = await import("./session");
+    first.claimVisitorFor("user-a");
+    const owned = first.getVisitorId();
+    vi.resetModules(); // a new page load; storage persists
+    const { api } = await import("@/lib/backend");
+    const invoke = vi.mocked(api.invoke);
+    invoke.mockReset();
+    invoke.mockResolvedValue({ data: { sessionId: "77777777-7777-4777-8777-777777777777" }, error: null } as never);
+    const s = await import("./session");
+    const capture = s.trackVisit("oxatl", "storefront" as never);
+    await new Promise((r) => setTimeout(r, 20));
+    expect(invoke).not.toHaveBeenCalled();
+    s.resolveVisitorIdentity(null); // auth: nobody signed in
+    await capture;
+    expect(invoke).toHaveBeenCalledTimes(1);
+    const body = invoke.mock.calls[0][1] as { visitorId?: string };
+    expect(body.visitorId).toBeDefined();
+    expect(body.visitorId).not.toBe(owned);
+  });
+});

@@ -5,7 +5,7 @@ import type { Profile } from "@/types/database";
 import type { Permission } from "@/types/roles";
 import { getPermissionsForUserRole } from "@/types/roles";
 import { useDemo } from "@/contexts/DemoContext";
-import { forgetVisitor, forgetVisitorIfOwned, linkVisitorOnce } from "@/lib/analytics/session";
+import { forgetVisitor, linkVisitorOnce, resolveVisitorIdentity } from "@/lib/analytics/session";
 import {
   checkLoginRateLimit,
   clearLoginRateLimit,
@@ -141,9 +141,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Initial session check
     auth.getSession().then(async ({ user }) => {
       if (user) lastUserId.current = user.id;
-      // Cold load already signed out: an id still owned by the previous
-      // account is rotated (no auth event will do it).
-      else if (!lastUserId.current) forgetVisitorIfOwned();
+      // Tell visit capture who is signed in on this load. A cold load that is
+      // already signed out rotates an id still owned by the previous account
+      // (no auth event will), and page views waiting on it are released.
+      if (user || !lastUserId.current) resolveVisitorIdentity(user?.id ?? null);
       let profile: Profile | null = null;
       let permissions: Permission[] = [];
 

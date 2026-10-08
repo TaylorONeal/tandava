@@ -98,6 +98,8 @@ function json(body: unknown, status = 200): Response {
 const RATE_WINDOW_MINUTES = 60;
 const MAX_PER_EMAIL = 6;
 const MAX_PER_IP = 20;
+/** Longest a booking waits on the opt-in confirmation email. */
+const OPT_IN_EMAIL_TIMEOUT_MS = 3000;
 
 async function sha256Hex(input: string): Promise<string> {
   const bytes = new TextEncoder().encode(input);
@@ -371,8 +373,16 @@ serve(async (req) => {
           studioName,
           confirmUrl: `${appUrl.replace(/\/+$/, "")}/email-updates?c=${encodeURIComponent(token)}`,
         });
-        const sent = await sendEmail({ to: guest.email, subject: email.subject, html: email.html, text: email.text, fromName: studioName });
-        if (!sent.success) console.error("express-book: opt-in confirmation email failed", sent.error);
+        // Auxiliary to a booking that already exists: never let a slow email
+        // provider hold back the checkout URL or the confirmation. A guest
+        // who misses it can tick the box on their next booking.
+        const timedOut = Symbol("timeout");
+        const sent = await Promise.race([
+          sendEmail({ to: guest.email, subject: email.subject, html: email.html, text: email.text, fromName: studioName }),
+          new Promise<typeof timedOut>((r) => setTimeout(() => r(timedOut), OPT_IN_EMAIL_TIMEOUT_MS)),
+        ]);
+        if (sent === timedOut) console.error("express-book: opt-in confirmation email timed out");
+        else if (!sent.success) console.error("express-book: opt-in confirmation email failed", sent.error);
       } catch (err) {
         console.error("express-book: opt-in confirmation failed", err);
       }

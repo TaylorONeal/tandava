@@ -217,6 +217,14 @@ function getProvider(): EmailProviderAdapter {
 // Public API
 // ---------------------------------------------------------------------------
 /**
+ * The provider sendEmail() will use. "console" delivers nothing (it only
+ * logs), so callers that record a send as delivered must refuse it.
+ */
+export function emailProviderName(): string {
+  return getProvider().name;
+}
+
+/**
  * Send an email using the configured provider.
  * Errors are caught and returned — never thrown — so email failures
  * don't block the calling operation (fire-and-forget pattern).

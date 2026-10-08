@@ -270,6 +270,12 @@ async function trackVisitInner(slug: string, surface: Surface, opts?: { studioSi
   if (typeof window === "undefined" || !slug) return;
   const href = window.location.href;
   const facts = parseLanding(href);
+  // This browser's id belongs to someone who signed in before. Until auth
+  // says who (if anyone) is signed in now, a visit could be recorded under
+  // the previous person's id: wait briefly for that answer.
+  if (!identityResolved && lsGet(OWNER_KEY)) {
+    await Promise.race([identityKnown, new Promise((r) => setTimeout(r, IDENTITY_WAIT_MS))]);
+  }
   // Adopt an embed handoff id first, so the link retry below targets it.
   const visitorId = getVisitorId(facts.handoffVisitorId);
   void retryHandoffLink();
@@ -357,6 +363,7 @@ export function claimVisitorFor(userId: string) {
     clearSessionKeys([SESSION_PREFIX, LINKED_PREFIX, CONSENT_PREFIX]);
   }
   lsSet(OWNER_KEY, userId);
+  markIdentityResolved();
 }
 
 /** Drop sessionStorage keys with these prefixes; a failed remove leaves a tombstone. */
@@ -541,6 +548,28 @@ export async function applyOAuthSignupConsent(userId: string, nonce?: string | n
  * sessions, so browsing after sign-out is not added to the signed-out
  * person's journey (and the next person starts clean).
  */
+let identityResolved = false;
+let resolveIdentity: () => void = () => {};
+const identityKnown = new Promise<void>((r) => (resolveIdentity = r));
+/** Longest a page view waits for auth to say who is signed in. */
+const IDENTITY_WAIT_MS = 1500;
+
+function markIdentityResolved() {
+  identityResolved = true;
+  resolveIdentity();
+}
+
+/**
+ * Called once auth knows who is signed in on this page load (null: nobody).
+ * Rotates an id that belongs to someone else, then releases page views that
+ * were waiting on it.
+ */
+export function resolveVisitorIdentity(userId: string | null) {
+  if (userId) claimVisitorFor(userId);
+  else forgetVisitorIfOwned();
+  markIdentityResolved();
+}
+
 /**
  * A load that starts signed out while this browser's id still belongs to a
  * signed-in person (their session expired or was cleared while the tab was
@@ -560,6 +589,7 @@ export function forgetVisitor() {
   lsRemove(PREVIOUS_KEY);
   lsRemove(RELINK_KEY);
   clearSessionKeys([SESSION_PREFIX, LINKED_PREFIX, CONSENT_PREFIX]);
+  markIdentityResolved();
 }
 
 /**

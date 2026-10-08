@@ -26,7 +26,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { sendEmail } from "../email/provider.ts";
+import { emailProviderName, sendEmail } from "../email/provider.ts";
 import { planStudio, formatAddress, type CandidateRow } from "../../../src/lib/marketing/runner.ts";
 import { isAutomationTemplate, renderAutomationEmail, withCampaignTags } from "../../../src/lib/marketing/automationEmails.ts";
 import { signUnsubscribe } from "../../../src/lib/marketing/unsubscribeToken.ts";
@@ -65,7 +65,12 @@ serve(async (req) => {
   if (!appUrl || !unsubscribeSecret) return json({ error: "APP_URL and AUTOMATIONS_UNSUBSCRIBE_SECRET must be set" }, 500);
 
   const body = (await req.json().catch(() => ({}))) as { studioId?: string; dryRun?: boolean };
-  const dryRun = !enabled || body.dryRun === true;
+  // The console provider "succeeds" without delivering. Marking those claims
+  // sent would advance sequences and dedupe emails nobody received, so a live
+  // run without a real provider plans only (and says why).
+  const noRealProvider = enabled && emailProviderName() === "console";
+  if (noRealProvider) console.error("run-automations: AUTOMATIONS_ENABLED=true but EMAIL_PROVIDER is not a real provider; nothing sent");
+  const dryRun = !enabled || body.dryRun === true || noRealProvider;
   const db = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
 
   // Booking conversions a trigger couldn't write (transient errors) are
@@ -191,5 +196,8 @@ serve(async (req) => {
     }
   }
 
-  return json({ ok: true, enabled, conversionsRetried: retried ?? 0, report });
+  return json({
+    ok: true, enabled, conversionsRetried: retried ?? 0, report,
+    ...(noRealProvider ? { blocked: "email_provider_not_configured" } : {}),
+  });
 });
