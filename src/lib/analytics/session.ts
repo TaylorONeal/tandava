@@ -163,6 +163,9 @@ export async function captureSettled(slug?: string, ms = 2000): Promise<void> {
   // A capture that already gave up left a session with no server id: try it
   // once more now, inside the same time cap, rather than book without it.
   retryPendingLink();
+  // Same for an embed handoff link that already settled with an error: try
+  // again now (a no-op when nothing is pending) so its session is owned.
+  void retryHandoffLink();
   if (slug && !inFlight.has(slug) && lastCapture.has(slug)) {
     const stored = readSession(slug);
     if (stored && !stored.id) {

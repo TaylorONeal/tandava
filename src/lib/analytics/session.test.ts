@@ -160,3 +160,20 @@ describe("sign-in link retry", () => {
     expect(link).toHaveBeenCalledTimes(2);
   });
 });
+
+describe("embed handoff retry before booking", () => {
+  it("captureSettled retries a handoff link that settled with an error", async () => {
+    const { data } = await import("@/lib/backend");
+    const link = vi.mocked(data.linkMyVisitor);
+    link.mockReset();
+    link.mockResolvedValueOnce({ error: { message: "network" } } as never);
+    link.mockResolvedValue({ error: null } as never);
+    window.localStorage.setItem("tandava.vid.relink", "33333333-3333-4333-8333-333333333333");
+    const s = await import("./session");
+    await s.retryHandoffLink();
+    expect(window.localStorage.getItem("tandava.vid.relink")).not.toBeNull();
+    await s.captureSettled();
+    expect(link).toHaveBeenCalledTimes(2);
+    expect(window.localStorage.getItem("tandava.vid.relink")).toBeNull();
+  });
+});
