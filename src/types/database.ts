@@ -2750,6 +2750,24 @@ export interface PublicOccurrenceRow {
   cancellation_minutes?: number | null;
 }
 
+/**
+ * The caller's own studio (`get_my_studio`) — identity and branding for
+ * owner-facing screens, so an owner is never asked to type their own slug.
+ */
+export interface MyStudioRow {
+  studio_id: string;
+  name: string;
+  slug: string;
+  timezone: string;
+  currency: string;
+  discoverable: boolean;
+  brand_primary_color: string | null;
+  brand_secondary_color: string | null;
+  logo_url: string | null;
+  express_booking_enabled: boolean;
+  staff_role: UserRole;
+}
+
 type DatabaseTable<Row, Insert = Partial<Row>> = {
   Row: { [Key in keyof Row]: Row[Key] };
   Insert: { [Key in keyof Insert]: Insert[Key] };
@@ -2824,6 +2842,10 @@ export interface Database {
       get_public_occurrence: {
         Args: { p_slug: string; p_occurrence_id: string };
         Returns: PublicOccurrenceRow[];
+      };
+      get_my_studio: {
+        Args: Record<string, never>;
+        Returns: MyStudioRow[];
       };
       get_my_effective_role: {
         Args: Record<string, never>;
