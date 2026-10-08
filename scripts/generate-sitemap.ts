@@ -19,10 +19,12 @@ const SITE_URL = process.env.VITE_APP_URL || "https://tandavastudio.com";
 
 const staticRoutes = [
   { path: "/", priority: "1.0", changefreq: "daily" },
-  { path: "/schedule", priority: "0.9", changefreq: "daily" },
-  { path: "/events", priority: "0.8", changefreq: "weekly" },
-  { path: "/instructors", priority: "0.8", changefreq: "weekly" },
-  { path: "/on-demand", priority: "0.7", changefreq: "weekly" },
+  // The three audience doors. /schedule, /events, /instructors and /on-demand
+  // still render demo data, so they stay out of the map (and robots.txt).
+  { path: "/discover", priority: "0.9", changefreq: "daily" },
+  { path: "/for-studios", priority: "0.9", changefreq: "weekly" },
+  { path: "/open-source", priority: "0.6", changefreq: "monthly" },
+  { path: "/demo", priority: "0.6", changefreq: "monthly" },
   // Public tools. Prerendered by scripts/prerender-tools.ts.
   { path: CALC_ROUTE, priority: "0.8", changefreq: "monthly" },
 ];

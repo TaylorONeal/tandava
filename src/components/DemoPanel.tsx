@@ -11,7 +11,8 @@
  */
 
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { STUDIO_SIGNUP_HREF } from "@/lib/audience";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -464,29 +465,23 @@ function DemoPanelInner() {
 
         <Separator />
 
-        {/* Getting Started */}
+        {/* Your own studio */}
         <div>
           <div className="flex items-center gap-1.5 mb-2">
             <Rocket className="h-3.5 w-3.5 text-primary" />
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Run your own
+              Your own studio
             </p>
           </div>
           <div className="space-y-2">
             <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Tandava is open-source and free to self-host. You can have your own studio platform running in under an hour.
+              This is sample data. Set up your studio and we host it: add classes and prices, connect Stripe, publish your booking page.
             </p>
-
-            <div className="space-y-1.5">
-              <StepItem number={1} text="Clone the repo from GitHub" />
-              <StepItem number={2} text="Run npm install && npm run dev" />
-              <StepItem number={3} text="Set up Supabase (local or hosted)" />
-              <StepItem number={4} text="Connect Stripe for payments" />
-              <StepItem number={5} text="Customize your branding and go live" />
-            </div>
-
+            <Button asChild size="sm" className="w-full text-xs">
+              <Link to={STUDIO_SIGNUP_HREF}>Set up your studio</Link>
+            </Button>
             <p className="text-[10px] text-muted-foreground pt-1">
-              No coding experience? Check our step-by-step guide for using AI coding tools to customize Tandava.
+              Want to self-host? <Link to="/open-source" className="underline underline-offset-2">Open source</Link>.
             </p>
           </div>
         </div>
@@ -541,16 +536,5 @@ function DemoPanelInner() {
       </div>
     </div>
     </>
-  );
-}
-
-function StepItem({ number, text }: { number: number; text: string }) {
-  return (
-    <div className="flex items-center gap-2">
-      <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary/20 text-[9px] font-bold text-primary shrink-0">
-        {number}
-      </span>
-      <span className="text-[11px]">{text}</span>
-    </div>
   );
 }

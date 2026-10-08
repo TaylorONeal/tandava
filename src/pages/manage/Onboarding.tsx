@@ -502,7 +502,7 @@ export default function Onboarding() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <Field label="Full Name" id={`staffName-${i}`} placeholder="Maya Patel" value={member.name} onChange={(e) => updateStaff(i, "name", e.target.value)} />
-                  <Field label="Email" id={`staffEmail-${i}`} placeholder="maya@tandava.yoga" value={member.email} onChange={(e) => updateStaff(i, "email", e.target.value)} />
+                  <Field label="Email" id={`staffEmail-${i}`} placeholder="maya@yourstudio.com" value={member.email} onChange={(e) => updateStaff(i, "email", e.target.value)} />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <Sel label="Role" value={member.role} onChange={(v) => updateStaff(i, "role", v)} options={[["teacher","Teacher"],["sub","Substitute"],["admin","Admin"],["front_desk","Front Desk"]]} />

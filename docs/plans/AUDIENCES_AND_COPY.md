@@ -32,13 +32,13 @@ Code: `src/lib/audience.ts` (intent), `src/components/layout/MarketingShell.tsx`
 
 | ID | Item |
 |---|---|
-| C-1 | `/demo` page and `DemoPanel` still pitch open source, AGPL, self-host and "Run your own" to everyone. Retarget to owners evaluating the hosted product; link `/open-source` once |
-| C-2 | `/schedule`, `/events`, `/instructors` still show mock data and student-facing copy. Gate or noindex (W6-3) |
+| C-1 | DONE 2026-10-08: /demo and DemoPanel now pitch hosted setup to owners; one link to /open-source. Was: `/demo` page and `DemoPanel` still pitch open source, AGPL, self-host and "Run your own" to everyone. Retarget to owners evaluating the hosted product; link `/open-source` once |
+| C-2 | DONE 2026-10-08 (robots + sitemap): mock-data routes disallowed and out of the sitemap; /discover, /for-studios, /open-source, /demo added. Real data still to come (W6-3). Was: `/schedule`, `/events`, `/instructors` still show mock data and student-facing copy. Gate or noindex (W6-3) |
 | C-3 | Translate new `auth.json` keys (other locales fall back to English) |
-| C-4 | Post-confirmation landing: email link returns to `/` with an error fragment if expired. Add a friendly `/auth/callback` expired state and resend |
+| C-4 | DONE 2026-10-08: /auth/callback shows an expired-link state with resend. Was: Post-confirmation landing: email link returns to `/` with an error fragment if expired. Add a friendly `/auth/callback` expired state and resend |
 | C-5 | Onboarding wizard copy pass for owners (hosted vs self-host assumptions) |
-| C-6 | Blog and tools footers say "open source" first; point to `/for-studios` for owners |
-| C-7 | Hosted-only config: hide self-host/demo notices when `VITE_DEMO_MODE` is off |
+| C-6 | DONE 2026-10-08: blog CTA and calculator footer point owners to /for-studios. Was: Blog and tools footers say "open source" first; point to `/for-studios` for owners |
+| C-7 | DONE 2026-10-08: notification settings show the fake provider forms only in demo mode. Was: Hosted-only config: hide self-host/demo notices when `VITE_DEMO_MODE` is off |
 | C-8 | Full string audit of `src/pages/manage/*`, emails and `public/locales/*` for hosted vs self-host assumptions (Stripe, SMTP, "your server") |
 | C-9 | Auth: `/auth/reset` and `/auth/reset-confirm` added 2026-10-07; confirm Supabase redirect allow-list includes `/auth/reset-confirm` on prod and previews |
-| C-10 | Auth emails: branded templates in `supabase/templates/`, pushed with `scripts/set-auth-emails.sh`. Still needs Resend SMTP (built-in mail is 2/hour and unbranded sender) and an expired-link resend on `/auth/reset-confirm` is in; consider token-hash links if mail scanners burn single-use links |
+| C-10 | DONE 2026-10-08: branded templates live, Resend SMTP on purafieldstudio.com. Was: Auth emails: branded templates in `supabase/templates/`, pushed with `scripts/set-auth-emails.sh`. Still needs Resend SMTP (built-in mail is 2/hour and unbranded sender) and an expired-link resend on `/auth/reset-confirm` is in; consider token-hash links if mail scanners burn single-use links |
