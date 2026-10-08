@@ -537,7 +537,9 @@ AS $$
               AND ub.status IN ('confirmed', 'waitlisted') AND o.starts_at > NOW()),
     COALESCE((SELECT jsonb_agg(jsonb_build_object('key', s.automation_key, 'step', s.step,
                 'episode', s.episode_key, 'sent_at', s.sent_at))
-              FROM automation_sends s WHERE s.profile_id = p.id AND s.studio_id = p_studio_id), '[]'::jsonb)
+              -- Delivered emails only: a failed step never advances a sequence.
+              FROM automation_sends s WHERE s.profile_id = p.id AND s.studio_id = p_studio_id
+                AND s.status = 'sent'), '[]'::jsonb)
   FROM profiles p JOIN members ON members.profile_id = p.id
   WHERE p.email IS NOT NULL;
 $$;
@@ -599,7 +601,9 @@ BEGIN
         CASE WHEN (SELECT COALESCE(is_guest, FALSE) FROM profiles WHERE id = NEW.profile_id)
              THEN 'guest_booking' ELSE 'member_booking' END,
         0, (SELECT currency FROM studios WHERE id = NEW.studio_id),
-        'booking', NEW.id, NULL, NULL
+        'booking', NEW.id, NULL,
+        CASE WHEN (SELECT COALESCE(is_guest, FALSE) FROM profiles WHERE id = NEW.profile_id)
+             THEN 'express' ELSE 'signup' END
       );
     EXCEPTION WHEN OTHERS THEN
       RAISE WARNING 'record_promoted_booking_conversion: %', SQLERRM;

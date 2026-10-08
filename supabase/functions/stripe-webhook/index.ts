@@ -87,7 +87,10 @@ serve(async (req) => {
         break;
 
       case "invoice.payment_succeeded":
-        await handlePaymentSucceeded(event.data.object as Stripe.Invoice);
+        if (!(await handlePaymentSucceeded(event.data.object as Stripe.Invoice))) {
+          // Safe to retry: the conversion is keyed by the invoice id.
+          return new Response("Retry later", { status: 500 });
+        }
         break;
 
       default:
@@ -452,15 +455,15 @@ async function uuidFromStripeId(id: string): Promise<string> {
  * (subscription_create) and is already recorded as membership_start.
  * Attribution only; renewal transactions in the ledger are tracked in #73.
  */
-async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
-  if (!invoice.subscription || invoice.billing_reason !== "subscription_cycle") return;
-  if (!invoice.amount_paid) return;
+async function handlePaymentSucceeded(invoice: Stripe.Invoice): Promise<boolean> {
+  if (!invoice.subscription || invoice.billing_reason !== "subscription_cycle") return true;
+  if (!invoice.amount_paid) return true;
   const { data: membership } = await supabase
     .from("memberships")
     .select("id, studio_id, profile_id")
     .eq("stripe_subscription_id", invoice.subscription as string)
     .maybeSingle();
-  if (!membership) return;
+  if (!membership) return true;
   const { error } = await supabase.rpc("record_conversion", {
     p_studio_id: membership.studio_id,
     p_profile_id: membership.profile_id,
@@ -473,7 +476,11 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
     p_converting_session_id: null,
     p_member_source: null,
   });
-  if (error) console.error("[stripe-webhook] renewal conversion failed:", error.message);
+  if (error) {
+    console.error("[stripe-webhook] renewal conversion failed:", error.message);
+    return false;
+  }
+  return true;
 }
 
 async function handlePaymentFailed(invoice: Stripe.Invoice) {

@@ -86,3 +86,15 @@ describe("forgetVisitor", () => {
     expect(window.localStorage.getItem("tandava.vid.owner")).toBeNull();
   });
 });
+
+describe("displaced visitor ids", () => {
+  it("keeps the id an embed handoff replaced, and drops it when the account changes", async () => {
+    const { getVisitorId, previousVisitorIds, claimVisitorFor } = await import("./session");
+    claimVisitorFor("user-a");
+    const original = getVisitorId();
+    getVisitorId("22222222-2222-4222-8222-222222222222");
+    expect(previousVisitorIds()).toEqual([original]);
+    claimVisitorFor("user-b");
+    expect(previousVisitorIds()).toEqual([]);
+  });
+});

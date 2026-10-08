@@ -41,6 +41,8 @@ export function getVisitorId(handoff?: string): string {
   try {
     const stored = window.localStorage.getItem(VISITOR_KEY);
     if (handoff && handoff !== stored) {
+      // Keep the displaced id so sign-in links its earlier visits too.
+      if (stored) rememberPreviousVisitor(stored);
       window.localStorage.setItem(VISITOR_KEY, handoff);
       return handoff;
     }
@@ -76,6 +78,28 @@ function writeSession(slug: string, s: StoredSession) {
     window.sessionStorage.setItem(SESSION_PREFIX + slug, JSON.stringify(s));
   } catch {
     memorySessions.set(slug, s);
+  }
+}
+
+const PREVIOUS_KEY = "tandava.vid.prev";
+
+function rememberPreviousVisitor(id: string) {
+  try {
+    const list = JSON.parse(window.localStorage.getItem(PREVIOUS_KEY) ?? "[]") as unknown;
+    const prev = Array.isArray(list) ? list.filter((x): x is string => typeof x === "string" && x !== id) : [];
+    window.localStorage.setItem(PREVIOUS_KEY, JSON.stringify([id, ...prev].slice(0, 3)));
+  } catch {
+    // ignore
+  }
+}
+
+/** Visitor ids this browser used before an embed handoff replaced them (newest first). */
+export function previousVisitorIds(): string[] {
+  try {
+    const list = JSON.parse(window.localStorage.getItem(PREVIOUS_KEY) ?? "[]") as unknown;
+    return Array.isArray(list) ? list.filter((x): x is string => typeof x === "string") : [];
+  } catch {
+    return [];
   }
 }
 
@@ -156,6 +180,7 @@ export function claimVisitorFor(userId: string) {
     const owner = window.localStorage.getItem(OWNER_KEY);
     if (owner && owner !== userId) {
       window.localStorage.setItem(VISITOR_KEY, randomId());
+      window.localStorage.removeItem(PREVIOUS_KEY);
       for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
         const k = window.sessionStorage.key(i);
         if (k?.startsWith(SESSION_PREFIX)) window.sessionStorage.removeItem(k);
@@ -186,8 +211,16 @@ export async function linkVisitorOnce(userId: string, via = "sign_in") {
   if (!done) {
     try {
       const { error } = await data.linkMyVisitor(getVisitorId(), via);
+      // Ids an embed handoff displaced belong to the same person on this browser.
+      const previous = previousVisitorIds();
+      for (const id of previous) await data.linkMyVisitor(id, `${via}_previous`);
       // Mark only on success, so a failed link is retried on the next auth event.
       if (!error) {
+        try {
+          window.localStorage.removeItem(PREVIOUS_KEY);
+        } catch {
+          // ignore
+        }
         try {
           window.sessionStorage.setItem(key, "1");
         } catch {
@@ -340,6 +373,7 @@ export function forgetVisitor() {
     window.localStorage.setItem(VISITOR_KEY, randomId());
     window.localStorage.removeItem(OWNER_KEY);
     window.localStorage.removeItem(PENDING_CONSENT_KEY);
+    window.localStorage.removeItem(PREVIOUS_KEY);
     for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
       const k = window.sessionStorage.key(i);
       if (k?.startsWith(SESSION_PREFIX) || k?.startsWith(LINKED_PREFIX) || k?.startsWith(CONSENT_PREFIX)) window.sessionStorage.removeItem(k);

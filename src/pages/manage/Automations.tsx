@@ -58,7 +58,7 @@ export default function Automations() {
   const live = isBackendConfigured();
   const { toast } = useToast();
   const { data: studio } = useMyStudio();
-  const { data: saved, isLoading } = useAutomationSettings(studio?.studio_id);
+  const { data: saved, isLoading, isError } = useAutomationSettings(studio?.studio_id);
   const save = useSaveAutomationSettings();
   const [form, setForm] = useState<FormState>(DEFAULTS);
 
@@ -202,10 +202,17 @@ export default function Automations() {
         </Card>
 
         <div className="flex items-center gap-3">
-          <Button onClick={() => void onSave()} disabled={!live || !studio || isLoading || save.isPending || !daysValid || !urlValid}>
+          {/* Never save over settings we couldn't read: defaults would overwrite them. */}
+          <Button onClick={() => void onSave()} disabled={!live || !studio || isLoading || isError || save.isPending || !daysValid || !urlValid}>
             {save.isPending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : "Save"}
           </Button>
-          <span className="text-xs text-muted-foreground">Owners and admins can change these.</span>
+          {isError ? (
+            <span role="alert" className="text-xs text-destructive">
+              Couldn't load your current settings. Reload the page before changing anything.
+            </span>
+          ) : (
+            <span className="text-xs text-muted-foreground">Owners and admins can change these.</span>
+          )}
         </div>
       </div>
     </ManageLayout>
