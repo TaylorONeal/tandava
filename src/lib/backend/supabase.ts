@@ -17,6 +17,7 @@ import { captchaOption } from "@/lib/auth/captcha";
 import { safeNextPath } from "@/lib/auth/next";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
+import { STUDIO_SETTINGS_COLUMNS, type StudioSettingsRow } from "@/lib/hosted/studioSettings";
 import type {
   AuthProvider,
   AuthUser,
@@ -308,6 +309,25 @@ const supabaseData: DataProvider = {
       data: rows[0] ?? null,
       error: error ? { message: error.message } : null,
     };
+  },
+
+  async getStudioSettings(studioId): Promise<DataResult<StudioSettingsRow>> {
+    const { data, error } = await getClient()
+      .from("studios")
+      .select(STUDIO_SETTINGS_COLUMNS)
+      .eq("id", studioId)
+      .single();
+    return { data: (data as unknown as StudioSettingsRow) ?? null, error: error ? { message: error.message } : null };
+  },
+
+  async updateStudioSettings(studioId, patch): Promise<DataResult<StudioSettingsRow>> {
+    const { data, error } = await getClient()
+      .from("studios")
+      .update(patch as never)
+      .eq("id", studioId)
+      .select(STUDIO_SETTINGS_COLUMNS)
+      .single();
+    return { data: (data as unknown as StudioSettingsRow) ?? null, error: error ? { message: error.message } : null };
   },
 
   async getMyStudio(): Promise<DataResult<MyStudioRow>> {
