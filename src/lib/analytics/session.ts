@@ -90,7 +90,19 @@ const PREVIOUS_KEY = "tandava.vid.prev";
 const RELINK_KEY = "tandava.vid.relink";
 
 /** Link a pending embed handoff id for a signed-in person; cleared only on success. */
-export async function retryHandoffLink() {
+let handoffInFlight: Promise<void> | null = null;
+
+/** Link a pending embed handoff id; bookings wait on this (captureSettled). */
+export function retryHandoffLink(): Promise<void> {
+  if (handoffInFlight) return handoffInFlight;
+  const p = retryHandoffLinkInner().finally(() => {
+    if (handoffInFlight === p) handoffInFlight = null;
+  });
+  handoffInFlight = p;
+  return p;
+}
+
+async function retryHandoffLinkInner() {
   let id: string | null = null;
   try {
     id = window.localStorage.getItem(RELINK_KEY);
@@ -148,7 +160,7 @@ const inFlight = new Map<string, Promise<void>>();
 export async function captureSettled(slug?: string, ms = 2000): Promise<void> {
   // Also wait for a sign-in link in progress: the server credits a session
   // only once it can see that the browser belongs to the person booking.
-  const pending = [...(slug ? [inFlight.get(slug)].filter(Boolean) : [...inFlight.values()]), ...(linkInFlight ? [linkInFlight] : [])];
+  const pending = [...(slug ? [inFlight.get(slug)].filter(Boolean) : [...inFlight.values()]), ...(linkInFlight ? [linkInFlight] : []), ...(handoffInFlight ? [handoffInFlight] : [])];
   if (!pending.length) return;
   await Promise.race([Promise.allSettled(pending), new Promise<void>((r) => setTimeout(r, ms))]);
 }
@@ -233,9 +245,11 @@ export function claimVisitorFor(userId: string) {
       window.localStorage.setItem(VISITOR_KEY, randomId());
       window.localStorage.removeItem(PREVIOUS_KEY);
       window.localStorage.removeItem(RELINK_KEY);
+      // A new visitor id needs linking again for everyone, A -> B -> A included.
       for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
         const k = window.sessionStorage.key(i);
-        if (k?.startsWith(SESSION_PREFIX)) window.sessionStorage.removeItem(k);
+        if (k?.startsWith(SESSION_PREFIX) || k?.startsWith(LINKED_PREFIX) || k?.startsWith(CONSENT_PREFIX))
+          window.sessionStorage.removeItem(k);
       }
     }
     window.localStorage.setItem(OWNER_KEY, userId);
@@ -243,6 +257,7 @@ export function claimVisitorFor(userId: string) {
     if (memoryOwner && memoryOwner !== userId) {
       memoryVisitor = randomId();
       memorySessions.clear();
+      linkedInMemory.clear();
     }
     memoryOwner = userId;
   }
