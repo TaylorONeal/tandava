@@ -172,8 +172,10 @@ export async function captureSettled(slug?: string, ms = 2000): Promise<void> {
   // again now (a no-op when nothing is pending) so its session is owned.
   void retryHandoffLink();
   if (slug && !inFlight.has(slug) && lastCapture.has(slug)) {
+    // No server id yet, or no session at all (an account switch in another
+    // tab cleared it while this page stayed open): capture again.
     const stored = readSession(slug);
-    if (stored && !stored.id) {
+    if (!stored || !stored.id) {
       const args = lastCapture.get(slug)!;
       void trackVisit(slug, args.surface, args.opts);
     }

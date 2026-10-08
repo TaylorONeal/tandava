@@ -204,3 +204,27 @@ describe("session storage write failures", () => {
     expect(new Set(tokens).size).toBe(1);
   });
 });
+
+describe("capture after an account switch", () => {
+  it("captureSettled recaptures when the session was cleared by claimVisitorFor", async () => {
+    vi.stubGlobal("window", {
+      localStorage: memoryStorage(),
+      sessionStorage: memoryStorage(),
+      location: { href: "https://app.example.com/s/oxatl" },
+    });
+    vi.stubGlobal("document", { referrer: "" });
+    vi.stubGlobal("navigator", { userAgent: "test" });
+    const { api } = await import("@/lib/backend");
+    const invoke = vi.mocked(api.invoke);
+    invoke.mockReset();
+    invoke.mockResolvedValue({ data: { sessionId: "55555555-5555-4555-8555-555555555555" }, error: null } as never);
+    const s = await import("./session");
+    s.claimVisitorFor("user-a");
+    await s.trackVisit("oxatl", "storefront" as never);
+    s.claimVisitorFor("user-b"); // another tab switched accounts: sessions cleared
+    expect(s.currentSessionId("oxatl")).toBeFalsy();
+    invoke.mockResolvedValue({ data: { sessionId: "66666666-6666-4666-8666-666666666666" }, error: null } as never);
+    await s.captureSettled("oxatl");
+    expect(s.currentSessionId("oxatl")).toBe("66666666-6666-4666-8666-666666666666");
+  });
+});
