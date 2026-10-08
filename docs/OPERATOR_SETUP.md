@@ -170,13 +170,16 @@ built from main's migrations 00001 to 00034 and has no migration tracking table,
 2. Verify, read-only, in the same editor:
    ```sql
    select to_regprocedure('public.record_checkout_conversion(jsonb,timestamptz)') is not null as checkout_fn,
-          to_regprocedure('public.record_renewal_conversion(text,text,integer,text,timestamptz)') is not null as renewal_fn,
+          to_regprocedure('public.record_renewal_conversion(text,text,integer,text,timestamptz,text)') is not null as renewal_fn,
+          to_regprocedure('public.claim_automation_send(uuid,uuid,text,integer,text)') is not null as claim_fn,
+          to_regprocedure('public.confirm_email_opt_in(uuid,uuid,timestamptz)') is not null as opt_in_fn,
           to_regclass('public.automation_settings') is not null as automations,
           (select count(*) from pg_tables t where schemaname = 'public' and rowsecurity
              and not exists (select 1 from pg_policies p where p.schemaname = 'public' and p.tablename = t.tablename)) as rls_tables_without_policy,
           has_function_privilege('anon', 'public.record_conversion(uuid,uuid,uuid,text,integer,text,text,uuid,uuid,text,timestamptz)', 'EXECUTE') as anon_can_write_conversions;
    ```
-   Expect `true, true, true, 0, false`.
+   Expect `true, true, true, true, true, 0, false`. (`to_regprocedure` needs every
+   argument type, defaulted ones included.)
 3. Only then deploy the functions: `stripe-webhook` and `stripe-checkout` (they call
    the new SQL functions; deployed before step 1, every paid checkout would answer
    500 and Stripe would retry until the SQL exists), then `express-book`,
