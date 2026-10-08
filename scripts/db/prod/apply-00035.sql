@@ -241,9 +241,11 @@ BEGIN
   END IF;
 
   -- The journey: every session at this studio from any visitor linked to the
-  -- person (or the anonymous visitor itself), up to the conversion.
+  -- person by the conversion time (or the converting browser itself), up to
+  -- the conversion. A device linked later (a delayed webhook, a retried
+  -- queued conversion) must not rewrite a past conversion's first touch.
   WITH visitors AS (
-    SELECT visitor_id FROM profile_visitors WHERE profile_id = p_profile_id
+    SELECT visitor_id FROM profile_visitors WHERE profile_id = p_profile_id AND linked_at <= v_at
     UNION
     SELECT p_visitor_id WHERE p_visitor_id IS NOT NULL
       AND NOT EXISTS (SELECT 1 FROM profile_visitors pv

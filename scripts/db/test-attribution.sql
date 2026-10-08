@@ -627,5 +627,25 @@ BEGIN
   IF b IS NULL THEN RAISE EXCEPTION 'a failed send should not count toward the cap'; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (31 blocks)'; END $$;
+-- 32. A device linked after the conversion time does not join that
+--     conversion's journey; the converting browser still does.
+DO $$
+DECLARE p UUID := '00000000-0000-0000-0000-0000000000a1';
+  v_conv UUID := gen_random_uuid(); v_late UUID := gen_random_uuid();
+  s_conv UUID; s_late UUID; c UUID; r conversion_events%ROWTYPE;
+BEGIN
+  s_conv := record_session('aloha', v_conv, 'tok-conv', 'storefront', 'https://x/s/aloha', NULL, '{}', '{}', 'direct', 'mobile');
+  s_late := record_session('aloha', v_late, 'tok-late', 'storefront', 'https://x/s/aloha', NULL, '{}', '{}', 'paid_search', 'desktop');
+  UPDATE analytics_sessions SET started_at = NOW() - interval '5 days' WHERE id = s_conv;
+  UPDATE analytics_sessions SET started_at = NOW() - interval '10 days' WHERE id = s_late;
+  -- The other device was linked just now, after the purchase two days ago.
+  PERFORM link_visitor(p, v_late, 'sign_in');
+  c := record_conversion('00000000-0000-0000-0000-00000000005a', p, v_conv, 'purchase', 5000, 'usd', 'transaction',
+        gen_random_uuid(), s_conv, NULL, NOW() - interval '2 days');
+  SELECT * INTO r FROM conversion_events WHERE id = c;
+  IF r.first_touch_session_id IS DISTINCT FROM s_conv OR r.touch_count <> 1 THEN
+    RAISE EXCEPTION 'late-linked device joined the journey: first % count %', r.first_touch_session_id, r.touch_count; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (32 blocks)'; END $$;
 ROLLBACK;
