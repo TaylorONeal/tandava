@@ -11,7 +11,7 @@
 
 import { api, data } from "@/lib/backend";
 import { classifyChannel } from "./channel";
-import { deviceType, parseLanding } from "./landing";
+import { deviceType, parseLanding, sanitizeUrl } from "./landing";
 
 const VISITOR_KEY = "tandava.vid";
 const SESSION_PREFIX = "tandava.sess.";
@@ -175,10 +175,11 @@ export function trackVisit(slug: string, surface: Surface, opts?: { studioSiteHo
 
 async function trackVisitInner(slug: string, surface: Surface, opts?: { studioSiteHost?: string | null }) {
   if (typeof window === "undefined" || !slug) return;
-  void retryHandoffLink();
   const href = window.location.href;
   const facts = parseLanding(href);
+  // Adopt an embed handoff id first, so the link retry below targets it.
   const visitorId = getVisitorId(facts.handoffVisitorId);
+  void retryHandoffLink();
   const now = Date.now();
   const existing = readSession(slug);
   // Any campaign tag (source, medium, campaign, content, term) or click id
@@ -206,8 +207,9 @@ async function trackVisitInner(slug: string, surface: Surface, opts?: { studioSi
       visitorId,
       sessionToken: session.token,
       surface,
-      landingUrl: href.slice(0, 1000),
-      referrer: referrer?.slice(0, 1000) ?? null,
+      // Never store tokens or personal data that ride on URLs.
+      landingUrl: sanitizeUrl(href),
+      referrer: sanitizeUrl(referrer),
       utm: facts.utm,
       clickIds: facts.clickIds,
       channel,

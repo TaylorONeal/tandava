@@ -85,3 +85,25 @@ export function withEmbedHandoff(
   }
   return `${base}?${params.toString()}`;
 }
+
+const KEEP_PARAMS = /^(utm_(source|medium|campaign|content|term)|fbclid|gclid|gbraid|wbraid|ttclid|msclkid)$/;
+
+/**
+ * A URL safe to store for analytics: scheme, host and path, plus only campaign
+ * tags and ad click ids. Everything else (continuation tokens, auth codes,
+ * emails, the embed handoff id) is dropped, as is any fragment. Null for
+ * anything that isn't an http(s) URL.
+ */
+export function sanitizeUrl(url: string | null | undefined, max = 1000): string | null {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    if (u.protocol !== "https:" && u.protocol !== "http:") return null;
+    const kept = new URLSearchParams();
+    for (const [k, v] of u.searchParams) if (KEEP_PARAMS.test(k)) kept.append(k, v);
+    const q = kept.toString();
+    return `${u.origin}${u.pathname}${q ? `?${q}` : ""}`.slice(0, max);
+  } catch {
+    return null;
+  }
+}

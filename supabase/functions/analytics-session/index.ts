@@ -15,6 +15,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { classifyChannel } from "../../../src/lib/analytics/channel.ts";
+import { sanitizeUrl } from "../../../src/lib/analytics/landing.ts";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -58,7 +59,8 @@ serve(async (req) => {
 
   const utm = pick(body.utm, ["source", "medium", "campaign", "content", "term"], 200);
   const clickIds = pick(body.clickIds, ["fbclid", "gclid", "gbraid", "wbraid", "ttclid", "msclkid"], 500);
-  const referrer = str(body.referrer, 1000);
+  // Sanitized here too: never trust the client to have dropped tokens.
+  const referrer = sanitizeUrl(str(body.referrer, 2000));
   const deviceType = ["mobile", "tablet", "desktop"].includes(body.deviceType) ? body.deviceType : null;
 
   const db = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
@@ -85,7 +87,7 @@ serve(async (req) => {
     p_visitor_id: visitorId,
     p_session_token: sessionToken,
     p_surface: surface,
-    p_landing_page_url: str(body.landingUrl, 1000),
+    p_landing_page_url: sanitizeUrl(str(body.landingUrl, 2000)),
     p_referrer_url: referrer,
     p_utm: utm,
     p_click_ids: clickIds,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { deviceType, parseLanding, withEmbedHandoff } from "./landing";
+import { deviceType, parseLanding, sanitizeUrl, withEmbedHandoff } from "./landing";
 
 describe("parseLanding", () => {
   it("reads UTMs and click ids from a full URL", () => {
@@ -60,4 +60,15 @@ describe("deviceType", () => {
     ["Mozilla/5.0 (iPad; CPU OS 18_0 like Mac OS X)", "tablet"],
     ["Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0)", "desktop"],
   ])("%s → %s", (ua, t) => expect(deviceType(ua)).toBe(t));
+});
+
+describe("sanitizeUrl", () => {
+  it("keeps only campaign tags and click ids", () => {
+    expect(sanitizeUrl("https://t.app/s/aloha/book/1?continue=SECRET&utm_source=ig&email=a@b.co&gclid=x#frag")).toBe(
+      "https://t.app/s/aloha/book/1?utm_source=ig&gclid=x",
+    );
+    expect(sanitizeUrl("https://t.app/auth/callback?code=abc&tv=11111111-1111-4111-8111-111111111111")).toBe("https://t.app/auth/callback");
+    expect(sanitizeUrl("javascript:alert(1)")).toBeNull();
+    expect(sanitizeUrl(null)).toBeNull();
+  });
 });
