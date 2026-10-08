@@ -151,7 +151,7 @@ export const HELP: HelpEntry[] = [
     status: "planned",
     question: "Can I switch from Mindbody or another system?",
     answer:
-      "Today: client lists, attendance and transactions import from CSV exports of Mindbody, Momence, Walla, Arketa, WellnessLiving or any spreadsheet. Planned: class pack balances, active memberships with their renewal dates, marketing opt-ins, and cards on file through Stripe's card import, with a dated cutover plan. Your old provider may charge for exports or need notice to release cards; we list what each one requires.",
+      "Today: client lists import from a CSV export of Mindbody, Momence, Walla, Arketa, WellnessLiving or any spreadsheet. Planned: attendance and transaction history, class pack balances, active memberships with their renewal dates, marketing opt-ins, and cards on file through Stripe's card import, with a dated cutover plan. Your old provider may charge for exports or need notice to release cards; we list what each one requires.",
     learnMore: "docs/prd/PRD-027-crm-marketing-ads-and-migration.md",
   },
 ];

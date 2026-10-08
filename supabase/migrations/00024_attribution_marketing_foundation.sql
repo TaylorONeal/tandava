@@ -61,7 +61,9 @@ ALTER TABLE studio_members
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS conversion_events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),   -- also the event_id sent to ad platforms (dedupe with the pixel)
-  studio_id UUID NOT NULL REFERENCES studios(id) ON DELETE CASCADE,
+  -- NULL for Tandava-level conversions (e.g. a Studio Network credit purchase,
+  -- PRD-023/024), which belong to no studio. Staff RLS never shows those.
+  studio_id UUID REFERENCES studios(id) ON DELETE CASCADE,
   profile_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
   visitor_id UUID,
   conversion_type TEXT NOT NULL,                    -- lead, guest_booking, member_booking, account_claimed, signup, pack_purchase, membership_start, event_registration, private_accepted, network_booking, first_check_in

@@ -74,7 +74,7 @@ Studios already tag their links: PRD-026 (`/manage/share`) gives them eleven cha
 ---
 
 ## Switching from other systems
-Existing: CSV import wizard for six sources (Mindbody, Momence, Walla, Arketa, WellnessLiving, generic), `import_jobs_v2`, `entity_sync_mappings` (external id ↔ Tandava id), quality reports. Gaps this PRD adds:
+Existing: a CSV import wizard that recognises six source formats (Mindbody, Momence, Walla, Arketa, WellnessLiving, generic), but the `import-members` function persists **client profiles only** (`import_type: "clients"`); attendance and transaction import are listed as remaining work in `docs/ROADMAP.md`. Schema for more exists: `import_jobs_v2`, `entity_sync_mappings` (external id ↔ Tandava id), quality reports. Gaps this PRD adds:
 
 | Gap | Plan |
 |---|---|
