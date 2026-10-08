@@ -38,6 +38,8 @@ const unsubscribeSecret = Deno.env.get("AUTOMATIONS_UNSUBSCRIBE_SECRET") ?? "";
 const enabled = Deno.env.get("AUTOMATIONS_ENABLED") === "true";
 /** Longest one automation email may take before the run moves on. */
 const SEND_TIMEOUT_MS = 15_000;
+/** Stop claiming sends well inside the Edge Function wall-clock limit (400s on hosted Supabase). */
+const RUN_BUDGET_MS = 300_000;
 const appUrl = (Deno.env.get("APP_URL") ?? "").replace(/\/+$/, "");
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -82,6 +84,7 @@ serve(async (req) => {
   if (!sameSecret(req.headers.get("x-cron-secret") ?? "", cronSecret)) return json({ error: "Forbidden" }, 403);
   if (!appUrl || !unsubscribeSecret) return json({ error: "APP_URL and AUTOMATIONS_UNSUBSCRIBE_SECRET must be set" }, 500);
 
+  const startedAt = Date.now();
   const body = (await req.json().catch(() => ({}))) as { studioId?: string; dryRun?: boolean };
   // A claimed send can't be retried (its episode key is unique), so check the
   // provider can deliver before claiming anything. The console provider
@@ -98,18 +101,28 @@ serve(async (req) => {
   const { data: retried, error: retryError } = await db.rpc("retry_queued_conversions", { p_limit: 500 });
   if (retryError) console.error("run-automations: conversion retry failed", retryError.message);
 
-  let studiosQuery = db.from("studios").select("id, name, slug, timezone, email, brand_primary_color");
-  if (body.studioId) {
-    if (!UUID.test(body.studioId)) return json({ error: "Bad studioId" }, 400);
-    studiosQuery = studiosQuery.eq("id", body.studioId);
+  if (body.studioId && !UUID.test(body.studioId)) return json({ error: "Bad studioId" }, 400);
+  // Every studio, in pages (a select is capped at 1,000 rows), in a stable order.
+  const studios: StudioRow[] = [];
+  for (let from = 0; ; from += 1000) {
+    let q = db.from("studios").select("id, name, slug, timezone, email, brand_primary_color").order("id").range(from, from + 999);
+    if (body.studioId) q = q.eq("id", body.studioId);
+    const { data, error: studiosError } = await q;
+    if (studiosError) return json({ error: studiosError.message }, 500);
+    studios.push(...((data ?? []) as StudioRow[]));
+    if (!data || data.length < 1000) break;
   }
-  const { data: studios, error: studiosError } = await studiosQuery;
-  if (studiosError) return json({ error: studiosError.message }, 500);
+  // A run that runs out of time stops early; start each hour at a different
+  // studio so the same ones aren't always the ones left for next time.
+  const rotate = studios.length ? Math.floor(Date.now() / 3_600_000) % studios.length : 0;
+  const ordered = [...studios.slice(rotate), ...studios.slice(0, rotate)];
+  let outOfTime = false;
 
   const now = new Date();
   const report: Record<string, unknown>[] = [];
 
-  for (const studio of (studios ?? []) as StudioRow[]) {
+  for (const studio of ordered) {
+    if (Date.now() - startedAt > RUN_BUDGET_MS - SEND_TIMEOUT_MS) { outOfTime = true; break; }
     const [{ data: settings, error: settingsError }, { data: candidates, error: candError }, { data: loc }] = await Promise.all([
       db.from("automation_settings").select("*").eq("studio_id", studio.id).maybeSingle(),
       allCandidates(studio.id),
@@ -144,6 +157,9 @@ serve(async (req) => {
 
 
     for (const s of plan.sends) {
+      // Never claim a send the invocation might not live to finish: a claim
+      // killed mid-send stays 'sending' and its episode can't be retried.
+      if (Date.now() - startedAt > RUN_BUDGET_MS - SEND_TIMEOUT_MS) { outOfTime = true; break; }
       if (!isAutomationTemplate(s.decision.template)) continue;
 
       // Claim first. The database enforces one automation email per person
@@ -224,10 +240,13 @@ serve(async (req) => {
           .eq("id", claimed[0].id);
       }
     }
+    if (outOfTime) break;
   }
 
   return json({
     ok: true, enabled, conversionsRetried: retried ?? 0, report,
     ...(blocked ? { blocked } : {}),
+    // The rest is picked up by the next hourly run.
+    ...(outOfTime ? { stoppedEarly: true } : {}),
   });
 });
