@@ -1,7 +1,7 @@
 # PRD-023: Studio Network (cross-studio credits, studio-controlled)
 
 ## Overview
-**Phase:** 8 (after the pilot studio is live and PRD-020/022 are verified)
+**Phase:** 10 (Marketplace, matching `docs/ROADMAP.md`; after the pilot studio is live and PRD-020/022/024 are verified)
 **Priority:** P1 strategic, P3 by date. Nothing here is buildable before there are several studios in one city.
 **Status:** Spec. Nothing exists in code. Today a pass belongs to one studio (`class_packs.studio_id`, `memberships.studio_id`) and there is no concept of a credit that works across studios.
 **Origin:** Taylor, Oct 8 2026: "Cross like ClassPass is a great idea but we need to be better than ClassPass, the studio must be able to enable or disable it, and we must show the studio its value and ROI."
@@ -60,7 +60,7 @@ The job is the opposite: a studio with empty seats tonight fills them with peopl
 ### Member side
 1. Credits are bought in the member's account (web checkout; see store note below) or granted by a home studio that opts into reciprocity (phase 2).
 2. Explore (PRD-022 chrome) lists network-eligible classes near the member, each with the credit price and the studio's name and colors. Tapping opens that studio's canvas, exactly as a deep link would.
-3. Booking a network seat goes through the existing member booking path with `sourceType: "network_credit"`, the same `book_class()` capacity lock, the same calendar event, the same cancellation policy as the studio's drop-ins.
+3. Booking a network seat uses a **new atomic path**, not the existing one: `book_class()` (migration 00012) accepts only `membership` and `class_pack` and raises `Unsupported payment source` for anything else, and it knows nothing about released seats. A `book_network_seat(occurrence, profile, release)` function, under the same row lock as `create_guest_booking()`, must in one transaction: verify the release is live and has quota left, verify the member is eligible (not excluded by the lookback, under the cap), debit the credit ledger at the floor price, insert the `bookings` row with `source_type = 'network_credit'` and the release id, and decrement the release. Any failed check rolls back the debit. The resulting booking then gets the same calendar event and the same cancellation policy as the studio's drop-ins; a cancellation inside policy credits the ledger back and returns the seat to the release if the window is still open.
 4. The first booking at a studio asks for the studio's waiver and for contact consent ("Let Aloha Yoga email you about classes"). One screen, defaults off.
 5. After the second visit, the studio's intro offer appears on the confirmation. After the cap, booking says: "You've used your 3 network visits at Aloha Yoga this month. Join Aloha Yoga from $X." The studio's own offer, not ours.
 
@@ -104,7 +104,8 @@ Monthly owner email with the same numbers (PRD-007 lifecycle automation carries 
 | `network_offering_rules` | studio_id, offering_id, weekday/time filters, seats_per_class, floor_price_cents, enabled |
 | `network_releases` | class_occurrence_id, seats_released, released_at, withdrawn_at; written by a scheduled job inside the window, withdrawn when a member books |
 | `network_credits` | profile_id, balance_cents, purchases and debits (ledger, append-only) |
-| `bookings.source_type` gains `network_credit`; `bookings.network_release_id` | The booking stays in `bookings`: rosters, waitlist, check-in and calendar need no special case (same reasoning as PRD-020) |
+| `bookings.source_type` gains `network_credit`; `bookings.network_release_id` | The booking stays in `bookings`: rosters, waitlist, check-in and calendar need no special case (same reasoning as PRD-020). Written only by `book_network_seat()` |
+| `book_network_seat()` (new RPC, service role) | Atomic eligibility + quota + ledger debit + booking insert; `book_class()` is left untouched |
 | `studio_members.source` | `network`, `express`, `import`, `signup`; first-touch of the relationship with this studio |
 | `transactions.network_fee_cents` | Itemised fee, so payouts and the ROI page agree to the cent |
 

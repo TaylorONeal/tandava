@@ -18,11 +18,11 @@ Every screen has two layers. The **canvas** (studio page, schedule, class, booki
 | Surface | Canvas (studio's) | Chrome (member's) |
 |---|---|---|
 | Member app, any studio screen | Studio header, schedule, booking | Tab bar: **Studio · Bookings · Passes · Me**; studio name with a chevron in the header (switcher) |
-| Web studio page `/s/:slug` | Everything on the page | Signed in: avatar menu top right (My bookings, Passes, Explore, Account). Signed out: a small "Booking by Tandava" wordmark in the footer, no call to action |
+| Web studio page `/s/:slug` | Everything on the page | Signed in: the avatar menu top right **is** the web's Me surface (My bookings, Passes, Explore, Account); the web has no tab bar. Signed out: a small "Booking by Tandava" wordmark in the footer, no call to action |
 | Embed on the studio's own site | Schedule and Book buttons | Nothing. The embed is the studio's site |
 | Booking confirmation, emails | Studio, class, calendar, save-your-details | Nothing |
 
-"Explore" (never "find another studio") lives in exactly two places: the last row of the studio switcher, and the **Me** tab. Two taps from anywhere, zero taps on a studio's canvas. Explore shows studios on Tandava near the member, with the network classes from PRD-023 when that ships. Until there are enough studios in a city to make browsing useful, Explore shows the member's own studios plus a search box, and nothing else.
+"Explore" (never "find another studio") lives in exactly two places: the last row of the studio switcher, and the **Me** surface (the Me tab in the app, the avatar menu on the web). Two taps from anywhere, zero taps on a studio's canvas. Explore shows studios on Tandava near the member, with the network classes from PRD-023 when that ships. Until there are enough studios in a city to make browsing useful, Explore shows the member's own studios plus a search box, and nothing else.
 
 ### Rules
 1. **Home studio is automatic at first, chosen after that.** Someone with one studio has it as home without being asked. The first time they book at a second studio, the confirmation asks once: "Make Ubud Yoga your home studio?" (default no). Never auto-switch home.
@@ -41,7 +41,7 @@ Every screen has two layers. The **canvas** (studio page, schedule, class, booki
 ### Acceptance
 - One-studio member: app opens straight to that studio's schedule, no switcher prompt.
 - Deep link to another studio: shows that studio, home unchanged, switcher shows both after booking.
-- Studio page, embed, confirmation and emails contain no link to other studios and no "explore" wording.
+- Studio page, embed, confirmation and emails contain no link to other studios and no "explore" wording in their content; the signed-in avatar menu (chrome) is the only place the word appears on a web studio page.
 - From any studio screen: Explore is reachable in two taps through the chrome.
 - Booking screen at a studio where the member holds no pass: drop-in (and network credit when live) shown, "Your passes" link present, no "doesn't apply" message.
 - Device zone differs from home: one line, dismissible, never repeated the same day.

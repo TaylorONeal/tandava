@@ -57,10 +57,10 @@ Three ids, each outliving the one before:
 | Id | Lives where | Created when | Links to |
 |---|---|---|---|
 | **visitor_id** | localStorage (first-party, per origin) and `analytics_sessions.visitor_id` | First page view on any Tandava surface | Sessions |
-| **profile_id** | `profiles` | Guest identity (PRD-020) or signup | visitor_id is attached at that moment and never changes again |
+| **profile_id** | `profiles` | Guest identity (PRD-020) or signup | One profile, many visitors: `profile_visitors (profile_id, visitor_id, linked_at)`. The visitor that created the identity is linked first; every later sign-in on another browser, a reset browser or the app links that device's visitor too. Links are added, never replaced |
 | **studio relationship** | `studio_members` (profile, studio) | First booking, purchase or signup at that studio | Carries `source`, first-touch and converting-touch for *that studio* |
 
-A visitor can be anonymous for weeks. The moment they become a profile (express booking, signup, network booking), every session with that visitor_id is theirs, and the first of those sessions is their **first touch**. The session that contains a conversion is the **converting touch**. Both are frozen onto the conversion row so later re-processing cannot rewrite history, matching `ATTRIBUTION_TRACKING.md`'s `conversion_events` idea but on the existing tables.
+A visitor can be anonymous for weeks. The moment they become a profile (express booking, signup, network booking), every session from any visitor linked to that profile is theirs. A person's **journey** is the union of sessions across all their linked visitors; the earliest session in it at the moment of a conversion is the **first touch** for that conversion, and the session containing the conversion is the **converting touch**. Both are frozen onto the conversion row so later re-processing cannot rewrite history, matching `ATTRIBUTION_TRACKING.md`'s `conversion_events` idea but on the existing tables. Linking a new device later extends the journey from then on; it does not reopen conversions already recorded, and a device linked *after* a conversion does not change that conversion's first touch even if its own sessions are older (the person was anonymous on it when they converted elsewhere; that history is reported as "linked later", not rewritten).
 
 **Conversions** (each writes a `conversion_events` row with value and the frozen touches): guest booking, member booking, account claimed, signup, pack purchase, membership start, membership renewal (no touch; retained), workshop or retreat registration, private request accepted, network credit purchase (Tandava-level), network booking (studio-level), first check-in.
 
@@ -86,7 +86,7 @@ The point of this table is that nothing is left out. If a surface is missing her
 | **UTM builder + link clicks** | `/l/:code` short links: record `link_clicks` (campaign, code, referrer, device), then 302 to the destination **with the UTMs appended**, so the page session and the click agree | The short link is the only thing in an Instagram bio; it must carry the campaign | UI only |
 | **Campaign emails and SMS** (PRD-011) | Every link rewritten through `/l/:code` with `utm_medium=email|sms`, `utm_campaign=<campaign id>`, and the recipient's profile_id in the token so opens-to-bookings join without cookies | Token | Schema only |
 | **QR codes** (front desk poster, studio code) | A `/l/:code` link with `utm_medium=qr`, `utm_content=<where the poster is>` | Same as links | Not built |
-| **Member app (iOS/Android)** | App sessions post the same session record with `device_type=app`. Deep links carry UTMs through the universal link URL. Install attribution: **Android** Play Install Referrer passes `utm_*` through install; **iOS** App Store campaign links (`?pt=…&ct=<campaign>&mt=8`) are visible only in App Store Connect's analytics, not inside the app, so iOS install source is reported from ASC data, not joined per person. First launch asks nothing. | visitor_id in app storage; adopted into the profile at sign-in | Planned (STORE-APPS.md) |
+| **Member app (iOS/Android)** | App sessions post the same session record with `device_type=app`. Deep links carry UTMs through the universal link URL. Install attribution: **Android** Play Install Referrer passes `utm_*` through install; **iOS** App Store campaign links (`?pt=…&ct=<campaign>&mt=8`) are visible only in App Store Connect's analytics, not inside the app, so iOS install source is reported from ASC data, not joined per person. First launch asks nothing. | visitor_id in app storage; linked to the profile at sign-in as one more `profile_visitors` row | Planned (STORE-APPS.md) |
 | **Owner app** | Not a consumer surface; no attribution capture. It *shows* the view. | | Planned |
 | **Network** (PRD-023) | Explore impression → studio page → booking: `source=network` on the `studio_members` row; the Tandava-level credit purchase has its own first touch | Same visitor | Spec |
 | **Privates** (PRD-021) | Request, proposal, acceptance as touchpoints; "private intro after first class" credited to the lifecycle automation that sent it | Same visitor | Spec |
@@ -123,8 +123,8 @@ Definitions live in `/manage/definitions` (exists) so "first touch" means the sa
 ---
 
 ## Build order (each step ships value on its own)
-1. **Session capture on every web surface** (one `src/lib/analytics/session.ts`, one edge function `analytics-session`), writing `analytics_sessions` with `visitor_id`; reconcile the 00003 schema with the spec in one migration (add `visitor_id`, `touchpoints` JSONB or a `touchpoints` table, `conversion_events`).
-2. **Attach at identity time:** `express-book`, signup, claim and the webhook write the visitor_id and the frozen touches onto `studio_members` and `conversion_events`.
+1. **Session capture on every web surface** (one `src/lib/analytics/session.ts`, one edge function `analytics-session`), writing `analytics_sessions` with `visitor_id`; reconcile the 00003 schema with the spec in one migration (add `visitor_id`, `profile_visitors`, `touchpoints` JSONB or a `touchpoints` table, `conversion_events`).
+2. **Link at identity time and at every sign-in:** `express-book`, signup, claim, OAuth callback and the app's sign-in insert a `profile_visitors` row for the current visitor; the webhook and the booking paths write the frozen touches onto `studio_members` and `conversion_events`.
 3. **`studio_members.source` for every writer** (express, signup, import, staff, network), so the view sums to 100%.
 4. **Short links** `/l/:code` with `link_clicks`, and the UTM builder producing them. The embed's `tv` token.
 5. **The view:** Sources tab on real data, then Funnel, then Journeys, then Features. Member detail strip.
@@ -142,7 +142,7 @@ Steps 1 to 3 are a pilot gate. A studio on Tandava for a month with no attributi
 
 ## Non-goals
 - Ad-platform cost import and ROAS in v1 (ROAS needs spend; spend needs connectors; see `docs/ai-agents/BUSINESS_CONNECTORS.md`). Show revenue per channel; owners know their spend.
-- Cross-device identity matching without sign-in. A phone and a laptop are two visitors until the person signs in on both.
+- Cross-device identity matching without sign-in. A phone and a laptop are two visitors until the person signs in on both; then both are linked to the profile (one-to-many), and nothing is guessed before that.
 - Fingerprinting of any kind.
 
 ## Beyond Tandava (for the playbook)
