@@ -155,6 +155,10 @@ Quick reference for all features, their status, and locations in the codebase.
 
 | Feature | Status | UI Location | Schema | PRD |
 |---------|--------|-------------|--------|-----|
+| Booking links + per-channel UTM | Demonstrated UI + backend foundation | `/manage/share` | `get_my_studio` | PRD-026 |
+| Printable QR code (real, scannable) | Built | `/manage/share` | - | PRD-022 |
+| Website embed widget | Built | `/manage/embed` | `get_public_schedule` | PRD-022 |
+| Per-platform widget install steps | Built | `/manage/embed` | - | PRD-022 |
 | Landing page builder | UI Only | `/manage/landing-pages` | `landing_pages` | - |
 | SEO recommendations | Schema | - | `seo_recommendations` | - |
 

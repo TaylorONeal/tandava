@@ -112,6 +112,7 @@ const AuditLogsManage = lazy(() => import("./pages/manage/AuditLogs"));
 const DataDictionaryManage = lazy(() => import("./pages/manage/DataDictionary"));
 const DefinitionsManage = lazy(() => import("./pages/manage/Definitions"));
 const EmbedSettingsManage = lazy(() => import("./pages/manage/EmbedSettings"));
+const ShareLinksManage = lazy(() => import("./pages/manage/ShareLinks"));
 
 const NotificationPreferences = lazy(() => import("./pages/account/NotificationPreferences"));
 
@@ -254,6 +255,7 @@ const App = () => (
                   <Route path="/manage/data-dictionary" element={<ProtectedRoute permission="studio.manage_schedule"><DataDictionaryManage /></ProtectedRoute>} />
                   <Route path="/manage/definitions" element={<ProtectedRoute permission="studio.manage_schedule"><DefinitionsManage /></ProtectedRoute>} />
                   <Route path="/manage/embed" element={<ProtectedRoute permission="studio.manage_settings"><EmbedSettingsManage /></ProtectedRoute>} />
+                  <Route path="/manage/share" element={<ProtectedRoute permission="studio.manage_settings"><ShareLinksManage /></ProtectedRoute>} />
 
                   {/* ---- Instructor portal routes (/teach) ---- */}
                   <Route path="/teach" element={<ProtectedRoute permission="studio.teach"><TeachDashboard /></ProtectedRoute>} />

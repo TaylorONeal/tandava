@@ -19,14 +19,15 @@
     "importData": "Importer des données",
     "smsInbox": "Boîte SMS",
     "notifications": "Notifications",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "shareLinks": "Liens de réservation",
+    "websiteEmbed": "Widget site web"
   },
   "title": "Administration du studio",
   "studentView": "Vue élève",
   "myAccount": "Mon compte",
   "studioSettings": "Paramètres du studio",
   "signOut": "Se déconnecter",
-
   "schedule": {
     "title": "Planning",
     "subtitle": "Crée et gère le planning de tes cours.",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "Rechercher un type de cours...",
     "activeOfferings": "Types actifs"
   },
-
   "admin": {
     "platformAdmin": "Administration plateforme",
     "platformDashboard": "Tableau de bord plateforme",
@@ -60,7 +60,6 @@
     "sentryConfigured": "Supervision des erreurs Sentry",
     "setEnvVar": "Définis {{key}} dans .env"
   },
-
   "studioManagement": "Gestion de studio",
   "owner": "Propriétaire"
 }

@@ -19,7 +19,7 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 
 ## Quick Links
 
-- **Growth specs (Oct 2026):** [PRD-020 Express Booking](prd/PRD-020-express-booking.md) · [PRD-021 Privates](prd/PRD-021-privates-and-appointments.md) · [PRD-022 Home studio, time zones, calendar](prd/PRD-022-home-studio-time-zones-calendar.md) · [PRD-023 Studio Network](prd/PRD-023-studio-network.md) · [PRD-024 Attribution everywhere](prd/PRD-024-attribution-everywhere.md) · [PRD-025 Off-site privates and private events](prd/PRD-025-offsite-privates-and-private-events.md) · [Store apps](app-store/STORE-APPS.md) · [Help and FAQ rule](HELP-AND-FAQ.md)
+- **Growth specs (Oct 2026):** [PRD-020 Express Booking](prd/PRD-020-express-booking.md) · [PRD-021 Privates](prd/PRD-021-privates-and-appointments.md) · [PRD-022 Home studio, time zones, calendar](prd/PRD-022-home-studio-time-zones-calendar.md) · [PRD-023 Studio Network](prd/PRD-023-studio-network.md) · [PRD-024 Attribution everywhere](prd/PRD-024-attribution-everywhere.md) · [PRD-025 Off-site privates and private events](prd/PRD-025-offsite-privates-and-private-events.md) · [PRD-026 Booking links and widget install](prd/PRD-026-booking-links-and-widget-install.md) · [Store apps](app-store/STORE-APPS.md) · [Help and FAQ rule](HELP-AND-FAQ.md)
 
 - [Implementation Handoff](IMPLEMENTATION_HANDOFF.md) — Bug fixes, tested hosted foundations, remaining blockers and three product decisions
 
@@ -33,6 +33,7 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 - [DEMO_MODE](DEMO_MODE.md) — Demo mode setup and customization
 - [NEXT_STEPS](NEXT_STEPS.md) — Prioritized task list for development
 - [Competitive Analysis](competitive/README.md) — Competitor briefs, index, and the shared brief structure
+- [Website Embed & Booking Links](guides/website-embed.md) — Share a link, or put the widget on your site
 - [Positioning by Audience](positioning/AUDIENCES.md) — Which message belongs to which product and audience
 - [Pricing Models](roadmap/PRICING_MODELS.md) — Flat vs per-location vs seat models for Tandava Cloud
 - [General FAQ](FAQ.md) — Common questions answered quickly
