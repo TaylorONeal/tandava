@@ -287,6 +287,13 @@ async function trackVisitInner(slug: string, surface: Surface, opts?: { studioSi
   // the previous person's id: wait briefly for that answer.
   if (!identityResolved && lsGet(OWNER_KEY)) {
     await Promise.race([identityKnown, new Promise((r) => setTimeout(r, IDENTITY_WAIT_MS))]);
+    if (!identityResolved) {
+      // Still unknown: sending now could file this visit under the previous
+      // person's id. Capture once auth answers instead (captureSettled also
+      // redoes it before a booking).
+      void identityKnown.then(() => trackVisit(slug, surface, opts));
+      return;
+    }
   }
   // Adopt an embed handoff id first, so the link retry below targets it.
   let visitorId = getVisitorId(facts.handoffVisitorId);

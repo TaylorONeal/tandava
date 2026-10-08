@@ -578,3 +578,38 @@ describe("handoff ownership that doesn't answer in time (PR #72 review)", () => 
     }
   });
 });
+
+describe("auth slower than the identity wait (PR #72 review)", () => {
+  it("captures only after auth answers, under the rotated id", async () => {
+    vi.useFakeTimers();
+    try {
+      const prior = "cdcdcdcd-cdcd-4dcd-8dcd-cdcdcdcdcdcd";
+      vi.stubGlobal("window", {
+        localStorage: memoryStorage(),
+        sessionStorage: memoryStorage(),
+        location: { href: "https://app.example.com/s/oxatl" },
+      });
+      vi.stubGlobal("document", { referrer: "" });
+      vi.stubGlobal("navigator", { userAgent: "test" });
+      window.localStorage.setItem("tandava.vid", prior);
+      window.localStorage.setItem("tandava.vid.owner", "user-a");
+      const { api } = await import("@/lib/backend");
+      const invoke = vi.mocked(api.invoke);
+      invoke.mockReset();
+      invoke.mockResolvedValue({ data: { sessionId: "34343434-3434-4434-8434-343434343434" }, error: null } as never);
+      const s = await import("./session");
+      const p = s.trackVisit("oxatl", "storefront" as never);
+      await vi.advanceTimersByTimeAsync(2000);
+      await p;
+      expect(invoke).not.toHaveBeenCalled();
+      // Auth answers late: signed out, so the id is rotated before capture.
+      s.resolveVisitorIdentity(null);
+      await vi.advanceTimersByTimeAsync(10);
+      await s.captureSettled("oxatl");
+      const sent = (invoke.mock.calls.at(-1)?.[1] as { visitorId: string }).visitorId;
+      expect(sent).not.toBe(prior);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
