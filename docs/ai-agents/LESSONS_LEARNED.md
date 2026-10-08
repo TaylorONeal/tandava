@@ -573,7 +573,8 @@ Found by the launch-v1 audit. Each has a test in `supabase/tests/`.
 | Charge before reserving | A paid drop-in could land on a full class and only be flagged for refund | Take the seat first (`hold_spot`), count live holds in every capacity check |
 | Docs drift from code | `.env.example` missed vars, STATUS was 8 months stale | W0-3 and W0-4: update docs in the same PR |
 | Shared `src/lib` code imported by an Edge Function without `.ts` | Deno can't resolve it, so the function can't deploy; `check:edge` only listed the Stripe functions, so nothing caught it | Use explicit `.ts` in any file Deno imports; add every new function to `check:edge` |
-| Visitor id rotation when `localStorage.setItem` fails but `getItem` works | Old person's id kept winning, so visits joined the wrong journey | All visitor id writes go through `setVisitor()`; memory outranks storage |
+| Partial storage failure (`getItem` works, `setItem`/`removeItem` throw) | Fixing it key by key took four review rounds (visitor, owner, relink marker) | One wrapper for all localStorage keys (`lsGet`/`lsSet`/`lsRemove` in `analytics/session.ts`) with a memory overlay that outranks storage. Fix the class, not the instance |
+| Rate limits checked from a candidate snapshot | Overlapping runs both pass the check and both send | Enforce caps at claim time in SQL under a per-subject advisory lock (`claim_automation_send`) |
 
 ## Production database changes (October 2026)
 
