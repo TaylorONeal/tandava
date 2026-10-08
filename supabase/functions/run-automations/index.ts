@@ -61,6 +61,22 @@ interface StudioRow {
   brand_primary_color: string | null;
 }
 
+/** PostgREST caps a response (1,000 rows on hosted Supabase): read every page, in a stable order. */
+const CANDIDATE_PAGE = 1000;
+async function allCandidates(studioId: string): Promise<{ data: unknown[] | null; error: { message: string } | null }> {
+  const db = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
+  const rows: unknown[] = [];
+  for (let from = 0; ; from += CANDIDATE_PAGE) {
+    const { data, error } = await db
+      .rpc("get_automation_candidates", { p_studio_id: studioId })
+      .order("profile_id")
+      .range(from, from + CANDIDATE_PAGE - 1);
+    if (error) return { data: null, error };
+    rows.push(...((data as unknown[] | null) ?? []));
+    if (!data || (data as unknown[]).length < CANDIDATE_PAGE) return { data: rows, error: null };
+  }
+}
+
 serve(async (req) => {
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
   if (!sameSecret(req.headers.get("x-cron-secret") ?? "", cronSecret)) return json({ error: "Forbidden" }, 403);
@@ -96,7 +112,7 @@ serve(async (req) => {
   for (const studio of (studios ?? []) as StudioRow[]) {
     const [{ data: settings, error: settingsError }, { data: candidates, error: candError }, { data: loc }] = await Promise.all([
       db.from("automation_settings").select("*").eq("studio_id", studio.id).maybeSingle(),
-      db.rpc("get_automation_candidates", { p_studio_id: studio.id }),
+      allCandidates(studio.id),
       db
         .from("locations")
         .select("address_line1, address_line2, city, state, zip")
