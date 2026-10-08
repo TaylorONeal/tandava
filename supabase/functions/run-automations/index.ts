@@ -230,6 +230,9 @@ serve(async (req) => {
       // recipient and studio. A timed-out send may still have gone out, so
       // its claim stays 'sending' (never resent, counts toward the daily cap).
       const timedOut = Symbol("timeout");
+      const rejected = Symbol("rejected");
+      // A rejected request (DNS, reset connection) may or may not have reached
+      // the provider: treated like a timeout, and the run goes on.
       const sendOrTimeout = await Promise.race([sendEmail({
         to: s.email,
         subject: email.subject,
@@ -242,13 +245,16 @@ serve(async (req) => {
           "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
         },
         tags: { automation: s.decision.key, step: String(s.decision.step) },
+      }).catch((e: unknown) => {
+        console.error("run-automations: provider request rejected", (e as Error)?.message ?? String(e));
+        return rejected;
       }), new Promise<typeof timedOut>((r) => setTimeout(() => r(timedOut), SEND_TIMEOUT_MS))]);
-      if (sendOrTimeout === timedOut) {
+      if (sendOrTimeout === timedOut || sendOrTimeout === rejected) {
         result.failed++;
-        console.error("run-automations: send timed out; claim left as sending", claimed[0].id);
+        console.error("run-automations: send timed out or rejected; claim left as sending", claimed[0].id);
         continue;
       }
-      const sent = sendOrTimeout;
+      const sent = sendOrTimeout as Awaited<ReturnType<typeof sendEmail>>;
 
       if (sent.success) {
         result.sent++;

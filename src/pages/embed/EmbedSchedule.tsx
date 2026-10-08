@@ -62,8 +62,8 @@ export default function EmbedSchedule() {
   // The widget runs in an iframe on the studio's own site, where storage is
   // often partitioned. The Book link carries the visitor id (tv) and, unless
   // the studio tagged its own link, marks the visit as coming from the embed on
-  // their site (PRD-024), so the booking page joins the two.
-  const visitorId = useMemo(() => getVisitorId(), []);
+  // their site (PRD-024), so the booking page joins the two. The id is read at
+  // click time: auth can rotate it after render (a previous account's id).
   const parentHost = useMemo(() => {
     try {
       return document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, "") : null;
@@ -124,7 +124,7 @@ export default function EmbedSchedule() {
                 {r.viewerNote && <p className="text-xs text-muted-foreground mt-0.5">{r.viewerNote}</p>}
               </div>
               <button
-                onClick={() => openHosted(withEmbedHandoff(bookPath(slug, r.id), visitorId, parentHost, typeof window === "undefined" ? null : window.location.search))}
+                onClick={() => openHosted(withEmbedHandoff(bookPath(slug, r.id), getVisitorId(), parentHost, typeof window === "undefined" ? null : window.location.search))}
                 className="shrink-0 rounded-md px-3 py-1.5 text-xs font-semibold text-white"
                 style={{ background: full ? "#9ca3af" : "var(--embed-primary, #4fd1c5)" }}
               >
