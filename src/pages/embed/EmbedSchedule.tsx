@@ -3,11 +3,14 @@ import { EmbedLayout, openHosted } from "./EmbedLayout";
 import { usePublicSchedule } from "@/hooks/useBooking";
 import { isBackendConfigured } from "@/lib/backend";
 import { Clock, MapPin } from "lucide-react";
+import { describeClassTime, deviceTimeZone } from "@/lib/time/classTime";
 
 interface Row {
   id: string;
   name: string;
   when: string;
+  /** "That's 11:00 AM your time (Central time)" when the visitor's zone differs. */
+  viewerNote?: string | null;
   location?: string;
   spotsLeft: number;
 }
@@ -20,17 +23,18 @@ const DEMO_ROWS: Row[] = [
   { id: "d4", name: "Sunrise Flow", when: "Wed · 6:30 AM", location: "Main Studio", spotsLeft: 8 },
 ];
 
-// Render class times in the STUDIO's timezone, not the visitor's browser zone.
-function formatWhen(iso: string, timeZone: string): string {
+// Studio time with the zone named in plain words (PRD-022), e.g.
+// "Sat, Oct 10 · 6:00 AM Hawaii time", plus the visitor's own time when their
+// zone differs. The widget sits on the studio's site; visitors may be anywhere.
+function formatWhen(iso: string, timeZone: string): { when: string; viewerNote: string | null } {
   try {
-    return new Date(iso).toLocaleString(undefined, {
-      timeZone,
-      weekday: "short",
-      hour: "numeric",
-      minute: "2-digit",
-    });
+    const t = describeClassTime({ startsAt: iso, studioTimeZone: timeZone, viewerTimeZone: deviceTimeZone() });
+    return { when: t.short, viewerNote: t.viewerNote };
   } catch {
-    return new Date(iso).toLocaleString(undefined, { weekday: "short", hour: "numeric", minute: "2-digit" });
+    return {
+      when: new Date(iso).toLocaleString(undefined, { weekday: "short", hour: "numeric", minute: "2-digit" }),
+      viewerNote: null,
+    };
   }
 }
 
@@ -58,7 +62,7 @@ export default function EmbedSchedule() {
     ? (schedule ?? []).map((r) => ({
         id: r.occurrence_id,
         name: r.offering_name,
-        when: formatWhen(r.starts_at, r.studio_timezone),
+        ...formatWhen(r.starts_at, r.studio_timezone),
         location: r.location_name ?? r.room ?? undefined,
         spotsLeft: Math.max(0, (r.capacity ?? 0) - (r.booked_count ?? 0)),
       }))
@@ -98,6 +102,7 @@ export default function EmbedSchedule() {
                     </>
                   )}
                 </p>
+                {r.viewerNote && <p className="text-xs text-muted-foreground mt-0.5">{r.viewerNote}</p>}
               </div>
               <button
                 onClick={() => openHosted(bookPath(slug, r.id))}

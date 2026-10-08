@@ -14,18 +14,21 @@
 
 import { useState } from "react";
 import { useMemberEntitlements, useBookingSources, useBookClass } from "@/hooks/useBooking";
-import { api as backendApi } from "@/lib/backend";
+import { api as backendApi, data as backendData } from "@/lib/backend";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import type { PublicOccurrenceRow } from "@/types/database";
+import { AddToCalendar } from "@/components/calendar/AddToCalendar";
+import type { ClassEventInput } from "@/lib/calendar/classEvent";
 
 export function MemberBookingPanel({
   row,
   occurrenceId,
   returnPath,
   priceLabel,
+  calendarEvent,
 }: {
   row: PublicOccurrenceRow;
   occurrenceId: string;
@@ -33,6 +36,7 @@ export function MemberBookingPanel({
   returnPath: string;
   /** Formatted drop-in price, when there is one. */
   priceLabel: string | null;
+  calendarEvent: ClassEventInput;
 }) {
   const { user, profile, signOut } = useAuth();
   const studioId = row.studio_id ?? undefined;
@@ -71,6 +75,20 @@ export function MemberBookingPanel({
     }
   };
 
+  const isFree = row.drop_in_price_cents === 0;
+
+  const bookFree = async () => {
+    setState("working");
+    setError(null);
+    const { error: freeError } = await backendData.bookFreeClass(occurrenceId);
+    if (freeError) {
+      setState("error");
+      setError(freeError.message);
+      return;
+    }
+    setState("booked");
+  };
+
   const payDropIn = async () => {
     setState("working");
     setError(null);
@@ -102,6 +120,9 @@ export function MemberBookingPanel({
             <p className="text-sm text-muted-foreground mt-1">
               Your spot in {row.offering_name} is confirmed. It's in My Schedule.
             </p>
+            <div className="mt-4">
+              <AddToCalendar event={{ ...calendarEvent, manageUrl: `${window.location.origin}/my-schedule` }} />
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -141,7 +162,18 @@ export function MemberBookingPanel({
                 )}
               </Button>
             ))}
-            {dropIn && priceLabel && (
+            {dropIn && isFree && (
+              <Button
+                variant={covering.length ? "outline" : "default"}
+                className="w-full"
+                size="lg"
+                disabled={busy}
+                onClick={() => void bookFree()}
+              >
+                Book this free class
+              </Button>
+            )}
+            {dropIn && !isFree && priceLabel && (
               <Button
                 variant={covering.length ? "outline" : "default"}
                 className="w-full"
@@ -152,7 +184,7 @@ export function MemberBookingPanel({
                 Pay {priceLabel} drop-in
               </Button>
             )}
-            {!covering.length && !(dropIn && priceLabel) && (
+            {!covering.length && !dropIn && (
               <p className="text-sm text-muted-foreground">
                 None of your passes cover this class and it has no drop-in price. Contact{" "}
                 {row.studio_name} to book.
