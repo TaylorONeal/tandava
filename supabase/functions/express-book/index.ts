@@ -641,11 +641,16 @@ serve(async (req) => {
       // The row itself (origin "express") is written by the bookings trigger
       // in the same transaction as the booking, so it can't be lost; here we
       // only add the validated visit, with retries.
-      if (sessionId) {
+      if (sessionId || visitorId) {
+        // The browser too, so a promotion without this visit still looks at
+        // this browser's visits and not a device linked later.
+        const ctx: Record<string, string> = {};
+        if (sessionId) ctx.session_id = sessionId;
+        if (visitorId) ctx.visitor_id = visitorId;
         let saved = false;
         for (let attempt = 0; attempt < 3 && !saved; attempt++) {
           const { error: ctxError } = await db.from("booking_attribution_context")
-            .update({ session_id: sessionId }).eq("booking_id", created.id);
+            .update(ctx).eq("booking_id", created.id);
           saved = !ctxError;
           if (ctxError) await new Promise((r) => setTimeout(r, 150 * (attempt + 1)));
         }

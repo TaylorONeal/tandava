@@ -855,6 +855,9 @@ CREATE TABLE IF NOT EXISTS booking_attribution_context (
   session_id UUID REFERENCES analytics_sessions(id) ON DELETE SET NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+-- The browser that made the spot: kept so a promotion without a saved visit
+-- can still look at that browser's visits (and not a device linked later).
+ALTER TABLE booking_attribution_context ADD COLUMN IF NOT EXISTS visitor_id UUID;
 ALTER TABLE booking_attribution_context ENABLE ROW LEVEL SECURITY;
 -- Written by triggers and express-book (service role) only.
 DROP POLICY IF EXISTS "No client access to booking attribution context" ON booking_attribution_context;
@@ -917,11 +920,17 @@ BEGIN
     IF FOUND THEN
       -- Origin and visit as they were when the person joined the waitlist.
       v_guest := v_ctx.origin = 'express';
+      -- No saved visit: the latest one before the spot was made, from the
+      -- browser that made it or a device already linked by then (a device
+      -- linked later must not become the converting touch).
       v_session := COALESCE(v_ctx.session_id, (
         SELECT s.id FROM analytics_sessions s
         WHERE s.studio_id = NEW.studio_id AND s.started_at <= v_ctx.created_at
-          AND (s.profile_id = NEW.profile_id
-               OR s.visitor_id IN (SELECT visitor_id FROM profile_visitors WHERE profile_id = NEW.profile_id))
+          -- Not s.profile_id: linking a device back-fills it onto that
+          -- device's older visits, which is exactly what must not count.
+          AND (s.visitor_id = v_ctx.visitor_id
+               OR s.visitor_id IN (SELECT visitor_id FROM profile_visitors
+                                   WHERE profile_id = NEW.profile_id AND linked_at <= v_ctx.created_at))
         ORDER BY s.started_at DESC LIMIT 1));
     ELSE
       -- Waitlisted before this context existed: best available guess.

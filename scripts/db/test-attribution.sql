@@ -674,5 +674,36 @@ BEGIN
     THEN RAISE EXCEPTION 'rerun stamped a new relationship'; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (34 blocks)'; END $$;
+-- 35. Promotion without a saved visit: the waitlisting browser's visit is
+--     used; an older visit from a device linked after the spot was made is not.
+DO $$
+DECLARE vw UUID := gen_random_uuid(); vl UUID := gen_random_uuid(); occ UUID := gen_random_uuid();
+        s_w UUID; s_l UUID; b UUID; r conversion_events%ROWTYPE;
+        g UUID := '00000000-0000-0000-0000-0000000000f8';
+BEGIN
+  INSERT INTO auth.users (id, email) VALUES (g, 'wait2@example.com');
+  UPDATE profiles SET is_guest = TRUE WHERE id = g;
+  INSERT INTO class_occurrences (id, studio_id, offering_id, location_id, starts_at, ends_at) VALUES
+    (occ, '00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000c1', NOW() + interval '10 day', NOW() + interval '10 day 1 hour');
+  s_w := record_session('aloha', vw, 'wl-w', 'booking', 'https://x/s/aloha/book/2', NULL, '{}'::jsonb, '{}'::jsonb, 'direct', 'mobile');
+  s_l := record_session('aloha', vl, 'wl-l', 'storefront', 'https://x/s/aloha?utm_source=ads', NULL, '{"source":"ads"}'::jsonb, '{}'::jsonb, 'paid_social', 'desktop');
+  UPDATE analytics_sessions SET started_at = NOW() - interval '2 hours' WHERE id = s_w;
+  UPDATE analytics_sessions SET started_at = NOW() - interval '1 hour' WHERE id = s_l;
+  PERFORM set_config('request.jwt.claim.sub', '', true);
+  PERFORM set_config('request.headers', '', true);
+  INSERT INTO bookings (studio_id, class_occurrence_id, profile_id, status)
+  VALUES ('00000000-0000-0000-0000-00000000005a', occ, g, 'waitlisted') RETURNING id INTO b;
+  -- express-book saved the browser but not the visit.
+  UPDATE booking_attribution_context SET visitor_id = vw WHERE booking_id = b;
+  -- Later, another device with a newer-but-pre-spot visit is linked.
+  PERFORM link_visitor(g, vl, 'sign_in');
+  UPDATE profile_visitors SET linked_at = NOW() + interval '1 minute' WHERE visitor_id = vl;
+  UPDATE booking_attribution_context SET created_at = NOW() - interval '1 second' WHERE booking_id = b;
+  UPDATE bookings SET status = 'confirmed' WHERE id = b;
+  SELECT * INTO r FROM conversion_events WHERE entity_type = 'booking' AND entity_id = b;
+  IF r.converting_touch_session_id IS DISTINCT FROM s_w THEN
+    RAISE EXCEPTION 'promotion used a later-linked device: %', r.converting_touch_session_id; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (35 blocks)'; END $$;
 ROLLBACK;
