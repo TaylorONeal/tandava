@@ -19,7 +19,7 @@ export function AuthCallback() {
     auth.getSession().then(async ({ user }) => {
       if (user) {
         // A Google sign-up's marketing choice, only for this exact attempt.
-        await applyOAuthSignupConsent(consentNonce);
+        await applyOAuthSignupConsent(user.id, consentNonce);
         navigate(next, { replace: true });
       } else {
         navigate("/auth/login", { replace: true });

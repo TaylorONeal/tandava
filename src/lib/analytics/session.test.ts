@@ -48,18 +48,29 @@ describe("getVisitorId", () => {
 });
 
 describe("signup consent across OAuth", () => {
-  it("applies only to the attempt that carries the nonce, once", async () => {
-    const { rememberSignupConsent, takeSignupConsent } = await import("./session");
+  it("binds to the attempt's nonce, then to the account; other accounts never get it", async () => {
+    const { rememberSignupConsent, pendingSignupConsentFor } = await import("./session");
     expect(rememberSignupConsent(undefined, true)).toBeUndefined();
-    const nonce = rememberSignupConsent("aloha", true);
-    expect(nonce).toBeTruthy();
-    expect(takeSignupConsent("someone-else")).toBeNull(); // wrong attempt: discarded
-    const again = rememberSignupConsent("aloha", true);
-    expect(takeSignupConsent(null)).toBeNull(); // plain sign-in: discarded
-    const third = rememberSignupConsent("aloha", false);
-    expect(takeSignupConsent(third)).toMatchObject({ slug: "aloha", granted: false });
-    expect(takeSignupConsent(third)).toBeNull();
-    expect(again).not.toBe(third);
+    const nonce = rememberSignupConsent("aloha", true)!;
+    expect(pendingSignupConsentFor("user-b", null)).toBeNull(); // plain sign-in
+    expect(pendingSignupConsentFor("user-b", "wrong")).toBeNull(); // another attempt
+    expect(pendingSignupConsentFor("user-a", nonce)).toMatchObject({ slug: "aloha", granted: true });
+    // Bound to user-a now: a retry for user-a works without the nonce, user-b never.
+    expect(pendingSignupConsentFor("user-a", null)).toMatchObject({ slug: "aloha" });
+    expect(pendingSignupConsentFor("user-b", nonce)).toBeNull();
+  });
+
+  it("keeps the choice when the save fails and clears it when it succeeds", async () => {
+    const backend = await import("@/lib/backend");
+    const apply = backend.data.applyMySignupConsent as unknown as ReturnType<typeof vi.fn>;
+    const { rememberSignupConsent, applyOAuthSignupConsent, pendingSignupConsentFor } = await import("./session");
+    const nonce = rememberSignupConsent("aloha", true)!;
+    apply.mockResolvedValueOnce({ error: { message: "network" } });
+    await applyOAuthSignupConsent("user-a", nonce);
+    expect(pendingSignupConsentFor("user-a", null)).not.toBeNull();
+    apply.mockResolvedValueOnce({ error: null });
+    await applyOAuthSignupConsent("user-a", null);
+    expect(pendingSignupConsentFor("user-a", null)).toBeNull();
   });
 });
 

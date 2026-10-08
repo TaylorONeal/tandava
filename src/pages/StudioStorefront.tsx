@@ -111,7 +111,7 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
             <Link to={registerHref}>Sign up to book<ArrowRight className="ms-2 h-4 w-4" /></Link>
           </Button>
           <Button asChild variant="outline" size="lg">
-            <Link to="/auth/login">Sign in</Link>
+            <Link to={loginHref}>Sign in</Link>
           </Button>
         </div>
       </section>

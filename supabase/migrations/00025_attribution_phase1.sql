@@ -377,8 +377,11 @@ STABLE
 SECURITY DEFINER
 SET search_path = public
 AS $$
-  -- Matches 00001's policy exactly (it did not filter on is_active).
-  SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid();
+  -- Active assignments only. 00001's policy did not filter, but it never
+  -- actually evaluated (it recursed); now that it does, and ~77 older
+  -- policies authorize through the studio_staff rows it exposes, a former
+  -- owner or teacher must not keep access through an inactive row.
+  SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid() AND is_active = TRUE;
 $$;
 REVOKE ALL ON FUNCTION my_staff_studio_ids() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION my_staff_studio_ids() TO authenticated;
@@ -410,7 +413,7 @@ $$;
 REVOKE ALL ON FUNCTION is_studio_admin(UUID) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION is_studio_admin(UUID) TO authenticated;
 
--- Same rows as before (co-workers at studios where I am staff), no recursion.
+-- Co-workers (active or not) at studios where I am active staff; no recursion.
 DROP POLICY IF EXISTS "Staff can view co-workers" ON studio_staff;
 CREATE POLICY "Staff can view co-workers"
   ON studio_staff FOR SELECT

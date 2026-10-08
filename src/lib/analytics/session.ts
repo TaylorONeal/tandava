@@ -191,8 +191,10 @@ export async function linkVisitorOnce(userId: string, via = "sign_in") {
   try {
     // A no-op unless the sign-up started on a studio page and wasn't applied yet.
     // Email sign-ups: metadata. OAuth sign-ups are applied by the callback
-    // (applyOAuthSignupConsent), which can prove which attempt it was.
+    // (applyOAuthSignupConsent), which can prove which attempt it was; a
+    // bound choice whose save failed is retried here.
     await data.applyMySignupConsent();
+    await applyOAuthSignupConsent(userId);
   } catch {
     // Best effort; the person can still opt in later.
   }
@@ -219,7 +221,8 @@ export function rememberSignupConsent(slug: string | undefined, granted: boolean
   if (!slug) return undefined;
   const nonce = randomId();
   try {
-    window.localStorage.setItem(PENDING_CONSENT_KEY, JSON.stringify({ slug, granted, at: Date.now(), nonce }));
+    const p: StoredPending = { slug, granted, at: Date.now(), nonce };
+    window.localStorage.setItem(PENDING_CONSENT_KEY, JSON.stringify(p));
     return nonce;
   } catch {
     return undefined; // Storage blocked: the choice can still be made later.
@@ -234,30 +237,69 @@ export function clearSignupConsent() {
   }
 }
 
-/** Take the pending choice if, and only if, it belongs to this OAuth attempt. One use. */
-export function takeSignupConsent(nonce: string | null | undefined): PendingConsent | null {
+interface StoredPending {
+  slug: string;
+  granted: boolean;
+  at: number;
+  nonce: string;
+  /** Set by the callback once the nonce matched: the account this choice belongs to. */
+  verifiedFor?: string;
+}
+
+function readPending(): StoredPending | null {
   try {
     const raw = window.localStorage.getItem(PENDING_CONSENT_KEY);
-    window.localStorage.removeItem(PENDING_CONSENT_KEY);
-    if (!raw || !nonce) return null;
-    const v = JSON.parse(raw) as { slug?: unknown; granted?: unknown; at?: unknown; nonce?: unknown };
-    if (typeof v.slug !== "string" || typeof v.granted !== "boolean" || typeof v.at !== "number") return null;
-    if (v.nonce !== nonce) return null;
-    if (Date.now() - v.at > PENDING_TTL_MS) return null;
-    return { slug: v.slug, granted: v.granted, startedAt: new Date(v.at).toISOString() };
+    if (!raw) return null;
+    const v = JSON.parse(raw) as Partial<StoredPending>;
+    if (typeof v.slug !== "string" || typeof v.granted !== "boolean" || typeof v.at !== "number" || typeof v.nonce !== "string")
+      return null;
+    return v as StoredPending;
   } catch {
     return null;
   }
 }
 
-/** Called by /auth/callback after an OAuth sign-in. */
-export async function applyOAuthSignupConsent(nonce: string | null | undefined) {
-  const pending = takeSignupConsent(nonce);
+function writePending(p: StoredPending) {
+  try {
+    window.localStorage.setItem(PENDING_CONSENT_KEY, JSON.stringify(p));
+  } catch {
+    // ignore
+  }
+}
+
+/**
+ * The pending choice for this account, if it belongs to it: either the OAuth
+ * callback proves the attempt (nonce match within the hour) and binds it to
+ * the signed-in account, or it was already bound to this account by an
+ * earlier callback whose save failed (kept for a week so it can be retried).
+ * Not removed here; removed only after the save succeeds.
+ */
+export function pendingSignupConsentFor(userId: string, nonce?: string | null): PendingConsent | null {
+  const p = readPending();
+  if (!p || !userId) return null;
+  const age = Date.now() - p.at;
+  if (p.verifiedFor) {
+    if (p.verifiedFor !== userId || age > 7 * 24 * 3600_000) return null;
+  } else {
+    if (!nonce || p.nonce !== nonce || age > PENDING_TTL_MS) return null;
+    writePending({ ...p, verifiedFor: userId });
+  }
+  return { slug: p.slug, granted: p.granted, startedAt: new Date(p.at).toISOString() };
+}
+
+/**
+ * Save a pending OAuth sign-up choice for this account. Called by
+ * /auth/callback (with the attempt's nonce) and on every later sign-in
+ * (retries a bound choice whose save failed). Cleared only on success.
+ */
+export async function applyOAuthSignupConsent(userId: string, nonce?: string | null) {
+  const pending = pendingSignupConsentFor(userId, nonce);
   if (!pending) return;
   try {
-    await data.applyMySignupConsent(pending);
+    const { error } = await data.applyMySignupConsent(pending);
+    if (!error) clearSignupConsent();
   } catch {
-    // Best effort.
+    // Kept for the next sign-in.
   }
 }
 

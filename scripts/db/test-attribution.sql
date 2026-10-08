@@ -276,5 +276,18 @@ DO $$ BEGIN
 END $$;
 RESET ROLE;
 
+-- 15. A former owner (inactive staff row) keeps no access.
+INSERT INTO auth.users (id, email) VALUES ('00000000-0000-0000-0000-0000000000f1', 'former@example.com');
+INSERT INTO studio_staff (studio_id, profile_id, role, is_active)
+VALUES ('00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000f1', 'owner', FALSE);
+SET LOCAL ROLE authenticated;
+SELECT set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000f1', true);
+DO $$ BEGIN
+  IF (SELECT count(*) FROM studio_staff) <> 0 THEN RAISE EXCEPTION 'former owner still sees staff rows'; END IF;
+  IF (SELECT count(*) FROM automation_settings) <> 0 THEN RAISE EXCEPTION 'former owner still reads settings'; END IF;
+  IF is_studio_admin('00000000-0000-0000-0000-00000000005a') THEN RAISE EXCEPTION 'former owner still admin'; END IF;
+END $$;
+RESET ROLE;
+
 SELECT 'attribution tests passed' AS result;
 ROLLBACK;
