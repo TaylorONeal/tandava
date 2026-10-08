@@ -91,6 +91,40 @@ The help center gets a page per source ("Switching from Mindbody") with what mov
 
 ---
 
+## Phasing (recommendation, Oct 8 2026)
+
+The rule: phase 1 needs no third-party approval, no per-studio registration and no ad-platform API. Everything in it is ours to ship, and each piece makes the next one measurable.
+
+### Phase 1: pilot (ship with the first studios)
+| Area | What | Why now |
+|---|---|---|
+| UTM capture | First-party sessions on storefront, booking page, embed (token through the Book link) and landing pages; visitor id; raw UTMs, referrer and ad click ids stored; `channel` via `classifyChannel` | Studios' tagged links from `/manage/share` (PRD-026) already exist; without capture they measure nothing |
+| Identity link | `express-book`, signup, claim and the Stripe webhook write `profile_visitors`, `studio_members.source` and `conversion_events` with frozen touches | Turns visits into "this Instagram link produced 6 members and $X" |
+| Owner view | Sources tab (channel → source → campaign → landing page, by bookings, new people, members, revenue) and the "How they found you" strip on member detail | The one screen a pilot owner will open weekly |
+| Consent | Write `consent_records` from the existing marketing checkbox on booking and signup (email only) | Automations can't legally run without it |
+| Email automations (3, defaults on) | Guest to member (save your details + intro offer), first-visit welcome + intro-offer follow-up, lapsed at the studio's median gap | Highest-value sequences across every competitor; each reports its own conversions |
+| Sending | One provider, Tandava's sending domain with the studio's name and reply-to; quiet hours and one-a-day cap | No per-studio DNS work on day one |
+| Paid ads | Click ids and UTMs captured, so paid traffic shows up in Sources by campaign with real revenue. No pixel, no API | The owner sees what their ads returned without us touching their ad accounts |
+
+Not in phase 1: SMS, custom sending domains, short links, browser pixels, any ad-platform connection.
+
+### Phase 2: after the pilot proves the reports match the money
+- SMS automations (per-studio 10DLC registration, explicit opt-in, keyword opt-out)
+- Remaining default automations (pack low, membership expiring/failed payment, win-back, birthday/milestone, review request, network visitor, private intro)
+- Studio's own sending domain (SPF/DKIM), branded templates
+- `/l/:code` short links with click counts; QR and bio links switch to them
+- Funnel by surface and Journeys tabs
+- Optional studio Meta/Google pixel on Tandava pages behind a consent banner (privacy page updated first)
+- Google Data Manager API uploads from the `conversion_deliveries` outbox (OAuth app verification; no Tech Provider step)
+- Migration: pack balances, active memberships with renewal dates, imported consent, Stripe card import runbook
+
+### Phase 3: platform verifications and audiences
+- Meta Tech Provider verification + App Review, Meta Business Extension connect, Conversions API with pixel dedupe, CAPI for CRM lead stages
+- Audiences: exclude members, lookalikes from converted members (consent-gated)
+- Spend import and ROAS on received revenue
+- TikTok Events API
+- AI copy drafting for sequences (reviewed before first send)
+
 ## Smart defaults and help
 Automations ship on with conservative defaults (one message per person per day max, quiet hours 9 PM to 8 AM studio time, SMS only with opt-in). Each automation and each advertising setting gets an info icon. Help entries to add to `src/content/help.ts`: "Does Tandava send marketing for me?", "How do I measure my Instagram and Google ads?", "Can I keep using my Meta pixel?", "How do I switch from Mindbody?" (planned until built).
 
