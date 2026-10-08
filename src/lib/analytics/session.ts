@@ -191,18 +191,27 @@ export async function linkVisitorOnce(userId: string, via = "sign_in") {
   try {
     // A no-op unless the sign-up started on a studio page and wasn't applied yet.
     const pending = takeSignupConsent();
-    await data.applyMySignupConsent(pending?.slug, pending?.granted);
+    await data.applyMySignupConsent(pending ?? undefined);
   } catch {
     // Best effort; the person can still opt in later.
   }
 }
 
 const PENDING_CONSENT_KEY = "tandava.pendingConsent";
+const PENDING_TTL_MS = 60 * 60 * 1000;
+
+export interface PendingConsent {
+  slug: string;
+  granted: boolean;
+  /** When the Google sign-up started; the server applies the choice only to an account created right after it. */
+  startedAt: string;
+}
 
 /**
  * Keep the sign-up marketing choice in this browser across an OAuth redirect
- * (Google sign-up carries no metadata). Applied once on the next sign-in, for
- * the studio the sign-up started from; ignored after a day.
+ * (Google sign-up carries no metadata). Applied once on the next sign-in, and
+ * only if that account was created just after this moment, so a cancelled
+ * attempt can never opt a different, existing account in. Expires in an hour.
  */
 export function rememberSignupConsent(slug: string | undefined, granted: boolean) {
   if (!slug) return;
@@ -213,15 +222,23 @@ export function rememberSignupConsent(slug: string | undefined, granted: boolean
   }
 }
 
-export function takeSignupConsent(): { slug: string; granted: boolean } | null {
+export function clearSignupConsent() {
+  try {
+    window.localStorage.removeItem(PENDING_CONSENT_KEY);
+  } catch {
+    // nothing to clear
+  }
+}
+
+export function takeSignupConsent(): PendingConsent | null {
   try {
     const raw = window.localStorage.getItem(PENDING_CONSENT_KEY);
     window.localStorage.removeItem(PENDING_CONSENT_KEY);
     if (!raw) return null;
     const v = JSON.parse(raw) as { slug?: unknown; granted?: unknown; at?: unknown };
     if (typeof v.slug !== "string" || typeof v.granted !== "boolean" || typeof v.at !== "number") return null;
-    if (Date.now() - v.at > 24 * 3600_000) return null;
-    return { slug: v.slug, granted: v.granted };
+    if (Date.now() - v.at > PENDING_TTL_MS) return null;
+    return { slug: v.slug, granted: v.granted, startedAt: new Date(v.at).toISOString() };
   } catch {
     return null;
   }
@@ -236,6 +253,7 @@ export function forgetVisitor() {
   try {
     window.localStorage.setItem(VISITOR_KEY, randomId());
     window.localStorage.removeItem(OWNER_KEY);
+    window.localStorage.removeItem(PENDING_CONSENT_KEY);
     for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
       const k = window.sessionStorage.key(i);
       if (k?.startsWith(SESSION_PREFIX) || k?.startsWith(LINKED_PREFIX)) window.sessionStorage.removeItem(k);

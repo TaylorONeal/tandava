@@ -157,7 +157,7 @@ function createSMTPProvider(): EmailProviderAdapter {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          from,
+          from: message.fromName ? `${displayName(message.fromName)} <${from}>` : from,
           to: message.to,
           subject: message.subject,
           html: message.html,

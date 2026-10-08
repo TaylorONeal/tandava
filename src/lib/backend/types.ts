@@ -222,7 +222,7 @@ export interface DataProvider {
    * from, once (migration 00025). Email sign-ups carry it in auth metadata;
    * OAuth sign-ups pass the choice kept in the browser across the redirect.
    */
-  applyMySignupConsent(slug?: string, granted?: boolean): Promise<MutationResult>;
+  applyMySignupConsent(pending?: { slug: string; granted: boolean; startedAt: string }): Promise<MutationResult>;
 
   /** Owner/admin report: sessions, new people, bookings and revenue by channel + source + campaign. */
   getAttributionSources(from: Date, to: Date, model: AttributionModel): Promise<DataResult<AttributionSourceRow[]>>;

@@ -11,7 +11,7 @@ import { Eye, EyeOff, Mail, Lock, User, ArrowRight, CheckCircle2, Sparkles, Mail
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { safeNextPath, studioSlugFromPath } from "@/lib/auth/next";
-import { rememberSignupConsent } from "@/lib/analytics/session";
+import { clearSignupConsent, rememberSignupConsent } from "@/lib/analytics/session";
 
 type RegistrationStep = "info" | "complete";
 
@@ -66,6 +66,8 @@ const Register = () => {
       return;
     }
 
+    // Email sign-ups carry the choice in metadata; drop any leftover Google attempt.
+    clearSignupConsent();
     const { error, requiresEmailConfirmation } = await signUpWithEmail(
       formData.email,
       formData.password,

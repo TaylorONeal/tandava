@@ -168,11 +168,14 @@ BEGIN
 
   PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000e2', true);
   IF apply_my_signup_consent() IS NOT FALSE THEN RAISE EXCEPTION 'consent without a studio should record nothing'; END IF;
-  -- OAuth sign-up: no metadata, the browser passes the kept choice.
-  IF apply_my_signup_consent('aloha', TRUE) IS NOT TRUE THEN RAISE EXCEPTION 'oauth signup consent not applied'; END IF;
+  -- OAuth sign-up: no metadata, the browser passes the kept choice, applied
+  -- only to an account created just after the attempt started.
+  IF apply_my_signup_consent('aloha', TRUE, NOW() + interval '2 hours') IS NOT FALSE
+    THEN RAISE EXCEPTION 'pending consent applied to an account older than the attempt'; END IF;
+  IF apply_my_signup_consent('aloha', TRUE, NOW()) IS NOT TRUE THEN RAISE EXCEPTION 'oauth signup consent not applied'; END IF;
   IF NOT has_consent('00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000e2', 'email_marketing')
     THEN RAISE EXCEPTION 'oauth signup consent not visible'; END IF;
-  IF apply_my_signup_consent('aloha', TRUE) IS NOT FALSE THEN RAISE EXCEPTION 'oauth consent applied twice'; END IF;
+  IF apply_my_signup_consent('aloha', TRUE, NOW()) IS NOT FALSE THEN RAISE EXCEPTION 'oauth consent applied twice'; END IF;
 END $$;
 
 -- 9. Stripe events are claimed once.
@@ -253,6 +256,22 @@ BEGIN
   IF a <> b OR (SELECT page_views FROM analytics_sessions WHERE id = a) <> 2
     THEN RAISE EXCEPTION 'same session token should be one visit'; END IF;
 END $$;
+
+-- 14. Owners read and write automation settings from a client session (no RLS
+--     recursion through studio_staff); a non-staff person sees nothing.
+GRANT SELECT, INSERT, UPDATE ON automation_settings, studio_staff TO authenticated;
+SET LOCAL ROLE authenticated;
+SELECT set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000a1', true);
+INSERT INTO automation_settings (studio_id, lapsed_enabled) VALUES ('00000000-0000-0000-0000-00000000005a', FALSE);
+DO $$ BEGIN
+  IF (SELECT count(*) FROM automation_settings) <> 1 THEN RAISE EXCEPTION 'owner cannot read settings'; END IF;
+  IF (SELECT count(*) FROM studio_staff) < 1 THEN RAISE EXCEPTION 'owner cannot see co-workers'; END IF;
+END $$;
+SELECT set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000b1', true);
+DO $$ BEGIN
+  IF (SELECT count(*) FROM automation_settings) <> 0 THEN RAISE EXCEPTION 'non-staff can read settings'; END IF;
+END $$;
+RESET ROLE;
 
 SELECT 'attribution tests passed' AS result;
 ROLLBACK;

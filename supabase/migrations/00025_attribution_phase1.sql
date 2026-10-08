@@ -362,6 +362,77 @@ REVOKE ALL ON FUNCTION get_member_attribution(UUID) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION get_member_attribution(UUID) TO authenticated;
 
 -- ===========================================================================
+-- Staff authorization without RLS recursion (PR #72 review)
+-- ===========================================================================
+-- 00001's "Staff can view co-workers" policy on studio_staff queries
+-- studio_staff, so any policy that looks at studio_staff from a client
+-- session fails with "infinite recursion detected" (00017 and 00020 worked
+-- around it per call). These helpers read studio_staff as the function owner,
+-- outside RLS, and the co-workers policy is rebuilt on top of them, which
+-- fixes every staff policy that reads studio_staff, old and new.
+CREATE OR REPLACE FUNCTION my_staff_studio_ids()
+RETURNS SETOF UUID
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  -- Matches 00001's policy exactly (it did not filter on is_active).
+  SELECT studio_id FROM studio_staff WHERE profile_id = auth.uid();
+$$;
+REVOKE ALL ON FUNCTION my_staff_studio_ids() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION my_staff_studio_ids() TO authenticated;
+
+CREATE OR REPLACE FUNCTION is_studio_staff(p_studio_id UUID)
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (SELECT 1 FROM studio_staff
+                 WHERE studio_id = p_studio_id AND profile_id = auth.uid() AND is_active = TRUE);
+$$;
+REVOKE ALL ON FUNCTION is_studio_staff(UUID) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION is_studio_staff(UUID) TO authenticated;
+
+CREATE OR REPLACE FUNCTION is_studio_admin(p_studio_id UUID)
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (SELECT 1 FROM studio_staff
+                 WHERE studio_id = p_studio_id AND profile_id = auth.uid() AND is_active = TRUE
+                   AND role IN ('owner', 'admin'));
+$$;
+REVOKE ALL ON FUNCTION is_studio_admin(UUID) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION is_studio_admin(UUID) TO authenticated;
+
+-- Same rows as before (co-workers at studios where I am staff), no recursion.
+DROP POLICY IF EXISTS "Staff can view co-workers" ON studio_staff;
+CREATE POLICY "Staff can view co-workers"
+  ON studio_staff FOR SELECT
+  USING (studio_id IN (SELECT my_staff_studio_ids()));
+
+-- The 00024 staff-read policies, rebuilt on the helpers.
+DROP POLICY IF EXISTS conversion_events_staff_read ON conversion_events;
+CREATE POLICY conversion_events_staff_read ON conversion_events
+  FOR SELECT TO authenticated USING (is_studio_staff(studio_id));
+DROP POLICY IF EXISTS consent_records_staff_read ON consent_records;
+CREATE POLICY consent_records_staff_read ON consent_records
+  FOR SELECT TO authenticated USING (studio_id IS NOT NULL AND is_studio_staff(studio_id));
+DROP POLICY IF EXISTS ad_integrations_admin_read ON ad_integrations;
+CREATE POLICY ad_integrations_admin_read ON ad_integrations
+  FOR SELECT TO authenticated USING (is_studio_admin(studio_id));
+DROP POLICY IF EXISTS conversion_deliveries_admin_read ON conversion_deliveries;
+CREATE POLICY conversion_deliveries_admin_read ON conversion_deliveries
+  FOR SELECT TO authenticated
+  USING (EXISTS (SELECT 1 FROM ad_integrations ai
+                 WHERE ai.id = conversion_deliveries.ad_integration_id AND is_studio_admin(ai.studio_id)));
+
+-- ===========================================================================
 -- Email automations (phase 1: three sequences)
 -- ===========================================================================
 CREATE TABLE IF NOT EXISTS automation_settings (
@@ -396,16 +467,13 @@ ALTER TABLE automation_sends ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS automation_settings_admin ON automation_settings;
 CREATE POLICY automation_settings_admin ON automation_settings
   FOR ALL TO authenticated
-  USING (EXISTS (SELECT 1 FROM studio_staff ss WHERE ss.studio_id = automation_settings.studio_id
-                 AND ss.profile_id = auth.uid() AND ss.is_active = TRUE AND ss.role IN ('owner', 'admin')))
-  WITH CHECK (EXISTS (SELECT 1 FROM studio_staff ss WHERE ss.studio_id = automation_settings.studio_id
-                 AND ss.profile_id = auth.uid() AND ss.is_active = TRUE AND ss.role IN ('owner', 'admin')));
+  USING (is_studio_admin(studio_id))
+  WITH CHECK (is_studio_admin(studio_id));
 
 DROP POLICY IF EXISTS automation_sends_staff_read ON automation_sends;
 CREATE POLICY automation_sends_staff_read ON automation_sends
   FOR SELECT TO authenticated
-  USING (EXISTS (SELECT 1 FROM studio_staff ss WHERE ss.studio_id = automation_sends.studio_id
-                 AND ss.profile_id = auth.uid() AND ss.is_active = TRUE));
+  USING (is_studio_staff(studio_id));
 
 -- Facts per person for the runner (src/lib/marketing/automations.ts decides).
 CREATE OR REPLACE FUNCTION get_automation_candidates(p_studio_id UUID)
@@ -544,7 +612,7 @@ CREATE TRIGGER trg_promoted_booking_conversion
 -- toggle and is never overwritten by this. A sign-up from no studio page
 -- records nothing: consent is to a sender, not to Tandava in general.
 CREATE OR REPLACE FUNCTION apply_my_signup_consent(
-  p_studio_slug TEXT DEFAULT NULL, p_granted BOOLEAN DEFAULT NULL
+  p_studio_slug TEXT DEFAULT NULL, p_granted BOOLEAN DEFAULT NULL, p_started_at TIMESTAMPTZ DEFAULT NULL
 )
 RETURNS BOOLEAN
 LANGUAGE plpgsql
@@ -553,19 +621,24 @@ SET search_path = public
 AS $$
 DECLARE
   v_meta JSONB;
+  v_created TIMESTAMPTZ;
   v_slug TEXT;
   v_granted BOOLEAN;
   v_studio UUID;
 BEGIN
   IF auth.uid() IS NULL THEN RETURN FALSE; END IF;
-  SELECT raw_user_meta_data INTO v_meta FROM auth.users WHERE id = auth.uid();
+  SELECT raw_user_meta_data, created_at INTO v_meta, v_created FROM auth.users WHERE id = auth.uid();
   -- Email sign-ups carry the choice in metadata; OAuth sign-ups (no metadata)
   -- pass the choice the browser kept across the redirect. Either way it is
   -- the person's own choice about their own email.
   IF COALESCE(v_meta->>'marketing_consent_studio', '') <> '' THEN
     v_slug := v_meta->>'marketing_consent_studio';
     v_granted := COALESCE((v_meta->>'marketing_consent')::boolean, FALSE);
-  ELSIF p_studio_slug IS NOT NULL AND p_granted IS NOT NULL THEN
+  ELSIF p_studio_slug IS NOT NULL AND p_granted IS NOT NULL AND p_started_at IS NOT NULL
+        -- Only the account this browser just created: one made within an hour
+        -- after the Google sign-up started. A cancelled attempt followed by
+        -- someone else signing in to an existing account applies nothing.
+        AND v_created BETWEEN p_started_at - interval '5 minutes' AND p_started_at + interval '1 hour' THEN
     v_slug := p_studio_slug;
     v_granted := p_granted;
   ELSE
@@ -584,8 +657,8 @@ BEGIN
   RETURN TRUE;
 END;
 $$;
-REVOKE ALL ON FUNCTION apply_my_signup_consent(TEXT, BOOLEAN) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION apply_my_signup_consent(TEXT, BOOLEAN) TO authenticated;
+REVOKE ALL ON FUNCTION apply_my_signup_consent(TEXT, BOOLEAN, TIMESTAMPTZ) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION apply_my_signup_consent(TEXT, BOOLEAN, TIMESTAMPTZ) TO authenticated;
 
 -- ===========================================================================
 -- Stripe webhook idempotency (PR #72 review)

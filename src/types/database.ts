@@ -2861,7 +2861,7 @@ export interface Database {
         Returns: StudioStorefront | null;
       };
       apply_my_signup_consent: {
-        Args: { p_studio_slug: string | null; p_granted: boolean | null };
+        Args: { p_studio_slug: string | null; p_granted: boolean | null; p_started_at: string | null };
         Returns: boolean;
       };
       link_my_visitor: {

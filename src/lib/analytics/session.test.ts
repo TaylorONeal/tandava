@@ -53,7 +53,7 @@ describe("signup consent across OAuth", () => {
     rememberSignupConsent(undefined, true);
     expect(takeSignupConsent()).toBeNull();
     rememberSignupConsent("aloha", true);
-    expect(takeSignupConsent()).toEqual({ slug: "aloha", granted: true });
+    expect(takeSignupConsent()).toMatchObject({ slug: "aloha", granted: true });
     expect(takeSignupConsent()).toBeNull();
   });
 });
