@@ -572,6 +572,8 @@ Found by the launch-v1 audit. Each has a test in `supabase/tests/`.
 | A test that never failed proves nothing | Easy to write vacuous tests | Revert the fix, watch the test fail, then restore |
 | Charge before reserving | A paid drop-in could land on a full class and only be flagged for refund | Take the seat first (`hold_spot`), count live holds in every capacity check |
 | Docs drift from code | `.env.example` missed vars, STATUS was 8 months stale | W0-3 and W0-4: update docs in the same PR |
+| Shared `src/lib` code imported by an Edge Function without `.ts` | Deno can't resolve it, so the function can't deploy; `check:edge` only listed the Stripe functions, so nothing caught it | Use explicit `.ts` in any file Deno imports; add every new function to `check:edge` |
+| Visitor id rotation when `localStorage.setItem` fails but `getItem` works | Old person's id kept winning, so visits joined the wrong journey | All visitor id writes go through `setVisitor()`; memory outranks storage |
 
 ## Production database changes (October 2026)
 
