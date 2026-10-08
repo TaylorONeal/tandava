@@ -592,6 +592,15 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 | New RLS table with no policy fails SEC-07 | Add an explicit policy, even deny-all (`USING (false)`) |
 | Two auth return helpers after a merge (`authReturn`, `auth/next`) | Keep both, point the pages at one, do not delete the other side's callers |
 
+## Edge functions on prod (October 2026)
+
+| Mistake | Cost | Fix |
+|---|---|---|
+| Merging code that adds or changes an edge function and assuming it is live | Express Booking page shipped while `express-book` did not exist on prod | Edge functions deploy separately from the web app. After any merge touching `supabase/functions/<name>`, redeploy that function and confirm with `get_edge_function` that the deployed source matches main; a name comparison alone misses changed functions |
+| Sending Taylor to the Supabase CLI on his Mac | 30 minutes of 403s: CLI logged into a personal account, commands run from `~`, multi-line pastes eaten by the login prompt | Deploy from the session with the Supabase MCP `deploy_edge_function`; if the CLI is unavoidable, run it from the repo root, one command per paste, and always pass `--project-ref mkaixgjwakfufmmwembn` (or `supabase link` first); seeing tandava-prod in `projects list` does not select it |
+| Navigating the browser pane away from a form the user is about to submit | Lost a filled secret form | Open a new tab for any other check while a hand-off is pending |
+| Secrets and auth captcha | Saving secrets, deploying and merging are blocked for the agent even with chat approval; captcha on without the widget locks everyone out | Fill the form, hand off the one click; ship the Turnstile widget before enabling captcha |
+
 ## Quick Reference: Prevention Patterns
 
 | Issue Type | Prevention Pattern |
