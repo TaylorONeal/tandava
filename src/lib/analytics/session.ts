@@ -116,11 +116,37 @@ async function retryHandoffLinkInner() {
   }
   if (!id) return;
   try {
-    const { error } = await data.linkMyVisitor(id, "embed_handoff");
-    if (!error) window.localStorage.removeItem(RELINK_KEY);
+    const { error, owned } = await data.linkMyVisitor(id, "embed_handoff");
+    // null: not signed in yet, keep it for later. false: the id belongs to
+    // someone else (a copied embed link), so stop using it on this browser.
+    if (!error && owned !== null) {
+      window.localStorage.removeItem(RELINK_KEY);
+      if (owned === false) rotateAwayFrom(id);
+    }
   } catch {
     // Retried on the next page view.
   }
+}
+
+/**
+ * This browser holds a visitor id that the server says belongs to another
+ * person. Start a fresh id and drop the visits recorded under the old one in
+ * this browser session, so this person's visits and bookings are their own.
+ */
+function rotateAwayFrom(id: string) {
+  try {
+    if (window.localStorage.getItem(VISITOR_KEY) !== id) return;
+    window.localStorage.setItem(VISITOR_KEY, randomId());
+    for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
+      const k = window.sessionStorage.key(i);
+      if (k?.startsWith(SESSION_PREFIX) || k?.startsWith(LINKED_PREFIX)) window.sessionStorage.removeItem(k);
+    }
+  } catch {
+    if (memoryVisitor !== id) return;
+    memoryVisitor = randomId();
+  }
+  memorySessions.clear();
+  linkedInMemory.clear();
 }
 
 function rememberPreviousVisitor(id: string) {
@@ -284,6 +310,10 @@ export function claimVisitorFor(userId: string) {
   try {
     const owner = window.localStorage.getItem(OWNER_KEY);
     if (owner && owner !== userId) {
+      // In-memory fallbacks (used when a storage write failed) go too: they
+      // would otherwise outrank the cleared storage and keep A's visit.
+      memorySessions.clear();
+      linkedInMemory.clear();
       window.localStorage.setItem(VISITOR_KEY, randomId());
       window.localStorage.removeItem(PREVIOUS_KEY);
       window.localStorage.removeItem(RELINK_KEY);
@@ -351,7 +381,14 @@ async function linkVisitorOnceInner(userId: string, via = "sign_in") {
   }
   if (!done) {
     try {
-      const { error } = await data.linkMyVisitor(getVisitorId(), via);
+      const current = getVisitorId();
+      let { error, owned } = await data.linkMyVisitor(current, via);
+      if (!error && owned === false) {
+        // Someone else owns this browser id (a copied embed link): use a fresh
+        // one for this person and link that instead.
+        rotateAwayFrom(current);
+        ({ error, owned } = await data.linkMyVisitor(getVisitorId(), via));
+      }
       // Ids an embed handoff displaced belong to the same person on this
       // browser; each is dropped only once its own link succeeded.
       const failed: string[] = [];
@@ -516,6 +553,8 @@ export async function applyOAuthSignupConsent(userId: string, nonce?: string | n
  */
 export function forgetVisitor() {
   linkUser = null;
+  memorySessions.clear();
+  linkedInMemory.clear();
   try {
     window.localStorage.setItem(VISITOR_KEY, randomId());
     window.localStorage.removeItem(OWNER_KEY);

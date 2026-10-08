@@ -321,12 +321,12 @@ const supabaseData: DataProvider = {
     };
   },
 
-  async linkMyVisitor(visitorId, via): Promise<MutationResult> {
-    const { error } = await getClient().rpc("link_my_visitor", {
+  async linkMyVisitor(visitorId, via): Promise<MutationResult & { owned?: boolean | null }> {
+    const { data, error } = await getClient().rpc("link_my_visitor", {
       p_visitor_id: visitorId,
       p_via: via,
     } as never);
-    return { error: error ? { message: error.message } : null };
+    return { error: error ? { message: error.message } : null, owned: error ? undefined : ((data as boolean | null) ?? null) };
   },
 
   async applyMySignupConsent(pending): Promise<MutationResult> {

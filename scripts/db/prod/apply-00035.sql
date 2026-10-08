@@ -162,15 +162,20 @@ GRANT EXECUTE ON FUNCTION link_visitor(UUID, UUID, TEXT) TO service_role;
 
 -- Signed-in clients link their own browser after sign-in / sign-up / claim.
 -- auth.uid() decides whose profile; the caller only supplies the visitor id.
+-- Returns whether the caller owns the id afterwards (NULL when not signed
+-- in), so a browser holding an id that belongs to someone else (a copied
+-- embed link) can drop it instead of feeding that person's journey.
+DROP FUNCTION IF EXISTS link_my_visitor(UUID, TEXT);
 CREATE OR REPLACE FUNCTION link_my_visitor(p_visitor_id UUID, p_via TEXT)
-RETURNS VOID
+RETURNS BOOLEAN
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  IF auth.uid() IS NULL THEN RETURN; END IF;
+  IF auth.uid() IS NULL OR p_visitor_id IS NULL THEN RETURN NULL; END IF;
   PERFORM link_visitor(auth.uid(), p_visitor_id, p_via);
+  RETURN EXISTS (SELECT 1 FROM profile_visitors WHERE visitor_id = p_visitor_id AND profile_id = auth.uid());
 END;
 $$;
 REVOKE ALL ON FUNCTION link_my_visitor(UUID, TEXT) FROM PUBLIC, anon;

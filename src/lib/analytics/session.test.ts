@@ -228,3 +228,57 @@ describe("capture after an account switch", () => {
     expect(s.currentSessionId("oxatl")).toBe("66666666-6666-4666-8666-666666666666");
   });
 });
+
+describe("visitor ids owned by someone else", () => {
+  it("drops a handoff id the server says belongs to another person", async () => {
+    const { data } = await import("@/lib/backend");
+    const link = vi.mocked(data.linkMyVisitor);
+    link.mockReset();
+    link.mockResolvedValue({ error: null, owned: false } as never);
+    const foreign = "77777777-7777-4777-8777-777777777777";
+    window.localStorage.setItem("tandava.vid", foreign);
+    window.localStorage.setItem("tandava.vid.relink", foreign);
+    const s = await import("./session");
+    await s.retryHandoffLink();
+    expect(window.localStorage.getItem("tandava.vid.relink")).toBeNull();
+    expect(window.localStorage.getItem("tandava.vid")).not.toBe(foreign);
+  });
+
+  it("links a fresh id when the browser's id belongs to someone else", async () => {
+    const { data } = await import("@/lib/backend");
+    const link = vi.mocked(data.linkMyVisitor);
+    vi.mocked(data.applyMySignupConsent).mockResolvedValue({ error: null } as never);
+    link.mockReset();
+    link.mockResolvedValueOnce({ error: null, owned: false } as never);
+    link.mockResolvedValue({ error: null, owned: true } as never);
+    const foreign = "88888888-8888-4888-8888-888888888888";
+    window.localStorage.setItem("tandava.vid", foreign);
+    const s = await import("./session");
+    await s.linkVisitorOnce("user-x");
+    expect(link).toHaveBeenCalledTimes(2);
+    const second = link.mock.calls[1][0];
+    expect(second).not.toBe(foreign);
+    expect(window.localStorage.getItem("tandava.vid")).toBe(second);
+  });
+});
+
+describe("account switch with in-memory fallback", () => {
+  it("clears A's in-memory session when B signs in (storage writes failing)", async () => {
+    const ss = memoryStorage();
+    ss.setItem = () => {
+      throw new Error("quota");
+    };
+    vi.stubGlobal("window", { localStorage: memoryStorage(), sessionStorage: ss, location: { href: "https://app.example.com/s/oxatl" } });
+    vi.stubGlobal("document", { referrer: "" });
+    vi.stubGlobal("navigator", { userAgent: "test" });
+    const { api } = await import("@/lib/backend");
+    vi.mocked(api.invoke).mockReset();
+    vi.mocked(api.invoke).mockResolvedValue({ data: { sessionId: "99999999-9999-4999-8999-999999999999" }, error: null } as never);
+    const s = await import("./session");
+    s.claimVisitorFor("user-a");
+    await s.trackVisit("oxatl", "storefront" as never);
+    expect(s.currentSessionId("oxatl")).toBe("99999999-9999-4999-8999-999999999999");
+    s.claimVisitorFor("user-b");
+    expect(s.currentSessionId("oxatl")).toBeFalsy();
+  });
+});

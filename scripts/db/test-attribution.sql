@@ -582,5 +582,21 @@ BEGIN
   IF (SELECT utm_source FROM analytics_sessions WHERE id = a) <> 'ig' THEN RAISE EXCEPTION 'existing tags overwritten'; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (28 blocks)'; END $$;
+-- 29. link_my_visitor reports ownership: true for the owner, false for
+--     someone holding another person's id (a copied embed link).
+DO $$
+DECLARE v UUID := gen_random_uuid(); r BOOLEAN;
+BEGIN
+  PERFORM link_visitor('00000000-0000-0000-0000-0000000000b1', v, 'sign_in');
+  PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000b1', true);
+  r := link_my_visitor(v, 'sign_in');
+  IF r IS DISTINCT FROM TRUE THEN RAISE EXCEPTION 'owner not reported as owner'; END IF;
+  PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000a1', true);
+  r := link_my_visitor(v, 'embed_handoff');
+  IF r IS DISTINCT FROM FALSE THEN RAISE EXCEPTION 'foreign id not reported: %', r; END IF;
+  PERFORM set_config('request.jwt.claim.sub', '', true);
+  IF link_my_visitor(v, 'x') IS NOT NULL THEN RAISE EXCEPTION 'anonymous call should return null'; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (29 blocks)'; END $$;
 ROLLBACK;

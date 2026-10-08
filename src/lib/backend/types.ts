@@ -227,7 +227,8 @@ export interface DataProvider {
    * (link_my_visitor RPC, migration 00035), so visits before sign-in count
    * toward their journey. Best effort; never rewrites another person's link.
    */
-  linkMyVisitor(visitorId: string, via: string): Promise<MutationResult>;
+  /** owned: whether the caller owns the id afterwards (false: someone else does; null: not signed in). */
+  linkMyVisitor(visitorId: string, via: string): Promise<MutationResult & { owned?: boolean | null }>;
 
   /**
    * Record the sign-up marketing choice for the studio the person signed up
