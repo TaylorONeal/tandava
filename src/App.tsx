@@ -98,13 +98,20 @@ function lazyWithReload<T extends ComponentType<any>>(load: () => Promise<{ defa
         /* storage blocked */
       }
       if (isChunkError && Date.now() - last > 60_000) {
+        // Reload only when the guard can be recorded. With storage blocked the
+        // flag would never persist and a genuinely broken chunk would reload
+        // forever; let the error boundary show its Reload button instead.
+        let recorded = false;
         try {
           sessionStorage.setItem(CHUNK_RELOAD_KEY, String(Date.now()));
+          recorded = sessionStorage.getItem(CHUNK_RELOAD_KEY) !== null;
         } catch {
           /* storage blocked */
         }
-        window.location.reload();
-        return new Promise<{ default: T }>(() => {});
+        if (recorded) {
+          window.location.reload();
+          return new Promise<{ default: T }>(() => {});
+        }
       }
       throw err;
     }
