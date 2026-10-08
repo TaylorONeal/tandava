@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { auth } from "@/lib/backend";
 import { resolveAfterAuth } from "@/lib/authReturn";
+import { safeNextPath } from "@/lib/auth/next";
 
 /**
  * Handles the OAuth redirect callback.
@@ -10,16 +11,18 @@ import { resolveAfterAuth } from "@/lib/authReturn";
  */
 export function AuthCallback() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const next = safeNextPath(searchParams.get("next"));
 
   useEffect(() => {
     auth.getSession().then(({ user }) => {
       if (user) {
-        navigate(resolveAfterAuth({}), { replace: true });
+        navigate(resolveAfterAuth({ next: next === "/" ? null : next }), { replace: true });
       } else {
         navigate("/auth/login", { replace: true });
       }
     });
-  }, [navigate]);
+  }, [navigate, next]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">

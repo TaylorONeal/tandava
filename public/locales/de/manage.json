@@ -19,14 +19,15 @@
     "importData": "Daten importieren",
     "smsInbox": "SMS-Posteingang",
     "notifications": "Benachrichtigungen",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "shareLinks": "Buchungslinks",
+    "websiteEmbed": "Website-Widget"
   },
   "title": "Studio-Admin",
   "studentView": "Mitgliederansicht",
   "myAccount": "Mein Konto",
   "studioSettings": "Studio-Einstellungen",
   "signOut": "Abmelden",
-
   "schedule": {
     "title": "Kursplan",
     "subtitle": "Erstelle und verwalte deinen Kursplan.",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "Angebote durchsuchen...",
     "activeOfferings": "Aktive Angebote"
   },
-
   "admin": {
     "platformAdmin": "Plattform-Admin",
     "platformDashboard": "Plattform-Dashboard",
@@ -60,7 +60,6 @@
     "sentryConfigured": "Sentry-Fehlerüberwachung",
     "setEnvVar": "Setze {{key}} in .env"
   },
-
   "studioManagement": "Studioverwaltung",
   "owner": "Inhaber:in"
 }

@@ -11,6 +11,7 @@ import { ArrowRight, Check } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { MarketingShell } from "@/components/layout/MarketingShell";
+import { FaqSection } from "@/components/help/FaqSection";
 import { STUDIO_SIGNUP_HREF } from "@/lib/audience";
 
 const STEPS = [
@@ -96,6 +97,25 @@ export default function ForStudios() {
           </Button>
         </div>
       </section>
+
+      <FaqSection
+        audience="owner"
+        ids={[
+          "express-booking",
+          "explore-on-studio-page",
+          "class-time-zone",
+          "studio-network-vs-classpass",
+          "studio-network-cannibalisation",
+          "privates-requests",
+          "offsite-and-events",
+          "attribution",
+          "marketing-automation",
+          "measure-ads",
+          "switching",
+          "tracking-privacy",
+        ]}
+        className="max-w-5xl mx-auto px-6 py-12"
+      />
 
       <section className="max-w-5xl mx-auto px-6 pt-4">
         <p className="text-sm text-muted-foreground">

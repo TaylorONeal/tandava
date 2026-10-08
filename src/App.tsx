@@ -56,6 +56,7 @@ class AppErrorBoundary extends Component<
 
 const Home = lazy(() => import("./pages/Home"));
 const StudioStorefront = lazy(() => import("./pages/StudioStorefront"));
+const ExpressBooking = lazy(() => import("./pages/ExpressBooking"));
 const Index = lazy(() => import("./pages/Index"));
 const Schedule = lazy(() => import("./pages/Schedule"));
 const MySchedule = lazy(() => import("./pages/MySchedule"));
@@ -68,11 +69,11 @@ const InstructorDetail = lazy(() => import("./pages/InstructorDetail"));
 const OnDemand = lazy(() => import("./pages/OnDemand"));
 const Login = lazy(() => import("./pages/auth/Login"));
 const Register = lazy(() => import("./pages/auth/Register"));
+const ResetConfirm = lazy(() => import("./pages/auth/ResetConfirm"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Demo = lazy(() => import("./pages/Demo"));
 const OpenSource = lazy(() => import("./pages/OpenSource"));
 const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
-const ResetConfirm = lazy(() => import("./pages/auth/ResetConfirm"));
 const ForStudios = lazy(() => import("./pages/ForStudios"));
 const StudioCalculator = lazy(() => import("./pages/tools/StudioCalculator"));
 const Blog = lazy(() => import("./pages/Blog"));
@@ -113,6 +114,7 @@ const AuditLogsManage = lazy(() => import("./pages/manage/AuditLogs"));
 const DataDictionaryManage = lazy(() => import("./pages/manage/DataDictionary"));
 const DefinitionsManage = lazy(() => import("./pages/manage/Definitions"));
 const EmbedSettingsManage = lazy(() => import("./pages/manage/EmbedSettings"));
+const ShareLinksManage = lazy(() => import("./pages/manage/ShareLinks"));
 
 const NotificationPreferences = lazy(() => import("./pages/account/NotificationPreferences"));
 
@@ -176,6 +178,11 @@ const App = () => (
                   <Route path="/discover" element={<Discover />} />
                   <Route path="/s/:slug" element={<StudioStorefront />} />
 
+                  {/* ---- Express Booking: login-free booking of one class
+                       (PRD-020). Public by design — no ProtectedRoute. The
+                       express-book Edge Function owns every write. ---- */}
+                  <Route path="/s/:slug/book/:occurrenceId" element={<ExpressBooking />} />
+
                   {/* ---- Blog (built but not yet linked in nav; noindex until
                        BLOG_PUBLISHED is flipped on in src/config/blog.ts) ---- */}
                   <Route path="/blog" element={<Blog />} />
@@ -197,6 +204,7 @@ const App = () => (
                   <Route path="/auth/reset" element={<ResetPassword />} />
                   <Route path="/auth/reset-confirm" element={<ResetConfirm />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
+                  {/* Password reset AND guest-to-account claim (PRD-020, ?claim=1). */}
 
                   {/* ---- Authenticated member routes ---- */}
                   <Route path="/my-schedule" element={<ProtectedRoute permission="member.view_profile"><MySchedule /></ProtectedRoute>} />
@@ -253,6 +261,7 @@ const App = () => (
                   <Route path="/manage/data-dictionary" element={<ProtectedRoute permission="studio.manage_schedule"><DataDictionaryManage /></ProtectedRoute>} />
                   <Route path="/manage/definitions" element={<ProtectedRoute permission="studio.manage_schedule"><DefinitionsManage /></ProtectedRoute>} />
                   <Route path="/manage/embed" element={<ProtectedRoute permission="studio.manage_settings"><EmbedSettingsManage /></ProtectedRoute>} />
+                  <Route path="/manage/share" element={<ProtectedRoute permission="studio.manage_settings"><ShareLinksManage /></ProtectedRoute>} />
 
                   {/* ---- Instructor portal routes (/teach) ---- */}
                   <Route path="/teach" element={<ProtectedRoute permission="studio.teach"><TeachDashboard /></ProtectedRoute>} />

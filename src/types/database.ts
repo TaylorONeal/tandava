@@ -99,6 +99,10 @@ export interface Profile {
   role?: UserRole;
   marketing_consent?: boolean;
   onboarding_completed?: boolean;
+  /** Created by express booking with no password yet (migration 00019). */
+  is_guest?: boolean;
+  /** When a guest set a password on the same email (migration 00019). */
+  claimed_at?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -2755,6 +2759,70 @@ export type DiscoverClassesArgs = {
   p_limit?: number;
 };
 
+/**
+ * One occurrence's public, booking-relevant facts (`get_public_occurrence`).
+ *
+ * Superset of PublicScheduleRow for a single class: adds the drop-in price and
+ * the studio's express booking policy, which the express booking page needs and
+ * the schedule list does not. Carries cancelled and past occurrences so the page
+ * can explain why they are unbookable rather than 404.
+ */
+export interface PublicOccurrenceRow {
+  occurrence_id: string;
+  starts_at: string;
+  ends_at: string;
+  room: string | null;
+  is_cancelled: boolean;
+  capacity: number;
+  booked_count: number;
+  offering_name: string;
+  offering_description: string | null;
+  drop_in_price_cents: number | null;
+  location_name: string | null;
+  location_city: string | null;
+  teacher_name: string | null;
+  studio_name: string;
+  studio_slug: string;
+  studio_timezone: string;
+  studio_currency: string;
+  studio_primary_color: string | null;
+  express_booking_enabled: boolean;
+  express_booking_cutoff_minutes: number;
+  express_waitlist_enabled: boolean;
+  express_waiver_required: boolean;
+  /** For the signed-in member path (coverage resolution). */
+  studio_id?: string | null;
+  offering_id?: string | null;
+  location_id?: string | null;
+  /** For add-to-calendar (map-resolvable address, cancellation window). */
+  location_address_line1?: string | null;
+  location_address_line2?: string | null;
+  location_state?: string | null;
+  location_zip?: string | null;
+  location_country?: string | null;
+  location_latitude?: number | null;
+  location_longitude?: number | null;
+  cancellation_minutes?: number | null;
+}
+
+/**
+ * The caller's own studio (`get_my_studio`) — identity and branding for
+ * owner-facing screens, so an owner is never asked to type their own slug.
+ */
+export interface MyStudioRow {
+  studio_id: string;
+  name: string;
+  slug: string;
+  timezone: string;
+  currency: string;
+  discoverable: boolean;
+  brand_primary_color: string | null;
+  brand_secondary_color: string | null;
+  logo_url: string | null;
+  express_booking_enabled: boolean;
+  staff_role: UserRole;
+}
+
 type DatabaseTable<Row, Insert = Partial<Row>> = {
   Row: { [Key in keyof Row]: Row[Key] };
   Insert: { [Key in keyof Insert]: Insert[Key] };
@@ -2818,6 +2886,11 @@ export interface Database {
         Args: { p_occurrence_id: string; p_source_type: string; p_source_id: string };
         Returns: Booking;
       };
+      /** Signed-in caller books a zero-price class (migration 00023). */
+      book_free_class: {
+        Args: { p_occurrence_id: string };
+        Returns: Booking;
+      };
       cancel_booking: {
         Args: { p_booking_id: string };
         Returns: Booking;
@@ -2829,6 +2902,14 @@ export interface Database {
       get_public_schedule: {
         Args: { p_slug: string; p_limit?: number };
         Returns: PublicScheduleRow[];
+      };
+      get_public_occurrence: {
+        Args: { p_slug: string; p_occurrence_id: string };
+        Returns: PublicOccurrenceRow[];
+      };
+      get_my_studio: {
+        Args: Record<string, never>;
+        Returns: MyStudioRow[];
       };
       get_my_effective_role: {
         Args: Record<string, never>;

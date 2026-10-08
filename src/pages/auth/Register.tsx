@@ -23,6 +23,7 @@ const Register = () => {
   const { signUpWithEmail, signInWithGoogle, isDemoMode } = useAuth();
   // Where the visitor was headed (e.g. the class they tapped Book on) before being asked to sign up.
   const nextParam = safeNext(searchParams.get("next"));
+  const next = nextParam ?? "/"; // carried through email confirmation and Google
   // Studio owners arrive from /for-studios with ?intent=studio; everyone else is a student.
   const isOwner = parseIntent(searchParams.get("intent")) === "studio";
   useEffect(() => {
@@ -79,7 +80,8 @@ const Register = () => {
         first_name: formData.firstName,
         last_name: formData.lastName,
         marketing_consent: formData.marketingConsent,
-      }
+      },
+      next
     );
 
     setIsLoading(false);
@@ -221,7 +223,7 @@ const Register = () => {
       return;
     }
 
-    const { error } = await signInWithGoogle();
+    const { error } = await signInWithGoogle(next);
     if (error) {
       toast({
         title: t('register.signupFailed'),

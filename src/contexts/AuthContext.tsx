@@ -28,12 +28,17 @@ interface AuthContextValue extends AuthState {
   signUpWithEmail: (
     email: string,
     password: string,
-    metadata: { first_name: string; last_name: string; marketing_consent?: boolean }
+    metadata: { first_name: string; last_name: string; marketing_consent?: boolean },
+    next?: string
   ) => Promise<{ error: AuthError | null; requiresEmailConfirmation?: boolean }>;
-  signInWithGoogle: () => Promise<{ error: AuthError | null }>;
+  signInWithGoogle: (next?: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
-  updatePassword: (password: string) => Promise<{ error: AuthError | null }>;
+  resetPassword: (
+    email: string,
+    options?: { next?: string; claim?: boolean }
+  ) => Promise<{ error: AuthError | null }>;
+  /** Set a password for the signed-in user; with `claim`, also marks a guest profile claimed. */
+  updatePassword: (password: string, options?: { claim?: boolean }) => Promise<{ error: AuthError | null }>;
   refreshProfile: () => Promise<void>;
 }
 
@@ -183,15 +188,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUpWithEmail = async (
     email: string,
     password: string,
-    metadata: { first_name: string; last_name: string; marketing_consent?: boolean }
+    metadata: { first_name: string; last_name: string; marketing_consent?: boolean },
+    next?: string
   ) => {
     if (isDemoMode) return { error: null };
-    return auth.signUpWithEmail(email, password, metadata);
+    return auth.signUpWithEmail(email, password, metadata, next);
   };
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = async (next?: string) => {
     if (isDemoMode) return { error: null };
-    const { error } = await auth.signInWithOAuth("google");
+    const { error } = await auth.signInWithOAuth("google", next);
     return { error };
   };
 
@@ -200,16 +206,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await auth.signOut();
   };
 
-  const resetPassword = async (email: string) => {
+  const resetPassword = async (email: string, options?: { next?: string; claim?: boolean }) => {
     if (isDemoMode) return { error: null };
-    const { error } = await auth.resetPassword(email);
+    const { error } = await auth.resetPassword(email, options);
     return { error };
   };
 
-  const updatePassword = async (password: string) => {
+  const updatePassword = async (password: string, options?: { claim?: boolean }) => {
     if (isDemoMode) return { error: null };
     const { error } = await auth.updatePassword(password);
-    return { error };
+    if (error) return { error };
+    const userId = state.user?.id;
+    if (options?.claim && userId) {
+      const { error: claimError } = await data.markProfileClaimed(userId);
+      await refreshProfile();
+      if (claimError) {
+        // The password is set, and the server already treats a guest with a
+        // password as an account (get_profile_identity_by_email). Report it so
+        // the page offers a retry instead of announcing success.
+        return {
+          error: {
+            message:
+              "Your password is saved, but we couldn't finish setting up your account. Try again in a moment.",
+          },
+        };
+      }
+    }
+    return { error: null };
   };
 
   return (

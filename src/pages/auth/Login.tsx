@@ -20,6 +20,7 @@ const Login = () => {
   const from = (location.state as { from?: { pathname?: string; search?: string } } | null)?.from ?? null;
   const resumePath = nextParam ?? safeNext(from?.pathname ? `${from.pathname}${from.search ?? ""}` : null);
   // Coming back to finish studio setup (from /for-studios or the onboarding gate).
+  const next = resumePath ?? "/";
   const isOwnerFlow = Boolean(resumePath?.startsWith("/manage/onboarding"));
   useEffect(() => {
     if (resumePath) stashReturn(resumePath); // survives the Google redirect
@@ -66,7 +67,7 @@ const Login = () => {
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
-    const { error } = await signInWithGoogle();
+    const { error } = await signInWithGoogle(next);
     if (error) {
       toast({
         title: t('signInFailed'),

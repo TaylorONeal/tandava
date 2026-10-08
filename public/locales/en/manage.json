@@ -19,14 +19,15 @@
     "importData": "Import Data",
     "smsInbox": "SMS Inbox",
     "notifications": "Notifications",
-    "settings": "Settings"
+    "settings": "Settings",
+    "shareLinks": "Booking Links",
+    "websiteEmbed": "Website Embed"
   },
   "title": "Studio Admin",
   "studentView": "Student View",
   "myAccount": "My Account",
   "studioSettings": "Studio Settings",
   "signOut": "Sign out",
-
   "schedule": {
     "title": "Schedule",
     "subtitle": "Create and manage your class schedule.",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "Search offerings...",
     "activeOfferings": "Active Offerings"
   },
-
   "admin": {
     "platformAdmin": "Platform Admin",
     "platformDashboard": "Platform Dashboard",
@@ -60,7 +60,6 @@
     "sentryConfigured": "Sentry error monitoring",
     "setEnvVar": "Set {{key}} in .env"
   },
-
   "studioManagement": "Studio Management",
   "owner": "Owner"
 }

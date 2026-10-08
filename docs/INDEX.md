@@ -12,12 +12,14 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 | **Contributor** | [CONTRIBUTING.md](../CONTRIBUTING.md) → [developer/01-domain-model.md](developer/01-domain-model.md) |
 | **Studio owner** | [guides/TRAINING_PATH.md](guides/TRAINING_PATH.md) → [guides/BRANDING_GUIDE.md](guides/BRANDING_GUIDE.md) |
 | **Designer** | [design/README.md](design/README.md) → [design/03-figma-structure.md](design/03-figma-structure.md) |
-| **Mobile developer** | [architecture/MOBILE_ARCHITECTURE.md](architecture/MOBILE_ARCHITECTURE.md) |
+| **Mobile developer** | [app-store/STORE-APPS.md](app-store/STORE-APPS.md) (two apps, deep links) → [architecture/MOBILE_ARCHITECTURE.md](architecture/MOBILE_ARCHITECTURE.md) |
 | **Understanding the system** | [architecture/DOMAIN_MODEL.md](architecture/DOMAIN_MODEL.md) |
 
 ---
 
 ## Quick Links
+
+- **Growth specs (Oct 2026):** [PRD-020 Express Booking](prd/PRD-020-express-booking.md) · [PRD-021 Privates](prd/PRD-021-privates-and-appointments.md) · [PRD-022 Home studio, time zones, calendar](prd/PRD-022-home-studio-time-zones-calendar.md) · [PRD-023 Studio Network](prd/PRD-023-studio-network.md) · [PRD-024 Attribution everywhere](prd/PRD-024-attribution-everywhere.md) · [PRD-025 Off-site privates and private events](prd/PRD-025-offsite-privates-and-private-events.md) · [PRD-026 Booking links and widget install](prd/PRD-026-booking-links-and-widget-install.md) · [PRD-027 CRM marketing, measured ads, switching](prd/PRD-027-crm-marketing-ads-and-migration.md) · [Store apps](app-store/STORE-APPS.md) · [Help and FAQ rule](HELP-AND-FAQ.md)
 
 - [Implementation Handoff](IMPLEMENTATION_HANDOFF.md) — Bug fixes, tested hosted foundations, remaining blockers and three product decisions
 
@@ -32,6 +34,10 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 - [FEATURE_INDEX](FEATURE_INDEX.md) — Complete feature status reference
 - [DEMO_MODE](DEMO_MODE.md) — Demo mode setup and customization
 - [NEXT_STEPS](NEXT_STEPS.md) — Prioritized task list for development
+- [Competitive Analysis](competitive/README.md) — Competitor briefs, index, and the shared brief structure
+- [Website Embed & Booking Links](guides/website-embed.md) — Share a link, or put the widget on your site
+- [Positioning by Audience](positioning/AUDIENCES.md) — Which message belongs to which product and audience
+- [Pricing Models](roadmap/PRICING_MODELS.md) — Flat vs per-location vs seat models for Tandava Cloud
 - [General FAQ](FAQ.md) — Common questions answered quickly
 - [Detailed FAQ](FAQ-detailed.md) — In-depth answers for complex scenarios
 
