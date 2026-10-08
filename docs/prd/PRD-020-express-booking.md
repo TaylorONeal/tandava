@@ -263,7 +263,7 @@ feature requires, not an unrelated cleanup.
 
 ## Launch gates (none of these are done)
 
-1. **Apply migration 00019 to a live database** and confirm `idx_profiles_email_lower` does not
+1. **Apply migrations 00019, 00020 and 00021 to a live database** and confirm `idx_profiles_email_lower` does not
    collide with existing duplicate-email rows. On a database with duplicates the index creation will
    fail; dedupe first.
 2. **Verify the Edge Function bundles.** It imports `../../../src/lib/booking/express.ts`, which

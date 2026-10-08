@@ -93,9 +93,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_email_lower ON profiles(LOWER(ema
 -- occurrences: the page must be able to say "this class was cancelled" rather
 -- than render a generic not-found. Eligibility is decided by the caller
 -- (src/lib/booking/express.ts), not by row omission here.
--- Dropped first so a dev database that ran an earlier draft of this migration
--- can re-run it (the return columns changed; CREATE OR REPLACE cannot do that).
-DROP FUNCTION IF EXISTS get_public_occurrence(TEXT, UUID);
 CREATE OR REPLACE FUNCTION get_public_occurrence(p_slug TEXT, p_occurrence_id UUID)
 RETURNS TABLE (
   occurrence_id UUID,
@@ -119,22 +116,7 @@ RETURNS TABLE (
   express_booking_enabled BOOLEAN,
   express_booking_cutoff_minutes INTEGER,
   express_waitlist_enabled BOOLEAN,
-  express_waiver_required BOOLEAN,
-  -- Ids a signed-in member's booking path needs to resolve coverage
-  -- (membership / pack scope by offering and location). Not sensitive.
-  studio_id UUID,
-  offering_id UUID,
-  location_id UUID,
-  -- Add-to-calendar needs a map-resolvable address and the cancellation
-  -- window. Public already: it is the studio's own business address.
-  location_address_line1 TEXT,
-  location_address_line2 TEXT,
-  location_state TEXT,
-  location_zip TEXT,
-  location_country TEXT,
-  location_latitude DOUBLE PRECISION,
-  location_longitude DOUBLE PRECISION,
-  cancellation_minutes INTEGER
+  express_waiver_required BOOLEAN
 )
 LANGUAGE sql
 STABLE
@@ -152,11 +134,7 @@ AS $$
     s.express_booking_cutoff_minutes,
     -- A guest waitlist requires BOTH the studio waitlist and the guest switch.
     (s.waitlist_enabled AND s.express_waitlist_enabled),
-    s.express_waiver_required,
-    s.id, co.offering_id, co.location_id,
-    l.address_line1, l.address_line2, l.state, l.zip, l.country,
-    l.latitude::DOUBLE PRECISION, l.longitude::DOUBLE PRECISION,
-    s.default_cancellation_minutes
+    s.express_waiver_required
   FROM studios s
   JOIN class_occurrences co ON co.studio_id = s.id
   JOIN offerings o ON o.id = co.offering_id
@@ -402,25 +380,18 @@ GRANT EXECUTE ON FUNCTION create_guest_booking(UUID, UUID, UUID) TO service_role
 -- `LOWER(email) = LOWER(p_email)` matches the index expression exactly.
 --
 -- Returns the two facts the decision needs and nothing else: no name, no phone,
--- no membership state.
---
--- is_guest is true only while the auth user still has NO password. The profile
--- flag alone is not trusted: if the client-side claim write fails after a guest
--- sets a password, the account must still be treated as an account, or anyone
--- could keep booking under that email from the public form. Service-role only — an anon caller could otherwise use it
+-- no membership state. Service-role only — an anon caller could otherwise use it
 -- to test whether any address has an account here.
 CREATE OR REPLACE FUNCTION get_profile_identity_by_email(p_email TEXT)
 RETURNS TABLE (profile_id UUID, is_guest BOOLEAN)
 LANGUAGE sql
 STABLE
 SECURITY DEFINER
-SET search_path = public, auth
+SET search_path = public
 AS $$
-  SELECT p.id,
-         (p.is_guest AND COALESCE(u.encrypted_password, '') = '') AS is_guest
-  FROM profiles p
-  LEFT JOIN auth.users u ON u.id = p.id
-  WHERE LOWER(p.email) = LOWER(p_email)
+  SELECT id, is_guest
+  FROM profiles
+  WHERE LOWER(email) = LOWER(p_email)
   LIMIT 1;
 $$;
 
