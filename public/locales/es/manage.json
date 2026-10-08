@@ -19,14 +19,15 @@
     "importData": "Importar datos",
     "smsInbox": "Bandeja de SMS",
     "notifications": "Notificaciones",
-    "settings": "Ajustes"
+    "settings": "Ajustes",
+    "shareLinks": "Enlaces de reserva",
+    "websiteEmbed": "Widget para tu web"
   },
   "title": "Administración del estudio",
   "studentView": "Vista de alumno",
   "myAccount": "Mi cuenta",
   "studioSettings": "Ajustes del estudio",
   "signOut": "Cerrar sesión",
-
   "schedule": {
     "title": "Horario",
     "subtitle": "Crea y gestiona el horario de tus clases.",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "Buscar tipos de clase...",
     "activeOfferings": "Tipos activos"
   },
-
   "admin": {
     "platformAdmin": "Administración de la plataforma",
     "platformDashboard": "Panel de la plataforma",
@@ -60,7 +60,6 @@
     "sentryConfigured": "Monitorización de errores con Sentry",
     "setEnvVar": "Define {{key}} en .env"
   },
-
   "studioManagement": "Gestión de estudios",
   "owner": "Propietario"
 }
