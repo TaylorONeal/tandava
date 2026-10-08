@@ -125,17 +125,18 @@ const Blog = () => {
       {/* CTA */}
       <section className="mt-20 rounded-2xl border border-border bg-gradient-to-br from-primary/10 to-accent-teal/10 p-8 text-center md:p-12">
         <h2 className="font-display text-2xl font-semibold md:text-3xl">
-          Run your studio on software you own
+          Run your studio on Tandava
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-          Tandava is open source. Self-host it, customize it, and never pay
-          per-member fees again.
+          Schedule, memberships, payments and a booking page that works on a
+          phone. No per-member fees, and your classes show up on Tandava
+          Discover.
         </p>
         <Link
-          to="/demo"
+          to="/for-studios"
           className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-          Explore the demo
+          See how it works
           <ArrowRight className="h-4 w-4" />
         </Link>
       </section>

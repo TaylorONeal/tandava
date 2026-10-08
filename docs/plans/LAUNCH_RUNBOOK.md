@@ -49,7 +49,7 @@ Claude never types keys. Run these on your machine after `npm i -g supabase && s
 supabase link --project-ref <ref>
 supabase secrets set STRIPE_SECRET_KEY=sk_test_... STRIPE_WEBHOOK_SECRET=whsec_... \
   APP_URL=https://tandavastudio.com STRIPE_CONNECT_MODE=platform \
-  EMAIL_PROVIDER=resend RESEND_API_KEY=re_... EMAIL_FROM=hello@tandavastudio.com EMAIL_FROM_NAME=Tandava
+  EMAIL_PROVIDER=resend RESEND_API_KEY=re_... EMAIL_FROM=hello@purafieldstudio.com EMAIL_FROM_NAME=Tandava
 ```
 
 Vercel project `tandava`, Production and Preview: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`,

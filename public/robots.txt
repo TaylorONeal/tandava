@@ -1,19 +1,10 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
+# One group for every crawler. A named group (e.g. "User-agent: Googlebot")
+# replaces the "*" group entirely for that bot, so per-bot Allow blocks would
+# silently drop every Disallow below. Keep a single group.
 User-agent: *
 Allow: /
 
-# Authenticated routes — no value for crawlers
+# Signed-in areas: no value for crawlers
 Disallow: /my-schedule
 Disallow: /account
 Disallow: /admin
@@ -21,4 +12,10 @@ Disallow: /manage
 Disallow: /staff
 Disallow: /auth
 
-Sitemap: https://tandava.yoga/sitemap.xml
+# Still demo data, not real studios (copy audit C-2)
+Disallow: /schedule
+Disallow: /events
+Disallow: /instructors
+Disallow: /on-demand
+
+Sitemap: https://tandavastudio.com/sitemap.xml
