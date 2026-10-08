@@ -13,6 +13,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDemo } from "@/contexts/DemoContext";
 import type { UserRole } from "@/types/database";
 import { STUDIO_SIGNUP_HREF } from "@/lib/audience";
+import { SEOHead } from "@/components/seo/SEOHead";
 import {
   OXATL_STUDIO,
   OXATL_LOCATIONS,
@@ -412,6 +413,11 @@ export default function Demo() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEOHead
+        title="Live demo"
+        description="Try Tandava with a sample studio: schedule, bookings, memberships and check-in. No sign-up needed."
+        canonical="/demo"
+      />
       {/* ================================================================ */}
       {/* TOP BAR — Tandava Open Source Demo                               */}
       {/* ================================================================ */}
