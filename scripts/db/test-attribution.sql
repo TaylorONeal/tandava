@@ -207,16 +207,17 @@ BEGIN
     THEN RAISE EXCEPTION 'second person inherited the first person''s journey: %', r.first_touch; END IF;
 END $$;
 
--- 11. Acquisition dates: new members default to their creation time; imports
+-- 11. Acquisition dates: a member row alone is not an acquisition; imports
 --     are not counted as newly acquired people.
 DO $$
 DECLARE n BIGINT;
 BEGIN
   INSERT INTO studio_members (studio_id, profile_id, source) VALUES
     ('00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000e1', 'import');
+  -- No conversion yet (an abandoned checkout looks like this): not acquired.
   IF (SELECT acquired_at FROM studio_members WHERE profile_id = '00000000-0000-0000-0000-0000000000e1'
-        AND studio_id = '00000000-0000-0000-0000-00000000005a') IS NULL
-    THEN RAISE EXCEPTION 'acquired_at has no default'; END IF;
+        AND studio_id = '00000000-0000-0000-0000-00000000005a') IS NOT NULL
+    THEN RAISE EXCEPTION 'acquired_at set before any conversion'; END IF;
   PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000a1', true);
   SELECT COALESCE(sum(new_people), 0) INTO n FROM get_attribution_sources(NOW() - interval '1 day', NOW() + interval '1 day', 'first');
   -- Ana (express guest) and lei (first conversion in block 10) are new; the import is not.
@@ -311,6 +312,20 @@ BEGIN
   SELECT COALESCE(sum(new_people), 0) INTO n FROM get_attribution_sources(NOW() - interval '1 day', NOW() + interval '1 day', 'first');
   -- Ana, lei and noa; not the import (block 11) and not the pre-tracking member.
   IF n <> 3 THEN RAISE EXCEPTION 'new people should be 3, got %', n; END IF;
+END $$;
+
+-- 17. A renewal keeps no converting visit and reports as its own channel.
+DO $$
+DECLARE c UUID; ch TEXT;
+BEGIN
+  c := record_conversion('00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000b1', NULL,
+    'membership_renewal', 5000, 'USD', 'stripe_invoice', gen_random_uuid(), NULL, NULL);
+  IF (SELECT converting_touch_session_id FROM conversion_events WHERE id = c) IS NOT NULL
+    THEN RAISE EXCEPTION 'renewal borrowed a visit'; END IF;
+  PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000a1', true);
+  SELECT channel INTO ch FROM get_attribution_sources(NOW() - interval '1 day', NOW() + interval '1 day', 'last')
+    WHERE revenue_cents = 5000;
+  IF ch IS DISTINCT FROM 'renewal' THEN RAISE EXCEPTION 'renewal channel %', ch; END IF;
 END $$;
 
 SELECT 'attribution tests passed' AS result;

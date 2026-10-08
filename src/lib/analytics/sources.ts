@@ -18,6 +18,7 @@ const CHANNEL_LABELS: Record<string, string> = {
   referral: "Other websites",
   direct: "Direct or unknown",
   unknown: "Before tracking started",
+  renewal: "Automatic renewals",
 };
 
 /** Plain-words name for a channel key; unknown keys pass through readable. */

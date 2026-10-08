@@ -94,7 +94,9 @@ describe("displaced visitor ids", () => {
     const original = getVisitorId();
     getVisitorId("22222222-2222-4222-8222-222222222222");
     expect(previousVisitorIds()).toEqual([original]);
+    window.localStorage.setItem("tandava.vid.relink", "22222222-2222-4222-8222-222222222222");
     claimVisitorFor("user-b");
     expect(previousVisitorIds()).toEqual([]);
+    expect(window.localStorage.getItem("tandava.vid.relink")).toBeNull();
   });
 });

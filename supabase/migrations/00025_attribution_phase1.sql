@@ -190,7 +190,11 @@ BEGIN
     (SELECT min(started_at) FROM journey)
   INTO v_first, v_last, v_count, v_first_at;
 
-  v_last := COALESCE(p_converting_session_id, v_last);
+  -- An automatic renewal happens without a visit: it has no converting
+  -- session, and borrowing the member's latest visit would credit an
+  -- unrelated email or campaign with the charge.
+  v_last := CASE WHEN p_conversion_type = 'membership_renewal' THEN p_converting_session_id
+                 ELSE COALESCE(p_converting_session_id, v_last) END;
 
   INSERT INTO conversion_events (
     studio_id, profile_id, visitor_id, conversion_type, value_cents, currency,
@@ -294,7 +298,7 @@ AS $$
   ),
   conv AS (
     SELECT
-      COALESCE(t->>'channel', 'unknown') AS channel,
+      COALESCE(t->>'channel', CASE WHEN c.conversion_type = 'membership_renewal' THEN 'renewal' ELSE 'unknown' END) AS channel,
       COALESCE(t->>'utm_source', t->>'referrer_domain', '') AS utm_source,
       COALESCE(t->>'utm_campaign', '') AS utm_campaign,
       count(*) FILTER (WHERE c.conversion_type IN ('guest_booking', 'member_booking')) AS bookings,
@@ -703,8 +707,9 @@ ALTER TABLE stripe_webhook_events ENABLE ROW LEVEL SECURITY;
 -- Acquisition dates (PR #72 review)
 -- ===========================================================================
 -- Existing members keep the date they joined; without this the first booking
--- after deploy would stamp them as acquired today. New rows default to their
--- creation time; record_conversion() only fills a still-null value.
+-- after deploy would stamp them as acquired today. New rows stay NULL until
+-- their first conversion (record_conversion() sets it), so a guest identity
+-- created for an abandoned checkout is never counted as a new person.
 UPDATE studio_members SET acquired_at = created_at WHERE acquired_at IS NULL;
 -- Relationships that existed before this migration (including imports made
 -- before import-members tagged them) were not acquired through anything this
@@ -712,4 +717,3 @@ UPDATE studio_members SET acquired_at = created_at WHERE acquired_at IS NULL;
 -- tracking began. Runs once, at migration time; new rows keep NULL until a
 -- conversion sets their real source.
 UPDATE studio_members SET source = 'pre_tracking' WHERE source IS NULL;
-ALTER TABLE studio_members ALTER COLUMN acquired_at SET DEFAULT NOW();

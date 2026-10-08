@@ -209,6 +209,7 @@ export function claimVisitorFor(userId: string) {
     if (owner && owner !== userId) {
       window.localStorage.setItem(VISITOR_KEY, randomId());
       window.localStorage.removeItem(PREVIOUS_KEY);
+      window.localStorage.removeItem(RELINK_KEY);
       for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
         const k = window.sessionStorage.key(i);
         if (k?.startsWith(SESSION_PREFIX)) window.sessionStorage.removeItem(k);
