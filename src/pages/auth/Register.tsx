@@ -10,7 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, CheckCircle2, Sparkles, MailCheck, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
-import { safeNextPath } from "@/lib/auth/next";
+import { safeNextPath, studioSlugFromPath } from "@/lib/auth/next";
 
 type RegistrationStep = "info" | "complete";
 
@@ -72,6 +72,8 @@ const Register = () => {
         first_name: formData.firstName,
         last_name: formData.lastName,
         marketing_consent: formData.marketingConsent,
+        // Consent is to a sender: record it for the studio this sign-up came from.
+        marketing_consent_studio: studioSlugFromPath(next),
       },
       next
     );

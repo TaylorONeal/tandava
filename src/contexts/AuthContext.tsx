@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { auth, data, isBackendConfigured } from "@/lib/backend";
-import type { AuthUser, AuthError } from "@/lib/backend";
+import type { AuthUser, AuthError, SignUpMetadata } from "@/lib/backend";
 import type { Profile } from "@/types/database";
 import type { Permission } from "@/types/roles";
 import { getPermissionsForUserRole } from "@/types/roles";
@@ -29,7 +29,7 @@ interface AuthContextValue extends AuthState {
   signUpWithEmail: (
     email: string,
     password: string,
-    metadata: { first_name: string; last_name: string; marketing_consent?: boolean },
+    metadata: SignUpMetadata,
     next?: string
   ) => Promise<{ error: AuthError | null; requiresEmailConfirmation?: boolean }>;
   signInWithGoogle: (next?: string) => Promise<{ error: AuthError | null }>;
@@ -190,7 +190,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUpWithEmail = async (
     email: string,
     password: string,
-    metadata: { first_name: string; last_name: string; marketing_consent?: boolean },
+    metadata: SignUpMetadata,
     next?: string
   ) => {
     if (isDemoMode) return { error: null };

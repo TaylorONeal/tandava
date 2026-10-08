@@ -124,5 +124,62 @@ BEGIN
     THEN RAISE EXCEPTION 'candidate facts wrong: %', r; END IF;
 END $$;
 
+-- 7. A member booking their own class counts as a conversion; a service-role
+--    insert (express-book, Stripe) does not, because those paths record their own.
+DO $$
+DECLARE occ1 UUID := gen_random_uuid(); occ2 UUID := gen_random_uuid(); b1 UUID; b2 UUID;
+BEGIN
+  INSERT INTO locations (id, studio_id, name) VALUES ('00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-00000000005a', 'Main');
+  INSERT INTO offerings (id, studio_id, name, slug) VALUES ('00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-00000000005a', 'Flow', 'flow');
+  INSERT INTO class_occurrences (id, studio_id, offering_id, location_id, starts_at, ends_at) VALUES
+    (occ1, '00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000c1', NOW() + interval '1 day', NOW() + interval '1 day 1 hour'),
+    (occ2, '00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000c1', NOW() + interval '2 day', NOW() + interval '2 day 1 hour');
+
+  PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000b1', true);
+  INSERT INTO bookings (studio_id, class_occurrence_id, profile_id) VALUES
+    ('00000000-0000-0000-0000-00000000005a', occ1, '00000000-0000-0000-0000-0000000000b1') RETURNING id INTO b1;
+  IF NOT EXISTS (SELECT 1 FROM conversion_events WHERE conversion_type = 'member_booking' AND entity_type = 'booking' AND entity_id = b1)
+    THEN RAISE EXCEPTION 'member self-booking not recorded'; END IF;
+
+  PERFORM set_config('request.jwt.claim.sub', '', true);
+  INSERT INTO bookings (studio_id, class_occurrence_id, profile_id) VALUES
+    ('00000000-0000-0000-0000-00000000005a', occ2, '00000000-0000-0000-0000-0000000000b1') RETURNING id INTO b2;
+  IF EXISTS (SELECT 1 FROM conversion_events WHERE entity_id = b2)
+    THEN RAISE EXCEPTION 'service-role booking should not be double counted'; END IF;
+END $$;
+
+-- 8. Sign-up consent applies once, to the studio the sign-up came from, and
+--    never overrides a later choice.
+DO $$
+BEGIN
+  INSERT INTO auth.users (id, email, raw_user_meta_data) VALUES
+    ('00000000-0000-0000-0000-0000000000e1', 'kai@example.com', '{"marketing_consent": true, "marketing_consent_studio": "aloha"}'),
+    ('00000000-0000-0000-0000-0000000000e2', 'lei@example.com', '{"marketing_consent": true}');
+
+  PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000e1', true);
+  IF apply_my_signup_consent() IS NOT TRUE THEN RAISE EXCEPTION 'signup consent not applied'; END IF;
+  IF NOT has_consent('00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000e1', 'email_marketing')
+    THEN RAISE EXCEPTION 'signup consent not visible'; END IF;
+  PERFORM record_consent('00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000e1', NULL,
+    'email_marketing', FALSE, 'unsubscribe_link', '2026-10');
+  IF apply_my_signup_consent() IS NOT FALSE THEN RAISE EXCEPTION 'signup consent applied twice'; END IF;
+  IF has_consent('00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000e1', 'email_marketing')
+    THEN RAISE EXCEPTION 'signup consent overrode an unsubscribe'; END IF;
+
+  PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000e2', true);
+  IF apply_my_signup_consent() IS NOT FALSE THEN RAISE EXCEPTION 'consent without a studio should record nothing'; END IF;
+END $$;
+
+-- 9. Stripe events are claimed once.
+DO $$
+BEGIN
+  INSERT INTO stripe_webhook_events (event_id, event_type) VALUES ('evt_test_1', 'checkout.session.completed');
+  BEGIN
+    INSERT INTO stripe_webhook_events (event_id, event_type) VALUES ('evt_test_1', 'checkout.session.completed');
+    RAISE EXCEPTION 'replayed event was accepted';
+  EXCEPTION WHEN unique_violation THEN NULL;
+  END;
+END $$;
+
 SELECT 'attribution tests passed' AS result;
 ROLLBACK;

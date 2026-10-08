@@ -429,7 +429,8 @@ AS $$
     COALESCE(p.is_guest, FALSE), p.claimed_at,
     has_consent(p_studio_id, p.id, 'email_marketing'),
     (SELECT min(created_at) FROM b WHERE b.profile_id = p.id),
-    CASE WHEN COALESCE(p.is_guest, FALSE) THEN (SELECT min(created_at) FROM b WHERE b.profile_id = p.id) END,
+    -- Latest guest booking: the follow-up is about the visit that just happened.
+    CASE WHEN COALESCE(p.is_guest, FALSE) THEN (SELECT max(created_at) FROM b WHERE b.profile_id = p.id) END,
     (SELECT min(checked_in_at) FROM visits v WHERE v.profile_id = p.id),
     (SELECT max(checked_in_at) FROM visits v WHERE v.profile_id = p.id),
     (SELECT count(*) FROM visits v WHERE v.profile_id = p.id),
@@ -449,3 +450,93 @@ AS $$
 $$;
 REVOKE ALL ON FUNCTION get_automation_candidates(UUID) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION get_automation_candidates(UUID) TO service_role;
+
+-- ===========================================================================
+-- Member bookings made by the member themselves (PR #72 review)
+-- ===========================================================================
+-- book_class() and book_free_class() run as the signed-in member. Count those
+-- bookings as conversions without touching the booking functions: an AFTER
+-- INSERT trigger fires only when the inserting session IS the member
+-- (auth.uid() = profile_id). Service-role paths (express-book, the Stripe
+-- webhook's drop-in booking) have no auth.uid() and record their own
+-- conversion with the converting session and the payment. Analytics never
+-- blocks a booking: any error here is swallowed.
+CREATE OR REPLACE FUNCTION record_member_booking_conversion()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  IF NEW.status = 'confirmed' AND auth.uid() IS NOT NULL AND auth.uid() = NEW.profile_id THEN
+    BEGIN
+      PERFORM record_conversion(
+        NEW.studio_id, NEW.profile_id, NULL, 'member_booking', 0,
+        (SELECT currency FROM studios WHERE id = NEW.studio_id),
+        'booking', NEW.id, NULL, 'signup'
+      );
+    EXCEPTION WHEN OTHERS THEN
+      RAISE WARNING 'record_member_booking_conversion: %', SQLERRM;
+    END;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_member_booking_conversion ON bookings;
+CREATE TRIGGER trg_member_booking_conversion
+  AFTER INSERT ON bookings
+  FOR EACH ROW EXECUTE FUNCTION record_member_booking_conversion();
+
+-- ===========================================================================
+-- Signup consent, scoped to the studio the person signed up from (PR #72 review)
+-- ===========================================================================
+-- Register stores marketing_consent and, when the sign-up started on a studio
+-- page, marketing_consent_studio (the slug) in the auth metadata. Applied on
+-- sign-in (email confirmation means there is no session at sign-up), once:
+-- a later change of mind is recorded by the unsubscribe link or a settings
+-- toggle and is never overwritten by this. A sign-up from no studio page
+-- records nothing: consent is to a sender, not to Tandava in general.
+CREATE OR REPLACE FUNCTION apply_my_signup_consent()
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_meta JSONB;
+  v_studio UUID;
+BEGIN
+  IF auth.uid() IS NULL THEN RETURN FALSE; END IF;
+  SELECT raw_user_meta_data INTO v_meta FROM auth.users WHERE id = auth.uid();
+  IF v_meta IS NULL OR COALESCE(v_meta->>'marketing_consent_studio', '') = '' THEN RETURN FALSE; END IF;
+  SELECT id INTO v_studio FROM studios WHERE slug = v_meta->>'marketing_consent_studio';
+  IF v_studio IS NULL THEN RETURN FALSE; END IF;
+  IF EXISTS (
+    SELECT 1 FROM consent_records
+    WHERE studio_id = v_studio AND profile_id = auth.uid() AND purpose = 'email_marketing'
+  ) THEN
+    RETURN FALSE;
+  END IF;
+  INSERT INTO consent_records (studio_id, profile_id, purpose, granted, source, policy_version)
+  VALUES (v_studio, auth.uid(), 'email_marketing', COALESCE((v_meta->>'marketing_consent')::boolean, FALSE),
+          'signup_form', '2026-10');
+  RETURN TRUE;
+END;
+$$;
+REVOKE ALL ON FUNCTION apply_my_signup_consent() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION apply_my_signup_consent() TO authenticated;
+
+-- ===========================================================================
+-- Stripe webhook idempotency (PR #72 review)
+-- ===========================================================================
+-- Stripe redelivers events. The webhook claims each checkout event id here
+-- before doing anything; a replay finds the row and stops, so transactions,
+-- memberships, packs and conversions are written once.
+CREATE TABLE IF NOT EXISTS stripe_webhook_events (
+  event_id TEXT PRIMARY KEY,
+  event_type TEXT NOT NULL,
+  received_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+ALTER TABLE stripe_webhook_events ENABLE ROW LEVEL SECURITY;
+-- No policies: service role only.

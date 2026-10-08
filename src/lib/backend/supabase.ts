@@ -287,6 +287,11 @@ const supabaseData: DataProvider = {
     return { error: error ? { message: error.message } : null };
   },
 
+  async applyMySignupConsent(): Promise<MutationResult> {
+    const { error } = await getClient().rpc("apply_my_signup_consent" as never);
+    return { error: error ? { message: error.message } : null };
+  },
+
   async getAttributionSources(from, to, model): Promise<DataResult<AttributionSourceRow[]>> {
     const { data, error } = await getClient().rpc("get_attribution_sources", {
       p_from: from.toISOString(),

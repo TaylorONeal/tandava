@@ -52,9 +52,25 @@ serve(async (req) => {
 
   try {
     switch (event.type) {
-      case "checkout.session.completed":
+      case "checkout.session.completed": {
+        // Stripe redelivers events. Claim the event id first; a replay finds
+        // it and stops, so transactions, memberships, packs and conversions
+        // are written once. (Handler errors are already swallowed below, so
+        // claiming before handling loses no retry that would have happened.)
+        const { error: claimError } = await supabase
+          .from("stripe_webhook_events")
+          .insert({ event_id: event.id, event_type: event.type });
+        if (claimError) {
+          if (claimError.code === "23505") {
+            console.log(`[stripe-webhook] ${event.id} already processed; skipping`);
+            break;
+          }
+          // Table missing or another failure: process anyway rather than drop a payment.
+          console.error("[stripe-webhook] could not claim event:", claimError.message);
+        }
         await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
         break;
+      }
 
       case "customer.subscription.updated":
         await handleSubscriptionUpdated(event.data.object as Stripe.Subscription);

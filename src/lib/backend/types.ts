@@ -31,6 +31,8 @@ export interface SignUpMetadata {
   first_name: string;
   last_name: string;
   marketing_consent?: boolean;
+  /** Slug of the studio page the sign-up started from; scopes marketing_consent to that studio. */
+  marketing_consent_studio?: string;
 }
 
 export interface AuthProvider {
@@ -214,6 +216,9 @@ export interface DataProvider {
    * toward their journey. Best effort; never rewrites another person's link.
    */
   linkMyVisitor(visitorId: string, via: string): Promise<MutationResult>;
+
+  /** Record the sign-up marketing choice for the studio the person signed up from, once (migration 00025). */
+  applyMySignupConsent(): Promise<MutationResult>;
 
   /** Owner/admin report: sessions, new people, bookings and revenue by channel + source + campaign. */
   getAttributionSources(from: Date, to: Date, model: AttributionModel): Promise<DataResult<AttributionSourceRow[]>>;

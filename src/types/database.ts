@@ -2860,6 +2860,10 @@ export interface Database {
         Args: { p_slug: string };
         Returns: StudioStorefront | null;
       };
+      apply_my_signup_consent: {
+        Args: Record<string, never>;
+        Returns: boolean;
+      };
       link_my_visitor: {
         Args: { p_visitor_id: string; p_via: string };
         Returns: undefined;

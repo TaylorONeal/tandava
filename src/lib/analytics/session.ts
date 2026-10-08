@@ -142,4 +142,10 @@ export async function linkVisitorOnce(userId: string, via = "sign_in") {
   } catch {
     // Linking is best effort.
   }
+  try {
+    // A no-op unless the sign-up started on a studio page and wasn't applied yet.
+    await data.applyMySignupConsent();
+  } catch {
+    // Best effort; the person can still opt in later.
+  }
 }

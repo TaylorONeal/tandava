@@ -59,6 +59,19 @@ describe("guest to member", () => {
     };
     expect(decideNext(f, NOW, TZ)).toMatchObject({ decision: { step: 1, template: "automation_guest_intro_offer" } });
   });
+  it("ignores an old guest booking (no backlog when someone opts in later or is imported)", () => {
+    expect(decideNext({ ...guest, guestBookingAt: daysAgo(40) }, NOW, TZ)).toEqual({ skip: "nothing_due" });
+  });
+  it("a repeat guest gets the nudge at most once a month", () => {
+    const f = {
+      ...guest,
+      guestBookingAt: daysAgo(1, 1),
+      sends: [{ key: "guest_to_member" as const, step: 0, episode: daysAgo(10).slice(0, 10), sentAt: daysAgo(10) }],
+    };
+    expect(decideNext(f, NOW, TZ)).toEqual({ skip: "nothing_due" });
+    const later = { ...f, sends: [{ ...f.sends[0], episode: daysAgo(35).slice(0, 10), sentAt: daysAgo(35) }] };
+    expect(decideNext(later, NOW, TZ)).toMatchObject({ decision: { step: 0 } });
+  });
   it("stops once claimed or a customer", () => {
     expect(decideNext({ ...guest, claimedAt: daysAgo(0) }, NOW, TZ)).toEqual({ skip: "nothing_due" });
     expect(decideNext({ ...guest, hasActivePack: true }, NOW, TZ)).toEqual({ skip: "nothing_due" });

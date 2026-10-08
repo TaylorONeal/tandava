@@ -94,6 +94,13 @@ function sent(f: PersonFacts, key: AutomationKey, step: number, episode: string)
   return f.sends.some((s) => s.key === key && s.step === step && s.episode === episode);
 }
 
+/** True when this automation step went out to the person in the last `days`, any episode. */
+function sentWithin(f: PersonFacts, key: AutomationKey, step: number, days: number, now: Date): boolean {
+  return f.sends.some(
+    (s) => s.key === key && s.step === step && now.getTime() - new Date(s.sentAt).getTime() < days * DAY,
+  );
+}
+
 function since(iso: string | null | undefined, now: Date): number {
   return iso ? now.getTime() - new Date(iso).getTime() : -Infinity;
 }
@@ -107,10 +114,15 @@ export function dueStep(f: PersonFacts, key: AutomationKey, now: Date, settings:
   switch (key) {
     case "guest_to_member": {
       if (!settings.guestToMemberEnabled || !f.isGuest || f.claimedAt || !f.guestBookingAt || isCustomer(f)) return null;
+      // guestBookingAt is the LATEST guest booking. Only a recent booking
+      // starts a follow-up (an old one, a fresh opt-in or an import must not
+      // trigger a backlog), and a guest who keeps booking hears from us at
+      // most once a month.
       const episode = f.guestBookingAt.slice(0, 10);
       const age = since(f.guestBookingAt, now);
-      if (age >= 1 * DAY && !sent(f, key, 0, episode)) return { key, step: 0, episode, template: "automation_guest_save_details" };
-      if (age >= 3 * DAY && sent(f, key, 0, episode) && !sent(f, key, 1, episode))
+      if (age >= 1 * DAY && age < 7 * DAY && !sent(f, key, 0, episode) && !sentWithin(f, key, 0, 30, now))
+        return { key, step: 0, episode, template: "automation_guest_save_details" };
+      if (age >= 3 * DAY && age < 14 * DAY && sent(f, key, 0, episode) && !sent(f, key, 1, episode))
         return { key, step: 1, episode, template: "automation_guest_intro_offer" };
       return null;
     }
