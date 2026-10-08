@@ -402,12 +402,18 @@ serve(async (req) => {
           await rpcChecked("link_visitor", { p_profile_id: profileId, p_visitor_id: visitorId, p_via: "express_booking" });
         }
         if (bookingId) {
-          await rpcChecked("record_conversion", {
-            p_studio_id: studioId, p_profile_id: profileId, p_visitor_id: visitorId,
-            p_conversion_type: "guest_booking", p_value_cents: valueCents, p_currency: row.studio_currency ?? "USD",
-            p_entity_type: "booking", p_entity_id: bookingId, p_converting_session_id: sessionId,
-            p_member_source: "express",
+          // The queueing wrapper: a failed write goes to conversion_retry_queue
+          // (drained hourly by run-automations) instead of being lost. The
+          // booking's own time travels with it.
+          const queued = await rpcChecked("record_conversion_or_queue", {
+            p_args: {
+              p_studio_id: studioId, p_profile_id: profileId, p_visitor_id: visitorId,
+              p_conversion_type: "guest_booking", p_value_cents: valueCents, p_currency: row.studio_currency ?? "USD",
+              p_entity_type: "booking", p_entity_id: bookingId, p_converting_session_id: sessionId,
+              p_member_source: "express", p_occurred_at: new Date().toISOString(),
+            },
           });
+          if (!queued) console.error("express-book: CONVERSION NOT SAVED", { studioId, bookingId });
         }
       } catch (err) {
         console.error("express-book: attribution failed", err);

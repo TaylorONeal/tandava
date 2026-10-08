@@ -165,6 +165,8 @@ async function handle(event: Stripe.Event) {
         p_amount_cents: invoice.amount_paid,
         p_currency: invoice.currency,
         p_paid_at: new Date((invoice.status_transitions?.paid_at ?? event.created) * 1000).toISOString(),
+        // Keys the conversion to the renewal's transaction so refunds net out.
+        p_payment_intent: (invoice.payment_intent as string) ?? null,
       });
       return renewed;
     }

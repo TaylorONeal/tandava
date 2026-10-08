@@ -314,6 +314,30 @@ $$;
 REVOKE ALL ON FUNCTION has_consent(UUID, UUID, TEXT) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION has_consent(UUID, UUID, TEXT) TO service_role;
 
+
+-- How much of a conversion's money was refunded. Conversion values are frozen
+-- at purchase; refunds land on the transaction (record_stripe_refund, 00031).
+-- One helper so the Sources report and the member page always agree.
+CREATE OR REPLACE FUNCTION conversion_refunded_cents(p_studio_id UUID, p_entity_type TEXT, p_entity_id UUID)
+RETURNS INTEGER
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT COALESCE((
+    SELECT COALESCE(tx.refunded_amount_cents, 0)
+    FROM transactions tx
+    WHERE tx.studio_id = p_studio_id
+      AND ((p_entity_type = 'transaction' AND tx.id = p_entity_id)
+        OR (p_entity_type = 'class_pack' AND tx.class_pack_id = p_entity_id)
+        OR (p_entity_type = 'membership' AND tx.membership_id = p_entity_id))
+    ORDER BY tx.created_at ASC
+    LIMIT 1
+  ), 0);
+$$;
+REVOKE ALL ON FUNCTION conversion_refunded_cents(UUID, TEXT, UUID) FROM PUBLIC, anon, authenticated;
+
 -- ===========================================================================
 -- Owner reports
 -- ===========================================================================
@@ -357,21 +381,15 @@ AS $$
       -- Money in after refunds: the conversion value is frozen at purchase,
       -- refunds live on the transaction (record_stripe_refund), so net them
       -- here. A fully refunded purchase is no longer a purchase.
-      count(*) FILTER (WHERE COALESCE(c.value_cents, 0) - COALESCE(rf.refunded, 0) > 0) AS purchases,
-      COALESCE(sum(GREATEST(0, COALESCE(c.value_cents, 0) - COALESCE(rf.refunded, 0))), 0) AS revenue_cents
+      count(*) FILTER (WHERE x.net > 0) AS purchases,
+      COALESCE(sum(x.net), 0) AS revenue_cents
     FROM conversion_events c
     CROSS JOIN my
-    CROSS JOIN LATERAL (SELECT CASE WHEN p_model = 'last' THEN c.converting_touch ELSE c.first_touch END AS t) x
-    LEFT JOIN LATERAL (
-      SELECT COALESCE(tx.refunded_amount_cents, 0) AS refunded
-      FROM transactions tx
-      WHERE tx.studio_id = c.studio_id
-        AND ((c.entity_type = 'transaction' AND tx.id = c.entity_id)
-          OR (c.entity_type = 'class_pack' AND tx.class_pack_id = c.entity_id)
-          OR (c.entity_type = 'membership' AND tx.membership_id = c.entity_id))
-      ORDER BY tx.created_at ASC
-      LIMIT 1
-    ) rf ON c.entity_type IN ('transaction', 'class_pack', 'membership')
+    CROSS JOIN LATERAL (
+      SELECT CASE WHEN p_model = 'last' THEN c.converting_touch ELSE c.first_touch END AS t,
+             GREATEST(0, COALESCE(c.value_cents, 0)
+               - conversion_refunded_cents(c.studio_id, c.entity_type, c.entity_id)) AS net
+    ) x
     WHERE c.studio_id = my.studio_id AND c.occurred_at >= p_from AND c.occurred_at < p_to
     GROUP BY 1, 2, 3
   ),
@@ -423,7 +441,10 @@ AS $$
   SELECT m.source, m.acquired_at, session_touch(m.first_touch_session_id),
          COALESCE((
            SELECT jsonb_agg(jsonb_build_object(
-             'type', c.conversion_type, 'value_cents', c.value_cents, 'currency', c.currency,
+             -- Net of refunds, like the Sources report; the original amount stays available.
+             'type', c.conversion_type,
+             'value_cents', GREATEST(0, COALESCE(c.value_cents, 0) - conversion_refunded_cents(c.studio_id, c.entity_type, c.entity_id)),
+             'gross_value_cents', c.value_cents, 'currency', c.currency,
              'occurred_at', c.occurred_at, 'first_touch', c.first_touch,
              'converting_touch', c.converting_touch, 'days_to_convert', c.days_to_convert
            ) ORDER BY c.occurred_at)
@@ -935,8 +956,11 @@ GRANT EXECUTE ON FUNCTION record_checkout_conversion(JSONB, TIMESTAMPTZ) TO serv
 -- A paid subscription renewal (invoice.paid, billing_reason subscription_cycle),
 -- after renew_membership_cycle(). Keyed by the Stripe invoice id, so a retry
 -- records nothing new. No converting visit: a renewal happens without one.
+-- Signature gained p_payment_intent; drop the five-argument form.
+DROP FUNCTION IF EXISTS record_renewal_conversion(TEXT, TEXT, INTEGER, TEXT, TIMESTAMPTZ);
 CREATE OR REPLACE FUNCTION record_renewal_conversion(
-  p_subscription_id TEXT, p_invoice_id TEXT, p_amount_cents INTEGER, p_currency TEXT, p_paid_at TIMESTAMPTZ
+  p_subscription_id TEXT, p_invoice_id TEXT, p_amount_cents INTEGER, p_currency TEXT, p_paid_at TIMESTAMPTZ,
+  p_payment_intent TEXT DEFAULT NULL
 )
 RETURNS UUID
 LANGUAGE plpgsql
@@ -945,22 +969,31 @@ SET search_path = public
 AS $$
 DECLARE
   v_mem memberships%ROWTYPE;
+  v_txn UUID;
 BEGIN
   IF p_subscription_id IS NULL OR p_invoice_id IS NULL OR COALESCE(p_amount_cents, 0) <= 0 THEN RETURN NULL; END IF;
   SELECT * INTO v_mem FROM memberships WHERE stripe_subscription_id = p_subscription_id LIMIT 1;
   IF NOT FOUND THEN RETURN NULL; END IF;
+  -- renew_membership_cycle() runs first and writes the renewal's transaction;
+  -- keying the conversion to it lets a refund of that charge come off the
+  -- report. Without a payment intent, fall back to the invoice id.
+  IF p_payment_intent IS NOT NULL THEN
+    SELECT id INTO v_txn FROM transactions
+    WHERE stripe_payment_intent_id = p_payment_intent AND membership_id = v_mem.id LIMIT 1;
+  END IF;
   RETURN record_conversion_or_queue(jsonb_build_object(
     'p_studio_id', v_mem.studio_id, 'p_profile_id', v_mem.profile_id, 'p_visitor_id', NULL,
     'p_conversion_type', 'membership_renewal', 'p_value_cents', p_amount_cents,
     'p_currency', upper(COALESCE(p_currency, 'USD')),
     -- A stable UUID per Stripe invoice id.
-    'p_entity_type', 'stripe_invoice', 'p_entity_id', md5('stripe:' || p_invoice_id)::uuid,
+    'p_entity_type', CASE WHEN v_txn IS NULL THEN 'stripe_invoice' ELSE 'transaction' END,
+    'p_entity_id', COALESCE(v_txn, md5('stripe:' || p_invoice_id)::uuid),
     'p_converting_session_id', NULL, 'p_member_source', NULL,
     'p_occurred_at', COALESCE(p_paid_at, NOW())));
 END;
 $$;
-REVOKE ALL ON FUNCTION record_renewal_conversion(TEXT, TEXT, INTEGER, TEXT, TIMESTAMPTZ) FROM PUBLIC, anon, authenticated;
-GRANT EXECUTE ON FUNCTION record_renewal_conversion(TEXT, TEXT, INTEGER, TEXT, TIMESTAMPTZ) TO service_role;
+REVOKE ALL ON FUNCTION record_renewal_conversion(TEXT, TEXT, INTEGER, TEXT, TIMESTAMPTZ, TEXT) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION record_renewal_conversion(TEXT, TEXT, INTEGER, TEXT, TIMESTAMPTZ, TEXT) TO service_role;
 
 -- Internal helpers and trigger functions: never callable by clients.
 REVOKE ALL ON FUNCTION booking_session_from_request(UUID, UUID) FROM PUBLIC, anon, authenticated;

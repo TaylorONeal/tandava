@@ -32,7 +32,10 @@ export interface TouchSnapshot {
 
 export interface MemberConversion {
   type: string;
+  /** Net of refunds. */
   value_cents: number | null;
+  /** The amount at purchase, before refunds. */
+  gross_value_cents?: number | null;
   currency: string | null;
   occurred_at: string;
   first_touch: TouchSnapshot | null;

@@ -462,7 +462,7 @@ BEGIN
     'record_consent(uuid,uuid,uuid,text,boolean,text,text)', 'has_consent(uuid,uuid,text)',
     'get_automation_candidates(uuid)', 'record_booking_conversion_or_queue(uuid,uuid,text,uuid,uuid,text)',
     'retry_queued_conversions(integer)', 'record_conversion_or_queue(jsonb)',
-    'record_checkout_conversion(jsonb,timestamptz)', 'record_renewal_conversion(text,text,integer,text,timestamptz)',
+    'record_checkout_conversion(jsonb,timestamptz)', 'record_renewal_conversion(text,text,integer,text,timestamptz,text)', 'conversion_refunded_cents(uuid,text,uuid)',
     'booking_session_from_request(uuid,uuid)'] LOOP
     IF has_function_privilege('anon', f, 'EXECUTE') OR has_function_privilege('authenticated', f, 'EXECUTE') THEN bad := bad || ' ' || f; END IF;
   END LOOP;
@@ -506,5 +506,31 @@ BEGIN
   IF has_function_privilege('anon', 'get_my_admin_studio()', 'EXECUTE') THEN RAISE EXCEPTION 'get_my_admin_studio open to anon'; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (25 blocks)'; END $$;
+-- 26. A refunded renewal comes off too (keyed to its transaction), and the
+--     member page shows the same net values as the report.
+DO $$
+DECLARE mem UUID; c UUID; rev0 BIGINT; rev1 BIGINT; v JSONB;
+BEGIN
+  SELECT id INTO mem FROM memberships WHERE stripe_subscription_id = 'sub_attr_1';
+  INSERT INTO transactions (studio_id, profile_id, type, status, amount_cents, currency, stripe_payment_intent_id, membership_id)
+  VALUES ('00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000b1', 'membership_renewal', 'completed',
+          12000, 'USD', 'pi_ren_2', mem);
+  c := record_renewal_conversion('sub_attr_1', 'in_attr_2', 12000, 'usd', NOW(), 'pi_ren_2');
+  IF (SELECT entity_type FROM conversion_events WHERE id = c) <> 'transaction' THEN RAISE EXCEPTION 'renewal not keyed to its transaction'; END IF;
+  PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000a1', true);
+  SELECT COALESCE(sum(revenue_cents), 0) INTO rev0
+    FROM get_attribution_sources(NOW() - interval '60 days', NOW() + interval '1 day', 'first', '00000000-0000-0000-0000-00000000005a');
+  PERFORM record_stripe_refund('evt_ref_3', 'pi_ren_2', 'ch_ren_2', 12000, 12000);
+  SELECT COALESCE(sum(revenue_cents), 0) INTO rev1
+    FROM get_attribution_sources(NOW() - interval '60 days', NOW() + interval '1 day', 'first', '00000000-0000-0000-0000-00000000005a');
+  IF rev0 - rev1 <> 12000 THEN RAISE EXCEPTION 'refunded renewal not netted: % -> %', rev0, rev1; END IF;
+  SELECT conversions INTO v FROM get_member_attribution('00000000-0000-0000-0000-0000000000b1', '00000000-0000-0000-0000-00000000005a');
+  IF EXISTS (SELECT 1 FROM jsonb_array_elements(v) e
+             WHERE (e->>'gross_value_cents')::int = 12000 AND e->>'type' = 'membership_renewal'
+               AND (e->>'value_cents')::int <> 0 AND (e->>'occurred_at')::timestamptz > NOW() - interval '1 minute')
+    THEN RAISE EXCEPTION 'member page still shows the refunded renewal'; END IF;
+  IF NOT EXISTS (SELECT 1 FROM jsonb_array_elements(v) e WHERE e ? 'gross_value_cents') THEN RAISE EXCEPTION 'gross value missing'; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (26 blocks)'; END $$;
 ROLLBACK;
