@@ -86,6 +86,10 @@ serve(async (req) => {
         await handlePaymentFailed(event.data.object as Stripe.Invoice);
         break;
 
+      case "invoice.payment_succeeded":
+        await handlePaymentSucceeded(event.data.object as Stripe.Invoice);
+        break;
+
       default:
         console.log(`[stripe-webhook] Unhandled event type: ${event.type}`);
     }
@@ -420,6 +424,45 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     .eq("stripe_subscription_id", subscription.id);
 
   if (error) console.error("Failed to cancel subscription:", error);
+}
+
+/** A stable UUID for a Stripe id (SHA-256, version/variant bits set), so replays dedupe. */
+async function uuidFromStripeId(id: string): Promise<string> {
+  const h = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`stripe:${id}`))).slice(0, 16);
+  h[6] = (h[6] & 0x0f) | 0x80; // version 8 (custom)
+  h[8] = (h[8] & 0x3f) | 0x80; // RFC 4122 variant
+  const hex = [...h].map((b) => b.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
+/**
+ * A successful subscription renewal (PRD-024): money in, credited to the
+ * journey that brought the member. The first invoice is the checkout
+ * (subscription_create) and is already recorded as membership_start.
+ * Attribution only; renewal transactions in the ledger are tracked in #73.
+ */
+async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
+  if (!invoice.subscription || invoice.billing_reason !== "subscription_cycle") return;
+  if (!invoice.amount_paid) return;
+  const { data: membership } = await supabase
+    .from("memberships")
+    .select("id, studio_id, profile_id")
+    .eq("stripe_subscription_id", invoice.subscription as string)
+    .maybeSingle();
+  if (!membership) return;
+  const { error } = await supabase.rpc("record_conversion", {
+    p_studio_id: membership.studio_id,
+    p_profile_id: membership.profile_id,
+    p_visitor_id: null,
+    p_conversion_type: "membership_renewal",
+    p_value_cents: invoice.amount_paid,
+    p_currency: (invoice.currency ?? "usd").toUpperCase(),
+    p_entity_type: "stripe_invoice",
+    p_entity_id: await uuidFromStripeId(invoice.id),
+    p_converting_session_id: null,
+    p_member_source: null,
+  });
+  if (error) console.error("[stripe-webhook] renewal conversion failed:", error.message);
 }
 
 async function handlePaymentFailed(invoice: Stripe.Invoice) {

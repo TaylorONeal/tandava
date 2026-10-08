@@ -25,6 +25,20 @@ describe("parseLanding", () => {
 });
 
 describe("withEmbedHandoff", () => {
+  it("carries the iframe's own campaign tags instead of the generic embed tags", () => {
+    const v = "11111111-1111-4111-8111-111111111111";
+    const url = new URL(
+      withEmbedHandoff("/s/aloha/book/x", v, "alohayoga.com", "?utm_source=instagram&utm_campaign=fall&fbclid=abc&other=1"),
+      "https://t.app",
+    );
+    expect(url.searchParams.get("utm_source")).toBe("instagram");
+    expect(url.searchParams.get("utm_campaign")).toBe("fall");
+    expect(url.searchParams.get("fbclid")).toBe("abc");
+    expect(url.searchParams.get("utm_medium")).toBeNull();
+    expect(url.searchParams.get("other")).toBeNull();
+    expect(url.searchParams.get("tv")).toBe(v);
+  });
+
   const v = "11111111-1111-1111-1111-111111111111";
   it("adds visitor, embed medium and the parent site as source", () => {
     const url = new URL(withEmbedHandoff("/s/aloha/book/x", v, "alohayoga.com"), "https://t.app");

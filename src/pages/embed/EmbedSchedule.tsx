@@ -124,7 +124,7 @@ export default function EmbedSchedule() {
                 {r.viewerNote && <p className="text-xs text-muted-foreground mt-0.5">{r.viewerNote}</p>}
               </div>
               <button
-                onClick={() => openHosted(withEmbedHandoff(bookPath(slug, r.id), visitorId, parentHost))}
+                onClick={() => openHosted(withEmbedHandoff(bookPath(slug, r.id), visitorId, parentHost, typeof window === "undefined" ? null : window.location.search))}
                 className="shrink-0 rounded-md px-3 py-1.5 text-xs font-semibold text-white"
                 style={{ background: full ? "#9ca3af" : "var(--embed-primary, #4fd1c5)" }}
               >

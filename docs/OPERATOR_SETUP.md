@@ -82,7 +82,7 @@ Estimated time: a couple of focused hours.
    ```
 4. Create a webhook (**Developers → Webhooks**) pointing at:
    `https://<project-ref>.supabase.co/functions/v1/stripe-webhook`
-   Subscribe to `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`. Copy its signing secret:
+   Subscribe to `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`, `invoice.payment_succeeded` (renewals in the Sources report). Copy its signing secret:
    ```bash
    supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...
    ```

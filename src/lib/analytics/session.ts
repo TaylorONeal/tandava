@@ -176,24 +176,32 @@ export async function linkVisitorOnce(userId: string, via = "sign_in") {
   if (typeof window === "undefined" || !userId) return;
   claimVisitorFor(userId);
   const key = LINKED_PREFIX + userId;
+  let done = false;
   try {
-    if (window.sessionStorage.getItem(key)) return;
-    window.sessionStorage.setItem(key, "1");
+    done = Boolean(window.sessionStorage.getItem(key));
   } catch {
-    if (linkedInMemory.has(key)) return;
-    linkedInMemory.add(key);
+    done = linkedInMemory.has(key);
+  }
+  if (!done) {
+    try {
+      const { error } = await data.linkMyVisitor(getVisitorId(), via);
+      // Mark only on success, so a failed link is retried on the next auth event.
+      if (!error) {
+        try {
+          window.sessionStorage.setItem(key, "1");
+        } catch {
+          linkedInMemory.add(key);
+        }
+      }
+    } catch {
+      // Retried on the next auth event.
+    }
   }
   try {
-    await data.linkMyVisitor(getVisitorId(), via);
-  } catch {
-    // Linking is best effort.
-  }
-  try {
-    // A no-op unless the sign-up started on a studio page and wasn't applied yet.
-    // Email sign-ups: metadata. OAuth sign-ups are applied by the callback
-    // (applyOAuthSignupConsent), which can prove which attempt it was; a
-    // bound choice whose save failed is retried here.
-    await data.applyMySignupConsent();
+    // Email sign-ups: metadata (idempotent server side). OAuth sign-ups are
+    // applied by the callback (applyOAuthSignupConsent), which can prove which
+    // attempt it was; a bound choice whose save failed is retried here.
+    if (!done) await data.applyMySignupConsent();
     await applyOAuthSignupConsent(userId);
   } catch {
     // Best effort; the person can still opt in later.

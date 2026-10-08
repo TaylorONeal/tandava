@@ -56,11 +56,32 @@ export function deviceType(userAgent: string): "mobile" | "tablet" | "desktop" {
  * A Book link from the embed widget: carry the visitor id and, when the studio
  * didn't tag the link itself, mark it as coming from the embed on their site.
  */
-export function withEmbedHandoff(path: string, visitorId: string, parentHost?: string | null): string {
+const CLICK_ID_KEYS = ["fbclid", "gclid", "gbraid", "wbraid", "ttclid", "msclkid"];
+
+export function withEmbedHandoff(
+  path: string,
+  visitorId: string,
+  parentHost?: string | null,
+  /** The embed iframe's own query string: studio-supplied campaign tags and click ids carry through. */
+  carry?: string | null,
+): string {
   const [base, query = ""] = path.split("?");
   const params = new URLSearchParams(query);
+  const from = new URLSearchParams(carry ?? "");
+  let carried = false;
+  for (const [k, v] of from) {
+    if ((k.startsWith("utm_") || CLICK_ID_KEYS.includes(k)) && v && !params.has(k)) {
+      params.set(k, v);
+      carried = true;
+    }
+  }
   params.set("tv", visitorId);
-  if (!params.has("utm_medium")) params.set("utm_medium", "embed");
-  if (!params.has("utm_source") && parentHost) params.set("utm_source", parentHost);
+  // Untagged embeds are credited to the studio's own site; a tagged one keeps
+  // its campaign so the booking page continues the same session.
+  const tagged = carried || [...params.keys()].some((k) => k.startsWith("utm_") || CLICK_ID_KEYS.includes(k));
+  if (!tagged) {
+    params.set("utm_medium", "embed");
+    if (parentHost) params.set("utm_source", parentHost);
+  }
   return `${base}?${params.toString()}`;
 }
