@@ -98,6 +98,10 @@ export interface Profile {
   role?: UserRole;
   marketing_consent?: boolean;
   onboarding_completed?: boolean;
+  /** Created by express booking with no password yet (migration 00019). */
+  is_guest?: boolean;
+  /** When a guest set a password on the same email (migration 00019). */
+  claimed_at?: string | null;
   created_at: string;
   updated_at: string;
 }

@@ -10,12 +10,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, CheckCircle2, Sparkles, MailCheck, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { safeNextPath } from "@/lib/auth/next";
 
 type RegistrationStep = "info" | "complete";
 
 const Register = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  // Set when someone arrives from a class they were booking; send them back there.
+  const next = safeNextPath(searchParams.get("next"));
   const { toast } = useToast();
   const { t } = useTranslation('auth');
   const { signUpWithEmail, signInWithGoogle, isDemoMode } = useAuth();
@@ -80,6 +83,11 @@ const Register = () => {
         description: error.message,
         variant: "destructive",
       });
+      return;
+    }
+
+    if (!requiresEmailConfirmation && next !== "/") {
+      navigate(next, { replace: true });
       return;
     }
 
@@ -202,7 +210,7 @@ const Register = () => {
       return;
     }
 
-    const { error } = await signInWithGoogle();
+    const { error } = await signInWithGoogle(next);
     if (error) {
       toast({
         title: t('register.signupFailed'),

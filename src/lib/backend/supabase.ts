@@ -13,6 +13,7 @@
  * All in one SDK with zero custom backend code.
  */
 
+import { safeNextPath } from "@/lib/auth/next";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
 import type {
@@ -101,10 +102,12 @@ const supabaseAuth: AuthProvider = {
     return { error: mapError(error), requiresEmailConfirmation };
   },
 
-  async signInWithOAuth(provider) {
+  async signInWithOAuth(provider, next) {
+    const path = safeNextPath(next);
+    const query = path === "/" ? "" : `?next=${encodeURIComponent(path)}`;
     const { error } = await getClient().auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: `${window.location.origin}/auth/callback${query}` },
     });
     return { error: mapError(error) };
   },
@@ -113,10 +116,19 @@ const supabaseAuth: AuthProvider = {
     await getClient().auth.signOut();
   },
 
-  async resetPassword(email) {
+  async resetPassword(email, options) {
+    const params = new URLSearchParams();
+    if (options?.next) params.set("next", safeNextPath(options.next));
+    if (options?.claim) params.set("claim", "1");
+    const query = params.toString();
     const { error } = await getClient().auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-confirm`,
+      redirectTo: `${window.location.origin}/auth/reset-confirm${query ? `?${query}` : ""}`,
     });
+    return { error: mapError(error) };
+  },
+
+  async updatePassword(password) {
+    const { error } = await getClient().auth.updateUser({ password });
     return { error: mapError(error) };
   },
 
@@ -138,6 +150,17 @@ const supabaseAuth: AuthProvider = {
 // ---------------------------------------------------------------------------
 
 const supabaseData: DataProvider = {
+  async markProfileClaimed(userId): Promise<MutationResult> {
+    // RLS "Users can update own profile" scopes this to the caller. The
+    // is_guest filter keeps claimed_at the first-claim time.
+    const { error } = await getClient()
+      .from("profiles")
+      .update({ is_guest: false, claimed_at: new Date().toISOString() })
+      .eq("id", userId)
+      .eq("is_guest", true);
+    return { error: error ? { message: error.message } : null };
+  },
+
   async getProfile(userId): Promise<DataResult<Profile>> {
     const client = getClient();
     // Roles live in studio_staff, not profiles. Resolve the caller's highest

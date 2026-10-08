@@ -69,6 +69,7 @@ const InstructorDetail = lazy(() => import("./pages/InstructorDetail"));
 const OnDemand = lazy(() => import("./pages/OnDemand"));
 const Login = lazy(() => import("./pages/auth/Login"));
 const Register = lazy(() => import("./pages/auth/Register"));
+const ResetConfirm = lazy(() => import("./pages/auth/ResetConfirm"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Demo = lazy(() => import("./pages/Demo"));
 const OpenSource = lazy(() => import("./pages/OpenSource"));
@@ -195,6 +196,8 @@ const App = () => (
                   <Route path="/auth/login" element={<Login />} />
                   <Route path="/auth/register" element={<Register />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
+                  {/* Password reset AND guest-to-account claim (PRD-020, ?claim=1). */}
+                  <Route path="/auth/reset-confirm" element={<ResetConfirm />} />
 
                   {/* ---- Authenticated member routes ---- */}
                   <Route path="/my-schedule" element={<ProtectedRoute permission="member.view_profile"><MySchedule /></ProtectedRoute>} />

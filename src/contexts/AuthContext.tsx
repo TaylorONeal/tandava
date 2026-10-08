@@ -30,9 +30,14 @@ interface AuthContextValue extends AuthState {
     password: string,
     metadata: { first_name: string; last_name: string; marketing_consent?: boolean }
   ) => Promise<{ error: AuthError | null; requiresEmailConfirmation?: boolean }>;
-  signInWithGoogle: () => Promise<{ error: AuthError | null }>;
+  signInWithGoogle: (next?: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
+  resetPassword: (
+    email: string,
+    options?: { next?: string; claim?: boolean }
+  ) => Promise<{ error: AuthError | null }>;
+  /** Set a password for the signed-in user; with `claim`, also marks a guest profile claimed. */
+  updatePassword: (password: string, options?: { claim?: boolean }) => Promise<{ error: AuthError | null }>;
   refreshProfile: () => Promise<void>;
 }
 
@@ -188,9 +193,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return auth.signUpWithEmail(email, password, metadata);
   };
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = async (next?: string) => {
     if (isDemoMode) return { error: null };
-    const { error } = await auth.signInWithOAuth("google");
+    const { error } = await auth.signInWithOAuth("google", next);
     return { error };
   };
 
@@ -199,10 +204,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await auth.signOut();
   };
 
-  const resetPassword = async (email: string) => {
+  const resetPassword = async (email: string, options?: { next?: string; claim?: boolean }) => {
     if (isDemoMode) return { error: null };
-    const { error } = await auth.resetPassword(email);
+    const { error } = await auth.resetPassword(email, options);
     return { error };
+  };
+
+  const updatePassword = async (password: string, options?: { claim?: boolean }) => {
+    if (isDemoMode) return { error: null };
+    const { error } = await auth.updatePassword(password);
+    if (error) return { error };
+    const userId = state.user?.id;
+    if (options?.claim && userId) {
+      // Best effort: the password is set either way, and an unclaimed flag only
+      // affects how staff see the record, never what the person can do.
+      const { error: claimError } = await data.markProfileClaimed(userId);
+      if (claimError) console.warn("markProfileClaimed failed:", claimError.message);
+      await refreshProfile();
+    }
+    return { error: null };
   };
 
   return (
@@ -214,6 +234,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signInWithGoogle,
         signOut,
         resetPassword,
+        updatePassword,
         refreshProfile,
       }}
     >
