@@ -145,6 +145,8 @@ Rules learned the hard way (full list in `docs/ai-agents/LESSONS_LEARNED.md`):
 - Prod DB changes: see "Production database changes" in LESSONS_LEARNED. Prod has no migration tracking table, so inspect the schema with read-only SQL. The auto-mode guard blocks DDL on prod even after chat approval: give the user ONE transactional SQL file and open `https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new` for them, then verify read-only.
 - Merging main: renumber our migrations after main's, rehearse in prod order locally (`pg_ctlcluster 16 main start`), run all four verify commands before pushing.
 - Always hand the user the exact page or link for any step they must do. Switching cost is the thing to minimise.
+- Merging PRs: only on Taylor's explicit "merge" in chat, only PRs with every check green, no conflicts and 0 open review threads, one at a time in dependency order, checking mergeability again after each. If the merge call is blocked, do not retry another route (auto_merge, the PR page): hand him the PR links in order. See "Merging and agent permissions" in LESSONS_LEARNED.
+- Wait for the Codex review on every PR and fix its P1s before asking for a merge; it caught real bugs on #74, #78, #81 and #82.
 - Prove a new test fails without the fix before trusting it.
 - Update docs and `.env.example` in the same PR. Home page mode is `VITE_HOME_MODE` (platform|discover).
 
@@ -162,6 +164,7 @@ Set up once, so nobody rediscovers it:
 | Vercel preview | Vercel MCP `web_fetch_vercel_url` (bypass built in, returns headers) | plain curl (SSO 401) | Use it to verify headers and pages |
 | Edge function deploy | Supabase MCP `deploy_edge_function` (Taylor approved prod deploys 2026-10-08). Bundle cross-folder imports as sibling files (express-book ships `./express.ts`, a copy of `src/lib/booking/express.ts`). `verify_jwt=false` only for express-book and stripe-webhook | Taylor's Mac CLI: his `supabase login` defaults to a personal account with no access to the Purafield org (403 on secrets) | Smoke test with `curl -X POST https://mkaixgjwakfufmmwembn.supabase.co/functions/v1/<fn>` |
 | Stripe CLI | not installable (release download blocked) | | Replay events by POSTing signed payloads, or run from Taylor's machine |
+| Merging PRs | REST is authenticated | `PUT .../pulls/N/merge` and `.../ccr/auto_merge` are blocked by the auto-mode guard, even after chat approval. Agents cannot write `.claude/settings.json` ([Self-Modification]) | Hand Taylor the PR links in merge order. A squash-merge allow rule in `.claude/settings.json` (added by Taylor) only takes effect in sessions started after it lands |
 
 ## Database
 
