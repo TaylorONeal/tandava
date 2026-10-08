@@ -48,13 +48,8 @@
       </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      // Register service worker for PWA support
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js').catch(function() {});
-        });
-      }
-    </script>
+    <!-- No inline scripts: the CSP (vercel.json) blocks them. The service worker
+         (public/sw.js) is not registered; its cache-everything strategy needs a
+         review before it ships. -->
   </body>
 </html>
