@@ -141,6 +141,18 @@ const supabaseAuth: AuthProvider = {
     return { error: mapError(error) };
   },
 
+  async resendConfirmation(email, next) {
+    const path = safeNextPath(next);
+    const { error } = await getClient().auth.resend({
+      type: "signup",
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback${path === "/" ? "" : `?next=${encodeURIComponent(path)}`}`,
+      },
+    });
+    return { error: mapError(error) };
+  },
+
   async getSession() {
     const { data } = await getClient().auth.getSession();
     return { user: mapUser(data?.session?.user ?? null) };

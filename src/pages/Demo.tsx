@@ -1,5 +1,6 @@
 /**
- * Demo Landing Page — Tandava Open Source Studio Management
+ * Demo Landing Page: a sample studio for owners evaluating hosted Tandava.
+ * Self-hosting and the code live on /open-source; this page points there once.
  *
  * The FIRST thing visitors see. Explains what the project is, who it's for,
  * shows features, then invites visitors to explore the platform by choosing a role.
@@ -11,6 +12,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDemo } from "@/contexts/DemoContext";
 import type { UserRole } from "@/types/database";
+import { STUDIO_SIGNUP_HREF } from "@/lib/audience";
 import {
   OXATL_STUDIO,
   OXATL_LOCATIONS,
@@ -19,14 +21,12 @@ import {
 } from "@/data/demo";
 import {
   Calendar,
-  MapPin,
   Users,
   LayoutDashboard,
   GraduationCap,
   ClipboardCheck,
   Sparkles,
   ArrowRight,
-  Github,
   ChevronDown,
   ChevronUp,
   Code2,
@@ -35,7 +35,6 @@ import {
   CreditCard,
   BarChart3,
   BookOpen,
-  ExternalLink,
   Server,
   Lock,
   Zap,
@@ -146,32 +145,32 @@ const FAQ_ITEMS: FAQItem[] = [
   {
     question: "Who is Tandava for?",
     answer:
-      "Studios with an internal engineering team, technical founder, or trusted dev partner. Developer-led collectives building studio software together. If you don't have someone who can deploy and maintain a web app, this is not ready for you yet — but we're working on making it more accessible over time.",
+      "Independent yoga, pilates and movement studios that want scheduling, memberships, payments and a phone-friendly booking page without per-member pricing. We host it; you do not need a developer.",
   },
   {
-    question: "Is this actually free?",
+    question: "What does it cost?",
     answer:
-      "Yes. Tandava is licensed under AGPL-3.0. You can self-host it forever at no cost. The code is fully open — every line is auditable. If you modify the source and make it available over a network, you share your modifications under the same license.",
+      "We are onboarding our first studios now and agree pricing with each owner before you take a single payment. Card fees are Stripe's, paid to your own Stripe account.",
   },
   {
     question: "How is this different from MindBody or Momence?",
     answer:
-      "Your data stays yours — run it on your own infrastructure. No per-member pricing that scales against you. No features hidden behind enterprise tiers. Export everything, anytime, in standard formats. And the code is open, so if something doesn't work for your studio, you change it.",
+      "No per-member pricing that grows against you, no features held back for an enterprise tier, and you can export everything at any time in standard formats. Your classes also appear on Tandava Discover, where students look for a class before they pick a studio.",
   },
   {
-    question: "What's the tech stack?",
+    question: "Where does the money go?",
     answer:
-      "React 18 + TypeScript + Vite on the frontend with shadcn/ui + Tailwind CSS. Supabase (PostgreSQL + Auth + Storage + Edge Functions) on the backend. Stripe Connect (Standard) for payments. Row-Level Security for multi-tenant isolation. Static SPA — deploy on Vercel, Netlify, or any host.",
+      "Straight to your own Stripe account through Stripe Connect. Tandava never holds your revenue.",
   },
   {
-    question: "What's the current status?",
+    question: "Is this demo real?",
     answer:
-      "The UI and workflows are complete and interactive. Payment processing (Stripe Connect), authentication (Supabase Auth), and email/SMS notifications are architecturally ready but need configuration for your deployment. This demo shows everything the platform does.",
+      "It runs the same screens as a live studio with sample data. Nothing you do here is saved or charged. Switch between owner, front desk, teacher and student to see each view.",
   },
   {
-    question: "Can I contribute?",
+    question: "Can I run it myself?",
     answer:
-      "Yes. We welcome bug fixes, documentation improvements, new export formats, and connector improvements. Read CONTRIBUTING.md first — it explains the project's core bias toward deployability and what kinds of contributions are prioritized.",
+      "Yes. Tandava is open source under AGPL-3.0. If you have a developer and want to self-host, start at the open source page.",
   },
 ];
 
@@ -425,20 +424,17 @@ export default function Demo() {
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-400" />
               </span>
               <span className="text-sm font-semibold text-white/90">
-                Tandava Open Source Studio Demo
+                Tandava demo studio
               </span>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <a
-              href="https://github.com/TaylorONeal/tandava"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/for-studios"
               className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
             >
-              <Github className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">GitHub</span>
-            </a>
+              <span>For studios</span>
+            </Link>
             <Link
               to="/blog"
               className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
@@ -474,14 +470,15 @@ export default function Demo() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-semibold tracking-tight mb-6 leading-[1.1]">
-              Studio management software you{" "}
-              <span className="text-primary">fork, deploy, and own</span>
+              See your studio{" "}
+              <span className="text-primary">running on Tandava</span>
             </h1>
 
             <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mb-8">
-              Tandava is open-source scheduling, membership, payment, and
-              analytics software for yoga, pilates, and movement studios. No
-              vendor lock-in. No per-member pricing. Your data stays yours.
+              Click through a working yoga studio as the owner, the front
+              desk, a teacher or a student. Schedule, memberships, payments,
+              check-in and reports, with sample data. When it looks right, set
+              up your own studio. We host it for you.
             </p>
 
             <div className="mb-10 flex flex-wrap gap-3">
@@ -492,42 +489,34 @@ export default function Demo() {
                 Explore the Demo
                 <ArrowRight className="w-4 h-4" />
               </a>
-              <a
-                href="https://github.com/TaylorONeal/tandava"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to={STUDIO_SIGNUP_HREF}
                 className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
-                <Github className="w-4 h-4" />
-                View Source
-              </a>
+                Set up your studio
+              </Link>
             </div>
 
-            {/* Quick stats */}
+            {/* What owners get */}
             <ul className="grid max-w-3xl gap-3 rounded-2xl border border-border/70 bg-card/70 p-4 text-sm text-muted-foreground sm:grid-cols-2">
-              <li className="flex items-center gap-1.5">
-                <Terminal className="w-4 h-4 text-primary" />
-                React + TypeScript + Vite
-              </li>
-              <li className="flex items-center gap-1.5">
-                <Database className="w-4 h-4 text-primary" />
-                Supabase (PostgreSQL)
-              </li>
-              <li className="flex items-center gap-1.5">
-                <CreditCard className="w-4 h-4 text-primary" />
-                Stripe Connect
-              </li>
-              <li className="flex items-center gap-1.5">
-                <GitFork className="w-4 h-4 text-primary" />
-                Fork & Deploy
-              </li>
+              {[
+                "Booking page that works on a phone",
+                "Memberships, class packs and drop-ins",
+                "Payments straight to your Stripe account",
+                "Listed on Tandava Discover for students",
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  {item}
+                </li>
+              ))}
             </ul>
           </div>
         </div>
       </section>
 
       {/* ================================================================ */}
-      {/* WHO THIS IS FOR / NOT FOR                                        */}
+      {/* WHO THIS IS FOR                                                  */}
       {/* ================================================================ */}
       <section className="border-t border-border bg-card/30">
         <div className="max-w-6xl mx-auto px-6 py-14">
@@ -535,19 +524,16 @@ export default function Demo() {
             <div className="rounded-2xl border border-border/80 bg-background/70 p-6">
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-accent-sage" />
-                Built for
+                A good fit
               </h2>
               <ul className="space-y-3">
                 {[
-                  "Studios with a technical founder or engineering team",
-                  "Developer-led collectives building studio tools together",
-                  "Studios with a trusted dev partner for deployment",
-                  "Technical evaluators exploring what studio software should look like",
+                  "Independent yoga, pilates and movement studios",
+                  "Owners who want students to book from a phone in one step",
+                  "Studios paying per-member fees that grow faster than they do",
+                  "Owners who want their data exportable, any time",
                 ].map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-2.5 text-sm text-muted-foreground"
-                  >
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-muted-foreground">
                     <CheckCircle2 className="w-4 h-4 text-accent-sage shrink-0 mt-0.5" />
                     {item}
                   </li>
@@ -557,27 +543,20 @@ export default function Demo() {
             <div className="rounded-2xl border border-border/80 bg-background/70 p-6">
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 <Layers className="w-5 h-5 text-muted-foreground" />
-                Not yet for
+                Not yet
               </h2>
               <ul className="space-y-3">
                 {[
-                  "Non-technical studio owners without dev support",
-                  "Studios expecting hosted SaaS or guided onboarding",
-                  "Anyone looking for a turnkey Mindbody replacement",
+                  "Large multi-site chains with franchise reporting",
+                  "Gyms built around equipment booking rather than classes",
                 ].map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-2.5 text-sm text-muted-foreground"
-                  >
-                    <span className="w-4 h-4 shrink-0 mt-0.5 text-center text-xs text-muted-foreground/50">
-                      —
-                    </span>
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                    <span className="w-4 h-4 shrink-0 mt-0.5 text-center text-xs text-muted-foreground/50">-</span>
                     {item}
                   </li>
                 ))}
                 <li className="text-xs text-muted-foreground/70 ps-6 pt-1">
-                  We aspire to make this more accessible over time, with the
-                  community.
+                  We are onboarding our first studios in Austin and working with each owner directly.
                 </li>
               </ul>
             </div>
@@ -741,116 +720,6 @@ export default function Demo() {
       </section>
 
       {/* ================================================================ */}
-      {/* WHY OPEN SOURCE                                                  */}
-      {/* ================================================================ */}
-      <section className="border-t border-border">
-        <div className="max-w-6xl mx-auto px-6 py-14">
-          <h2 className="text-2xl font-display font-semibold mb-8">
-            Why open source
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-5 rounded-xl border bg-card">
-              <Lock className="w-5 h-5 text-primary mb-3" />
-              <h3 className="font-semibold mb-2">Your Data Stays Yours</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Run it on your own infrastructure. Export everything, anytime.
-                No vendor lock-in by design.
-              </p>
-            </div>
-            <div className="p-5 rounded-xl border bg-card">
-              <Server className="w-5 h-5 text-primary mb-3" />
-              <h3 className="font-semibold mb-2">Self-Hosted</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Deploy on Vercel, Netlify, or your own server. No per-member
-                pricing. No features behind paywalls.
-              </p>
-            </div>
-            <div className="p-5 rounded-xl border bg-card">
-              <Zap className="w-5 h-5 text-primary mb-3" />
-              <h3 className="font-semibold mb-2">Modern Stack</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                React 18, TypeScript, Vite, shadcn/ui, Supabase, Stripe Connect.
-                Production-grade architecture with RLS.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* QUICK START                                                      */}
-      {/* ================================================================ */}
-      <section className="border-t border-border bg-card/30">
-        <div className="max-w-6xl mx-auto px-6 py-14">
-          <div className="max-w-2xl">
-            <h2 className="text-2xl font-display font-semibold mb-2 flex items-center gap-2">
-              <BookOpen className="w-5 h-5" />
-              Get started
-            </h2>
-            <p className="text-muted-foreground mb-6">
-              Clone, install, and run in under 2 minutes
-            </p>
-
-            <div className="mb-6 overflow-x-auto rounded-xl border bg-background p-5 font-mono text-sm text-muted-foreground">
-              <p className="text-primary/70">
-                $ git clone https://github.com/TaylorONeal/tandava.git
-              </p>
-              <p className="text-primary/70">$ cd tandava && npm install</p>
-              <p className="text-primary/70">
-                $ echo "VITE_DEMO_MODE=true" &gt; .env.local
-              </p>
-              <p className="text-primary/70">$ npm run dev</p>
-              <p className="mt-2 text-muted-foreground/50">
-                # → http://localhost:8080
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <Link
-                to="/blog"
-                className="inline-flex min-h-10 items-center gap-2 rounded-full border border-primary/20 bg-background px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
-                <BookOpen className="w-4 h-4" /> Blog
-              </Link>
-              <a
-                href="https://github.com/TaylorONeal/tandava"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-10 items-center gap-2 rounded-full border border-primary/20 bg-background px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
-                <Github className="w-4 h-4" /> Repository{" "}
-                <ExternalLink className="w-3 h-3" />
-              </a>
-              <a
-                href="https://github.com/TaylorONeal/tandava/blob/main/DEPLOYMENT.md"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-10 items-center gap-2 rounded-full border border-primary/20 bg-background px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
-                Deployment Guide <ExternalLink className="w-3 h-3" />
-              </a>
-              <a
-                href="https://github.com/TaylorONeal/tandava/blob/main/ARCHITECTURE.md"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-10 items-center gap-2 rounded-full border border-primary/20 bg-background px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
-                Architecture <ExternalLink className="w-3 h-3" />
-              </a>
-              <a
-                href="https://github.com/TaylorONeal/tandava/blob/main/CONTRIBUTING.md"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-10 items-center gap-2 rounded-full border border-primary/20 bg-background px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
-                Contributing <ExternalLink className="w-3 h-3" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
       {/* FAQ                                                               */}
       {/* ================================================================ */}
       <section className="border-t border-border">
@@ -870,7 +739,11 @@ export default function Demo() {
       <section className="border-t border-border bg-card/30">
         <div className="max-w-3xl mx-auto px-6 py-14 text-center">
           <p className="text-sm text-muted-foreground">
-            Tandava is open-source software. Built by the community, for the community.
+            Technical and want to run it yourself? Tandava is open source.{" "}
+            <Link to="/open-source" className="text-primary hover:underline">
+              Self-hosting and the code
+            </Link>
+            .
           </p>
         </div>
       </section>
@@ -881,19 +754,19 @@ export default function Demo() {
       <section className="border-t border-border bg-gradient-to-br from-primary/10 to-background">
         <div className="max-w-6xl mx-auto px-6 py-14 text-center">
           <h2 className="text-2xl font-display font-semibold mb-3">
-            Ready to explore?
+            Ready for your own studio?
           </h2>
           <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            See how Tandava handles scheduling, payments, check-in, and
-            analytics — with real data from a demo studio.
+            Set up takes a few minutes: your classes, prices and Stripe. Your
+            booking page goes live when you publish the schedule.
           </p>
-          <a
-            href="#explore"
+          <Link
+            to={STUDIO_SIGNUP_HREF}
             className="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
-            Choose a Role & Explore
+            Set up your studio
             <ArrowRight className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -901,23 +774,17 @@ export default function Demo() {
       {/* FOOTER                                                           */}
       {/* ================================================================ */}
       <footer className="border-t border-border py-8 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-3">
             <span className="font-medium text-foreground">Tandava</span>
             <span>·</span>
-            <span>Open-source studio management</span>
+            <span>Studio software and class discovery</span>
           </div>
-          <p className="text-xs text-muted-foreground">
-            AGPL-3.0 · Self-hosted ·{" "}
-            <a
-              href="https://github.com/TaylorONeal/tandava"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            >
-              GitHub
-            </a>
-          </p>
+          <div className="flex items-center gap-4 text-xs">
+            <Link to="/for-studios" className="hover:text-foreground">For studios</Link>
+            <Link to="/discover" className="hover:text-foreground">Find a class</Link>
+            <Link to="/open-source" className="hover:text-foreground">Open source</Link>
+          </div>
         </div>
       </footer>
     </div>

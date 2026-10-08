@@ -70,6 +70,9 @@ export interface AuthProvider {
   /** Set a new password for the signed-in user (after a reset or claim link). */
   updatePassword(password: string): Promise<{ error: AuthError | null }>;
 
+  /** Send a fresh sign-up confirmation email (the first link expired or was used). */
+  resendConfirmation(email: string, next?: string): Promise<{ error: AuthError | null }>;
+
   /** Get the currently authenticated user (from persisted session) */
   getSession(): Promise<{ user: AuthUser | null }>;
 
