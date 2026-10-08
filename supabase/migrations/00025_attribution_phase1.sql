@@ -472,7 +472,10 @@ CREATE TABLE IF NOT EXISTS automation_sends (
   automation_key TEXT NOT NULL CHECK (automation_key IN ('guest_to_member', 'first_visit', 'lapsed')),
   step INTEGER NOT NULL,
   episode_key TEXT NOT NULL,            -- e.g. the lapse's last-visit date, so a person lapses once per episode
-  status TEXT NOT NULL DEFAULT 'sent' CHECK (status IN ('sent', 'failed')),
+  -- sending: claimed, not yet confirmed by the provider. Only 'sent' counts
+  -- as delivered history; a stuck 'sending' row blocks a resend (no duplicate)
+  -- and never advances a sequence.
+  status TEXT NOT NULL DEFAULT 'sending' CHECK (status IN ('sending', 'sent', 'failed')),
   error TEXT,
   sent_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE (studio_id, profile_id, automation_key, step, episode_key)

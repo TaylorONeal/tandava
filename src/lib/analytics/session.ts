@@ -146,7 +146,9 @@ const inFlight = new Map<string, Promise<void>>();
  * Never blocks a booking for more than `ms`.
  */
 export async function captureSettled(slug?: string, ms = 2000): Promise<void> {
-  const pending = slug ? [inFlight.get(slug)].filter(Boolean) : [...inFlight.values()];
+  // Also wait for a sign-in link in progress: the server credits a session
+  // only once it can see that the browser belongs to the person booking.
+  const pending = [...(slug ? [inFlight.get(slug)].filter(Boolean) : [...inFlight.values()]), ...(linkInFlight ? [linkInFlight] : [])];
   if (!pending.length) return;
   await Promise.race([Promise.allSettled(pending), new Promise<void>((r) => setTimeout(r, ms))]);
 }
@@ -248,7 +250,17 @@ export function claimVisitorFor(userId: string) {
 
 let memoryOwner: string | null = null;
 
-export async function linkVisitorOnce(userId: string, via = "sign_in") {
+let linkInFlight: Promise<void> | null = null;
+
+export function linkVisitorOnce(userId: string, via = "sign_in"): Promise<void> {
+  const p = linkVisitorOnceInner(userId, via).finally(() => {
+    if (linkInFlight === p) linkInFlight = null;
+  });
+  linkInFlight = p;
+  return p;
+}
+
+async function linkVisitorOnceInner(userId: string, via = "sign_in") {
   if (typeof window === "undefined" || !userId) return;
   claimVisitorFor(userId);
   const key = LINKED_PREFIX + userId;

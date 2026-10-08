@@ -131,7 +131,7 @@ serve(async (req) => {
             automation_key: s.decision.key,
             step: s.decision.step,
             episode_key: s.decision.episode,
-            status: "sent",
+            status: "sending",
           },
           { onConflict: "studio_id,profile_id,automation_key,step,episode_key", ignoreDuplicates: true },
         )
@@ -181,6 +181,11 @@ serve(async (req) => {
 
       if (sent.success) {
         result.sent++;
+        const { error: markError } = await db
+          .from("automation_sends")
+          .update({ status: "sent", sent_at: new Date().toISOString() })
+          .eq("id", claimed[0].id);
+        if (markError) console.error("run-automations: could not mark sent", markError.message);
       } else {
         result.failed++;
         await db

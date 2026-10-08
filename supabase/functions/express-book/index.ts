@@ -319,7 +319,19 @@ serve(async (req) => {
     // First-party attribution (PRD-024). Both optional; both validated.
     const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     const visitorId = typeof payload.visitorId === "string" && UUID_RE.test(payload.visitorId) ? payload.visitorId : null;
-    const sessionId = typeof payload.sessionId === "string" && UUID_RE.test(payload.sessionId) ? payload.sessionId : null;
+    const claimedSessionId = typeof payload.sessionId === "string" && UUID_RE.test(payload.sessionId) ? payload.sessionId : null;
+    // Only this browser's own visit at this studio may be credited.
+    let sessionId: string | null = null;
+    if (claimedSessionId && visitorId && studioId) {
+      const { data: ownSession } = await db
+        .from("analytics_sessions")
+        .select("id")
+        .eq("id", claimedSessionId)
+        .eq("studio_id", studioId)
+        .eq("visitor_id", visitorId)
+        .maybeSingle();
+      sessionId = ownSession?.id ?? null;
+    }
 
     /**
      * RPC with the error checked (supabase-js resolves failures as { error },
