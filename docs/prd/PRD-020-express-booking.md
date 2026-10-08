@@ -180,6 +180,28 @@ drift from the branch the tests cover. Same split as `src/lib/hosted/*`.
 - [x] Storefront "Book" deep-links to express booking instead of `/auth/register`
 - [x] Embed widget "Book" deep-links to the occurrence instead of a generic schedule page
 
+### US-20.9: Guest saves the booking as an account (Oct 8, 2026)
+**As a** guest who just booked,
+**I want** to keep my details without filling in a signup form,
+**So I can** rebook in one tap and buy a pack next time.
+
+- [x] Optional "Save my details for next time" checkbox in the form (unchecked by default)
+- [x] After booking, and after returning from Stripe, a "Save your details" card offers the link
+- [x] Ticking the checkbox sends the link automatically on the confirmation screen
+- [x] The link is a password-set link (`resetPassword` with `claim`), so mailbox control is proven
+      before a password is attached to the identity the public form created
+- [x] `/auth/reset-confirm?claim=1` sets the password and marks `is_guest = false`, `claimed_at`
+- [x] "Sign in and book now" and "Sign in instead" return to the same class (`?next=`, also
+      through Google sign-in and Register); `safeNextPath` blocks open redirects
+- [x] Confirmation copy no longer claims an email we do not send yet
+- [ ] Supabase Auth: add `/auth/reset-confirm` (with query string) to the allowed redirect URLs
+- [ ] Supabase Auth recovery email template: wording that fits both "reset" and "save your account"
+- [ ] Verify against a live project that a recovery link works for an unconfirmed passwordless
+      guest user and confirms the email (UNVERIFIED)
+- [ ] Register on a guest's email: Supabase `signUp` on an existing unconfirmed user may not set a
+      password. Route that case to the claim link (needs a server check that does not leak whether
+      the address exists)
+
 ### US-20.8: Abuse control
 - [x] Rate limit per email (6/hour) and per IP hash (20/hour)
 - [x] IP stored only as a salted hash; `EXPRESS_IP_SALT` required for IP limiting
@@ -241,7 +263,7 @@ feature requires, not an unrelated cleanup.
 
 ## Launch gates (none of these are done)
 
-1. **Apply migration 00019 to a live database** and confirm `idx_profiles_email_lower` does not
+1. **Apply migrations 00019 and 00020 to a live database** and confirm `idx_profiles_email_lower` does not
    collide with existing duplicate-email rows. On a database with duplicates the index creation will
    fail; dedupe first.
 2. **Verify the Edge Function bundles.** It imports `../../../src/lib/booking/express.ts`, which
@@ -255,7 +277,9 @@ feature requires, not an unrelated cleanup.
 5. **Add the `express_continue` and `express_confirmation` email templates** in
    `supabase/functions/email/templates.ts`. Until then the continue link is generated and recorded
    but never delivered, which strands that path.
-6. **Build the continue-token consumer.** `?continue=<token>` is generated and hashed but nothing
+6. (claim flow, US-20.9) **Add `/auth/reset-confirm` to Supabase Auth redirect URLs** and reword
+   the recovery email so it reads right for a guest saving an account.
+6b. **Build the continue-token consumer.** `?continue=<token>` is generated and hashed but nothing
    redeems it yet, so an existing member currently reaches a dead end.
 7. **Test the concurrent-last-spot case** against a live database. `create_guest_booking()` uses
    `FOR UPDATE`; that is untested PL/pgSQL.

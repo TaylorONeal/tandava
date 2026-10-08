@@ -26,6 +26,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { usePublicOccurrence, useExpressBook } from "@/hooks/useBooking";
+import { useAuth } from "@/contexts/AuthContext";
+import { MemberBookingPanel } from "@/components/booking/MemberBookingPanel";
+import { expressBookingPath, loginHref } from "@/lib/auth/next";
 import { isBackendConfigured } from "@/lib/backend";
 import {
   checkOccurrenceEligibility,
@@ -157,6 +160,7 @@ type Form = {
   phone: string;
   marketingConsent: boolean;
   waiverAccepted: boolean;
+  saveAccount: boolean;
 };
 
 const EMPTY_FORM: Form = {
@@ -166,12 +170,47 @@ const EMPTY_FORM: Form = {
   phone: "",
   marketingConsent: false,
   waiverAccepted: false,
+  saveAccount: false,
 };
+
+/**
+ * Survives the Stripe Checkout round trip (same tab), so the page can offer, or
+ * send, the save-as-account link when the guest comes back with ?booked=1.
+ * sessionStorage only: it is gone when the tab closes, and the page works the
+ * same without it (the card just asks for the email).
+ */
+const PENDING_KEY = "tandava.express.pending";
+
+type PendingGuest = { email: string; saveAccount: boolean; occurrenceId: string };
+
+function readPending(occurrenceId: string | undefined): PendingGuest | null {
+  try {
+    const raw = window.sessionStorage.getItem(PENDING_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as PendingGuest;
+    return parsed.occurrenceId === occurrenceId ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function writePending(value: PendingGuest | null) {
+  try {
+    if (value) window.sessionStorage.setItem(PENDING_KEY, JSON.stringify(value));
+    else window.sessionStorage.removeItem(PENDING_KEY);
+  } catch {
+    // Private mode or blocked storage: the card falls back to asking.
+  }
+}
 
 export default function ExpressBooking() {
   const { slug, occurrenceId } = useParams<{ slug: string; occurrenceId: string }>();
   const [searchParams] = useSearchParams();
   const live = isBackendConfigured();
+  const { user } = useAuth();
+  // A signed-in visitor books through their membership, pack or a member
+  // drop-in, never the guest form (express-book diverts claimed accounts).
+  const signedIn = live && Boolean(user);
 
   const { data: fetched, isLoading, isError } = usePublicOccurrence(slug, occurrenceId);
   const expressBook = useExpressBook();
@@ -203,11 +242,19 @@ export default function ExpressBooking() {
     [searchParams],
   );
 
-  // A pending_payment outcome hands back a Checkout URL to follow.
+  // A pending_payment outcome hands back a Checkout URL to follow. Remember the
+  // email and the save-account choice first, for the ?booked=1 return.
   useEffect(() => {
     const url = expressBook.data?.outcome === "pending_payment" ? expressBook.data.checkoutUrl : null;
-    if (url) window.location.assign(url);
-  }, [expressBook.data]);
+    if (url) {
+      if (occurrenceId) writePending({ email: form.email.trim(), saveAccount: form.saveAccount, occurrenceId });
+      window.location.assign(url);
+    }
+  }, [expressBook.data, form.email, form.saveAccount, occurrenceId]);
+
+  const pending = useMemo(() => (returnedFromPayment ? readPending(occurrenceId) : null), [returnedFromPayment, occurrenceId]);
+  const bookingPath = slug && occurrenceId ? expressBookingPath(slug, occurrenceId) : "/";
+  const signInHref = loginHref(bookingPath);
 
   const set = <K extends keyof Form>(key: K, value: Form[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -284,7 +331,7 @@ export default function ExpressBooking() {
           tone="error"
           title="We couldn't load that class"
           body="The link may be out of date, or this studio may not have instant booking turned on. You can still book with an account, or pick another time from the schedule."
-          action={{ to: `/auth/register${slug ? `?studio=${encodeURIComponent(slug)}` : ""}`, label: "Book with an account" }}
+          action={{ to: `/auth/register?next=${encodeURIComponent(bookingPath)}`, label: "Book with an account" }}
           secondaryAction={slug ? { to: `/s/${slug}`, label: "See the schedule" } : undefined}
         />
       </Shell>
@@ -305,9 +352,18 @@ export default function ExpressBooking() {
         <Notice
           tone="success"
           title="You're booked"
-          body={`Your spot in ${row.offering_name} is confirmed. We emailed your confirmation and the studio's cancellation policy.`}
+          body={`Your payment went through and your spot in ${row.offering_name} is held. Stripe emails your receipt.`}
           action={slug ? { to: `/s/${slug}`, label: `Back to ${row.studio_name}` } : undefined}
         />
+        {live && !signedIn && (
+          <SaveAccountCard
+            studioName={row.studio_name}
+            initialEmail={pending?.email ?? ""}
+            autoSend={Boolean(pending?.saveAccount && pending.email)}
+            next={slug ? `/s/${slug}` : "/my-schedule"}
+            onDone={() => writePending(null)}
+          />
+        )}
       </Shell>
     );
   }
@@ -325,15 +381,23 @@ export default function ExpressBooking() {
               ? `${row.offering_name} is full, so you're on the waitlist${
                   result?.waitlistPosition ? ` at position ${result.waitlistPosition}` : ""
                 }. We'll email you the moment a spot opens, and you won't be charged unless you get in.`
-              : `Your spot in ${row.offering_name} is confirmed. We emailed your confirmation and the studio's cancellation policy.`
+              : `Your spot in ${row.offering_name} is confirmed.`
           }
           action={slug ? { to: `/s/${slug}`, label: `Back to ${row.studio_name}` } : undefined}
           footnote={
             demoResult
               ? "Demo mode: this confirmation is simulated. No booking was created and no email was sent."
-              : "Want to manage bookings and buy a pass? Set a password on this email any time to turn this into a full account."
+              : undefined
           }
         />
+        {live && !demoResult && (
+          <SaveAccountCard
+            studioName={row.studio_name}
+            initialEmail={form.email.trim()}
+            autoSend={form.saveAccount}
+            next={slug ? `/s/${slug}` : "/my-schedule"}
+          />
+        )}
       </Shell>
     );
   }
@@ -349,7 +413,7 @@ export default function ExpressBooking() {
             result.message ??
             "We sent you a link to finish booking this class. It expires in 30 minutes."
           }
-          action={{ to: "/auth/login", label: "Sign in and book now" }}
+          action={{ to: signInHref, label: "Sign in and book now" }}
           secondaryAction={slug ? { to: `/s/${slug}`, label: "See the schedule" } : undefined}
           footnote="We don't book straight away from a public form when the address already has an account, because anyone can type anyone's email. Signing in is the fastest way through, and it also lets you use a membership or class pack."
         />
@@ -368,6 +432,30 @@ export default function ExpressBooking() {
           title="This class can't be booked"
           body={rejectMessage(eligibility.reason!)}
           action={slug ? { to: `/s/${slug}`, label: "See other times" } : undefined}
+        />
+      </Shell>
+    );
+  }
+
+  // --- Signed in: member booking instead of the guest form ---------------
+
+  if (signedIn && occurrenceId) {
+    return (
+      <Shell>
+        <ClassSummary row={row} zone={zone} spotsLeft={eligibility?.spotsLeft ?? 0} />
+        {paymentCancelled && (
+          <Notice
+            tone="info"
+            title="Payment cancelled"
+            body="Nothing was charged and your spot was not held."
+            inline
+          />
+        )}
+        <MemberBookingPanel
+          row={row}
+          occurrenceId={occurrenceId}
+          returnPath={bookingPath}
+          priceLabel={price && price > 0 ? formatMoney(price, row.studio_currency || "USD") : null}
         />
       </Shell>
     );
@@ -475,6 +563,19 @@ export default function ExpressBooking() {
               <span>Email me about new classes and offers from {row.studio_name}.</span>
             </label>
 
+            {live && (
+              <label className="flex items-start gap-3 text-sm text-muted-foreground">
+                <Checkbox
+                  checked={form.saveAccount}
+                  onCheckedChange={(v) => set("saveAccount", v === true)}
+                />
+                <span>
+                  Save my details for next time. After booking we'll email a link to set a password,
+                  so you can rebook in one tap and use class packs.
+                </span>
+              </label>
+            )}
+
             {/* State the commitment before the button, not after it. */}
             <div className="rounded-md bg-muted/40 p-3 text-sm">
               {waitlisting ? (
@@ -487,7 +588,7 @@ export default function ExpressBooking() {
                   You'll pay{" "}
                   <strong>{formatMoney(price, row.studio_currency || "USD")}</strong> on the next
                   screen. Already have a membership or class pack?{" "}
-                  <Link to="/auth/login" className="underline">
+                  <Link to={signInHref} className="underline">
                     Sign in instead
                   </Link>
                   .
@@ -537,6 +638,115 @@ export default function ExpressBooking() {
 // ---------------------------------------------------------------------------
 // Pieces
 // ---------------------------------------------------------------------------
+
+/**
+ * The account nudge (PRD-020 Job 3). Shown after a guest books, never before:
+ * the booking is the point, the account is the follow-up.
+ *
+ * It sends the password-set link (resetPassword with claim), which proves the
+ * guest controls the mailbox before any password is attached to the identity
+ * the public form created. With `autoSend` (the guest ticked "Save my details"
+ * in the form) the link goes out on mount and the card confirms it.
+ */
+function SaveAccountCard({
+  studioName,
+  initialEmail,
+  autoSend,
+  next,
+  onDone,
+}: {
+  studioName: string;
+  initialEmail: string;
+  autoSend: boolean;
+  next: string;
+  onDone?: () => void;
+}) {
+  const { resetPassword } = useAuth();
+  const [email, setEmail] = useState(initialEmail);
+  const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [error, setError] = useState<string | null>(null);
+
+  const send = async (address: string) => {
+    const to = address.trim();
+    if (!to || !to.includes("@")) {
+      setState("error");
+      setError("Enter the email you booked with.");
+      return;
+    }
+    setState("sending");
+    setError(null);
+    const { error: sendError } = await resetPassword(to, { claim: true, next });
+    if (sendError) {
+      setState("error");
+      setError(sendError.message);
+      return;
+    }
+    setState("sent");
+    onDone?.();
+  };
+
+  useEffect(() => {
+    if (autoSend && initialEmail) void send(initialEmail);
+    // Send once on mount when the guest opted in; later sends are manual.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (state === "sent") {
+    return (
+      <Notice
+        tone="info"
+        icon={<Mail className="h-5 w-5" aria-hidden="true" />}
+        title="Check your email"
+        body={`We sent a link to ${email.trim()}. Open it to set a password and your booking at ${studioName} stays with your account.`}
+        footnote="The link works once and expires after a short time. Nothing changes if you ignore it."
+        inline
+      />
+    );
+  }
+
+  return (
+    <Card>
+      <CardContent className="pt-6 space-y-3">
+        <div>
+          <h2 className="font-semibold leading-tight">Save your details for next time</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Set a password on the email you booked with. Next time it's one tap, and you can buy
+            a class pack or membership at {studioName}.
+          </p>
+        </div>
+        <form
+          className="flex flex-col gap-2 sm:flex-row"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void send(email);
+          }}
+          noValidate
+        >
+          <Input
+            type="email"
+            aria-label="Email you booked with"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+          />
+          <Button type="submit" disabled={state === "sending"} className="shrink-0">
+            {state === "sending" ? (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            ) : (
+              "Email me a link"
+            )}
+          </Button>
+        </form>
+        {error && (
+          <p role="alert" className="text-xs text-destructive">
+            {error}
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (

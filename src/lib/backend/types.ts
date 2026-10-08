@@ -44,17 +44,31 @@ export interface AuthProvider {
   signUpWithEmail(
     email: string,
     password: string,
-    metadata: SignUpMetadata
+    metadata: SignUpMetadata,
+    /** Same-origin path to land on after the confirmation link. */
+    next?: string
   ): Promise<{ error: AuthError | null; requiresEmailConfirmation?: boolean }>;
 
   /** Initiate OAuth flow (redirects the browser) */
-  signInWithOAuth(provider: "google" | "apple"): Promise<{ error: AuthError | null }>;
+  signInWithOAuth(provider: "google" | "apple", next?: string): Promise<{ error: AuthError | null }>;
 
   /** Sign out the current user */
   signOut(): Promise<void>;
 
-  /** Send a password reset email */
-  resetPassword(email: string): Promise<{ error: AuthError | null }>;
+  /**
+   * Email a link that lets the owner of `email` set a password.
+   * Used for "forgot password" and for a guest saving their booking details as
+   * an account (`claim: true`). Clicking the link proves control of the mailbox,
+   * which is what makes claiming a passwordless guest identity safe.
+   * `next` is the same-origin path to land on after the password is set.
+   */
+  resetPassword(
+    email: string,
+    options?: { next?: string; claim?: boolean }
+  ): Promise<{ error: AuthError | null }>;
+
+  /** Set a new password for the signed-in user (after a reset or claim link). */
+  updatePassword(password: string): Promise<{ error: AuthError | null }>;
 
   /** Get the currently authenticated user (from persisted session) */
   getSession(): Promise<{ user: AuthUser | null }>;
@@ -141,6 +155,13 @@ export interface MemberEntitlements {
 export interface DataProvider {
   /** Fetch a user profile by ID */
   getProfile(userId: string): Promise<DataResult<Profile>>;
+
+  /**
+   * Mark the signed-in user's guest profile as claimed (PRD-020 claim flow):
+   * is_guest = false, claimed_at = now. A no-op for a profile that was never a
+   * guest, and harmless where migration 00019 is not applied yet.
+   */
+  markProfileClaimed(userId: string): Promise<MutationResult>;
 
   /** Create a new message (contact form, feedback, etc.) */
   createMessage(input: CreateMessageInput): Promise<MutationResult>;
