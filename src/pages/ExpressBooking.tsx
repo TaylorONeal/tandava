@@ -30,6 +30,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { MemberBookingPanel } from "@/components/booking/MemberBookingPanel";
 import { ClassTime } from "@/components/time/ClassTime";
 import { AddToCalendar } from "@/components/calendar/AddToCalendar";
+import { HelpTip } from "@/components/help/HelpTip";
 import type { ClassEventInput } from "@/lib/calendar/classEvent";
 import { expressBookingPath, loginHref } from "@/lib/auth/next";
 import { isBackendConfigured } from "@/lib/backend";
@@ -567,7 +568,8 @@ export default function ExpressBooking() {
                 />
                 <span>
                   Save my details for next time. After booking we'll email a link to set a password,
-                  so you can rebook in one tap and use class packs.
+                  so you can rebook in one tap and use class packs.{" "}
+                  <HelpTip id="save-your-details" />
                 </span>
               </label>
             )}

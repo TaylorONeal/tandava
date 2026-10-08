@@ -48,7 +48,12 @@ Quick reference for all features, their status, and locations in the codebase.
 | Guest identity (passwordless profile) | Backend foundation | - | `profiles.is_guest` | PRD-020 |
 | Express booking rate limiting | Backend foundation | - | `count_recent_express_claims` | PRD-020 |
 | Continue link for existing accounts | Partial (token issued, not yet redeemed) | - | `express_booking_claims.continue_token_hash` | PRD-020 |
-| Privates / 1:1 appointments | Planned | - | - | PRD-021 |
+| Privates / 1:1 appointments (instant + request/approve, rooms, alternatives) | Planned | - | `instructor_availability` only | PRD-021 |
+| Class times in studio zone + viewer's time; add to calendar | Built (web) | `/s/:slug`, `/s/:slug/book/:id`, embed | `get_public_occurrence` (00021) | PRD-022 |
+| Home studio, switcher, Explore in the chrome, passes by studio | Planned | - | - | PRD-022 |
+| Studio Network (cross-studio credits, studio-controlled, ROI view) | Planned | - | - | PRD-023 |
+| Off-site privates (client address, travel) and private events (corporate, parties, room rental, quotes, invoices) | Planned | - | `events` (reused) | PRD-025 |
+| Help content, landing FAQ, info icons (one source) | Built | `/` FAQ, `HelpTip` | `src/content/help.ts` | docs/HELP-AND-FAQ.md |
 
 ### Members & Students
 
@@ -150,7 +155,7 @@ Quick reference for all features, their status, and locations in the codebase.
 
 | Feature | Status | UI Location | Schema | PRD |
 |---------|--------|-------------|--------|-----|
-| Booking links + per-channel UTM | Demonstrated UI + backend foundation | `/manage/share` | `get_my_studio` | PRD-022 |
+| Booking links + per-channel UTM | Demonstrated UI + backend foundation | `/manage/share` | `get_my_studio` | PRD-026 |
 | Printable QR code (real, scannable) | Built | `/manage/share` | - | PRD-022 |
 | Website embed widget | Built | `/manage/embed` | `get_public_schedule` | PRD-022 |
 | Per-platform widget install steps | Built | `/manage/embed` | - | PRD-022 |
@@ -180,7 +185,7 @@ Quick reference for all features, their status, and locations in the codebase.
 | Landing page A/B | Schema | - | `landing_page_variants` | PRD-011 |
 | Meta Ads integration | Future | - | - | PRD-011 |
 | Google Ads integration | Future | - | - | PRD-011 |
-| Attribution tracking | Future | - | - | PRD-011 |
+| Attribution tracking (every surface, one linked view) | Planned; only Express Booking captures UTMs today | `/manage/analytics/attribution` (planned) | `analytics_sessions` (unused), `express_booking_claims.utm_*` | PRD-024 |
 
 ### Engagement & Retention
 

@@ -212,6 +212,30 @@ You create waiver templates with your liability and consent language. Waivers ca
 
 Tandava offers several tools for new students: intro offers (first class free, trial packs, welcome discounts), guest passes (existing students can buy a class for someone else), and promo codes targeted at new students only. You can also track which students were referred and through which referral program. For a detailed walkthrough, see [New Student Workflow](workflows/new-student.md).
 
+### Can someone book a class without creating an account?
+
+Yes, when you turn on instant booking for your studio (it is off by default). A first-time visitor books a single drop-in or free class with their name and email, pays on the next screen if the class has a price, and is done. They can tick "Save my details for next time" to get a link that turns the booking into an account. Memberships and class packs still need an account. If the email already belongs to an account, we never book into it from a public form; the visitor is asked to sign in instead. See [PRD-020](prd/PRD-020-express-booking.md). Status: built, not yet verified against a live database.
+
+### Which time zone do students see class times in?
+
+Yours, always, with the zone named in words ("6:00 AM Hawaii time"). A student whose phone is in another zone also sees their local time on a second line, with the day when it differs. Booking confirmations offer Add to calendar for Apple Calendar, Google Calendar and Outlook, with your address, the teacher and the cancellation deadline in your time. See [PRD-022](prd/PRD-022-home-studio-time-zones-calendar.md).
+
+### Will my booking page show other studios?
+
+No. Your page, embedded schedule, booking form, confirmations and emails show only your studio. Members reach the rest of Tandava through the app's own menu, never through anything on your page. See [PRD-022](prd/PRD-022-home-studio-time-zones-calendar.md).
+
+### Is the Studio Network the same as ClassPass? (planned)
+
+No. ClassPass is a marketplace that lists your classes on its terms. The Studio Network is Tandava's own, between studios on Tandava, and you set the terms: which classes, how many seats, from when, the lowest price, who is excluded. Anyone who bought from you in the last 90 days cannot use Network credits at your studio, so your members don't move their spend. The visitor becomes your member record, and converting them to a membership, pack, workshop or private costs you nothing. It is off until you turn it on, and the settings page shows your empty-seat history and the money before you do. A ClassPass connector is a separate, optional thing, available only if you ask and the terms exist. See [PRD-023](prd/PRD-023-studio-network.md).
+
+### How do private sessions get booked? (planned)
+
+If a teacher publishes available times, a student picks one and books. Otherwise the student sends a request with up to three preferred times, checked against the teacher's classes, other appointments and room availability before it is sent; the teacher accepts one, proposes other times, or hands it to the studio. There is no decline button. The card is authorised at request and charged only when a time is accepted. See [PRD-021](prd/PRD-021-privates-and-appointments.md).
+
+### Can a teacher go to a client's home? Can I host a corporate class or a party? (planned)
+
+Privates get a place: your room, the client's address, or online, with a travel fee and travel time blocked on the teacher's calendar. Off-site work is request-only and opt-in per teacher, with safety defaults you can tighten. Group bookings (corporate classes, parties, team offsites, room rentals) are quoted from your price list, take a deposit, give every attendee a link to sign your waiver, and can be invoiced to a company. See [PRD-025](prd/PRD-025-offsite-privates-and-private-events.md).
+
 ---
 
 ## Payments and Billing
@@ -266,7 +290,9 @@ Newsletter signup forms can be embedded at multiple touchpoints: page footers, p
 
 ### What analytics does Tandava provide?
 
-Tandava tracks analytics sessions with full UTM attribution (source, medium, campaign, content, term), referrer information, device type, and landing page. Sessions track page views, duration, and whether they converted (booking, signup, purchase, newsletter). Daily analytics are aggregated into a dashboard view with traffic, conversions, revenue, top sources, class fill rates, and new versus returning student counts.
+Today: operational reports from your real data (bookings, attendance, memberships, revenue) once your studio is live, and campaign tags (utm_source, utm_medium, utm_campaign) recorded on instant bookings made from a tagged link. The analytics screens you see in the demo show sample data.
+
+Planned, and a condition of the hosted pilot: attribution on every surface, as one linked view. Each visitor gets a first-party id on your booking page, embedded schedule, landing pages, blog, emails and the app; when they book or sign up, their first touch and converting touch are frozen onto that conversion. You then see sources, campaigns and landing pages by bookings, new people, members and revenue; the common journeys; the funnel per surface; and each feature (instant booking, the Network, privates) as a channel with its own results. First-party only, no advertising pixels unless you add one, no IP addresses stored. See [PRD-024](prd/PRD-024-attribution-everywhere.md).
 
 ### How do referral programs work?
 

@@ -1,5 +1,5 @@
 /**
- * Share links (PRD-022).
+ * Share links (PRD-026).
  *
  * Pure, framework-free construction of the public links a studio hands out:
  * their branded storefront, and a direct link to one class that books in a

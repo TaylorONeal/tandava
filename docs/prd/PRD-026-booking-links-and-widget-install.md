@@ -1,4 +1,4 @@
-# PRD-022: Booking links and widget install
+# PRD-026: Booking links and widget install
 
 ## Overview
 **Phase:** 6
