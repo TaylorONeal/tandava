@@ -242,3 +242,50 @@ describe("guest follow-up survives a repeat booking", () => {
     expect(decideNext(f, NOW, TZ)).toMatchObject({ decision: { step: 1, episode: daysAgo(4).slice(0, 10) } });
   });
 });
+
+describe("failed and stuck claims close their step (PR #72 review)", () => {
+  it("does not plan a lapsed email again after the provider failed it", () => {
+    const f = {
+      ...base,
+      lastVisitAt: daysAgo(30),
+      visitCount: 3,
+      bookingCount: 3,
+      sends: [{ key: "lapsed" as const, step: 0, episode: daysAgo(30).slice(0, 10), sentAt: daysAgo(3), failed: true }],
+    };
+    expect(decideNext(f, NOW, TZ)).toEqual({ skip: "nothing_due" });
+  });
+  it("does not replan a claim left in 'sending' past the cap window", () => {
+    const f = {
+      ...base,
+      lastVisitAt: daysAgo(30),
+      visitCount: 3,
+      bookingCount: 3,
+      sends: [{ key: "lapsed" as const, step: 0, episode: daysAgo(30).slice(0, 10), sentAt: daysAgo(2), pending: true }],
+    };
+    expect(decideNext(f, NOW, TZ)).toEqual({ skip: "nothing_due" });
+  });
+  it("does not replan a failed first-visit intro offer", () => {
+    const visit = daysAgo(4);
+    const f = {
+      ...base,
+      firstCheckInAt: visit,
+      lastVisitAt: visit,
+      visitCount: 1,
+      bookingCount: 1,
+      sends: [
+        { key: "first_visit" as const, step: 0, episode: visit.slice(0, 10), sentAt: daysAgo(3, 12) },
+        { key: "first_visit" as const, step: 1, episode: visit.slice(0, 10), sentAt: daysAgo(1, 2), failed: true },
+      ],
+    };
+    expect(decideNext(f, NOW, TZ)).toEqual({ skip: "nothing_due" });
+  });
+  it("a failure does not count toward the daily cap", () => {
+    const f = {
+      ...base,
+      isGuest: true,
+      guestBookingAt: daysAgo(2),
+      sends: [{ key: "lapsed" as const, step: 0, episode: "x", sentAt: daysAgo(0, 2), failed: true }],
+    };
+    expect(decideNext(f, NOW, TZ)).toMatchObject({ decision: { key: "guest_to_member", step: 0 } });
+  });
+});

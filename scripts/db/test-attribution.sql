@@ -729,5 +729,22 @@ BEGIN
   IF NOT analytics_admit('test:other', 3, 3600) THEN RAISE EXCEPTION 'buckets are independent'; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (37 blocks)'; END $$;
+-- 38. This studio's failed sends come back flagged failed (they close their
+--     step so the planner can't refill every run with unclaimable sends);
+--     another studio's failures stay out.
+DO $$
+DECLARE sends JSONB;
+BEGIN
+  INSERT INTO automation_sends (studio_id, profile_id, automation_key, step, episode_key, status, sent_at) VALUES
+    ('00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000b1', 'lapsed', 0, 'f-own', 'failed', NOW() - interval '3 days'),
+    ('00000000-0000-0000-0000-00000000005b', '00000000-0000-0000-0000-0000000000b1', 'lapsed', 0, 'f-other', 'failed', NOW() - interval '2 hours');
+  SELECT c.sends INTO sends FROM get_automation_candidates('00000000-0000-0000-0000-00000000005a') c
+    WHERE c.profile_id = '00000000-0000-0000-0000-0000000000b1';
+  IF NOT EXISTS (SELECT 1 FROM jsonb_array_elements(sends) e WHERE e->>'episode' = 'f-own' AND (e->>'failed')::boolean)
+    THEN RAISE EXCEPTION 'own failed send missing: %', sends; END IF;
+  IF EXISTS (SELECT 1 FROM jsonb_array_elements(sends) e WHERE e->>'episode' = 'f-other')
+    THEN RAISE EXCEPTION 'other studio failure leaked: %', sends; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (38 blocks)'; END $$;
 ROLLBACK;

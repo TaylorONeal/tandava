@@ -44,6 +44,12 @@ export interface PriorSend {
    * sequences, recency windows and the intro offer are per studio.
    */
   otherStudio?: boolean;
+  /**
+   * The provider rejected it (status 'failed'). Never retried: the unique key
+   * on the send makes a second claim impossible, so the step is closed. It
+   * counts for nothing else (not the cap, recency or the intro offer).
+   */
+  failed?: boolean;
 }
 
 export interface PersonFacts {
@@ -103,9 +109,19 @@ export function lapsedThresholdDays(medianGapDays: number | null | undefined, ov
   return Math.min(45, Math.max(14, Math.round(medianGapDays * 2)));
 }
 
-/** This studio's sends; another studio's only matter for the daily cap. */
+/** This studio's sends that may have gone out; another studio's only matter for the daily cap. */
 function own(f: PersonFacts): PriorSend[] {
-  return f.sends.filter((s) => !s.otherStudio);
+  return f.sends.filter((s) => !s.otherStudio && !s.failed);
+}
+
+/**
+ * Any claim of this studio's for the step, in any state. A claimed step is
+ * never planned again: the unique key rejects a second claim, so planning it
+ * would only fill the run's plan with sends that can't happen and starve
+ * everyone after them.
+ */
+function claimed(f: PersonFacts, key: AutomationKey, step: number, episode: string): boolean {
+  return f.sends.some((s) => !s.otherStudio && s.key === key && s.step === step && s.episode === episode);
 }
 
 function sent(f: PersonFacts, key: AutomationKey, step: number, episode: string): boolean {
@@ -151,7 +167,7 @@ export function dueStep(f: PersonFacts, key: AutomationKey, now: Date, settings:
       // most once a month.
       const episode = f.guestBookingAt.slice(0, 10);
       const age = since(f.guestBookingAt, now);
-      if (age >= 1 * DAY && age < 7 * DAY && !sent(f, key, 0, episode) && !sentWithin(f, key, 0, 30, now))
+      if (age >= 1 * DAY && age < 7 * DAY && !claimed(f, key, 0, episode) && !sentWithin(f, key, 0, 30, now))
         return { key, step: 0, episode, template: "automation_guest_save_details" };
       // Step 1 follows the step 0 that actually went out, not the latest
       // booking: a guest who books again in between still gets the intro
@@ -159,7 +175,7 @@ export function dueStep(f: PersonFacts, key: AutomationKey, now: Date, settings:
       const lastStep0 = own(f)
         .filter((x) => x.key === key && x.step === 0 && !x.pending)
         .sort((a, b) => b.sentAt.localeCompare(a.sentAt))[0];
-      if (lastStep0 && !introOfferSent(f) && !sent(f, key, 1, lastStep0.episode)) {
+      if (lastStep0 && !introOfferSent(f) && !claimed(f, key, 1, lastStep0.episode)) {
         // Same window as before, counted from that episode's booking date,
         // and never sooner than two days after step 0 actually went out (it
         // can be delayed by consent, quiet hours or the daily cap).
@@ -176,7 +192,7 @@ export function dueStep(f: PersonFacts, key: AutomationKey, now: Date, settings:
       // Welcome only in the first week; never for someone with real history.
       // Not for someone who already booked their next class: the welcome's
       // whole ask is "book your next class".
-      if (f.visitCount === 1 && f.bookingCount <= 1 && !f.hasUpcomingBooking && age >= 2 * HOUR && age < 7 * DAY && !sent(f, key, 0, episode))
+      if (f.visitCount === 1 && f.bookingCount <= 1 && !f.hasUpcomingBooking && age >= 2 * HOUR && age < 7 * DAY && !claimed(f, key, 0, episode))
         return { key, step: 0, episode, template: "automation_first_visit_welcome" };
       if (
         f.bookingCount <= 1 &&
@@ -185,6 +201,7 @@ export function dueStep(f: PersonFacts, key: AutomationKey, now: Date, settings:
         age < 14 * DAY &&
         sent(f, key, 0, episode) &&
         since(sentAtOf(f, key, 0, episode), now) >= STEP_GAP &&
+        !claimed(f, key, 1, episode) &&
         !introOfferSent(f)
       )
         return { key, step: 1, episode, template: "automation_first_visit_intro_offer" };
@@ -195,7 +212,7 @@ export function dueStep(f: PersonFacts, key: AutomationKey, now: Date, settings:
       const threshold = lapsedThresholdDays(f.medianGapDays, settings.lapsedDaysOverride);
       const episode = f.lastVisitAt.slice(0, 10);
       const age = since(f.lastVisitAt, now);
-      if (age >= threshold * DAY && age < (threshold + 30) * DAY && !sent(f, key, 0, episode))
+      if (age >= threshold * DAY && age < (threshold + 30) * DAY && !claimed(f, key, 0, episode))
         return { key, step: 0, episode, template: "automation_lapsed" };
       return null;
     }
@@ -214,6 +231,6 @@ export function decideNext(
   if (!due) return { skip: "nothing_due" };
   if (!f.emailConsent) return { skip: "no_consent" };
   if (inQuietHours(now, studioTimeZone)) return { skip: "quiet_hours" };
-  if (f.sends.some((s) => now.getTime() - new Date(s.sentAt).getTime() < DAY)) return { skip: "daily_cap" };
+  if (f.sends.some((s) => !s.failed && now.getTime() - new Date(s.sentAt).getTime() < DAY)) return { skip: "daily_cap" };
   return { decision: due };
 }

@@ -523,3 +523,29 @@ describe("a capture request that hangs", () => {
     }
   });
 });
+
+describe("copied handoff link opened by a signed-in person (PR #72 review)", () => {
+  it("captures under a fresh id, never the other person's handoff id", async () => {
+    const foreign = "99999999-9999-4999-8999-999999999999";
+    vi.stubGlobal("window", {
+      localStorage: memoryStorage(),
+      sessionStorage: memoryStorage(),
+      location: { href: `https://app.example.com/s/oxatl?tv=${foreign}` },
+    });
+    vi.stubGlobal("document", { referrer: "" });
+    vi.stubGlobal("navigator", { userAgent: "test" });
+    const { api, data } = await import("@/lib/backend");
+    const link = vi.mocked(data.linkMyVisitor);
+    link.mockReset();
+    // The server answers a moment later: the id belongs to someone else.
+    link.mockImplementation(() => new Promise((r) => setTimeout(() => r({ error: null, owned: false } as never), 20)));
+    const invoke = vi.mocked(api.invoke);
+    invoke.mockReset();
+    invoke.mockResolvedValue({ data: { sessionId: "12121212-1212-4212-8212-121212121212" }, error: null } as never);
+    const s = await import("./session");
+    await s.trackVisit("oxatl", "storefront" as never);
+    const sent = (invoke.mock.calls.at(-1)?.[1] as { visitorId: string }).visitorId;
+    expect(sent).not.toBe(foreign);
+    expect(sent).toBe(window.localStorage.getItem("tandava.vid"));
+  });
+});

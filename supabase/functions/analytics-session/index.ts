@@ -83,14 +83,23 @@ serve(async (req) => {
 
   // Public endpoint, client-chosen ids: cap what one source, and one studio,
   // can write. Over the cap the visit just isn't recorded (no error shown).
+  // The source is checked first, and the studio is resolved before its bucket
+  // exists, so made-up slugs can't each mint a new rate-limit row.
   const source = await sourceBucket(req);
-  const checks = [db.rpc("analytics_admit", { p_bucket: `studio:${slug}`, p_limit: PER_STUDIO_PER_HOUR, p_window_seconds: 3600 })];
-  if (source) checks.push(db.rpc("analytics_admit", { p_bucket: source, p_limit: PER_SOURCE_PER_HOUR, p_window_seconds: 3600 }));
-  const admitted = await Promise.all(checks);
-  if (admitted.some((r) => r.error || r.data !== true)) return json({ sessionId: null });
+  if (source) {
+    const { data: ok, error } = await db.rpc("analytics_admit", { p_bucket: source, p_limit: PER_SOURCE_PER_HOUR, p_window_seconds: 3600 });
+    if (error || ok !== true) return json({ sessionId: null });
+  }
+
+  // Same rule as record_session: unknown or private studio records nothing.
+  const { data: studio } = await db.from("studios").select("id, website").eq("slug", slug).eq("discoverable", true).maybeSingle();
+  if (!studio) return json({ sessionId: null });
+  {
+    const { data: ok, error } = await db.rpc("analytics_admit", { p_bucket: `studio:${studio.id}`, p_limit: PER_STUDIO_PER_HOUR, p_window_seconds: 3600 });
+    if (error || ok !== true) return json({ sessionId: null });
+  }
 
   // The studio's own website host lets a visit from it count as "embed".
-  const { data: studio } = await db.from("studios").select("website").eq("slug", slug).maybeSingle();
   let studioSiteHost: string | null = null;
   try {
     studioSiteHost = studio?.website ? new URL(studio.website).hostname.replace(/^www\./, "") : null;

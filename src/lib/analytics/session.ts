@@ -258,6 +258,8 @@ export async function captureSettled(slug?: string, ms = 2000): Promise<void> {
 const lastCapture = new Map<string, { surface: Surface; opts?: { studioSiteHost?: string | null } }>();
 
 const CAPTURE_RETRY_MS = [300, 800];
+/** How long a capture waits for the server to say whose a handoff id is. */
+const HANDOFF_WAIT_MS = 3000;
 
 export function trackVisit(slug: string, surface: Surface, opts?: { studioSiteHost?: string | null }): Promise<void> {
   lastCapture.set(slug, { surface, opts });
@@ -287,8 +289,17 @@ async function trackVisitInner(slug: string, surface: Surface, opts?: { studioSi
     await Promise.race([identityKnown, new Promise((r) => setTimeout(r, IDENTITY_WAIT_MS))]);
   }
   // Adopt an embed handoff id first, so the link retry below targets it.
-  const visitorId = getVisitorId(facts.handoffVisitorId);
-  void retryHandoffLink();
+  let visitorId = getVisitorId(facts.handoffVisitorId);
+  if (lsGet(RELINK_KEY)) {
+    // A signed-in person opening a copied handoff link: the server may say
+    // the id belongs to someone else. Wait (briefly) for that answer and use
+    // whatever id survives, so this visit never lands in the other person's
+    // journey. Anonymous visitors get an immediate null and keep the id.
+    await Promise.race([retryHandoffLink(), new Promise((r) => setTimeout(r, HANDOFF_WAIT_MS))]);
+    visitorId = getVisitorId();
+  } else {
+    void retryHandoffLink();
+  }
   retryPendingLink();
   const now = Date.now();
   const existing = readSession(slug);

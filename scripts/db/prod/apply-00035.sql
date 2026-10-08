@@ -685,8 +685,11 @@ AS $$
               AND ub.status IN ('confirmed', 'waitlisted') AND o.starts_at > NOW()),
     COALESCE((SELECT jsonb_agg(jsonb_build_object('key', s.automation_key, 'step', s.step,
                 'episode', s.episode_key, 'sent_at', s.sent_at, 'pending', s.status = 'sending',
-                'other_studio', s.studio_id <> p_studio_id))
-              -- Failed sends are dropped. Unresolved 'sending' claims come back
+                'other_studio', s.studio_id <> p_studio_id, 'failed', s.status = 'failed'))
+              -- This studio's failed sends come back flagged failed: they
+              -- close their step (the unique key blocks a second claim, so
+              -- planning it again would starve later recipients) and count
+              -- for nothing else. Another studio's failures are dropped. Unresolved 'sending' claims come back
               -- flagged pending: they count for the daily cap and the
               -- intro-offer rule (the provider may have delivered them) but
               -- never advance a sequence. Another studio's last-day sends come
@@ -694,7 +697,7 @@ AS $$
               -- one-per-person daily cap, never for this studio's sequences.
               FROM automation_sends s WHERE s.profile_id = p.id
                 AND (s.studio_id = p_studio_id OR s.sent_at > NOW() - INTERVAL '1 day')
-                AND s.status IN ('sent', 'sending')), '[]'::jsonb)
+                AND (s.status IN ('sent', 'sending') OR (s.status = 'failed' AND s.studio_id = p_studio_id))), '[]'::jsonb)
   FROM profiles p JOIN members ON members.profile_id = p.id
   WHERE p.email IS NOT NULL;
 $$;
