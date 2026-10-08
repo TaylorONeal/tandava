@@ -91,11 +91,17 @@ const supabaseAuth: AuthProvider = {
     return { user: mapUser(data?.user ?? null), error: mapError(error) };
   },
 
-  async signUpWithEmail(email, password, metadata: SignUpMetadata) {
+  async signUpWithEmail(email, password, metadata: SignUpMetadata, next) {
+    const path = safeNextPath(next);
     const { data, error } = await getClient().auth.signUp({
       email,
       password,
-      options: { data: metadata },
+      options: {
+        data: metadata,
+        // The confirmation link lands on the callback, which forwards to `next`
+        // (e.g. the class someone was booking when they registered).
+        emailRedirectTo: `${window.location.origin}/auth/callback${path === "/" ? "" : `?next=${encodeURIComponent(path)}`}`,
+      },
     });
     // A user without a session means Supabase is waiting for email confirmation.
     const requiresEmailConfirmation = Boolean(data?.user && !data?.session);

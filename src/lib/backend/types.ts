@@ -44,7 +44,9 @@ export interface AuthProvider {
   signUpWithEmail(
     email: string,
     password: string,
-    metadata: SignUpMetadata
+    metadata: SignUpMetadata,
+    /** Same-origin path to land on after the confirmation link. */
+    next?: string
   ): Promise<{ error: AuthError | null; requiresEmailConfirmation?: boolean }>;
 
   /** Initiate OAuth flow (redirects the browser) */

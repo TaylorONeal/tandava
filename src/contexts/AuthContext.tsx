@@ -28,7 +28,8 @@ interface AuthContextValue extends AuthState {
   signUpWithEmail: (
     email: string,
     password: string,
-    metadata: { first_name: string; last_name: string; marketing_consent?: boolean }
+    metadata: { first_name: string; last_name: string; marketing_consent?: boolean },
+    next?: string
   ) => Promise<{ error: AuthError | null; requiresEmailConfirmation?: boolean }>;
   signInWithGoogle: (next?: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
@@ -187,10 +188,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUpWithEmail = async (
     email: string,
     password: string,
-    metadata: { first_name: string; last_name: string; marketing_consent?: boolean }
+    metadata: { first_name: string; last_name: string; marketing_consent?: boolean },
+    next?: string
   ) => {
     if (isDemoMode) return { error: null };
-    return auth.signUpWithEmail(email, password, metadata);
+    return auth.signUpWithEmail(email, password, metadata, next);
   };
 
   const signInWithGoogle = async (next?: string) => {
@@ -216,11 +218,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) return { error };
     const userId = state.user?.id;
     if (options?.claim && userId) {
-      // Best effort: the password is set either way, and an unclaimed flag only
-      // affects how staff see the record, never what the person can do.
       const { error: claimError } = await data.markProfileClaimed(userId);
-      if (claimError) console.warn("markProfileClaimed failed:", claimError.message);
       await refreshProfile();
+      if (claimError) {
+        // The password is set, and the server already treats a guest with a
+        // password as an account (get_profile_identity_by_email). Report it so
+        // the page offers a retry instead of announcing success.
+        return {
+          error: {
+            message:
+              "Your password is saved, but we couldn't finish setting up your account. Try again in a moment.",
+          },
+        };
+      }
     }
     return { error: null };
   };

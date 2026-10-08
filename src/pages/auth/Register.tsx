@@ -72,7 +72,8 @@ const Register = () => {
         first_name: formData.firstName,
         last_name: formData.lastName,
         marketing_consent: formData.marketingConsent,
-      }
+      },
+      next
     );
 
     setIsLoading(false);
@@ -116,7 +117,7 @@ const Register = () => {
 
             <div className="space-y-3 pt-4">
               <Button
-                onClick={() => navigate("/auth/login")}
+                onClick={() => navigate(next === "/" ? "/auth/login" : `/auth/login?next=${encodeURIComponent(next)}`)}
                 className="w-full h-14 text-lg"
                 size="lg"
               >

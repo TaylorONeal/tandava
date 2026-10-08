@@ -2735,6 +2735,10 @@ export interface PublicOccurrenceRow {
   express_booking_cutoff_minutes: number;
   express_waitlist_enabled: boolean;
   express_waiver_required: boolean;
+  /** For the signed-in member path (coverage resolution). */
+  studio_id?: string | null;
+  offering_id?: string | null;
+  location_id?: string | null;
 }
 
 type DatabaseTable<Row, Insert = Partial<Row>> = {

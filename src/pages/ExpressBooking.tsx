@@ -27,6 +27,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { usePublicOccurrence, useExpressBook } from "@/hooks/useBooking";
 import { useAuth } from "@/contexts/AuthContext";
+import { MemberBookingPanel } from "@/components/booking/MemberBookingPanel";
 import { expressBookingPath, loginHref } from "@/lib/auth/next";
 import { isBackendConfigured } from "@/lib/backend";
 import {
@@ -206,6 +207,10 @@ export default function ExpressBooking() {
   const { slug, occurrenceId } = useParams<{ slug: string; occurrenceId: string }>();
   const [searchParams] = useSearchParams();
   const live = isBackendConfigured();
+  const { user } = useAuth();
+  // A signed-in visitor books through their membership, pack or a member
+  // drop-in, never the guest form (express-book diverts claimed accounts).
+  const signedIn = live && Boolean(user);
 
   const { data: fetched, isLoading, isError } = usePublicOccurrence(slug, occurrenceId);
   const expressBook = useExpressBook();
@@ -350,7 +355,7 @@ export default function ExpressBooking() {
           body={`Your payment went through and your spot in ${row.offering_name} is held. Stripe emails your receipt.`}
           action={slug ? { to: `/s/${slug}`, label: `Back to ${row.studio_name}` } : undefined}
         />
-        {live && (
+        {live && !signedIn && (
           <SaveAccountCard
             studioName={row.studio_name}
             initialEmail={pending?.email ?? ""}
@@ -427,6 +432,30 @@ export default function ExpressBooking() {
           title="This class can't be booked"
           body={rejectMessage(eligibility.reason!)}
           action={slug ? { to: `/s/${slug}`, label: "See other times" } : undefined}
+        />
+      </Shell>
+    );
+  }
+
+  // --- Signed in: member booking instead of the guest form ---------------
+
+  if (signedIn && occurrenceId) {
+    return (
+      <Shell>
+        <ClassSummary row={row} zone={zone} spotsLeft={eligibility?.spotsLeft ?? 0} />
+        {paymentCancelled && (
+          <Notice
+            tone="info"
+            title="Payment cancelled"
+            body="Nothing was charged and your spot was not held."
+            inline
+          />
+        )}
+        <MemberBookingPanel
+          row={row}
+          occurrenceId={occurrenceId}
+          returnPath={bookingPath}
+          priceLabel={price && price > 0 ? formatMoney(price, row.studio_currency || "USD") : null}
         />
       </Shell>
     );
