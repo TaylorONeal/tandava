@@ -574,7 +574,7 @@ export default function Onboarding() {
               <Switch checked={discoverable} onCheckedChange={setDiscoverable} />
               <div>
                 <Label>List my studio on Tandava Discover</Label>
-                <p className="text-xs text-muted-foreground">Students searching Tandava Discover can find and book your classes. You can turn this off any time.</p>
+                <p className="text-xs text-muted-foreground">Students searching Tandava Discover can find and book your classes.</p>
               </div>
             </div>
             <Separator />
