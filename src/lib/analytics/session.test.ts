@@ -282,3 +282,20 @@ describe("account switch with in-memory fallback", () => {
     expect(s.currentSessionId("oxatl")).toBeFalsy();
   });
 });
+
+describe("visitor id write failures", () => {
+  it("uses the rotated in-memory id when localStorage.setItem fails but getItem works", async () => {
+    const { getVisitorId, claimVisitorFor, forgetVisitor } = await import("./session");
+    const first = getVisitorId();
+    claimVisitorFor("user-a");
+    window.localStorage.setItem = () => {
+      throw new Error("quota");
+    };
+    forgetVisitor();
+    const afterSignOut = getVisitorId();
+    expect(afterSignOut).not.toBe(first);
+    expect(getVisitorId()).toBe(afterSignOut);
+    claimVisitorFor("user-b");
+    expect(getVisitorId()).not.toBe(first);
+  });
+});

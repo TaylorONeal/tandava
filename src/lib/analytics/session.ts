@@ -38,26 +38,45 @@ function randomId(): string {
  * through sign-in linking (profile_visitors).
  */
 export function getVisitorId(handoff?: string): string {
-  try {
-    const stored = window.localStorage.getItem(VISITOR_KEY);
-    if (handoff && handoff !== stored) {
-      // Keep the displaced id so sign-in links its earlier visits too.
-      if (stored) rememberPreviousVisitor(stored);
-      window.localStorage.setItem(VISITOR_KEY, handoff);
+  // An id that only made it to memory (a failed write) is newer than whatever
+  // storage still holds, e.g. the previous person's id after a rotation.
+  const stored = memoryVisitor ?? readStoredVisitor();
+  if (handoff && handoff !== stored) {
+    // Keep the displaced id so sign-in links its earlier visits too.
+    if (stored) rememberPreviousVisitor(stored);
+    setVisitor(handoff);
+    try {
       // Someone already signed in gets no new auth event; link it now (a
       // no-op on the server for anonymous visitors). Kept pending until the
       // link succeeds; trackVisit retries it on the next page view.
       window.localStorage.setItem(RELINK_KEY, handoff);
       void retryHandoffLink();
-      return handoff;
+    } catch {
+      // Storage unavailable: no pending link to retry.
     }
-    if (stored) return stored;
-    const id = randomId();
-    window.localStorage.setItem(VISITOR_KEY, id);
-    return id;
+    return handoff;
+  }
+  if (stored) return stored;
+  const id = randomId();
+  setVisitor(id);
+  return id;
+}
+
+function readStoredVisitor(): string | null {
+  try {
+    return window.localStorage.getItem(VISITOR_KEY);
   } catch {
-    memoryVisitor = handoff ?? memoryVisitor ?? randomId();
-    return memoryVisitor;
+    return null;
+  }
+}
+
+/** Persist the visitor id; on a failed write keep it in memory, where it outranks storage. */
+function setVisitor(id: string) {
+  try {
+    window.localStorage.setItem(VISITOR_KEY, id);
+    memoryVisitor = null;
+  } catch {
+    memoryVisitor = id;
   }
 }
 
@@ -134,16 +153,15 @@ async function retryHandoffLinkInner() {
  * this browser session, so this person's visits and bookings are their own.
  */
 function rotateAwayFrom(id: string) {
+  if ((memoryVisitor ?? readStoredVisitor()) !== id) return;
+  setVisitor(randomId());
   try {
-    if (window.localStorage.getItem(VISITOR_KEY) !== id) return;
-    window.localStorage.setItem(VISITOR_KEY, randomId());
     for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
       const k = window.sessionStorage.key(i);
       if (k?.startsWith(SESSION_PREFIX) || k?.startsWith(LINKED_PREFIX)) window.sessionStorage.removeItem(k);
     }
   } catch {
-    if (memoryVisitor !== id) return;
-    memoryVisitor = randomId();
+    // Memory fallbacks are cleared below.
   }
   memorySessions.clear();
   linkedInMemory.clear();
@@ -314,7 +332,7 @@ export function claimVisitorFor(userId: string) {
       // would otherwise outrank the cleared storage and keep A's visit.
       memorySessions.clear();
       linkedInMemory.clear();
-      window.localStorage.setItem(VISITOR_KEY, randomId());
+      setVisitor(randomId());
       window.localStorage.removeItem(PREVIOUS_KEY);
       window.localStorage.removeItem(RELINK_KEY);
       // A new visitor id needs linking again for everyone, A -> B -> A included.
@@ -327,7 +345,7 @@ export function claimVisitorFor(userId: string) {
     window.localStorage.setItem(OWNER_KEY, userId);
   } catch {
     if (memoryOwner && memoryOwner !== userId) {
-      memoryVisitor = randomId();
+      setVisitor(randomId());
       memorySessions.clear();
       linkedInMemory.clear();
     }
@@ -556,7 +574,7 @@ export function forgetVisitor() {
   memorySessions.clear();
   linkedInMemory.clear();
   try {
-    window.localStorage.setItem(VISITOR_KEY, randomId());
+    setVisitor(randomId());
     window.localStorage.removeItem(OWNER_KEY);
     window.localStorage.removeItem(PENDING_CONSENT_KEY);
     window.localStorage.removeItem(PREVIOUS_KEY);
@@ -566,7 +584,7 @@ export function forgetVisitor() {
       if (k?.startsWith(SESSION_PREFIX) || k?.startsWith(LINKED_PREFIX) || k?.startsWith(CONSENT_PREFIX)) window.sessionStorage.removeItem(k);
     }
   } catch {
-    memoryVisitor = randomId();
+    setVisitor(randomId());
     memoryOwner = null;
     memorySessions.clear();
     linkedInMemory.clear();

@@ -6,7 +6,7 @@
  * records.
  */
 
-import { decideNext, DEFAULT_SETTINGS, type AutomationKey, type AutomationSettings, type Decision, type PersonFacts, type SkipReason } from "./automations";
+import { decideNext, DEFAULT_SETTINGS, type AutomationKey, type AutomationSettings, type Decision, type PersonFacts, type SkipReason } from "./automations.ts";
 
 /** One row of get_automation_candidates() as PostgREST returns it. */
 export interface CandidateRow {
