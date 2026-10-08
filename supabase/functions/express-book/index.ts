@@ -382,7 +382,7 @@ serve(async (req) => {
      * Attribution and consent never fail a booking, but they are checked and
      * retried.
      */
-    const recordAttribution = async (profileId: string, bookingId: string | null, valueCents: number) => {
+    const recordAttribution = async (profileId: string, bookingId: string | null, valueCents: number, bookedAt?: string | null) => {
       try {
         if (guest.marketingConsent) {
           await requestOptInConfirmation(profileId);
@@ -410,7 +410,8 @@ serve(async (req) => {
               p_studio_id: studioId, p_profile_id: profileId, p_visitor_id: visitorId,
               p_conversion_type: "guest_booking", p_value_cents: valueCents, p_currency: row.studio_currency ?? "USD",
               p_entity_type: "booking", p_entity_id: bookingId, p_converting_session_id: sessionId,
-              p_member_source: "express", p_occurred_at: new Date().toISOString(),
+              // The booking's own commit time, not when this code got here.
+              p_member_source: "express", p_occurred_at: bookedAt ?? new Date().toISOString(),
             },
           });
           if (!queued) console.error("express-book: CONVERSION NOT SAVED", { studioId, bookingId });
@@ -612,13 +613,21 @@ serve(async (req) => {
       // Keep how this waitlist spot was made; the conversion is recorded at
       // promotion (record_promoted_booking_conversion), maybe after the guest
       // has saved an account or visited again.
-      const { error: ctxError } = await db.from("booking_attribution_context").upsert(
-        { booking_id: created.id, studio_id: studioId, origin: "express", session_id: sessionId },
-        { onConflict: "booking_id" },
-      );
-      if (ctxError) console.error("express-book: waitlist attribution context not saved", ctxError.message);
+      // The row itself (origin "express") is written by the bookings trigger
+      // in the same transaction as the booking, so it can't be lost; here we
+      // only add the validated visit, with retries.
+      if (sessionId) {
+        let saved = false;
+        for (let attempt = 0; attempt < 3 && !saved; attempt++) {
+          const { error: ctxError } = await db.from("booking_attribution_context")
+            .update({ session_id: sessionId }).eq("booking_id", created.id);
+          saved = !ctxError;
+          if (ctxError) await new Promise((r) => setTimeout(r, 150 * (attempt + 1)));
+        }
+        if (!saved) console.error("express-book: waitlist visit not saved; promotion will use the latest visit before it", created.id);
+      }
     }
-    await recordAttribution(profileId, outcome === "booked" ? created?.id ?? null : null, 0);
+    await recordAttribution(profileId, outcome === "booked" ? created?.id ?? null : null, 0, created?.booked_at ?? created?.created_at ?? null);
 
     return json({
       outcome,

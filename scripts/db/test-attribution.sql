@@ -550,8 +550,10 @@ BEGIN
   PERFORM set_config('request.headers', '', true);
   INSERT INTO bookings (studio_id, class_occurrence_id, profile_id, status)
   VALUES ('00000000-0000-0000-0000-00000000005a', occ, g, 'waitlisted') RETURNING id INTO b;
-  INSERT INTO booking_attribution_context (booking_id, studio_id, origin, session_id)
-  VALUES (b, '00000000-0000-0000-0000-00000000005a', 'express', early);
+  -- The trigger wrote the context with the booking; express-book adds the visit.
+  IF NOT EXISTS (SELECT 1 FROM booking_attribution_context WHERE booking_id = b AND origin = 'express')
+    THEN RAISE EXCEPTION 'waitlist context not written with the booking'; END IF;
+  UPDATE booking_attribution_context SET session_id = early WHERE booking_id = b;
   -- They save an account and come back through another link before a spot opens.
   UPDATE profiles SET is_guest = FALSE WHERE id = g;
   PERFORM record_session('aloha', v, 'wl-2', 'storefront', 'https://x/s/aloha?utm_source=ig', NULL,

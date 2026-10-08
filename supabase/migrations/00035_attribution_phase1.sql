@@ -743,6 +743,15 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
+  -- A guest's waitlist spot made by the service role (express booking): record
+  -- its origin in the same transaction as the booking, so it can't be lost.
+  -- express-book then adds the validated visit.
+  IF NEW.status = 'waitlisted' AND auth.uid() IS NULL
+     AND EXISTS (SELECT 1 FROM profiles WHERE id = NEW.profile_id AND is_guest IS TRUE) THEN
+    INSERT INTO booking_attribution_context (booking_id, studio_id, origin)
+    VALUES (NEW.id, NEW.studio_id, 'express')
+    ON CONFLICT (booking_id) DO NOTHING;
+  END IF;
   IF auth.uid() IS NOT NULL AND auth.uid() = NEW.profile_id THEN
     IF NEW.status = 'confirmed' THEN
       PERFORM record_booking_conversion_or_queue(
