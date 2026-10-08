@@ -53,7 +53,8 @@ export interface AuthProvider {
   ): Promise<{ error: AuthError | null; requiresEmailConfirmation?: boolean }>;
 
   /** Initiate OAuth flow (redirects the browser) */
-  signInWithOAuth(provider: "google" | "apple", next?: string): Promise<{ error: AuthError | null }>;
+  /** `consentNonce` rides on the callback URL so a sign-up's marketing choice applies only to that attempt. */
+  signInWithOAuth(provider: "google" | "apple", next?: string, consentNonce?: string): Promise<{ error: AuthError | null }>;
 
   /** Sign out the current user */
   signOut(): Promise<void>;

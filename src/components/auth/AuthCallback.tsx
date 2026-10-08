@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { auth } from "@/lib/backend";
 import { safeNextPath } from "@/lib/auth/next";
+import { applyOAuthSignupConsent } from "@/lib/analytics/session";
 
 /**
  * Handles the OAuth redirect callback.
@@ -12,16 +13,19 @@ export function AuthCallback() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const next = safeNextPath(searchParams.get("next"));
+  const consentNonce = searchParams.get("cn");
 
   useEffect(() => {
-    auth.getSession().then(({ user }) => {
+    auth.getSession().then(async ({ user }) => {
       if (user) {
+        // A Google sign-up's marketing choice, only for this exact attempt.
+        await applyOAuthSignupConsent(consentNonce);
         navigate(next, { replace: true });
       } else {
         navigate("/auth/login", { replace: true });
       }
     });
-  }, [navigate, next]);
+  }, [navigate, next, consentNonce]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">

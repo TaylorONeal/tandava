@@ -48,6 +48,8 @@ export interface PersonFacts {
   medianGapDays?: number | null;
   hasActiveMembership: boolean;
   hasActivePack: boolean;
+  /** A confirmed or waitlisted future class at this studio. */
+  hasUpcomingBooking?: boolean;
   sends: PriorSend[];
 }
 
@@ -150,7 +152,7 @@ export function dueStep(f: PersonFacts, key: AutomationKey, now: Date, settings:
       return null;
     }
     case "lapsed": {
-      if (!settings.lapsedEnabled || !f.lastVisitAt || f.visitCount < 2) return null;
+      if (!settings.lapsedEnabled || !f.lastVisitAt || f.visitCount < 2 || f.hasUpcomingBooking) return null;
       const threshold = lapsedThresholdDays(f.medianGapDays, settings.lapsedDaysOverride);
       const episode = f.lastVisitAt.slice(0, 10);
       const age = since(f.lastVisitAt, now);

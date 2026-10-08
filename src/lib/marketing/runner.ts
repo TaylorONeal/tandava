@@ -25,6 +25,7 @@ export interface CandidateRow {
   median_gap_days: number | string | null;
   has_active_membership: boolean | null;
   has_active_pack: boolean | null;
+  has_upcoming_booking?: boolean | null;
   sends: { key: string; step: number; episode: string; sent_at: string }[] | null;
 }
 
@@ -57,6 +58,7 @@ export function factsFromCandidate(r: CandidateRow): PersonFacts {
     medianGapDays: num(r.median_gap_days),
     hasActiveMembership: Boolean(r.has_active_membership),
     hasActivePack: Boolean(r.has_active_pack),
+    hasUpcomingBooking: Boolean(r.has_upcoming_booking),
     sends: (r.sends ?? [])
       .filter((s) => KEYS.has(s.key as AutomationKey))
       .map((s) => ({ key: s.key as AutomationKey, step: Number(s.step), episode: s.episode, sentAt: s.sent_at })),

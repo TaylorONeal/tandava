@@ -109,9 +109,12 @@ const supabaseAuth: AuthProvider = {
     return { error: mapError(error), requiresEmailConfirmation };
   },
 
-  async signInWithOAuth(provider, next) {
+  async signInWithOAuth(provider, next, consentNonce) {
     const path = safeNextPath(next);
-    const query = path === "/" ? "" : `?next=${encodeURIComponent(path)}`;
+    const params = new URLSearchParams();
+    if (path !== "/") params.set("next", path);
+    if (consentNonce) params.set("cn", consentNonce);
+    const query = params.toString() ? `?${params.toString()}` : "";
     const { error } = await getClient().auth.signInWithOAuth({
       provider,
       options: { redirectTo: `${window.location.origin}/auth/callback${query}` },

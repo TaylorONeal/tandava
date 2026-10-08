@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AUTOMATION_TEMPLATES, escapeHtml, isAutomationTemplate, renderAutomationEmail, safeUrl } from "./automationEmails";
+import { AUTOMATION_TEMPLATES, escapeHtml, isAutomationTemplate, renderAutomationEmail, safeUrl, withCampaignTags } from "./automationEmails";
 import { decideNext, DEFAULT_SETTINGS } from "./automations";
 
 const input = {
@@ -72,5 +72,16 @@ describe("helpers", () => {
     expect(safeUrl("ftp://x", "f")).toBe("f");
     expect(safeUrl(null, "f")).toBe("f");
     expect(safeUrl("https://a.b/c", "f")).toBe("https://a.b/c");
+  });
+});
+
+describe("withCampaignTags", () => {
+  it("adds tags, keeps the link's own query and any tags the studio set", () => {
+    expect(withCampaignTags("https://oxatl.com/intro?ref=a", "first_visit")).toBe(
+      "https://oxatl.com/intro?ref=a&utm_source=tandava&utm_medium=email&utm_campaign=first_visit",
+    );
+    expect(withCampaignTags("https://oxatl.com/i?utm_source=studio", "lapsed")).toContain("utm_source=studio");
+    expect(withCampaignTags("javascript:alert(1)", "x")).toBeNull();
+    expect(withCampaignTags(null, "x")).toBeNull();
   });
 });

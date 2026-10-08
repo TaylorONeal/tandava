@@ -32,7 +32,7 @@ interface AuthContextValue extends AuthState {
     metadata: SignUpMetadata,
     next?: string
   ) => Promise<{ error: AuthError | null; requiresEmailConfirmation?: boolean }>;
-  signInWithGoogle: (next?: string) => Promise<{ error: AuthError | null }>;
+  signInWithGoogle: (next?: string, consentNonce?: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
   resetPassword: (
     email: string,
@@ -197,9 +197,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return auth.signUpWithEmail(email, password, metadata, next);
   };
 
-  const signInWithGoogle = async (next?: string) => {
+  const signInWithGoogle = async (next?: string, consentNonce?: string) => {
     if (isDemoMode) return { error: null };
-    const { error } = await auth.signInWithOAuth("google", next);
+    const { error } = await auth.signInWithOAuth("google", next, consentNonce);
     return { error };
   };
 

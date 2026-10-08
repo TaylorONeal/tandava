@@ -485,6 +485,7 @@ RETURNS TABLE (
   first_check_in_at TIMESTAMPTZ, last_visit_at TIMESTAMPTZ,
   visit_count BIGINT, booking_count BIGINT, median_gap_days NUMERIC,
   has_active_membership BOOLEAN, has_active_pack BOOLEAN,
+  has_upcoming_booking BOOLEAN,
   sends JSONB
 )
 LANGUAGE sql
@@ -523,6 +524,10 @@ AS $$
     EXISTS (SELECT 1 FROM class_packs cp WHERE cp.profile_id = p.id AND cp.studio_id = p_studio_id
             AND cp.status = 'active' AND COALESCE(cp.classes_remaining, 0) > 0
             AND (cp.expires_at IS NULL OR cp.expires_at > NOW())),
+    -- Already coming back: a lapsed check-in would be wrong.
+    EXISTS (SELECT 1 FROM bookings ub JOIN class_occurrences o ON o.id = ub.class_occurrence_id
+            WHERE ub.profile_id = p.id AND ub.studio_id = p_studio_id
+              AND ub.status IN ('confirmed', 'waitlisted') AND o.starts_at > NOW()),
     COALESCE((SELECT jsonb_agg(jsonb_build_object('key', s.automation_key, 'step', s.step,
                 'episode', s.episode_key, 'sent_at', s.sent_at))
               FROM automation_sends s WHERE s.profile_id = p.id AND s.studio_id = p_studio_id), '[]'::jsonb)

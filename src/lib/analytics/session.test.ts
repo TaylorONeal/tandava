@@ -48,13 +48,18 @@ describe("getVisitorId", () => {
 });
 
 describe("signup consent across OAuth", () => {
-  it("keeps the choice once and only for a studio sign-up", async () => {
+  it("applies only to the attempt that carries the nonce, once", async () => {
     const { rememberSignupConsent, takeSignupConsent } = await import("./session");
-    rememberSignupConsent(undefined, true);
-    expect(takeSignupConsent()).toBeNull();
-    rememberSignupConsent("aloha", true);
-    expect(takeSignupConsent()).toMatchObject({ slug: "aloha", granted: true });
-    expect(takeSignupConsent()).toBeNull();
+    expect(rememberSignupConsent(undefined, true)).toBeUndefined();
+    const nonce = rememberSignupConsent("aloha", true);
+    expect(nonce).toBeTruthy();
+    expect(takeSignupConsent("someone-else")).toBeNull(); // wrong attempt: discarded
+    const again = rememberSignupConsent("aloha", true);
+    expect(takeSignupConsent(null)).toBeNull(); // plain sign-in: discarded
+    const third = rememberSignupConsent("aloha", false);
+    expect(takeSignupConsent(third)).toMatchObject({ slug: "aloha", granted: false });
+    expect(takeSignupConsent(third)).toBeNull();
+    expect(again).not.toBe(third);
   });
 });
 

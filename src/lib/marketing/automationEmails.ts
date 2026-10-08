@@ -167,3 +167,22 @@ export const AUTOMATION_TEMPLATES: AutomationTemplate[] = [
 export function isAutomationTemplate(t: string): t is AutomationTemplate {
   return (AUTOMATION_TEMPLATES as string[]).includes(t);
 }
+
+/**
+ * Add the automation's campaign tags to a studio-supplied link (keeping its
+ * own query string), so clicks and purchases from the intro offer show up in
+ * Sources under the automation. Tags the studio already set are kept.
+ */
+export function withCampaignTags(url: string | null | undefined, campaign: string): string | null {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    if (u.protocol !== "https:" && u.protocol !== "http:") return null;
+    if (!u.searchParams.has("utm_source")) u.searchParams.set("utm_source", "tandava");
+    if (!u.searchParams.has("utm_medium")) u.searchParams.set("utm_medium", "email");
+    if (!u.searchParams.has("utm_campaign")) u.searchParams.set("utm_campaign", campaign);
+    return u.toString();
+  } catch {
+    return null;
+  }
+}

@@ -28,7 +28,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { sendEmail } from "../email/provider.ts";
 import { planStudio, formatAddress, type CandidateRow } from "../../../src/lib/marketing/runner.ts";
-import { isAutomationTemplate, renderAutomationEmail } from "../../../src/lib/marketing/automationEmails.ts";
+import { isAutomationTemplate, renderAutomationEmail, withCampaignTags } from "../../../src/lib/marketing/automationEmails.ts";
 import { signUnsubscribe } from "../../../src/lib/marketing/unsubscribeToken.ts";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -146,7 +146,7 @@ serve(async (req) => {
         firstName: s.firstName,
         scheduleUrl: `${scheduleUrl}?utm_source=tandava&utm_medium=email&utm_campaign=${s.decision.key}`,
         saveDetailsUrl: `${scheduleUrl}/save-details?utm_source=tandava&utm_medium=email&utm_campaign=${s.decision.key}`,
-        introOfferUrl: settings?.intro_offer_url ?? null,
+        introOfferUrl: withCampaignTags(settings?.intro_offer_url, s.decision.key),
         unsubscribeUrl,
         studioAddress: address,
         brandColor: studio.brand_primary_color,

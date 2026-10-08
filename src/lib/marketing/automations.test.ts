@@ -78,6 +78,14 @@ describe("guest to member", () => {
   });
 });
 
+describe("lapsed stops when they've booked again", () => {
+  it("no check-in for someone with a class coming up", () => {
+    const f = { ...base, lastVisitAt: daysAgo(30), firstCheckInAt: daysAgo(90), visitCount: 8, bookingCount: 9, medianGapDays: 7 };
+    expect(decideNext(f, NOW, TZ)).toMatchObject({ decision: { key: "lapsed" } });
+    expect(decideNext({ ...f, hasUpcomingBooking: true }, NOW, TZ)).toEqual({ skip: "nothing_due" });
+  });
+});
+
 describe("one intro offer per person", () => {
   it("a guest who got the guest intro offer doesn't get the first-visit one too", () => {
     const f = {

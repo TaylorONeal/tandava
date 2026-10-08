@@ -218,8 +218,8 @@ const Register = () => {
 
     // OAuth carries no sign-up metadata: keep the marketing choice in this
     // browser and apply it for this studio after the redirect signs them in.
-    rememberSignupConsent(studioSlugFromPath(next), formData.marketingConsent);
-    const { error } = await signInWithGoogle(next);
+    const consentNonce = rememberSignupConsent(studioSlugFromPath(next), formData.marketingConsent);
+    const { error } = await signInWithGoogle(next, consentNonce);
     if (error) {
       toast({
         title: t('register.signupFailed'),

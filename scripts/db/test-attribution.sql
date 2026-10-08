@@ -245,6 +245,9 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM studio_members WHERE studio_id = '00000000-0000-0000-0000-00000000005a'
                  AND profile_id = '00000000-0000-0000-0000-0000000000e3')
     THEN RAISE EXCEPTION 'conversion did not create the studio relationship'; END IF;
+  IF (SELECT has_upcoming_booking FROM get_automation_candidates('00000000-0000-0000-0000-00000000005a')
+      WHERE profile_id = '00000000-0000-0000-0000-0000000000e3') IS NOT TRUE
+    THEN RAISE EXCEPTION 'upcoming booking not reported to the runner'; END IF;
 END $$;
 
 -- 13. Overlapping page loads in one session make one visit.

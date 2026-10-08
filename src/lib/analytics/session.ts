@@ -190,8 +190,9 @@ export async function linkVisitorOnce(userId: string, via = "sign_in") {
   }
   try {
     // A no-op unless the sign-up started on a studio page and wasn't applied yet.
-    const pending = takeSignupConsent();
-    await data.applyMySignupConsent(pending ?? undefined);
+    // Email sign-ups: metadata. OAuth sign-ups are applied by the callback
+    // (applyOAuthSignupConsent), which can prove which attempt it was.
+    await data.applyMySignupConsent();
   } catch {
     // Best effort; the person can still opt in later.
   }
@@ -203,22 +204,25 @@ const PENDING_TTL_MS = 60 * 60 * 1000;
 export interface PendingConsent {
   slug: string;
   granted: boolean;
-  /** When the Google sign-up started; the server applies the choice only to an account created right after it. */
+  /** When the Google sign-up started. */
   startedAt: string;
 }
 
 /**
  * Keep the sign-up marketing choice in this browser across an OAuth redirect
- * (Google sign-up carries no metadata). Applied once on the next sign-in, and
- * only if that account was created just after this moment, so a cancelled
- * attempt can never opt a different, existing account in. Expires in an hour.
+ * (Google sign-up carries no metadata). Returns a random nonce that rides on
+ * that attempt's callback URL; the callback applies the choice only when the
+ * nonce matches, so a cancelled attempt can't opt in whoever signs in next.
+ * Expires in an hour.
  */
-export function rememberSignupConsent(slug: string | undefined, granted: boolean) {
-  if (!slug) return;
+export function rememberSignupConsent(slug: string | undefined, granted: boolean): string | undefined {
+  if (!slug) return undefined;
+  const nonce = randomId();
   try {
-    window.localStorage.setItem(PENDING_CONSENT_KEY, JSON.stringify({ slug, granted, at: Date.now() }));
+    window.localStorage.setItem(PENDING_CONSENT_KEY, JSON.stringify({ slug, granted, at: Date.now(), nonce }));
+    return nonce;
   } catch {
-    // Storage blocked: the choice can still be made later.
+    return undefined; // Storage blocked: the choice can still be made later.
   }
 }
 
@@ -230,17 +234,30 @@ export function clearSignupConsent() {
   }
 }
 
-export function takeSignupConsent(): PendingConsent | null {
+/** Take the pending choice if, and only if, it belongs to this OAuth attempt. One use. */
+export function takeSignupConsent(nonce: string | null | undefined): PendingConsent | null {
   try {
     const raw = window.localStorage.getItem(PENDING_CONSENT_KEY);
     window.localStorage.removeItem(PENDING_CONSENT_KEY);
-    if (!raw) return null;
-    const v = JSON.parse(raw) as { slug?: unknown; granted?: unknown; at?: unknown };
+    if (!raw || !nonce) return null;
+    const v = JSON.parse(raw) as { slug?: unknown; granted?: unknown; at?: unknown; nonce?: unknown };
     if (typeof v.slug !== "string" || typeof v.granted !== "boolean" || typeof v.at !== "number") return null;
+    if (v.nonce !== nonce) return null;
     if (Date.now() - v.at > PENDING_TTL_MS) return null;
     return { slug: v.slug, granted: v.granted, startedAt: new Date(v.at).toISOString() };
   } catch {
     return null;
+  }
+}
+
+/** Called by /auth/callback after an OAuth sign-in. */
+export async function applyOAuthSignupConsent(nonce: string | null | undefined) {
+  const pending = takeSignupConsent(nonce);
+  if (!pending) return;
+  try {
+    await data.applyMySignupConsent(pending);
+  } catch {
+    // Best effort.
   }
 }
 
