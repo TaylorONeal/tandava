@@ -116,6 +116,7 @@ export default function Automations() {
             </p>
             <p>Only people who said yes to your emails. Never between 9pm and 8am your time. At most one a day per person.</p>
             <p>Every email has a one-click unsubscribe, and replies go to the email on your studio profile.</p>
+            <p>Each email carries your studio's postal address, as the law requires for marketing email. Nothing sends until your location has a street address and city.</p>
           </CardContent>
         </Card>
 

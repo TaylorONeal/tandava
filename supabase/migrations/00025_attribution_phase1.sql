@@ -689,7 +689,10 @@ CREATE TABLE IF NOT EXISTS stripe_webhook_events (
   event_type TEXT NOT NULL,
   -- processing: claimed, fulfilment under way (or the function died mid-way);
   -- completed: fulfilled. Only completed events are skipped on redelivery.
-  status TEXT NOT NULL DEFAULT 'processing' CHECK (status IN ('processing', 'completed')),
+  -- fulfilled: entitlements written, some attribution writes still pending
+  -- (pending_conversions); a redelivery replays only those.
+  status TEXT NOT NULL DEFAULT 'processing' CHECK (status IN ('processing', 'fulfilled', 'completed')),
+  pending_conversions JSONB,
   received_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   completed_at TIMESTAMPTZ
 );

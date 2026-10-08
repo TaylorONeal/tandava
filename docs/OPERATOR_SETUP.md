@@ -193,6 +193,8 @@ $$);
 
 Quiet hours, the daily cap and consent are enforced per person in code, so an hourly schedule is safe in every time zone.
 
+A studio with no street address and city on an active location gets no automation email (the run report says `blocked: no_postal_address`). If the `express-book` logs ever show `CONSENT NOT SAVED`, record that person's choice by hand before the next run: an unsaved opt-out must not be emailed.
+
 ---
 
 ## What a studio owner does after all this

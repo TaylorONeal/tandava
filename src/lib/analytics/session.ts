@@ -45,10 +45,10 @@ export function getVisitorId(handoff?: string): string {
       if (stored) rememberPreviousVisitor(stored);
       window.localStorage.setItem(VISITOR_KEY, handoff);
       // Someone already signed in gets no new auth event; link it now (a
-      // no-op on the server for anonymous visitors).
-      void Promise.resolve()
-        .then(() => data.linkMyVisitor(handoff, "embed_handoff"))
-        .catch(() => undefined);
+      // no-op on the server for anonymous visitors). Kept pending until the
+      // link succeeds; trackVisit retries it on the next page view.
+      window.localStorage.setItem(RELINK_KEY, handoff);
+      void retryHandoffLink();
       return handoff;
     }
     if (stored) return stored;
@@ -87,6 +87,24 @@ function writeSession(slug: string, s: StoredSession) {
 }
 
 const PREVIOUS_KEY = "tandava.vid.prev";
+const RELINK_KEY = "tandava.vid.relink";
+
+/** Link a pending embed handoff id for a signed-in person; cleared only on success. */
+export async function retryHandoffLink() {
+  let id: string | null = null;
+  try {
+    id = window.localStorage.getItem(RELINK_KEY);
+  } catch {
+    return;
+  }
+  if (!id) return;
+  try {
+    const { error } = await data.linkMyVisitor(id, "embed_handoff");
+    if (!error) window.localStorage.removeItem(RELINK_KEY);
+  } catch {
+    // Retried on the next page view.
+  }
+}
 
 function rememberPreviousVisitor(id: string) {
   try {
@@ -122,6 +140,7 @@ export type Surface = "storefront" | "booking" | "embed" | "landing" | "blog" | 
  */
 export async function trackVisit(slug: string, surface: Surface, opts?: { studioSiteHost?: string | null }) {
   if (typeof window === "undefined" || !slug) return;
+  void retryHandoffLink();
   const href = window.location.href;
   const facts = parseLanding(href);
   const visitorId = getVisitorId(facts.handoffVisitorId);
@@ -388,6 +407,7 @@ export function forgetVisitor() {
     window.localStorage.removeItem(OWNER_KEY);
     window.localStorage.removeItem(PENDING_CONSENT_KEY);
     window.localStorage.removeItem(PREVIOUS_KEY);
+    window.localStorage.removeItem(RELINK_KEY);
     for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
       const k = window.sessionStorage.key(i);
       if (k?.startsWith(SESSION_PREFIX) || k?.startsWith(LINKED_PREFIX) || k?.startsWith(CONSENT_PREFIX)) window.sessionStorage.removeItem(k);

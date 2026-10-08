@@ -102,10 +102,16 @@ serve(async (req) => {
     const plan = planStudio((candidates ?? []) as CandidateRow[], settings, now, studio.timezone || "UTC");
     const result = { studio: studio.slug, planned: plan.sends.length, skipped: plan.skipped, sent: 0, failed: 0, dryRun };
     report.push(result);
-    if (dryRun || plan.sends.length === 0) continue;
-
     const scheduleUrl = `${appUrl}/s/${encodeURIComponent(studio.slug)}`;
     const address = formatAddress(loc);
+    // CAN-SPAM: commercial email must carry a valid postal address. No
+    // address on an active location, no automation email.
+    if (!address) {
+      (result as Record<string, unknown>).blocked = "no_postal_address";
+      continue;
+    }
+    if (dryRun || plan.sends.length === 0) continue;
+
 
     for (const s of plan.sends) {
       if (!isAutomationTemplate(s.decision.template)) continue;

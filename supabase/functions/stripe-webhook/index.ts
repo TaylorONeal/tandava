@@ -54,7 +54,10 @@ serve(async (req) => {
     switch (event.type) {
       case "checkout.session.completed": {
         // Stripe redelivers events. Fulfil each checkout once: claim the event
-        // (processing), fulfil, mark completed. See migration 00025.
+        // (processing), fulfil, then mark completed. If only the attribution
+        // writes failed, the row is "fulfilled" with those writes saved, and
+        // the 500 makes Stripe redeliver; the redelivery replays just them
+        // (idempotent per entity), never the fulfilment. See migration 00025.
         const claim = await claimEvent(event);
         if (claim === "done") {
           console.log(`[stripe-webhook] ${event.id} already fulfilled; skipping`);
@@ -64,12 +67,18 @@ serve(async (req) => {
           // Another delivery is fulfilling it right now; let Stripe retry later.
           return new Response("Event in progress", { status: 503 });
         }
-        const fulfilled = await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+        if (typeof claim === "object") {
+          const still: Record<string, unknown>[] = [];
+          for (const args of claim.pending) if (!(await callRecordConversion(args))) still.push(args);
+          await finishEvent(event.id, still);
+          if (still.length) return new Response("Retry attribution", { status: 500 });
+          break;
+        }
+        const failedConversions: Record<string, unknown>[] = [];
+        const fulfilled = await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session, failedConversions);
         if (claim === "claimed" && fulfilled) {
-          await supabase
-            .from("stripe_webhook_events")
-            .update({ status: "completed", completed_at: new Date().toISOString() })
-            .eq("event_id", event.id);
+          await finishEvent(event.id, failedConversions);
+          if (failedConversions.length) return new Response("Retry attribution", { status: 500 });
         }
         break;
       }
@@ -114,6 +123,18 @@ serve(async (req) => {
 
 const STALE_CLAIM_MS = 10 * 60 * 1000;
 
+/** Completed when nothing is left; otherwise fulfilled with the attribution writes still to do. */
+async function finishEvent(eventId: string, pending: Record<string, unknown>[]) {
+  await supabase
+    .from("stripe_webhook_events")
+    .update(
+      pending.length
+        ? { status: "fulfilled", pending_conversions: pending }
+        : { status: "completed", completed_at: new Date().toISOString(), pending_conversions: null },
+    )
+    .eq("event_id", eventId);
+}
+
 /**
  * claimed: this delivery owns the event. done: already fulfilled.
  * busy: another delivery claimed it under 10 minutes ago.
@@ -121,7 +142,9 @@ const STALE_CLAIM_MS = 10 * 60 * 1000;
  * A claim older than 10 minutes that never completed (the function was killed
  * mid-fulfilment) is taken over, so a paid checkout is never stranded.
  */
-async function claimEvent(event: Stripe.Event): Promise<"claimed" | "done" | "busy" | "untracked"> {
+async function claimEvent(
+  event: Stripe.Event,
+): Promise<"claimed" | "done" | "busy" | "untracked" | { pending: Record<string, unknown>[] }> {
   const { error } = await supabase
     .from("stripe_webhook_events")
     .insert({ event_id: event.id, event_type: event.type, status: "processing" });
@@ -132,10 +155,11 @@ async function claimEvent(event: Stripe.Event): Promise<"claimed" | "done" | "bu
   }
   const { data: row } = await supabase
     .from("stripe_webhook_events")
-    .select("status, received_at")
+    .select("status, received_at, pending_conversions")
     .eq("event_id", event.id)
     .maybeSingle();
   if (row?.status === "completed") return "done";
+  if (row?.status === "fulfilled") return { pending: (row.pending_conversions as Record<string, unknown>[]) ?? [] };
   const age = row?.received_at ? Date.now() - new Date(row.received_at).getTime() : Infinity;
   if (age < STALE_CLAIM_MS) return "busy";
   // Take over a stale claim, guarded on the old timestamp so only one retry wins.
@@ -158,7 +182,10 @@ async function claimEvent(event: Stripe.Event): Promise<"claimed" | "done" | "bu
  * the event stays "processing" in the ledger and a manual resend from the
  * Stripe dashboard (after 10 minutes) can fulfil it again.
  */
-async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promise<boolean> {
+async function handleCheckoutCompleted(
+  session: Stripe.Checkout.Session,
+  failedConversions: Record<string, unknown>[],
+): Promise<boolean> {
   const metadata = session.metadata || {};
   const paymentIntentId = (session.payment_intent as string) || null;
 
@@ -199,8 +226,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
       // waitlist (the class filled during Checkout) or failed to book still
       // counts as money in, under its own type, so booking rates stay honest.
       const confirmed = !bookingError && booking && booking.status === "confirmed";
-      await recordPurchaseConversion(
-        metadata,
+      await recordPurchaseConversion(failedConversions, metadata,
         confirmed ? (metadata.express === "1" ? "guest_booking" : "member_booking") : "drop_in_payment",
         "transaction",
         txn.id,
@@ -261,7 +287,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
         console.error("Failed to record membership transaction:", txnError);
         return false;
       }
-      await recordPurchaseConversion(metadata, "membership_start", "membership", membership.id, session.amount_total, session.currency, "signup");
+      await recordPurchaseConversion(failedConversions, metadata, "membership_start", "membership", membership.id, session.amount_total, session.currency, "signup");
       break;
     }
 
@@ -304,7 +330,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
       }
 
       if (txn?.id) {
-        await recordPurchaseConversion(metadata, "event_registration", "transaction", txn.id, paid, session.currency, "signup");
+        await recordPurchaseConversion(failedConversions, metadata, "event_registration", "transaction", txn.id, paid, session.currency, "signup");
       }
 
       // Bump denormalized registration counts (no trigger for events).
@@ -361,7 +387,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
         console.error("Failed to record class pack transaction:", txnError);
         return false;
       }
-      await recordPurchaseConversion(metadata, "pack_purchase", "class_pack", pack.id, session.amount_total, session.currency, "signup");
+      await recordPurchaseConversion(failedConversions, metadata, "pack_purchase", "class_pack", pack.id, session.amount_total, session.currency, "signup");
       break;
     }
   }
@@ -375,6 +401,8 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
  * failure is logged and never affects the purchase itself.
  */
 async function recordPurchaseConversion(
+  /** Collects this request's failed writes, saved on the ledger row for retry. */
+  failed: Record<string, unknown>[],
   metadata: Record<string, string>,
   conversionType: string,
   entityType: string,
@@ -383,25 +411,35 @@ async function recordPurchaseConversion(
   currency: string | null,
   memberSource: string,
 ) {
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const visitorId = metadata.visitor_id && UUID_RE.test(metadata.visitor_id) ? metadata.visitor_id : null;
+  const sessionId = metadata.session_id && UUID_RE.test(metadata.session_id) ? metadata.session_id : null;
+  const args = {
+    p_studio_id: metadata.studio_id,
+    p_profile_id: metadata.profile_id,
+    p_visitor_id: visitorId,
+    p_conversion_type: conversionType,
+    p_value_cents: amountCents ?? 0,
+    p_currency: (currency ?? "usd").toUpperCase(),
+    p_entity_type: entityType,
+    p_entity_id: entityId,
+    p_converting_session_id: sessionId,
+    p_member_source: memberSource,
+  };
+  if (!(await callRecordConversion(args))) failed.push(args);
+}
+
+async function callRecordConversion(args: Record<string, unknown>): Promise<boolean> {
   try {
-    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    const visitorId = metadata.visitor_id && UUID_RE.test(metadata.visitor_id) ? metadata.visitor_id : null;
-    const sessionId = metadata.session_id && UUID_RE.test(metadata.session_id) ? metadata.session_id : null;
-    const { error } = await supabase.rpc("record_conversion", {
-      p_studio_id: metadata.studio_id,
-      p_profile_id: metadata.profile_id,
-      p_visitor_id: visitorId,
-      p_conversion_type: conversionType,
-      p_value_cents: amountCents ?? 0,
-      p_currency: (currency ?? "usd").toUpperCase(),
-      p_entity_type: entityType,
-      p_entity_id: entityId,
-      p_converting_session_id: sessionId,
-      p_member_source: memberSource,
-    });
-    if (error) console.error("[stripe-webhook] record_conversion failed:", error.message);
+    const { error } = await supabase.rpc("record_conversion", args);
+    if (error) {
+      console.error("[stripe-webhook] record_conversion failed:", error.message);
+      return false;
+    }
+    return true;
   } catch (err) {
     console.error("[stripe-webhook] record_conversion threw:", err);
+    return false;
   }
 }
 

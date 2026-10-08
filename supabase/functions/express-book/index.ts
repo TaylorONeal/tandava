@@ -321,17 +321,42 @@ serve(async (req) => {
     const visitorId = typeof payload.visitorId === "string" && UUID_RE.test(payload.visitorId) ? payload.visitorId : null;
     const sessionId = typeof payload.sessionId === "string" && UUID_RE.test(payload.sessionId) ? payload.sessionId : null;
 
-    /** Attribution and consent are best effort: they must never fail a booking. */
+    /**
+     * RPC with the error checked (supabase-js resolves failures as { error },
+     * it doesn't throw) and two quick retries for transient failures.
+     */
+    const rpcChecked = async (fn: string, args: Record<string, unknown>): Promise<boolean> => {
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const { error } = await db.rpc(fn, args);
+        if (!error) return true;
+        console.error(`express-book: ${fn} failed (attempt ${attempt + 1})`, error.message);
+        await new Promise((r) => setTimeout(r, 150 * (attempt + 1)));
+      }
+      return false;
+    };
+
+    /**
+     * Attribution and consent never fail a booking, but they are checked and
+     * retried. Consent goes first: the choice on this form is the newest one
+     * and must replace an older opt-in.
+     */
     const recordAttribution = async (profileId: string, bookingId: string | null, valueCents: number) => {
       try {
-        if (visitorId) await db.rpc("link_visitor", { p_profile_id: profileId, p_visitor_id: visitorId, p_via: "express_booking" });
-        await db.rpc("record_consent", {
+        const consentSaved = await rpcChecked("record_consent", {
           p_studio_id: studioId, p_profile_id: profileId, p_visitor_id: visitorId,
           p_purpose: "email_marketing", p_granted: guest.marketingConsent, p_source: "express_booking_form",
           p_policy_version: "2026-10",
         });
+        if (!consentSaved) {
+          // Loud on purpose: an unsaved opt-out must be fixed by hand before
+          // the next automation run (docs/OPERATOR_SETUP.md, automations).
+          console.error("express-book: CONSENT NOT SAVED", { studioId, profileId, granted: guest.marketingConsent });
+        }
+        if (visitorId) {
+          await rpcChecked("link_visitor", { p_profile_id: profileId, p_visitor_id: visitorId, p_via: "express_booking" });
+        }
         if (bookingId) {
-          await db.rpc("record_conversion", {
+          await rpcChecked("record_conversion", {
             p_studio_id: studioId, p_profile_id: profileId, p_visitor_id: visitorId,
             p_conversion_type: "guest_booking", p_value_cents: valueCents, p_currency: row.studio_currency ?? "USD",
             p_entity_type: "booking", p_entity_id: bookingId, p_converting_session_id: sessionId,
