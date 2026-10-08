@@ -448,6 +448,9 @@ async function recordPurchaseConversion(
     p_entity_id: entityId,
     p_converting_session_id: sessionId,
     p_member_source: memberSource,
+    // Stamped now and saved with the args, so a replay keeps the purchase's
+    // own time (journey cutoff and reporting period).
+    p_occurred_at: new Date().toISOString(),
   };
   if (!(await callRecordConversion(args))) failed.push(args);
 }
@@ -540,6 +543,10 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice): Promise<boolean>
     p_entity_id: await uuidFromStripeId(invoice.id),
     p_converting_session_id: null,
     p_member_source: null,
+    // The charge's own time, not the (possibly much later) redelivery's.
+    p_occurred_at: invoice.status_transitions?.paid_at
+      ? new Date(invoice.status_transitions.paid_at * 1000).toISOString()
+      : new Date().toISOString(),
   });
   if (error) {
     console.error("[stripe-webhook] renewal conversion failed:", error.message);

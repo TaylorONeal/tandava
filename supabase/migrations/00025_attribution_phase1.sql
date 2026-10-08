@@ -150,6 +150,9 @@ $$;
 REVOKE ALL ON FUNCTION session_touch(UUID) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION session_touch(UUID) TO service_role;
 
+-- The signature gained p_occurred_at; drop the ten-argument form so named
+-- calls without it are not ambiguous between two overloads.
+DROP FUNCTION IF EXISTS record_conversion(UUID, UUID, UUID, TEXT, INTEGER, TEXT, TEXT, UUID, UUID, TEXT);
 CREATE OR REPLACE FUNCTION record_conversion(
   p_studio_id UUID,
   p_profile_id UUID,
@@ -160,7 +163,11 @@ CREATE OR REPLACE FUNCTION record_conversion(
   p_entity_type TEXT,
   p_entity_id UUID,
   p_converting_session_id UUID,
-  p_member_source TEXT
+  p_member_source TEXT,
+  -- When the booking or purchase actually happened. A retry passes the
+  -- original time, so later visits don't join the journey and the conversion
+  -- stays in the right reporting period. NULL means now.
+  p_occurred_at TIMESTAMPTZ DEFAULT NULL
 )
 RETURNS UUID
 LANGUAGE plpgsql
@@ -173,13 +180,14 @@ DECLARE
   v_count INTEGER;
   v_first_at TIMESTAMPTZ;
   v_id UUID;
+  v_at TIMESTAMPTZ := COALESCE(p_occurred_at, NOW());
 BEGIN
   IF p_visitor_id IS NOT NULL AND p_profile_id IS NOT NULL THEN
     PERFORM link_visitor(p_profile_id, p_visitor_id, p_conversion_type);
   END IF;
 
   -- The journey: every session at this studio from any visitor linked to the
-  -- person (or the anonymous visitor itself), up to now.
+  -- person (or the anonymous visitor itself), up to the conversion.
   WITH visitors AS (
     SELECT visitor_id FROM profile_visitors WHERE profile_id = p_profile_id
     UNION
@@ -190,7 +198,7 @@ BEGIN
     SELECT s.id, s.started_at FROM analytics_sessions s
     WHERE s.visitor_id IN (SELECT visitor_id FROM visitors)
       AND (p_studio_id IS NULL OR s.studio_id = p_studio_id)
-      AND s.started_at <= NOW()
+      AND s.started_at <= v_at
   )
   SELECT
     (SELECT id FROM journey ORDER BY started_at ASC, id LIMIT 1),
@@ -208,12 +216,13 @@ BEGIN
   INSERT INTO conversion_events (
     studio_id, profile_id, visitor_id, conversion_type, value_cents, currency,
     entity_type, entity_id, first_touch_session_id, converting_touch_session_id,
-    first_touch, converting_touch, touch_count, days_to_convert
+    first_touch, converting_touch, touch_count, days_to_convert, occurred_at
   ) VALUES (
     p_studio_id, p_profile_id, p_visitor_id, p_conversion_type, p_value_cents, upper(p_currency),
     p_entity_type, p_entity_id, v_first, v_last,
     session_touch(v_first), session_touch(v_last), COALESCE(v_count, 0),
-    CASE WHEN v_first_at IS NULL THEN NULL ELSE GREATEST(0, (NOW()::date - v_first_at::date)) END
+    CASE WHEN v_first_at IS NULL THEN NULL ELSE GREATEST(0, (v_at::date - v_first_at::date)) END,
+    v_at
   )
   ON CONFLICT (conversion_type, entity_type, entity_id) WHERE entity_id IS NOT NULL DO NOTHING
   RETURNING id INTO v_id;
@@ -225,7 +234,7 @@ BEGIN
   -- otherwise), so create the relationship here if it is missing.
   IF p_studio_id IS NOT NULL AND p_profile_id IS NOT NULL THEN
     INSERT INTO studio_members (studio_id, profile_id, source, first_touch_session_id, acquired_at)
-    VALUES (p_studio_id, p_profile_id, p_member_source, v_first, NOW())
+    VALUES (p_studio_id, p_profile_id, p_member_source, v_first, v_at)
     ON CONFLICT (studio_id, profile_id) DO UPDATE SET
       source = COALESCE(studio_members.source, EXCLUDED.source),
       first_touch_session_id = COALESCE(studio_members.first_touch_session_id, EXCLUDED.first_touch_session_id),
@@ -235,8 +244,8 @@ BEGIN
   RETURN v_id;
 END;
 $$;
-REVOKE ALL ON FUNCTION record_conversion(UUID, UUID, UUID, TEXT, INTEGER, TEXT, TEXT, UUID, UUID, TEXT) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION record_conversion(UUID, UUID, UUID, TEXT, INTEGER, TEXT, TEXT, UUID, UUID, TEXT) TO service_role;
+REVOKE ALL ON FUNCTION record_conversion(UUID, UUID, UUID, TEXT, INTEGER, TEXT, TEXT, UUID, UUID, TEXT, TIMESTAMPTZ) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION record_conversion(UUID, UUID, UUID, TEXT, INTEGER, TEXT, TEXT, UUID, UUID, TEXT, TIMESTAMPTZ) TO service_role;
 
 -- ===========================================================================
 -- Consent (append-only)
@@ -631,11 +640,13 @@ DECLARE
     'p_conversion_type', p_type, 'p_value_cents', 0,
     'p_currency', (SELECT currency FROM studios WHERE id = p_studio_id),
     'p_entity_type', 'booking', 'p_entity_id', p_booking_id,
-    'p_converting_session_id', p_session, 'p_member_source', p_source);
+    'p_converting_session_id', p_session, 'p_member_source', p_source,
+    -- The booking's own time, kept for a retry.
+    'p_occurred_at', NOW());
 BEGIN
   BEGIN
     PERFORM record_conversion(p_studio_id, p_profile_id, NULL, p_type, 0,
-      v_args->>'p_currency', 'booking', p_booking_id, p_session, p_source);
+      v_args->>'p_currency', 'booking', p_booking_id, p_session, p_source, NOW());
   EXCEPTION WHEN OTHERS THEN
     BEGIN
       INSERT INTO conversion_retry_queue (args, last_error) VALUES (v_args, left(SQLERRM, 500));
@@ -663,7 +674,8 @@ BEGIN
         (r.args->>'p_studio_id')::uuid, (r.args->>'p_profile_id')::uuid, (r.args->>'p_visitor_id')::uuid,
         r.args->>'p_conversion_type', (r.args->>'p_value_cents')::int, r.args->>'p_currency',
         r.args->>'p_entity_type', (r.args->>'p_entity_id')::uuid,
-        (r.args->>'p_converting_session_id')::uuid, r.args->>'p_member_source');
+        (r.args->>'p_converting_session_id')::uuid, r.args->>'p_member_source',
+        (r.args->>'p_occurred_at')::timestamptz);
       DELETE FROM conversion_retry_queue WHERE id = r.id;
       v_done := v_done + 1;
     EXCEPTION WHEN OTHERS THEN

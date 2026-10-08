@@ -162,6 +162,7 @@ export async function captureSettled(slug?: string, ms = 2000): Promise<void> {
   // only once it can see that the browser belongs to the person booking.
   // A capture that already gave up left a session with no server id: try it
   // once more now, inside the same time cap, rather than book without it.
+  retryPendingLink();
   if (slug && !inFlight.has(slug) && lastCapture.has(slug)) {
     const stored = readSession(slug);
     if (stored && !stored.id) {
@@ -195,6 +196,7 @@ async function trackVisitInner(slug: string, surface: Surface, opts?: { studioSi
   // Adopt an embed handoff id first, so the link retry below targets it.
   const visitorId = getVisitorId(facts.handoffVisitorId);
   void retryHandoffLink();
+  retryPendingLink();
   const now = Date.now();
   const existing = readSession(slug);
   // Any campaign tag (source, medium, campaign, content, term) or click id
@@ -296,8 +298,30 @@ export function claimVisitorFor(userId: string) {
 let memoryOwner: string | null = null;
 
 let linkInFlight: Promise<void> | null = null;
+/** The signed-in person whose visitor link last ran; a failed link is retried for them. */
+let linkUser: string | null = null;
+
+function linkMarked(userId: string): boolean {
+  const key = LINKED_PREFIX + userId;
+  try {
+    return Boolean(window.sessionStorage.getItem(key));
+  } catch {
+    return linkedInMemory.has(key);
+  }
+}
+
+/**
+ * Retry a sign-in link that settled with an error. Called from page capture
+ * and before a booking, so a failure during sign-in does not leave the rest
+ * of the login session unattributed.
+ */
+export function retryPendingLink(): void {
+  if (typeof window === "undefined" || !linkUser || linkInFlight || linkMarked(linkUser)) return;
+  void linkVisitorOnce(linkUser, "sign_in_retry");
+}
 
 export function linkVisitorOnce(userId: string, via = "sign_in"): Promise<void> {
+  linkUser = userId;
   const p = linkVisitorOnceInner(userId, via).finally(() => {
     if (linkInFlight === p) linkInFlight = null;
   });
@@ -481,6 +505,7 @@ export async function applyOAuthSignupConsent(userId: string, nonce?: string | n
  * person's journey (and the next person starts clean).
  */
 export function forgetVisitor() {
+  linkUser = null;
   try {
     window.localStorage.setItem(VISITOR_KEY, randomId());
     window.localStorage.removeItem(OWNER_KEY);

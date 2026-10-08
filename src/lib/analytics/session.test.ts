@@ -141,3 +141,22 @@ describe("visit capture failures", () => {
     expect(s.currentSessionId("oxatl")).toBe("22222222-2222-4222-8222-222222222222");
   });
 });
+
+describe("sign-in link retry", () => {
+  it("captureSettled retries a link that settled with an error", async () => {
+    const { data } = await import("@/lib/backend");
+    const link = vi.mocked(data.linkMyVisitor);
+    vi.mocked(data.applyMySignupConsent).mockResolvedValue({ error: null } as never);
+    link.mockReset();
+    link.mockResolvedValueOnce({ error: { message: "network" } } as never);
+    link.mockResolvedValue({ error: null } as never);
+    const s = await import("./session");
+    await s.linkVisitorOnce("user-a");
+    expect(link).toHaveBeenCalledTimes(1);
+    await s.captureSettled();
+    expect(link).toHaveBeenCalledTimes(2);
+    // Linked now: no further retries.
+    await s.captureSettled();
+    expect(link).toHaveBeenCalledTimes(2);
+  });
+});

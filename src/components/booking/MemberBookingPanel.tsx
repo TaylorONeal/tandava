@@ -65,7 +65,7 @@ export function MemberBookingPanel({
     setError(null);
     try {
       // The conversion is credited from the visit; let its capture land first.
-      await captureSettled();
+      await captureSettled(row.studio_slug ?? undefined);
       await bookClass.mutateAsync({
         sessionId: currentSessionId(row.studio_slug),
         occurrenceId,
@@ -84,7 +84,7 @@ export function MemberBookingPanel({
   const bookFree = async () => {
     setState("working");
     setError(null);
-    await captureSettled();
+    await captureSettled(row.studio_slug ?? undefined);
     const { error: freeError } = await backendData.bookFreeClass(occurrenceId, currentSessionId(row.studio_slug));
     if (freeError) {
       setState("error");
@@ -97,7 +97,7 @@ export function MemberBookingPanel({
   const payDropIn = async () => {
     setState("working");
     setError(null);
-    await captureSettled();
+    await captureSettled(row.studio_slug ?? undefined);
     const origin = window.location.origin;
     const { data, error: invokeError } = await backendApi.invoke<{ url?: string; error?: string }>(
       "stripe-checkout",

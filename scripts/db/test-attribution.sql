@@ -368,5 +368,27 @@ BEGIN
     THEN RAISE EXCEPTION 'queued conversion not retried (%)', n; END IF;
 END $$;
 
+-- 20. A retried conversion keeps its own time: later visits stay out of the
+--     journey, and occurred_at is the original moment.
+DO $$
+DECLARE v UUID := gen_random_uuid(); early UUID; late UUID; c UUID; r conversion_events%ROWTYPE; bid UUID := gen_random_uuid();
+BEGIN
+  early := record_session('aloha', v, 'when-1', 'storefront', 'https://x/s/aloha?utm_source=ig', NULL,
+    '{"source":"ig"}'::jsonb, '{}'::jsonb, 'organic_social', 'mobile');
+  UPDATE analytics_sessions SET started_at = NOW() - interval '3 days' WHERE id = early;
+  late := record_session('aloha', v, 'when-2', 'storefront', 'https://x/s/aloha', NULL, '{}'::jsonb, '{}'::jsonb, 'direct', 'mobile');
+  UPDATE analytics_sessions SET started_at = NOW() - interval '1 day' WHERE id = late;
+  INSERT INTO conversion_retry_queue (args) VALUES (jsonb_build_object(
+    'p_studio_id', '00000000-0000-0000-0000-00000000005a', 'p_profile_id', NULL,
+    'p_visitor_id', v, 'p_conversion_type', 'guest_booking', 'p_value_cents', 0, 'p_currency', 'USD',
+    'p_entity_type', 'booking', 'p_entity_id', bid, 'p_converting_session_id', NULL, 'p_member_source', 'express',
+    'p_occurred_at', NOW() - interval '2 days'));
+  PERFORM retry_queued_conversions(10);
+  SELECT * INTO r FROM conversion_events WHERE entity_id = bid;
+  IF r.touch_count <> 1 OR r.converting_touch_session_id IS DISTINCT FROM early
+    THEN RAISE EXCEPTION 'a visit after the conversion joined its journey (% touches)', r.touch_count; END IF;
+  IF r.occurred_at > NOW() - interval '47 hours' THEN RAISE EXCEPTION 'retry moved the conversion to %', r.occurred_at; END IF;
+END $$;
+
 SELECT 'attribution tests passed' AS result;
 ROLLBACK;
