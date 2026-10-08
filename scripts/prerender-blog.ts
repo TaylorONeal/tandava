@@ -86,11 +86,14 @@ function buildHead(meta: HeadMeta): string {
 function render(template: string, meta: HeadMeta, bodyHtml: string): string {
   let html = stripDefaultHead(template);
   html = html.replace(/<\/head>/i, () => `    ${buildHead(meta)}\n  </head>`);
-  // Replace the #root placeholder content (lazy match stops at the </div>
-  // immediately followed by the module <script> Vite injects).
+  // Replace the #root placeholder content, up to the explicit /root marker
+  // in index.html (Vite moves the module script into <head>, so it is no anchor).
+  if (!html.includes("<!-- /root")) {
+    throw new Error("index.html lost its <!-- /root --> marker; prerendered pages would ship without content");
+  }
   html = html.replace(
-    /<div id="root">[\s\S]*?<\/div>(\s*<script)/i,
-    (_match, scriptPrefix: string) => `<div id="root">${bodyHtml}</div>${scriptPrefix}`,
+    /<div id="root">[\s\S]*?<\/div>(<!-- \/root)/i,
+    (_match, marker: string) => `<div id="root">${bodyHtml}</div>${marker}`,
   );
   return html;
 }

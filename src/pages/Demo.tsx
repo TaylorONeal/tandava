@@ -465,7 +465,7 @@ export default function Demo() {
             <div className="flex items-center gap-2 mb-6">
               <Code2 className="w-5 h-5 text-primary" />
               <span className="text-sm font-medium text-primary">
-                Open Source · AGPL-3.0 · Self-Hosted
+                Demo studio · sample data · nothing is saved
               </span>
             </div>
 

@@ -1,5 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
-import { captchaEnabled, captchaOption, getCaptchaToken, onCaptchaReset, setCaptchaToken, takeCaptchaToken } from "./captcha";
+import {
+  captchaEnabled,
+  captchaOption,
+  getCaptchaState,
+  getCaptchaToken,
+  onCaptchaReset,
+  setCaptchaFailed,
+  setCaptchaToken,
+  takeCaptchaToken,
+} from "./captcha";
 
 describe("captcha token store", () => {
   it("is off without a site key", () => {
@@ -27,5 +36,15 @@ describe("captcha token store", () => {
     expect(captchaOption()).toEqual({});
     setCaptchaToken("tok-3");
     expect(captchaOption()).toEqual({ captchaToken: "tok-3" });
+  });
+
+  it("reports a failed widget so forms are not locked out", () => {
+    setCaptchaFailed(true);
+    expect(getCaptchaState()).toBe("failed");
+    setCaptchaToken("tok-4");
+    expect(getCaptchaState()).toBe("token");
+    takeCaptchaToken();
+    setCaptchaFailed(false);
+    expect(getCaptchaState()).toBe("none");
   });
 });

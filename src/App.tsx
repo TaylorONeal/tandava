@@ -13,7 +13,7 @@ import { AuthCallback } from "@/components/auth/AuthCallback";
 import { SEOHead } from "@/components/seo/SEOHead";
 // DemoPanel removed — role selection now happens on landing page + DemoRoleBar
 import { DemoRoleBar } from "@/components/DemoRoleBar";
-import { Component, lazy, Suspense, type ErrorInfo, type ReactNode } from "react";
+import { Component, lazy, Suspense, type ComponentType, type ErrorInfo, type ReactNode } from "react";
 
 // ---------------------------------------------------------------------------
 // Error Boundary — shows the crash instead of a black screen
@@ -69,92 +69,134 @@ function DemoDataPage({ children }: { children: ReactNode }) {
   );
 }
 
-const Home = lazy(() => import("./pages/Home"));
-const StudioStorefront = lazy(() => import("./pages/StudioStorefront"));
-const ExpressBooking = lazy(() => import("./pages/ExpressBooking"));
-const Index = lazy(() => import("./pages/Index"));
-const Schedule = lazy(() => import("./pages/Schedule"));
-const MySchedule = lazy(() => import("./pages/MySchedule"));
-const Community = lazy(() => import("./pages/Community"));
-const Account = lazy(() => import("./pages/Account"));
-const Studios = lazy(() => import("./pages/Studios"));
-const StudioDetail = lazy(() => import("./pages/StudioDetail"));
-const Instructors = lazy(() => import("./pages/Instructors"));
-const InstructorDetail = lazy(() => import("./pages/InstructorDetail"));
-const OnDemand = lazy(() => import("./pages/OnDemand"));
-const Login = lazy(() => import("./pages/auth/Login"));
-const Register = lazy(() => import("./pages/auth/Register"));
-const ResetConfirm = lazy(() => import("./pages/auth/ResetConfirm"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-const Demo = lazy(() => import("./pages/Demo"));
-const OpenSource = lazy(() => import("./pages/OpenSource"));
-const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
-const ForStudios = lazy(() => import("./pages/ForStudios"));
-const StudioCalculator = lazy(() => import("./pages/tools/StudioCalculator"));
-const Blog = lazy(() => import("./pages/Blog"));
-const BlogCategory = lazy(() => import("./pages/blog/BlogCategory"));
-const BlogPost = lazy(() => import("./pages/blog/BlogPost"));
+/**
+ * lazy() that survives a deploy. Each build renames its chunks, so a tab opened
+ * before a deploy asks for chunk files that no longer exist and the page
+ * crashes with "Failed to fetch dynamically imported module". Reload once to
+ * pick up the new build; the session flag stops a reload loop if the chunk is
+ * genuinely broken.
+ */
+const CHUNK_RELOAD_KEY = "tandava.chunkReloadAt";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- matches React.lazy's own constraint
+function lazyWithReload<T extends ComponentType<any>>(load: () => Promise<{ default: T }>) {
+  return lazy(async () => {
+    try {
+      const mod = await load();
+      try {
+        sessionStorage.removeItem(CHUNK_RELOAD_KEY);
+      } catch {
+        /* storage blocked */
+      }
+      return mod;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const isChunkError = /dynamically imported module|Importing a module script failed|error loading dynamically/i.test(message);
+      let last = 0;
+      try {
+        last = Number(sessionStorage.getItem(CHUNK_RELOAD_KEY) ?? 0);
+      } catch {
+        /* storage blocked */
+      }
+      if (isChunkError && Date.now() - last > 60_000) {
+        try {
+          sessionStorage.setItem(CHUNK_RELOAD_KEY, String(Date.now()));
+        } catch {
+          /* storage blocked */
+        }
+        window.location.reload();
+        return new Promise<{ default: T }>(() => {});
+      }
+      throw err;
+    }
+  });
+}
 
-const ManageDashboard = lazy(() => import("./pages/manage/Dashboard"));
-const ScheduleManage = lazy(() => import("./pages/manage/ScheduleManage"));
-const StudentsManage = lazy(() => import("./pages/manage/Students"));
-const TeachersManage = lazy(() => import("./pages/manage/Teachers"));
-const OfferingsManage = lazy(() => import("./pages/manage/Offerings"));
-const FinancialsManage = lazy(() => import("./pages/manage/Financials"));
-const ReportsManage = lazy(() => import("./pages/manage/Reports"));
-const ImportManage = lazy(() => import("./pages/manage/Import"));
-const SettingsManage = lazy(() => import("./pages/manage/Settings"));
-const OnboardingManage = lazy(() => import("./pages/manage/Onboarding"));
-const MemberDetailManage = lazy(() => import("./pages/manage/MemberDetail"));
-const PromoCodesManage = lazy(() => import("./pages/manage/PromoCodes"));
-const EventsManage = lazy(() => import("./pages/manage/Events"));
-const LandingPagesManage = lazy(() => import("./pages/manage/LandingPages"));
-const AnalyticsHubManage = lazy(() => import("./pages/manage/AnalyticsHub"));
-const MemberAnalyticsManage = lazy(() => import("./pages/manage/MemberAnalytics"));
-const SalesAnalyticsManage = lazy(() => import("./pages/manage/SalesAnalytics"));
-const FinancialAnalyticsManage = lazy(() => import("./pages/manage/FinancialAnalytics"));
-const SiteAnalyticsManage = lazy(() => import("./pages/manage/SiteAnalytics"));
-const DataConnectorsManage = lazy(() => import("./pages/manage/DataConnectors"));
-const ProductsManage = lazy(() => import("./pages/manage/Products"));
-const InventoryManage = lazy(() => import("./pages/manage/Inventory"));
-const PurchaseOrdersManage = lazy(() => import("./pages/manage/PurchaseOrders"));
-const NotificationSettingsManage = lazy(() => import("./pages/manage/NotificationSettings"));
-const SmsInboxManage = lazy(() => import("./pages/manage/SmsInbox"));
-const UtmBuilderManage = lazy(() => import("./pages/manage/UtmBuilder"));
-const CampaignsManage = lazy(() => import("./pages/manage/Campaigns"));
-const TasksManage = lazy(() => import("./pages/manage/Tasks"));
-const OnDemandManage = lazy(() => import("./pages/manage/OnDemand"));
-const FeatureSettingsManage = lazy(() => import("./pages/manage/FeatureSettings"));
-const AuditLogsManage = lazy(() => import("./pages/manage/AuditLogs"));
-const DataDictionaryManage = lazy(() => import("./pages/manage/DataDictionary"));
-const DefinitionsManage = lazy(() => import("./pages/manage/Definitions"));
-const EmbedSettingsManage = lazy(() => import("./pages/manage/EmbedSettings"));
-const ShareLinksManage = lazy(() => import("./pages/manage/ShareLinks"));
+const Home = lazyWithReload(() => import("./pages/Home"));
+const StudioStorefront = lazyWithReload(() => import("./pages/StudioStorefront"));
+const ExpressBooking = lazyWithReload(() => import("./pages/ExpressBooking"));
+const Index = lazyWithReload(() => import("./pages/Index"));
+const Schedule = lazyWithReload(() => import("./pages/Schedule"));
+const MySchedule = lazyWithReload(() => import("./pages/MySchedule"));
+const Community = lazyWithReload(() => import("./pages/Community"));
+const Account = lazyWithReload(() => import("./pages/Account"));
+const Studios = lazyWithReload(() => import("./pages/Studios"));
+const StudioDetail = lazyWithReload(() => import("./pages/StudioDetail"));
+const Instructors = lazyWithReload(() => import("./pages/Instructors"));
+const InstructorDetail = lazyWithReload(() => import("./pages/InstructorDetail"));
+const OnDemand = lazyWithReload(() => import("./pages/OnDemand"));
+const Login = lazyWithReload(() => import("./pages/auth/Login"));
+const Register = lazyWithReload(() => import("./pages/auth/Register"));
+const ResetConfirm = lazyWithReload(() => import("./pages/auth/ResetConfirm"));
+const NotFound = lazyWithReload(() => import("./pages/NotFound"));
+const Demo = lazyWithReload(() => import("./pages/Demo"));
+const OpenSource = lazyWithReload(() => import("./pages/OpenSource"));
+const ResetPassword = lazyWithReload(() => import("./pages/auth/ResetPassword"));
+const ForStudios = lazyWithReload(() => import("./pages/ForStudios"));
+const StudioCalculator = lazyWithReload(() => import("./pages/tools/StudioCalculator"));
+const Blog = lazyWithReload(() => import("./pages/Blog"));
+const BlogCategory = lazyWithReload(() => import("./pages/blog/BlogCategory"));
+const BlogPost = lazyWithReload(() => import("./pages/blog/BlogPost"));
 
-const NotificationPreferences = lazy(() => import("./pages/account/NotificationPreferences"));
+const ManageDashboard = lazyWithReload(() => import("./pages/manage/Dashboard"));
+const ScheduleManage = lazyWithReload(() => import("./pages/manage/ScheduleManage"));
+const StudentsManage = lazyWithReload(() => import("./pages/manage/Students"));
+const TeachersManage = lazyWithReload(() => import("./pages/manage/Teachers"));
+const OfferingsManage = lazyWithReload(() => import("./pages/manage/Offerings"));
+const FinancialsManage = lazyWithReload(() => import("./pages/manage/Financials"));
+const ReportsManage = lazyWithReload(() => import("./pages/manage/Reports"));
+const ImportManage = lazyWithReload(() => import("./pages/manage/Import"));
+const SettingsManage = lazyWithReload(() => import("./pages/manage/Settings"));
+const OnboardingManage = lazyWithReload(() => import("./pages/manage/Onboarding"));
+const MemberDetailManage = lazyWithReload(() => import("./pages/manage/MemberDetail"));
+const PromoCodesManage = lazyWithReload(() => import("./pages/manage/PromoCodes"));
+const EventsManage = lazyWithReload(() => import("./pages/manage/Events"));
+const LandingPagesManage = lazyWithReload(() => import("./pages/manage/LandingPages"));
+const AnalyticsHubManage = lazyWithReload(() => import("./pages/manage/AnalyticsHub"));
+const MemberAnalyticsManage = lazyWithReload(() => import("./pages/manage/MemberAnalytics"));
+const SalesAnalyticsManage = lazyWithReload(() => import("./pages/manage/SalesAnalytics"));
+const FinancialAnalyticsManage = lazyWithReload(() => import("./pages/manage/FinancialAnalytics"));
+const SiteAnalyticsManage = lazyWithReload(() => import("./pages/manage/SiteAnalytics"));
+const DataConnectorsManage = lazyWithReload(() => import("./pages/manage/DataConnectors"));
+const ProductsManage = lazyWithReload(() => import("./pages/manage/Products"));
+const InventoryManage = lazyWithReload(() => import("./pages/manage/Inventory"));
+const PurchaseOrdersManage = lazyWithReload(() => import("./pages/manage/PurchaseOrders"));
+const NotificationSettingsManage = lazyWithReload(() => import("./pages/manage/NotificationSettings"));
+const SmsInboxManage = lazyWithReload(() => import("./pages/manage/SmsInbox"));
+const UtmBuilderManage = lazyWithReload(() => import("./pages/manage/UtmBuilder"));
+const CampaignsManage = lazyWithReload(() => import("./pages/manage/Campaigns"));
+const TasksManage = lazyWithReload(() => import("./pages/manage/Tasks"));
+const OnDemandManage = lazyWithReload(() => import("./pages/manage/OnDemand"));
+const FeatureSettingsManage = lazyWithReload(() => import("./pages/manage/FeatureSettings"));
+const AuditLogsManage = lazyWithReload(() => import("./pages/manage/AuditLogs"));
+const DataDictionaryManage = lazyWithReload(() => import("./pages/manage/DataDictionary"));
+const DefinitionsManage = lazyWithReload(() => import("./pages/manage/Definitions"));
+const EmbedSettingsManage = lazyWithReload(() => import("./pages/manage/EmbedSettings"));
+const ShareLinksManage = lazyWithReload(() => import("./pages/manage/ShareLinks"));
 
-const TeachDashboard = lazy(() => import("./pages/teach/Dashboard"));
-const TeachSchedule = lazy(() => import("./pages/teach/Schedule"));
-const TeachSubs = lazy(() => import("./pages/teach/Subs"));
-const TeachEarnings = lazy(() => import("./pages/teach/Earnings"));
-const TeachAvailability = lazy(() => import("./pages/teach/Availability"));
-const TeachProfile = lazy(() => import("./pages/teach/Profile"));
+const NotificationPreferences = lazyWithReload(() => import("./pages/account/NotificationPreferences"));
 
-const StaffCheckin = lazy(() => import("./pages/staff/StaffCheckin"));
-const StaffWaitlist = lazy(() => import("./pages/staff/StaffWaitlist"));
+const TeachDashboard = lazyWithReload(() => import("./pages/teach/Dashboard"));
+const TeachSchedule = lazyWithReload(() => import("./pages/teach/Schedule"));
+const TeachSubs = lazyWithReload(() => import("./pages/teach/Subs"));
+const TeachEarnings = lazyWithReload(() => import("./pages/teach/Earnings"));
+const TeachAvailability = lazyWithReload(() => import("./pages/teach/Availability"));
+const TeachProfile = lazyWithReload(() => import("./pages/teach/Profile"));
 
-const Kiosk = lazy(() => import("./pages/Kiosk"));
+const StaffCheckin = lazyWithReload(() => import("./pages/staff/StaffCheckin"));
+const StaffWaitlist = lazyWithReload(() => import("./pages/staff/StaffWaitlist"));
 
-const Discover = lazy(() => import("./pages/Discover"));
-const EmbedSchedule = lazy(() => import("./pages/embed/EmbedSchedule"));
-const EmbedEvent = lazy(() => import("./pages/embed/EmbedEvent"));
+const Kiosk = lazyWithReload(() => import("./pages/Kiosk"));
 
-const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
-const AdminStudios = lazy(() => import("./pages/admin/AdminStudios"));
-const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
-const AdminBilling = lazy(() => import("./pages/admin/AdminBilling"));
-const AdminFeedback = lazy(() => import("./pages/admin/AdminFeedback"));
-const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
+const Discover = lazyWithReload(() => import("./pages/Discover"));
+const EmbedSchedule = lazyWithReload(() => import("./pages/embed/EmbedSchedule"));
+const EmbedEvent = lazyWithReload(() => import("./pages/embed/EmbedEvent"));
+
+const AdminDashboard = lazyWithReload(() => import("./pages/admin/AdminDashboard"));
+const AdminStudios = lazyWithReload(() => import("./pages/admin/AdminStudios"));
+const AdminUsers = lazyWithReload(() => import("./pages/admin/AdminUsers"));
+const AdminBilling = lazyWithReload(() => import("./pages/admin/AdminBilling"));
+const AdminFeedback = lazyWithReload(() => import("./pages/admin/AdminFeedback"));
+const AdminSettings = lazyWithReload(() => import("./pages/admin/AdminSettings"));
 
 const queryClient = new QueryClient();
 
