@@ -31,7 +31,7 @@ import { MemberBookingPanel } from "@/components/booking/MemberBookingPanel";
 import { ClassTime } from "@/components/time/ClassTime";
 import { AddToCalendar } from "@/components/calendar/AddToCalendar";
 import { HelpTip } from "@/components/help/HelpTip";
-import { currentSessionId, getVisitorId, trackVisit } from "@/lib/analytics/session";
+import { captureSettled, currentSessionId, getVisitorId, trackVisit } from "@/lib/analytics/session";
 import type { ClassEventInput } from "@/lib/calendar/classEvent";
 import { expressBookingPath, loginHref } from "@/lib/auth/next";
 import { isBackendConfigured } from "@/lib/backend";
@@ -261,6 +261,8 @@ export default function ExpressBooking() {
     }
     if (!slug || !occurrenceId) return;
 
+    // Let this visit's capture land first so the booking credits it.
+    if (live) await captureSettled(slug);
     const result = await expressBook.mutateAsync({
       slug,
       occurrenceId,

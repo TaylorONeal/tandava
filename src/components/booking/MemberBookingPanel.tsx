@@ -13,6 +13,7 @@
  */
 
 import { useState } from "react";
+import { captureSettled } from "@/lib/analytics/session";
 import { useMemberEntitlements, useBookingSources, useBookClass } from "@/hooks/useBooking";
 import { api as backendApi, data as backendData } from "@/lib/backend";
 import { useAuth } from "@/contexts/AuthContext";
@@ -63,6 +64,8 @@ export function MemberBookingPanel({
     setState("working");
     setError(null);
     try {
+      // The conversion is credited from the visit; let its capture land first.
+      await captureSettled();
       await bookClass.mutateAsync({
         occurrenceId,
         sourceType: type === "MEMBERSHIP" ? "membership" : "class_pack",
@@ -80,6 +83,7 @@ export function MemberBookingPanel({
   const bookFree = async () => {
     setState("working");
     setError(null);
+    await captureSettled();
     const { error: freeError } = await backendData.bookFreeClass(occurrenceId);
     if (freeError) {
       setState("error");

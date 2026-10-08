@@ -70,15 +70,28 @@ serve(async (req) => {
         if (typeof claim === "object") {
           const still: Record<string, unknown>[] = [];
           for (const args of claim.pending) if (!(await callRecordConversion(args))) still.push(args);
-          await finishEvent(event.id, still);
-          if (still.length) return new Response("Retry attribution", { status: 500 });
+          const saved = await finishEvent(event.id, still);
+          if (still.length && saved) return new Response("Retry attribution", { status: 500 });
           break;
         }
         const failedConversions: Record<string, unknown>[] = [];
         const fulfilled = await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session, failedConversions);
-        if (claim === "claimed" && fulfilled) {
-          await finishEvent(event.id, failedConversions);
-          if (failedConversions.length) return new Response("Retry attribution", { status: 500 });
+        if (!fulfilled) {
+          // A required write failed. With the ledger, the claim stays
+          // "processing" and the retry takes it over after 10 minutes;
+          // without it (untracked) the retry simply runs again. Either way
+          // a paid checkout must not be acknowledged unfulfilled.
+          return new Response("Fulfilment failed", { status: 500 });
+        }
+        if (claim === "claimed") {
+          const saved = await finishEvent(event.id, failedConversions);
+          // Ask for a retry only if the ledger knows to replay just the
+          // attribution writes; if the ledger update itself failed, a retry
+          // would re-run the fulfilment, which is worse than a lost conversion.
+          if (failedConversions.length && saved) return new Response("Retry attribution", { status: 500 });
+          if (!saved) console.error("[stripe-webhook] LEDGER NOT UPDATED for", event.id, "pending conversions:", failedConversions.length);
+        } else if (failedConversions.length) {
+          console.error("[stripe-webhook] ledger unavailable; conversions not recorded for", event.id);
         }
         break;
       }
@@ -123,16 +136,24 @@ serve(async (req) => {
 
 const STALE_CLAIM_MS = 10 * 60 * 1000;
 
-/** Completed when nothing is left; otherwise fulfilled with the attribution writes still to do. */
-async function finishEvent(eventId: string, pending: Record<string, unknown>[]) {
-  await supabase
-    .from("stripe_webhook_events")
-    .update(
-      pending.length
-        ? { status: "fulfilled", pending_conversions: pending }
-        : { status: "completed", completed_at: new Date().toISOString(), pending_conversions: null },
-    )
-    .eq("event_id", eventId);
+/**
+ * Completed when nothing is left; otherwise fulfilled with the attribution
+ * writes still to do. Returns false if the ledger couldn't be updated.
+ */
+async function finishEvent(eventId: string, pending: Record<string, unknown>[]): Promise<boolean> {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const { error } = await supabase
+      .from("stripe_webhook_events")
+      .update(
+        pending.length
+          ? { status: "fulfilled", pending_conversions: pending }
+          : { status: "completed", completed_at: new Date().toISOString(), pending_conversions: null },
+      )
+      .eq("event_id", eventId);
+    if (!error) return true;
+    console.error("[stripe-webhook] ledger update failed:", error.message);
+  }
+  return false;
 }
 
 /**

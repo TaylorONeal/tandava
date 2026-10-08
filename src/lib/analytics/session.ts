@@ -138,7 +138,28 @@ export type Surface = "storefront" | "booking" | "embed" | "landing" | "blog" | 
  * idle, or arriving with campaign tags) starts a new session; otherwise the
  * existing one is refreshed.
  */
-export async function trackVisit(slug: string, surface: Surface, opts?: { studioSiteHost?: string | null }) {
+const inFlight = new Map<string, Promise<void>>();
+
+/**
+ * Wait (briefly) for this page's visit capture to land, so a booking made
+ * seconds after arriving is credited to the visit that brought the person.
+ * Never blocks a booking for more than `ms`.
+ */
+export async function captureSettled(slug?: string, ms = 2000): Promise<void> {
+  const pending = slug ? [inFlight.get(slug)].filter(Boolean) : [...inFlight.values()];
+  if (!pending.length) return;
+  await Promise.race([Promise.allSettled(pending), new Promise<void>((r) => setTimeout(r, ms))]);
+}
+
+export function trackVisit(slug: string, surface: Surface, opts?: { studioSiteHost?: string | null }): Promise<void> {
+  const p = trackVisitInner(slug, surface, opts).finally(() => {
+    if (inFlight.get(slug) === p) inFlight.delete(slug);
+  });
+  inFlight.set(slug, p);
+  return p;
+}
+
+async function trackVisitInner(slug: string, surface: Surface, opts?: { studioSiteHost?: string | null }) {
   if (typeof window === "undefined" || !slug) return;
   void retryHandoffLink();
   const href = window.location.href;
