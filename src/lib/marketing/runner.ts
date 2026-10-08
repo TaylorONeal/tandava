@@ -26,7 +26,7 @@ export interface CandidateRow {
   has_active_membership: boolean | null;
   has_active_pack: boolean | null;
   has_upcoming_booking?: boolean | null;
-  sends: { key: string; step: number; episode: string; sent_at: string }[] | null;
+  sends: { key: string; step: number; episode: string; sent_at: string; pending?: boolean | null }[] | null;
 }
 
 export interface SettingsRow {
@@ -61,7 +61,13 @@ export function factsFromCandidate(r: CandidateRow): PersonFacts {
     hasUpcomingBooking: Boolean(r.has_upcoming_booking),
     sends: (r.sends ?? [])
       .filter((s) => KEYS.has(s.key as AutomationKey))
-      .map((s) => ({ key: s.key as AutomationKey, step: Number(s.step), episode: s.episode, sentAt: s.sent_at })),
+      .map((s) => ({
+        key: s.key as AutomationKey,
+        step: Number(s.step),
+        episode: s.episode,
+        sentAt: s.sent_at,
+        pending: Boolean(s.pending),
+      })),
   };
 }
 

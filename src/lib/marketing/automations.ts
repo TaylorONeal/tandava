@@ -33,6 +33,12 @@ export interface PriorSend {
   step: number;
   episode: string;
   sentAt: string;
+  /**
+   * Claimed but not confirmed by the provider (status 'sending'). It may have
+   * gone out, so it counts for the daily cap, recency windows and the
+   * intro-offer rule, but it never advances a sequence.
+   */
+  pending?: boolean;
 }
 
 export interface PersonFacts {
@@ -93,7 +99,7 @@ export function lapsedThresholdDays(medianGapDays: number | null | undefined, ov
 }
 
 function sent(f: PersonFacts, key: AutomationKey, step: number, episode: string): boolean {
-  return f.sends.some((s) => s.key === key && s.step === step && s.episode === episode);
+  return f.sends.some((s) => !s.pending && s.key === key && s.step === step && s.episode === episode);
 }
 
 /** True when this automation step went out to the person in the last `days`, any episode. */

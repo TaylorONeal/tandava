@@ -161,3 +161,37 @@ describe("lapsed", () => {
     ).toEqual({ skip: "nothing_due" });
   });
 });
+
+describe("unconfirmed sends (claimed, provider result not recorded)", () => {
+  const guest = { ...base, isGuest: true };
+  it("count toward the one-a-day cap", () => {
+    const f = {
+      ...guest,
+      guestBookingAt: daysAgo(5),
+      sends: [{ key: "lapsed" as const, step: 0, episode: "x", sentAt: daysAgo(0, 5), pending: true }],
+    };
+    expect(decideNext(f, NOW, TZ)).toEqual({ skip: "daily_cap" });
+  });
+  it("never advance a sequence", () => {
+    const f = {
+      ...guest,
+      guestBookingAt: daysAgo(3, 1),
+      sends: [{ key: "guest_to_member" as const, step: 0, episode: daysAgo(3, 1).slice(0, 10), sentAt: daysAgo(2), pending: true }],
+    };
+    expect(decideNext(f, NOW, TZ)).not.toMatchObject({ decision: { step: 1 } });
+  });
+  it("still block a second intro offer", () => {
+    const f = {
+      ...base,
+      firstCheckInAt: daysAgo(3, 1),
+      lastVisitAt: daysAgo(3, 1),
+      visitCount: 1,
+      bookingCount: 1,
+      sends: [
+        { key: "first_visit" as const, step: 0, episode: daysAgo(3, 1).slice(0, 10), sentAt: daysAgo(3) },
+        { key: "guest_to_member" as const, step: 1, episode: "g", sentAt: daysAgo(2), pending: true },
+      ],
+    };
+    expect(decideNext(f, NOW, TZ)).toEqual({ skip: "nothing_due" });
+  });
+});

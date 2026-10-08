@@ -160,12 +160,27 @@ const inFlight = new Map<string, Promise<void>>();
 export async function captureSettled(slug?: string, ms = 2000): Promise<void> {
   // Also wait for a sign-in link in progress: the server credits a session
   // only once it can see that the browser belongs to the person booking.
+  // A capture that already gave up left a session with no server id: try it
+  // once more now, inside the same time cap, rather than book without it.
+  if (slug && !inFlight.has(slug) && lastCapture.has(slug)) {
+    const stored = readSession(slug);
+    if (stored && !stored.id) {
+      const args = lastCapture.get(slug)!;
+      void trackVisit(slug, args.surface, args.opts);
+    }
+  }
   const pending = [...(slug ? [inFlight.get(slug)].filter(Boolean) : [...inFlight.values()]), ...(linkInFlight ? [linkInFlight] : []), ...(handoffInFlight ? [handoffInFlight] : [])];
   if (!pending.length) return;
   await Promise.race([Promise.allSettled(pending), new Promise<void>((r) => setTimeout(r, ms))]);
 }
 
+/** The last capture's arguments per studio, so captureSettled() can redo a failed one. */
+const lastCapture = new Map<string, { surface: Surface; opts?: { studioSiteHost?: string | null } }>();
+
+const CAPTURE_RETRY_MS = [300, 800];
+
 export function trackVisit(slug: string, surface: Surface, opts?: { studioSiteHost?: string | null }): Promise<void> {
+  lastCapture.set(slug, { surface, opts });
   const p = trackVisitInner(slug, surface, opts).finally(() => {
     if (inFlight.get(slug) === p) inFlight.delete(slug);
   });
@@ -201,27 +216,38 @@ async function trackVisitInner(slug: string, surface: Surface, opts?: { studioSi
     ...facts.clickIds,
   });
 
-  try {
-    const { data } = await api.invoke<{ sessionId?: string | null }>("analytics-session", {
-      slug,
-      visitorId,
-      sessionToken: session.token,
-      surface,
-      // Never store tokens or personal data that ride on URLs.
-      landingUrl: sanitizeUrl(href),
-      referrer: sanitizeUrl(referrer),
-      utm: facts.utm,
-      clickIds: facts.clickIds,
-      channel,
-      deviceType: deviceType(navigator.userAgent),
-    });
-    // Attach the id only if this is still the current session: a slower
-    // response from an earlier page must not restore an older campaign.
-    if (data?.sessionId && readSession(slug)?.token === session.token) {
-      writeSession(slug, { ...readSession(slug)!, id: data.sessionId });
+  const body = {
+    slug,
+    visitorId,
+    sessionToken: session.token,
+    surface,
+    // Never store tokens or personal data that ride on URLs.
+    landingUrl: sanitizeUrl(href),
+    referrer: sanitizeUrl(referrer),
+    utm: facts.utm,
+    clickIds: facts.clickIds,
+    channel,
+    deviceType: deviceType(navigator.userAgent),
+  };
+  // record_session is idempotent per session token, so a retry after a
+  // transient failure is safe. Errors resolve (not throw), so check both.
+  for (let attempt = 0; attempt <= CAPTURE_RETRY_MS.length; attempt++) {
+    if (attempt > 0) await new Promise((r) => setTimeout(r, CAPTURE_RETRY_MS[attempt - 1]));
+    // A newer page view replaced this session: its own capture takes over.
+    if (readSession(slug)?.token !== session.token) return;
+    try {
+      const { data, error } = await api.invoke<{ sessionId?: string | null }>("analytics-session", body);
+      if (!error && data?.sessionId) {
+        // Attach the id only if this is still the current session: a slower
+        // response from an earlier page must not restore an older campaign.
+        if (readSession(slug)?.token === session.token) {
+          writeSession(slug, { ...readSession(slug)!, id: data.sessionId });
+        }
+        return;
+      }
+    } catch {
+      // Capture must never break the page; fall through to the next attempt.
     }
-  } catch {
-    // Capture must never break the page.
   }
 }
 

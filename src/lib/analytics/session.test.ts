@@ -102,3 +102,42 @@ describe("displaced visitor ids", () => {
     expect(window.localStorage.getItem("tandava.vid.relink")).toBeNull();
   });
 });
+
+describe("visit capture failures", () => {
+  const stubPage = () => {
+    vi.stubGlobal("window", {
+      localStorage: memoryStorage(),
+      sessionStorage: memoryStorage(),
+      location: { href: "https://app.example.com/s/oxatl?utm_source=ig" },
+    });
+    vi.stubGlobal("document", { referrer: "" });
+    vi.stubGlobal("navigator", { userAgent: "test" });
+  };
+
+  it("retries a capture that returned an error", async () => {
+    stubPage();
+    const { api } = await import("@/lib/backend");
+    const invoke = vi.mocked(api.invoke);
+    invoke.mockReset();
+    invoke.mockResolvedValueOnce({ data: null, error: { message: "db down" } } as never);
+    invoke.mockResolvedValueOnce({ data: { sessionId: "11111111-1111-4111-8111-111111111111" }, error: null } as never);
+    const s = await import("./session");
+    await s.trackVisit("oxatl", "storefront" as never);
+    expect(invoke).toHaveBeenCalledTimes(2);
+    expect(s.currentSessionId("oxatl")).toBe("11111111-1111-4111-8111-111111111111");
+  });
+
+  it("captureSettled redoes a capture that gave up before a booking", async () => {
+    stubPage();
+    const { api } = await import("@/lib/backend");
+    const invoke = vi.mocked(api.invoke);
+    invoke.mockReset();
+    invoke.mockResolvedValue({ data: null, error: { message: "db down" } } as never);
+    const s = await import("./session");
+    await s.trackVisit("oxatl", "storefront" as never);
+    expect(s.currentSessionId("oxatl")).toBeUndefined();
+    invoke.mockResolvedValue({ data: { sessionId: "22222222-2222-4222-8222-222222222222" }, error: null } as never);
+    await s.captureSettled("oxatl");
+    expect(s.currentSessionId("oxatl")).toBe("22222222-2222-4222-8222-222222222222");
+  });
+});

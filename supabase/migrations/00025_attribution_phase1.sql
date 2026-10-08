@@ -552,10 +552,13 @@ AS $$
             WHERE ub.profile_id = p.id AND ub.studio_id = p_studio_id
               AND ub.status IN ('confirmed', 'waitlisted') AND o.starts_at > NOW()),
     COALESCE((SELECT jsonb_agg(jsonb_build_object('key', s.automation_key, 'step', s.step,
-                'episode', s.episode_key, 'sent_at', s.sent_at))
-              -- Delivered emails only: a failed step never advances a sequence.
+                'episode', s.episode_key, 'sent_at', s.sent_at, 'pending', s.status = 'sending'))
+              -- Failed sends are dropped. Unresolved 'sending' claims come back
+              -- flagged pending: they count for the daily cap and the
+              -- intro-offer rule (the provider may have delivered them) but
+              -- never advance a sequence.
               FROM automation_sends s WHERE s.profile_id = p.id AND s.studio_id = p_studio_id
-                AND s.status = 'sent'), '[]'::jsonb)
+                AND s.status IN ('sent', 'sending')), '[]'::jsonb)
   FROM profiles p JOIN members ON members.profile_id = p.id
   WHERE p.email IS NOT NULL;
 $$;
