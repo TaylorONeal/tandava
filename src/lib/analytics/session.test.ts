@@ -613,3 +613,26 @@ describe("auth slower than the identity wait (PR #72 review)", () => {
     }
   });
 });
+
+describe("a stalled visitor-link request (PR #72 review)", () => {
+  it("settles, so a later retry can link", async () => {
+    vi.useFakeTimers();
+    try {
+      const { data } = await import("@/lib/backend");
+      const link = vi.mocked(data.linkMyVisitor);
+      vi.mocked(data.applyMySignupConsent).mockResolvedValue({ error: null } as never);
+      link.mockReset();
+      link.mockImplementationOnce(() => new Promise(() => {})); // hangs
+      link.mockResolvedValue({ error: null, owned: true } as never);
+      const s = await import("./session");
+      const first = s.linkVisitorOnce("user-z");
+      await vi.advanceTimersByTimeAsync(9000);
+      await first;
+      s.retryPendingLink();
+      await vi.advanceTimersByTimeAsync(10);
+      expect(link.mock.calls.length).toBeGreaterThanOrEqual(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});

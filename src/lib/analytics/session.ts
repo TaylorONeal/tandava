@@ -18,6 +18,18 @@ const SESSION_PREFIX = "tandava.sess.";
 const SESSION_TTL_MS = 30 * 60 * 1000;
 /** Longest one capture attempt may take before the next retry (or the next capture) goes ahead. */
 const CAPTURE_ATTEMPT_TIMEOUT_MS = 8000;
+/** Longest one visitor-link request may hang before it counts as failed (and can be retried). */
+const LINK_ATTEMPT_TIMEOUT_MS = 8000;
+
+/** linkMyVisitor, settled within LINK_ATTEMPT_TIMEOUT_MS: a stalled request must not block every retry. */
+function linkMyVisitorBounded(id: string, via: string): ReturnType<typeof data.linkMyVisitor> {
+  return Promise.race([
+    data.linkMyVisitor(id, via),
+    new Promise<Awaited<ReturnType<typeof data.linkMyVisitor>>>((r) =>
+      setTimeout(() => r({ error: { message: "timeout" }, owned: null } as Awaited<ReturnType<typeof data.linkMyVisitor>>), LINK_ATTEMPT_TIMEOUT_MS),
+    ),
+  ]);
+}
 
 /**
  * Web storage behind an in-memory overlay. A write or remove that throws
@@ -171,7 +183,7 @@ async function retryHandoffLinkInner() {
   const id = lsGet(RELINK_KEY);
   if (!id) return;
   try {
-    const { error, owned } = await data.linkMyVisitor(id, "embed_handoff");
+    const { error, owned } = await linkMyVisitorBounded(id, "embed_handoff");
     // null: not signed in yet, keep it for later. false: the id belongs to
     // someone else (a copied embed link), so stop using it on this browser.
     if (!error && owned !== null) {
@@ -447,18 +459,18 @@ async function linkVisitorOnceInner(userId: string, via = "sign_in") {
   if (!done) {
     try {
       const current = getVisitorId();
-      let { error, owned } = await data.linkMyVisitor(current, via);
+      let { error, owned } = await linkMyVisitorBounded(current, via);
       if (!error && owned === false) {
         // Someone else owns this browser id (a copied embed link): use a fresh
         // one for this person and link that instead.
         rotateAwayFrom(current);
-        ({ error, owned } = await data.linkMyVisitor(getVisitorId(), via));
+        ({ error, owned } = await linkMyVisitorBounded(getVisitorId(), via));
       }
       // Ids an embed handoff displaced belong to the same person on this
       // browser; each is dropped only once its own link succeeded.
       const failed: string[] = [];
       for (const id of previousVisitorIds()) {
-        const r = await data.linkMyVisitor(id, `${via}_previous`).catch(() => ({ error: { message: "failed" } }));
+        const r = await linkMyVisitorBounded(id, `${via}_previous`).catch(() => ({ error: { message: "failed" } }));
         if (r.error) failed.push(id);
       }
       if (failed.length) lsSet(PREVIOUS_KEY, JSON.stringify(failed));
