@@ -34,6 +34,9 @@ import type {
 import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront } from "@/types/database";
 import type { AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
 
+/** Request header carrying the analytics session into booking RPCs (read by the bookings trigger, migration 00025). */
+const SESSION_HEADER = "x-tandava-session";
+
 // ---------------------------------------------------------------------------
 // Supabase client singleton
 // ---------------------------------------------------------------------------
@@ -215,11 +218,14 @@ const supabaseData: DataProvider = {
   },
 
   async bookClass(input: BookClassInput): Promise<DataResult<Booking>> {
-    const { data, error } = await getClient().rpc("book_class", {
+    const call = getClient().rpc("book_class", {
       p_occurrence_id: input.occurrenceId,
       p_source_type: input.sourceType,
       p_source_id: input.sourceId,
     });
+    // The booking trigger reads this header to credit the visit (validated
+    // server side against the member's own linked visitors).
+    const { data, error } = await (input.sessionId ? call.setHeader(SESSION_HEADER, input.sessionId) : call);
 
     return {
       data: (data as Booking) ?? null,
@@ -227,10 +233,11 @@ const supabaseData: DataProvider = {
     };
   },
 
-  async bookFreeClass(occurrenceId): Promise<DataResult<Booking>> {
-    const { data, error } = await getClient().rpc("book_free_class", {
+  async bookFreeClass(occurrenceId, sessionId): Promise<DataResult<Booking>> {
+    const call = getClient().rpc("book_free_class", {
       p_occurrence_id: occurrenceId,
     });
+    const { data, error } = await (sessionId ? call.setHeader(SESSION_HEADER, sessionId) : call);
     return {
       data: (data as Booking) ?? null,
       error: error ? { message: error.message } : null,

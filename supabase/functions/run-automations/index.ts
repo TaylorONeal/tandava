@@ -68,6 +68,11 @@ serve(async (req) => {
   const dryRun = !enabled || body.dryRun === true;
   const db = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
 
+  // Booking conversions a trigger couldn't write (transient errors) are
+  // retried here first; record_conversion is idempotent per entity.
+  const { data: retried, error: retryError } = await db.rpc("retry_queued_conversions", { p_limit: 500 });
+  if (retryError) console.error("run-automations: conversion retry failed", retryError.message);
+
   let studiosQuery = db.from("studios").select("id, name, slug, timezone, email, brand_primary_color");
   if (body.studioId) {
     if (!UUID.test(body.studioId)) return json({ error: "Bad studioId" }, 400);
@@ -186,5 +191,5 @@ serve(async (req) => {
     }
   }
 
-  return json({ ok: true, enabled, report });
+  return json({ ok: true, enabled, conversionsRetried: retried ?? 0, report });
 });

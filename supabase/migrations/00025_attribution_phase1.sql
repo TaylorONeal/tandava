@@ -78,6 +78,13 @@ GRANT EXECUTE ON FUNCTION record_session(TEXT, UUID, TEXT, TEXT, TEXT, TEXT, JSO
 -- ===========================================================================
 -- Identity
 -- ===========================================================================
+-- One owner per browser id (first link wins). Keep the earliest link if an
+-- older install has duplicates.
+DELETE FROM profile_visitors pv USING profile_visitors older
+WHERE pv.visitor_id = older.visitor_id
+  AND (pv.linked_at, pv.profile_id) > (older.linked_at, older.profile_id);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_profile_visitors_visitor ON profile_visitors (visitor_id);
+
 CREATE OR REPLACE FUNCTION link_visitor(p_profile_id UUID, p_visitor_id UUID, p_via TEXT)
 RETURNS VOID
 LANGUAGE plpgsql
@@ -89,12 +96,14 @@ BEGIN
   -- A browser id belongs to the first person who signed in on it. A shared
   -- household or front-desk browser must not merge two people's journeys;
   -- the client also starts a fresh visitor id when the account changes.
-  IF EXISTS (SELECT 1 FROM profile_visitors WHERE visitor_id = p_visitor_id AND profile_id <> p_profile_id) THEN
-    RETURN;
-  END IF;
+  -- Atomic: the unique index on visitor_id (below) makes the first link win
+  -- even when two people link the same browser at the same moment.
   INSERT INTO profile_visitors (profile_id, visitor_id, linked_via)
   VALUES (p_profile_id, p_visitor_id, left(COALESCE(p_via, 'unknown'), 32))
-  ON CONFLICT (profile_id, visitor_id) DO NOTHING;
+  ON CONFLICT (visitor_id) DO NOTHING;
+  IF NOT EXISTS (SELECT 1 FROM profile_visitors WHERE visitor_id = p_visitor_id AND profile_id = p_profile_id) THEN
+    RETURN;  -- someone else owns this browser id
+  END IF;
   UPDATE analytics_sessions SET profile_id = p_profile_id
   WHERE visitor_id = p_visitor_id AND profile_id IS NULL;
 END;
@@ -560,6 +569,107 @@ GRANT EXECUTE ON FUNCTION get_automation_candidates(UUID) TO service_role;
 -- webhook's drop-in booking) have no auth.uid() and record their own
 -- conversion with the converting session and the payment. Analytics never
 -- blocks a booking: any error here is swallowed.
+-- Conversions a booking trigger couldn't write (a transient error must not
+-- fail the booking). run-automations drains this hourly via
+-- retry_queued_conversions(); record_conversion is idempotent per entity.
+CREATE TABLE IF NOT EXISTS conversion_retry_queue (
+  id BIGSERIAL PRIMARY KEY,
+  args JSONB NOT NULL,
+  attempts INTEGER NOT NULL DEFAULT 0,
+  last_error TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+ALTER TABLE conversion_retry_queue ENABLE ROW LEVEL SECURITY;  -- service role only
+
+-- The booking page's analytics session, sent as the x-tandava-session request
+-- header on the booking RPC. Trusted only if it is this person's own visit at
+-- this studio.
+CREATE OR REPLACE FUNCTION booking_session_from_request(p_profile_id UUID, p_studio_id UUID)
+RETURNS UUID
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_raw TEXT;
+  v_id UUID;
+BEGIN
+  BEGIN
+    v_raw := current_setting('request.headers', true)::json->>'x-tandava-session';
+  EXCEPTION WHEN OTHERS THEN
+    RETURN NULL;
+  END;
+  IF v_raw IS NULL OR v_raw !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' THEN
+    RETURN NULL;
+  END IF;
+  SELECT s.id INTO v_id FROM analytics_sessions s
+  WHERE s.id = v_raw::uuid AND s.studio_id = p_studio_id
+    AND (s.profile_id = p_profile_id
+         OR s.visitor_id IN (SELECT visitor_id FROM profile_visitors WHERE profile_id = p_profile_id));
+  RETURN v_id;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION record_booking_conversion_or_queue(
+  p_studio_id UUID, p_profile_id UUID, p_type TEXT, p_booking_id UUID, p_session UUID, p_source TEXT
+)
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_args JSONB := jsonb_build_object(
+    'p_studio_id', p_studio_id, 'p_profile_id', p_profile_id, 'p_visitor_id', NULL,
+    'p_conversion_type', p_type, 'p_value_cents', 0,
+    'p_currency', (SELECT currency FROM studios WHERE id = p_studio_id),
+    'p_entity_type', 'booking', 'p_entity_id', p_booking_id,
+    'p_converting_session_id', p_session, 'p_member_source', p_source);
+BEGIN
+  BEGIN
+    PERFORM record_conversion(p_studio_id, p_profile_id, NULL, p_type, 0,
+      v_args->>'p_currency', 'booking', p_booking_id, p_session, p_source);
+  EXCEPTION WHEN OTHERS THEN
+    BEGIN
+      INSERT INTO conversion_retry_queue (args, last_error) VALUES (v_args, left(SQLERRM, 500));
+    EXCEPTION WHEN OTHERS THEN
+      RAISE WARNING 'booking conversion lost: %', SQLERRM;
+    END;
+  END;
+END;
+$$;
+REVOKE ALL ON FUNCTION record_booking_conversion_or_queue(UUID, UUID, TEXT, UUID, UUID, TEXT) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION retry_queued_conversions(p_limit INTEGER DEFAULT 500)
+RETURNS INTEGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  r RECORD;
+  v_done INTEGER := 0;
+BEGIN
+  FOR r IN SELECT * FROM conversion_retry_queue WHERE attempts < 10 ORDER BY id LIMIT p_limit FOR UPDATE SKIP LOCKED LOOP
+    BEGIN
+      PERFORM record_conversion(
+        (r.args->>'p_studio_id')::uuid, (r.args->>'p_profile_id')::uuid, (r.args->>'p_visitor_id')::uuid,
+        r.args->>'p_conversion_type', (r.args->>'p_value_cents')::int, r.args->>'p_currency',
+        r.args->>'p_entity_type', (r.args->>'p_entity_id')::uuid,
+        (r.args->>'p_converting_session_id')::uuid, r.args->>'p_member_source');
+      DELETE FROM conversion_retry_queue WHERE id = r.id;
+      v_done := v_done + 1;
+    EXCEPTION WHEN OTHERS THEN
+      UPDATE conversion_retry_queue SET attempts = attempts + 1, last_error = left(SQLERRM, 500) WHERE id = r.id;
+    END;
+  END LOOP;
+  RETURN v_done;
+END;
+$$;
+REVOKE ALL ON FUNCTION retry_queued_conversions(INTEGER) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION retry_queued_conversions(INTEGER) TO service_role;
+
 CREATE OR REPLACE FUNCTION record_member_booking_conversion()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -568,15 +678,9 @@ SET search_path = public
 AS $$
 BEGIN
   IF NEW.status = 'confirmed' AND auth.uid() IS NOT NULL AND auth.uid() = NEW.profile_id THEN
-    BEGIN
-      PERFORM record_conversion(
-        NEW.studio_id, NEW.profile_id, NULL, 'member_booking', 0,
-        (SELECT currency FROM studios WHERE id = NEW.studio_id),
-        'booking', NEW.id, NULL, 'signup'
-      );
-    EXCEPTION WHEN OTHERS THEN
-      RAISE WARNING 'record_member_booking_conversion: %', SQLERRM;
-    END;
+    PERFORM record_booking_conversion_or_queue(
+      NEW.studio_id, NEW.profile_id, 'member_booking', NEW.id,
+      booking_session_from_request(NEW.profile_id, NEW.studio_id), 'signup');
   END IF;
   RETURN NEW;
 END;
@@ -597,21 +701,15 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+  v_guest BOOLEAN;
 BEGIN
   IF OLD.status = 'waitlisted' AND NEW.status = 'confirmed' THEN
-    BEGIN
-      PERFORM record_conversion(
-        NEW.studio_id, NEW.profile_id, NULL,
-        CASE WHEN (SELECT COALESCE(is_guest, FALSE) FROM profiles WHERE id = NEW.profile_id)
-             THEN 'guest_booking' ELSE 'member_booking' END,
-        0, (SELECT currency FROM studios WHERE id = NEW.studio_id),
-        'booking', NEW.id, NULL,
-        CASE WHEN (SELECT COALESCE(is_guest, FALSE) FROM profiles WHERE id = NEW.profile_id)
-             THEN 'express' ELSE 'signup' END
-      );
-    EXCEPTION WHEN OTHERS THEN
-      RAISE WARNING 'record_promoted_booking_conversion: %', SQLERRM;
-    END;
+    SELECT COALESCE(is_guest, FALSE) INTO v_guest FROM profiles WHERE id = NEW.profile_id;
+    PERFORM record_booking_conversion_or_queue(
+      NEW.studio_id, NEW.profile_id,
+      CASE WHEN v_guest THEN 'guest_booking' ELSE 'member_booking' END,
+      NEW.id, NULL, CASE WHEN v_guest THEN 'express' ELSE 'signup' END);
   END IF;
   RETURN NEW;
 END;

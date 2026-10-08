@@ -328,5 +328,45 @@ BEGIN
   IF ch IS DISTINCT FROM 'renewal' THEN RAISE EXCEPTION 'renewal channel %', ch; END IF;
 END $$;
 
+-- 18. A member booking credits the booking page's own session (request
+--     header), but only a session that belongs to that member.
+DO $$
+DECLARE v UUID := gen_random_uuid(); mine UUID; theirs UUID; occ UUID := gen_random_uuid(); occ2 UUID := gen_random_uuid(); b UUID; b2 UUID;
+BEGIN
+  INSERT INTO auth.users (id, email) VALUES ('00000000-0000-0000-0000-0000000000e5', 'kim@example.com');
+  mine := record_session('aloha', v, 'kim-1', 'booking', 'https://x/s/aloha/book/1?utm_source=newsletter&utm_medium=email', NULL,
+    '{"source":"newsletter","medium":"email"}'::jsonb, '{}'::jsonb, 'email', 'mobile');
+  PERFORM link_visitor('00000000-0000-0000-0000-0000000000e5', v, 'sign_in');
+  theirs := record_session('aloha', gen_random_uuid(), 'other-1', 'storefront', 'https://x/s/aloha', NULL, '{}'::jsonb, '{}'::jsonb, 'direct', 'desktop');
+  INSERT INTO class_occurrences (id, studio_id, offering_id, location_id, starts_at, ends_at) VALUES
+    (occ, '00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000c1', NOW() + interval '5 day', NOW() + interval '5 day 1 hour'),
+    (occ2, '00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000c1', NOW() + interval '6 day', NOW() + interval '6 day 1 hour');
+
+  PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000e5', true);
+  PERFORM set_config('request.headers', json_build_object('x-tandava-session', mine)::text, true);
+  INSERT INTO bookings (studio_id, class_occurrence_id, profile_id) VALUES ('00000000-0000-0000-0000-00000000005a', occ, '00000000-0000-0000-0000-0000000000e5') RETURNING id INTO b;
+  IF (SELECT converting_touch_session_id FROM conversion_events WHERE entity_id = b) IS DISTINCT FROM mine
+    THEN RAISE EXCEPTION 'booking page session not credited'; END IF;
+
+  PERFORM set_config('request.headers', json_build_object('x-tandava-session', theirs)::text, true);
+  INSERT INTO bookings (studio_id, class_occurrence_id, profile_id) VALUES ('00000000-0000-0000-0000-00000000005a', occ2, '00000000-0000-0000-0000-0000000000e5') RETURNING id INTO b2;
+  IF (SELECT converting_touch_session_id FROM conversion_events WHERE entity_id = b2) = theirs
+    THEN RAISE EXCEPTION 'someone else''s session was credited'; END IF;
+  PERFORM set_config('request.headers', '', true);
+END $$;
+
+-- 19. Queued conversions are retried and removed.
+DO $$
+DECLARE bid UUID := gen_random_uuid(); n INTEGER;
+BEGIN
+  INSERT INTO conversion_retry_queue (args) VALUES (jsonb_build_object(
+    'p_studio_id', '00000000-0000-0000-0000-00000000005a', 'p_profile_id', '00000000-0000-0000-0000-0000000000b1',
+    'p_visitor_id', NULL, 'p_conversion_type', 'member_booking', 'p_value_cents', 0, 'p_currency', 'USD',
+    'p_entity_type', 'booking', 'p_entity_id', bid, 'p_converting_session_id', NULL, 'p_member_source', 'signup'));
+  n := retry_queued_conversions(10);
+  IF n <> 1 OR EXISTS (SELECT 1 FROM conversion_retry_queue) OR NOT EXISTS (SELECT 1 FROM conversion_events WHERE entity_id = bid)
+    THEN RAISE EXCEPTION 'queued conversion not retried (%)', n; END IF;
+END $$;
+
 SELECT 'attribution tests passed' AS result;
 ROLLBACK;

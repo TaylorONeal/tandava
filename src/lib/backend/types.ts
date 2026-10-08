@@ -117,6 +117,8 @@ export interface BookClassInput {
   occurrenceId: string;
   sourceType: "membership" | "class_pack";
   sourceId: string;
+  /** The booking page's analytics session (PRD-024), credited as the converting visit. */
+  sessionId?: string;
 }
 
 /**
@@ -181,7 +183,7 @@ export interface DataProvider {
   bookClass(input: BookClassInput): Promise<DataResult<Booking>>;
 
   /** Book the signed-in user into a zero-price class (book_free_class() RPC, migration 00023). */
-  bookFreeClass(occurrenceId: string): Promise<DataResult<Booking>>;
+  bookFreeClass(occurrenceId: string, sessionId?: string): Promise<DataResult<Booking>>;
 
   /** Cancel a booking via the cancel_booking() RPC (late-cancel detection + refund/fee). */
   cancelBooking(bookingId: string): Promise<DataResult<Booking>>;

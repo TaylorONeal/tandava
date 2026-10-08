@@ -70,8 +70,10 @@ serve(async (req) => {
         if (typeof claim === "object") {
           const still: Record<string, unknown>[] = [];
           for (const args of claim.pending) if (!(await callRecordConversion(args))) still.push(args);
-          const saved = await finishEvent(event.id, still);
-          if (still.length && saved) return new Response("Retry attribution", { status: 500 });
+          // Replaying a fulfilled event never re-runs fulfilment, so asking
+          // for another retry is always safe here.
+          await finishEvent(event.id, still);
+          if (still.length) return new Response("Retry attribution", { status: 500 });
           break;
         }
         const failedConversions: Record<string, unknown>[] = [];
