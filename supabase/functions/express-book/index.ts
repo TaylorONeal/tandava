@@ -608,6 +608,16 @@ serve(async (req) => {
     const outcome = created?.status === "waitlisted" ? "waitlisted" : "booked";
 
     await recordClaim({ outcome, profile_id: profileId, booking_id: created?.id ?? null });
+    if (outcome === "waitlisted" && created?.id) {
+      // Keep how this waitlist spot was made; the conversion is recorded at
+      // promotion (record_promoted_booking_conversion), maybe after the guest
+      // has saved an account or visited again.
+      const { error: ctxError } = await db.from("booking_attribution_context").upsert(
+        { booking_id: created.id, studio_id: studioId, origin: "express", session_id: sessionId },
+        { onConflict: "booking_id" },
+      );
+      if (ctxError) console.error("express-book: waitlist attribution context not saved", ctxError.message);
+    }
     await recordAttribution(profileId, outcome === "booked" ? created?.id ?? null : null, 0);
 
     return json({

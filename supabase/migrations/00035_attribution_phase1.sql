@@ -720,6 +720,22 @@ $$;
 REVOKE ALL ON FUNCTION retry_queued_conversions(INTEGER) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION retry_queued_conversions(INTEGER) TO service_role;
 
+-- How a waitlisted booking was made, captured when it is made, so the
+-- conversion recorded at promotion (maybe days later) keeps its origin and
+-- visit even if the guest has since saved an account or visited again.
+CREATE TABLE IF NOT EXISTS booking_attribution_context (
+  booking_id UUID PRIMARY KEY REFERENCES bookings(id) ON DELETE CASCADE,
+  studio_id UUID NOT NULL REFERENCES studios(id) ON DELETE CASCADE,
+  origin TEXT NOT NULL CHECK (origin IN ('express', 'member')),
+  session_id UUID REFERENCES analytics_sessions(id) ON DELETE SET NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+ALTER TABLE booking_attribution_context ENABLE ROW LEVEL SECURITY;
+-- Written by triggers and express-book (service role) only.
+DROP POLICY IF EXISTS "No client access to booking attribution context" ON booking_attribution_context;
+CREATE POLICY "No client access to booking attribution context" ON booking_attribution_context
+  FOR ALL USING (FALSE) WITH CHECK (FALSE);
+
 CREATE OR REPLACE FUNCTION record_member_booking_conversion()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -727,10 +743,16 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  IF NEW.status = 'confirmed' AND auth.uid() IS NOT NULL AND auth.uid() = NEW.profile_id THEN
-    PERFORM record_booking_conversion_or_queue(
-      NEW.studio_id, NEW.profile_id, 'member_booking', NEW.id,
-      booking_session_from_request(NEW.profile_id, NEW.studio_id), 'signup');
+  IF auth.uid() IS NOT NULL AND auth.uid() = NEW.profile_id THEN
+    IF NEW.status = 'confirmed' THEN
+      PERFORM record_booking_conversion_or_queue(
+        NEW.studio_id, NEW.profile_id, 'member_booking', NEW.id,
+        booking_session_from_request(NEW.profile_id, NEW.studio_id), 'signup');
+    ELSIF NEW.status = 'waitlisted' THEN
+      INSERT INTO booking_attribution_context (booking_id, studio_id, origin, session_id)
+      VALUES (NEW.id, NEW.studio_id, 'member', booking_session_from_request(NEW.profile_id, NEW.studio_id))
+      ON CONFLICT (booking_id) DO NOTHING;
+    END IF;
   END IF;
   RETURN NEW;
 END;
@@ -753,13 +775,29 @@ SET search_path = public
 AS $$
 DECLARE
   v_guest BOOLEAN;
+  v_ctx booking_attribution_context%ROWTYPE;
+  v_session UUID;
 BEGIN
   IF OLD.status = 'waitlisted' AND NEW.status = 'confirmed' THEN
-    SELECT COALESCE(is_guest, FALSE) INTO v_guest FROM profiles WHERE id = NEW.profile_id;
+    SELECT * INTO v_ctx FROM booking_attribution_context WHERE booking_id = NEW.id;
+    IF FOUND THEN
+      -- Origin and visit as they were when the person joined the waitlist.
+      v_guest := v_ctx.origin = 'express';
+      v_session := COALESCE(v_ctx.session_id, (
+        SELECT s.id FROM analytics_sessions s
+        WHERE s.studio_id = NEW.studio_id AND s.started_at <= v_ctx.created_at
+          AND (s.profile_id = NEW.profile_id
+               OR s.visitor_id IN (SELECT visitor_id FROM profile_visitors WHERE profile_id = NEW.profile_id))
+        ORDER BY s.started_at DESC LIMIT 1));
+    ELSE
+      -- Waitlisted before this context existed: best available guess.
+      SELECT COALESCE(is_guest, FALSE) INTO v_guest FROM profiles WHERE id = NEW.profile_id;
+      v_session := NULL;
+    END IF;
     PERFORM record_booking_conversion_or_queue(
       NEW.studio_id, NEW.profile_id,
       CASE WHEN v_guest THEN 'guest_booking' ELSE 'member_booking' END,
-      NEW.id, NULL, CASE WHEN v_guest THEN 'express' ELSE 'signup' END);
+      NEW.id, v_session, CASE WHEN v_guest THEN 'express' ELSE 'signup' END);
   END IF;
   RETURN NEW;
 END;

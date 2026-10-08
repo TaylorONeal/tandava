@@ -532,5 +532,35 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM jsonb_array_elements(v) e WHERE e ? 'gross_value_cents') THEN RAISE EXCEPTION 'gross value missing'; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (26 blocks)'; END $$;
+-- 27. A waitlist spot keeps how it was made: an express guest who saves an
+--     account and visits again before promotion is still credited to the
+--     express visit that booked the spot.
+DO $$
+DECLARE v UUID := gen_random_uuid(); occ UUID := gen_random_uuid(); early UUID; b UUID; r conversion_events%ROWTYPE;
+        g UUID := '00000000-0000-0000-0000-0000000000f7';
+BEGIN
+  INSERT INTO auth.users (id, email) VALUES (g, 'wait@example.com');
+  UPDATE profiles SET is_guest = TRUE WHERE id = g;
+  INSERT INTO class_occurrences (id, studio_id, offering_id, location_id, starts_at, ends_at) VALUES
+    (occ, '00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000c1', NOW() + interval '9 day', NOW() + interval '9 day 1 hour');
+  early := record_session('aloha', v, 'wl-1', 'booking', 'https://x/s/aloha/book/1?utm_source=flyer', NULL,
+    '{"source":"flyer"}'::jsonb, '{}'::jsonb, 'qr', 'mobile');
+  PERFORM link_visitor(g, v, 'express_booking');
+  PERFORM set_config('request.jwt.claim.sub', '', true);
+  PERFORM set_config('request.headers', '', true);
+  INSERT INTO bookings (studio_id, class_occurrence_id, profile_id, status)
+  VALUES ('00000000-0000-0000-0000-00000000005a', occ, g, 'waitlisted') RETURNING id INTO b;
+  INSERT INTO booking_attribution_context (booking_id, studio_id, origin, session_id)
+  VALUES (b, '00000000-0000-0000-0000-00000000005a', 'express', early);
+  -- They save an account and come back through another link before a spot opens.
+  UPDATE profiles SET is_guest = FALSE WHERE id = g;
+  PERFORM record_session('aloha', v, 'wl-2', 'storefront', 'https://x/s/aloha?utm_source=ig', NULL,
+    '{"source":"ig"}'::jsonb, '{}'::jsonb, 'organic_social', 'mobile');
+  UPDATE bookings SET status = 'confirmed' WHERE id = b;
+  SELECT * INTO r FROM conversion_events WHERE entity_type = 'booking' AND entity_id = b;
+  IF r.conversion_type IS DISTINCT FROM 'guest_booking' THEN RAISE EXCEPTION 'promoted express spot recorded as %', r.conversion_type; END IF;
+  IF r.converting_touch_session_id IS DISTINCT FROM early THEN RAISE EXCEPTION 'promotion credited a later visit'; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (27 blocks)'; END $$;
 ROLLBACK;
