@@ -295,7 +295,13 @@ async function trackVisitInner(slug: string, surface: Surface, opts?: { studioSi
     // the id belongs to someone else. Wait (briefly) for that answer and use
     // whatever id survives, so this visit never lands in the other person's
     // journey. Anonymous visitors get an immediate null and keep the id.
-    await Promise.race([retryHandoffLink(), new Promise((r) => setTimeout(r, HANDOFF_WAIT_MS))]);
+    const settled = await Promise.race([
+      retryHandoffLink().then(() => true),
+      new Promise<false>((r) => setTimeout(() => r(false), HANDOFF_WAIT_MS)),
+    ]);
+    // No answer in time: skip this capture rather than risk writing it under
+    // someone else's id. captureSettled() redoes it once the link settles.
+    if (!settled) return;
     visitorId = getVisitorId();
   } else {
     void retryHandoffLink();

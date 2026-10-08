@@ -549,3 +549,32 @@ describe("copied handoff link opened by a signed-in person (PR #72 review)", () 
     expect(sent).toBe(window.localStorage.getItem("tandava.vid"));
   });
 });
+
+describe("handoff ownership that doesn't answer in time (PR #72 review)", () => {
+  it("skips the capture instead of sending the unverified handoff id", async () => {
+    vi.useFakeTimers();
+    try {
+      const foreign = "abababab-abab-4bab-8bab-abababababab";
+      vi.stubGlobal("window", {
+        localStorage: memoryStorage(),
+        sessionStorage: memoryStorage(),
+        location: { href: `https://app.example.com/s/oxatl?tv=${foreign}` },
+      });
+      vi.stubGlobal("document", { referrer: "" });
+      vi.stubGlobal("navigator", { userAgent: "test" });
+      const { api, data } = await import("@/lib/backend");
+      const link = vi.mocked(data.linkMyVisitor);
+      link.mockReset();
+      link.mockImplementation(() => new Promise(() => {})); // never answers
+      const invoke = vi.mocked(api.invoke);
+      invoke.mockReset();
+      const s = await import("./session");
+      const p = s.trackVisit("oxatl", "storefront" as never);
+      await vi.advanceTimersByTimeAsync(5000);
+      await p;
+      expect(invoke).not.toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
