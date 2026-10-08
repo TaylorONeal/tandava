@@ -134,7 +134,15 @@ export function formatAddress(loc: {
   state?: string | null;
   zip?: string | null;
 } | null | undefined): string | null {
-  if (!loc?.address_line1 || !loc.city) return null;
+  if (!loc?.address_line1?.trim()) return null;
+  // Onboarding stores the whole address in one field ("100 Congress Ave,
+  // Austin, TX 78701") and no city. Accept that when it reads as a full
+  // address (street number plus a comma before the city); a bare street
+  // line is still not a postal address.
+  if (!loc.city) {
+    const full = loc.address_line1.trim();
+    return /\d/.test(full) && full.includes(",") ? full : null;
+  }
   const line = [loc.address_line1, loc.address_line2].filter(Boolean).join(" ");
   const region = [loc.state, loc.zip].filter(Boolean).join(" ");
   return [line, loc.city, region].filter(Boolean).join(", ");

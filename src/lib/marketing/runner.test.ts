@@ -80,4 +80,8 @@ describe("formatAddress", () => {
     expect(formatAddress({ address_line1: "100 Congress Ave" })).toBeNull();
     expect(formatAddress(null)).toBeNull();
   });
+  it("accepts onboarding's single-field full address (no city column)", () => {
+    expect(formatAddress({ address_line1: "100 Congress Ave, Austin, TX 78701" })).toBe("100 Congress Ave, Austin, TX 78701");
+    expect(formatAddress({ address_line1: "Downtown, Austin" })).toBeNull();
+  });
 });
