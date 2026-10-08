@@ -16,6 +16,8 @@ import { deviceType, parseLanding, sanitizeUrl } from "./landing";
 const VISITOR_KEY = "tandava.vid";
 const SESSION_PREFIX = "tandava.sess.";
 const SESSION_TTL_MS = 30 * 60 * 1000;
+/** Longest one capture attempt may take before the next retry (or the next capture) goes ahead. */
+const CAPTURE_ATTEMPT_TIMEOUT_MS = 8000;
 
 /**
  * Web storage behind an in-memory overlay. A write or remove that throws
@@ -329,7 +331,14 @@ async function trackVisitInner(slug: string, surface: Surface, opts?: { studioSi
     // A newer page view replaced this session: its own capture takes over.
     if (readSession(slug)?.token !== session.token) return;
     try {
-      const { data, error } = await api.invoke<{ sessionId?: string | null }>("analytics-session", body);
+      // Bounded: captures for a studio run one at a time, so a request that
+      // hangs instead of failing would otherwise block every later capture.
+      const res = await Promise.race([
+        api.invoke<{ sessionId?: string | null }>("analytics-session", body),
+        new Promise<null>((r) => setTimeout(() => r(null), CAPTURE_ATTEMPT_TIMEOUT_MS)),
+      ]);
+      if (!res) continue;
+      const { data, error } = res;
       if (!error && data?.sessionId) {
         // Attach the id only if this is still the current session: a slower
         // response from an earlier page must not restore an older campaign.

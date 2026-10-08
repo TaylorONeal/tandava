@@ -494,3 +494,32 @@ describe("overlapping captures for one studio", () => {
     expect(invoke).toHaveBeenCalledTimes(2);
   });
 });
+
+describe("a capture request that hangs", () => {
+  it("times out so the next capture for the studio still runs", async () => {
+    vi.useFakeTimers();
+    try {
+      vi.stubGlobal("window", {
+        localStorage: memoryStorage(),
+        sessionStorage: memoryStorage(),
+        location: { href: "https://app.example.com/s/oxatl" },
+      });
+      vi.stubGlobal("document", { referrer: "" });
+      vi.stubGlobal("navigator", { userAgent: "test" });
+      const { api } = await import("@/lib/backend");
+      const invoke = vi.mocked(api.invoke);
+      invoke.mockReset();
+      invoke.mockImplementation(() => new Promise(() => {}) as never); // never settles
+      const s = await import("./session");
+      const first = s.trackVisit("oxatl", "storefront" as never);
+      await vi.advanceTimersByTimeAsync(120_000);
+      await first; // finished despite every attempt hanging
+      invoke.mockReset();
+      invoke.mockResolvedValue({ data: { sessionId: "99999999-9999-4999-8999-999999999999" }, error: null } as never);
+      await s.trackVisit("oxatl", "booking" as never);
+      expect(s.currentSessionId("oxatl")).toBe("99999999-9999-4999-8999-999999999999");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});

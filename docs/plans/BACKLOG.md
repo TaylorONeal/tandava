@@ -93,6 +93,7 @@ commands in [LAUNCH_RUNBOOK.md](LAUNCH_RUNBOOK.md).
 | W7-4 | Flip `VITE_HOME_MODE=discover` | W7-3, D4 | LATER |
 | W7-5 | Single-use embed handoff tokens: the embed asks the server for a short-lived, one-time token instead of passing its raw visitor id as `tv`, so a copied booking URL opened by two signed-out people can't merge their journeys (PR #72 review, deferred as a new feature) | PR #72 | LATER |
 | W7-6 | Pass the express origin into `create_guest_booking` instead of inferring it from `profiles.is_guest` in the waitlist-context trigger, so a guest claiming their account in the same instant as an express waitlist booking still gets an express (not member) conversion on promotion (PR #72 review, deferred: changes main's booking function) | PR #72 | LATER |
+| W7-7 | Idempotent page-view counts: `record_session` increments `page_views` on every call, so a retried capture whose first response was lost counts twice. Add a per-page-view request id (RPC signature change) so a retry is recognised (PR #72 review, deferred: page_views is display-only, not used for attribution or money) | PR #72 | LATER |
 
 ## Critical path
 
