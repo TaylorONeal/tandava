@@ -405,7 +405,7 @@ export default function Onboarding() {
       );
       case 1: return (
         <StepCard title="Location" desc="Where is your studio located?">
-          <Field label="Street Address" id="address" placeholder="123 Main St, San Francisco, CA 94105" value={f.address ?? ""} onChange={set("address")} />
+          <Field label="Street Address" id="address" placeholder="123 Main St, Austin, TX 78704" value={f.address ?? ""} onChange={set("address")} />
           <Field label="Rooms (comma-separated)" id="rooms" placeholder="Main Studio, Hot Room" value={f.rooms ?? ""} onChange={set("rooms")} />
           <Field label="Amenities" id="amenities" placeholder="Showers, Mat Rentals, Changing Rooms, Lockers" value={f.amenities ?? ""} onChange={set("amenities")} />
         </StepCard>
@@ -573,8 +573,8 @@ export default function Onboarding() {
             <div className="flex items-center gap-3">
               <Switch checked={discoverable} onCheckedChange={setDiscoverable} />
               <div>
-                <Label>List my studio in the public directory</Label>
-                <p className="text-xs text-muted-foreground">Students browsing Tandava can find and book your classes.</p>
+                <Label>List my studio on Tandava Discover</Label>
+                <p className="text-xs text-muted-foreground">Students searching Tandava Discover can find and book your classes. You can turn this off any time.</p>
               </div>
             </div>
             <Separator />
@@ -597,7 +597,7 @@ export default function Onboarding() {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Studio Setup</h1>
-          <p className="text-sm text-muted-foreground mt-1">Complete these steps to get your studio up and running. Every step can be skipped and finished later — your progress is saved as you go.</p>
+          <p className="text-sm text-muted-foreground mt-1">Complete these steps to get your studio up and running. Every step can be skipped and finished later. Your progress is saved as you go.</p>
         </div>
         {restoring ? (
           <div className="flex items-center gap-3 text-sm text-muted-foreground py-12 justify-center">

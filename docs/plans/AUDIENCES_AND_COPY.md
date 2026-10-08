@@ -36,7 +36,7 @@ Code: `src/lib/audience.ts` (intent), `src/components/layout/MarketingShell.tsx`
 | C-2 | DONE 2026-10-08 (robots + sitemap): mock-data routes disallowed and out of the sitemap; /discover, /for-studios, /open-source, /demo added. Real data still to come (W6-3). Was: `/schedule`, `/events`, `/instructors` still show mock data and student-facing copy. Gate or noindex (W6-3) |
 | C-3 | Translate new `auth.json` keys (other locales fall back to English) |
 | C-4 | DONE 2026-10-08: /auth/callback shows an expired-link state with resend. Was: Post-confirmation landing: email link returns to `/` with an error fragment if expired. Add a friendly `/auth/callback` expired state and resend |
-| C-5 | Onboarding wizard copy pass for owners (hosted vs self-host assumptions) |
+| C-5 | DONE 2026-10-08: onboarding names Tandava Discover for the listing toggle and says it can be turned off; hosted wording already (Stripe form, no server setup). Was: Onboarding wizard copy pass for owners (hosted vs self-host assumptions) |
 | C-6 | DONE 2026-10-08: blog CTA and calculator footer point owners to /for-studios. Was: Blog and tools footers say "open source" first; point to `/for-studios` for owners |
 | C-7 | DONE 2026-10-08: notification settings show the fake provider forms only in demo mode. Was: Hosted-only config: hide self-host/demo notices when `VITE_DEMO_MODE` is off |
 | C-8 | Full string audit of `src/pages/manage/*`, emails and `public/locales/*` for hosted vs self-host assumptions (Stripe, SMTP, "your server") |
