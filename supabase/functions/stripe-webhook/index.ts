@@ -77,7 +77,10 @@ serve(async (req) => {
           break;
         }
         const failedConversions: Record<string, unknown>[] = [];
-        const fulfilled = await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session, failedConversions);
+        // Stripe's signed event time is when the checkout completed; a late or
+        // retried delivery must not move the conversion past later visits.
+        const occurredAt = new Date(event.created * 1000).toISOString();
+        const fulfilled = await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session, failedConversions, occurredAt);
         if (!fulfilled) {
           // A required write failed. With the ledger, the claim stays
           // "processing" and the retry takes it over after 10 minutes;
@@ -208,6 +211,8 @@ async function claimEvent(
 async function handleCheckoutCompleted(
   session: Stripe.Checkout.Session,
   failedConversions: Record<string, unknown>[],
+  /** When Stripe completed the checkout (the event's created time). */
+  occurredAt: string,
 ): Promise<boolean> {
   const metadata = session.metadata || {};
   const paymentIntentId = (session.payment_intent as string) || null;
@@ -249,7 +254,7 @@ async function handleCheckoutCompleted(
       // waitlist (the class filled during Checkout) or failed to book still
       // counts as money in, under its own type, so booking rates stay honest.
       const confirmed = !bookingError && booking && booking.status === "confirmed";
-      await recordPurchaseConversion(failedConversions, metadata,
+      await recordPurchaseConversion(failedConversions, occurredAt, metadata,
         confirmed ? (metadata.express === "1" ? "guest_booking" : "member_booking") : "drop_in_payment",
         "transaction",
         txn.id,
@@ -310,7 +315,7 @@ async function handleCheckoutCompleted(
         console.error("Failed to record membership transaction:", txnError);
         return false;
       }
-      await recordPurchaseConversion(failedConversions, metadata, "membership_start", "membership", membership.id, session.amount_total, session.currency, "signup");
+      await recordPurchaseConversion(failedConversions, occurredAt, metadata, "membership_start", "membership", membership.id, session.amount_total, session.currency, "signup");
       break;
     }
 
@@ -353,7 +358,7 @@ async function handleCheckoutCompleted(
       }
 
       if (txn?.id) {
-        await recordPurchaseConversion(failedConversions, metadata, "event_registration", "transaction", txn.id, paid, session.currency, "signup");
+        await recordPurchaseConversion(failedConversions, occurredAt, metadata, "event_registration", "transaction", txn.id, paid, session.currency, "signup");
       }
 
       // Bump denormalized registration counts (no trigger for events).
@@ -410,7 +415,7 @@ async function handleCheckoutCompleted(
         console.error("Failed to record class pack transaction:", txnError);
         return false;
       }
-      await recordPurchaseConversion(failedConversions, metadata, "pack_purchase", "class_pack", pack.id, session.amount_total, session.currency, "signup");
+      await recordPurchaseConversion(failedConversions, occurredAt, metadata, "pack_purchase", "class_pack", pack.id, session.amount_total, session.currency, "signup");
       break;
     }
   }
@@ -426,6 +431,7 @@ async function handleCheckoutCompleted(
 async function recordPurchaseConversion(
   /** Collects this request's failed writes, saved on the ledger row for retry. */
   failed: Record<string, unknown>[],
+  occurredAt: string,
   metadata: Record<string, string>,
   conversionType: string,
   entityType: string,
@@ -448,9 +454,9 @@ async function recordPurchaseConversion(
     p_entity_id: entityId,
     p_converting_session_id: sessionId,
     p_member_source: memberSource,
-    // Stamped now and saved with the args, so a replay keeps the purchase's
-    // own time (journey cutoff and reporting period).
-    p_occurred_at: new Date().toISOString(),
+    // Stripe's event time, saved with the args, so a late delivery or a
+    // replay keeps the purchase's own time (journey cutoff, reporting period).
+    p_occurred_at: occurredAt,
   };
   if (!(await callRecordConversion(args))) failed.push(args);
 }

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
 import { auth, data, isBackendConfigured } from "@/lib/backend";
 import type { AuthUser, AuthError, SignUpMetadata } from "@/lib/backend";
 import type { Profile } from "@/types/database";
@@ -52,6 +52,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const demo = useDemo();
   const isDemoMode = demo.isDemoMode || !isBackendConfigured();
 
+  /** The signed-in user the listener last saw, to spot a sign-out from elsewhere. */
+  const lastUserId = useRef<string | null>(null);
   const [state, setState] = useState<AuthState>({
     user: null,
     profile: isDemoMode ? { ...demo.activeProfile, role: demo.activePersona.role } : null,
@@ -113,6 +115,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       let profile: Profile | null = null;
       let permissions: Permission[] = [];
 
+      // Signed out without this tab's signOut() (expired session, another
+      // tab): the browser id is linked to that person, so start a fresh one
+      // before anonymous visits join their journey.
+      if (!user && lastUserId.current) forgetVisitor();
+      lastUserId.current = user?.id ?? null;
+
       if (user) {
         void linkVisitorOnce(user.id);
         profile = await fetchProfile(user.id);
@@ -132,6 +140,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Initial session check
     auth.getSession().then(async ({ user }) => {
+      if (user) lastUserId.current = user.id;
       let profile: Profile | null = null;
       let permissions: Permission[] = [];
 
