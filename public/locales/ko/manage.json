@@ -19,14 +19,15 @@
     "importData": "데이터 가져오기",
     "smsInbox": "SMS 수신함",
     "notifications": "알림",
-    "settings": "설정"
+    "settings": "설정",
+    "shareLinks": "예약 링크",
+    "websiteEmbed": "웹사이트 임베드"
   },
   "title": "스튜디오 관리자",
   "studentView": "수강생 화면",
   "myAccount": "내 계정",
   "studioSettings": "스튜디오 설정",
   "signOut": "로그아웃",
-
   "schedule": {
     "title": "수업 일정",
     "subtitle": "수업 일정을 만들고 관리하세요.",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "수업 상품 검색...",
     "activeOfferings": "활성 수업 상품"
   },
-
   "admin": {
     "platformAdmin": "플랫폼 관리자",
     "platformDashboard": "플랫폼 대시보드",
@@ -60,7 +60,6 @@
     "sentryConfigured": "Sentry 오류 모니터링",
     "setEnvVar": ".env에 {{key}} 설정"
   },
-
   "studioManagement": "스튜디오 관리",
   "owner": "대표"
 }

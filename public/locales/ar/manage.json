@@ -19,14 +19,15 @@
     "importData": "استيراد البيانات",
     "smsInbox": "صندوق الرسائل النصية",
     "notifications": "الإشعارات",
-    "settings": "الإعدادات"
+    "settings": "الإعدادات",
+    "shareLinks": "روابط الحجز",
+    "websiteEmbed": "تضمين الموقع"
   },
   "title": "إدارة الاستوديو",
   "studentView": "عرض العضو",
   "myAccount": "حسابي",
   "studioSettings": "إعدادات الاستوديو",
   "signOut": "تسجيل الخروج",
-
   "schedule": {
     "title": "الجدول",
     "subtitle": "أنشئ جدول حصصك وأدره.",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "ابحث في العروض...",
     "activeOfferings": "العروض النشطة"
   },
-
   "admin": {
     "platformAdmin": "مشرف المنصة",
     "platformDashboard": "لوحة تحكم المنصة",
@@ -60,7 +60,6 @@
     "sentryConfigured": "مراقبة أخطاء Sentry",
     "setEnvVar": "عيّن {{key}} في ‎.env"
   },
-
   "studioManagement": "إدارة الاستوديو",
   "owner": "المالك"
 }

@@ -19,14 +19,15 @@
     "importData": "डेटा आयात करें",
     "smsInbox": "SMS इनबॉक्स",
     "notifications": "सूचनाएँ",
-    "settings": "सेटिंग्स"
+    "settings": "सेटिंग्स",
+    "shareLinks": "बुकिंग लिंक",
+    "websiteEmbed": "वेबसाइट एम्बेड"
   },
   "title": "स्टूडियो एडमिन",
   "studentView": "विद्यार्थी दृश्य",
   "myAccount": "मेरा खाता",
   "studioSettings": "स्टूडियो सेटिंग्स",
   "signOut": "साइन आउट",
-
   "schedule": {
     "title": "शेड्यूल",
     "subtitle": "अपनी क्लास का शेड्यूल बनाएँ और प्रबंधित करें।",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "क्लास के प्रकार खोजें...",
     "activeOfferings": "सक्रिय प्रकार"
   },
-
   "admin": {
     "platformAdmin": "प्लेटफ़ॉर्म एडमिन",
     "platformDashboard": "प्लेटफ़ॉर्म डैशबोर्ड",
@@ -60,7 +60,6 @@
     "sentryConfigured": "Sentry त्रुटि मॉनिटरिंग",
     "setEnvVar": ".env में {{key}} सेट करें"
   },
-
   "studioManagement": "स्टूडियो प्रबंधन",
   "owner": "मालिक"
 }
