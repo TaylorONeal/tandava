@@ -2809,6 +2809,15 @@ export interface PublicOccurrenceRow {
  * The caller's own studio (`get_my_studio`) — identity and branding for
  * owner-facing screens, so an owner is never asked to type their own slug.
  */
+/** A studio the caller administers (`get_my_admin_studio`), for owner-only screens. */
+export interface MyAdminStudioRow {
+  studio_id: string;
+  name: string;
+  slug: string;
+  currency: string | null;
+  staff_role: string;
+}
+
 export interface MyStudioRow {
   studio_id: string;
   name: string;

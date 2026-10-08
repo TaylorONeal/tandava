@@ -10,6 +10,7 @@ import type {
   AutomationSettingsRow,
   MemberAttribution,
 } from "@/types/attribution";
+import type { MyAdminStudioRow } from "@/types/database";
 
 /** The report for the studio the manage UI is showing (never one the server picks). */
 export function useAttributionSources(studioId: string | undefined, days: number, model: AttributionModel) {
@@ -32,6 +33,23 @@ export function useMemberAttribution(studioId: string | undefined, profileId: st
     enabled: Boolean(studioId && profileId) && isBackendConfigured(),
     queryFn: async (): Promise<MemberAttribution | null> => {
       const { data, error } = await backendData.getMemberAttribution(studioId!, profileId!);
+      if (error) throw new Error(error.message);
+      return data;
+    },
+  });
+}
+
+/**
+ * The studio owner-only screens act on: one the caller is owner/admin of.
+ * get_my_studio() can return a studio where they only teach.
+ */
+export function useMyAdminStudio() {
+  return useQuery({
+    queryKey: ["my-admin-studio"],
+    enabled: isBackendConfigured(),
+    staleTime: 5 * 60_000,
+    queryFn: async (): Promise<MyAdminStudioRow | null> => {
+      const { data, error } = await backendData.getMyAdminStudio();
       if (error) throw new Error(error.message);
       return data;
     },

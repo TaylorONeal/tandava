@@ -7,8 +7,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { HelpTip } from "@/components/help/HelpTip";
 import { ArrowLeft, ChevronDown, ChevronRight, Link2 } from "lucide-react";
 import { isBackendConfigured } from "@/lib/backend";
-import { useAttributionSources } from "@/hooks/useAttribution";
-import { useMyStudio } from "@/hooks/useBooking";
+import { useMyAdminStudio, useAttributionSources } from "@/hooks/useAttribution";
 import { sourceLine, summariseSources } from "@/lib/analytics/sources";
 import { formatPrice } from "@/lib/reference-data";
 import type { AttributionModel, AttributionSourceRow } from "@/types/attribution";
@@ -37,7 +36,7 @@ export default function AttributionSources() {
   const [days, setDays] = useState<number>(30);
   const [model, setModel] = useState<AttributionModel>("first");
   const [open, setOpen] = useState<string | null>(null);
-  const { data: studio } = useMyStudio();
+  const { data: studio } = useMyAdminStudio();
   const query = useAttributionSources(studio?.studio_id, days, model);
   const rows = live ? (query.data ?? []) : SAMPLE_ROWS;
   const { totals, channels } = summariseSources(rows);

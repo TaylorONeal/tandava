@@ -71,7 +71,7 @@ export function BookClassButton({ occurrenceId, studioSlug, className }: Props) 
       // Nothing on file covers this class: pay for it as a drop-in.
       trackFunnel("checkout_started", { kind: "drop_in", price_cents: result.drop_in_price_cents });
       setRedirecting(true);
-      const { error } = await checkoutDropIn(occurrenceId);
+      const { error } = await checkoutDropIn(occurrenceId, studioSlug);
       if (error) {
         setRedirecting(false);
         toast({ title: "Couldn't start checkout", description: error, variant: "destructive" });

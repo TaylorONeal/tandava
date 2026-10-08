@@ -330,10 +330,24 @@ AS $$
       COALESCE(t->>'utm_source', t->>'referrer_domain', '') AS utm_source,
       COALESCE(t->>'utm_campaign', '') AS utm_campaign,
       count(*) FILTER (WHERE c.conversion_type IN ('guest_booking', 'member_booking')) AS bookings,
-      count(*) FILTER (WHERE COALESCE(c.value_cents, 0) > 0) AS purchases,
-      COALESCE(sum(c.value_cents), 0) AS revenue_cents
-    FROM conversion_events c, my,
-      LATERAL (SELECT CASE WHEN p_model = 'last' THEN c.converting_touch ELSE c.first_touch END AS t) x
+      -- Money in after refunds: the conversion value is frozen at purchase,
+      -- refunds live on the transaction (record_stripe_refund), so net them
+      -- here. A fully refunded purchase is no longer a purchase.
+      count(*) FILTER (WHERE COALESCE(c.value_cents, 0) - COALESCE(rf.refunded, 0) > 0) AS purchases,
+      COALESCE(sum(GREATEST(0, COALESCE(c.value_cents, 0) - COALESCE(rf.refunded, 0))), 0) AS revenue_cents
+    FROM conversion_events c
+    CROSS JOIN my
+    CROSS JOIN LATERAL (SELECT CASE WHEN p_model = 'last' THEN c.converting_touch ELSE c.first_touch END AS t) x
+    LEFT JOIN LATERAL (
+      SELECT COALESCE(tx.refunded_amount_cents, 0) AS refunded
+      FROM transactions tx
+      WHERE tx.studio_id = c.studio_id
+        AND ((c.entity_type = 'transaction' AND tx.id = c.entity_id)
+          OR (c.entity_type = 'class_pack' AND tx.class_pack_id = c.entity_id)
+          OR (c.entity_type = 'membership' AND tx.membership_id = c.entity_id))
+      ORDER BY tx.created_at ASC
+      LIMIT 1
+    ) rf ON c.entity_type IN ('transaction', 'class_pack', 'membership')
     WHERE c.studio_id = my.studio_id AND c.occurred_at >= p_from AND c.occurred_at < p_to
     GROUP BY 1, 2, 3
   ),
@@ -943,3 +957,29 @@ UPDATE studio_members SET acquired_at = created_at WHERE acquired_at IS NULL;
 -- tracking began. Runs once, at migration time; new rows keep NULL until a
 -- conversion sets their real source.
 UPDATE studio_members SET source = 'pre_tracking' WHERE source IS NULL;
+
+
+-- ===========================================================================
+-- The studio the caller administers (PR #72 review)
+-- ===========================================================================
+-- get_my_studio() returns the earliest assignment of any role. Owner/admin
+-- screens (Automations, Where students come from) need a studio the caller
+-- can actually manage: a teacher at studio A who owns studio B gets B here.
+CREATE OR REPLACE FUNCTION get_my_admin_studio()
+RETURNS TABLE (studio_id UUID, name TEXT, slug TEXT, currency TEXT, staff_role user_role)
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT s.id, s.name, s.slug, s.currency, ss.role
+  FROM studio_staff ss
+  JOIN studios s ON s.id = ss.studio_id
+  WHERE ss.profile_id = (SELECT auth.uid())
+    AND ss.is_active = TRUE
+    AND ss.role IN ('owner', 'admin')
+  ORDER BY ss.created_at ASC
+  LIMIT 1;
+$$;
+REVOKE ALL ON FUNCTION get_my_admin_studio() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION get_my_admin_studio() TO authenticated;

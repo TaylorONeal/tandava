@@ -32,7 +32,7 @@ import type {
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
 
 /** Request header carrying the analytics session into booking RPCs (read by the bookings trigger, migration 00035). */
@@ -383,6 +383,12 @@ const supabaseData: DataProvider = {
       .from("automation_settings" as never)
       .upsert({ ...row, updated_at: new Date().toISOString() } as never, { onConflict: "studio_id" });
     return { error: error ? { message: error.message } : null };
+  },
+
+  async getMyAdminStudio(): Promise<DataResult<MyAdminStudioRow>> {
+    const { data, error } = await getClient().rpc("get_my_admin_studio" as never);
+    const rows = (data as MyAdminStudioRow[] | null) ?? [];
+    return { data: rows[0] ?? null, error: error ? { message: error.message } : null };
   },
 
   async getMyStudio(): Promise<DataResult<MyStudioRow>> {

@@ -9,8 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { HelpTip } from "@/components/help/HelpTip";
 import { useToast } from "@/hooks/use-toast";
-import { useMyStudio } from "@/hooks/useBooking";
-import { useAutomationSettings, useSaveAutomationSettings } from "@/hooks/useAttribution";
+import { useMyAdminStudio, useAutomationSettings, useSaveAutomationSettings } from "@/hooks/useAttribution";
 import { isBackendConfigured } from "@/lib/backend";
 import { safeUrl } from "@/lib/marketing/automationEmails";
 import { Loader2, Mail } from "lucide-react";
@@ -57,7 +56,7 @@ const AUTOMATIONS = [
 export default function Automations() {
   const live = isBackendConfigured();
   const { toast } = useToast();
-  const { data: studio } = useMyStudio();
+  const { data: studio } = useMyAdminStudio();
   const { data: saved, isLoading, isError } = useAutomationSettings(studio?.studio_id);
   const save = useSaveAutomationSettings();
   const [form, setForm] = useState<FormState>(DEFAULTS);

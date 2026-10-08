@@ -9,7 +9,7 @@
  * See docs/developer/backend-flexibility.md for architecture details.
  */
 
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { FeedbackType } from "@/types/database";
 import type { AttributionModel, AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
 
@@ -213,6 +213,8 @@ export interface DataProvider {
    * owner-facing screens. Null when the caller has no active staff record.
    */
   getMyStudio(): Promise<DataResult<MyStudioRow>>;
+  /** A studio the caller is an active owner/admin of (owner-only screens). */
+  getMyAdminStudio(): Promise<DataResult<MyAdminStudioRow>>;
 
   /** Upcoming (non-cancelled, future) class occurrences for a studio, with offering + location joined. */
   getUpcomingClasses(studioId: string): Promise<DataResult<ClassOccurrence[]>>;

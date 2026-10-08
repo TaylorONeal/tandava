@@ -475,5 +475,36 @@ BEGIN
   IF bad <> '' THEN RAISE EXCEPTION 'functions open to clients:%', bad; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (23 blocks)'; END $$;
+-- 24. Refunds come off attributed revenue; a fully refunded purchase stops
+--     counting as a purchase (refunds live on the transaction, 00031).
+DO $$
+DECLARE rev0 BIGINT; rev1 BIGINT; rev2 BIGINT; p0 BIGINT; p2 BIGINT;
+BEGIN
+  PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000a1', true);
+  SELECT COALESCE(sum(revenue_cents), 0), COALESCE(sum(purchases), 0) INTO rev0, p0
+    FROM get_attribution_sources(NOW() - interval '60 days', NOW() + interval '1 day', 'last', '00000000-0000-0000-0000-00000000005a');
+  PERFORM record_stripe_refund('evt_ref_1', 'pi_attr_1', 'ch_attr_1', 2500, 1000);
+  SELECT COALESCE(sum(revenue_cents), 0) INTO rev1
+    FROM get_attribution_sources(NOW() - interval '60 days', NOW() + interval '1 day', 'last', '00000000-0000-0000-0000-00000000005a');
+  IF rev0 - rev1 <> 1000 THEN RAISE EXCEPTION 'partial refund not netted: % -> %', rev0, rev1; END IF;
+  PERFORM record_stripe_refund('evt_ref_2', 'pi_attr_1', 'ch_attr_1', 2500, 2500);
+  SELECT COALESCE(sum(revenue_cents), 0), COALESCE(sum(purchases), 0) INTO rev2, p2
+    FROM get_attribution_sources(NOW() - interval '60 days', NOW() + interval '1 day', 'last', '00000000-0000-0000-0000-00000000005a');
+  IF rev0 - rev2 <> 2500 OR p0 - p2 <> 1 THEN RAISE EXCEPTION 'full refund not netted: rev % -> %, purchases % -> %', rev0, rev2, p0, p2; END IF;
+END $$;
+
+-- 25. Owner screens use a studio the caller administers, even when an older
+--     assignment elsewhere is a teaching one.
+DO $$
+DECLARE a UUID;
+BEGIN
+  INSERT INTO studio_staff (studio_id, profile_id, role, is_active, created_at)
+  VALUES ('00000000-0000-0000-0000-00000000005b', '00000000-0000-0000-0000-0000000000a1', 'teacher', TRUE, NOW() - interval '5 years');
+  PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000a1', true);
+  SELECT studio_id INTO a FROM get_my_admin_studio();
+  IF a IS DISTINCT FROM '00000000-0000-0000-0000-00000000005a'::uuid THEN RAISE EXCEPTION 'admin studio should be aloha, got %', a; END IF;
+  IF has_function_privilege('anon', 'get_my_admin_studio()', 'EXECUTE') THEN RAISE EXCEPTION 'get_my_admin_studio open to anon'; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (25 blocks)'; END $$;
 ROLLBACK;
