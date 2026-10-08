@@ -211,8 +211,32 @@ BEGIN
     THEN RAISE EXCEPTION 'acquired_at has no default'; END IF;
   PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000a1', true);
   SELECT COALESCE(sum(new_people), 0) INTO n FROM get_attribution_sources(NOW() - interval '1 day', NOW() + interval '1 day', 'first');
-  -- Only Ana (express guest, fixture) is a new person; the import is not.
-  IF n <> 1 THEN RAISE EXCEPTION 'new people should be 1 (import excluded), got %', n; END IF;
+  -- Ana (express guest) and lei (first conversion in block 10) are new; the import is not.
+  IF n <> 2 THEN RAISE EXCEPTION 'new people should be 2 (import excluded), got %', n; END IF;
+END $$;
+
+-- 12. A signed-in member's first booking creates the studio relationship,
+--     and a waitlisted booking counts once it is promoted.
+DO $$
+DECLARE occ UUID := gen_random_uuid(); b UUID;
+BEGIN
+  INSERT INTO auth.users (id, email) VALUES ('00000000-0000-0000-0000-0000000000e3', 'noa@example.com');
+  INSERT INTO class_occurrences (id, studio_id, offering_id, location_id, starts_at, ends_at) VALUES
+    (occ, '00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000c1', NOW() + interval '3 day', NOW() + interval '3 day 1 hour');
+
+  PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000e3', true);
+  INSERT INTO bookings (studio_id, class_occurrence_id, profile_id, status) VALUES
+    ('00000000-0000-0000-0000-00000000005a', occ, '00000000-0000-0000-0000-0000000000e3', 'waitlisted') RETURNING id INTO b;
+  IF EXISTS (SELECT 1 FROM conversion_events WHERE entity_id = b)
+    THEN RAISE EXCEPTION 'a waitlisted booking should not count yet'; END IF;
+
+  PERFORM set_config('request.jwt.claim.sub', '', true);
+  UPDATE bookings SET status = 'confirmed' WHERE id = b;
+  IF NOT EXISTS (SELECT 1 FROM conversion_events WHERE conversion_type = 'member_booking' AND entity_id = b)
+    THEN RAISE EXCEPTION 'promoted booking not recorded'; END IF;
+  IF NOT EXISTS (SELECT 1 FROM studio_members WHERE studio_id = '00000000-0000-0000-0000-00000000005a'
+                 AND profile_id = '00000000-0000-0000-0000-0000000000e3')
+    THEN RAISE EXCEPTION 'conversion did not create the studio relationship'; END IF;
 END $$;
 
 SELECT 'attribution tests passed' AS result;

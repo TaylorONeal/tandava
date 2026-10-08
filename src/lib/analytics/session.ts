@@ -31,15 +31,25 @@ function randomId(): string {
   }
 }
 
+/**
+ * This browser's visitor id. A validated embed handoff id (`tv`) wins over a
+ * stored one: the embed session on the studio's own site and the booking here
+ * must be one journey. An older id on this origin stays joined to the person
+ * through sign-in linking (profile_visitors).
+ */
 export function getVisitorId(handoff?: string): string {
   try {
     const stored = window.localStorage.getItem(VISITOR_KEY);
+    if (handoff && handoff !== stored) {
+      window.localStorage.setItem(VISITOR_KEY, handoff);
+      return handoff;
+    }
     if (stored) return stored;
-    const id = handoff ?? randomId();
+    const id = randomId();
     window.localStorage.setItem(VISITOR_KEY, id);
     return id;
   } catch {
-    memoryVisitor = memoryVisitor ?? handoff ?? randomId();
+    memoryVisitor = handoff ?? memoryVisitor ?? randomId();
     return memoryVisitor;
   }
 }

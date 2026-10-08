@@ -207,12 +207,16 @@ BEGIN
 
   -- First time this person has a relationship with this studio: record where
   -- it came from. Never overwritten.
+  -- A signed-in member's first booking or purchase may be their first contact
+  -- with the studio (only express booking and import create the row
+  -- otherwise), so create the relationship here if it is missing.
   IF p_studio_id IS NOT NULL AND p_profile_id IS NOT NULL THEN
-    UPDATE studio_members SET
-      source = COALESCE(source, p_member_source),
-      first_touch_session_id = COALESCE(first_touch_session_id, v_first),
-      acquired_at = COALESCE(acquired_at, NOW())
-    WHERE studio_id = p_studio_id AND profile_id = p_profile_id;
+    INSERT INTO studio_members (studio_id, profile_id, source, first_touch_session_id, acquired_at)
+    VALUES (p_studio_id, p_profile_id, p_member_source, v_first, NOW())
+    ON CONFLICT (studio_id, profile_id) DO UPDATE SET
+      source = COALESCE(studio_members.source, EXCLUDED.source),
+      first_touch_session_id = COALESCE(studio_members.first_touch_session_id, EXCLUDED.first_touch_session_id),
+      acquired_at = COALESCE(studio_members.acquired_at, EXCLUDED.acquired_at);
   END IF;
 
   RETURN v_id;
@@ -496,6 +500,39 @@ DROP TRIGGER IF EXISTS trg_member_booking_conversion ON bookings;
 CREATE TRIGGER trg_member_booking_conversion
   AFTER INSERT ON bookings
   FOR EACH ROW EXECUTE FUNCTION record_member_booking_conversion();
+
+-- A waitlisted booking that gets promoted becomes a booking then, whoever
+-- triggers the promotion (a cancellation, staff, a job). Paths that record
+-- their own conversion never record a waitlisted booking, and the per-entity
+-- unique index stops any duplicate.
+CREATE OR REPLACE FUNCTION record_promoted_booking_conversion()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  IF OLD.status = 'waitlisted' AND NEW.status = 'confirmed' THEN
+    BEGIN
+      PERFORM record_conversion(
+        NEW.studio_id, NEW.profile_id, NULL,
+        CASE WHEN (SELECT COALESCE(is_guest, FALSE) FROM profiles WHERE id = NEW.profile_id)
+             THEN 'guest_booking' ELSE 'member_booking' END,
+        0, (SELECT currency FROM studios WHERE id = NEW.studio_id),
+        'booking', NEW.id, NULL, NULL
+      );
+    EXCEPTION WHEN OTHERS THEN
+      RAISE WARNING 'record_promoted_booking_conversion: %', SQLERRM;
+    END;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_promoted_booking_conversion ON bookings;
+CREATE TRIGGER trg_promoted_booking_conversion
+  AFTER UPDATE OF status ON bookings
+  FOR EACH ROW EXECUTE FUNCTION record_promoted_booking_conversion();
 
 -- ===========================================================================
 -- Signup consent, scoped to the studio the person signed up from (PR #72 review)

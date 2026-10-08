@@ -35,3 +35,14 @@ describe("claimVisitorFor", () => {
     expect(window.sessionStorage.getItem("tandava.sess.aloha")).toBeNull();
   });
 });
+
+describe("getVisitorId", () => {
+  it("adopts an embed handoff id over a stored one", async () => {
+    const { getVisitorId } = await import("./session");
+    const stored = getVisitorId();
+    const handoff = "11111111-1111-4111-8111-111111111111";
+    expect(getVisitorId(handoff)).toBe(handoff);
+    expect(getVisitorId()).toBe(handoff);
+    expect(stored).not.toBe(handoff);
+  });
+});

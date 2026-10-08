@@ -64,8 +64,8 @@ serve(async (req) => {
           // Another delivery is fulfilling it right now; let Stripe retry later.
           return new Response("Event in progress", { status: 503 });
         }
-        await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
-        if (claim === "claimed") {
+        const fulfilled = await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+        if (claim === "claimed" && fulfilled) {
           await supabase
             .from("stripe_webhook_events")
             .update({ status: "completed", completed_at: new Date().toISOString() })
@@ -146,7 +146,12 @@ async function claimEvent(event: Stripe.Event): Promise<"claimed" | "done" | "bu
 // Event handlers
 // ---------------------------------------------------------------------------
 
-async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
+/**
+ * Fulfil a completed checkout. Returns false when a required write failed, so
+ * the event stays "processing" in the ledger and a manual resend from the
+ * Stripe dashboard (after 10 minutes) can fulfil it again.
+ */
+async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promise<boolean> {
   const metadata = session.metadata || {};
   const paymentIntentId = (session.payment_intent as string) || null;
 
@@ -167,7 +172,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         .single();
       if (txnError) {
         console.error("Failed to record drop-in transaction:", txnError);
-        return;
+        return false;
       }
 
       // create_guest_booking() re-checks capacity under a row lock and is
@@ -197,6 +202,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         metadata.express === "1" ? "express" : "signup",
       );
       if (!booking) console.warn("[stripe-webhook] drop-in booking row not returned");
+      if (bookingError) return false;
       break;
     }
 
@@ -232,7 +238,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         .single();
       if (memErr) {
         console.error("Failed to create membership:", memErr);
-        return;
+        return false;
       }
 
       const { error: txnError } = await supabase.from("transactions").insert({
@@ -279,7 +285,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       });
       if (regErr) {
         console.error("Failed to create event registration:", regErr);
-        break;
+        return false;
       }
 
       if (txn?.id) {
@@ -302,7 +308,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         .single();
       if (!pt) {
         console.error("Class pack type not found:", metadata.class_pack_type_id);
-        return;
+        return false;
       }
 
       const expires = new Date();
@@ -324,7 +330,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         .single();
       if (packErr) {
         console.error("Failed to create class pack:", packErr);
-        return;
+        return false;
       }
 
       const { error: txnError } = await supabase.from("transactions").insert({
@@ -341,6 +347,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       break;
     }
   }
+  return true;
 }
 
 /**
