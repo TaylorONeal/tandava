@@ -1205,6 +1205,47 @@ $$;
 REVOKE ALL ON FUNCTION backfill_pre_tracking_members() FROM PUBLIC, anon, authenticated;
 SELECT backfill_pre_tracking_members();
 
+-- ===========================================================================
+-- Admission control for anonymous visit capture (PR #72 review)
+-- ===========================================================================
+-- analytics-session is public (no JWT) and the client picks its own visitor
+-- id and session token, so it is rate-limited per source and per studio
+-- before record_session runs. Buckets hold a salted hash of the source (never
+-- an address) and a counter for the current window, and are kept a day.
+CREATE TABLE IF NOT EXISTS analytics_admission (
+  bucket TEXT NOT NULL,
+  window_start TIMESTAMPTZ NOT NULL,
+  hits INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (bucket, window_start)
+);
+ALTER TABLE analytics_admission ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS analytics_admission_none ON analytics_admission;
+CREATE POLICY analytics_admission_none ON analytics_admission FOR ALL USING (FALSE) WITH CHECK (FALSE);
+
+-- TRUE while the bucket is under its limit for the current window.
+CREATE OR REPLACE FUNCTION analytics_admit(p_bucket TEXT, p_limit INTEGER, p_window_seconds INTEGER)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_window TIMESTAMPTZ := to_timestamp(floor(extract(epoch FROM NOW()) / p_window_seconds) * p_window_seconds);
+  v_hits INTEGER;
+BEGIN
+  INSERT INTO analytics_admission (bucket, window_start, hits) VALUES (left(p_bucket, 200), v_window, 1)
+  ON CONFLICT (bucket, window_start) DO UPDATE SET hits = analytics_admission.hits + 1
+  RETURNING hits INTO v_hits;
+  -- Housekeeping, a little at a time.
+  IF random() < 0.01 THEN
+    DELETE FROM analytics_admission WHERE window_start < NOW() - INTERVAL '1 day';
+  END IF;
+  RETURN v_hits <= p_limit;
+END;
+$$;
+REVOKE ALL ON FUNCTION analytics_admit(TEXT, INTEGER, INTEGER) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION analytics_admit(TEXT, INTEGER, INTEGER) TO service_role;
+
 
 -- ===========================================================================
 -- The studio the caller administers (PR #72 review)

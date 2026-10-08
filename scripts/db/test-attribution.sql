@@ -459,7 +459,7 @@ BEGIN
   FOREACH f IN ARRAY ARRAY[
     'record_session(text,uuid,text,text,text,text,jsonb,jsonb,text,text)', 'link_visitor(uuid,uuid,text)',
     'session_touch(uuid)', 'record_conversion(uuid,uuid,uuid,text,integer,text,text,uuid,uuid,text,timestamptz)',
-    'record_consent(uuid,uuid,uuid,text,boolean,text,text)', 'confirm_email_opt_in(uuid,uuid,timestamptz)', 'lock_consent(uuid,uuid,text)', 'backfill_pre_tracking_members()', 'has_consent(uuid,uuid,text)',
+    'record_consent(uuid,uuid,uuid,text,boolean,text,text)', 'confirm_email_opt_in(uuid,uuid,timestamptz)', 'lock_consent(uuid,uuid,text)', 'backfill_pre_tracking_members()', 'analytics_admit(text,integer,integer)', 'has_consent(uuid,uuid,text)',
     'get_automation_candidates(uuid)', 'claim_automation_send(uuid,uuid,text,integer,text)', 'record_booking_conversion_or_queue(uuid,uuid,text,uuid,uuid,text)',
     'retry_queued_conversions(integer)', 'record_conversion_or_queue(jsonb)',
     'record_checkout_conversion(jsonb,timestamptz)', 'record_renewal_conversion(text,text,integer,text,timestamptz,text)', 'conversion_refunded_cents(uuid,text,uuid)',
@@ -719,5 +719,15 @@ BEGIN
     THEN RAISE EXCEPTION 'uncollected price counted as money in'; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (36 blocks)'; END $$;
+-- 37. Admission control: a bucket is admitted up to its limit per window.
+DO $$
+DECLARE i INTEGER; ok BOOLEAN;
+BEGIN
+  FOR i IN 1..3 LOOP ok := analytics_admit('test:bucket', 3, 3600); END LOOP;
+  IF NOT ok THEN RAISE EXCEPTION 'third hit should be admitted'; END IF;
+  IF analytics_admit('test:bucket', 3, 3600) THEN RAISE EXCEPTION 'fourth hit should be refused'; END IF;
+  IF NOT analytics_admit('test:other', 3, 3600) THEN RAISE EXCEPTION 'buckets are independent'; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (37 blocks)'; END $$;
 ROLLBACK;

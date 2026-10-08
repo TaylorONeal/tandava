@@ -6,7 +6,8 @@
  *
  * What it stores: path, referrer, utm_* tags, ad click ids, device class, and
  * a channel computed here (never trusted from the client). What it never
- * stores: IP address, user agent string, cookies. Unknown or private studios
+ * stores: IP address, user agent string, cookies. (Rate limiting keeps a
+ * salted hash of the source for at most a day, never next to a visit.) Unknown or private studios
  * record nothing and the response doesn't say why.
  *
  * Deploy: supabase functions deploy analytics-session --no-verify-jwt
@@ -19,6 +20,21 @@ import { sanitizeUrl } from "../../../src/lib/analytics/landing.ts";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+// Salt for the per-source rate limit (never an IP in storage). Falls back to
+// express booking's salt; with neither, only the per-studio cap applies.
+const ipSalt = Deno.env.get("ANALYTICS_IP_SALT") ?? Deno.env.get("EXPRESS_IP_SALT") ?? "";
+
+/** Page views one source may record per hour, and one studio per hour. */
+const PER_SOURCE_PER_HOUR = 300;
+const PER_STUDIO_PER_HOUR = 20_000;
+
+async function sourceBucket(req: Request): Promise<string | null> {
+  if (!ipSalt) return null;
+  const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim();
+  if (!ip) return null;
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${ipSalt}:${ip}`));
+  return "src:" + Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -64,6 +80,14 @@ serve(async (req) => {
   const deviceType = ["mobile", "tablet", "desktop"].includes(body.deviceType) ? body.deviceType : null;
 
   const db = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
+
+  // Public endpoint, client-chosen ids: cap what one source, and one studio,
+  // can write. Over the cap the visit just isn't recorded (no error shown).
+  const source = await sourceBucket(req);
+  const checks = [db.rpc("analytics_admit", { p_bucket: `studio:${slug}`, p_limit: PER_STUDIO_PER_HOUR, p_window_seconds: 3600 })];
+  if (source) checks.push(db.rpc("analytics_admit", { p_bucket: source, p_limit: PER_SOURCE_PER_HOUR, p_window_seconds: 3600 }));
+  const admitted = await Promise.all(checks);
+  if (admitted.some((r) => r.error || r.data !== true)) return json({ sessionId: null });
 
   // The studio's own website host lets a visit from it count as "embed".
   const { data: studio } = await db.from("studios").select("website").eq("slug", slug).maybeSingle();

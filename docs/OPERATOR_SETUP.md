@@ -187,7 +187,7 @@ built from main's migrations 00001 to 00034 and has no migration tracking table,
 4. Then the frontend (Vercel), so visit capture and sign-in linking start.
 
 
-Visit capture (`analytics-session`) and conversion recording need no secrets beyond `APP_URL`. The automation emails need:
+Visit capture (`analytics-session`) and conversion recording need no secrets beyond `APP_URL`. Set `ANALYTICS_IP_SALT` (any long random string; `EXPRESS_IP_SALT` is used if it is unset) so visit capture can rate-limit each source to 300 page views an hour; without a salt only the per-studio cap (20,000 an hour) applies. Only a salted hash is kept, for at most a day, never next to a visit. The automation emails need:
 
 ```bash
 supabase secrets set APP_URL=https://tandavastudio.com
