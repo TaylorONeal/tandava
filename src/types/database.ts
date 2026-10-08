@@ -2831,7 +2831,7 @@ export interface Database {
         Args: { p_occurrence_id: string; p_source_type: string; p_source_id: string };
         Returns: Booking;
       };
-      /** Signed-in caller books a zero-price class (migration 00022). */
+      /** Signed-in caller books a zero-price class (migration 00023). */
       book_free_class: {
         Args: { p_occurrence_id: string };
         Returns: Booking;

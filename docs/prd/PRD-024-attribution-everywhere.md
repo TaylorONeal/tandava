@@ -96,6 +96,9 @@ Every table above shares one rule: **capture happens on the page, attribution is
 
 ---
 
+## Studios' own UTMs
+Studios tag their own links (PRD-026's `/manage/share` offers eleven channel presets; owners also paste links from their website, Linktree, newsletters and ads). Capture keeps every `utm_*`, referrer and click id exactly as it arrived; reporting groups by `analytics_sessions.channel`, computed by one tested function, so "instagram/bio", "ig/linkinbio" and "Instagram/social" all land in organic social while drill-down still shows the raw tags. Links from the studio's own website reach Tandava through the embed token or a tagged link and keep their UTMs end to end. Ad click ids (`fbclid`, `gclid`, `gbraid`, `wbraid`, `ttclid`, `msclkid`) are captured at the first touch for PRD-027's server-side conversions. Schema: migration 00024.
+
 ## The interlinked view (what the owner opens)
 
 One place, `/manage/analytics/attribution`, four tabs that drill into each other. Each number is a link to the rows behind it.
