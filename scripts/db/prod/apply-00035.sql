@@ -311,17 +311,34 @@ GRANT EXECUTE ON FUNCTION record_conversion(UUID, UUID, UUID, TEXT, INTEGER, TEX
 -- clock plus a sequence makes the order total.
 ALTER TABLE consent_records ALTER COLUMN captured_at SET DEFAULT clock_timestamp();
 ALTER TABLE consent_records ADD COLUMN IF NOT EXISTS seq BIGSERIAL;
+-- Every consent write for one person, studio and purpose takes this lock, so
+-- a check-then-write (confirmation, sign-up default) cannot interleave with
+-- an unsubscribe. Rows are stamped with clock_timestamp() after the lock:
+-- NOW() is the transaction start, which can sort a later write first.
+CREATE OR REPLACE FUNCTION lock_consent(p_studio_id UUID, p_profile_id UUID, p_purpose TEXT)
+RETURNS VOID
+LANGUAGE sql
+SET search_path = public
+AS $$
+  SELECT pg_advisory_xact_lock(hashtextextended(
+    'consent:' || p_studio_id::text || ':' || p_profile_id::text || ':' || p_purpose, 0));
+$$;
+REVOKE ALL ON FUNCTION lock_consent(UUID, UUID, TEXT) FROM PUBLIC, anon, authenticated;
+
 CREATE OR REPLACE FUNCTION record_consent(
   p_studio_id UUID, p_profile_id UUID, p_visitor_id UUID,
   p_purpose TEXT, p_granted BOOLEAN, p_source TEXT, p_policy_version TEXT
 )
 RETURNS VOID
-LANGUAGE sql
+LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
-  INSERT INTO consent_records (studio_id, profile_id, visitor_id, purpose, granted, source, policy_version)
-  VALUES (p_studio_id, p_profile_id, p_visitor_id, p_purpose, p_granted, left(p_source, 64), p_policy_version);
+BEGIN
+  PERFORM lock_consent(p_studio_id, p_profile_id, p_purpose);
+  INSERT INTO consent_records (studio_id, profile_id, visitor_id, purpose, granted, source, policy_version, captured_at)
+  VALUES (p_studio_id, p_profile_id, p_visitor_id, p_purpose, p_granted, left(p_source, 64), p_policy_version, clock_timestamp());
+END;
 $$;
 REVOKE ALL ON FUNCTION record_consent(UUID, UUID, UUID, TEXT, BOOLEAN, TEXT, TEXT) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION record_consent(UUID, UUID, UUID, TEXT, BOOLEAN, TEXT, TEXT) TO service_role;
@@ -341,6 +358,32 @@ AS $$
 $$;
 REVOKE ALL ON FUNCTION has_consent(UUID, UUID, TEXT) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION has_consent(UUID, UUID, TEXT) TO service_role;
+
+-- Confirmed opt-in (the /email-updates link). Check and grant are one locked
+-- step: an opt-out recorded after the link was issued always wins, including
+-- one that lands while this runs. Returns 'confirmed' or 'superseded'.
+CREATE OR REPLACE FUNCTION confirm_email_opt_in(p_studio_id UUID, p_profile_id UUID, p_issued_at TIMESTAMPTZ)
+RETURNS TEXT
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  PERFORM lock_consent(p_studio_id, p_profile_id, 'email_marketing');
+  IF EXISTS (
+    SELECT 1 FROM consent_records
+    WHERE studio_id = p_studio_id AND profile_id = p_profile_id AND purpose = 'email_marketing'
+      AND granted = FALSE AND captured_at > p_issued_at
+  ) THEN
+    RETURN 'superseded';
+  END IF;
+  INSERT INTO consent_records (studio_id, profile_id, purpose, granted, source, policy_version, captured_at)
+  VALUES (p_studio_id, p_profile_id, 'email_marketing', TRUE, 'email_confirmation', '2026-10', clock_timestamp());
+  RETURN 'confirmed';
+END;
+$$;
+REVOKE ALL ON FUNCTION confirm_email_opt_in(UUID, UUID, TIMESTAMPTZ) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION confirm_email_opt_in(UUID, UUID, TIMESTAMPTZ) TO service_role;
 
 
 -- How much of a conversion's money was refunded. Conversion values are frozen
@@ -943,14 +986,15 @@ BEGIN
   END IF;
   SELECT id INTO v_studio FROM studios WHERE slug = v_slug;
   IF v_studio IS NULL THEN RETURN FALSE; END IF;
+  PERFORM lock_consent(v_studio, auth.uid(), 'email_marketing');
   IF EXISTS (
     SELECT 1 FROM consent_records
     WHERE studio_id = v_studio AND profile_id = auth.uid() AND purpose = 'email_marketing'
   ) THEN
     RETURN FALSE;
   END IF;
-  INSERT INTO consent_records (studio_id, profile_id, purpose, granted, source, policy_version)
-  VALUES (v_studio, auth.uid(), 'email_marketing', v_granted, 'signup_form', '2026-10');
+  INSERT INTO consent_records (studio_id, profile_id, purpose, granted, source, policy_version, captured_at)
+  VALUES (v_studio, auth.uid(), 'email_marketing', v_granted, 'signup_form', '2026-10', clock_timestamp());
   RETURN TRUE;
 END;
 $$;

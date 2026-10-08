@@ -106,19 +106,18 @@ serve(async (req) => {
       return json({ ok: false, error: "superseded", studioName });
     }
     if (preview) return json({ ok: true, studioName });
-    const { error } = await db.rpc("record_consent", {
+    // Check and grant in one locked step, so an unsubscribe that lands
+    // between the preview check above and now still wins.
+    const { data: outcome, error } = await db.rpc("confirm_email_opt_in", {
       p_studio_id: who.studioId,
       p_profile_id: who.profileId,
-      p_visitor_id: null,
-      p_purpose: "email_marketing",
-      p_granted: true,
-      p_source: "email_confirmation",
-      p_policy_version: "2026-10",
+      p_issued_at: new Date(who.issuedAt).toISOString(),
     });
     if (error) {
-      console.error("unsubscribe: confirm record_consent failed", error.message);
+      console.error("unsubscribe: confirm_email_opt_in failed", error.message);
       return json({ ok: false, error: "save_failed" }, 500);
     }
+    if (outcome === "superseded") return json({ ok: false, error: "superseded", studioName });
     return json({ ok: true, studioName, confirmed: true });
   }
 

@@ -459,7 +459,7 @@ BEGIN
   FOREACH f IN ARRAY ARRAY[
     'record_session(text,uuid,text,text,text,text,jsonb,jsonb,text,text)', 'link_visitor(uuid,uuid,text)',
     'session_touch(uuid)', 'record_conversion(uuid,uuid,uuid,text,integer,text,text,uuid,uuid,text,timestamptz)',
-    'record_consent(uuid,uuid,uuid,text,boolean,text,text)', 'has_consent(uuid,uuid,text)',
+    'record_consent(uuid,uuid,uuid,text,boolean,text,text)', 'confirm_email_opt_in(uuid,uuid,timestamptz)', 'lock_consent(uuid,uuid,text)', 'has_consent(uuid,uuid,text)',
     'get_automation_candidates(uuid)', 'claim_automation_send(uuid,uuid,text,integer,text)', 'record_booking_conversion_or_queue(uuid,uuid,text,uuid,uuid,text)',
     'retry_queued_conversions(integer)', 'record_conversion_or_queue(jsonb)',
     'record_checkout_conversion(jsonb,timestamptz)', 'record_renewal_conversion(text,text,integer,text,timestamptz,text)', 'conversion_refunded_cents(uuid,text,uuid)',
@@ -647,5 +647,18 @@ BEGIN
     RAISE EXCEPTION 'late-linked device joined the journey: first % count %', r.first_touch_session_id, r.touch_count; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (32 blocks)'; END $$;
+-- 33. confirm_email_opt_in: an opt-out after the link was issued wins; an
+--     earlier one doesn't block a fresh confirmation.
+DO $$
+DECLARE st UUID := '00000000-0000-0000-0000-00000000005b'; p UUID := '00000000-0000-0000-0000-0000000000a1';
+  issued TIMESTAMPTZ := clock_timestamp(); r TEXT;
+BEGIN
+  PERFORM record_consent(st, p, NULL, 'email_marketing', FALSE, 'unsubscribe_link', '2026-10');
+  r := confirm_email_opt_in(st, p, issued);
+  IF r <> 'superseded' OR has_consent(st, p, 'email_marketing') THEN RAISE EXCEPTION 'stale confirmation reversed an opt-out: %', r; END IF;
+  r := confirm_email_opt_in(st, p, clock_timestamp());
+  IF r <> 'confirmed' OR NOT has_consent(st, p, 'email_marketing') THEN RAISE EXCEPTION 'fresh confirmation not recorded: %', r; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (33 blocks)'; END $$;
 ROLLBACK;

@@ -142,8 +142,10 @@ serve(async (req) => {
       const out: Record<string, string> = {};
       if (claimedVisitor) {
         // Only a browser id that isn't someone else's.
-        const { data: owner } = await db.from("profile_visitors").select("profile_id").eq("visitor_id", claimedVisitor).maybeSingle();
-        if (!owner || owner.profile_id === profileId) out.visitor_id = claimedVisitor;
+        // A failed lookup is not "unowned": fail closed, as express-book does.
+        const { data: owner, error: ownerError } = await db
+          .from("profile_visitors").select("profile_id").eq("visitor_id", claimedVisitor).maybeSingle();
+        if (!ownerError && (!owner || owner.profile_id === profileId)) out.visitor_id = claimedVisitor;
       }
       if (claimedSession) {
         const { data: sess } = await db
