@@ -34,7 +34,7 @@ Code: `src/lib/audience.ts` (intent), `src/components/layout/MarketingShell.tsx`
 |---|---|
 | C-1 | DONE 2026-10-08: /demo and DemoPanel now pitch hosted setup to owners; one link to /open-source. Was: `/demo` page and `DemoPanel` still pitch open source, AGPL, self-host and "Run your own" to everyone. Retarget to owners evaluating the hosted product; link `/open-source` once |
 | C-2 | DONE 2026-10-08 (robots + sitemap): mock-data routes disallowed and out of the sitemap; /discover, /for-studios, /open-source, /demo added. Real data still to come (W6-3). Was: `/schedule`, `/events`, `/instructors` still show mock data and student-facing copy. Gate or noindex (W6-3) |
-| C-3 | Translate new `auth.json` keys (other locales fall back to English) |
+| C-3 | DONE 2026-10-08: owner-signup auth strings and the two new nav labels translated in every locale except Balinese (ban falls back to English). Missing `_one` plurals in ja/ko/zh/th/vi/id/ms are correct (those languages use only `other`). Was: Translate new `auth.json` keys (other locales fall back to English) |
 | C-4 | DONE 2026-10-08: /auth/callback shows an expired-link state with resend. Was: Post-confirmation landing: email link returns to `/` with an error fragment if expired. Add a friendly `/auth/callback` expired state and resend |
 | C-5 | Onboarding wizard copy pass for owners (hosted vs self-host assumptions) |
 | C-6 | DONE 2026-10-08: blog CTA and calculator footer point owners to /for-studios. Was: Blog and tools footers say "open source" first; point to `/for-studios` for owners |

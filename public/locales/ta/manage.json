@@ -19,14 +19,15 @@
     "importData": "தரவை இறக்குமதி செய்",
     "smsInbox": "SMS இன்பாக்ஸ்",
     "notifications": "அறிவிப்புகள்",
-    "settings": "அமைப்புகள்"
+    "settings": "அமைப்புகள்",
+    "shareLinks": "முன்பதிவு இணைப்புகள்",
+    "websiteEmbed": "இணையதள உட்பொதிப்பு"
   },
   "title": "ஸ்டுடியோ நிர்வாகம்",
   "studentView": "மாணவர் காட்சி",
   "myAccount": "என் கணக்கு",
   "studioSettings": "ஸ்டுடியோ அமைப்புகள்",
   "signOut": "வெளியேறு",
-
   "schedule": {
     "title": "அட்டவணை",
     "subtitle": "உங்கள் வகுப்பு அட்டவணையை உருவாக்கி நிர்வகிக்கவும்.",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "வகுப்பு வகைகளைத் தேடு...",
     "activeOfferings": "செயலில் உள்ள வகைகள்"
   },
-
   "admin": {
     "platformAdmin": "தள நிர்வாகம்",
     "platformDashboard": "தள டாஷ்போர்டு",
@@ -60,7 +60,6 @@
     "sentryConfigured": "Sentry பிழைக் கண்காணிப்பு",
     "setEnvVar": ".env இல் {{key}} ஐ அமைக்கவும்"
   },
-
   "studioManagement": "ஸ்டுடியோ மேலாண்மை",
   "owner": "உரிமையாளர்"
 }
