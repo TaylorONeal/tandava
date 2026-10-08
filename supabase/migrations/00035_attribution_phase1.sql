@@ -1074,7 +1074,14 @@ BEGIN
   RETURN record_conversion_or_queue(jsonb_build_object(
     'p_studio_id', v_txn.studio_id, 'p_profile_id', v_txn.profile_id,
     'p_visitor_id', CASE WHEN (v_meta ->> 'visitor_id') ~* c_uuid THEN v_meta ->> 'visitor_id' END,
-    'p_conversion_type', v_type, 'p_value_cents', COALESCE(v_txn.amount_cents, 0),
+    -- What Stripe actually collected at checkout. A trial membership completes
+    -- with amount_total 0 while fulfilment stores the plan price; reporting
+    -- that price would count money before any was paid (renewals add it
+    -- when invoices are paid).
+    'p_conversion_type', v_type,
+    'p_value_cents', CASE WHEN (p_session ->> 'amount_total') ~ '^[0-9]+$'
+                          THEN (p_session ->> 'amount_total')::integer
+                          ELSE COALESCE(v_txn.amount_cents, 0) END,
     'p_currency', upper(COALESCE(v_txn.currency, p_session ->> 'currency', 'USD')),
     'p_entity_type', v_etype, 'p_entity_id', v_eid,
     -- Checked by stripe-checkout (this person's own visit at this studio).

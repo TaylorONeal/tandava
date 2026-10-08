@@ -705,5 +705,19 @@ BEGIN
     RAISE EXCEPTION 'promotion used a later-linked device: %', r.converting_touch_session_id; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (35 blocks)'; END $$;
+-- 36. A checkout's value is what Stripe collected, not the stored price: a
+--     zero-amount checkout (a trial) records 0 even when fulfilment stored
+--     the full price.
+DO $$
+DECLARE txn UUID := gen_random_uuid(); c UUID;
+BEGIN
+  INSERT INTO transactions (id, studio_id, profile_id, type, status, amount_cents, currency, stripe_checkout_session_id)
+  VALUES (txn, '00000000-0000-0000-0000-00000000005a', '00000000-0000-0000-0000-0000000000b1', 'workshop', 'completed', 9000, 'USD', 'cs_trial_1');
+  c := record_checkout_conversion(jsonb_build_object('id', 'cs_trial_1', 'amount_total', 0, 'currency', 'usd',
+         'metadata', jsonb_build_object('type', 'workshop')), NOW());
+  IF (SELECT value_cents FROM conversion_events WHERE entity_type = 'transaction' AND entity_id = txn) IS DISTINCT FROM 0
+    THEN RAISE EXCEPTION 'uncollected price counted as money in'; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (36 blocks)'; END $$;
 ROLLBACK;

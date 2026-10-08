@@ -36,6 +36,8 @@ const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const cronSecret = Deno.env.get("AUTOMATIONS_CRON_SECRET") ?? "";
 const unsubscribeSecret = Deno.env.get("AUTOMATIONS_UNSUBSCRIBE_SECRET") ?? "";
 const enabled = Deno.env.get("AUTOMATIONS_ENABLED") === "true";
+/** Longest one automation email may take before the run moves on. */
+const SEND_TIMEOUT_MS = 15_000;
 const appUrl = (Deno.env.get("APP_URL") ?? "").replace(/\/+$/, "");
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -167,7 +169,11 @@ serve(async (req) => {
         brandColor: studio.brand_primary_color,
       });
 
-      const sent = await sendEmail({
+      // Bounded: one stalled provider request must not hold up every later
+      // recipient and studio. A timed-out send may still have gone out, so
+      // its claim stays 'sending' (never resent, counts toward the daily cap).
+      const timedOut = Symbol("timeout");
+      const sendOrTimeout = await Promise.race([sendEmail({
         to: s.email,
         subject: email.subject,
         html: email.html,
@@ -179,7 +185,13 @@ serve(async (req) => {
           "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
         },
         tags: { automation: s.decision.key, step: String(s.decision.step) },
-      });
+      }), new Promise<typeof timedOut>((r) => setTimeout(() => r(timedOut), SEND_TIMEOUT_MS))]);
+      if (sendOrTimeout === timedOut) {
+        result.failed++;
+        console.error("run-automations: send timed out; claim left as sending", claimed[0].id);
+        continue;
+      }
+      const sent = sendOrTimeout;
 
       if (sent.success) {
         result.sent++;
