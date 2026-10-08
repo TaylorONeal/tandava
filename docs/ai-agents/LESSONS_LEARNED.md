@@ -573,6 +573,25 @@ Found by the launch-v1 audit. Each has a test in `supabase/tests/`.
 | Charge before reserving | A paid drop-in could land on a full class and only be flagged for refund | Take the seat first (`hold_spot`), count live holds in every capacity check |
 | Docs drift from code | `.env.example` missed vars, STATUS was 8 months stale | W0-3 and W0-4: update docs in the same PR |
 
+## Production database changes (October 2026)
+
+How a merge that touches migrations should go. Followed on PR #64; it worked.
+
+1. **Look at prod first, read-only.** `mcp__Supabase__list_migrations` returned nothing because prod was never migrated with the CLI, so it proves nothing. Ask the schema instead (`execute_sql`: `to_regclass` for tables, `pg_proc` for functions, column checks). Compare against each migration file to learn which are applied.
+2. **Two branches, same migration numbers.** Rename OUR unapplied or already-hand-applied files to follow main's, in the same relative order. Prod has no tracking table, so renaming is free. Grep docs and scripts for the old names.
+3. **Rehearse in prod order.** Build a throwaway local DB (`pg_ctlcluster 16 main start`, then a scratch database with `supabase/tests/support/supabase_stub.sql`), apply what prod already has, then the pending files, with `ON_ERROR_STOP`. Then run `npm run test:db` on the fresh order too.
+4. **Check prod data against new constraints.** A unique index or NOT NULL on a live table fails on dirty rows. Count duplicates before proposing it.
+5. **The auto-mode guard blocks `apply_migration` and DDL via `execute_sql` on prod, even after the user says approve in chat.** Do not retry or shrink the payload to get past it. Bundle the pending files into one `BEGIN; ... COMMIT;` file, send it with SendUserFile, and open the dashboard SQL editor for the user:
+   `https://supabase.com/dashboard/project/<ref>/sql/new` (Browser pane `navigate`). Always open the exact page; never make the user hunt for it.
+6. **Verify after, read-only.** Check functions, tables, columns, `pv_policies`, "RLS tables without a policy = 0", and that service-role-only functions are not executable by `anon`.
+
+| Mistake | Fix |
+|---|---|
+| `schema_migrations` missing, assumed prod was empty | Query the real schema |
+| Test stub lacked a column main's migration reads (`auth.users.encrypted_password`) | Keep the stub in step with the columns migrations touch |
+| New RLS table with no policy fails SEC-07 | Add an explicit policy, even deny-all (`USING (false)`) |
+| Two auth return helpers after a merge (`authReturn`, `auth/next`) | Keep both, point the pages at one, do not delete the other side's callers |
+
 ## Quick Reference: Prevention Patterns
 
 | Issue Type | Prevention Pattern |
@@ -586,6 +605,7 @@ Found by the launch-v1 audit. Each has a test in `supabase/tests/`.
 | New table | RLS + policy + test in same migration |
 | Definer fn | search_path pinned, revoke anon |
 | Money event | Idempotent by event id, 5xx on failure |
+| Prod migrations | Query schema, rehearse in prod order, hand over one transactional SQL file plus the dashboard link |
 | Offline | Service worker, queue actions |
 | Errors | Specific messages, recovery actions |
 

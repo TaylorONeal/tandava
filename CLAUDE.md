@@ -142,6 +142,9 @@ Rules learned the hard way (full list in `docs/ai-agents/LESSONS_LEARNED.md`):
 - Every new table: RLS + policy + test in the same migration. Use `(SELECT auth.uid())` and `my_staff_studio_ids()`.
 - Every SECURITY DEFINER function: pin `search_path`, `REVOKE` from PUBLIC and anon.
 - Money events are idempotent by Stripe event id; entitlement changes go through the ledger trigger only.
+- Prod DB changes: see "Production database changes" in LESSONS_LEARNED. Prod has no migration tracking table, so inspect the schema with read-only SQL. The auto-mode guard blocks DDL on prod even after chat approval: give the user ONE transactional SQL file and open `https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new` for them, then verify read-only.
+- Merging main: renumber our migrations after main's, rehearse in prod order locally (`pg_ctlcluster 16 main start`), run all four verify commands before pushing.
+- Always hand the user the exact page or link for any step they must do. Switching cost is the thing to minimise.
 - Prove a new test fails without the fix before trusting it.
 - Update docs and `.env.example` in the same PR. Home page mode is `VITE_HOME_MODE` (platform|discover).
 
