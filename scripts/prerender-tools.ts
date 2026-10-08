@@ -82,9 +82,12 @@ function buildHead(meta: HeadMeta): string {
 function render(template: string, meta: HeadMeta, bodyHtml: string): string {
   let html = stripDefaultHead(template);
   html = html.replace(/<\/head>/i, () => `    ${buildHead(meta)}\n  </head>`);
+  if (!html.includes("<!-- /root")) {
+    throw new Error("index.html lost its <!-- /root --> marker; prerendered pages would ship without content");
+  }
   html = html.replace(
-    /<div id="root">[\s\S]*?<\/div>(\s*<script)/i,
-    (_match, scriptPrefix: string) => `<div id="root">${bodyHtml}</div>${scriptPrefix}`,
+    /<div id="root">[\s\S]*?<\/div>(<!-- \/root)/i,
+    (_match, marker: string) => `<div id="root">${bodyHtml}</div>${marker}`,
   );
   return html;
 }

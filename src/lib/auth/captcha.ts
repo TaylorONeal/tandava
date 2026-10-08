@@ -20,12 +20,30 @@ export function captchaEnabled(siteKey: string = TURNSTILE_SITE_KEY): boolean {
 type Listener = () => void;
 
 let token: string | null = null;
+/**
+ * The widget could not produce a token (blocked script, embedded browser,
+ * Cloudflare error). Forms then stay usable: if Supabase enforces captcha the
+ * request fails with its own message, and if it does not, nobody is locked out
+ * by a check the server never asked for.
+ */
+let failed = false;
 const tokenListeners = new Set<Listener>();
 const resetListeners = new Set<Listener>();
 
 export function setCaptchaToken(value: string | null): void {
   token = value;
+  if (value) failed = false;
   tokenListeners.forEach((fn) => fn());
+}
+
+export function setCaptchaFailed(value: boolean): void {
+  failed = value;
+  tokenListeners.forEach((fn) => fn());
+}
+
+/** Snapshot for useSyncExternalStore: "token", "failed" or "none". */
+export function getCaptchaState(): "token" | "failed" | "none" {
+  return token ? "token" : failed ? "failed" : "none";
 }
 
 export function getCaptchaToken(): string | null {

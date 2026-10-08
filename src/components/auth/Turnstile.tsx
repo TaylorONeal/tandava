@@ -2,9 +2,10 @@ import { useEffect, useRef, useSyncExternalStore } from "react";
 import {
   TURNSTILE_SITE_KEY,
   captchaEnabled,
-  getCaptchaToken,
+  getCaptchaState,
   onCaptchaReset,
   onCaptchaToken,
+  setCaptchaFailed,
   setCaptchaToken,
 } from "@/lib/auth/captcha";
 
@@ -63,10 +64,16 @@ export function Turnstile({ className }: { className?: string }) {
           appearance: "interaction-only",
           callback: (token: string) => setCaptchaToken(token),
           "expired-callback": () => setCaptchaToken(null),
-          "error-callback": () => setCaptchaToken(null),
+          "error-callback": () => {
+            setCaptchaToken(null);
+            setCaptchaFailed(true);
+          },
         });
       })
-      .catch(() => setCaptchaToken(null));
+      .catch(() => {
+        setCaptchaToken(null);
+        setCaptchaFailed(true);
+      });
     const offReset = onCaptchaReset(() => {
       if (widgetId && window.turnstile) window.turnstile.reset(widgetId);
     });
@@ -75,6 +82,7 @@ export function Turnstile({ className }: { className?: string }) {
       offReset();
       if (widgetId && window.turnstile) window.turnstile.remove(widgetId);
       setCaptchaToken(null);
+      setCaptchaFailed(false);
     };
   }, []);
 
@@ -82,8 +90,8 @@ export function Turnstile({ className }: { className?: string }) {
   return <div ref={ref} className={className} />;
 }
 
-/** True when the form may submit: captcha is off, or a token is ready. */
+/** True when the form may submit: captcha is off, a token is ready, or the widget failed. */
 export function useCaptchaReady(): boolean {
-  const token = useSyncExternalStore(onCaptchaToken, getCaptchaToken, getCaptchaToken);
-  return !captchaEnabled() || Boolean(token);
+  const state = useSyncExternalStore(onCaptchaToken, getCaptchaState, getCaptchaState);
+  return !captchaEnabled() || state !== "none";
 }
