@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useMyStudio } from "@/hooks/useBooking";
+import { data as backendData, isBackendConfigured } from "@/lib/backend";
+import { toForm, toPatch, type StudioSettingsRow } from "@/lib/hosted/studioSettings";
 import { ManageLayout } from "@/components/manage/ManageLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -73,11 +77,110 @@ export default function SettingsManage() {
     { name: "Analytics configured", pass: googleAnalyticsId.length > 0 },
   ];
 
-  const handleSave = () => {
-    toast({
-      title: "Settings saved",
-      description: "Your studio settings have been updated.",
+  // Live studio: load and save the real `studios` row. Demo keeps sample values.
+  const { isDemoMode } = useAuth();
+  const live = !isDemoMode && isBackendConfigured();
+  const { data: myStudio, isLoading: studioLoading } = useMyStudio();
+  const studioId = myStudio?.studio_id ?? null;
+  const [expressEnabled, setExpressEnabled] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const applyRow = (row: StudioSettingsRow) => {
+    const f = toForm(row);
+    setStudioName(f.name);
+    setStudioSlug(f.slug);
+    setStudioEmail(f.email);
+    setStudioPhone(f.phone);
+    setStudioWebsite(f.website);
+    setTimezone(f.timezone);
+    setCurrency(f.currency);
+    setPrimaryColor(f.primaryColor);
+    setSecondaryColor(f.secondaryColor);
+    setCancelMinutes(f.cancelMinutes);
+    setLateCancelFee(f.lateCancelFee);
+    setNoShowFee(f.noShowFee);
+    setWaitlistEnabled(f.waitlistEnabled);
+    setMaxWaitlist(f.maxWaitlist);
+    setDiscoverable(Boolean(row.discoverable));
+    setExpressEnabled(Boolean(row.express_booking_enabled));
+  };
+
+  useEffect(() => {
+    if (!live || !studioId) return;
+    let cancelled = false;
+    backendData.getStudioSettings(studioId).then(({ data, error }) => {
+      if (cancelled) return;
+      if (error || !data) {
+        toast({ title: "Could not load your studio", description: error?.message ?? "Try again in a moment.", variant: "destructive" });
+        return;
+      }
+      applyRow(data);
     });
+    return () => {
+      cancelled = true;
+    };
+    // applyRow and toast are stable for this purpose; reload only when the studio changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [live, studioId]);
+
+  const handleSave = async () => {
+    if (!live) {
+      toast({ title: "Settings saved", description: "Demo mode: nothing is stored." });
+      return;
+    }
+    if (!studioId) {
+      toast({ title: "No studio yet", description: "Finish studio setup first, then come back to settings.", variant: "destructive" });
+      return;
+    }
+    const result = toPatch({
+      name: studioName,
+      slug: studioSlug,
+      email: studioEmail,
+      phone: studioPhone,
+      website: studioWebsite,
+      timezone,
+      currency,
+      primaryColor,
+      secondaryColor,
+      cancelMinutes,
+      lateCancelFee,
+      noShowFee,
+      waitlistEnabled,
+      maxWaitlist,
+    });
+    if (result.status === "invalid") {
+      toast({ title: "Check these fields", description: result.errors.join(" "), variant: "destructive" });
+      return;
+    }
+    setSaving(true);
+    const { data, error } = await backendData.updateStudioSettings(studioId, result.patch);
+    setSaving(false);
+    if (error || !data) {
+      toast({ title: "Not saved", description: error?.message ?? "Try again in a moment.", variant: "destructive" });
+      return;
+    }
+    applyRow(data);
+    toast({ title: "Settings saved", description: "Your studio settings have been updated." });
+  };
+
+  /** Listing switches save immediately: an owner who unlists expects it to take effect now. */
+  const saveSwitch = async (patch: { discoverable?: boolean; express_booking_enabled?: boolean }) => {
+    if (!live) {
+      if (patch.discoverable !== undefined) setDiscoverable(patch.discoverable);
+      if (patch.express_booking_enabled !== undefined) setExpressEnabled(patch.express_booking_enabled);
+      return;
+    }
+    if (!studioId) {
+      toast({ title: "No studio yet", description: "Finish studio setup first.", variant: "destructive" });
+      return;
+    }
+    const { data, error } = await backendData.updateStudioSettings(studioId, patch);
+    if (error || !data) {
+      toast({ title: "Not saved", description: error?.message ?? "Try again in a moment.", variant: "destructive" });
+      return;
+    }
+    applyRow(data);
+    toast({ title: "Saved" });
   };
 
   return (
@@ -87,6 +190,12 @@ export default function SettingsManage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Studio Settings</h1>
           <p className="text-sm text-muted-foreground mt-1">Configure your studio preferences and policies</p>
+          {live && (
+            <p className="text-xs text-muted-foreground mt-2">
+              General, Policies, Branding and the Discover switches save to your studio. Locations, Notifications and SEO
+              settings are not saved yet.
+            </p>
+          )}
         </div>
 
         <Tabs defaultValue="general" className="space-y-6">
@@ -136,7 +245,7 @@ export default function SettingsManage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="studioSlug">URL Slug</Label>
-                    <Input id="studioSlug" value={studioSlug} onChange={(e) => setStudioSlug(e.target.value)} />
+                    <Input id="studioSlug" value={studioSlug} readOnly={live} onChange={(e) => setStudioSlug(e.target.value)} />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -185,7 +294,7 @@ export default function SettingsManage() {
                   </div>
                 </div>
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSave}>
+                  <Button onClick={handleSave} disabled={saving}>
                     <Save className="h-4 w-4 me-2" />
                     Save Changes
                   </Button>
@@ -288,7 +397,7 @@ export default function SettingsManage() {
                 )}
 
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSave}>
+                  <Button onClick={handleSave} disabled={saving}>
                     <Save className="h-4 w-4 me-2" />
                     Save Policies
                   </Button>
@@ -344,7 +453,7 @@ export default function SettingsManage() {
                 </div>
 
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSave}>
+                  <Button onClick={handleSave} disabled={saving}>
                     <Save className="h-4 w-4 me-2" />
                     Save Branding
                   </Button>
@@ -357,19 +466,27 @@ export default function SettingsManage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Globe className="h-5 w-5" />
-                  Discovery Directory
+                  Tandava Discover
                 </CardTitle>
                 <CardDescription>
-                  Make your studio discoverable on the Tandava directory so new students can find you
+                  Let new students find and book your classes
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium">List on Discovery Directory</p>
-                    <p className="text-xs text-muted-foreground">Your schedule and offerings will appear in public search results</p>
+                    <p className="text-sm font-medium">List on Tandava Discover</p>
+                    <p className="text-xs text-muted-foreground">Your public classes appear where students search for a class. Turn off to unlist.</p>
                   </div>
-                  <Switch checked={discoverable} onCheckedChange={setDiscoverable} />
+                  <Switch checked={discoverable} onCheckedChange={(v) => saveSwitch({ discoverable: v })} disabled={live && studioLoading} />
+                </div>
+                <Separator className="my-4" />
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">Guest booking (no account needed)</p>
+                    <p className="text-xs text-muted-foreground">New students book a class with name and email in one step. Needs the listing above.</p>
+                  </div>
+                  <Switch checked={expressEnabled} onCheckedChange={(v) => saveSwitch({ express_booking_enabled: v })} disabled={live && studioLoading} />
                 </div>
               </CardContent>
             </Card>
@@ -424,7 +541,7 @@ export default function SettingsManage() {
                   </div>
                 ))}
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSave}>
+                  <Button onClick={handleSave} disabled={saving}>
                     <Save className="h-4 w-4 me-2" />
                     Save Notifications
                   </Button>
@@ -535,7 +652,7 @@ export default function SettingsManage() {
                 </div>
 
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSave}>
+                  <Button onClick={handleSave} disabled={saving}>
                     <Save className="h-4 w-4 me-2" />
                     Save SEO Settings
                   </Button>
@@ -584,7 +701,7 @@ export default function SettingsManage() {
                 </div>
 
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSave}>
+                  <Button onClick={handleSave} disabled={saving}>
                     <Save className="h-4 w-4 me-2" />
                     Save Tracking
                   </Button>
