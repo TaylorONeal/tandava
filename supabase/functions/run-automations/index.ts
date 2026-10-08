@@ -121,21 +121,16 @@ serve(async (req) => {
     for (const s of plan.sends) {
       if (!isAutomationTemplate(s.decision.template)) continue;
 
-      // Claim first; an existing row means another run already handled it.
-      const { data: claimed, error: claimError } = await db
-        .from("automation_sends")
-        .upsert(
-          {
-            studio_id: studio.id,
-            profile_id: s.profileId,
-            automation_key: s.decision.key,
-            step: s.decision.step,
-            episode_key: s.decision.episode,
-            status: "sending",
-          },
-          { onConflict: "studio_id,profile_id,automation_key,step,episode_key", ignoreDuplicates: true },
-        )
-        .select("id");
+      // Claim first. The database enforces one automation email per person
+      // per day across studios and runs; NULL means capped or already claimed.
+      const { data: claimedId, error: claimError } = await db.rpc("claim_automation_send", {
+        p_studio_id: studio.id,
+        p_profile_id: s.profileId,
+        p_key: s.decision.key,
+        p_step: s.decision.step,
+        p_episode: s.decision.episode,
+      });
+      const claimed = typeof claimedId === "string" ? [{ id: claimedId }] : null;
       if (claimError || !claimed?.length) continue;
 
       // The candidate list can be minutes old by now; an unsubscribe that

@@ -17,7 +17,45 @@ const VISITOR_KEY = "tandava.vid";
 const SESSION_PREFIX = "tandava.sess.";
 const SESSION_TTL_MS = 30 * 60 * 1000;
 
-let memoryVisitor: string | null = null;
+/**
+ * localStorage behind an in-memory overlay. A write or remove that throws
+ * (quota, privacy mode) lands in the overlay, which outranks storage for that
+ * key, so a failed write never leaves an older stored value (the previous
+ * person's id, owner or pending link) in charge. A later write that succeeds
+ * clears the overlay entry. Every localStorage access in this file goes
+ * through these three.
+ */
+const overlay = new Map<string, string | null>();
+
+function lsGet(key: string): string | null {
+  if (overlay.has(key)) return overlay.get(key) ?? null;
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+/** True when the value reached real storage (it survives a reload). */
+function lsSet(key: string, value: string): boolean {
+  try {
+    window.localStorage.setItem(key, value);
+    overlay.delete(key);
+    return true;
+  } catch {
+    overlay.set(key, value);
+    return false;
+  }
+}
+
+function lsRemove(key: string) {
+  try {
+    window.localStorage.removeItem(key);
+    overlay.delete(key);
+  } catch {
+    overlay.set(key, null);
+  }
+}
 const memorySessions = new Map<string, { token: string; id?: string; last: number }>();
 
 function randomId(): string {
@@ -38,46 +76,23 @@ function randomId(): string {
  * through sign-in linking (profile_visitors).
  */
 export function getVisitorId(handoff?: string): string {
-  // An id that only made it to memory (a failed write) is newer than whatever
-  // storage still holds, e.g. the previous person's id after a rotation.
-  const stored = memoryVisitor ?? readStoredVisitor();
+  const stored = lsGet(VISITOR_KEY);
   if (handoff && handoff !== stored) {
     // Keep the displaced id so sign-in links its earlier visits too.
     if (stored) rememberPreviousVisitor(stored);
-    setVisitor(handoff);
-    try {
-      // Someone already signed in gets no new auth event; link it now (a
-      // no-op on the server for anonymous visitors). Kept pending until the
-      // link succeeds; trackVisit retries it on the next page view.
-      window.localStorage.setItem(RELINK_KEY, handoff);
-      void retryHandoffLink();
-    } catch {
-      // Storage unavailable: no pending link to retry.
-    }
+    lsSet(VISITOR_KEY, handoff);
+    // Someone already signed in gets no new auth event; link it now (a
+    // no-op on the server for anonymous visitors). Kept pending (in memory if
+    // storage refuses the write) until the link succeeds; trackVisit and
+    // captureSettled retry it.
+    lsSet(RELINK_KEY, handoff);
+    void retryHandoffLink();
     return handoff;
   }
   if (stored) return stored;
   const id = randomId();
-  setVisitor(id);
+  lsSet(VISITOR_KEY, id);
   return id;
-}
-
-function readStoredVisitor(): string | null {
-  try {
-    return window.localStorage.getItem(VISITOR_KEY);
-  } catch {
-    return null;
-  }
-}
-
-/** Persist the visitor id; on a failed write keep it in memory, where it outranks storage. */
-function setVisitor(id: string) {
-  try {
-    window.localStorage.setItem(VISITOR_KEY, id);
-    memoryVisitor = null;
-  } catch {
-    memoryVisitor = id;
-  }
 }
 
 interface StoredSession {
@@ -127,19 +142,14 @@ export function retryHandoffLink(): Promise<void> {
 }
 
 async function retryHandoffLinkInner() {
-  let id: string | null = null;
-  try {
-    id = window.localStorage.getItem(RELINK_KEY);
-  } catch {
-    return;
-  }
+  const id = lsGet(RELINK_KEY);
   if (!id) return;
   try {
     const { error, owned } = await data.linkMyVisitor(id, "embed_handoff");
     // null: not signed in yet, keep it for later. false: the id belongs to
     // someone else (a copied embed link), so stop using it on this browser.
     if (!error && owned !== null) {
-      window.localStorage.removeItem(RELINK_KEY);
+      lsRemove(RELINK_KEY);
       if (owned === false) rotateAwayFrom(id);
     }
   } catch {
@@ -153,35 +163,23 @@ async function retryHandoffLinkInner() {
  * this browser session, so this person's visits and bookings are their own.
  */
 function rotateAwayFrom(id: string) {
-  if ((memoryVisitor ?? readStoredVisitor()) !== id) return;
-  setVisitor(randomId());
-  try {
-    for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
-      const k = window.sessionStorage.key(i);
-      if (k?.startsWith(SESSION_PREFIX) || k?.startsWith(LINKED_PREFIX)) window.sessionStorage.removeItem(k);
-    }
-  } catch {
-    // Memory fallbacks are cleared below.
-  }
+  if (lsGet(VISITOR_KEY) !== id) return;
+  lsSet(VISITOR_KEY, randomId());
+  clearSessionKeys([SESSION_PREFIX, LINKED_PREFIX]);
   memorySessions.clear();
   inFlight.clear(); // a pending capture belongs to the previous visitor id
   linkedInMemory.clear();
 }
 
 function rememberPreviousVisitor(id: string) {
-  try {
-    const list = JSON.parse(window.localStorage.getItem(PREVIOUS_KEY) ?? "[]") as unknown;
-    const prev = Array.isArray(list) ? list.filter((x): x is string => typeof x === "string" && x !== id) : [];
-    window.localStorage.setItem(PREVIOUS_KEY, JSON.stringify([id, ...prev].slice(0, 3)));
-  } catch {
-    // ignore
-  }
+  const prev = previousVisitorIds().filter((x) => x !== id);
+  lsSet(PREVIOUS_KEY, JSON.stringify([id, ...prev].slice(0, 3)));
 }
 
 /** Visitor ids this browser used before an embed handoff replaced them (newest first). */
 export function previousVisitorIds(): string[] {
   try {
-    const list = JSON.parse(window.localStorage.getItem(PREVIOUS_KEY) ?? "[]") as unknown;
+    const list = JSON.parse(lsGet(PREVIOUS_KEY) ?? "[]") as unknown;
     return Array.isArray(list) ? list.filter((x): x is string => typeof x === "string") : [];
   } catch {
     return [];
@@ -326,37 +324,33 @@ const OWNER_KEY = "tandava.vid.owner";
  * the previous person's journey. The server enforces the same rule.
  */
 export function claimVisitorFor(userId: string) {
-  try {
-    const owner = window.localStorage.getItem(OWNER_KEY);
-    if (owner && owner !== userId) {
-      // In-memory fallbacks (used when a storage write failed) go too: they
-      // would otherwise outrank the cleared storage and keep A's visit.
-      memorySessions.clear();
-      inFlight.clear(); // a pending capture belongs to the previous visitor id
-      linkedInMemory.clear();
-      setVisitor(randomId());
-      window.localStorage.removeItem(PREVIOUS_KEY);
-      window.localStorage.removeItem(RELINK_KEY);
-      // A new visitor id needs linking again for everyone, A -> B -> A included.
-      for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
-        const k = window.sessionStorage.key(i);
-        if (k?.startsWith(SESSION_PREFIX) || k?.startsWith(LINKED_PREFIX) || k?.startsWith(CONSENT_PREFIX))
-          window.sessionStorage.removeItem(k);
-      }
-    }
-    window.localStorage.setItem(OWNER_KEY, userId);
-  } catch {
-    if (memoryOwner && memoryOwner !== userId) {
-      setVisitor(randomId());
-      memorySessions.clear();
-      inFlight.clear(); // a pending capture belongs to the previous visitor id
-      linkedInMemory.clear();
-    }
-    memoryOwner = userId;
+  const owner = lsGet(OWNER_KEY);
+  if (owner && owner !== userId) {
+    // In-memory fallbacks go too: they would otherwise outrank the cleared
+    // storage and keep A's visit.
+    memorySessions.clear();
+    inFlight.clear(); // a pending capture belongs to the previous visitor id
+    linkedInMemory.clear();
+    lsSet(VISITOR_KEY, randomId());
+    lsRemove(PREVIOUS_KEY);
+    lsRemove(RELINK_KEY);
+    // A new visitor id needs linking again for everyone, A -> B -> A included.
+    clearSessionKeys([SESSION_PREFIX, LINKED_PREFIX, CONSENT_PREFIX]);
   }
+  lsSet(OWNER_KEY, userId);
 }
 
-let memoryOwner: string | null = null;
+/** Drop sessionStorage keys with these prefixes (best effort). */
+function clearSessionKeys(prefixes: string[]) {
+  try {
+    for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
+      const k = window.sessionStorage.key(i);
+      if (k && prefixes.some((p) => k.startsWith(p))) window.sessionStorage.removeItem(k);
+    }
+  } catch {
+    // Memory fallbacks are cleared by the caller.
+  }
+}
 
 let linkInFlight: Promise<void> | null = null;
 /** The signed-in person whose visitor link last ran; a failed link is retried for them. */
@@ -417,12 +411,8 @@ async function linkVisitorOnceInner(userId: string, via = "sign_in") {
         const r = await data.linkMyVisitor(id, `${via}_previous`).catch(() => ({ error: { message: "failed" } }));
         if (r.error) failed.push(id);
       }
-      try {
-        if (failed.length) window.localStorage.setItem(PREVIOUS_KEY, JSON.stringify(failed));
-        else window.localStorage.removeItem(PREVIOUS_KEY);
-      } catch {
-        // ignore
-      }
+      if (failed.length) lsSet(PREVIOUS_KEY, JSON.stringify(failed));
+      else lsRemove(PREVIOUS_KEY);
       // Mark only when everything linked, so failures retry on the next auth event.
       if (!error && failed.length === 0) {
         try {
@@ -484,21 +474,15 @@ export interface PendingConsent {
 export function rememberSignupConsent(slug: string | undefined, granted: boolean): string | undefined {
   if (!slug) return undefined;
   const nonce = randomId();
-  try {
-    const p: StoredPending = { slug, granted, at: Date.now(), nonce };
-    window.localStorage.setItem(PENDING_CONSENT_KEY, JSON.stringify(p));
-    return nonce;
-  } catch {
-    return undefined; // Storage blocked: the choice can still be made later.
-  }
+  const p: StoredPending = { slug, granted, at: Date.now(), nonce };
+  // Must survive the OAuth redirect: a memory-only copy is no use.
+  if (lsSet(PENDING_CONSENT_KEY, JSON.stringify(p))) return nonce;
+  lsRemove(PENDING_CONSENT_KEY);
+  return undefined; // Storage blocked: the choice can still be made later.
 }
 
 export function clearSignupConsent() {
-  try {
-    window.localStorage.removeItem(PENDING_CONSENT_KEY);
-  } catch {
-    // nothing to clear
-  }
+  lsRemove(PENDING_CONSENT_KEY);
 }
 
 interface StoredPending {
@@ -512,7 +496,7 @@ interface StoredPending {
 
 function readPending(): StoredPending | null {
   try {
-    const raw = window.localStorage.getItem(PENDING_CONSENT_KEY);
+    const raw = lsGet(PENDING_CONSENT_KEY);
     if (!raw) return null;
     const v = JSON.parse(raw) as Partial<StoredPending>;
     if (typeof v.slug !== "string" || typeof v.granted !== "boolean" || typeof v.at !== "number" || typeof v.nonce !== "string")
@@ -524,11 +508,7 @@ function readPending(): StoredPending | null {
 }
 
 function writePending(p: StoredPending) {
-  try {
-    window.localStorage.setItem(PENDING_CONSENT_KEY, JSON.stringify(p));
-  } catch {
-    // ignore
-  }
+  lsSet(PENDING_CONSENT_KEY, JSON.stringify(p));
 }
 
 /**
@@ -577,23 +557,12 @@ export function forgetVisitor() {
   memorySessions.clear();
   inFlight.clear(); // a pending capture belongs to the previous visitor id
   linkedInMemory.clear();
-  try {
-    setVisitor(randomId());
-    window.localStorage.removeItem(OWNER_KEY);
-    window.localStorage.removeItem(PENDING_CONSENT_KEY);
-    window.localStorage.removeItem(PREVIOUS_KEY);
-    window.localStorage.removeItem(RELINK_KEY);
-    for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
-      const k = window.sessionStorage.key(i);
-      if (k?.startsWith(SESSION_PREFIX) || k?.startsWith(LINKED_PREFIX) || k?.startsWith(CONSENT_PREFIX)) window.sessionStorage.removeItem(k);
-    }
-  } catch {
-    setVisitor(randomId());
-    memoryOwner = null;
-    memorySessions.clear();
-    inFlight.clear(); // a pending capture belongs to the previous visitor id
-    linkedInMemory.clear();
-  }
+  lsSet(VISITOR_KEY, randomId());
+  lsRemove(OWNER_KEY);
+  lsRemove(PENDING_CONSENT_KEY);
+  lsRemove(PREVIOUS_KEY);
+  lsRemove(RELINK_KEY);
+  clearSessionKeys([SESSION_PREFIX, LINKED_PREFIX, CONSENT_PREFIX]);
 }
 
 /**

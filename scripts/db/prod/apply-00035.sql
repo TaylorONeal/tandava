@@ -656,6 +656,32 @@ $$;
 REVOKE ALL ON FUNCTION get_automation_candidates(UUID) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION get_automation_candidates(UUID) TO service_role;
 
+-- Claim one automation send. One automation email per person per day across
+-- every studio, enforced here, not from the runner's (possibly stale)
+-- candidate snapshot: claims for the same person are serialized with a
+-- transaction-scoped advisory lock, so overlapping runs cannot both claim.
+-- Returns the claimed row id, or NULL when capped or already claimed.
+CREATE OR REPLACE FUNCTION claim_automation_send(
+  p_studio_id UUID, p_profile_id UUID, p_key TEXT, p_step INTEGER, p_episode TEXT
+) RETURNS UUID
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+DECLARE v_id UUID;
+BEGIN
+  PERFORM pg_advisory_xact_lock(hashtextextended('automation_send:' || p_profile_id::text, 0));
+  IF EXISTS (SELECT 1 FROM automation_sends
+             WHERE profile_id = p_profile_id AND status IN ('sent', 'sending')
+               AND sent_at > NOW() - INTERVAL '1 day') THEN
+    RETURN NULL;
+  END IF;
+  INSERT INTO automation_sends (studio_id, profile_id, automation_key, step, episode_key, status)
+  VALUES (p_studio_id, p_profile_id, p_key, p_step, p_episode, 'sending')
+  ON CONFLICT (studio_id, profile_id, automation_key, step, episode_key) DO NOTHING
+  RETURNING id INTO v_id;
+  RETURN v_id;
+END $$;
+REVOKE ALL ON FUNCTION claim_automation_send(UUID, UUID, TEXT, INTEGER, TEXT) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION claim_automation_send(UUID, UUID, TEXT, INTEGER, TEXT) TO service_role;
+
 -- ===========================================================================
 -- Member bookings made by the member themselves (PR #72 review)
 -- ===========================================================================

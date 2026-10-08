@@ -460,7 +460,7 @@ BEGIN
     'record_session(text,uuid,text,text,text,text,jsonb,jsonb,text,text)', 'link_visitor(uuid,uuid,text)',
     'session_touch(uuid)', 'record_conversion(uuid,uuid,uuid,text,integer,text,text,uuid,uuid,text,timestamptz)',
     'record_consent(uuid,uuid,uuid,text,boolean,text,text)', 'has_consent(uuid,uuid,text)',
-    'get_automation_candidates(uuid)', 'record_booking_conversion_or_queue(uuid,uuid,text,uuid,uuid,text)',
+    'get_automation_candidates(uuid)', 'claim_automation_send(uuid,uuid,text,integer,text)', 'record_booking_conversion_or_queue(uuid,uuid,text,uuid,uuid,text)',
     'retry_queued_conversions(integer)', 'record_conversion_or_queue(jsonb)',
     'record_checkout_conversion(jsonb,timestamptz)', 'record_renewal_conversion(text,text,integer,text,timestamptz,text)', 'conversion_refunded_cents(uuid,text,uuid)',
     'booking_session_from_request(uuid,uuid)'] LOOP
@@ -614,5 +614,18 @@ BEGIN
     THEN RAISE EXCEPTION 'old other-studio send leaked: %', sends; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (30 blocks)'; END $$;
+-- 31. claim_automation_send enforces the per-person daily cap across studios.
+DO $$
+DECLARE p UUID := '00000000-0000-0000-0000-0000000000a1'; a UUID; b UUID;
+BEGIN
+  DELETE FROM automation_sends WHERE profile_id = p;
+  a := claim_automation_send('00000000-0000-0000-0000-00000000005a', p, 'lapsed', 0, 'cap-a');
+  b := claim_automation_send('00000000-0000-0000-0000-00000000005b', p, 'lapsed', 0, 'cap-b');
+  IF a IS NULL OR b IS NOT NULL THEN RAISE EXCEPTION 'cross-studio cap not enforced: % %', a, b; END IF;
+  UPDATE automation_sends SET status = 'failed' WHERE id = a;
+  b := claim_automation_send('00000000-0000-0000-0000-00000000005b', p, 'lapsed', 0, 'cap-b');
+  IF b IS NULL THEN RAISE EXCEPTION 'a failed send should not count toward the cap'; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (31 blocks)'; END $$;
 ROLLBACK;

@@ -326,3 +326,43 @@ describe("capture in flight during an account switch", () => {
     expect(s.currentSessionId("oxatl")).toBe("77777777-7777-4777-8777-777777777777");
   });
 });
+
+describe("localStorage reads work but writes fail", () => {
+  const breakWrites = () => {
+    window.localStorage.setItem = () => {
+      throw new Error("quota");
+    };
+    window.localStorage.removeItem = () => {
+      throw new Error("quota");
+    };
+  };
+
+  it("keeps a handoff link pending in memory and retries it before booking", async () => {
+    const { data } = await import("@/lib/backend");
+    const link = vi.mocked(data.linkMyVisitor);
+    link.mockReset();
+    link.mockResolvedValueOnce({ error: { message: "network" }, owned: null } as never);
+    link.mockResolvedValue({ error: null, owned: true } as never);
+    const s = await import("./session");
+    s.getVisitorId();
+    breakWrites();
+    const handoff = "44444444-4444-4444-8444-444444444444";
+    expect(s.getVisitorId(handoff)).toBe(handoff);
+    await s.retryHandoffLink(); // the first attempt fails
+    await s.captureSettled();
+    expect(link).toHaveBeenLastCalledWith(handoff, "embed_handoff");
+    expect(link).toHaveBeenCalledTimes(2);
+  });
+
+  it("an account switch rotates once, not on every later auth event", async () => {
+    const s = await import("./session");
+    s.claimVisitorFor("user-a");
+    const a = s.getVisitorId();
+    breakWrites();
+    s.claimVisitorFor("user-b");
+    const b = s.getVisitorId();
+    expect(b).not.toBe(a);
+    s.claimVisitorFor("user-b");
+    expect(s.getVisitorId()).toBe(b);
+  });
+});
