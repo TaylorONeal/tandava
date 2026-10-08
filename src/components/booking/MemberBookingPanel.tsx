@@ -14,7 +14,7 @@
 
 import { useState } from "react";
 import { useMemberEntitlements, useBookingSources, useBookClass } from "@/hooks/useBooking";
-import { api as backendApi } from "@/lib/backend";
+import { api as backendApi, data as backendData } from "@/lib/backend";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -73,6 +73,20 @@ export function MemberBookingPanel({
       setState("error");
       setError(err instanceof Error ? err.message : "Could not book this class.");
     }
+  };
+
+  const isFree = row.drop_in_price_cents === 0;
+
+  const bookFree = async () => {
+    setState("working");
+    setError(null);
+    const { error: freeError } = await backendData.bookFreeClass(occurrenceId);
+    if (freeError) {
+      setState("error");
+      setError(freeError.message);
+      return;
+    }
+    setState("booked");
   };
 
   const payDropIn = async () => {
@@ -148,7 +162,18 @@ export function MemberBookingPanel({
                 )}
               </Button>
             ))}
-            {dropIn && priceLabel && (
+            {dropIn && isFree && (
+              <Button
+                variant={covering.length ? "outline" : "default"}
+                className="w-full"
+                size="lg"
+                disabled={busy}
+                onClick={() => void bookFree()}
+              >
+                Book this free class
+              </Button>
+            )}
+            {dropIn && !isFree && priceLabel && (
               <Button
                 variant={covering.length ? "outline" : "default"}
                 className="w-full"
@@ -159,7 +184,7 @@ export function MemberBookingPanel({
                 Pay {priceLabel} drop-in
               </Button>
             )}
-            {!covering.length && !(dropIn && priceLabel) && (
+            {!covering.length && !dropIn && (
               <p className="text-sm text-muted-foreground">
                 None of your passes cover this class and it has no drop-in price. Contact{" "}
                 {row.studio_name} to book.

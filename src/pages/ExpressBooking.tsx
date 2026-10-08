@@ -409,8 +409,16 @@ export default function ExpressBooking() {
   }
 
   // --- Blocked before the form -------------------------------------------
+  //
+  // Express policy (express_booking_enabled, the guest cutoff, "full" for
+  // guests) governs the guest form only. A signed-in member books through
+  // their own path, so for them only universal blockers apply: cancelled or
+  // already started. express_disabled is the database default and must not
+  // hide the member panel.
+  const universalBlock =
+    eligibility && !eligibility.eligible && (eligibility.reason === "cancelled" || eligibility.reason === "already_started");
 
-  if (eligibility && !eligibility.eligible) {
+  if (eligibility && !eligibility.eligible && (!signedIn || universalBlock)) {
     return (
       <Shell>
         <ClassSummary row={row} spotsLeft={eligibility.spotsLeft} />
