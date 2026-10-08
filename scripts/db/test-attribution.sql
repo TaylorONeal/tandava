@@ -459,7 +459,7 @@ BEGIN
   FOREACH f IN ARRAY ARRAY[
     'record_session(text,uuid,text,text,text,text,jsonb,jsonb,text,text)', 'link_visitor(uuid,uuid,text)',
     'session_touch(uuid)', 'record_conversion(uuid,uuid,uuid,text,integer,text,text,uuid,uuid,text,timestamptz)',
-    'record_consent(uuid,uuid,uuid,text,boolean,text,text)', 'confirm_email_opt_in(uuid,uuid,timestamptz)', 'lock_consent(uuid,uuid,text)', 'has_consent(uuid,uuid,text)',
+    'record_consent(uuid,uuid,uuid,text,boolean,text,text)', 'confirm_email_opt_in(uuid,uuid,timestamptz)', 'lock_consent(uuid,uuid,text)', 'backfill_pre_tracking_members()', 'has_consent(uuid,uuid,text)',
     'get_automation_candidates(uuid)', 'claim_automation_send(uuid,uuid,text,integer,text)', 'record_booking_conversion_or_queue(uuid,uuid,text,uuid,uuid,text)',
     'retry_queued_conversions(integer)', 'record_conversion_or_queue(jsonb)',
     'record_checkout_conversion(jsonb,timestamptz)', 'record_renewal_conversion(text,text,integer,text,timestamptz,text)', 'conversion_refunded_cents(uuid,text,uuid)',
@@ -660,5 +660,19 @@ BEGIN
   IF r <> 'confirmed' OR NOT has_consent(st, p, 'email_marketing') THEN RAISE EXCEPTION 'fresh confirmation not recorded: %', r; END IF;
 END $$;
 
-DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (33 blocks)'; END $$;
+-- 34. The pre-tracking backfill runs once: a rerun of the migration leaves
+--     relationships created since (source still NULL) alone.
+DO $$
+DECLARE p UUID := '00000000-0000-0000-0000-0000000000a1'; st UUID := '00000000-0000-0000-0000-00000000005b';
+BEGIN
+  -- A relationship created after the migration ran.
+  DELETE FROM studio_members WHERE studio_id = st AND profile_id = p;
+  INSERT INTO studio_members (studio_id, profile_id) VALUES (st, p);
+  IF backfill_pre_tracking_members() THEN RAISE EXCEPTION 'backfill ran a second time'; END IF;
+  IF (SELECT source FROM studio_members WHERE studio_id = st AND profile_id = p) IS NOT NULL
+     OR (SELECT acquired_at FROM studio_members WHERE studio_id = st AND profile_id = p) IS NOT NULL
+    THEN RAISE EXCEPTION 'rerun stamped a new relationship'; END IF;
+END $$;
+
+DO $$ BEGIN RAISE NOTICE 'PASS ATTR-ALL  attribution, consent, automations and paid conversions (34 blocks)'; END $$;
 ROLLBACK;

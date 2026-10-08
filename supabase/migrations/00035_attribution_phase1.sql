@@ -1132,13 +1132,38 @@ REVOKE ALL ON FUNCTION record_promoted_booking_conversion() FROM PUBLIC, anon, a
 -- after deploy would stamp them as acquired today. New rows stay NULL until
 -- their first conversion (record_conversion() sets it), so a guest identity
 -- created for an abandoned checkout is never counted as a new person.
-UPDATE studio_members SET acquired_at = created_at WHERE acquired_at IS NULL;
 -- Relationships that existed before this migration (including imports made
 -- before import-members tagged them) were not acquired through anything this
 -- report can see; mark them so "new people" counts only acquisitions since
--- tracking began. Runs once, at migration time; new rows keep NULL until a
--- conversion sets their real source.
-UPDATE studio_members SET source = 'pre_tracking' WHERE source IS NULL;
+-- tracking began. New rows keep NULL until a conversion sets their real source.
+--
+-- Once only: the prod bundle is documented as safe to re-run, and a second run
+-- would otherwise stamp rows created since (guest identities from abandoned
+-- checkouts) as pre_tracking, which record_conversion() can never correct.
+CREATE TABLE IF NOT EXISTS schema_markers (
+  name TEXT PRIMARY KEY,
+  applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+ALTER TABLE schema_markers ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS schema_markers_none ON schema_markers;
+CREATE POLICY schema_markers_none ON schema_markers FOR ALL USING (FALSE) WITH CHECK (FALSE);
+
+CREATE OR REPLACE FUNCTION backfill_pre_tracking_members()
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  INSERT INTO schema_markers (name) VALUES ('00035_member_backfill') ON CONFLICT (name) DO NOTHING;
+  IF NOT FOUND THEN RETURN FALSE; END IF;
+  UPDATE studio_members SET acquired_at = created_at WHERE acquired_at IS NULL;
+  UPDATE studio_members SET source = 'pre_tracking' WHERE source IS NULL;
+  RETURN TRUE;
+END;
+$$;
+REVOKE ALL ON FUNCTION backfill_pre_tracking_members() FROM PUBLIC, anon, authenticated;
+SELECT backfill_pre_tracking_members();
 
 
 -- ===========================================================================
