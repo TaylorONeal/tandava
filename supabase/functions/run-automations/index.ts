@@ -28,7 +28,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { emailProviderReady, sendEmail } from "../email/provider.ts";
 import { planStudio, formatAddress, type CandidateRow } from "../../../src/lib/marketing/runner.ts";
-import { isValidTimeZone } from "../../../src/lib/marketing/automations.ts";
+import { inQuietHours, isValidTimeZone } from "../../../src/lib/marketing/automations.ts";
 import { isAutomationTemplate, renderAutomationEmail, withCampaignTags } from "../../../src/lib/marketing/automationEmails.ts";
 import { signUnsubscribe } from "../../../src/lib/marketing/unsubscribeToken.ts";
 
@@ -178,6 +178,12 @@ serve(async (req) => {
       // killed mid-send stays 'sending' and its episode can't be retried.
       if (Date.now() - startedAt > RUN_BUDGET_MS - SEND_TIMEOUT_MS) { outOfTime = true; break; }
       if (!isAutomationTemplate(s.decision.template)) continue;
+      // The plan used the run's start time; a run can last minutes. Quiet
+      // hours start mid-run for this studio: stop sending to it.
+      if (inQuietHours(new Date(), timeZone)) {
+        (result as Record<string, unknown>).stopped = "quiet_hours";
+        break;
+      }
 
       // Claim first. The database enforces one automation email per person
       // per day across studios and runs; NULL means capped or already claimed.
