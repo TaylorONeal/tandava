@@ -181,7 +181,9 @@ async function trackVisitInner(slug: string, surface: Surface, opts?: { studioSi
   const visitorId = getVisitorId(facts.handoffVisitorId);
   const now = Date.now();
   const existing = readSession(slug);
-  const tagged = Boolean(facts.utm.source || facts.utm.medium || Object.values(facts.clickIds).some(Boolean));
+  // Any campaign tag (source, medium, campaign, content, term) or click id
+  // marks a tagged arrival.
+  const tagged = Object.values(facts.utm).some(Boolean) || Object.values(facts.clickIds).some(Boolean);
   const fp = tagged ? JSON.stringify([facts.utm, facts.clickIds]) : undefined;
   // New session: none yet, 30 minutes idle, or arriving with DIFFERENT tags
   // (a reload of the same tagged link is the same visit).
@@ -467,4 +469,27 @@ export function forgetVisitor() {
     memorySessions.clear();
     linkedInMemory.clear();
   }
+}
+
+/**
+ * What a checkout should carry for attribution: this browser's visitor id and
+ * the most recent visit (for the studio when known). The server verifies both
+ * belong to the signed-in person before using them.
+ */
+export function checkoutAttribution(slug?: string): { visitorId?: string; sessionId?: string } {
+  if (typeof window === "undefined") return {};
+  const visitorId = getVisitorId();
+  if (slug) return { visitorId, sessionId: currentSessionId(slug) };
+  let latest: StoredSession | null = null;
+  try {
+    for (let i = 0; i < window.sessionStorage.length; i++) {
+      const k = window.sessionStorage.key(i);
+      if (!k?.startsWith(SESSION_PREFIX)) continue;
+      const v = JSON.parse(window.sessionStorage.getItem(k) ?? "null") as StoredSession | null;
+      if (v?.id && (!latest || v.last > latest.last)) latest = v;
+    }
+  } catch {
+    for (const v of memorySessions.values()) if (v.id && (!latest || v.last > latest.last)) latest = v;
+  }
+  return { visitorId, sessionId: latest?.id };
 }

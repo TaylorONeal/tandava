@@ -48,12 +48,14 @@ export function isStripeConfigured(): boolean {
 // Checkout helpers (call backend API functions)
 // ---------------------------------------------------------------------------
 import { api } from "@/lib/backend";
+import { checkoutAttribution } from "@/lib/analytics/session";
 
 /** Redirect to Stripe Checkout for a class drop-in (by class occurrence id) */
 export async function checkoutDropIn(occurrenceId: string): Promise<{ error?: string }> {
   const { data, error } = await api.invoke<{ url: string }>("stripe-checkout", {
     type: "drop_in",
     occurrenceId,
+    ...checkoutAttribution(),
   });
 
   if (error) return { error: error.message };
@@ -75,6 +77,7 @@ export async function checkoutMembership(
     type: "membership",
     studioId,
     membershipTypeId,
+    ...checkoutAttribution(),
   });
 
   if (error) return { error: error.message };
@@ -96,6 +99,7 @@ export async function checkoutClassPack(
     type: "class_pack",
     studioId,
     classPackTypeId,
+    ...checkoutAttribution(),
   });
 
   if (error) return { error: error.message };
@@ -118,6 +122,7 @@ export async function checkoutEvent(params: {
   const { data, error } = await api.invoke<{ url: string }>("stripe-checkout", {
     type: "workshop",
     ...params,
+    ...checkoutAttribution(),
   });
 
   if (error) return { error: error.message };

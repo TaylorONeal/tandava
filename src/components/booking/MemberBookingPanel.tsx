@@ -13,7 +13,7 @@
  */
 
 import { useState } from "react";
-import { captureSettled, currentSessionId } from "@/lib/analytics/session";
+import { captureSettled, checkoutAttribution, currentSessionId } from "@/lib/analytics/session";
 import { useMemberEntitlements, useBookingSources, useBookClass } from "@/hooks/useBooking";
 import { api as backendApi, data as backendData } from "@/lib/backend";
 import { useAuth } from "@/contexts/AuthContext";
@@ -97,12 +97,14 @@ export function MemberBookingPanel({
   const payDropIn = async () => {
     setState("working");
     setError(null);
+    await captureSettled();
     const origin = window.location.origin;
     const { data, error: invokeError } = await backendApi.invoke<{ url?: string; error?: string }>(
       "stripe-checkout",
       {
         type: "drop_in",
         occurrenceId,
+        ...checkoutAttribution(row.studio_slug),
         successUrl: `${origin}${returnPath}?booked=1`,
         cancelUrl: `${origin}${returnPath}?cancelled=1`,
       },

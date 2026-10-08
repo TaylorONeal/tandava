@@ -109,6 +109,45 @@ serve(async (req) => {
 
   try {
     // Resolve studio + Stripe Connect routing once we know the studio id.
+    /**
+     * The page's analytics visit (PRD-024), credited as the converting session
+     * on the purchase. Trusted only if the session is at this studio and
+     * belongs to this person (their linked browser or the visitor id sent).
+     */
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const claimedVisitor = typeof payload.visitorId === "string" && UUID_RE.test(payload.visitorId) ? payload.visitorId : null;
+    const claimedSession = typeof payload.sessionId === "string" && UUID_RE.test(payload.sessionId) ? payload.sessionId : null;
+    const attributionFor = async (studioId: string): Promise<Record<string, string>> => {
+      const out: Record<string, string> = {};
+      if (claimedVisitor) {
+        // Only a browser id that isn't someone else's.
+        const { data: owner } = await db.from("profile_visitors").select("profile_id").eq("visitor_id", claimedVisitor).maybeSingle();
+        if (!owner || owner.profile_id === profileId) out.visitor_id = claimedVisitor;
+      }
+      if (claimedSession) {
+        const { data: sess } = await db
+          .from("analytics_sessions")
+          .select("id, visitor_id, profile_id")
+          .eq("id", claimedSession)
+          .eq("studio_id", studioId)
+          .maybeSingle();
+        if (sess) {
+          let mine = sess.profile_id === profileId || (out.visitor_id && sess.visitor_id === out.visitor_id);
+          if (!mine) {
+            const { data: link } = await db
+              .from("profile_visitors")
+              .select("visitor_id")
+              .eq("profile_id", profileId)
+              .eq("visitor_id", sess.visitor_id)
+              .maybeSingle();
+            mine = Boolean(link);
+          }
+          if (mine) out.session_id = sess.id;
+        }
+      }
+      return out;
+    };
+
     const connectFor = async (studioId: string) => {
       const { data: studio } = await db
         .from("studios")
@@ -179,6 +218,7 @@ serve(async (req) => {
           occurrence_id: occurrenceId,
           profile_id: profileId,
           studio_id: occ.studio_id as string,
+          ...(await attributionFor(occ.studio_id as string)),
           amount_cents: String(amount),
         },
         ...(connected
@@ -233,6 +273,7 @@ serve(async (req) => {
             membership_type_id: membershipTypeId,
             profile_id: profileId,
             studio_id: mt.studio_id as string,
+            ...(await attributionFor(mt.studio_id as string)),
           },
           ...(connected
             ? {
@@ -246,6 +287,7 @@ serve(async (req) => {
           membership_type_id: membershipTypeId,
           profile_id: profileId,
           studio_id: mt.studio_id as string,
+          ...(await attributionFor(mt.studio_id as string)),
         },
       });
 
@@ -290,6 +332,7 @@ serve(async (req) => {
           class_pack_type_id: classPackTypeId,
           profile_id: profileId,
           studio_id: pt.studio_id as string,
+          ...(await attributionFor(pt.studio_id as string)),
         },
         ...(connected
           ? {
@@ -410,6 +453,7 @@ serve(async (req) => {
           type: "workshop",
           event_id: eventId,
           studio_id: ev.studio_id as string,
+          ...(await attributionFor(ev.studio_id as string)),
           profile_id: profileId,
           tier_id: tierId ?? "",
           amount_cents: String(dueNow),
