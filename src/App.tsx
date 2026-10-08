@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LocaleProvider } from "@/contexts/LocaleContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AuthCallback } from "@/components/auth/AuthCallback";
+import { SEOHead } from "@/components/seo/SEOHead";
 // DemoPanel removed — role selection now happens on landing page + DemoRoleBar
 import { DemoRoleBar } from "@/components/DemoRoleBar";
 import { Component, lazy, Suspense, type ErrorInfo, type ReactNode } from "react";
@@ -52,6 +53,20 @@ class AppErrorBoundary extends Component<
     }
     return this.props.children;
   }
+}
+
+/**
+ * Pages that still render demo data rather than real studios (copy audit C-2).
+ * Crawlable but noindex: a robots.txt Disallow would stop crawlers from ever
+ * seeing the noindex, and linked URLs can be indexed anyway.
+ */
+function DemoDataPage({ children }: { children: ReactNode }) {
+  return (
+    <>
+      <SEOHead noindex />
+      {children}
+    </>
+  );
 }
 
 const Home = lazy(() => import("./pages/Home"));
@@ -197,12 +212,12 @@ const App = () => (
 
                   {/* ---- Student-facing routes ---- */}
                   <Route path="/home" element={<Index />} />
-                  <Route path="/schedule" element={<Schedule />} />
-                  <Route path="/events" element={<Studios />} />
+                  <Route path="/schedule" element={<DemoDataPage><Schedule /></DemoDataPage>} />
+                  <Route path="/events" element={<DemoDataPage><Studios /></DemoDataPage>} />
                   <Route path="/events/:id" element={<StudioDetail />} />
-                  <Route path="/instructors" element={<Instructors />} />
-                  <Route path="/instructors/:id" element={<InstructorDetail />} />
-                  <Route path="/on-demand" element={<OnDemand />} />
+                  <Route path="/instructors" element={<DemoDataPage><Instructors /></DemoDataPage>} />
+                  <Route path="/instructors/:id" element={<DemoDataPage><InstructorDetail /></DemoDataPage>} />
+                  <Route path="/on-demand" element={<DemoDataPage><OnDemand /></DemoDataPage>} />
 
                   {/* ---- Auth routes ---- */}
                   <Route path="/auth/login" element={<Login />} />

@@ -23,10 +23,11 @@
  * component's optimism.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { usePublicOccurrence, useExpressBook } from "@/hooks/useBooking";
 import { useAuth } from "@/contexts/AuthContext";
+import { Turnstile, useCaptchaReady } from "@/components/auth/Turnstile";
 import { MemberBookingPanel } from "@/components/booking/MemberBookingPanel";
 import { ClassTime } from "@/components/time/ClassTime";
 import { AddToCalendar } from "@/components/calendar/AddToCalendar";
@@ -671,6 +672,8 @@ function SaveAccountCard({
   onDone?: () => void;
 }) {
   const { resetPassword } = useAuth();
+  const captchaReady = useCaptchaReady();
+  const autoSent = useRef(false);
   const [email, setEmail] = useState(initialEmail);
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
@@ -695,10 +698,13 @@ function SaveAccountCard({
   };
 
   useEffect(() => {
-    if (autoSend && initialEmail) void send(initialEmail);
-    // Send once on mount when the guest opted in; later sends are manual.
+    // Send once when the guest opted in, as soon as the captcha (if any) has a
+    // token; later sends are manual.
+    if (!autoSend || !initialEmail || autoSent.current || !captchaReady) return;
+    autoSent.current = true;
+    void send(initialEmail);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [captchaReady]);
 
   if (state === "sent") {
     return (
@@ -739,7 +745,7 @@ function SaveAccountCard({
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
           />
-          <Button type="submit" disabled={state === "sending"} className="shrink-0">
+          <Button type="submit" disabled={state === "sending" || !captchaReady} className="shrink-0">
             {state === "sending" ? (
               <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
             ) : (
@@ -747,6 +753,7 @@ function SaveAccountCard({
             )}
           </Button>
         </form>
+        <Turnstile />
         {error && (
           <p role="alert" className="text-xs text-destructive">
             {error}

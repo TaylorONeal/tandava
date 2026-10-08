@@ -10,6 +10,7 @@ import { SEOHead } from "@/components/seo/SEOHead";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { authHref, resolveAfterAuth, safeNext, stashReturn } from "@/lib/authReturn";
+import { Turnstile, useCaptchaReady } from "@/components/auth/Turnstile";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const Login = () => {
     if (resumePath) stashReturn(resumePath); // survives the Google redirect
   }, [resumePath]);
   const { toast } = useToast();
+  const captchaReady = useCaptchaReady();
   const { signInWithEmail, signInWithGoogle } = useAuth();
   const { t } = useTranslation('auth');
   const [showPassword, setShowPassword] = useState(false);
@@ -165,7 +167,8 @@ const Login = () => {
             </div>
 
             {/* Submit */}
-            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+            <Turnstile />
+            <Button type="submit" className="w-full" size="lg" disabled={isLoading || !captchaReady}>
               {isLoading ? t('signingIn') : t('signIn')}
             </Button>
           </form>

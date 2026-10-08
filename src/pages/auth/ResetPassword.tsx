@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
+import { Turnstile, useCaptchaReady } from "@/components/auth/Turnstile";
 import { AuthCard } from "@/components/auth/AuthCard";
 
 /** /auth/reset: ask for the account email and send a recovery link. */
@@ -13,6 +14,7 @@ export default function ResetPassword() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const captchaReady = useCaptchaReady();
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +42,8 @@ export default function ResetPassword() {
           <Input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-        <Button type="submit" className="w-full" disabled={busy || !email}>{busy ? "Sending..." : "Send reset link"}</Button>
+        <Turnstile />
+        <Button type="submit" className="w-full" disabled={busy || !email || !captchaReady}>{busy ? "Sending..." : "Send reset link"}</Button>
         <p className="text-center text-sm text-muted-foreground">
           <Link to="/auth/login" className="text-primary hover:underline">Back to sign in</Link>
         </p>
