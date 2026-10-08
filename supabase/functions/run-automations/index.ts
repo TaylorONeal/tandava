@@ -39,7 +39,7 @@ const unsubscribeSecret = Deno.env.get("AUTOMATIONS_UNSUBSCRIBE_SECRET") ?? "";
 const enabled = Deno.env.get("AUTOMATIONS_ENABLED") === "true";
 /** Longest one automation email may take before the run moves on. */
 const SEND_TIMEOUT_MS = 15_000;
-/** Delays before each attempt to record a delivered send. */
+/** Delays before each attempt to record a delivered send or release an unsent claim. */
 const MARK_RETRY_MS = [0, 500, 2000];
 /** Stop claiming sends well inside the Edge Function wall-clock limit (400s on hosted Supabase). */
 const RUN_BUDGET_MS = 300_000;
@@ -199,7 +199,15 @@ serve(async (req) => {
         p_purpose: "email_marketing",
       });
       if (stillConsents !== true) {
-        await db.from("automation_sends").delete().eq("id", claimed[0].id);
+        // Nothing was sent, so releasing is safe to repeat. A claim left behind
+        // would close this step for good, even after consent is given again.
+        let releaseError: { message: string } | null = null;
+        for (const wait of MARK_RETRY_MS) {
+          if (wait) await new Promise((r) => setTimeout(r, wait));
+          ({ error: releaseError } = await db.from("automation_sends").delete().eq("id", claimed[0].id));
+          if (!releaseError) break;
+        }
+        if (releaseError) console.error("run-automations: could not release unsent claim", claimed[0].id, releaseError.message);
         continue;
       }
 

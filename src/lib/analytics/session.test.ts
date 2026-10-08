@@ -636,3 +636,36 @@ describe("a stalled visitor-link request (PR #72 review)", () => {
     }
   });
 });
+
+describe("handoff answer arriving after the wait (PR #72 review)", () => {
+  it("captures the visit once ownership is known", async () => {
+    vi.useFakeTimers();
+    try {
+      const handoff = "efefefef-efef-4fef-8fef-efefefefefef";
+      vi.stubGlobal("window", {
+        localStorage: memoryStorage(),
+        sessionStorage: memoryStorage(),
+        location: { href: `https://app.example.com/s/oxatl?tv=${handoff}` },
+      });
+      vi.stubGlobal("document", { referrer: "" });
+      vi.stubGlobal("navigator", { userAgent: "test" });
+      const { api, data } = await import("@/lib/backend");
+      const link = vi.mocked(data.linkMyVisitor);
+      link.mockReset();
+      link.mockImplementation(() => new Promise((r) => setTimeout(() => r({ error: null, owned: true } as never), 5000)));
+      const invoke = vi.mocked(api.invoke);
+      invoke.mockReset();
+      invoke.mockResolvedValue({ data: { sessionId: "56565656-5656-4656-8656-565656565656" }, error: null } as never);
+      const s = await import("./session");
+      const p = s.trackVisit("oxatl", "storefront" as never);
+      await vi.advanceTimersByTimeAsync(3500);
+      await p;
+      expect(invoke).not.toHaveBeenCalled();
+      await vi.advanceTimersByTimeAsync(3000);
+      expect(invoke).toHaveBeenCalled();
+      expect((invoke.mock.calls.at(-1)?.[1] as { visitorId: string }).visitorId).toBe(handoff);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});

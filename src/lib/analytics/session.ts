@@ -319,8 +319,14 @@ async function trackVisitInner(slug: string, surface: Surface, opts?: { studioSi
       new Promise<false>((r) => setTimeout(() => r(false), HANDOFF_WAIT_MS)),
     ]);
     // No answer in time: skip this capture rather than risk writing it under
-    // someone else's id. captureSettled() redoes it once the link settles.
-    if (!settled) return;
+    // someone else's id. Capture once the answer arrives (only if it settled
+    // the question; an error leaves it to captureSettled before a booking).
+    if (!settled) {
+      void retryHandoffLink().then(() => {
+        if (!lsGet(RELINK_KEY)) void trackVisit(slug, surface, opts);
+      });
+      return;
+    }
     visitorId = getVisitorId();
   } else {
     void retryHandoffLink();
