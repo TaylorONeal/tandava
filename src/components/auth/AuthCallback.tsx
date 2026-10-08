@@ -37,13 +37,31 @@ export function AuthCallback() {
     });
   }, [navigate, next, linkError]);
 
-  if (linkError) return <LinkFailed error={linkError} next={next} />;
+  if (linkError?.emailLink) return <LinkFailed error={linkError} next={next} />;
+  if (linkError) return <SignInFailed next={next} />;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="text-center space-y-4">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
         <p className="text-muted-foreground">Completing sign in...</p>
+      </div>
+    </div>
+  );
+}
+
+function SignInFailed({ next }: { next: string }) {
+  const login = next === "/" ? "/auth/login" : `/auth/login?next=${encodeURIComponent(next)}`;
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <div className="w-full max-w-sm space-y-4">
+        <h1 className="text-xl font-semibold">Sign-in did not finish</h1>
+        <p className="text-sm text-muted-foreground">
+          The sign-in was cancelled or the provider sent us back without an account. Nothing was changed.
+        </p>
+        <Button asChild className="w-full">
+          <Link to={login}>Try again</Link>
+        </Button>
       </div>
     </div>
   );

@@ -12,10 +12,8 @@ Disallow: /manage
 Disallow: /staff
 Disallow: /auth
 
-# Still demo data, not real studios (copy audit C-2)
-Disallow: /schedule
-Disallow: /events
-Disallow: /instructors
-Disallow: /on-demand
+# /schedule, /events, /instructors and /on-demand still show demo data. They
+# stay crawlable on purpose and carry <meta name="robots" content="noindex">;
+# a Disallow here would hide that tag from crawlers (copy audit C-2).
 
 Sitemap: https://tandavastudio.com/sitemap.xml

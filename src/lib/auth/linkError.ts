@@ -9,6 +9,12 @@ export interface AuthLinkError {
   description: string;
   /** Expired or already used: the fix is a new link, not a different password. */
   expired: boolean;
+  /**
+   * An emailed link (sign-up confirmation, magic link) failed, so a resent
+   * email can fix it. False for OAuth failures such as a declined Google
+   * consent, which also land on /auth/callback with ?error= and need a retry.
+   */
+  emailLink: boolean;
 }
 
 export function readAuthLinkError(hash: string, search: string): AuthLinkError | null {
@@ -20,7 +26,8 @@ export function readAuthLinkError(hash: string, search: string): AuthLinkError |
     const description = params.get("error_description")?.replace(/\+/g, " ") ?? "";
     const c = code ?? error ?? "unknown";
     const expired = c === "otp_expired" || /expired|invalid/i.test(description);
-    return { code: c, description, expired };
+    const emailLink = c === "otp_expired" || /email link|otp/i.test(description);
+    return { code: c, description, expired, emailLink };
   }
   return null;
 }

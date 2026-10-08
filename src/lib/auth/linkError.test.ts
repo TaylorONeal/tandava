@@ -7,11 +7,21 @@ describe("readAuthLinkError", () => {
       "#error=access_denied&error_code=otp_expired&error_description=Email+link+is+invalid+or+has+expired",
       "",
     );
-    expect(e).toEqual({ code: "otp_expired", description: "Email link is invalid or has expired", expired: true });
+    expect(e).toEqual({
+      code: "otp_expired",
+      description: "Email link is invalid or has expired",
+      expired: true,
+      emailLink: true,
+    });
   });
 
   it("reads an error from the query string", () => {
     expect(readAuthLinkError("", "?error=server_error&error_description=boom")?.code).toBe("server_error");
+  });
+
+  it("does not treat a declined OAuth consent as an email link", () => {
+    const e = readAuthLinkError("", "?error=access_denied&error_description=The+user+denied+the+request");
+    expect(e?.emailLink).toBe(false);
   });
 
   it("returns null for a normal callback", () => {

@@ -29,7 +29,9 @@ one business name, and Taylor's personal account stays a member, not the owner.
    (today it returns 403 on environment variables).
 3. Stripe: create or confirm the Purafield Studio account. Enable Connect. Stay in **test mode**
    until step 5 passes.
-4. Resend: sign up, add domain `tandavastudio.com`, add the DNS records it shows.
+4. Resend: sign up, add domain `purafieldstudio.com` (verified 2026-10-08, DNS at GoDaddy) and send as
+   `hello@purafieldstudio.com`. `tandavastudio.com` is not verified (Squarespace DNS access lost); switch
+   EMAIL_FROM and the Supabase SMTP sender only after verifying it in Resend.
 5. Cloudflare: sign up or sign in, Turnstile, add widget for `tandavastudio.com` and `*.vercel.app`.
    Copy site key and secret key.
 6. Delete the empty "Purafield Studio" org created on 2026-10-04 under the personal login, or ignore it.
