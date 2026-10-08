@@ -60,7 +60,7 @@ commands in [LAUNCH_RUNBOOK.md](LAUNCH_RUNBOOK.md).
 | W4-1 | `book_class_auto` | W3 | AUTO-01..06 | DONE (00026) |
 | W4-2 | Return-to-intent auth, storefront Book and Buy buttons | W4-1 | authReturn unit tests | DONE |
 | W4-3 | `hold_spot` then checkout so a paid drop-in cannot hit a full class | W4-1 | HOLD-01..11 | DONE (00027, checkout calls it) |
-| W4-6 | Turnstile on sign-up (Supabase Auth captcha). Needs `frame-src https://challenges.cloudflare.com` in vercel.json CSP and a site key env var | D7 | E2E | NEXT |
+| W4-6 | Turnstile on sign-up (Supabase Auth captcha). Needs `frame-src https://challenges.cloudflare.com` in vercel.json CSP and a site key env var | D7 | E2E | Widget DONE (#75, #76, live). Enforcement waits on the Turnstile secret in Supabase Auth > Attack Protection (Taylor) |
 | W4-4 | Playwright E2E-01 guest to booked | W4-2, D6 | E2E-01 | UI half DONE (`npm run test:e2e`, mocked Supabase, in CI). Full stack half needs local Supabase |
 | W4-5 | Wire real data into Schedule, MySchedule, Account (replace mocks) | W4-1 | E2E | LATER |
 
@@ -79,9 +79,9 @@ commands in [LAUNCH_RUNBOOK.md](LAUNCH_RUNBOOK.md).
 | ID | Task | Needs | Status |
 |---|---|---|---|
 | W6-1 | `setFunnelSink` at main.tsx next to initSentry | W4-2 | NEXT |
-| W6-2 | Prerender `/discover` and `/s/:slug`, sitemap, fix robots vs sitemap domain | none | LATER |
-| W6-3 | noindex on mock pages (/schedule, /events, /instructors, /my-schedule) | W4-5 | LATER |
-| W6-4 | `/for-studios` page, open source pitch under `/open-source` | none | LATER |
+| W6-2 | Prerender `/discover` and `/s/:slug`, sitemap, fix robots vs sitemap domain | none | Robots and sitemap on tandavastudio.com DONE (#74, #78). Prerender of `/discover` and `/s/:slug` LATER |
+| W6-3 | noindex on mock pages (/schedule, /events, /instructors, /my-schedule) | W4-5 | DONE for /schedule, /events, /instructors, /on-demand (#78, `DemoDataPage` wrapper). /my-schedule open: it sits behind ProtectedRoute, so crawlers get the sign-in redirect; add `noindex` when W4-5 wires its real data |
+| W6-4 | `/for-studios` page, open source pitch under `/open-source` | none | DONE (pages live, in sitemap) |
 
 ## W7 Pilot ops
 
@@ -96,4 +96,6 @@ commands in [LAUNCH_RUNBOOK.md](LAUNCH_RUNBOOK.md).
 
 W1 -> W3 -> W4-1 -> W4-3 -> W4-4 -> W5-2 -> W7-3 -> W7-4. W2 gates W4-3 and W5-2. W6 can run beside W5.
 
-- NEXT: Settings > Discover toggle does not persist. `src/pages/manage/Settings.tsx` keeps `discoverable` in local state and the save handler only toasts, so an owner cannot unlist a studio after onboarding. Wire it to update `studios.discoverable` (found in #81 review, 2026-10-08).
+- DONE (#82): Settings loads and saves the real `studios` row; Discover and Express Booking switches persist. Test SET-01..03.
+- NEXT: Settings tabs that still only toast (notifications, SEO, branding beyond the studios row) show placeholder data. The SEO tab shows a fake `https://{slug}.tandava.yoga/sitemap.xml`; replace with the real per-studio URL on tandavastudio.com or hide it.
+- NEXT: Demo sample data still uses `@tandava.yoga` emails and `https://tandava.yoga` defaults (Settings, Teachers, Tasks). Fine in demo mode; make sure none of it shows for a live studio.
