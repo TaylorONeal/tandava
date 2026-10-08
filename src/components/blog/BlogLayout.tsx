@@ -112,7 +112,7 @@ export function BlogLayout({ children, activeCategory }: BlogLayoutProps) {
               <span className="font-display text-lg font-bold">Tandava</span>
             </div>
             <p className="mt-3 text-sm text-muted-foreground">
-              Open-source studio management for yoga, pilates, and movement
+              Studio management for yoga, pilates, and movement
               studios. Insights for studio owners, teachers, and operators.
             </p>
           </div>
@@ -137,9 +137,9 @@ export function BlogLayout({ children, activeCategory }: BlogLayoutProps) {
           </nav>
         </div>
         <div className="container mt-8 flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
-          <span>&copy; {new Date().getFullYear()} Tandava. Open source studio software.</span>
-          <Link to="/open-source" className="transition-colors hover:text-foreground">
-            About Tandava
+          <span>&copy; {new Date().getFullYear()} Tandava. Studio software for yoga, pilates, and movement.</span>
+          <Link to="/for-studios" className="transition-colors hover:text-foreground">
+            For studios
           </Link>
         </div>
       </footer>

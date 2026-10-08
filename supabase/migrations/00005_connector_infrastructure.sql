@@ -547,100 +547,100 @@ INSERT INTO connector_definitions (slug, name, description, connector_type, cate
 
 ('generic-csv-import', 'Generic CSV', 'Import data from any CSV file with manual column mapping', 'import', 'migration',
  ARRAY['members', 'attendance', 'transactions', 'offerings', 'staff'], true,
- ARRAY[],
+ ARRAY[]::TEXT[],
  'Export data from your current system as CSV. Any CSV format is supported with manual column mapping.'),
 
 -- Marketplace Connectors (Bidirectional Sync)
 ('classpass-sync', 'ClassPass', 'Accept bookings from ClassPass members', 'sync_inbound', 'marketplace',
- ARRAY['bookings', 'checkins'], false, ARRAY[],
+ ARRAY['bookings', 'checkins'], false, ARRAY[]::TEXT[],
  NULL),
 
 ('gympass-sync', 'Gympass', 'Accept bookings from Gympass corporate members', 'sync_inbound', 'marketplace',
- ARRAY['bookings', 'checkins'], false, ARRAY[],
+ ARRAY['bookings', 'checkins'], false, ARRAY[]::TEXT[],
  NULL),
 
 -- Calendar Connectors (Bidirectional)
 ('google-calendar', 'Google Calendar', 'Sync classes and bookings to Google Calendar', 'sync_bidirectional', 'calendar',
- ARRAY['classes', 'bookings'], false, ARRAY[],
+ ARRAY['classes', 'bookings'], false, ARRAY[]::TEXT[],
  NULL),
 
 ('apple-calendar', 'Apple Calendar', 'Sync classes and bookings via iCal feed', 'sync_outbound', 'calendar',
- ARRAY['classes', 'bookings'], false, ARRAY[],
+ ARRAY['classes', 'bookings'], false, ARRAY[]::TEXT[],
  NULL),
 
 ('outlook-calendar', 'Outlook Calendar', 'Sync classes and bookings to Microsoft Outlook', 'sync_bidirectional', 'calendar',
- ARRAY['classes', 'bookings'], false, ARRAY[],
+ ARRAY['classes', 'bookings'], false, ARRAY[]::TEXT[],
  NULL),
 
 -- CRM/Marketing Connectors (Bidirectional)
 ('mailchimp', 'Mailchimp', 'Sync contacts and segments to Mailchimp for email marketing', 'sync_bidirectional', 'crm',
- ARRAY['members', 'segments', 'tags'], false, ARRAY[],
+ ARRAY['members', 'segments', 'tags'], false, ARRAY[]::TEXT[],
  NULL),
 
 ('klaviyo', 'Klaviyo', 'Sync customer data to Klaviyo for advanced email/SMS marketing', 'sync_bidirectional', 'crm',
- ARRAY['members', 'events', 'segments'], false, ARRAY[],
+ ARRAY['members', 'events', 'segments'], false, ARRAY[]::TEXT[],
  NULL),
 
 ('hubspot', 'HubSpot', 'Sync contacts and deals to HubSpot CRM', 'sync_bidirectional', 'crm',
- ARRAY['members', 'transactions'], false, ARRAY[],
+ ARRAY['members', 'transactions'], false, ARRAY[]::TEXT[],
  NULL),
 
 -- Accounting Connectors (Outbound)
 ('quickbooks-online', 'QuickBooks Online', 'Export transactions and invoices to QuickBooks', 'sync_outbound', 'accounting',
- ARRAY['transactions', 'invoices', 'payroll'], false, ARRAY[],
+ ARRAY['transactions', 'invoices', 'payroll'], false, ARRAY[]::TEXT[],
  NULL),
 
 ('xero', 'Xero', 'Export transactions and invoices to Xero', 'sync_outbound', 'accounting',
- ARRAY['transactions', 'invoices', 'payroll'], false, ARRAY[],
+ ARRAY['transactions', 'invoices', 'payroll'], false, ARRAY[]::TEXT[],
  NULL),
 
 ('freshbooks', 'FreshBooks', 'Export invoices to FreshBooks', 'sync_outbound', 'accounting',
- ARRAY['invoices'], false, ARRAY[],
+ ARRAY['invoices'], false, ARRAY[]::TEXT[],
  NULL),
 
 -- Communication Connectors
 ('twilio', 'Twilio', 'Send SMS notifications via Twilio', 'sync_outbound', 'communication',
- ARRAY['notifications'], false, ARRAY[],
+ ARRAY['notifications'], false, ARRAY[]::TEXT[],
  NULL),
 
 ('sendgrid', 'SendGrid', 'Send transactional emails via SendGrid', 'sync_outbound', 'communication',
- ARRAY['notifications'], false, ARRAY[],
+ ARRAY['notifications'], false, ARRAY[]::TEXT[],
  NULL),
 
 ('slack', 'Slack', 'Send alerts and notifications to Slack channels', 'sync_outbound', 'communication',
- ARRAY['alerts', 'bookings'], false, ARRAY[],
+ ARRAY['alerts', 'bookings'], false, ARRAY[]::TEXT[],
  NULL),
 
 -- Access Control
 ('kisi', 'Kisi', 'Control door access based on memberships and bookings', 'sync_outbound', 'access_control',
- ARRAY['members', 'access_grants'], false, ARRAY[],
+ ARRAY['members', 'access_grants'], false, ARRAY[]::TEXT[],
  NULL),
 
 -- Analytics Connectors
 ('google-analytics', 'Google Analytics', 'Track website and booking conversions', 'sync_outbound', 'analytics',
- ARRAY['events', 'conversions'], false, ARRAY[],
+ ARRAY['events', 'conversions'], false, ARRAY[]::TEXT[],
  NULL),
 
 ('meta-pixel', 'Meta Pixel', 'Track Facebook/Instagram ad conversions', 'sync_outbound', 'analytics',
- ARRAY['events', 'conversions'], false, ARRAY[],
+ ARRAY['events', 'conversions'], false, ARRAY[]::TEXT[],
  NULL),
 
 -- Custom/Automation Connectors
 ('zapier', 'Zapier', 'Connect to 5000+ apps via Zapier', 'sync_bidirectional', 'custom',
- ARRAY['members', 'bookings', 'transactions', 'events'], false, ARRAY[],
+ ARRAY['members', 'bookings', 'transactions', 'events'], false, ARRAY[]::TEXT[],
  NULL),
 
 ('custom-webhook', 'Custom Webhook', 'Send events to your own webhook endpoints', 'sync_outbound', 'custom',
- ARRAY['all'], false, ARRAY[],
+ ARRAY['all'], false, ARRAY[]::TEXT[],
  NULL),
 
 -- Compliance/Export
 ('gdpr-export', 'GDPR Data Export', 'Export all data for a specific user (data subject access request)', 'export', 'compliance',
- ARRAY['full_profile'], true, ARRAY[],
+ ARRAY['full_profile'], true, ARRAY[]::TEXT[],
  NULL),
 
 ('full-backup', 'Full Data Backup', 'Export all studio data for backup or migration', 'export', 'compliance',
- ARRAY['all'], true, ARRAY[],
+ ARRAY['all'], true, ARRAY[]::TEXT[],
  NULL);
 
 -- ============================================================================

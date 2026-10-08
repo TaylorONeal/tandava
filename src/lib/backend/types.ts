@@ -9,7 +9,7 @@
  * See docs/developer/backend-flexibility.md for architecture details.
  */
 
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { FeedbackType } from "@/types/database";
 
 // ---------------------------------------------------------------------------
@@ -172,6 +172,8 @@ export interface DataProvider {
    * Drop-in/paid bookings use the Stripe checkout flow instead.
    */
   bookClass(input: BookClassInput): Promise<DataResult<Booking>>;
+  /** Book with the best available source, or report that payment is needed. */
+  bookClassAuto(occurrenceId: string): Promise<DataResult<BookClassAutoResult>>;
 
   /** Book the signed-in user into a zero-price class (book_free_class() RPC, migration 00023). */
   bookFreeClass(occurrenceId: string): Promise<DataResult<Booking>>;
@@ -185,6 +187,8 @@ export interface DataProvider {
   /** Public storefront (profile + offerings + pricing) for a discoverable studio by slug. Null if not discoverable. */
   getStudioStorefront(slug: string): Promise<DataResult<StudioStorefront>>;
 
+  /** Upcoming classes across all discoverable studios, with optional city/style/date filters. */
+  discoverClasses(args?: DiscoverClassesArgs): Promise<DataResult<DiscoverClassRow[]>>;
   /**
    * Public booking-relevant facts for ONE occurrence of a discoverable studio —
    * what the express booking page renders. Returns the row even when the class

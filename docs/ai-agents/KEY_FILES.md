@@ -227,3 +227,16 @@ ls -la src/hooks/
 ---
 
 *Update this file when adding significant new files or directories.*
+
+## Launch v1 additions
+
+| File | Purpose |
+|---|---|
+| `supabase/migrations/00022` to `00026` | Security baseline, policies, booking integrity, payments, book_class_auto |
+| `supabase/tests/` and `scripts/db-test.sh` | Plain-SQL DB tests and runner (`npm run test:db`) |
+| `supabase/functions/stripe-webhook/index.ts` | Thin webhook; logic is in SQL fulfilment functions |
+| `supabase/functions/_shared/urls.ts` | Return URL allowlist |
+| `src/lib/authReturn.ts` | Return-to-intent after auth |
+| `src/components/booking/` | BookClassButton, PurchaseButton |
+| `.github/workflows/ci.yml` | Web and database CI |
+| `docs/plans/` | PRD, BACKLOG, PROGRESS |

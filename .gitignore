@@ -31,3 +31,7 @@ coverage
 
 # Subagents workspace artifacts
 subagents/
+
+# Playwright
+test-results/
+playwright-report/

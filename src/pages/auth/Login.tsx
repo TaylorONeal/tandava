@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,18 +9,22 @@ import { useAuth } from "@/contexts/AuthContext";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { safeNextPath } from "@/lib/auth/next";
+import { authHref, resolveAfterAuth, safeNext, stashReturn } from "@/lib/authReturn";
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  // Return to where the person was (a class they were booking, or a protected
-  // page that bounced them here), never to an arbitrary URL.
-  const fromState = (location.state as { from?: { pathname?: string; search?: string } } | null)?.from;
-  const next = safeNextPath(
-    searchParams.get("next") ?? (fromState?.pathname ? `${fromState.pathname}${fromState.search ?? ""}` : null),
-  );
+  // Destination to resume after signing in: explicit ?next=, or the page a ProtectedRoute bounced from.
+  const nextParam = safeNext(searchParams.get("next"));
+  const from = (location.state as { from?: { pathname?: string; search?: string } } | null)?.from ?? null;
+  const resumePath = nextParam ?? safeNext(from?.pathname ? `${from.pathname}${from.search ?? ""}` : null);
+  // Coming back to finish studio setup (from /for-studios or the onboarding gate).
+  const next = resumePath ?? "/";
+  const isOwnerFlow = Boolean(resumePath?.startsWith("/manage/onboarding"));
+  useEffect(() => {
+    if (resumePath) stashReturn(resumePath); // survives the Google redirect
+  }, [resumePath]);
   const { toast } = useToast();
   const { signInWithEmail, signInWithGoogle } = useAuth();
   const { t } = useTranslation('auth');
@@ -57,7 +61,7 @@ const Login = () => {
       description: t('signInSuccess'),
     });
 
-    navigate(next, { replace: true });
+    navigate(resolveAfterAuth({ next: nextParam, from }), { replace: true });
     setIsLoading(false);
   };
 
@@ -213,10 +217,7 @@ const Login = () => {
           {/* Sign up link */}
           <p className="text-center text-sm text-muted-foreground">
             {t('noAccount')}{" "}
-            <Link
-              to={next === "/" ? "/auth/register" : `/auth/register?next=${encodeURIComponent(next)}`}
-              className="text-primary hover:underline font-medium"
-            >
+            <Link to={authHref("/auth/register", resumePath)} className="text-primary hover:underline font-medium">
               {t('signUp')}
             </Link>
           </p>
@@ -231,9 +232,9 @@ const Login = () => {
               <span className="text-4xl font-bold text-primary-foreground">T</span>
             </div>
           </div>
-          <h2 className="text-3xl font-bold mb-4">{t('practiceAwaits')}</h2>
+          <h2 className="text-3xl font-bold mb-4">{isOwnerFlow ? t('studioPracticeTitle') : t('practiceAwaits')}</h2>
           <p className="text-muted-foreground text-lg">
-            {t('practiceAwaitsDesc')}
+            {isOwnerFlow ? t('studioPracticeDesc') : t('practiceAwaitsDesc')}
           </p>
         </div>
       </div>

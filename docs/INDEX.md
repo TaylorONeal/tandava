@@ -29,6 +29,8 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 - [README](../README.md) — Project overview, architecture, and getting started
 - [STATUS](STATUS.md) — Current project status and known limitations
 - [ROADMAP](ROADMAP.md) — Development phases and feature status
+- [Launch PRD](plans/PRD-launch-v1.md), [Backlog](plans/BACKLOG.md), [Progress](plans/PROGRESS.md) — Launch v1 plan, ordered tasks, state
+- [Launch architecture diagrams](developer/07-launch-architecture.md) — Booking, payments, RLS model
 - [FEATURE_INDEX](FEATURE_INDEX.md) — Complete feature status reference
 - [DEMO_MODE](DEMO_MODE.md) — Demo mode setup and customization
 - [NEXT_STEPS](NEXT_STEPS.md) — Prioritized task list for development

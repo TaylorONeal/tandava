@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { auth } from "@/lib/backend";
+import { resolveAfterAuth } from "@/lib/authReturn";
 import { safeNextPath } from "@/lib/auth/next";
 
 /**
@@ -16,7 +17,7 @@ export function AuthCallback() {
   useEffect(() => {
     auth.getSession().then(({ user }) => {
       if (user) {
-        navigate(next, { replace: true });
+        navigate(resolveAfterAuth({ next: next === "/" ? null : next }), { replace: true });
       } else {
         navigate("/auth/login", { replace: true });
       }
