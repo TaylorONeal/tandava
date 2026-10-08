@@ -301,6 +301,15 @@ BEGIN
   IF (SELECT guest_booking_at FROM get_automation_candidates('00000000-0000-0000-0000-00000000005a')
       WHERE profile_id = '00000000-0000-0000-0000-0000000000e4') IS NOT NULL
     THEN RAISE EXCEPTION 'waitlisted guest started a follow-up'; END IF;
+  -- Joined the waitlist 5 days ago, promoted now: the follow-up counts from
+  -- the promotion, not from joining the waitlist.
+  UPDATE bookings SET created_at = NOW() - interval '5 days'
+    WHERE profile_id = '00000000-0000-0000-0000-0000000000e4' AND class_occurrence_id = occ;
+  UPDATE bookings SET status = 'confirmed', waitlist_position = NULL
+    WHERE profile_id = '00000000-0000-0000-0000-0000000000e4' AND class_occurrence_id = occ;
+  IF (SELECT guest_booking_at FROM get_automation_candidates('00000000-0000-0000-0000-00000000005a')
+      WHERE profile_id = '00000000-0000-0000-0000-0000000000e4') < NOW() - interval '1 minute'
+    THEN RAISE EXCEPTION 'promoted guest follow-up counted from the waitlist join'; END IF;
 
   PERFORM set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000a1', true);
   SELECT COALESCE(sum(new_people), 0) INTO n FROM get_attribution_sources(NOW() - interval '1 day', NOW() + interval '1 day', 'first');

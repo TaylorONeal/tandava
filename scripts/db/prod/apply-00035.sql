@@ -628,6 +628,30 @@ CREATE POLICY automation_sends_staff_read ON automation_sends
   FOR SELECT TO authenticated
   USING (is_studio_staff(studio_id));
 
+-- When a waitlisted booking became a real seat. promote_waitlist() only
+-- flips the status, so created_at is when the person joined the waitlist; the
+-- guest follow-up counts from the seat, not the wait (PR #72 review).
+ALTER TABLE bookings ADD COLUMN IF NOT EXISTS confirmed_at TIMESTAMPTZ;
+
+CREATE OR REPLACE FUNCTION stamp_booking_promotion()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
+BEGIN
+  IF OLD.status = 'waitlisted' AND NEW.status = 'confirmed' THEN
+    NEW.confirmed_at := NOW();
+  END IF;
+  RETURN NEW;
+END;
+$$;
+REVOKE ALL ON FUNCTION stamp_booking_promotion() FROM PUBLIC, anon, authenticated;
+
+DROP TRIGGER IF EXISTS trg_stamp_booking_promotion ON bookings;
+CREATE TRIGGER trg_stamp_booking_promotion
+  BEFORE UPDATE OF status ON bookings
+  FOR EACH ROW EXECUTE FUNCTION stamp_booking_promotion();
+
 -- Facts per person for the runner (src/lib/marketing/automations.ts decides).
 CREATE OR REPLACE FUNCTION get_automation_candidates(p_studio_id UUID)
 RETURNS TABLE (
@@ -650,7 +674,8 @@ AS $$
     SELECT m.profile_id FROM studio_members m WHERE m.studio_id = p_studio_id
   ),
   b AS (
-    SELECT bk.profile_id, bk.created_at, bk.checked_in_at, bk.status
+    SELECT bk.profile_id, bk.created_at, bk.checked_in_at, bk.status,
+           COALESCE(bk.confirmed_at, bk.created_at) AS seated_at
     FROM bookings bk JOIN members USING (profile_id)
     WHERE bk.studio_id = p_studio_id AND bk.status NOT IN ('cancelled', 'late_cancel')
   ),
@@ -666,7 +691,7 @@ AS $$
     (SELECT min(created_at) FROM b WHERE b.profile_id = p.id),
     -- Latest guest booking: the follow-up is about the visit that just happened.
     -- Confirmed (or attended) seats only: a guest still on the waitlist was never booked.
-    CASE WHEN COALESCE(p.is_guest, FALSE) THEN (SELECT max(created_at) FROM b WHERE b.profile_id = p.id
+    CASE WHEN COALESCE(p.is_guest, FALSE) THEN (SELECT max(seated_at) FROM b WHERE b.profile_id = p.id
       AND b.status IN ('confirmed', 'checked_in', 'no_show')) END,
     (SELECT min(checked_in_at) FROM visits v WHERE v.profile_id = p.id),
     (SELECT max(checked_in_at) FROM visits v WHERE v.profile_id = p.id),

@@ -38,6 +38,8 @@ const unsubscribeSecret = Deno.env.get("AUTOMATIONS_UNSUBSCRIBE_SECRET") ?? "";
 const enabled = Deno.env.get("AUTOMATIONS_ENABLED") === "true";
 /** Longest one automation email may take before the run moves on. */
 const SEND_TIMEOUT_MS = 15_000;
+/** Delays before each attempt to record a delivered send. */
+const MARK_RETRY_MS = [0, 500, 2000];
 /** Stop claiming sends well inside the Edge Function wall-clock limit (400s on hosted Supabase). */
 const RUN_BUDGET_MS = 300_000;
 const appUrl = (Deno.env.get("APP_URL") ?? "").replace(/\/+$/, "");
@@ -227,11 +229,20 @@ serve(async (req) => {
 
       if (sent.success) {
         result.sent++;
-        const { error: markError } = await db
-          .from("automation_sends")
-          .update({ status: "sent", sent_at: new Date().toISOString() })
-          .eq("id", claimed[0].id);
-        if (markError) console.error("run-automations: could not mark sent", markError.message);
+        // The email went out: recording that is safe to repeat, so retry a
+        // transient failure. A claim left 'sending' never advances its
+        // sequence (step 0 would block the intro offer for good).
+        const sentAt = new Date().toISOString();
+        let markError: { message: string } | null = null;
+        for (const wait of MARK_RETRY_MS) {
+          if (wait) await new Promise((r) => setTimeout(r, wait));
+          ({ error: markError } = await db
+            .from("automation_sends")
+            .update({ status: "sent", sent_at: sentAt })
+            .eq("id", claimed[0].id));
+          if (!markError) break;
+        }
+        if (markError) console.error("run-automations: could not mark sent; claim left as sending", claimed[0].id, markError.message);
       } else {
         result.failed++;
         await db

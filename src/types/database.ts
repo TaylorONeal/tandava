@@ -257,6 +257,8 @@ export interface Booking {
   checked_in_at: string | null;
   checked_in_by: string | null;
   cancelled_at: string | null;
+  /** Set when a waitlisted booking is promoted to a seat (00035). */
+  confirmed_at?: string | null;
   cancel_reason: string | null;
   is_late_cancel: boolean;
   booked_at: string;
