@@ -125,6 +125,18 @@ serve(async (req) => {
         .select("id");
       if (claimError || !claimed?.length) continue;
 
+      // The candidate list can be minutes old by now; an unsubscribe that
+      // landed in between must win. Release the claim and skip.
+      const { data: stillConsents } = await db.rpc("has_consent", {
+        p_studio_id: studio.id,
+        p_profile_id: s.profileId,
+        p_purpose: "email_marketing",
+      });
+      if (stillConsents !== true) {
+        await db.from("automation_sends").delete().eq("id", claimed[0].id);
+        continue;
+      }
+
       const token = await signUnsubscribe(studio.id, s.profileId, unsubscribeSecret);
       // Footer link opens the app's confirm page; the header is the one-click POST endpoint.
       const unsubscribeUrl = `${appUrl}/unsubscribe?t=${encodeURIComponent(token)}`;

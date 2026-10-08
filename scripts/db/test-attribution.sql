@@ -244,5 +244,15 @@ BEGIN
     THEN RAISE EXCEPTION 'conversion did not create the studio relationship'; END IF;
 END $$;
 
+-- 13. Overlapping page loads in one session make one visit.
+DO $$
+DECLARE v UUID := gen_random_uuid(); a UUID; b UUID;
+BEGIN
+  a := record_session('aloha', v, 'tok-x', 'storefront', 'https://x/s/aloha', NULL, '{}'::jsonb, '{}'::jsonb, 'direct', 'mobile');
+  b := record_session('aloha', v, 'tok-x', 'booking', 'https://x/s/aloha/book/1', NULL, '{}'::jsonb, '{}'::jsonb, 'direct', 'mobile');
+  IF a <> b OR (SELECT page_views FROM analytics_sessions WHERE id = a) <> 2
+    THEN RAISE EXCEPTION 'same session token should be one visit'; END IF;
+END $$;
+
 SELECT 'attribution tests passed' AS result;
 ROLLBACK;

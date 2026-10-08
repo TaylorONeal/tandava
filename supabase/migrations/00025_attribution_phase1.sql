@@ -14,6 +14,9 @@
 -- ===========================================================================
 -- Sessions
 -- ===========================================================================
+CREATE UNIQUE INDEX IF NOT EXISTS uq_analytics_sessions_visit
+  ON analytics_sessions (studio_id, visitor_id, session_token);
+
 CREATE OR REPLACE FUNCTION record_session(
   p_studio_slug TEXT,
   p_visitor_id UUID,
@@ -41,15 +44,6 @@ BEGIN
     RETURN NULL;  -- unknown or private studio: record nothing, reveal nothing
   END IF;
 
-  -- One row per (visitor, session token): a page refresh inside the same
-  -- session updates page_views instead of inserting.
-  SELECT id INTO v_id FROM analytics_sessions
-  WHERE studio_id = v_studio AND visitor_id = p_visitor_id AND session_token = p_session_token;
-  IF v_id IS NOT NULL THEN
-    UPDATE analytics_sessions SET page_views = page_views + 1 WHERE id = v_id;
-    RETURN v_id;
-  END IF;
-
   v_ref_host := NULLIF(substring(COALESCE(p_referrer_url, '') FROM '^[a-z]+://([^/:?#]+)'), '');
 
   INSERT INTO analytics_sessions (
@@ -67,7 +61,13 @@ BEGIN
     left(p_click_ids->>'gclid', 500), left(p_click_ids->>'gbraid', 500), left(p_click_ids->>'wbraid', 500),
     left(p_click_ids->>'ttclid', 500), left(p_click_ids->>'msclkid', 500),
     left(p_channel, 32), left(p_device_type, 16), 1
-  ) RETURNING id INTO v_id;
+  )
+  -- One row per (studio, visitor, session token), atomically: a refresh or
+  -- two overlapping page loads in the same session count page views on one
+  -- row instead of creating a second visit.
+  ON CONFLICT (studio_id, visitor_id, session_token)
+    DO UPDATE SET page_views = analytics_sessions.page_views + 1
+  RETURNING id INTO v_id;
 
   RETURN v_id;
 END;

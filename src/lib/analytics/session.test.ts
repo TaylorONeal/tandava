@@ -57,3 +57,16 @@ describe("signup consent across OAuth", () => {
     expect(takeSignupConsent()).toBeNull();
   });
 });
+
+describe("forgetVisitor", () => {
+  it("gives the browser a fresh id and drops sessions on sign-out", async () => {
+    const { getVisitorId, claimVisitorFor, forgetVisitor } = await import("./session");
+    claimVisitorFor("user-a");
+    const before = getVisitorId();
+    window.sessionStorage.setItem("tandava.sess.aloha", "{}");
+    forgetVisitor();
+    expect(getVisitorId()).not.toBe(before);
+    expect(window.sessionStorage.getItem("tandava.sess.aloha")).toBeNull();
+    expect(window.localStorage.getItem("tandava.vid.owner")).toBeNull();
+  });
+});

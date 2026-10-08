@@ -5,7 +5,7 @@ import type { Profile } from "@/types/database";
 import type { Permission } from "@/types/roles";
 import { getPermissionsForUserRole } from "@/types/roles";
 import { useDemo } from "@/contexts/DemoContext";
-import { linkVisitorOnce } from "@/lib/analytics/session";
+import { forgetVisitor, linkVisitorOnce } from "@/lib/analytics/session";
 import {
   checkLoginRateLimit,
   clearLoginRateLimit,
@@ -206,6 +206,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     if (isDemoMode) return;
     await auth.signOut();
+    forgetVisitor();
   };
 
   const resetPassword = async (email: string, options?: { next?: string; claim?: boolean }) => {

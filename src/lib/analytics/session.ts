@@ -226,3 +226,24 @@ export function takeSignupConsent(): { slug: string; granted: boolean } | null {
     return null;
   }
 }
+
+/**
+ * On sign-out, give this browser a fresh anonymous identity and drop its
+ * sessions, so browsing after sign-out is not added to the signed-out
+ * person's journey (and the next person starts clean).
+ */
+export function forgetVisitor() {
+  try {
+    window.localStorage.setItem(VISITOR_KEY, randomId());
+    window.localStorage.removeItem(OWNER_KEY);
+    for (let i = window.sessionStorage.length - 1; i >= 0; i--) {
+      const k = window.sessionStorage.key(i);
+      if (k?.startsWith(SESSION_PREFIX) || k?.startsWith(LINKED_PREFIX)) window.sessionStorage.removeItem(k);
+    }
+  } catch {
+    memoryVisitor = randomId();
+    memoryOwner = null;
+    memorySessions.clear();
+    linkedInMemory.clear();
+  }
+}
