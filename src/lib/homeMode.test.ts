@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseHomeMode, resolveHomeTarget, type HomeInputs } from "./homeMode";
+import { parseHomeMode, resolveHomeTarget, workspacePath, manageHeaderName, type HomeInputs } from "./homeMode";
 
 const base: HomeInputs = {
   studioSlug: null,
@@ -41,5 +41,26 @@ describe("resolveHomeTarget (HOME-01)", () => {
   it("signed-in users go to their workspace regardless of mode", () => {
     expect(resolveHomeTarget({ ...base, hasProfile: true, canManage: true, homeMode: "discover" })).toBe("workspace-manage");
     expect(resolveHomeTarget({ ...base, hasProfile: true, homeMode: "discover" })).toBe("workspace-member");
+  });
+});
+
+describe("workspacePath", () => {
+  it("sends managers to /manage", () => {
+    expect(workspacePath("workspace-manage")).toBe("/manage");
+  });
+  it("sends students to Discover, not the sample-data schedule", () => {
+    expect(workspacePath("workspace-member")).toBe("/discover");
+  });
+});
+
+describe("manageHeaderName", () => {
+  it("shows the owner's studio when live", () => {
+    expect(manageHeaderName(true, "Purafield Studio (test)", "Oxatl Yoga")).toBe("Purafield Studio (test)");
+  });
+  it("never shows the sample studio to a live owner while loading", () => {
+    expect(manageHeaderName(true, undefined, "Oxatl Yoga")).toBe("");
+  });
+  it("shows the sample studio in the demo", () => {
+    expect(manageHeaderName(false, null, "Oxatl Yoga")).toBe("Oxatl Yoga");
   });
 });

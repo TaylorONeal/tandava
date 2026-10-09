@@ -14,7 +14,7 @@
  *
  * Request (POST):
  *   {
- *     slug: string,              // studio slug, must be discoverable
+ *     slug: string,              // studio slug, booking page must be live (page_live)
  *     occurrenceId: string,
  *     firstName, lastName, email: string,
  *     phone?: string,

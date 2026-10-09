@@ -1,7 +1,7 @@
 /**
  * Public Studio Storefront — /s/:slug
  *
- * A discoverable studio's real public page: profile, class offerings, pricing,
+ * A studio's real public page: profile, class offerings, pricing,
  * and upcoming schedule, fetched by slug from the public RPCs
  * (get_studio_storefront + get_public_schedule). No login required.
  *
@@ -9,7 +9,7 @@
  * (docs/architecture/MULTI_TENANCY.md): once per-studio subdomains land, a
  * resolved subdomain simply renders this component for the matched studio.
  *
- * Gating: the RPC returns data only when studios.discoverable = true, so a
+ * Gating: the RPC returns data only when studios.page_live = true (00038), so a
  * private or unknown slug lands on the neutral "not available" state below.
  */
 
@@ -75,7 +75,7 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
     );
   }
 
-  // Null = slug didn't match a discoverable studio (RPC gates on discoverable).
+  // Null = slug didn't match a studio with a live booking page.
   if (isError || !storefront) {
     return (
       <Shell>

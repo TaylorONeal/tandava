@@ -91,8 +91,8 @@ serve(async (req) => {
     if (error || ok !== true) return json({ sessionId: null });
   }
 
-  // Same rule as record_session: unknown or private studio records nothing.
-  const { data: studio } = await db.from("studios").select("id, website").eq("slug", slug).eq("discoverable", true).maybeSingle();
+  // Same rule as record_session (00038): a studio whose booking page is off records nothing.
+  const { data: studio } = await db.from("studios").select("id, website").eq("slug", slug).eq("page_live", true).maybeSingle();
   if (!studio) return json({ sessionId: null });
   {
     const { data: ok, error } = await db.rpc("analytics_admit", { p_bucket: `studio:${studio.id}`, p_limit: PER_STUDIO_PER_HOUR, p_window_seconds: 3600 });
