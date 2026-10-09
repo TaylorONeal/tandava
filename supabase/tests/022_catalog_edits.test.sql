@@ -132,4 +132,32 @@ BEGIN
   EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(n = 1 AND m = 0 AND NOT has_function_privilege('anon', 'get_studio_staff_names(uuid)', 'EXECUTE'),
                      'CAT-12', 'staff names for own studio only');
+
+  -- CAT-13: a membership's billing and class limit are fixed once someone has it; the price is not.
+  INSERT INTO memberships (studio_id, profile_id, membership_type_id, status, current_period_start, current_period_end)
+  SELECT pg_temp.id('studio_a'), pg_temp.id('student_a1'), id, 'active', NOW(), NOW() + interval '30 days'
+    FROM membership_types WHERE studio_id = pg_temp.id('studio_a');
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  BEGIN
+    UPDATE membership_types SET classes_per_cycle = 4 WHERE studio_id = pg_temp.id('studio_a');
+    ok := false;
+  EXCEPTION WHEN check_violation THEN ok := true;
+  END;
+  UPDATE membership_types SET price_cents = 17000 WHERE studio_id = pg_temp.id('studio_a');
+  GET DIAGNOSTICS n = ROW_COUNT;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(ok AND n = 1, 'CAT-13', 'membership terms locked once joined, price still editable');
+
+  -- CAT-14: a pack bought before the owner changed it keeps the terms sold at checkout.
+  DELETE FROM stripe_events WHERE id = 'evt_cat14';
+  UPDATE class_pack_types SET class_count = 10, validity_days = 365 WHERE id = 'aaaaaaaa-4000-0000-0000-000000000001';
+  PERFORM fulfill_stripe_checkout('evt_cat14', 'checkout.session.completed', jsonb_build_object(
+    'id', 'cs_cat14', 'payment_intent', 'pi_cat14', 'amount_total', 12000, 'currency', 'usd',
+    'metadata', jsonb_build_object('type', 'class_pack', 'class_pack_type_id', 'aaaaaaaa-4000-0000-0000-000000000001',
+      'studio_id', pg_temp.id('studio_a'), 'profile_id', pg_temp.id('student_a2'),
+      'class_count', '5', 'validity_days', '30')));
+  SELECT count(*) INTO n FROM class_packs
+   WHERE stripe_payment_intent_id = 'pi_cat14' AND classes_total = 5 AND classes_remaining = 5
+     AND expires_at BETWEEN NOW() + interval '29 days' AND NOW() + interval '31 days';
+  PERFORM pg_temp.ok(n = 1, 'CAT-14', 'pack fulfilled with the terms sold at checkout');
 END $$;

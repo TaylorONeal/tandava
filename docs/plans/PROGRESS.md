@@ -138,5 +138,6 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - Found: after onboarding nothing could change. /manage/offerings and /manage/schedule showed sample data, and offerings, class_pack_types, membership_types and schedule_rules had read policies only.
 - 00042: owner/admin INSERT and UPDATE policies (no DELETE, "Off" keeps history), value checks, studio_id fixed, rules must use their own studio's class, location and staff, class length/capacity/off reach scheduled classes (capacity also reaches booked classes, never below bookings), `get_studio_staff_names` for the teacher picker. Tests CAT-01..12 (fail without the migration).
 - Live pages: "Classes and pricing" (classes, packs, memberships) and "Weekly schedule". Prices apply at the next checkout (checkout reads the rows). Booked classes keep their time and teacher when a rule changes.
-- Prod after merge: Taylor runs `scripts/db/prod/apply-00042.sql`.
+- Codex P1s fixed: checkout refuses packs and memberships turned off; packs and memberships are fulfilled with the terms shown at checkout (metadata), and a membership's billing and class limit lock once someone has joined (CAT-13, CAT-14). Turning a class off unschedules it; classes people already booked still run and stay bookable.
+- Prod after merge: Taylor runs `scripts/db/prod/apply-00042.sql`, then redeploy stripe-checkout.
 

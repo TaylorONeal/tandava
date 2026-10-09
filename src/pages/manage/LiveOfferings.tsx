@@ -221,7 +221,7 @@ export default function LiveOfferings() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>Turn it off to stop new bookings or purchases. History is kept.</DialogDescription>
+            <DialogDescription>Nothing is deleted. Turn it off to stop selling or scheduling it.</DialogDescription>
           </DialogHeader>
 
           {editing?.kind === "offering" && (
@@ -246,7 +246,7 @@ export default function LiveOfferings() {
                 <Switch id="offering-active" checked={editing.form.isActive} onCheckedChange={(v) => setForm("isActive", v)} />
               </div>
               {editing.id && !editing.form.isActive && (
-                <p className="text-xs text-muted-foreground">Turning a class off cancels its future classes that nobody has booked.</p>
+                <p className="text-xs text-muted-foreground">Off takes it off the schedule: future classes nobody booked are cancelled. Classes people already booked still run.</p>
               )}
             </div>
           )}
@@ -274,7 +274,7 @@ export default function LiveOfferings() {
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Price" id="f-price"><Input id="f-price" inputMode="decimal" value={editing.form.price} onChange={(e) => setForm("price", e.target.value)} /></Field>
                 <Field label="Bills">
-                  <Select value={editing.form.cycle} onValueChange={(v) => setForm("cycle", v as BillingCycle)}>
+                  <Select value={editing.form.cycle} disabled={Boolean(editing.id)} onValueChange={(v) => setForm("cycle", v as BillingCycle)}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {BILLING_CYCLES.map((c) => <SelectItem key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</SelectItem>)}
@@ -283,14 +283,14 @@ export default function LiveOfferings() {
                 </Field>
               </div>
               <Field label="Classes per cycle" id="f-classes-per-cycle" hint="Blank for unlimited.">
-                <Input id="f-classes-per-cycle" inputMode="numeric" value={editing.form.classesPerCycle} onChange={(e) => setForm("classesPerCycle", e.target.value)} />
+                <Input id="f-classes-per-cycle" disabled={Boolean(editing.id)} inputMode="numeric" value={editing.form.classesPerCycle} onChange={(e) => setForm("classesPerCycle", e.target.value)} />
               </Field>
               <div className="flex items-center justify-between">
                 <Label htmlFor="membership-active">On sale</Label>
                 <Switch id="membership-active" checked={editing.form.isActive} onCheckedChange={(v) => setForm("isActive", v)} />
               </div>
               {editing.id && (
-                <p className="text-xs text-muted-foreground">Current members keep their price. The new price is for new sign-ups.</p>
+                <p className="text-xs text-muted-foreground">Current members keep their price. The new price is for new sign-ups. To change billing or the class limit, add a new membership and turn this one off.</p>
               )}
             </div>
           )}

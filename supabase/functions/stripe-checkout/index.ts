@@ -273,10 +273,12 @@ serve(async (req) => {
 
       const { data: mt } = await db
         .from("membership_types")
-        .select("name, price_cents, billing_cycle, trial_days, studio_id")
+        .select("name, price_cents, billing_cycle, trial_days, studio_id, is_active")
         .eq("id", membershipTypeId)
         .single();
       if (!mt) return json({ error: "Membership plan not found" }, 404);
+      // Owners turn plans off in Classes and pricing; a stale page must not sell one.
+      if (mt.is_active === false) return json({ error: "This membership is no longer on sale" }, 409);
 
       const { currency, connected } = await connectFor(mt.studio_id as string);
       const recurring = recurringFor(mt.billing_cycle as string);
@@ -304,6 +306,7 @@ serve(async (req) => {
           metadata: {
             type: "membership",
             membership_type_id: membershipTypeId,
+            billing_cycle: mt.billing_cycle as string,
             profile_id: profileId,
             studio_id: mt.studio_id as string,
             ...(await attributionFor(mt.studio_id as string)),
@@ -318,6 +321,7 @@ serve(async (req) => {
         metadata: {
           type: "membership",
           membership_type_id: membershipTypeId,
+          billing_cycle: mt.billing_cycle as string,
           profile_id: profileId,
           studio_id: mt.studio_id as string,
           ...(await attributionFor(mt.studio_id as string)),
@@ -335,10 +339,11 @@ serve(async (req) => {
 
       const { data: pt } = await db
         .from("class_pack_types")
-        .select("name, price_cents, class_count, studio_id")
+        .select("name, price_cents, class_count, validity_days, studio_id, is_active")
         .eq("id", classPackTypeId)
         .single();
       if (!pt) return json({ error: "Class pack not found" }, 404);
+      if (pt.is_active === false) return json({ error: "This class pack is no longer on sale" }, 409);
 
       const { currency, connected } = await connectFor(pt.studio_id as string);
       const amount = pt.price_cents as number;
@@ -363,6 +368,9 @@ serve(async (req) => {
         metadata: {
           type: "class_pack",
           class_pack_type_id: classPackTypeId,
+          // Terms shown at checkout; fulfillment uses these, not the row as edited later (00042).
+          class_count: String(pt.class_count),
+          validity_days: String(pt.validity_days ?? 90),
           profile_id: profileId,
           studio_id: pt.studio_id as string,
           ...(await attributionFor(pt.studio_id as string)),

@@ -1,5 +1,6 @@
 -- Apply 00042 (owner edits classes, prices and schedule, LP-5) to tandava-prod. Needs 00036..00041.
 -- Paste all of it into https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new and Run.
+-- Then redeploy stripe-checkout (it sends the terms this SQL reads).
 BEGIN;
 -- 00042: owners and admins edit classes, prices and the weekly schedule (LP-5).
 --
@@ -20,6 +21,8 @@ BEGIN;
 --      (never below the number booked).
 --   6. get_studio_staff_names: the schedule editor's teacher picker. Staff
 --      cannot read each other's profiles through RLS.
+--   7. Purchases keep the terms shown at checkout, and a membership's billing
+--      cycle and class limit are fixed once someone has joined.
 --
 -- Prices are read at checkout (stripe-checkout builds price_data from these
 -- rows), so a price edit applies to the next purchase with no Stripe change.
@@ -172,4 +175,188 @@ AS $$
 $$;
 REVOKE ALL ON FUNCTION get_studio_staff_names(UUID) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION get_studio_staff_names(UUID) TO authenticated;
+
+-- 7. Purchases keep the terms they were sold with ---------------------------------
+-- An owner can now edit a pack's size or validity while a customer is in
+-- Checkout. stripe-checkout puts the terms it showed into the session metadata
+-- (class_count, validity_days, billing_cycle) and fulfillment uses them. Older
+-- sessions without them fall back to the current row. Otherwise unchanged from
+-- 00031.
+CREATE OR REPLACE FUNCTION fulfill_stripe_checkout(
+  p_event_id   TEXT,
+  p_event_type TEXT,
+  p_session    JSONB
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_meta        JSONB := COALESCE(p_session -> 'metadata', '{}'::jsonb);
+  v_kind        TEXT  := v_meta ->> 'type';
+  v_studio_id   UUID  := NULLIF(v_meta ->> 'studio_id', '')::uuid;
+  v_profile_id  UUID  := NULLIF(v_meta ->> 'profile_id', '')::uuid;
+  v_amount      INTEGER := COALESCE((p_session ->> 'amount_total')::int, 0);
+  v_currency    TEXT  := UPPER(COALESCE(NULLIF(p_session ->> 'currency', ''), 'USD'));
+  v_pi          TEXT  := NULLIF(p_session ->> 'payment_intent', '');
+  v_session_id  TEXT  := NULLIF(p_session ->> 'id', '');
+  v_fee         INTEGER := NULLIF(v_meta ->> 'platform_fee_cents', '')::int;
+  v_inserted    INTEGER;
+  v_txn_id      UUID;
+  v_note        TEXT;
+  v_occ         class_occurrences%ROWTYPE;
+  v_taken       INTEGER;
+  v_mt          membership_types%ROWTYPE;
+  v_period_end  TIMESTAMPTZ;
+  v_mem_id      UUID;
+  v_pt          class_pack_types%ROWTYPE;
+  v_pack_id     UUID;
+  v_balance     INTEGER;
+  v_tier        UUID;
+BEGIN
+  INSERT INTO stripe_events (id, type) VALUES (p_event_id, p_event_type) ON CONFLICT (id) DO NOTHING;
+  GET DIAGNOSTICS v_inserted = ROW_COUNT;
+  IF v_inserted = 0 THEN
+    RETURN jsonb_build_object('status', 'duplicate');
+  END IF;
+
+  -- The same payment can arrive under a different event id (for example
+  -- checkout.session.completed and checkout.session.async_payment_succeeded).
+  IF EXISTS (SELECT 1 FROM transactions
+             WHERE (v_pi IS NOT NULL AND stripe_payment_intent_id = v_pi)
+                OR (v_session_id IS NOT NULL AND stripe_checkout_session_id = v_session_id)) THEN
+    UPDATE stripe_events SET processed_at = NOW(), note = 'payment already fulfilled by another event' WHERE id = p_event_id;
+    RETURN jsonb_build_object('status', 'duplicate', 'reason', 'payment already fulfilled');
+  END IF;
+
+  IF v_kind IS NULL THEN
+    UPDATE stripe_events SET processed_at = NOW(), note = 'no metadata.type; ignored' WHERE id = p_event_id;
+    RETURN jsonb_build_object('status', 'ignored');
+  END IF;
+  IF v_studio_id IS NULL OR v_profile_id IS NULL THEN
+    RAISE EXCEPTION 'checkout session % is missing studio_id/profile_id metadata', v_session_id;
+  END IF;
+
+  IF v_kind = 'drop_in' THEN
+    SELECT * INTO v_occ FROM class_occurrences
+      WHERE id = NULLIF(v_meta ->> 'occurrence_id', '')::uuid FOR UPDATE;
+    IF NOT FOUND OR v_occ.studio_id <> v_studio_id THEN
+      RAISE EXCEPTION 'drop-in class % not found for studio %', v_meta ->> 'occurrence_id', v_studio_id;
+    END IF;
+
+    INSERT INTO transactions (studio_id, profile_id, type, status, amount_cents, currency,
+                              platform_fee_cents, stripe_payment_intent_id, stripe_checkout_session_id)
+    VALUES (v_studio_id, v_profile_id, 'drop_in', 'completed', v_amount, v_currency,
+            v_fee, v_pi, v_session_id)
+    RETURNING id INTO v_txn_id;
+
+    SELECT count(*) INTO v_taken FROM bookings
+      WHERE class_occurrence_id = v_occ.id AND status IN ('confirmed', 'checked_in');
+
+    IF EXISTS (SELECT 1 FROM bookings WHERE class_occurrence_id = v_occ.id AND profile_id = v_profile_id
+               AND status NOT IN ('cancelled', 'late_cancel')) THEN
+      v_note := 'already booked: duplicate payment, refund needed';
+    ELSIF v_occ.is_cancelled THEN
+      v_note := 'class cancelled: refund needed';
+    ELSIF v_taken >= v_occ.capacity THEN
+      v_note := 'class full: refund needed';
+    ELSE
+      INSERT INTO bookings (studio_id, class_occurrence_id, profile_id, status, transaction_id)
+      VALUES (v_studio_id, v_occ.id, v_profile_id, 'confirmed', v_txn_id);
+    END IF;
+
+  ELSIF v_kind = 'membership' THEN
+    SELECT * INTO v_mt FROM membership_types WHERE id = NULLIF(v_meta ->> 'membership_type_id', '')::uuid;
+    IF NOT FOUND OR v_mt.studio_id <> v_studio_id THEN
+      RAISE EXCEPTION 'membership type % not found for studio %', v_meta ->> 'membership_type_id', v_studio_id;
+    END IF;
+    -- The cycle sold at checkout (metadata, 00042), else the plan's current one.
+    v_period_end := CASE COALESCE(NULLIF(v_meta ->> 'billing_cycle', ''), v_mt.billing_cycle::text)
+      WHEN 'weekly'    THEN NOW() + INTERVAL '7 days'
+      WHEN 'quarterly' THEN NOW() + INTERVAL '3 months'
+      WHEN 'annual'    THEN NOW() + INTERVAL '1 year'
+      ELSE NOW() + INTERVAL '1 month' END;
+
+    INSERT INTO memberships (studio_id, profile_id, membership_type_id, status,
+                             current_period_start, current_period_end, stripe_subscription_id)
+    VALUES (v_studio_id, v_profile_id, v_mt.id, 'active', NOW(), v_period_end, NULLIF(p_session ->> 'subscription', ''))
+    RETURNING id INTO v_mem_id;
+
+    INSERT INTO transactions (studio_id, profile_id, type, status, amount_cents, currency,
+                              platform_fee_cents, stripe_payment_intent_id, stripe_checkout_session_id, membership_id)
+    VALUES (v_studio_id, v_profile_id, 'membership_purchase', 'completed',
+            COALESCE(NULLIF(v_amount, 0), v_mt.price_cents, 0), v_currency, v_fee, v_pi, v_session_id, v_mem_id);
+
+  ELSIF v_kind = 'class_pack' THEN
+    SELECT * INTO v_pt FROM class_pack_types WHERE id = NULLIF(v_meta ->> 'class_pack_type_id', '')::uuid;
+    IF NOT FOUND OR v_pt.studio_id <> v_studio_id THEN
+      RAISE EXCEPTION 'class pack type % not found for studio %', v_meta ->> 'class_pack_type_id', v_studio_id;
+    END IF;
+
+    INSERT INTO class_packs (studio_id, profile_id, class_pack_type_id, status, classes_remaining,
+                             classes_total, expires_at, stripe_payment_intent_id)
+    -- The terms sold at checkout (metadata, 00042), else the pack's current ones.
+    VALUES (v_studio_id, v_profile_id, v_pt.id, 'active',
+            COALESCE(NULLIF(v_meta ->> 'class_count', '')::int, v_pt.class_count),
+            COALESCE(NULLIF(v_meta ->> 'class_count', '')::int, v_pt.class_count),
+            NOW() + make_interval(days => COALESCE(NULLIF(v_meta ->> 'validity_days', '')::int, v_pt.validity_days, 90)), v_pi)
+    RETURNING id INTO v_pack_id;
+
+    INSERT INTO transactions (studio_id, profile_id, type, status, amount_cents, currency,
+                              platform_fee_cents, stripe_payment_intent_id, stripe_checkout_session_id, class_pack_id)
+    VALUES (v_studio_id, v_profile_id, 'class_pack_purchase', 'completed',
+            COALESCE(NULLIF(v_amount, 0), v_pt.price_cents, 0), v_currency, v_fee, v_pi, v_session_id, v_pack_id);
+
+  ELSIF v_kind = 'workshop' THEN
+    v_balance := COALESCE(NULLIF(v_meta ->> 'balance_due_cents', '')::int, 0);
+    v_tier    := NULLIF(v_meta ->> 'tier_id', '')::uuid;
+
+    INSERT INTO transactions (studio_id, profile_id, type, status, amount_cents, currency,
+                              platform_fee_cents, stripe_payment_intent_id, stripe_checkout_session_id)
+    VALUES (v_studio_id, v_profile_id, 'workshop', 'completed', v_amount, v_currency, v_fee, v_pi, v_session_id)
+    RETURNING id INTO v_txn_id;
+
+    INSERT INTO event_registrations (event_id, studio_id, profile_id, pricing_tier_id, status,
+                                     amount_paid_cents, deposit_paid_cents, balance_due_cents, transaction_id)
+    VALUES (NULLIF(v_meta ->> 'event_id', '')::uuid, v_studio_id, v_profile_id, v_tier, 'registered',
+            v_amount, CASE WHEN v_balance > 0 THEN v_amount ELSE 0 END, v_balance, v_txn_id);
+
+    PERFORM increment_event_registered(NULLIF(v_meta ->> 'event_id', '')::uuid);
+    IF v_tier IS NOT NULL THEN PERFORM increment_tier_registered(v_tier); END IF;
+
+  ELSE
+    UPDATE stripe_events SET processed_at = NOW(), note = 'unknown type ' || v_kind WHERE id = p_event_id;
+    RETURN jsonb_build_object('status', 'ignored', 'reason', 'unknown type');
+  END IF;
+
+  UPDATE stripe_events SET processed_at = NOW(), note = v_note WHERE id = p_event_id;
+  RETURN jsonb_build_object('status', 'processed', 'kind', v_kind, 'note', v_note);
+END;
+$$;
+
+-- A membership's billing cycle and class limit apply to everyone already on it
+-- (usage is checked against the plan), so they are fixed once anyone has
+-- joined. Price and name can change: existing subscriptions keep their price.
+CREATE OR REPLACE FUNCTION membership_type_lock_terms()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  IF (NEW.billing_cycle IS DISTINCT FROM OLD.billing_cycle
+      OR NEW.classes_per_cycle IS DISTINCT FROM OLD.classes_per_cycle)
+     AND EXISTS (SELECT 1 FROM memberships WHERE membership_type_id = OLD.id) THEN
+    RAISE EXCEPTION 'People already have this membership. Add a new one with the new billing or class limit, and turn this one off.'
+      USING ERRCODE = '23514';
+  END IF;
+  RETURN NEW;
+END $$;
+REVOKE ALL ON FUNCTION membership_type_lock_terms() FROM PUBLIC, anon, authenticated;
+
+DROP TRIGGER IF EXISTS membership_types_lock_terms ON membership_types;
+CREATE TRIGGER membership_types_lock_terms
+  BEFORE UPDATE OF billing_cycle, classes_per_cycle ON membership_types
+  FOR EACH ROW EXECUTE FUNCTION membership_type_lock_terms();
 COMMIT;
