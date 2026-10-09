@@ -9,7 +9,7 @@
  * See docs/developer/backend-flexibility.md for architecture details.
  */
 
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyBookingRow, MyEntitlementRow, MyProfilePatch, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { StudioSettingsPatch, StudioSettingsRow } from "@/lib/hosted/studioSettings";
 import type { FeedbackType } from "@/types/database";
 import type { AttributionModel, AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
@@ -193,6 +193,12 @@ export interface DataProvider {
 
   /** Cancel a booking via the cancel_booking() RPC (late-cancel detection + refund/fee). */
   cancelBooking(bookingId: string): Promise<DataResult<Booking>>;
+  /** The signed-in user's own bookings, newest class first (get_my_bookings, 00039). */
+  getMyBookings(): Promise<DataResult<MyBookingRow[]>>;
+  /** The signed-in user's memberships and class packs across studios (get_my_entitlements, 00040). */
+  getMyEntitlements(): Promise<DataResult<MyEntitlementRow[]>>;
+  /** Update the signed-in user's own profile (RLS: own row only). */
+  updateMyProfile(userId: string, patch: MyProfilePatch): Promise<DataResult<Profile>>;
 
   /** Public upcoming schedule for a discoverable studio (by slug) — used by the embed widget. */
   getPublicSchedule(slug: string, limit?: number): Promise<DataResult<PublicScheduleRow[]>>;
@@ -223,7 +229,7 @@ export interface DataProvider {
   /** Update studio columns. Returns the saved row so the form shows what the database holds. */
   updateStudioSettings(
     studioId: string,
-    patch: StudioSettingsPatch | { discoverable?: boolean; express_booking_enabled?: boolean },
+    patch: StudioSettingsPatch | { discoverable?: boolean; express_booking_enabled?: boolean; page_live?: boolean },
   ): Promise<DataResult<StudioSettingsRow>>;
 
   /** Upcoming (non-cancelled, future) class occurrences for a studio, with offering + location joined. */
