@@ -123,6 +123,10 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - Found: /account showed a made-up profile ("Sarah Chen"), membership and pack to real users, and its Save buttons only toasted. LP-4b in the same PR: live /account shows the person's real profile (saves to `profiles`, own row only, PROF-01) and their memberships and class packs across studios from 00040 `get_my_entitlements()` (ENT-01..03), with "Manage billing" (Stripe portal) on Stripe-billed memberships. Preferences and saved cards have no backing store, so the live page does not show them. Demo keeps the sample account.
 - Prod after merge: Taylor runs `scripts/db/prod/apply-00039-00040.sql` (independent of 00038).
 
+## 2026-10-09 (later): LP-14 funnel sink
+- `setFunnelSink` wired in main.tsx: student funnel events (discover_viewed, class_opened, checkout_started, booking_completed...) go to PostHog's capture endpoint over plain fetch (no SDK) when `VITE_POSTHOG_KEY` is set, with the anonymous attribution visitor id. Without a key they are dropped. `.env.example` documents it.
+- Open: Taylor creates a PostHog project (https://us.posthog.com/signup, purafieldstudio@gmail.com), then the project API key is set as `VITE_POSTHOG_KEY` in Vercel (Production and Preview).
+
 ## 2026-10-09 (later): LP-8 advisor warnings
 - Security advisor on prod: 21 "Function Search Path Mutable", 13 anon and 28 authenticated "SECURITY DEFINER executable", 1 "Leaked password protection disabled".
 - 00041 pins search_path on the 21 functions, revokes EXECUTE on SECURITY DEFINER trigger functions (Postgres checks it only at CREATE TRIGGER), and makes book_free_class signed-in only. HARD-01..03 fail without it.
