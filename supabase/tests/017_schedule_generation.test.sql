@@ -110,3 +110,19 @@ BEGIN
                      AND NOT has_function_privilege('authenticated', 'generate_rule_occurrences(uuid, integer)', 'EXECUTE'),
                      'GEN-09', 'anon cannot generate; the per-rule helper is internal');
 END $$;
+
+-- GEN-13 (00037): a rule saved without a start date starts on the studio's
+-- local date, not the database's. Picks a timezone whose date differs now.
+DO $$
+DECLARE v_tz text; v_from date;
+BEGIN
+  SELECT tz INTO v_tz FROM unnest(ARRAY['Etc/GMT+12', 'Etc/GMT-14']) tz
+   WHERE (NOW() AT TIME ZONE tz)::date <> CURRENT_DATE LIMIT 1;
+  UPDATE studios SET timezone = v_tz WHERE id = pg_temp.id('studio_c');
+  INSERT INTO schedule_rules (studio_id, offering_id, location_id, recurrence, day_of_week, start_time, end_time)
+  VALUES (pg_temp.id('studio_c'), 'cccccccc-2000-0000-0000-000000000001', 'cccccccc-1000-0000-0000-000000000003',
+          'weekly', 'monday', '18:00', '19:00')
+  RETURNING effective_from INTO v_from;
+  PERFORM pg_temp.ok(v_from = (NOW() AT TIME ZONE v_tz)::date AND v_from <> CURRENT_DATE,
+                     'GEN-13', 'implicit start date is the studio''s local date (' || v_tz || ' ' || v_from || ')');
+END $$;
