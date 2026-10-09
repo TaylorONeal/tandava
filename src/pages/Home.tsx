@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { hasPermission } from "@/types/roles";
 import { resolveStudioSlug } from "@/lib/studio-host";
-import { parseHomeMode, resolveHomeTarget } from "@/lib/homeMode";
+import { parseHomeMode, resolveHomeTarget, workspacePath } from "@/lib/homeMode";
 
 const Demo = lazy(() => import("./Demo"));
 const ForStudios = lazy(() => import("./ForStudios"));
@@ -59,8 +59,7 @@ export default function Home() {
     case "platform":
       return <ForStudios />;
     case "workspace-manage":
-      return <Navigate to="/manage" replace />;
     case "workspace-member":
-      return <Navigate to="/schedule" replace />;
+      return <Navigate to={workspacePath(target)} replace />;
   }
 }

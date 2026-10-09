@@ -44,3 +44,17 @@ export function resolveHomeTarget(i: HomeInputs): HomeTarget {
   if (!i.hasProfile) return i.homeMode === "discover" ? "discover" : "platform";
   return i.canManage ? "workspace-manage" : "workspace-member";
 }
+
+/**
+ * Where a signed-in visitor's workspace starts. Managers go to /manage.
+ * Students go to /discover: /schedule and /my-schedule still show sample
+ * data until they are wired to the live backend (LP-4).
+ */
+export function workspacePath(target: "workspace-manage" | "workspace-member"): string {
+  return target === "workspace-manage" ? "/manage" : "/discover";
+}
+
+/** Studio name in the manage header: the owner's studio when live, the sample studio in the demo. */
+export function manageHeaderName(live: boolean, myStudioName: string | null | undefined, demoName: string): string {
+  return live ? (myStudioName ?? "") : demoName;
+}
