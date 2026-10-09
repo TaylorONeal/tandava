@@ -2,6 +2,30 @@
 
 Rules: one slice per commit (`W4-2a`), a test lands with the code, a DB change is a new migration, nothing starts before its `Needs` are done. Status: DONE, NEXT, LATER. See [PRD](PRD-launch-v1.md).
 
+## Launch path (2026-10-09, supersedes the loose NEXT lines at the bottom)
+
+Launch means: one real pilot studio takes a real booking and a real payment on tandavastudio.com, without being listed in Discover. Discover as a home page (W7-4) comes after 5 studios. Gates run in order; items inside a gate run in parallel. Claude works the code items while Taylor clears his batch.
+
+| Gate | ID | Task | Owner | Needs | Status |
+|---|---|---|---|---|---|
+| 1 Money proof (sandbox) | LP-1 | Smoke test: buy drop-in, pack and membership on the test studio; refund one; resend one delivered event and confirm exactly one transaction. Record in PROGRESS | Claude drives, Taylor types the 4242 test card | Discover on for the test studio (temporary) | NEXT |
+| | LP-1b | W7-1 in full: drive and resend every event stripe-webhook handles (checkout, refund, renewal, `account.updated`, subscription updated and deleted, payment failed); each yields exactly one ledger effect. No Stripe CLI here: trigger from the dashboard and test clocks, resend from the event page | Claude, Taylor for card entry | LP-1 | NEXT |
+| 2 A studio can sell on its own | LP-2 | Public page and guest booking work for a studio that is not in Discover. New owner-controlled "page live" state (`studios` has no active or published field today): storefront RPCs and express-book serve a studio by slug only when its page is live; `discoverable` only adds it to `discover_classes` and requires a live page. Negative DB tests for a studio whose page is off. Migration, edge redeploy | Claude | none | NEXT |
+| | LP-3 | Owner lands on `/manage` for their studio; header shows the studio name; no sample notifications. Students land on their bookings | Claude | none | NEXT |
+| | LP-4 | Real data in MySchedule and Account (W4-5), `noindex` on /my-schedule | Claude | none | NEXT |
+| | LP-5 | Owner can edit classes, prices and schedule after onboarding (W5-1). Check on the test studio first, fix what fails | Claude | LP-1 | NEXT |
+| | LP-6 | Hide Settings tabs that only toast (fake sitemap URL included) instead of building them. Move the Discover and page-live switches from the Branding tab to General | Claude | none | NEXT |
+| | LP-14 | Funnel sink (W6-1) so pilot drop-off is visible from the first studio | Claude | none | NEXT |
+| 3 Trust and abuse | LP-7 | `EXPRESS_IP_SALT` secret; Turnstile hostnames (tandavastudio.com, www) then the secret in Supabase Auth | Taylor | none | NEXT |
+| | LP-8 | Advisor warnings: pin `search_path` on legacy functions (48 warnings). New migration, prod via SQL handoff | Claude, Taylor runs SQL | none | NEXT |
+| | LP-9 | Terms, privacy and studio refund policy pages reachable from checkout and signup | Claude drafts, Taylor approves | none | NEXT |
+| 4 Live money | LP-10 | D1 pricing: flat $99/mo or % fee. Sets the application fee before live | Taylor decides | none | NEXT |
+| | LP-11 | Stripe live: activate the platform account, Connect live settings (Accounts v1 opt-in now, v2 later), two live webhook destinations, live keys and secrets in Supabase | Taylor clicks, Claude fills forms | LP-1b, LP-10 | LATER |
+| | LP-12 | Live smoke: one real small purchase and refund | Taylor | LP-11 | LATER |
+| 5 Pilot | LP-13 | First pilot studio onboarded and timed (target under 30 minutes); support address hello@purafieldstudio.com | Taylor recruits, Claude watches logs | Gates 2 to 4 (LP-14 included) | LATER |
+
+Parked until after LP-1b: #72 attribution (it edits stripe-webhook; do not change the money path mid-test). Stale: #62, #63.
+
 ## W0 Safety net
 
 | ID | Task | Needs | Acceptance | Status |
