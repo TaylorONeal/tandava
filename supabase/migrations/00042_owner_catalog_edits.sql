@@ -376,12 +376,10 @@ $$;
 
 -- A membership's billing cycle and class limit apply to everyone on it (usage
 -- is checked against the plan, not copied to the membership), including a
--- buyer still in Checkout. So owners cannot change them on an existing plan:
--- they add a new plan and turn the old one off. Price and name can change:
--- existing subscriptions keep their price. The onboarding function (service
--- role, no signed-in user) may still re-save its starter plan while the
--- studio's booking page is not live and nobody has joined, i.e. while nobody
--- can be in Checkout for it.
+-- buyer still in Checkout, which nothing can rule out (a stale page can start
+-- one). So they never change on an existing plan, for anyone: a new plan
+-- replaces it (the onboarding function does that itself). Price and name can
+-- change: existing subscriptions keep their price.
 CREATE OR REPLACE FUNCTION membership_type_lock_terms()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -389,11 +387,8 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  IF (NEW.billing_cycle IS DISTINCT FROM OLD.billing_cycle
-      OR NEW.classes_per_cycle IS DISTINCT FROM OLD.classes_per_cycle)
-     AND ((SELECT auth.uid()) IS NOT NULL
-          OR EXISTS (SELECT 1 FROM memberships WHERE membership_type_id = OLD.id)
-          OR EXISTS (SELECT 1 FROM studios WHERE id = OLD.studio_id AND page_live)) THEN
+  IF NEW.billing_cycle IS DISTINCT FROM OLD.billing_cycle
+     OR NEW.classes_per_cycle IS DISTINCT FROM OLD.classes_per_cycle THEN
     RAISE EXCEPTION 'Billing and the class limit cannot change on an existing membership. Add a new one and turn this one off.'
       USING ERRCODE = '23514';
   END IF;

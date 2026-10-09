@@ -181,8 +181,8 @@ BEGIN
   SELECT capacity INTO v_cap FROM class_occurrences WHERE id = pg_temp.id('occ_a_open');
   PERFORM pg_temp.ok(ok AND v_cap = 1, 'CAT-15', 'cut refused during a paid hold, then applied exactly (got ' || v_cap || ')');
 
-  -- CAT-16: an owner cannot change an existing plan's class limit even before anyone joins;
-  -- the onboarding function (no signed-in user) can re-save its starter plan.
+  -- CAT-16: nobody changes an existing plan's class limit, not even the service role
+  -- (a buyer may be in Checkout for it before any membership row exists).
   INSERT INTO membership_types (id, studio_id, name, price_cents, classes_per_cycle)
   VALUES ('aaaaaaaa-6000-0000-0000-0000000000ff', pg_temp.id('studio_a'), 'Eight a month', 9000, 8);
   PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
@@ -193,17 +193,12 @@ BEGIN
   END;
   EXECUTE 'RESET ROLE';
   PERFORM set_config('request.jwt.claim.sub', '', true);  -- service role: no signed-in user
-  UPDATE studios SET page_live = FALSE, discoverable = FALSE WHERE id = pg_temp.id('studio_a');
-  UPDATE membership_types SET classes_per_cycle = 6 WHERE id = 'aaaaaaaa-6000-0000-0000-0000000000ff';
-  UPDATE studios SET page_live = TRUE WHERE id = pg_temp.id('studio_a');
   BEGIN
-    UPDATE membership_types SET classes_per_cycle = 5 WHERE id = 'aaaaaaaa-6000-0000-0000-0000000000ff';
+    UPDATE membership_types SET classes_per_cycle = 6 WHERE id = 'aaaaaaaa-6000-0000-0000-0000000000ff';
     m := 0;
   EXCEPTION WHEN check_violation THEN m := 1;
   END;
-  UPDATE studios SET discoverable = TRUE WHERE id = pg_temp.id('studio_a');
-  PERFORM pg_temp.ok(ok AND m = 1 AND (SELECT classes_per_cycle FROM membership_types WHERE id = 'aaaaaaaa-6000-0000-0000-0000000000ff') = 6,
-                     'CAT-16', 'owner blocked; onboarding re-save allowed only before launch and before anyone joins');
+  PERFORM pg_temp.ok(ok AND m = 1, 'CAT-16', 'class limit fixed for owners and the service role');
 
   -- CAT-17: a class that runs past midnight keeps its full length.
   PERFORM pg_temp.as_user(pg_temp.id('staff_a'));

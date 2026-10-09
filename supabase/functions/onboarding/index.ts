@@ -465,19 +465,23 @@ serve(async (req) => {
             classes_per_cycle: unlimited ? null : packClasses,
             price_cents: f.memberPrice ? dollarsToCents(f.memberPrice) : (unlimited ? dropIn * 12 : dropIn * packClasses),
           };
+          // A plan's billing and class limit never change once it exists
+          // (00042: someone may be buying it). New terms mean a new starter
+          // plan; the old one is turned off. Name and price update in place.
           const { data: existingMembership } = await db
-            .from("membership_types").select("id").eq("studio_id", studioId)
+            .from("membership_types").select("id, billing_cycle, classes_per_cycle")
+            .eq("studio_id", studioId).neq("is_active", false)
             .order("created_at").limit(1).maybeSingle();
-          if (existingMembership) {
-            // Once the page is live someone may be buying this plan, so its
-            // billing and class limit are fixed (00042): re-saving after launch
-            // updates only the name and price.
-            const { data: live } = await db.from("studios").select("page_live").eq("id", studioId).maybeSingle();
-            const patch = live?.page_live
-              ? { name: membership.name, price_cents: membership.price_cents }
-              : membership;
-            await db.from("membership_types").update(patch).eq("id", existingMembership.id);
+          if (existingMembership
+              && existingMembership.billing_cycle === membership.billing_cycle
+              && (existingMembership.classes_per_cycle ?? null) === membership.classes_per_cycle) {
+            await db.from("membership_types")
+              .update({ name: membership.name, price_cents: membership.price_cents })
+              .eq("id", existingMembership.id);
           } else {
+            if (existingMembership) {
+              await db.from("membership_types").update({ is_active: false }).eq("id", existingMembership.id);
+            }
             await db.from("membership_types").insert(membership);
           }
         }
