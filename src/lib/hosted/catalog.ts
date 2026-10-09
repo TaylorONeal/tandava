@@ -285,7 +285,11 @@ export function formatTime(t: string): string {
 
 export const dayLabel = (d: Weekday): string => d.charAt(0).toUpperCase() + d.slice(1);
 
-export interface RuleForm { offeringId: string; day: Weekday; start: string; teacherId: string; locationId: string; isActive: boolean }
+/** Shown next to a rule that is not plain weekly. */
+export const recurrenceNote = (r: string): string | null =>
+  r === "daily" ? "Every day" : r === "biweekly" ? "Every other week" : r === "weekly" ? null : r;
+
+export interface RuleForm { offeringId: string; day: Weekday; start: string; teacherId: string; locationId: string; isActive: boolean; recurrence?: string }
 
 export const ruleToForm = (r: CatalogRule): RuleForm => ({
   offeringId: r.offering_id,
@@ -294,9 +298,12 @@ export const ruleToForm = (r: CatalogRule): RuleForm => ({
   teacherId: r.teacher_id ?? "",
   locationId: r.location_id,
   isActive: r.is_active !== false,
+  // Kept as is: the form edits weekly rules, and must not turn a daily or
+  // every-other-week rule into a weekly one.
+  recurrence: r.recurrence,
 });
 
-export type RulePatch = Pick<CatalogRule, "offering_id" | "location_id" | "teacher_id" | "day_of_week" | "start_time" | "end_time" | "is_active"> & { recurrence: "weekly" };
+export type RulePatch = Pick<CatalogRule, "offering_id" | "location_id" | "teacher_id" | "day_of_week" | "start_time" | "end_time" | "is_active" | "recurrence">;
 
 export function ruleFromForm(
   f: RuleForm,
@@ -318,7 +325,7 @@ export function ruleFromForm(
       start_time: f.start,
       end_time: ruleEndTime(f.start, offering.duration_minutes),
       is_active: f.isActive,
-      recurrence: "weekly",
+      recurrence: f.recurrence || "weekly",
     },
   };
 }

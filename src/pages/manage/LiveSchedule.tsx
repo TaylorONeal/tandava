@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { useStudioCatalog } from "@/hooks/useStudioCatalog";
 import {
-  WEEKDAYS, dayLabel, formatTime, ruleEndTime, ruleFromForm, ruleToForm, rulesByDay,
+  WEEKDAYS, dayLabel, formatTime, recurrenceNote, ruleEndTime, ruleFromForm, ruleToForm, rulesByDay,
   type CatalogRule, type RuleForm, type Weekday,
 } from "@/lib/hosted/catalog";
 import { Link } from "react-router-dom";
@@ -105,7 +105,7 @@ export default function LiveSchedule() {
                       {formatTime(r.start_time)} to {formatTime(r.end_time)} · {offeringName(r.offering_id)}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {[teacherName(r.teacher_id), locations.length > 1 ? locations.find((l) => l.id === r.location_id)?.name : null]
+                      {[recurrenceNote(r.recurrence), teacherName(r.teacher_id), locations.length > 1 ? locations.find((l) => l.id === r.location_id)?.name : null]
                         .filter(Boolean).join(" · ") || "No teacher set"}
                     </p>
                   </div>

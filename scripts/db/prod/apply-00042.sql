@@ -131,8 +131,9 @@ BEGIN
    WHERE sr.offering_id = NEW.id;
 
   -- Classes with bookings or holds are left alone by the reconcile, so the
-  -- new capacity is set on them here, exactly as asked (unless the rule or
-  -- the class has its own capacity). Below the number booked, everyone stays
+  -- new capacity is set on them here, exactly as asked (unless the rule has
+  -- its own capacity; schedule_overrides has no capacity type, so a sub or a
+  -- moved time does not keep the old capacity). Below the number booked, everyone stays
   -- booked and the class shows full until it drops under the new capacity;
   -- waitlist promotion only fills seats below capacity. A cut that would
   -- strand a customer paying in Checkout (an active seat hold) is refused, so
@@ -148,7 +149,6 @@ BEGIN
          AND co.capacity IS DISTINCT FROM NEW.capacity
          AND NOT EXISTS (SELECT 1 FROM schedule_rules sr
                           WHERE sr.id = co.schedule_rule_id AND sr.capacity_override IS NOT NULL)
-         AND NOT EXISTS (SELECT 1 FROM schedule_overrides so WHERE so.class_occurrence_id = co.id)
        ORDER BY co.id
          FOR UPDATE OF co
     LOOP

@@ -62,6 +62,13 @@ describe("schedule", () => {
     );
     expect(r.patch).toMatchObject({ end_time: "09:00", teacher_id: null, recurrence: "weekly" });
   });
+  it("keeps a non-weekly rule's recurrence when edited", () => {
+    const r = ruleFromForm(
+      { offeringId: "o1", day: "tuesday", start: "07:30", teacherId: "", locationId: "l1", isActive: true, recurrence: "biweekly" },
+      [{ id: "o1", duration_minutes: 60 }],
+    );
+    expect(r.patch?.recurrence).toBe("biweekly");
+  });
   it("needs a class, a time and a location", () => {
     const r = ruleFromForm({ offeringId: "x", day: "tuesday", start: "7", teacherId: "", locationId: "", isActive: true }, []);
     expect(r.errors).toHaveLength(3);
