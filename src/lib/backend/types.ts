@@ -229,7 +229,7 @@ export interface DataProvider {
   /** Update studio columns. Returns the saved row so the form shows what the database holds. */
   updateStudioSettings(
     studioId: string,
-    patch: StudioSettingsPatch | { discoverable?: boolean; express_booking_enabled?: boolean },
+    patch: StudioSettingsPatch | { discoverable?: boolean; express_booking_enabled?: boolean; page_live?: boolean },
   ): Promise<DataResult<StudioSettingsRow>>;
 
   /** Upcoming (non-cancelled, future) class occurrences for a studio, with offering + location joined. */

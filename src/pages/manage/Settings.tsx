@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMyStudio } from "@/hooks/useBooking";
 import { data as backendData, isBackendConfigured } from "@/lib/backend";
-import { toForm, toPatch, type StudioSettingsRow } from "@/lib/hosted/studioSettings";
+import { toForm, toPatch, type StudioSettingsRow, showSettingsTab } from "@/lib/hosted/studioSettings";
 import { ManageLayout } from "@/components/manage/ManageLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,6 +38,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
+import { PayoutsCard } from "@/components/manage/PayoutsCard";
 import { useToast } from "@/hooks/use-toast";
 import { OXATL_STUDIO } from "@/data/demo/oxatl-yoga";
 
@@ -61,6 +62,7 @@ export default function SettingsManage() {
   const [primaryColor, setPrimaryColor] = useState("#4fd1c5");
   const [secondaryColor, setSecondaryColor] = useState("#f687b3");
   const [discoverable, setDiscoverable] = useState(false);
+  const [pageLive, setPageLive] = useState(false);
 
   // SEO Settings
   const [metaDescription, setMetaDescription] = useState("Hot yoga, vinyasa, and meditation classes in San Francisco's SOMA neighborhood. New students get their first week free.");
@@ -107,6 +109,7 @@ export default function SettingsManage() {
     setWaitlistEnabled(f.waitlistEnabled);
     setMaxWaitlist(f.maxWaitlist);
     setDiscoverable(Boolean(row.discoverable));
+    setPageLive(Boolean(row.page_live));
     setExpressEnabled(Boolean(row.express_booking_enabled));
   };
 
@@ -174,9 +177,17 @@ export default function SettingsManage() {
   };
 
   /** Listing switches save immediately: an owner who unlists expects it to take effect now. */
-  const saveSwitch = async (patch: { discoverable?: boolean; express_booking_enabled?: boolean }) => {
+  const saveSwitch = async (patch: { discoverable?: boolean; express_booking_enabled?: boolean; page_live?: boolean }) => {
     if (!live) {
-      if (patch.discoverable !== undefined) setDiscoverable(patch.discoverable);
+      // Mirror the database rule: listing publishes the page, unpublishing unlists.
+      if (patch.page_live !== undefined) {
+        setPageLive(patch.page_live);
+        if (!patch.page_live) setDiscoverable(false);
+      }
+      if (patch.discoverable !== undefined) {
+        setDiscoverable(patch.discoverable);
+        if (patch.discoverable) setPageLive(true);
+      }
       if (patch.express_booking_enabled !== undefined) setExpressEnabled(patch.express_booking_enabled);
       return;
     }
@@ -191,6 +202,7 @@ export default function SettingsManage() {
     }
     // Only the switches: unsaved edits elsewhere in the form stay as typed.
     setDiscoverable(Boolean(data.discoverable));
+    setPageLive(Boolean(data.page_live));
     setExpressEnabled(Boolean(data.express_booking_enabled));
     toast({ title: "Saved" });
   };
@@ -204,8 +216,7 @@ export default function SettingsManage() {
           <p className="text-sm text-muted-foreground mt-1">Configure your studio preferences and policies</p>
           {live && (
             <p className="text-xs text-muted-foreground mt-2">
-              General, Policies, Branding and the Discover switches save to your studio. Locations, Notifications and SEO
-              settings are not saved yet.
+              Every setting on this page saves to your studio. Locations, notifications and SEO settings are coming later.
             </p>
           )}
         </div>
@@ -216,10 +227,12 @@ export default function SettingsManage() {
               <Building2 className="h-3.5 w-3.5 me-1.5" />
               General
             </TabsTrigger>
+            {showSettingsTab("locations", live) && (
             <TabsTrigger value="locations" className="text-xs">
               <MapPin className="h-3.5 w-3.5 me-1.5" />
               Locations
             </TabsTrigger>
+            )}
             <TabsTrigger value="policies" className="text-xs">
               <Shield className="h-3.5 w-3.5 me-1.5" />
               Policies
@@ -232,18 +245,63 @@ export default function SettingsManage() {
               <CreditCard className="h-3.5 w-3.5 me-1.5" />
               Billing
             </TabsTrigger>
+            {showSettingsTab("notifications", live) && (
             <TabsTrigger value="notifications" className="text-xs">
               <Bell className="h-3.5 w-3.5 me-1.5" />
               Notifications
             </TabsTrigger>
+            )}
+            {showSettingsTab("seo", live) && (
             <TabsTrigger value="seo" className="text-xs">
               <Search className="h-3.5 w-3.5 me-1.5" />
               SEO
             </TabsTrigger>
+            )}
           </TabsList>
 
           {/* General Settings */}
           <TabsContent value="general" className="space-y-6">
+            {/* Booking page and Discover */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="h-5 w-5" />
+                  Booking page and Discover
+                </CardTitle>
+                <CardDescription>
+                  Your own booking page works on its own. Listing on Tandava Discover is optional.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-medium">Booking page live</p>
+                    <p className="text-xs text-muted-foreground">
+                      Students can see your classes and book or buy at{" "}
+                      <span className="font-mono">{(import.meta.env.VITE_APP_URL || "https://tandavastudio.com").replace(/^https?:\/\//, "")}/s/{studioSlug}</span>
+                      . Turn off while you are still setting up.
+                    </p>
+                  </div>
+                  <Switch aria-label="Booking page live" checked={pageLive} onCheckedChange={(v) => saveSwitch({ page_live: v })} disabled={live && (studioLoading || !loaded)} />
+                </div>
+                <Separator className="my-4" />
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-medium">List on Tandava Discover</p>
+                    <p className="text-xs text-muted-foreground">Your public classes also appear where students search for a class. Listing turns your booking page on.</p>
+                  </div>
+                  <Switch aria-label="List on Tandava Discover" checked={discoverable} onCheckedChange={(v) => saveSwitch({ discoverable: v })} disabled={live && (studioLoading || !loaded)} />
+                </div>
+                <Separator className="my-4" />
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-medium">Guest booking (no account needed)</p>
+                    <p className="text-xs text-muted-foreground">New students book a class with name and email in one step. Needs your booking page live.</p>
+                  </div>
+                  <Switch aria-label="Guest booking" checked={expressEnabled} onCheckedChange={(v) => saveSwitch({ express_booking_enabled: v })} disabled={live && (studioLoading || !loaded)} />
+                </div>
+              </CardContent>
+            </Card>
             <Card>
               <CardHeader>
                 <CardTitle>Studio Information</CardTitle>
@@ -316,6 +374,8 @@ export default function SettingsManage() {
           </TabsContent>
 
           {/* Locations */}
+          {/* No backing store yet: shown in the demo only. */}
+          {showSettingsTab("locations", live) && (
           <TabsContent value="locations" className="space-y-6">
             <Card>
               <CardHeader>
@@ -347,6 +407,7 @@ export default function SettingsManage() {
               </CardContent>
             </Card>
           </TabsContent>
+          )}
 
           {/* Policies */}
           <TabsContent value="policies" className="space-y-6">
@@ -453,6 +514,9 @@ export default function SettingsManage() {
                   </div>
                 </div>
 
+                {/* Logo upload needs storage; demo only for now. */}
+                {!live && (
+                  <>
                 <Separator />
 
                 <div className="space-y-2">
@@ -463,6 +527,8 @@ export default function SettingsManage() {
                     <Button variant="outline" size="sm" className="mt-3" onClick={() => toast({ title: "Upload", description: "Logo upload requires Supabase Storage connection." })}>Upload Logo</Button>
                   </div>
                 </div>
+                  </>
+                )}
 
                 <div className="flex justify-end pt-2">
                   <Button onClick={handleSave} disabled={saving || (live && !loaded)}>
@@ -473,39 +539,14 @@ export default function SettingsManage() {
               </CardContent>
             </Card>
 
-            {/* Discovery */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Globe className="h-5 w-5" />
-                  Tandava Discover
-                </CardTitle>
-                <CardDescription>
-                  Let new students find and book your classes
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium">List on Tandava Discover</p>
-                    <p className="text-xs text-muted-foreground">Your public classes appear where students search for a class. Turn off to unlist.</p>
-                  </div>
-                  <Switch checked={discoverable} onCheckedChange={(v) => saveSwitch({ discoverable: v })} disabled={live && (studioLoading || !loaded)} />
-                </div>
-                <Separator className="my-4" />
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium">Guest booking (no account needed)</p>
-                    <p className="text-xs text-muted-foreground">New students book a class with name and email in one step. Needs the listing above.</p>
-                  </div>
-                  <Switch checked={expressEnabled} onCheckedChange={(v) => saveSwitch({ express_booking_enabled: v })} disabled={live && (studioLoading || !loaded)} />
-                </div>
-              </CardContent>
-            </Card>
           </TabsContent>
 
           {/* Billing / Stripe */}
           <TabsContent value="billing" className="space-y-6">
+            {live ? (
+              <PayoutsCard />
+            ) : (
+              <>
             <Card>
               <CardHeader>
                 <CardTitle>Payments</CardTitle>
@@ -525,9 +566,13 @@ export default function SettingsManage() {
                 </div>
               </CardContent>
             </Card>
+              </>
+            )}
           </TabsContent>
 
           {/* Notifications */}
+          {/* No backing store yet: shown in the demo only. */}
+          {showSettingsTab("notifications", live) && (
           <TabsContent value="notifications" className="space-y-6">
             <Card>
               <CardHeader>
@@ -561,8 +606,11 @@ export default function SettingsManage() {
               </CardContent>
             </Card>
           </TabsContent>
+          )}
 
           {/* SEO Settings */}
+          {/* No backing store yet: shown in the demo only. */}
+          {showSettingsTab("seo", live) && (
           <TabsContent value="seo" className="space-y-6">
             {/* SEO Score Card */}
             <Card className="border-primary/20">
@@ -741,6 +789,7 @@ export default function SettingsManage() {
               </CardContent>
             </Card>
           </TabsContent>
+          )}
         </Tabs>
       </div>
     </ManageLayout>
