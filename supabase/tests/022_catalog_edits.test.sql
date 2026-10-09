@@ -240,4 +240,14 @@ BEGIN
    WHERE id = pg_temp.id('occ_a_open') AND ends_at - starts_at = interval '75 minutes'
      AND starts_at BETWEEN NOW() + interval '47 hours' AND NOW() + interval '49 hours';
   PERFORM pg_temp.ok(n = 1, 'CAT-20', 'booked class takes the new length, same start');
+
+  -- CAT-21: turning a class off cancels its unbooked one-off classes; booked ones stay.
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  UPDATE offerings SET is_active = false WHERE id = 'aaaaaaaa-2000-0000-0000-000000000002';
+  UPDATE offerings SET is_active = false WHERE id = v_vinyasa;
+  EXECUTE 'RESET ROLE';
+  SELECT (SELECT is_cancelled FROM class_occurrences WHERE id = 'aaaaaaaa-3000-0000-0000-000000000002')
+     AND NOT (SELECT is_cancelled FROM class_occurrences WHERE id = pg_temp.id('occ_a_open'))
+    INTO ok;
+  PERFORM pg_temp.ok(ok, 'CAT-21', 'unbooked one-off class cancelled, booked one kept');
 END $$;

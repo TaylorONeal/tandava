@@ -424,7 +424,7 @@ serve(async (req) => {
         const style = String(f.classStyle ?? "Class");
         const offeringName = String(f.className ?? "").trim()
           || style.charAt(0).toUpperCase() + style.slice(1);
-        await db.from("offerings").upsert(
+        const { error: offeringErr } = await db.from("offerings").upsert(
           {
             studio_id: studioId,
             name: offeringName,
@@ -437,6 +437,8 @@ serve(async (req) => {
           },
           { onConflict: "studio_id,slug" },
         );
+        // Checked: 00042 rejects zero or negative length, capacity and price.
+        if (offeringErr) return json({ error: offeringErr.message }, 400);
 
         if (step === "pricing") {
           const dropIn = dollarsToCents(f.classPrice);

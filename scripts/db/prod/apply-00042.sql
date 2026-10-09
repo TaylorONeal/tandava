@@ -130,6 +130,24 @@ BEGIN
          updated_at = NOW()
    WHERE sr.offering_id = NEW.id;
 
+  -- Turning a class off: one-off classes (no rule, so no reconcile) nobody
+  -- booked or holds are cancelled too. Locked first, checked after, as 00037.
+  IF COALESCE(OLD.is_active, true) AND NEW.is_active = false THEN
+    FOR v_occ IN
+      SELECT co.id FROM class_occurrences co
+       WHERE co.offering_id = NEW.id AND co.schedule_rule_id IS NULL
+         AND co.starts_at > NOW() AND NOT COALESCE(co.is_cancelled, false)
+       ORDER BY co.id
+         FOR UPDATE OF co
+    LOOP
+      IF NOT occurrence_has_live_interest(v_occ) THEN
+        UPDATE class_occurrences
+           SET is_cancelled = true, cancelled_at = NOW(), cancellation_reason = 'offering_turned_off', updated_at = NOW()
+         WHERE id = v_occ;
+      END IF;
+    END LOOP;
+  END IF;
+
   -- The reconcile skips classes with bookings or holds. Their start stays put
   -- (nobody is moved), but they take the new length too, unless their time
   -- was changed by hand.
