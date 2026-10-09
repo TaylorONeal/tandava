@@ -101,3 +101,8 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - Workbench shell rejects `--override` flags on `stripe trigger`, so it cannot send a session with our metadata. A fulfilled purchase needs a real Checkout session from our app.
 - Found: CSP `frame-src` blocked `https://js.stripe.com` on every page (console error on the storefront). Fixed in this PR with a header test.
 - Agents may not type card numbers, test cards included, on non-local pages, so the Checkout card step stays with Taylor (about 20 seconds).
+
+## 2026-10-09 (later): LP-3 owner and student landing
+- Manage header shows the signed-in owner's studio name (was hard-coded "Tandava Yoga"); the sample "5" on the bell shows only in the demo.
+- Signed-in students (and owners before their studio exists) land on /discover instead of /schedule, which still shows Oxatl sample data (LP-4).
+- Owners already land on /manage: `get_my_effective_role` reads studio_staff, so the earlier /schedule landing was before onboarding created the studio.
