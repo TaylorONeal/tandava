@@ -40,12 +40,14 @@ AS $$
   LEFT JOIN locations l ON l.id = co.location_id
   LEFT JOIN profiles t ON t.id = co.teacher_id
   WHERE b.profile_id = (SELECT auth.uid())
-  ORDER BY co.starts_at DESC
+  -- Upcoming soonest first, then past newest first, so the limit never drops
+  -- tomorrow's class in favour of one months away.
+  ORDER BY (co.starts_at < NOW()), CASE WHEN co.starts_at >= NOW() THEN co.starts_at END ASC, co.starts_at DESC
   LIMIT LEAST(GREATEST(COALESCE(p_limit, 100), 1), 500);
 $$;
 
 COMMENT ON FUNCTION get_my_bookings(INTEGER) IS
-  'The calling user''s own bookings with class, studio, room, location and teacher names, newest class first. My Schedule page.';
+  'The calling user''s own bookings with class, studio, room, location and teacher names: upcoming soonest first, then past newest first. My Schedule page.';
 
 REVOKE ALL ON FUNCTION get_my_bookings(INTEGER) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION get_my_bookings(INTEGER) TO authenticated;

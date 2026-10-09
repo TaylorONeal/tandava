@@ -374,7 +374,11 @@ const MySchedule = () => {
           </TabsContent>
 
           <TabsContent value="past" className="mt-6">
-            {pastSource.length > 0 ? (
+            {live && isLoading ? (
+              <div className="rounded-xl border bg-card p-12 text-center text-muted-foreground">Loading your bookings…</div>
+            ) : live && isError ? (
+              <div className="rounded-xl border bg-card p-12 text-center text-muted-foreground">Your bookings could not be loaded. Refresh to try again.</div>
+            ) : pastSource.length > 0 ? (
               <div className="space-y-4">
                 {pastSource.map((booking) => (
                   <BookingCard

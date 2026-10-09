@@ -4,6 +4,7 @@
 INSERT INTO bookings (studio_id, class_occurrence_id, profile_id, status) VALUES
   (pg_temp.id('studio_a'), pg_temp.id('occ_a_open'), pg_temp.id('student_a1'), 'confirmed'),
   (pg_temp.id('studio_a'), 'aaaaaaaa-3000-0000-0000-000000000004', pg_temp.id('student_a1'), 'checked_in'),
+  (pg_temp.id('studio_a'), 'aaaaaaaa-3000-0000-0000-000000000002', pg_temp.id('student_a1'), 'confirmed'),
   (pg_temp.id('studio_b'), pg_temp.id('occ_b_open'), pg_temp.id('student_b1'), 'confirmed');
 
 DO $$
@@ -15,7 +16,13 @@ BEGIN
          count(*) FILTER (WHERE starts_at < NOW())
     INTO n, named, past FROM get_my_bookings();
   EXECUTE 'RESET ROLE';
-  PERFORM pg_temp.ok(n = 2 AND named = 2 AND past = 1, 'MYB-01', 'student sees own 2 bookings with class and studio names');
+  PERFORM pg_temp.ok(n = 3 AND named = 3 AND past = 1, 'MYB-01', 'student sees own 3 bookings with class and studio names');
+
+  -- MYB-04: upcoming comes first, soonest first (the limit keeps the nearest class).
+  PERFORM pg_temp.as_user(pg_temp.id('student_a1'));
+  SELECT count(*) INTO n FROM get_my_bookings(1) x WHERE x.occurrence_id = pg_temp.id('occ_a_open');
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(n = 1, 'MYB-04', 'limit 1 returns the soonest upcoming class');
 
   -- MYB-02: never another student's bookings.
   PERFORM pg_temp.as_user(pg_temp.id('student_a1'));

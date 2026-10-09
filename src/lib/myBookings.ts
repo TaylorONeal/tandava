@@ -23,6 +23,9 @@ export interface MyBookingView {
   classCancelled: boolean;
 }
 
+/** cancel_booking treats a missing studio policy as 120 minutes. */
+export const DEFAULT_CANCELLATION_MINUTES = 120;
+
 const STATUS: Record<MyBookingRow["status"], MyBookingStatus> = {
   confirmed: "BOOKED",
   waitlisted: "WAITLISTED",
@@ -49,7 +52,8 @@ export function toMyBookingView(row: MyBookingRow, now: Date = new Date()): MyBo
   const status = STATUS[row.status] ?? "BOOKED";
   const isUpcoming = start.getTime() > now.getTime();
   const active = status === "BOOKED" || status === "WAITLISTED";
-  const minutes = row.cancellation_minutes ?? 0;
+  // Same fallback as cancel_booking (00030): a blank policy means 120 minutes.
+  const minutes = row.cancellation_minutes ?? DEFAULT_CANCELLATION_MINUTES;
   const deadline = new Date(start.getTime() - minutes * 60_000);
   return {
     id: row.booking_id,

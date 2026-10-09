@@ -42,6 +42,9 @@ describe("toMyBookingView", () => {
     expect(v.canCancel).toBe(true);
     expect(v.cancelDeadline).toBeNull();
   });
+  it("uses cancel_booking's 120-minute default when the studio left the policy blank", () => {
+    expect(toMyBookingView(row({ cancellation_minutes: null }), NOW).cancelDeadline).toBe("Cancel by Sat, Oct 10, 8:00 AM");
+  });
   it("maps late cancels to canceled", () => {
     expect(toMyBookingView(row({ status: "late_cancel" }), NOW).status).toBe("CANCELED");
   });
