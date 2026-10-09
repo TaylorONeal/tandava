@@ -42,7 +42,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function SettingsManage() {
   const { toast } = useToast();
-  const [studioName, setStudioName] = useState("Tandava Yoga");
+  const [studioName, setStudioName] = useState("Oxatl Yoga");
   const [studioSlug, setStudioSlug] = useState("tandava-yoga");
   const [studioEmail, setStudioEmail] = useState("hello@tandava.yoga");
   const [studioPhone, setStudioPhone] = useState("+1 (415) 555-0100");

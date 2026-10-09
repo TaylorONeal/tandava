@@ -119,7 +119,7 @@ const mockRecentLinks: (LinkClick & { short_url: string; click_count: number })[
     utm_campaign: "january-promo",
     utm_term: null,
     utm_content: "header-cta",
-    destination_url: "https://tandavayoga.com/schedule",
+    destination_url: "https://yourstudio.com/schedule",
     short_code: "tnd.yoga/a1b2c3",
     short_url: "https://tnd.yoga/a1b2c3",
     profile_id: null,
@@ -140,7 +140,7 @@ const mockRecentLinks: (LinkClick & { short_url: string; click_count: number })[
     utm_campaign: "new-student-offer",
     utm_term: "yoga classes",
     utm_content: "carousel-1",
-    destination_url: "https://tandavayoga.com/new-students",
+    destination_url: "https://yourstudio.com/new-students",
     short_code: "tnd.yoga/x4y5z6",
     short_url: "https://tnd.yoga/x4y5z6",
     profile_id: null,
@@ -161,7 +161,7 @@ const mockRecentLinks: (LinkClick & { short_url: string; click_count: number })[
     utm_campaign: "bio-link",
     utm_term: null,
     utm_content: null,
-    destination_url: "https://tandavayoga.com",
+    destination_url: "https://yourstudio.com",
     short_code: "tnd.yoga/m7n8o9",
     short_url: "https://tnd.yoga/m7n8o9",
     profile_id: null,
@@ -182,7 +182,7 @@ const mockRecentLinks: (LinkClick & { short_url: string; click_count: number })[
     utm_campaign: "brand-search",
     utm_term: "tandava yoga",
     utm_content: null,
-    destination_url: "https://tandavayoga.com",
+    destination_url: "https://yourstudio.com",
     short_code: "tnd.yoga/p1q2r3",
     short_url: "https://tnd.yoga/p1q2r3",
     profile_id: null,
@@ -203,7 +203,7 @@ const mockRecentLinks: (LinkClick & { short_url: string; click_count: number })[
     utm_campaign: "wellness-collab",
     utm_term: null,
     utm_content: "blog-post",
-    destination_url: "https://tandavayoga.com/workshops",
+    destination_url: "https://yourstudio.com/workshops",
     short_code: "tnd.yoga/s4t5u6",
     short_url: "https://tnd.yoga/s4t5u6",
     profile_id: null,
@@ -459,7 +459,7 @@ export default function UtmBuilder() {
                   <Label htmlFor="destinationUrl">Destination URL</Label>
                   <Input
                     id="destinationUrl"
-                    placeholder="https://tandavayoga.com/schedule"
+                    placeholder="https://yourstudio.com/schedule"
                     value={destinationUrl}
                     onChange={(e) => setDestinationUrl(e.target.value)}
                   />

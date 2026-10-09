@@ -392,7 +392,7 @@ export default function Onboarding() {
     switch (step) {
       case 0: return (
         <StepCard title="Studio Information" desc="Tell us about your studio to get started">
-          <Field label="Studio Name" id="studioName" placeholder="e.g. Tandava Yoga" value={f.studioName ?? ""} onChange={set("studioName")} />
+          <Field label="Studio Name" id="studioName" placeholder="e.g. Oxatl Yoga" value={f.studioName ?? ""} onChange={set("studioName")} />
           <div className="space-y-2">
             <Label htmlFor="studioDesc">Description</Label>
             <Textarea id="studioDesc" placeholder="A brief description of your studio..." value={f.studioDesc ?? ""} onChange={set("studioDesc")} rows={3} />
