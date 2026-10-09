@@ -85,4 +85,4 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - Stripe sandbox (platform `acct_1UNlJxL4WU0kwuiF`, "Purafield Studio sandbox"): test studio connected account `acct_1UOSAmL4K6KVihAt` Enabled, charges and payouts on, Stripe test bank. `studios.stripe_charges_enabled` = true.
 - Webhook destinations, both Active: `tandava-prod` (Your account, 7 events) and `tandava-prod-connect` (Connected accounts, `account.updated`). `STRIPE_CONNECT_WEBHOOK_SECRET` set by Taylor in Supabase. `stripe_events` is still empty: no purchase yet.
 - Found: the test studio's page `/s/purafield-studio-test-eejz` says "Studio not available". Storefront RPCs and express-book gate on `discoverable`, so a studio outside Discover cannot sell. LP-2.
-- Launch path written as gates LP-1..LP-14 at the top of BACKLOG.md. Next: LP-1 (sandbox purchases), with Discover temporarily on for the test studio.
+- Launch path written as gates LP-1..LP-14 at the top of BACKLOG.md. Next: LP-1 (sandbox smoke purchases), with Discover temporarily on for the test studio, then LP-1b (every webhook event).
