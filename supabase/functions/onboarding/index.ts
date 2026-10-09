@@ -468,8 +468,18 @@ serve(async (req) => {
           const { data: existingMembership } = await db
             .from("membership_types").select("id").eq("studio_id", studioId)
             .order("created_at").limit(1).maybeSingle();
-          if (existingMembership) await db.from("membership_types").update(membership).eq("id", existingMembership.id);
-          else await db.from("membership_types").insert(membership);
+          if (existingMembership) {
+            // Once the page is live someone may be buying this plan, so its
+            // billing and class limit are fixed (00042): re-saving after launch
+            // updates only the name and price.
+            const { data: live } = await db.from("studios").select("page_live").eq("id", studioId).maybeSingle();
+            const patch = live?.page_live
+              ? { name: membership.name, price_cents: membership.price_cents }
+              : membership;
+            await db.from("membership_types").update(patch).eq("id", existingMembership.id);
+          } else {
+            await db.from("membership_types").insert(membership);
+          }
         }
         break;
       }

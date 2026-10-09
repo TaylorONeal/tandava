@@ -193,9 +193,17 @@ BEGIN
   END;
   EXECUTE 'RESET ROLE';
   PERFORM set_config('request.jwt.claim.sub', '', true);  -- service role: no signed-in user
+  UPDATE studios SET page_live = FALSE, discoverable = FALSE WHERE id = pg_temp.id('studio_a');
   UPDATE membership_types SET classes_per_cycle = 6 WHERE id = 'aaaaaaaa-6000-0000-0000-0000000000ff';
-  PERFORM pg_temp.ok(ok AND (SELECT classes_per_cycle FROM membership_types WHERE id = 'aaaaaaaa-6000-0000-0000-0000000000ff') = 6,
-                     'CAT-16', 'owner blocked, onboarding re-save allowed before anyone joins');
+  UPDATE studios SET page_live = TRUE WHERE id = pg_temp.id('studio_a');
+  BEGIN
+    UPDATE membership_types SET classes_per_cycle = 5 WHERE id = 'aaaaaaaa-6000-0000-0000-0000000000ff';
+    m := 0;
+  EXCEPTION WHEN check_violation THEN m := 1;
+  END;
+  UPDATE studios SET discoverable = TRUE WHERE id = pg_temp.id('studio_a');
+  PERFORM pg_temp.ok(ok AND m = 1 AND (SELECT classes_per_cycle FROM membership_types WHERE id = 'aaaaaaaa-6000-0000-0000-0000000000ff') = 6,
+                     'CAT-16', 'owner blocked; onboarding re-save allowed only before launch and before anyone joins');
 
   -- CAT-17: a class that runs past midnight keeps its full length.
   PERFORM pg_temp.as_user(pg_temp.id('staff_a'));

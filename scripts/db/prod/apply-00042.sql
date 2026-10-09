@@ -383,8 +383,9 @@ $$;
 -- buyer still in Checkout. So owners cannot change them on an existing plan:
 -- they add a new plan and turn the old one off. Price and name can change:
 -- existing subscriptions keep their price. The onboarding function (service
--- role, no signed-in user) may still re-save its starter plan before anyone
--- has joined.
+-- role, no signed-in user) may still re-save its starter plan while the
+-- studio's booking page is not live and nobody has joined, i.e. while nobody
+-- can be in Checkout for it.
 CREATE OR REPLACE FUNCTION membership_type_lock_terms()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -395,7 +396,8 @@ BEGIN
   IF (NEW.billing_cycle IS DISTINCT FROM OLD.billing_cycle
       OR NEW.classes_per_cycle IS DISTINCT FROM OLD.classes_per_cycle)
      AND ((SELECT auth.uid()) IS NOT NULL
-          OR EXISTS (SELECT 1 FROM memberships WHERE membership_type_id = OLD.id)) THEN
+          OR EXISTS (SELECT 1 FROM memberships WHERE membership_type_id = OLD.id)
+          OR EXISTS (SELECT 1 FROM studios WHERE id = OLD.studio_id AND page_live)) THEN
     RAISE EXCEPTION 'Billing and the class limit cannot change on an existing membership. Add a new one and turn this one off.'
       USING ERRCODE = '23514';
   END IF;
