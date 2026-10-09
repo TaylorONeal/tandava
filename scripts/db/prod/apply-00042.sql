@@ -1,6 +1,6 @@
 -- Apply 00042 (owner edits classes, prices and schedule, LP-5) to tandava-prod. Needs 00036..00041.
 -- Paste all of it into https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new and Run.
--- Then redeploy stripe-checkout (it sends the terms this SQL reads).
+-- Then redeploy stripe-checkout and onboarding.
 BEGIN;
 -- 00042: owners and admins edit classes, prices and the weekly schedule (LP-5).
 --
@@ -21,8 +21,8 @@ BEGIN;
 --      (never below the number booked).
 --   6. get_studio_staff_names: the schedule editor's teacher picker. Staff
 --      cannot read each other's profiles through RLS.
---   7. Purchases keep the terms shown at checkout, and a membership's billing
---      cycle and class limit are fixed once someone has joined.
+--   7. Purchases keep the terms shown at checkout, and owners cannot change
+--      an existing membership's billing cycle or class limit.
 --
 -- Prices are read at checkout (stripe-checkout builds price_data from these
 -- rows), so a price edit applies to the next purchase with no Stripe change.
@@ -118,24 +118,35 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  -- Re-save each rule: end time follows the new length (clamped to the same
-  -- day), and the 00036 trigger reconciles its classes (capacity, on/off).
+  -- Re-save each rule: end time follows the new length (TIME wraps past
+  -- midnight, and generate_rule_occurrences then uses the class length), and
+  -- the 00036 trigger reconciles its classes (capacity, on/off).
   UPDATE schedule_rules sr
-     SET end_time = time '00:00' + make_interval(
-                      mins => LEAST((EXTRACT(EPOCH FROM sr.start_time) / 60)::int + NEW.duration_minutes, 1439)),
+     SET end_time = sr.start_time + make_interval(mins => NEW.duration_minutes),
          updated_at = NOW()
    WHERE sr.offering_id = NEW.id;
 
-  -- Classes with bookings are left alone by the reconcile. A capacity change
-  -- still applies to them, never below the number already booked, unless the
-  -- rule or the class has its own capacity.
+  -- Classes with bookings or holds are left alone by the reconcile. A capacity
+  -- change still applies to them, never below the seats already taken or held
+  -- (a paid Checkout holds its seat), unless the rule or the class has its own
+  -- capacity.
   IF NEW.capacity IS DISTINCT FROM OLD.capacity THEN
     UPDATE class_occurrences co
-       SET capacity = GREATEST(NEW.capacity, COALESCE(co.booked_count, 0)), updated_at = NOW()
-     WHERE co.offering_id = NEW.id
+       SET capacity = t.floor_cap, updated_at = NOW()
+      FROM (SELECT c.id,
+                   GREATEST(NEW.capacity,
+                            (SELECT count(*) FROM bookings b
+                              WHERE b.class_occurrence_id = c.id AND b.status IN ('confirmed', 'checked_in'))
+                          + (SELECT count(*) FROM seat_holds h
+                              WHERE h.class_occurrence_id = c.id AND h.status = 'active' AND h.expires_at > NOW())
+                   )::int AS floor_cap
+              FROM class_occurrences c
+             WHERE c.offering_id = NEW.id) t
+     WHERE t.id = co.id
+       AND co.offering_id = NEW.id
        AND co.starts_at > NOW()
        AND NOT COALESCE(co.is_cancelled, false)
-       AND co.capacity IS DISTINCT FROM GREATEST(NEW.capacity, COALESCE(co.booked_count, 0))
+       AND co.capacity IS DISTINCT FROM t.floor_cap
        AND NOT EXISTS (SELECT 1 FROM schedule_rules sr
                         WHERE sr.id = co.schedule_rule_id AND sr.capacity_override IS NOT NULL)
        AND NOT EXISTS (SELECT 1 FROM schedule_overrides so WHERE so.class_occurrence_id = co.id);
@@ -335,9 +346,13 @@ BEGIN
 END;
 $$;
 
--- A membership's billing cycle and class limit apply to everyone already on it
--- (usage is checked against the plan), so they are fixed once anyone has
--- joined. Price and name can change: existing subscriptions keep their price.
+-- A membership's billing cycle and class limit apply to everyone on it (usage
+-- is checked against the plan, not copied to the membership), including a
+-- buyer still in Checkout. So owners cannot change them on an existing plan:
+-- they add a new plan and turn the old one off. Price and name can change:
+-- existing subscriptions keep their price. The onboarding function (service
+-- role, no signed-in user) may still re-save its starter plan before anyone
+-- has joined.
 CREATE OR REPLACE FUNCTION membership_type_lock_terms()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -347,8 +362,9 @@ AS $$
 BEGIN
   IF (NEW.billing_cycle IS DISTINCT FROM OLD.billing_cycle
       OR NEW.classes_per_cycle IS DISTINCT FROM OLD.classes_per_cycle)
-     AND EXISTS (SELECT 1 FROM memberships WHERE membership_type_id = OLD.id) THEN
-    RAISE EXCEPTION 'People already have this membership. Add a new one with the new billing or class limit, and turn this one off.'
+     AND ((SELECT auth.uid()) IS NOT NULL
+          OR EXISTS (SELECT 1 FROM memberships WHERE membership_type_id = OLD.id)) THEN
+    RAISE EXCEPTION 'Billing and the class limit cannot change on an existing membership. Add a new one and turn this one off.'
       USING ERRCODE = '23514';
   END IF;
   RETURN NEW;

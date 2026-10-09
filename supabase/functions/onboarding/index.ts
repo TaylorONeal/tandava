@@ -510,9 +510,9 @@ serve(async (req) => {
         const startTime = /^\d{2}:\d{2}/.test(String(f.schedTime ?? "")) ? String(f.schedTime) : "09:00";
         const duration = offering.duration_minutes ?? 60;
         const [h, m] = startTime.split(":").map(Number);
-        // Clamp to end-of-day: a TIME end before the start would read as a
-        // negative-length class downstream.
-        const endMinutes = Math.min(h * 60 + m + duration, 24 * 60 - 1);
+        // Wrap past midnight: generate_rule_occurrences reads an end at or
+        // before the start as an overnight class and uses the class length.
+        const endMinutes = (h * 60 + m + duration) % (24 * 60);
         const endTime = `${String(Math.floor(endMinutes / 60)).padStart(2, "0")}:${String(endMinutes % 60).padStart(2, "0")}`;
 
         // Only accept a teacher who is actually staff of this studio.

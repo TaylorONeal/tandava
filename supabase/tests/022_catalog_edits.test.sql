@@ -160,4 +160,43 @@ BEGIN
    WHERE stripe_payment_intent_id = 'pi_cat14' AND classes_total = 5 AND classes_remaining = 5
      AND expires_at BETWEEN NOW() + interval '29 days' AND NOW() + interval '31 days';
   PERFORM pg_temp.ok(n = 1, 'CAT-14', 'pack fulfilled with the terms sold at checkout');
+
+  -- CAT-15: lowering capacity keeps seats held by a customer in Checkout.
+  INSERT INTO seat_holds (class_occurrence_id, profile_id, studio_id, expires_at)
+  VALUES (pg_temp.id('occ_a_open'), pg_temp.id('student_a2'), pg_temp.id('studio_a'), NOW() + interval '30 minutes');
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  UPDATE offerings SET capacity = 1 WHERE id = v_vinyasa;
+  EXECUTE 'RESET ROLE';
+  SELECT capacity INTO v_cap FROM class_occurrences WHERE id = pg_temp.id('occ_a_open');
+  PERFORM pg_temp.ok(v_cap = 2, 'CAT-15', 'capacity floor counts the booking and the live hold (got ' || v_cap || ')');
+
+  -- CAT-16: an owner cannot change an existing plan's class limit even before anyone joins;
+  -- the onboarding function (no signed-in user) can re-save its starter plan.
+  INSERT INTO membership_types (id, studio_id, name, price_cents, classes_per_cycle)
+  VALUES ('aaaaaaaa-6000-0000-0000-0000000000ff', pg_temp.id('studio_a'), 'Eight a month', 9000, 8);
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  BEGIN
+    UPDATE membership_types SET classes_per_cycle = 4 WHERE id = 'aaaaaaaa-6000-0000-0000-0000000000ff';
+    ok := false;
+  EXCEPTION WHEN check_violation THEN ok := true;
+  END;
+  EXECUTE 'RESET ROLE';
+  PERFORM set_config('request.jwt.claim.sub', '', true);  -- service role: no signed-in user
+  UPDATE membership_types SET classes_per_cycle = 6 WHERE id = 'aaaaaaaa-6000-0000-0000-0000000000ff';
+  PERFORM pg_temp.ok(ok AND (SELECT classes_per_cycle FROM membership_types WHERE id = 'aaaaaaaa-6000-0000-0000-0000000000ff') = 6,
+                     'CAT-16', 'owner blocked, onboarding re-save allowed before anyone joins');
+
+  -- CAT-17: a class that runs past midnight keeps its full length.
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  INSERT INTO offerings (studio_id, name, slug, duration_minutes, capacity)
+  VALUES (pg_temp.id('studio_a'), 'Late Night', 'late-night', 60, 10) RETURNING id INTO v_off;
+  INSERT INTO schedule_rules (studio_id, offering_id, location_id, recurrence, day_of_week, start_time, end_time)
+  VALUES (pg_temp.id('studio_a'), v_off, v_loc_a, 'weekly', 'friday', '23:30', '00:30') RETURNING id INTO v_rule;
+  UPDATE offerings SET duration_minutes = 90 WHERE id = v_off;
+  EXECUTE 'RESET ROLE';
+  SELECT count(*) INTO n FROM class_occurrences WHERE schedule_rule_id = v_rule AND NOT is_cancelled;
+  SELECT count(*) INTO m FROM class_occurrences
+   WHERE schedule_rule_id = v_rule AND NOT is_cancelled AND ends_at - starts_at <> interval '90 minutes';
+  SELECT end_time INTO v_end FROM schedule_rules WHERE id = v_rule;
+  PERFORM pg_temp.ok(n >= 8 AND m = 0 AND v_end = '01:00', 'CAT-17', 'overnight class keeps its length (' || n || ' classes, ' || m || ' wrong)');
 END $$;

@@ -265,10 +265,14 @@ export function membershipFromForm(f: MembershipForm): { patch?: MembershipPatch
 /** "18:00:00" or "18:00" -> "18:00". */
 export const hhmm = (t: string): string => t.slice(0, 5);
 
-/** End time on the same day: start + length, clamped to 23:59 (a TIME cannot pass midnight). */
+/**
+ * Start + length as a wall-clock TIME, wrapping past midnight (23:30 + 60 ->
+ * 00:30). Class generation reads an end at or before the start as "runs past
+ * midnight" and uses the class length, so overnight classes keep their length.
+ */
 export function ruleEndTime(start: string, durationMinutes: number): string {
   const [h, m] = hhmm(start).split(":").map(Number);
-  const end = Math.min(h * 60 + m + durationMinutes, 24 * 60 - 1);
+  const end = (h * 60 + m + durationMinutes) % (24 * 60);
   return `${String(Math.floor(end / 60)).padStart(2, "0")}:${String(end % 60).padStart(2, "0")}`;
 }
 

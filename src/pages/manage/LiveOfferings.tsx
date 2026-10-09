@@ -290,7 +290,7 @@ export default function LiveOfferings() {
                 <Switch id="membership-active" checked={editing.form.isActive} onCheckedChange={(v) => setForm("isActive", v)} />
               </div>
               {editing.id && (
-                <p className="text-xs text-muted-foreground">Current members keep their price. The new price is for new sign-ups. To change billing or the class limit, add a new membership and turn this one off.</p>
+                <p className="text-xs text-muted-foreground">Current members keep their price. The new price is for new sign-ups. Billing and the class limit cannot change: add a new membership and turn this one off.</p>
               )}
             </div>
           )}

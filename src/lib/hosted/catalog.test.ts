@@ -51,9 +51,9 @@ describe("packs and memberships", () => {
 });
 
 describe("schedule", () => {
-  it("ends a class on the same day", () => {
+  it("ends a class after its length, wrapping past midnight", () => {
     expect(ruleEndTime("18:00", 75)).toBe("19:15");
-    expect(ruleEndTime("23:30:00", 60)).toBe("23:59");
+    expect(ruleEndTime("23:30:00", 60)).toBe("00:30");
   });
   it("builds a rule from the class length", () => {
     const r = ruleFromForm(
