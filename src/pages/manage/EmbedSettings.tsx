@@ -19,6 +19,7 @@ const DEMO_STUDIO_SUMMARY = {
   name: DEMO_STUDIO.name,
   brand_primary_color: DEMO_STUDIO.brand_primary_color ?? "#4fd1c5",
   discoverable: true,
+  page_live: true,
 };
 
 /**
@@ -249,15 +250,15 @@ export default function EmbedSettings() {
           </CardContent>
         </Card>
 
-        {live && studio && "discoverable" in studio && !studio.discoverable && (
+        {live && studio && "page_live" in studio && !studio.page_live && (
           <Card className="border-amber-500/40 bg-amber-500/5">
             <CardContent className="flex items-start gap-3 py-4">
               <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" aria-hidden="true" />
               <div className="space-y-1 text-sm">
                 <p className="font-medium">Your schedule isn't public yet</p>
                 <p className="text-muted-foreground">
-                  The widget will load empty until your studio is set to discoverable. Turn it on in
-                  Settings, then reload your site.
+                  The widget will load empty until your booking page is live. Turn on Booking page live
+                  in Settings, then reload your site.
                 </p>
               </div>
             </CardContent>

@@ -170,6 +170,7 @@ export default function ShareLinks() {
         timezone: DEMO_STUDIO.timezone,
         currency: DEMO_STUDIO.currency,
         discoverable: true,
+        page_live: true,
         brand_primary_color: DEMO_STUDIO.brand_primary_color ?? null,
         brand_secondary_color: DEMO_STUDIO.brand_secondary_color ?? null,
         logo_url: DEMO_STUDIO.logo_url ?? null,
@@ -249,17 +250,17 @@ export default function ShareLinks() {
           </p>
         </div>
 
-        {/* Discoverability is the one thing that silently breaks every link on
+        {/* The booking page switch is the one thing that silently breaks every link on
             this page, so it is stated at the top rather than discovered later. */}
-        {studio && !studio.discoverable && (
+        {studio && !studio.page_live && (
           <Card className="border-amber-500/40 bg-amber-500/5">
             <CardContent className="flex items-start gap-3 py-4">
               <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" aria-hidden="true" />
               <div className="space-y-1 text-sm">
                 <p className="font-medium">Your page isn't public yet</p>
                 <p className="text-muted-foreground">
-                  These links won't work for anyone else until your studio is set to discoverable.
-                  Turn it on in Settings, then come back.
+                  These links won't work for anyone else until your booking page is live.
+                  Turn on Booking page live in Settings, then come back.
                 </p>
               </div>
             </CardContent>

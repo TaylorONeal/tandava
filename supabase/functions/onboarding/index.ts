@@ -127,7 +127,7 @@ async function buildStatus(db: SupabaseClient, studioId: string | undefined) {
 
   const [studioRes, progressRes, offeringsRes, staffRes, locationsRes] = await Promise.all([
     db.from("studios")
-      .select("id, name, description, timezone, currency, brand_primary_color, brand_secondary_color, stripe_account_id, stripe_onboarding_complete, discoverable")
+      .select("id, name, description, timezone, currency, brand_primary_color, brand_secondary_color, stripe_account_id, stripe_onboarding_complete, discoverable, page_live")
       .eq("id", studioId).single(),
     db.from("studio_onboarding")
       .select("completed_steps, current_step, is_launched")
@@ -177,6 +177,7 @@ async function buildStatus(db: SupabaseClient, studioId: string | undefined) {
           primaryColor: studio.brand_primary_color,
           secondaryColor: studio.brand_secondary_color,
           discoverable: studio.discoverable,
+          pageLive: studio.page_live,
           address: (locationsRes.data ?? []).find((l) => l.is_primary)?.address_line1
             ?? locationsRes.data?.[0]?.address_line1 ?? null,
         }
@@ -612,8 +613,14 @@ serve(async (req) => {
       }
 
       case "launch": {
-        if (typeof f.discoverable === "boolean") {
-          await db.from("studios").update({ discoverable: f.discoverable }).eq("id", studioId);
+        // Booking page and Discover listing (00038). A trigger keeps them
+        // consistent: listing publishes the page, unpublishing unlists.
+        const launchPatch: Record<string, boolean> = {};
+        if (typeof f.pageLive === "boolean") launchPatch.page_live = f.pageLive;
+        if (typeof f.discoverable === "boolean") launchPatch.discoverable = f.discoverable;
+        if (Object.keys(launchPatch).length > 0) {
+          const { error: launchErr } = await db.from("studios").update(launchPatch).eq("id", studioId);
+          if (launchErr) return json({ error: launchErr.message }, 500);
         }
         break;
       }

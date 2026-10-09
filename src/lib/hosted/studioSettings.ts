@@ -24,10 +24,12 @@ export interface StudioSettingsRow {
   max_waitlist_size: number | null;
   discoverable: boolean;
   express_booking_enabled: boolean;
+  /** Booking page live (00038). Listing on Discover requires it. */
+  page_live: boolean;
 }
 
 export const STUDIO_SETTINGS_COLUMNS =
-  "id, name, slug, email, phone, website, timezone, currency, brand_primary_color, brand_secondary_color, default_cancellation_minutes, late_cancel_fee_cents, no_show_fee_cents, waitlist_enabled, max_waitlist_size, discoverable, express_booking_enabled";
+  "id, name, slug, email, phone, website, timezone, currency, brand_primary_color, brand_secondary_color, default_cancellation_minutes, late_cancel_fee_cents, no_show_fee_cents, waitlist_enabled, max_waitlist_size, discoverable, express_booking_enabled, page_live";
 
 export interface StudioSettingsForm {
   name: string;
@@ -48,7 +50,7 @@ export interface StudioSettingsForm {
 
 /** Columns an owner may change from the settings form. Slug and id are not editable here. */
 export type StudioSettingsPatch = Partial<
-  Omit<StudioSettingsRow, "id" | "slug" | "discoverable" | "express_booking_enabled">
+  Omit<StudioSettingsRow, "id" | "slug" | "discoverable" | "express_booking_enabled" | "page_live">
 >;
 
 const centsToDollars = (cents: number | null): string =>

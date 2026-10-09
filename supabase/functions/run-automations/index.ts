@@ -110,10 +110,10 @@ serve(async (req) => {
   for (let from = 0; ; from += 1000) {
     let q = db.from("studios").select("id, name, slug, timezone, email, brand_primary_color").order("id").range(from, from + 999);
     if (body.studioId) q = q.eq("id", body.studioId);
-    // Only published studios send: a draft, paused or unlisted studio's
+    // Only studios with a live booking page (00038) send: a draft or paused studio's
     // storefront rejects bookings, so its emails would point at a dead page.
     // A dry run may still plan for any studio.
-    if (!dryRun) q = q.eq("discoverable", true);
+    if (!dryRun) q = q.eq("page_live", true);
     const { data, error: studiosError } = await q;
     if (studiosError) return json({ error: studiosError.message }, 500);
     studios.push(...((data ?? []) as StudioRow[]));

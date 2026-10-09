@@ -19,6 +19,7 @@ const row: StudioSettingsRow = {
   max_waitlist_size: 10,
   discoverable: false,
   express_booking_enabled: false,
+  page_live: true,
 };
 
 describe("studio settings mapping", () => {

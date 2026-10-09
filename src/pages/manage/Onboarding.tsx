@@ -53,7 +53,7 @@ interface OnboardingStatus {
   studioId: string | null;
   studio?: {
     name?: string; description?: string; timezone?: string; currency?: string;
-    primaryColor?: string; secondaryColor?: string; discoverable?: boolean; address?: string;
+    primaryColor?: string; secondaryColor?: string; discoverable?: boolean; pageLive?: boolean; address?: string;
   } | null;
   completedSteps?: string[];
   currentStep?: string;
@@ -132,6 +132,9 @@ export default function Onboarding() {
   });
   const [memberUnlimited, setMemberUnlimited] = useState(true);
   const [discoverable, setDiscoverable] = useState(false);
+  // Booking page live (00038): on by default at launch, so a studio can sell
+  // from its own page without a Discover listing.
+  const [pageLive, setPageLive] = useState(true);
   const [staffList, setStaffList] = useState<StaffRow[]>([emptyStaffRow()]);
   const [saving, setSaving] = useState(false);
   const [launching, setLaunching] = useState(false);
@@ -165,6 +168,7 @@ export default function Onboarding() {
       if (draft.f) setF((p) => ({ ...p, ...draft.f }));
       if (typeof draft.memberUnlimited === "boolean") setMemberUnlimited(draft.memberUnlimited);
       if (typeof draft.discoverable === "boolean") setDiscoverable(draft.discoverable);
+      if (typeof draft.pageLive === "boolean") setPageLive(draft.pageLive);
       if (Array.isArray(draft.staffList) && draft.staffList.length > 0) setStaffList(draft.staffList);
       // Steps are stored by key, not index, so drafts survive step reordering.
       const stepIdx = STEPS.findIndex((s) => s.key === draft.step);
@@ -188,7 +192,7 @@ export default function Onboarding() {
         localStorage.setItem(
           DRAFT_KEY,
           JSON.stringify({
-            f, memberUnlimited, discoverable, staffList,
+            f, memberUnlimited, discoverable, pageLive, staffList,
             step: STEPS[step].key,
             done: [...done].map((i) => STEPS[i].key),
           }),
@@ -198,7 +202,7 @@ export default function Onboarding() {
       }
     }, 400);
     return () => clearTimeout(timer);
-  }, [f, memberUnlimited, discoverable, staffList, step, done]);
+  }, [f, memberUnlimited, discoverable, pageLive, staffList, step, done]);
 
   const applyStatus = useCallback((status: OnboardingStatus, restoreCursor: boolean) => {
     setStudioId(status.studioId ?? null);
@@ -220,6 +224,8 @@ export default function Onboarding() {
         address: p.address ?? s.address ?? "",
       }));
       if (typeof s.discoverable === "boolean") setDiscoverable(s.discoverable);
+      // Before the first launch the switch keeps its default (on); after it, show the saved state.
+      if (typeof s.pageLive === "boolean" && (status.completedSteps ?? []).includes("launch")) setPageLive(s.pageLive);
     }
 
     if (!status.studioId) return;
@@ -289,7 +295,7 @@ export default function Onboarding() {
       return { staff: staffList.filter((s) => s.name.trim() || s.email.trim()) };
     }
     if (STEPS[step].key === "launch") {
-      return { ...f, memberUnlimited, discoverable };
+      return { ...f, memberUnlimited, discoverable, pageLive: pageLive || discoverable };
     }
     return { ...f, memberUnlimited };
   };
@@ -571,7 +577,18 @@ export default function Onboarding() {
             </div>
             <Separator />
             <div className="flex items-center gap-3">
-              <Switch checked={discoverable} onCheckedChange={setDiscoverable} />
+              <Switch
+                aria-label="Publish my booking page"
+                checked={pageLive || discoverable}
+                onCheckedChange={(v) => { setPageLive(v); if (!v) setDiscoverable(false); }}
+              />
+              <div>
+                <Label>Publish my booking page</Label>
+                <p className="text-xs text-muted-foreground">Students can book and buy on your own page. You can turn it off any time in Settings.</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Switch aria-label="List my studio on Tandava Discover" checked={discoverable} onCheckedChange={(v) => { setDiscoverable(v); if (v) setPageLive(true); }} />
               <div>
                 <Label>List my studio on Tandava Discover</Label>
                 <p className="text-xs text-muted-foreground">Students searching Tandava Discover can find and book your classes.</p>

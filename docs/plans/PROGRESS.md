@@ -101,3 +101,9 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - Workbench shell rejects `--override` flags on `stripe trigger`, so it cannot send a session with our metadata. A fulfilled purchase needs a real Checkout session from our app.
 - Found: CSP `frame-src` blocked `https://js.stripe.com` on every page (console error on the storefront). Fixed in this PR with a header test.
 - Agents may not type card numbers, test cards included, on non-local pages, so the Checkout card step stays with Taylor (about 20 seconds).
+
+## 2026-10-09 (later): LP-2 booking page live (#90)
+- #87 (example names) and #89 (CSP allows Stripe.js frames) merged.
+- 00038: `studios.page_live`. Storefront, public schedule, guest booking lookup, free-class booking and visit tracking serve a studio by slug only when its page is live; `discoverable` only adds it to Discover. Trigger: listing turns the page on, turning the page off unlists. Backfill: listed studios keep a live page. Tests LIVE-01..08 (fail without the migration).
+- Settings: "Booking page live", "List on Tandava Discover" and "Guest booking" now sit on the General tab (were under Branding). Onboarding launch step: "Publish my booking page", on by default; the onboarding function saves it.
+- Prod after merge, in this order: Taylor runs `scripts/db/prod/apply-00038.sql`; then redeploy `onboarding`, `analytics-session` and `run-automations` via Supabase MCP (they read `page_live`, which does not exist before the SQL).
