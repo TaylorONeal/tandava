@@ -434,16 +434,16 @@ serve(async (req) => {
           classes_per_cycle: unlimitedEarly ? null : packClassesEarly,
           price_cents: f.memberPrice ? dollarsToCents(f.memberPrice) : (unlimitedEarly ? dropInEarly * 12 : dropInEarly * packClassesEarly),
         };
-        // The wizard's starter pack and plan exist only once this step has been
-        // completed (has_pricing); they are then the studio's oldest. If the step
-        // was skipped, a pack or plan the owner made in Classes and pricing is
-        // theirs, not the wizard's, and is never overwritten here.
-        const { data: progress } = await db.from("studio_onboarding").select("has_pricing")
-          .eq("studio_id", studioId).maybeSingle();
-        const hasStarter = step === "pricing" && progress?.has_pricing === true;
-        const { data: starter } = hasStarter
+        // The wizard's own starter pack and plan, recorded when it created them
+        // (00042). A pack or plan the owner made in Classes and pricing is
+        // never overwritten here.
+        const { data: progress } = step === "pricing"
+          ? await db.from("studio_onboarding").select("starter_pack_type_id, starter_membership_type_id")
+              .eq("studio_id", studioId).maybeSingle()
+          : { data: null };
+        const { data: starter } = progress?.starter_membership_type_id
           ? await db.from("membership_types").select("id, billing_cycle, classes_per_cycle")
-              .eq("studio_id", studioId).order("created_at").limit(1).maybeSingle()
+              .eq("id", progress.starter_membership_type_id).maybeSingle()
           : { data: null };
         if (starter && (starter.billing_cycle !== membership.billing_cycle
                         || (starter.classes_per_cycle ?? null) !== membership.classes_per_cycle)) {
@@ -497,23 +497,23 @@ serve(async (req) => {
             price_cents: f.packPrice ? dollarsToCents(f.packPrice) : dropIn * packClasses,
             validity_days: 90,
           };
-          const { data: existingPack } = hasStarter
-            ? await db.from("class_pack_types").select("id").eq("studio_id", studioId)
-                .order("created_at").limit(1).maybeSingle()
-            : { data: null };
           // Checked: 00042 rejects negative prices and zero-class packs.
-          const { error: packErr } = existingPack
-            ? await db.from("class_pack_types").update(pack).eq("id", existingPack.id)
-            : await db.from("class_pack_types").insert(pack);
+          const packId = progress?.starter_pack_type_id ?? null;
+          const { data: savedPack, error: packErr } = packId
+            ? await db.from("class_pack_types").update(pack).eq("id", packId).select("id").maybeSingle()
+            : await db.from("class_pack_types").insert(pack).select("id").single();
           if (packErr) return json({ error: packErr.message }, 400);
 
           // The starter plan is the studio's first membership type. Its billing
           // and class limit never change once it exists (00042: someone may be
           // buying it), so a re-save with new terms is refused with a pointer
           // to Classes and pricing; name and price update in place.
+          let membershipId = starter?.id ?? null;
           if (!starter) {
-            const { error: insErr } = await db.from("membership_types").insert(membership);
+            const { data: inserted, error: insErr } = await db.from("membership_types")
+              .insert(membership).select("id").single();
             if (insErr) return json({ error: insErr.message }, 400);
+            membershipId = inserted?.id ?? null;
           } else if (starter.billing_cycle === membership.billing_cycle
                      && (starter.classes_per_cycle ?? null) === membership.classes_per_cycle) {
             const { error: updErr } = await db.from("membership_types")
@@ -521,6 +521,16 @@ serve(async (req) => {
               .eq("id", starter.id);
             if (updErr) return json({ error: updErr.message }, 400);
           }
+          const starterIds = {
+            starter_pack_type_id: savedPack?.id ?? packId,
+            starter_membership_type_id: membershipId,
+          };
+          const { data: onboardingRow } = await db.from("studio_onboarding").select("id")
+            .eq("studio_id", studioId).maybeSingle();
+          const { error: idsErr } = onboardingRow
+            ? await db.from("studio_onboarding").update(starterIds).eq("id", onboardingRow.id)
+            : await db.from("studio_onboarding").insert({ studio_id: studioId, ...starterIds });
+          if (idsErr) return json({ error: idsErr.message }, 500);
         }
         break;
       }

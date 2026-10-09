@@ -263,4 +263,24 @@ BEGIN
      AND NOT (SELECT is_cancelled FROM class_occurrences WHERE id = pg_temp.id('occ_a_open'))
     INTO ok;
   PERFORM pg_temp.ok(ok, 'CAT-21', 'unbooked one-off class cancelled, booked one kept');
+
+  -- CAT-23: moving or turning off a rule waits while one of its classes is being paid for.
+  INSERT INTO schedule_rules (id, studio_id, offering_id, location_id, recurrence, day_of_week, start_time, end_time)
+  VALUES ('aaaaaaaa-7000-0000-0000-000000000023', pg_temp.id('studio_a'), 'aaaaaaaa-2000-0000-0000-000000000002', v_loc_a,
+          'weekly', 'wednesday', '12:00', '13:00');
+  UPDATE offerings SET is_active = true WHERE id = 'aaaaaaaa-2000-0000-0000-000000000002';
+  INSERT INTO seat_holds (class_occurrence_id, profile_id, studio_id, expires_at)
+  SELECT id, pg_temp.id('student_b1'), pg_temp.id('studio_a'), NOW() + interval '30 minutes'
+    FROM class_occurrences WHERE schedule_rule_id = 'aaaaaaaa-7000-0000-0000-000000000023'
+   ORDER BY starts_at LIMIT 1;
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  BEGIN
+    UPDATE schedule_rules SET day_of_week = 'thursday' WHERE id = 'aaaaaaaa-7000-0000-0000-000000000023';
+    ok := false;
+  EXCEPTION WHEN lock_not_available THEN ok := true;
+  END;
+  UPDATE schedule_rules SET teacher_id = pg_temp.id('staff_a') WHERE id = 'aaaaaaaa-7000-0000-0000-000000000023';
+  GET DIAGNOSTICS n = ROW_COUNT;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(ok AND n = 1, 'CAT-23', 'rule move waits for a paid hold; a teacher change does not');
 END $$;

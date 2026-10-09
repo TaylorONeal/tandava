@@ -17,8 +17,10 @@
 --      (refused while a cut would strand a seat being paid for).
 --   6. get_studio_staff_names: the schedule editor's teacher picker. Staff
 --      cannot read each other's profiles through RLS.
---   7. Purchases keep the terms shown at checkout, and owners cannot change
---      an existing membership's billing cycle or class limit.
+--   7. Purchases keep the terms shown at checkout, and nobody can change an
+--      existing membership's billing cycle or class limit.
+--   8. A rule edit that moves or removes classes waits for active Checkout holds.
+--   9. The onboarding wizard records the starter pack and plan it created.
 --
 -- Prices are read at checkout (stripe-checkout builds price_data from these
 -- rows), so a price edit applies to the next purchase with no Stripe change.
@@ -436,3 +438,60 @@ DROP TRIGGER IF EXISTS membership_types_lock_terms ON membership_types;
 CREATE TRIGGER membership_types_lock_terms
   BEFORE UPDATE OF billing_cycle, classes_per_cycle ON membership_types
   FOR EACH ROW EXECUTE FUNCTION membership_type_lock_terms();
+
+-- 8. A rule edit waits for seats being paid for -------------------------------
+-- The reconcile keeps a class that has an active Checkout hold. If the owner
+-- moves or removes the rule meanwhile and the buyer then abandons Checkout,
+-- that class would stay on sale until the daily job. So an edit that changes
+-- when or whether the rule runs is refused while one of its future classes has
+-- an active hold. Classes are locked first (book and hold lock the same row).
+CREATE OR REPLACE FUNCTION schedule_rule_wait_for_holds()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  -- Owners and admins editing in the app (signed in). Server paths keep the
+  -- 00036/00037 behaviour: the held class survives and the daily top-up
+  -- cancels it once the hold lapses (GEN-12).
+  IF (SELECT auth.uid()) IS NOT NULL
+     AND ((NEW.day_of_week, NEW.start_time, NEW.recurrence, NEW.offering_id, NEW.location_id,
+      COALESCE(NEW.is_active, true), NEW.effective_from, NEW.effective_until)
+     IS DISTINCT FROM
+     (OLD.day_of_week, OLD.start_time, OLD.recurrence, OLD.offering_id, OLD.location_id,
+      COALESCE(OLD.is_active, true), OLD.effective_from, OLD.effective_until)) THEN
+    PERFORM 1 FROM class_occurrences co
+     WHERE co.schedule_rule_id = OLD.id AND co.starts_at > NOW() AND NOT COALESCE(co.is_cancelled, false)
+     ORDER BY co.id
+       FOR UPDATE OF co;
+    IF EXISTS (SELECT 1 FROM seat_holds h JOIN class_occurrences co ON co.id = h.class_occurrence_id
+                WHERE co.schedule_rule_id = OLD.id AND co.starts_at > NOW()
+                  AND NOT COALESCE(co.is_cancelled, false)
+                  AND h.status = 'active' AND h.expires_at > NOW()) THEN
+      RAISE EXCEPTION 'Someone is paying for a spot in this class right now. Try again in a few minutes.'
+        USING ERRCODE = '55P03';
+    END IF;
+  END IF;
+  RETURN NEW;
+END $$;
+REVOKE ALL ON FUNCTION schedule_rule_wait_for_holds() FROM PUBLIC, anon, authenticated;
+
+DROP TRIGGER IF EXISTS schedule_rules_wait_for_holds ON schedule_rules;
+CREATE TRIGGER schedule_rules_wait_for_holds
+  BEFORE UPDATE ON schedule_rules
+  FOR EACH ROW EXECUTE FUNCTION schedule_rule_wait_for_holds();
+
+-- 9. The onboarding wizard remembers the pack and plan it created -------------
+-- so re-saving its Pricing step updates those rows and never an owner's own.
+ALTER TABLE studio_onboarding ADD COLUMN IF NOT EXISTS starter_pack_type_id UUID REFERENCES class_pack_types(id) ON DELETE SET NULL;
+ALTER TABLE studio_onboarding ADD COLUMN IF NOT EXISTS starter_membership_type_id UUID REFERENCES membership_types(id) ON DELETE SET NULL;
+-- Studios that already finished Pricing: until now the wizard's rows were the
+-- studio's oldest (nothing else could create them), so record those.
+UPDATE studio_onboarding so
+   SET starter_pack_type_id = COALESCE(so.starter_pack_type_id,
+         (SELECT id FROM class_pack_types WHERE studio_id = so.studio_id ORDER BY created_at LIMIT 1)),
+       starter_membership_type_id = COALESCE(so.starter_membership_type_id,
+         (SELECT id FROM membership_types WHERE studio_id = so.studio_id ORDER BY created_at LIMIT 1))
+ WHERE so.has_pricing;
+
