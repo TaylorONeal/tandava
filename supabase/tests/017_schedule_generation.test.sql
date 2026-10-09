@@ -126,3 +126,24 @@ BEGIN
   PERFORM pg_temp.ok(v_from = (NOW() AT TIME ZONE v_tz)::date AND v_from <> CURRENT_DATE,
                      'GEN-13', 'implicit start date is the studio''s local date (' || v_tz || ' ' || v_from || ')');
 END $$;
+
+-- GEN-14 (00037): an explicitly supplied start date is kept as given (studio C is
+-- in a timezone whose date differs, set by GEN-13).
+-- GEN-15 (00037): a class with a one-off change keeps it when the rule is edited.
+DO $$
+DECLARE v_rule uuid := 'cccccccc-4000-0000-0000-000000000002'; v_from date; v_sub uuid; v_room text;
+BEGIN
+  INSERT INTO schedule_rules (id, studio_id, offering_id, location_id, recurrence, day_of_week, start_time, end_time, room, effective_from)
+  VALUES (v_rule, pg_temp.id('studio_c'), 'cccccccc-2000-0000-0000-000000000001', 'cccccccc-1000-0000-0000-000000000003',
+          'weekly', 'wednesday', '12:00', '13:00', 'Main', CURRENT_DATE)
+  RETURNING effective_from INTO v_from;
+  PERFORM pg_temp.ok(v_from = CURRENT_DATE, 'GEN-14', 'explicit start date is kept even when it equals the database date');
+
+  SELECT id INTO v_sub FROM class_occurrences WHERE schedule_rule_id = v_rule ORDER BY starts_at LIMIT 1;
+  UPDATE class_occurrences SET room = 'Studio 2', is_subbed = true WHERE id = v_sub;
+  UPDATE schedule_rules SET room = 'Loft' WHERE id = v_rule;
+  SELECT room INTO v_room FROM class_occurrences WHERE id = v_sub;
+  PERFORM pg_temp.ok(v_room = 'Studio 2'
+                     AND (SELECT count(*) FROM class_occurrences WHERE schedule_rule_id = v_rule AND room = 'Loft') >= 7,
+                     'GEN-15', 'one-off change survives a rule edit; other classes refresh');
+END $$;
