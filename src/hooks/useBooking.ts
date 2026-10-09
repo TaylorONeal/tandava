@@ -11,7 +11,7 @@ import { useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { data as backendData, api as backendApi, isBackendConfigured } from "@/lib/backend";
 import type { BookClassInput, ExpressBookInput, ExpressBookResult } from "@/lib/backend";
-import type { ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront } from "@/types/database";
+import type { ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyBookingRow, StudioStorefront } from "@/types/database";
 import { resolvePaymentSources } from "@/lib/booking/entitlements";
 import type { PaymentSource } from "@/components/booking/PaymentSourceSelector";
 
@@ -233,6 +233,19 @@ export function useMyStudio() {
       const { data, error } = await backendData.getMyStudio();
       if (error) throw new Error(error.message);
       return data;
+    },
+  });
+}
+
+/** The signed-in user's own bookings for My Schedule (get_my_bookings, 00039). */
+export function useMyBookings() {
+  return useQuery({
+    queryKey: ["my-bookings"],
+    enabled: enabled(),
+    queryFn: async (): Promise<MyBookingRow[]> => {
+      const { data, error } = await backendData.getMyBookings();
+      if (error) throw new Error(error.message);
+      return data ?? [];
     },
   });
 }
