@@ -110,4 +110,4 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 
 ## 2026-10-09 (later): LP-6 Settings shows only what saves
 - Live studios no longer see the Locations, Notifications and SEO tabs or the logo upload (they only toasted "saved"; the SEO tab showed a fake sitemap URL). The demo keeps them. `showSettingsTab` is unit-tested.
-- Billing tab (live) shows the real payout status from `stripe-connect` and opens Stripe onboarding or the Stripe account.
+- Billing tab (live) shows payout status from `stripe-connect`: ready only when Stripe has `charges_enabled` (what checkout requires), "Stripe review" when details are in but payments are not on yet ("Finish in Stripe" resumes onboarding), and "Open Stripe" goes to the owner's Stripe dashboard (Standard accounts).
