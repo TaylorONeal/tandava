@@ -23,6 +23,11 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import { data as backendData, isBackendConfigured } from "@/lib/backend";
+import { useMyBookings } from "@/hooks/useBooking";
+import { SEOHead } from "@/components/seo/SEOHead";
+import { splitMyBookings, type MyBookingView } from "@/lib/myBookings";
 
 interface BookingItem {
   id: string;
@@ -31,7 +36,7 @@ interface BookingItem {
   teacher: {
     name: string;
     avatar?: string;
-  };
+  } | null;
   startTime: string;
   duration: number;
   location: string;
@@ -148,7 +153,7 @@ function BookingCard({
 }: {
   booking: BookingItem;
   onCancel: (id: string) => void;
-  onRate: (id: string) => void;
+  onRate?: (id: string) => void;
   isPast?: boolean;
 }) {
   const status = statusConfig[booking.status];
@@ -173,6 +178,7 @@ function BookingCard({
           <h3 className="text-lg font-semibold text-foreground">{booking.title}</h3>
 
           {/* Teacher */}
+          {booking.teacher && (
           <div className="flex items-center gap-2 mt-2 mb-3">
             <Avatar className="h-6 w-6">
               <AvatarImage src={booking.teacher.avatar} alt={booking.teacher.name} />
@@ -182,6 +188,7 @@ function BookingCard({
             </Avatar>
             <span className="text-sm text-muted-foreground">{booking.teacher.name}</span>
           </div>
+          )}
 
           {/* Details */}
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
@@ -210,7 +217,7 @@ function BookingCard({
 
         {/* Actions */}
         <div className="flex sm:flex-col gap-2">
-          {isPast && booking.status === "CHECKED_IN" ? (
+          {isPast && booking.status === "CHECKED_IN" && onRate ? (
             <Button variant="outline" size="sm" onClick={() => onRate(booking.id)}>
               <Star className="h-4 w-4 me-1" />
               Rate
@@ -231,25 +238,67 @@ function BookingCard({
   );
 }
 
+/** A live booking in the card's shape. */
+function toItem(v: MyBookingView): BookingItem {
+  return {
+    id: v.id,
+    type: "CLASS",
+    title: v.classCancelled ? `${v.title} (cancelled by the studio)` : v.title,
+    teacher: v.teacherName ? { name: v.teacherName } : null,
+    startTime: v.when,
+    duration: v.durationMinutes,
+    location: v.place ? `${v.studioName} · ${v.place}` : v.studioName,
+    status: v.status,
+    canCancel: v.canCancel,
+    cancelDeadline: v.cancelDeadline ?? undefined,
+  };
+}
+
 const MySchedule = () => {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<BookingItem | null>(null);
   const [canceledIds, setCanceledIds] = useState<Set<string>>(new Set());
   const [ratedIds, setRatedIds] = useState<Set<string>>(new Set());
+  const [cancelling, setCancelling] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const activeUpcoming = upcomingBookings.filter((b) => !canceledIds.has(b.id));
+  // Live: the signed-in student's real bookings. Demo: the sample list.
+  const live = isBackendConfigured();
+  const { data: rows, isLoading, isError } = useMyBookings();
+  const liveSplit = splitMyBookings(rows ?? []);
+  const upcomingSource = live ? liveSplit.upcoming.map(toItem) : upcomingBookings;
+  const pastSource = live ? liveSplit.past.map(toItem) : pastBookings;
+
+  const activeUpcoming = upcomingSource.filter((b) => !canceledIds.has(b.id));
 
   const handleCancelClick = (id: string) => {
-    const booking = [...upcomingBookings, ...pastBookings].find((b) => b.id === id);
+    const booking = [...upcomingSource, ...pastSource].find((b) => b.id === id);
     if (booking) {
       setSelectedBooking(booking);
       setCancelDialogOpen(true);
     }
   };
 
-  const handleConfirmCancel = () => {
+  const handleConfirmCancel = async () => {
     if (!selectedBooking) return;
+    if (live) {
+      setCancelling(true);
+      const { error } = await backendData.cancelBooking(selectedBooking.id);
+      setCancelling(false);
+      if (error) {
+        toast({ title: "Not cancelled", description: error.message, variant: "destructive" });
+        return;
+      }
+      await queryClient.invalidateQueries({ queryKey: ["my-bookings"] });
+      toast({
+        title: "Booking cancelled",
+        description: `Your ${selectedBooking.title} booking is cancelled. The studio's cancellation policy applies.`,
+      });
+      setCancelDialogOpen(false);
+      setSelectedBooking(null);
+      return;
+    }
     setCanceledIds((prev) => new Set(prev).add(selectedBooking.id));
     toast({
       title: "Booking canceled",
@@ -270,6 +319,8 @@ const MySchedule = () => {
 
   return (
     <AppLayout>
+      {/* A personal page: never indexed. */}
+      <SEOHead title="My schedule" noindex />
       <div className="space-y-6">
         {/* Header */}
         <div>
@@ -291,14 +342,18 @@ const MySchedule = () => {
           </TabsList>
 
           <TabsContent value="upcoming" className="mt-6">
-            {activeUpcoming.length > 0 ? (
+            {live && isLoading ? (
+              <div className="rounded-xl border bg-card p-12 text-center text-muted-foreground">Loading your bookings…</div>
+            ) : live && isError ? (
+              <div className="rounded-xl border bg-card p-12 text-center text-muted-foreground">Your bookings could not be loaded. Refresh to try again.</div>
+            ) : activeUpcoming.length > 0 ? (
               <div className="space-y-4">
                 {activeUpcoming.map((booking) => (
                   <BookingCard
                     key={booking.id}
                     booking={booking}
                     onCancel={handleCancelClick}
-                    onRate={handleRate}
+                    onRate={live ? undefined : handleRate}
                   />
                 ))}
               </div>
@@ -310,21 +365,21 @@ const MySchedule = () => {
                   You don't have any classes, workshops, or appointments scheduled.
                 </p>
                 <Button asChild>
-                  <a href="/schedule">Browse Schedule</a>
+                  <a href={live ? "/discover" : "/schedule"}>Find a class</a>
                 </Button>
               </div>
             )}
           </TabsContent>
 
           <TabsContent value="past" className="mt-6">
-            {pastBookings.length > 0 ? (
+            {pastSource.length > 0 ? (
               <div className="space-y-4">
-                {pastBookings.map((booking) => (
+                {pastSource.map((booking) => (
                   <BookingCard
                     key={booking.id}
                     booking={booking}
                     onCancel={handleCancelClick}
-                    onRate={handleRate}
+                    onRate={live ? undefined : handleRate}
                     isPast
                   />
                 ))}
@@ -367,7 +422,7 @@ const MySchedule = () => {
             <Button variant="outline" onClick={() => setCancelDialogOpen(false)}>
               Keep Booking
             </Button>
-            <Button variant="destructive" onClick={handleConfirmCancel}>
+            <Button variant="destructive" onClick={handleConfirmCancel} disabled={cancelling}>
               Cancel Booking
             </Button>
           </DialogFooter>

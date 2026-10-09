@@ -101,3 +101,9 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - Workbench shell rejects `--override` flags on `stripe trigger`, so it cannot send a session with our metadata. A fulfilled purchase needs a real Checkout session from our app.
 - Found: CSP `frame-src` blocked `https://js.stripe.com` on every page (console error on the storefront). Fixed in this PR with a header test.
 - Agents may not type card numbers, test cards included, on non-local pages, so the Checkout card step stays with Taylor (about 20 seconds).
+
+## 2026-10-09 (later): LP-4a My Schedule on real bookings
+- 00039 `get_my_bookings()`: the caller's own bookings with class, studio, room, location and teacher names (SECURITY DEFINER, authenticated only). Tests MYB-01..03.
+- /my-schedule (live) lists real upcoming and past bookings in the studio's timezone, with the late-cancel deadline; Cancel calls `cancel_booking`. Demo keeps the sample list. Page is noindex.
+- Prod after merge: Taylor runs `scripts/db/prod/apply-00039.sql` (independent of 00038).
+- Found: /account shows a made-up profile ("Sarah Chen"), membership and pack to real users, and its Save buttons only toast. LP-4b.

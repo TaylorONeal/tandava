@@ -33,7 +33,7 @@ import type {
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyBookingRow, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
 
 /** Request header carrying the analytics session into booking RPCs (read by the bookings trigger, migration 00035). */
@@ -276,6 +276,14 @@ const supabaseData: DataProvider = {
     });
     return {
       data: (data as Booking) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async getMyBookings(): Promise<DataResult<MyBookingRow[]>> {
+    const { data, error } = await getClient().rpc("get_my_bookings", { p_limit: 100 });
+    return {
+      data: (data as MyBookingRow[] | null) ?? [],
       error: error ? { message: error.message } : null,
     };
   },

@@ -9,7 +9,7 @@
  * See docs/developer/backend-flexibility.md for architecture details.
  */
 
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyBookingRow, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { StudioSettingsPatch, StudioSettingsRow } from "@/lib/hosted/studioSettings";
 import type { FeedbackType } from "@/types/database";
 import type { AttributionModel, AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
@@ -193,6 +193,8 @@ export interface DataProvider {
 
   /** Cancel a booking via the cancel_booking() RPC (late-cancel detection + refund/fee). */
   cancelBooking(bookingId: string): Promise<DataResult<Booking>>;
+  /** The signed-in user's own bookings, newest class first (get_my_bookings, 00039). */
+  getMyBookings(): Promise<DataResult<MyBookingRow[]>>;
 
   /** Public upcoming schedule for a discoverable studio (by slug) — used by the embed widget. */
   getPublicSchedule(slug: string, limit?: number): Promise<DataResult<PublicScheduleRow[]>>;
