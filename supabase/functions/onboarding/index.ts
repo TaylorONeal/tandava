@@ -434,7 +434,14 @@ serve(async (req) => {
           classes_per_cycle: unlimitedEarly ? null : packClassesEarly,
           price_cents: f.memberPrice ? dollarsToCents(f.memberPrice) : (unlimitedEarly ? dropInEarly * 12 : dropInEarly * packClassesEarly),
         };
-        const { data: starter } = step === "pricing"
+        // The wizard's starter pack and plan exist only once this step has been
+        // completed (has_pricing); they are then the studio's oldest. If the step
+        // was skipped, a pack or plan the owner made in Classes and pricing is
+        // theirs, not the wizard's, and is never overwritten here.
+        const { data: progress } = await db.from("studio_onboarding").select("has_pricing")
+          .eq("studio_id", studioId).maybeSingle();
+        const hasStarter = step === "pricing" && progress?.has_pricing === true;
+        const { data: starter } = hasStarter
           ? await db.from("membership_types").select("id, billing_cycle, classes_per_cycle")
               .eq("studio_id", studioId).order("created_at").limit(1).maybeSingle()
           : { data: null };
@@ -490,9 +497,10 @@ serve(async (req) => {
             price_cents: f.packPrice ? dollarsToCents(f.packPrice) : dropIn * packClasses,
             validity_days: 90,
           };
-          const { data: existingPack } = await db
-            .from("class_pack_types").select("id").eq("studio_id", studioId)
-            .order("created_at").limit(1).maybeSingle();
+          const { data: existingPack } = hasStarter
+            ? await db.from("class_pack_types").select("id").eq("studio_id", studioId)
+                .order("created_at").limit(1).maybeSingle()
+            : { data: null };
           // Checked: 00042 rejects negative prices and zero-class packs.
           const { error: packErr } = existingPack
             ? await db.from("class_pack_types").update(pack).eq("id", existingPack.id)
