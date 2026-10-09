@@ -630,6 +630,10 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 | Onboarding saved a weekly rule and nothing expanded it into classes | A new studio had a schedule with nothing to book; every booking and payment test was blocked | Seed one real studio end to end through the UI before calling a flow done. Rules now expand by trigger plus a daily job (00036, GEN tests) |
 | Stripe API defaults move under you | `accounts.create` (v1) is refused for new Connect platforms in 2026 | Read the function log (`query_logs`, source `function_logs`) before guessing; record the Stripe setting you rely on in PROGRESS |
 | Telling the user an account without checking | "Reset the app password" left Taylor guessing which account | Name the exact email and what it signs into; check `auth.users` read-only first |
+| Driving Stripe in the built-in browser pane | Stripe login needs Taylor's passkey, which does not work in the pane; the pane session also dropped the login | Use Claude in Chrome (his real Chrome, already signed in to Stripe). Stripe's segmented date input needs one key press per digit |
+| "Paste the SQL" without a link | Taylor did not know where the SQL was | Hand the raw file link (`https://raw.githubusercontent.com/TaylorONeal/tandava/main/scripts/db/prod/apply-000NN.sql`) plus the SQL editor link |
+| Treating "hidden from Discover" as "private" | The storefront RPCs and express-book gate on `discoverable`, so a hidden studio has no public page and cannot sell. Found when the test studio's page said "Studio not available" | LP-2: separate "page is live" from "listed in Discover" |
+| Changing prod rows with `execute_sql` | The auto-mode guard blocks prod UPDATEs too ([Modify Shared Resources]), even for the test studio | Hand Taylor the product UI switch (e.g. /manage/settings), not SQL |
 
 ## Quick Reference: Prevention Patterns
 

@@ -80,6 +80,13 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - Found: after sign-in a real owner lands on `/schedule` with Oxatl sample data, and the manage header says "Tandava Yoga" with sample notifications (BACKLOG).
 - Turnstile shows "Verification failed" in Taylor's Chrome. Do not add the Turnstile secret to Supabase Auth until the widget passes; check the widget hostnames first.
 
+## 2026-10-09 (evening): Stripe ready, launch path set
+- #85 merged (cfa9aa3). 00036 and 00037 applied to prod by Taylor; onboarding edge function v4 deployed (re-saving the class step edits the first rule).
+- Stripe sandbox (platform `acct_1UNlJxL4WU0kwuiF`, "Purafield Studio sandbox"): test studio connected account `acct_1UOSAmL4K6KVihAt` Enabled, charges and payouts on, Stripe test bank. `studios.stripe_charges_enabled` = true.
+- Webhook destinations, both Active: `tandava-prod` (Your account, 7 events) and `tandava-prod-connect` (Connected accounts, `account.updated`). `STRIPE_CONNECT_WEBHOOK_SECRET` set by Taylor in Supabase. `stripe_events` is still empty: no purchase yet.
+- Found: the test studio's page `/s/purafield-studio-test-eejz` says "Studio not available". Storefront RPCs and express-book gate on `discoverable`, so a studio outside Discover cannot sell. LP-2.
+- Launch path written as gates LP-1..LP-14 at the top of BACKLOG.md. Next: LP-1 (sandbox smoke purchases), with Discover temporarily on for the test studio, then LP-1b (every webhook event).
+
 ## 2026-10-09 (later): attribution phase 1 (#72) live in the database
 - 00035 applied to prod by Taylor (SQL editor, bundle `scripts/db/prod/apply-00035.sql`, sha 654754f0ed69). Verified read-only: checkout, renewal, claim and opt-in functions present, `automation_settings` present, `bookings.confirmed_at` present, `analytics_sessions.profile_id` FK is ON DELETE SET NULL, 0 RLS tables without a policy, anon cannot write conversions. 00036 and 00037 also on prod.
 - Edge functions deployed from the #72 branch via Supabase MCP, each bundled to one file with esbuild (`npx esbuild supabase/functions/<fn>/index.ts --bundle --format=esm --platform=neutral --external:'https://*'`): stripe-webhook v5, stripe-checkout v5, express-book v3, analytics-session v1 (new), unsubscribe v1 (new), run-automations v1 (new). verify_jwt off for all but stripe-checkout. Smoke-tested: webhook 400 without signature, checkout 401 "Not authenticated", express-book 404 for an unknown studio, analytics-session `{sessionId:null}` for an unknown studio, unsubscribe 400 invalid_link, run-automations 403 without the cron secret.
