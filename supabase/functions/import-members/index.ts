@@ -172,7 +172,7 @@ serve(async (req) => {
       const { error: linkErr } = await db
         .from("studio_members")
         .upsert(
-          { studio_id: studioId, profile_id: profileId, notes: rec.notes || null, tags },
+          { studio_id: studioId, profile_id: profileId, notes: rec.notes || null, tags, source: "import" },
           { onConflict: "studio_id,profile_id", ignoreDuplicates: true },
         );
       if (linkErr) {

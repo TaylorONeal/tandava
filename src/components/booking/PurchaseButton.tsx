@@ -41,8 +41,8 @@ export function PurchaseButton({ kind, studioId, studioSlug, itemId, label, vari
     trackFunnel("checkout_started", { kind });
     const { error } =
       kind === "membership"
-        ? await checkoutMembership(studioId, itemId)
-        : await checkoutClassPack(studioId, itemId);
+        ? await checkoutMembership(studioId, itemId, studioSlug)
+        : await checkoutClassPack(studioId, itemId, studioSlug);
     if (error) {
       setBusy(false);
       toast({ title: "Couldn't start checkout", description: error, variant: "destructive" });

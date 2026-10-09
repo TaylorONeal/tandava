@@ -26,6 +26,15 @@ export interface EmailMessage {
   text?: string;
   replyTo?: string;
   tags?: Record<string, string>;
+  /** Extra headers, e.g. List-Unsubscribe for marketing email (RFC 8058). */
+  headers?: Record<string, string>;
+  /** Display name override, e.g. the studio's name on its own automations. */
+  fromName?: string;
+}
+
+/** Strip characters that would break a From display name. */
+function displayName(name: string): string {
+  return name.replace(/["<>\r\n]/g, "").slice(0, 80);
 }
 
 export interface EmailResult {
@@ -60,12 +69,13 @@ function createResendProvider(): EmailProviderAdapter {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: `${fromName} <${from}>`,
+          from: `${displayName(message.fromName ?? fromName)} <${from}>`,
           to: message.to,
           subject: message.subject,
           html: message.html,
           text: message.text,
           reply_to: message.replyTo,
+          headers: message.headers,
           tags: message.tags
             ? Object.entries(message.tags).map(([name, value]) => ({ name, value }))
             : undefined,
@@ -104,7 +114,8 @@ function createSendGridProvider(): EmailProviderAdapter {
         },
         body: JSON.stringify({
           personalizations: [{ to: [{ email: message.to }] }],
-          from: { email: from, name: fromName },
+          from: { email: from, name: displayName(message.fromName ?? fromName) },
+          headers: message.headers,
           reply_to: message.replyTo ? { email: message.replyTo } : undefined,
           subject: message.subject,
           content: [
@@ -146,12 +157,13 @@ function createSMTPProvider(): EmailProviderAdapter {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          from,
+          from: message.fromName ? `${displayName(message.fromName)} <${from}>` : from,
           to: message.to,
           subject: message.subject,
           html: message.html,
           text: message.text,
           replyTo: message.replyTo,
+          headers: message.headers,
         }),
       });
 
@@ -204,6 +216,29 @@ function getProvider(): EmailProviderAdapter {
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
+/**
+ * The provider sendEmail() will use. "console" delivers nothing (it only
+ * logs), so callers that record a send as delivered must refuse it.
+ */
+export function emailProviderName(): string {
+  return getProvider().name;
+}
+
+/**
+ * Whether the configured provider can deliver at all: a real provider with
+ * its credential set. Callers that claim a send before delivering (and can't
+ * retry a claimed send) check this first, so a missing secret fails the run,
+ * not every email in it.
+ */
+export function emailProviderReady(): { ready: boolean; reason?: string } {
+  const name = emailProviderName();
+  const required: Record<string, string> = { resend: "RESEND_API_KEY", sendgrid: "SENDGRID_API_KEY", smtp: "SMTP_RELAY_URL" };
+  const key = required[name];
+  if (!key) return { ready: false, reason: "email_provider_not_configured" };
+  if (!Deno.env.get(key)) return { ready: false, reason: `${key.toLowerCase()}_missing` };
+  return { ready: true };
+}
+
 /**
  * Send an email using the configured provider.
  * Errors are caught and returned — never thrown — so email failures

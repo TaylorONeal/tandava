@@ -117,8 +117,8 @@ export function useBookClass() {
 export function useBookClassAuto() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (occurrenceId: string) => {
-      const { data, error } = await backendData.bookClassAuto(occurrenceId);
+    mutationFn: async ({ occurrenceId, sessionId }: { occurrenceId: string; sessionId?: string }) => {
+      const { data, error } = await backendData.bookClassAuto(occurrenceId, sessionId);
       if (error) throw new Error(error.message);
       if (!data) throw new Error("Booking failed");
       return data;

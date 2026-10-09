@@ -1,10 +1,11 @@
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
 import { auth, data, isBackendConfigured } from "@/lib/backend";
-import type { AuthUser, AuthError } from "@/lib/backend";
+import type { AuthUser, AuthError, SignUpMetadata } from "@/lib/backend";
 import type { Profile } from "@/types/database";
 import type { Permission } from "@/types/roles";
 import { getPermissionsForUserRole } from "@/types/roles";
 import { useDemo } from "@/contexts/DemoContext";
+import { forgetVisitor, linkVisitorOnce, resolveVisitorIdentity } from "@/lib/analytics/session";
 import {
   checkLoginRateLimit,
   clearLoginRateLimit,
@@ -28,10 +29,10 @@ interface AuthContextValue extends AuthState {
   signUpWithEmail: (
     email: string,
     password: string,
-    metadata: { first_name: string; last_name: string; marketing_consent?: boolean },
+    metadata: SignUpMetadata,
     next?: string
   ) => Promise<{ error: AuthError | null; requiresEmailConfirmation?: boolean }>;
-  signInWithGoogle: (next?: string) => Promise<{ error: AuthError | null }>;
+  signInWithGoogle: (next?: string, consentNonce?: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
   resetPassword: (
     email: string,
@@ -51,6 +52,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const demo = useDemo();
   const isDemoMode = demo.isDemoMode || !isBackendConfigured();
 
+  /** The signed-in user the listener last saw, to spot a sign-out from elsewhere. */
+  const lastUserId = useRef<string | null>(null);
   const [state, setState] = useState<AuthState>({
     user: null,
     profile: isDemoMode ? { ...demo.activeProfile, role: demo.activePersona.role } : null,
@@ -112,7 +115,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       let profile: Profile | null = null;
       let permissions: Permission[] = [];
 
+      // Signed out without this tab's signOut() (expired session, another
+      // tab): the browser id is linked to that person, so start a fresh one
+      // before anonymous visits join their journey.
+      if (!user && lastUserId.current) forgetVisitor();
+      lastUserId.current = user?.id ?? null;
+
       if (user) {
+        void linkVisitorOnce(user.id);
         profile = await fetchProfile(user.id);
         if (profile) {
           permissions = getPermissionsForUserRole(profile.role);
@@ -130,6 +140,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Initial session check
     auth.getSession().then(async ({ user }) => {
+      if (user) lastUserId.current = user.id;
+      // Tell visit capture who is signed in on this load. A cold load that is
+      // already signed out rotates an id still owned by the previous account
+      // (no auth event will), and page views waiting on it are released.
+      if (user || !lastUserId.current) resolveVisitorIdentity(user?.id ?? null);
       let profile: Profile | null = null;
       let permissions: Permission[] = [];
 
@@ -188,22 +203,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUpWithEmail = async (
     email: string,
     password: string,
-    metadata: { first_name: string; last_name: string; marketing_consent?: boolean },
+    metadata: SignUpMetadata,
     next?: string
   ) => {
     if (isDemoMode) return { error: null };
     return auth.signUpWithEmail(email, password, metadata, next);
   };
 
-  const signInWithGoogle = async (next?: string) => {
+  const signInWithGoogle = async (next?: string, consentNonce?: string) => {
     if (isDemoMode) return { error: null };
-    const { error } = await auth.signInWithOAuth("google", next);
+    const { error } = await auth.signInWithOAuth("google", next, consentNonce);
     return { error };
   };
 
   const signOut = async () => {
     if (isDemoMode) return;
     await auth.signOut();
+    forgetVisitor();
   };
 
   const resetPassword = async (email: string, options?: { next?: string; claim?: boolean }) => {

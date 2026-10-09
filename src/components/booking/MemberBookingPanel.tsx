@@ -13,6 +13,7 @@
  */
 
 import { useState } from "react";
+import { captureSettled, checkoutAttribution, currentSessionId } from "@/lib/analytics/session";
 import { useMemberEntitlements, useBookingSources, useBookClass } from "@/hooks/useBooking";
 import { api as backendApi, data as backendData } from "@/lib/backend";
 import { useAuth } from "@/contexts/AuthContext";
@@ -63,7 +64,10 @@ export function MemberBookingPanel({
     setState("working");
     setError(null);
     try {
+      // The conversion is credited from the visit; let its capture land first.
+      await captureSettled(row.studio_slug ?? undefined);
       await bookClass.mutateAsync({
+        sessionId: currentSessionId(row.studio_slug),
         occurrenceId,
         sourceType: type === "MEMBERSHIP" ? "membership" : "class_pack",
         sourceId,
@@ -80,7 +84,8 @@ export function MemberBookingPanel({
   const bookFree = async () => {
     setState("working");
     setError(null);
-    const { error: freeError } = await backendData.bookFreeClass(occurrenceId);
+    await captureSettled(row.studio_slug ?? undefined);
+    const { error: freeError } = await backendData.bookFreeClass(occurrenceId, currentSessionId(row.studio_slug));
     if (freeError) {
       setState("error");
       setError(freeError.message);
@@ -92,12 +97,14 @@ export function MemberBookingPanel({
   const payDropIn = async () => {
     setState("working");
     setError(null);
+    await captureSettled(row.studio_slug ?? undefined);
     const origin = window.location.origin;
     const { data, error: invokeError } = await backendApi.invoke<{ url?: string; error?: string }>(
       "stripe-checkout",
       {
         type: "drop_in",
         occurrenceId,
+        ...checkoutAttribution(row.studio_slug),
         successUrl: `${origin}${returnPath}?booked=1`,
         cancelUrl: `${origin}${returnPath}?cancelled=1`,
       },

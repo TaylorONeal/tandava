@@ -257,6 +257,8 @@ export interface Booking {
   checked_in_at: string | null;
   checked_in_by: string | null;
   cancelled_at: string | null;
+  /** Set when a waitlisted booking is promoted to a seat (00035). */
+  confirmed_at?: string | null;
   cancel_reason: string | null;
   is_late_cancel: boolean;
   booked_at: string;
@@ -2809,6 +2811,15 @@ export interface PublicOccurrenceRow {
  * The caller's own studio (`get_my_studio`) — identity and branding for
  * owner-facing screens, so an owner is never asked to type their own slug.
  */
+/** A studio the caller administers (`get_my_admin_studio`), for owner-only screens. */
+export interface MyAdminStudioRow {
+  studio_id: string;
+  name: string;
+  slug: string;
+  currency: string | null;
+  staff_role: string;
+}
+
 export interface MyStudioRow {
   studio_id: string;
   name: string;
@@ -2918,6 +2929,22 @@ export interface Database {
       get_studio_storefront: {
         Args: { p_slug: string };
         Returns: StudioStorefront | null;
+      };
+      apply_my_signup_consent: {
+        Args: { p_studio_slug: string | null; p_granted: boolean | null; p_started_at: string | null };
+        Returns: boolean;
+      };
+      link_my_visitor: {
+        Args: { p_visitor_id: string; p_via: string };
+        Returns: undefined;
+      };
+      get_attribution_sources: {
+        Args: { p_from: string; p_to: string; p_model?: string; p_studio_id?: string };
+        Returns: import("./attribution").AttributionSourceRow[];
+      };
+      get_member_attribution: {
+        Args: { p_profile_id: string; p_studio_id?: string };
+        Returns: import("./attribution").MemberAttribution[];
       };
       discover_classes: {
         Args: DiscoverClassesArgs;

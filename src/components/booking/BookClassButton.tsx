@@ -18,6 +18,7 @@ import { useBookClassAuto } from "@/hooks/useBooking";
 import { checkoutDropIn } from "@/lib/stripe";
 import { authHref } from "@/lib/authReturn";
 import { trackFunnel } from "@/lib/funnel";
+import { captureSettled, currentSessionId } from "@/lib/analytics/session";
 
 interface Props {
   occurrenceId: string;
@@ -51,7 +52,9 @@ export function BookClassButton({ occurrenceId, studioSlug, className }: Props) 
 
   const onClick = async () => {
     try {
-      const result = await book.mutateAsync(occurrenceId);
+      // The booking is credited to the visit that brought them; let its capture land first.
+      await captureSettled(studioSlug);
+      const result = await book.mutateAsync({ occurrenceId, sessionId: currentSessionId(studioSlug) });
       if (result.result === "booked") {
         setDone(result.status);
         trackFunnel("booking_completed", { source: result.source_type, status: result.status });
@@ -68,7 +71,7 @@ export function BookClassButton({ occurrenceId, studioSlug, className }: Props) 
       // Nothing on file covers this class: pay for it as a drop-in.
       trackFunnel("checkout_started", { kind: "drop_in", price_cents: result.drop_in_price_cents });
       setRedirecting(true);
-      const { error } = await checkoutDropIn(occurrenceId);
+      const { error } = await checkoutDropIn(occurrenceId, studioSlug);
       if (error) {
         setRedirecting(false);
         toast({ title: "Couldn't start checkout", description: error, variant: "destructive" });

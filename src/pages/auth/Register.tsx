@@ -12,6 +12,8 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { parseIntent, STUDIO_ONBOARDING_PATH } from "@/lib/audience";
 import { authHref, resolveAfterAuth, safeNext, stashReturn } from "@/lib/authReturn";
+import { studioSlugFromPath } from "@/lib/auth/next";
+import { clearSignupConsent, rememberSignupConsent } from "@/lib/analytics/session";
 import { Turnstile, useCaptchaReady } from "@/components/auth/Turnstile";
 
 type RegistrationStep = "info" | "complete";
@@ -75,6 +77,8 @@ const Register = () => {
       return;
     }
 
+    // Email sign-ups carry the choice in metadata; drop any leftover Google attempt.
+    clearSignupConsent();
     const { error, requiresEmailConfirmation } = await signUpWithEmail(
       formData.email,
       formData.password,
@@ -82,6 +86,8 @@ const Register = () => {
         first_name: formData.firstName,
         last_name: formData.lastName,
         marketing_consent: formData.marketingConsent,
+        // Consent is to a sender: record it for the studio this sign-up came from.
+        marketing_consent_studio: studioSlugFromPath(next),
       },
       next
     );
@@ -225,7 +231,10 @@ const Register = () => {
       return;
     }
 
-    const { error } = await signInWithGoogle(next);
+    // OAuth carries no sign-up metadata: keep the marketing choice in this
+    // browser and apply it for this studio after the redirect signs them in.
+    const consentNonce = rememberSignupConsent(studioSlugFromPath(next), formData.marketingConsent);
+    const { error } = await signInWithGoogle(next, consentNonce);
     if (error) {
       toast({
         title: t('register.signupFailed'),

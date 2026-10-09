@@ -18,7 +18,7 @@ import {
   CreditCard, PauseCircle, XCircle, RefreshCw, Package, StickyNote, Shield,
   Plus, X, Gift, FileText, CheckCircle2, AlertCircle, Filter,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 // --- Mock Data ---
 const member = {
@@ -84,6 +84,7 @@ const fmtDate = (d: string, opts?: Intl.DateTimeFormatOptions) =>
 
 // --- Component ---
 export default function MemberDetail() {
+  const { id: routeId } = useParams<{ id: string }>();
   const { toast } = useToast();
   const [pauseOpen, setPauseOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
@@ -223,6 +224,10 @@ export default function MemberDetail() {
             </CardContent>
           </Card>
         </div>
+
+        {/* MemberSourceStrip waits for this page to load the routed member's
+            real details (backlog W7-11): next to the fixture member it would
+            show a real person's source under someone else's name. */}
 
         {/* Tabs */}
         <Tabs defaultValue="membership" className="space-y-6">

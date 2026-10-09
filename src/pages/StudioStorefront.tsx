@@ -15,6 +15,8 @@
 
 import { ClassTime } from "@/components/time/ClassTime";
 import { useParams, useSearchParams, Link } from "react-router-dom";
+import { useEffect } from "react";
+import { trackVisit } from "@/lib/analytics/session";
 import { useStudioStorefront, usePublicSchedule } from "@/hooks/useBooking";
 import { isBackendConfigured } from "@/lib/backend";
 import { formatPrice } from "@/lib/reference-data";
@@ -40,6 +42,16 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
   const slug = slugProp ?? params.slug;
   const { data: storefront, isLoading, isError } = useStudioStorefront(slug);
   const { data: schedule } = usePublicSchedule(slug);
+  // Sign-ups from this page come back here and carry the studio, so the
+  // marketing choice on the form is recorded for this studio (PRD-027).
+  const studioHome = slug ? `/s/${encodeURIComponent(slug)}` : "/";
+  const registerHref = slug ? `/auth/register?next=${encodeURIComponent(studioHome)}` : "/auth/register";
+  const loginHref = slug ? `/auth/login?next=${encodeURIComponent(studioHome)}` : "/auth/login";
+
+  // First-party visit capture (PRD-024): which link, post or site sent them here.
+  useEffect(() => {
+    if (slug && isBackendConfigured()) void trackVisit(slug, "storefront");
+  }, [slug]);
 
   // Storefronts read from the live backend; the demo build has none.
   if (!isBackendConfigured()) {
@@ -89,7 +101,7 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
     : all.slice(0, 6);
 
   return (
-    <Shell studioName={studio.name} accent={accent}>
+    <Shell studioName={studio.name} accent={accent} registerHref={registerHref} loginHref={loginHref}>
       <SEOHead
         title={`${studio.name} — Classes & Membership`}
         description={studio.description ?? `Book classes and memberships at ${studio.name}.`}
@@ -249,7 +261,19 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
   );
 }
 
-function Shell({ children, studioName, accent }: { children: React.ReactNode; studioName?: string; accent?: string }) {
+function Shell({
+  children,
+  studioName,
+  accent,
+  registerHref = "/auth/register",
+  loginHref = "/auth/login",
+}: {
+  children: React.ReactNode;
+  studioName?: string;
+  accent?: string;
+  registerHref?: string;
+  loginHref?: string;
+}) {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border">
@@ -264,9 +288,9 @@ function Shell({ children, studioName, accent }: { children: React.ReactNode; st
             <span className="font-semibold tracking-tight">{studioName ?? "Tandava"}</span>
           </Link>
           <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm"><Link to="/auth/login">Sign in</Link></Button>
+            <Button asChild variant="ghost" size="sm"><Link to={loginHref}>Sign in</Link></Button>
             <Button asChild size="sm" style={accent ? { backgroundColor: accent } : undefined}>
-              <Link to="/auth/register">Sign up</Link>
+              <Link to={registerHref}>Sign up</Link>
             </Button>
           </div>
         </div>

@@ -29,6 +29,12 @@ for f in 010_isolation 015_baseline 016_studio_settings 017_schedule_generation 
   [ $rc -ne 0 ] && failed=1
 done
 
+echo "== 070_attribution (scripts/db/test-attribution.sql, own fixtures, rolls back)"
+cleanup
+out=$(q -f ../../scripts/db/test-attribution.sql 2>&1); rc=$?
+echo "$out" | grep -E "PASS|FAIL|ERROR" | sed -E 's/^psql:[^ ]+ //; s/^NOTICE:  //'
+[ $rc -ne 0 ] && failed=1
+
 echo "== 040_booking_race (two concurrent sessions, one seat)"
 cleanup
 q -f fixtures.sql >/dev/null || { echo "fixtures failed"; exit 2; }

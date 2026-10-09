@@ -53,7 +53,13 @@ Estimated time: a couple of focused hours.
    supabase functions deploy email
    supabase functions deploy push
    supabase functions deploy sms
+   # Public, no user session; each validates its own input or secret:
+   supabase functions deploy express-book --no-verify-jwt
+   supabase functions deploy analytics-session --no-verify-jwt
+   supabase functions deploy unsubscribe --no-verify-jwt
+   supabase functions deploy run-automations --no-verify-jwt
    ```
+   Before `db push` on an existing project, check the migrations build a clean database locally: `scripts/db/verify-migrations.sh` (needs a local Postgres 16; see the script header).
 4. **Auth config** (**Authentication → URL Configuration**):
    - **Site URL:** `https://tandavastudio.com`
    - **Redirect URLs:** add `https://tandavastudio.com/**`
@@ -76,7 +82,7 @@ Estimated time: a couple of focused hours.
    ```
 4. Create a webhook (**Developers → Webhooks**) pointing at:
    `https://<project-ref>.supabase.co/functions/v1/stripe-webhook`
-   Subscribe to `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`. Copy its signing secret:
+   Subscribe to `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `charge.refunded`, `invoice.paid` (renewals: usage reset and the Sources report), `invoice.payment_failed`, `customer.subscription.updated`, `customer.subscription.deleted` (and `account.updated` on the Connect endpoint). The list in `supabase/functions/stripe-webhook/index.ts` is the source of truth. Copy its signing secret:
    ```bash
    supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...
    ```
@@ -146,6 +152,84 @@ If all five pass, the hosted service is live and self-serve.
 ## Optional: notifications
 
 Email and SMS are provider-agnostic edge functions. To turn them on, set the relevant secrets (see [docs/developer/email-system.md](developer/email-system.md) and the SMS function) — e.g. `EMAIL_PROVIDER=resend` + `RESEND_API_KEY=…`, and VAPID keys for web push. The app runs fine without them; studios just won't get automated messages until they're configured.
+
+### Attribution and automations (PRD-024 / PRD-027 phase 1)
+
+**Upgrading an existing project (tandava-prod) to migration 00035.** Production was
+built from main's migrations 00001 to 00034 and has no migration tracking table, so
+`supabase db push` is not used. Order matters:
+
+1. Apply the database change first, in one transaction. Open the SQL editor
+   (https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new), paste the
+   whole of [`scripts/db/prod/apply-00035.sql`](../scripts/db/prod/apply-00035.sql)
+   and run it once. It checks that 00024, 00031 and 00033 are in place and that
+   `analytics_sessions` has no duplicate visits, then applies 00035; any error rolls
+   everything back. Re-running it is harmless. (Regenerate it with
+   `scripts/db/prod-bundle.sh 00035 > scripts/db/prod/apply-00035.sql` if 00035
+   changes.)
+2. Verify, read-only, in the same editor:
+   ```sql
+   select to_regprocedure('public.record_checkout_conversion(jsonb,timestamptz)') is not null as checkout_fn,
+          to_regprocedure('public.record_renewal_conversion(text,text,integer,text,timestamptz,text)') is not null as renewal_fn,
+          to_regprocedure('public.claim_automation_send(uuid,uuid,text,integer,text)') is not null as claim_fn,
+          to_regprocedure('public.confirm_email_opt_in(uuid,uuid,timestamptz)') is not null as opt_in_fn,
+          to_regclass('public.automation_settings') is not null as automations,
+          (select count(*) from pg_tables t where schemaname = 'public' and rowsecurity
+             and not exists (select 1 from pg_policies p where p.schemaname = 'public' and p.tablename = t.tablename)) as rls_tables_without_policy,
+          has_function_privilege('anon', 'public.record_conversion(uuid,uuid,uuid,text,integer,text,text,uuid,uuid,text,timestamptz)', 'EXECUTE') as anon_can_write_conversions;
+   ```
+   Expect `true, true, true, true, true, 0, false`. (`to_regprocedure` needs every
+   argument type, defaulted ones included.)
+3. Only then deploy the functions: `stripe-webhook` and `stripe-checkout` (they call
+   the new SQL functions; deployed before step 1, every paid checkout would answer
+   500 and Stripe would retry until the SQL exists), then `express-book`,
+   `analytics-session`, `unsubscribe`, `run-automations` (all `--no-verify-jwt`).
+4. Then the frontend (Vercel), so visit capture and sign-in linking start.
+
+
+Visit capture (`analytics-session`) and conversion recording need no secrets beyond `APP_URL`. Set `ANALYTICS_IP_SALT` (any long random string; `EXPRESS_IP_SALT` is used if it is unset) so visit capture can rate-limit each source to 300 page views an hour; without a salt only the per-studio cap (20,000 an hour) applies. Only a salted hash is kept, for at most a day, never next to a visit. The automation emails need:
+
+```bash
+supabase secrets set APP_URL=https://tandavastudio.com
+supabase secrets set AUTOMATIONS_CRON_SECRET=<long random string>
+supabase secrets set AUTOMATIONS_UNSUBSCRIBE_SECRET=<a different long random string>
+# Leave this unset until a dry run looks right; without it every run only reports.
+supabase secrets set AUTOMATIONS_ENABLED=true
+```
+
+`AUTOMATIONS_ENABLED=true` also needs a real `EMAIL_PROVIDER` (`resend`, `sendgrid` or `smtp`) with its secret (`RESEND_API_KEY`, `SENDGRID_API_KEY` or `SMTP_RELAY_URL`). Without them a run only plans and returns `"blocked": "<reason>"` (`email_provider_not_configured`, or e.g. `resend_api_key_missing`): a claimed send can't be retried, so nothing is claimed until the provider can deliver.
+
+Never rotate `AUTOMATIONS_UNSUBSCRIBE_SECRET` casually: it signs the unsubscribe links in emails already sent, and rotating it breaks them. It also signs the opt-in confirmation links, so `express-book` needs it too (Supabase secrets are shared by all functions).
+
+Confirmed opt-in: a ticked marketing box on the public booking form does not record consent. `express-book` emails a confirm link (`/email-updates?c=...`, valid 14 days); consent is recorded (source `email_confirmation`) only when the person taps "Yes, send me updates" on that page. An unticked box records an opt-out immediately. Logs saying `opt-in confirmation email failed`, `timed out` or `email provider can't deliver` (the booking waits at most 3 seconds for it) mean that person simply isn't opted in.
+
+Dry run first (returns the plan per studio, sends nothing):
+
+```bash
+curl -s -X POST "https://<project-ref>.supabase.co/functions/v1/run-automations" \
+  -H "x-cron-secret: $AUTOMATIONS_CRON_SECRET" -H "content-type: application/json" \
+  -d '{"dryRun": true}'
+```
+
+Then schedule it hourly with pg_cron + pg_net (**Database → Extensions**: enable both; store the secret in Vault rather than in the job text):
+
+```sql
+select vault.create_secret('<the cron secret>', 'automations_cron_secret');
+select cron.schedule('run-automations', '7 * * * *', $$
+  select net.http_post(
+    url := 'https://<project-ref>.supabase.co/functions/v1/run-automations',
+    headers := jsonb_build_object(
+      'content-type', 'application/json',
+      'x-cron-secret', (select decrypted_secret from vault.decrypted_secrets where name = 'automations_cron_secret')
+    ),
+    body := '{}'::jsonb
+  );
+$$);
+```
+
+Quiet hours, the daily cap and consent are enforced per person in code, so an hourly schedule is safe in every time zone.
+
+A studio with no street address and city on an active location gets no automation email (the run report says `blocked: no_postal_address`). If the `express-book` logs ever show `CONSENT NOT SAVED`, record that person's choice by hand before the next run: an unsaved opt-out must not be emailed.
 
 ---
 

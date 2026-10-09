@@ -48,12 +48,24 @@ export function isStripeConfigured(): boolean {
 // Checkout helpers (call backend API functions)
 // ---------------------------------------------------------------------------
 import { api } from "@/lib/backend";
+import { captureSettled, checkoutAttribution } from "@/lib/analytics/session";
+
+/**
+ * Attribution for a checkout: wait (max 2 s) for this page's visit capture,
+ * then send that studio's visit. Without the wait a quick click sends no
+ * session, or another studio's.
+ */
+async function attributionFor(studioSlug?: string) {
+  await captureSettled(studioSlug);
+  return checkoutAttribution(studioSlug);
+}
 
 /** Redirect to Stripe Checkout for a class drop-in (by class occurrence id) */
-export async function checkoutDropIn(occurrenceId: string): Promise<{ error?: string }> {
+export async function checkoutDropIn(occurrenceId: string, studioSlug?: string): Promise<{ error?: string }> {
   const { data, error } = await api.invoke<{ url: string }>("stripe-checkout", {
     type: "drop_in",
     occurrenceId,
+    ...(await attributionFor(studioSlug)),
   });
 
   if (error) return { error: error.message };
@@ -69,12 +81,14 @@ export async function checkoutDropIn(occurrenceId: string): Promise<{ error?: st
 /** Redirect to Stripe Checkout for a membership/subscription */
 export async function checkoutMembership(
   studioId: string,
-  membershipTypeId: string
+  membershipTypeId: string,
+  studioSlug?: string,
 ): Promise<{ error?: string }> {
   const { data, error } = await api.invoke<{ url: string }>("stripe-checkout", {
     type: "membership",
     studioId,
     membershipTypeId,
+    ...(await attributionFor(studioSlug)),
   });
 
   if (error) return { error: error.message };
@@ -90,12 +104,14 @@ export async function checkoutMembership(
 /** Redirect to Stripe Checkout for a class pack (by class pack type id) */
 export async function checkoutClassPack(
   studioId: string,
-  classPackTypeId: string
+  classPackTypeId: string,
+  studioSlug?: string,
 ): Promise<{ error?: string }> {
   const { data, error } = await api.invoke<{ url: string }>("stripe-checkout", {
     type: "class_pack",
     studioId,
     classPackTypeId,
+    ...(await attributionFor(studioSlug)),
   });
 
   if (error) return { error: error.message };
@@ -118,6 +134,7 @@ export async function checkoutEvent(params: {
   const { data, error } = await api.invoke<{ url: string }>("stripe-checkout", {
     type: "workshop",
     ...params,
+    ...(await attributionFor()),
   });
 
   if (error) return { error: error.message };

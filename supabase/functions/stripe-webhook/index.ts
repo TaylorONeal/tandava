@@ -19,6 +19,12 @@
  * A paid customer therefore never ends up with "paid but nothing delivered":
  * either the whole fulfilment commits, or Stripe tries again.
  *
+ * Attribution (PRD-024, migration 00035): after fulfilment commits, the
+ * conversion is recorded from what fulfilment wrote (record_checkout_conversion,
+ * record_renewal_conversion), with Stripe's event time. Those calls are
+ * idempotent per entity and queue their own failures for retry, so they never
+ * affect the payment; a duplicate delivery simply re-checks them.
+ *
  * The behaviour of the SQL functions is covered by supabase/tests/060_payments.test.sql.
  *
  * Deploy: supabase functions deploy stripe-webhook
@@ -110,11 +116,18 @@ async function handle(event: Stripe.Event) {
       const session = event.data.object as Stripe.Checkout.Session;
       // Unpaid sessions (async methods still pending) are fulfilled by async_payment_succeeded.
       if (session.payment_status === "unpaid") return { status: "waiting for payment" };
-      return rpc("fulfill_stripe_checkout", {
+      const result = await rpc("fulfill_stripe_checkout", {
         p_event_id: event.id,
         p_event_type: event.type,
         p_session: session,
       });
+      // Runs on duplicates too (a no-op once recorded). The signed event time is
+      // when the checkout completed; a late delivery must not move the conversion.
+      await rpc("record_checkout_conversion", {
+        p_session: session,
+        p_occurred_at: new Date(event.created * 1000).toISOString(),
+      });
+      return result;
     }
 
     case "charge.refunded": {
@@ -136,7 +149,7 @@ async function handle(event: Stripe.Event) {
         return { status: "not a renewal" };
       }
       const line = invoice.lines.data[0];
-      return rpc("renew_membership_cycle", {
+      const renewed = await rpc("renew_membership_cycle", {
         p_event_id: event.id,
         p_subscription_id: invoice.subscription as string,
         p_period_start: new Date((line?.period?.start ?? invoice.period_start) * 1000).toISOString(),
@@ -145,6 +158,17 @@ async function handle(event: Stripe.Event) {
         p_currency: invoice.currency,
         p_payment_intent: (invoice.payment_intent as string) ?? null,
       });
+      // Money in from a renewal, credited to the member's own journey (no visit).
+      await rpc("record_renewal_conversion", {
+        p_subscription_id: invoice.subscription as string,
+        p_invoice_id: invoice.id,
+        p_amount_cents: invoice.amount_paid,
+        p_currency: invoice.currency,
+        p_paid_at: new Date((invoice.status_transitions?.paid_at ?? event.created) * 1000).toISOString(),
+        // Keys the conversion to the renewal's transaction so refunds net out.
+        p_payment_intent: (invoice.payment_intent as string) ?? null,
+      });
+      return renewed;
     }
 
     case "account.updated": {
