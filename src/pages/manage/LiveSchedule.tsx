@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { useStudioCatalog } from "@/hooks/useStudioCatalog";
 import {
-  WEEKDAYS, dayLabel, formatTime, recurrenceNote, ruleEndTime, ruleFromForm, ruleToForm, rulesByDay,
+  WEEKDAYS, dayLabel, formatTime, pickableLocations, recurrenceNote, ruleEndTime, ruleFromForm, ruleToForm, rulesByDay,
   type CatalogRule, type RuleForm, type Weekday,
 } from "@/lib/hosted/catalog";
 import { Link } from "react-router-dom";
@@ -37,7 +37,8 @@ export default function LiveSchedule() {
   const offerings = catalog?.offerings ?? [];
   const activeOfferings = offerings.filter((o) => o.is_active !== false);
   const locations = catalog?.locations ?? [];
-  const primaryLocation = locations.find((l) => l.is_primary) ?? locations[0];
+  const openLocations = pickableLocations(locations);
+  const primaryLocation = openLocations.find((l) => l.is_primary) ?? openLocations[0];
   const offeringName = (id: string) => offerings.find((o) => o.id === id)?.name ?? "Class";
   const teacherName = (id: string | null) => (id ? staff.find((s) => s.profile_id === id)?.name ?? "Teacher" : null);
 
@@ -187,12 +188,13 @@ export default function LiveSchedule() {
                   </SelectContent>
                 </Select>
               </Field>
-              {locations.length > 1 && (
+              {pickableLocations(locations, editing.id ? editing.form.locationId : undefined).length > 1 && (
                 <Field label="Location">
                   <Select value={editing.form.locationId} onValueChange={(v) => setForm("locationId", v)}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {locations.map((l) => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}
+                      {pickableLocations(locations, editing.id ? editing.form.locationId : undefined)
+                        .map((l) => <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </Field>

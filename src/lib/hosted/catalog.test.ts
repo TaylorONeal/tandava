@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   parseMoney, centsToInput, formatPrice, offeringFromForm, emptyOfferingForm, packFromForm, emptyPackForm,
-  membershipFromForm, emptyMembershipForm, ruleEndTime, ruleFromForm, rulesByDay, uniqueSlug, formatTime,
+  membershipFromForm, emptyMembershipForm, ruleEndTime, ruleFromForm, rulesByDay, uniqueSlug, formatTime, pickableLocations,
 } from "./catalog";
 
 describe("money", () => {
@@ -91,6 +91,14 @@ describe("schedule", () => {
     expect(formatTime("07:00:00")).toBe("7am");
     expect(formatTime("18:30")).toBe("6:30pm");
     expect(formatTime("12:00")).toBe("12pm");
+  });
+});
+
+describe("pickableLocations", () => {
+  it("hides closed locations except the one a rule already uses", () => {
+    const locs = [{ id: "a", is_active: true }, { id: "b", is_active: false }];
+    expect(pickableLocations(locs).map((l) => l.id)).toEqual(["a"]);
+    expect(pickableLocations(locs, "b").map((l) => l.id)).toEqual(["a", "b"]);
   });
 });
 

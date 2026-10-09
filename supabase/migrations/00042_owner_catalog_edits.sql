@@ -94,6 +94,11 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM locations WHERE id = NEW.location_id AND studio_id = NEW.studio_id) THEN
     RAISE EXCEPTION 'location belongs to another studio' USING ERRCODE = '23514';
   END IF;
+  -- A new rule, or a move to another location, needs an open location.
+  IF (TG_OP = 'INSERT' OR NEW.location_id IS DISTINCT FROM OLD.location_id)
+     AND EXISTS (SELECT 1 FROM locations WHERE id = NEW.location_id AND is_active = false) THEN
+    RAISE EXCEPTION 'that location is closed' USING ERRCODE = '23514';
+  END IF;
   IF NEW.teacher_id IS NOT NULL
      AND NOT EXISTS (SELECT 1 FROM studio_staff
                       WHERE studio_id = NEW.studio_id AND profile_id = NEW.teacher_id) THEN

@@ -283,4 +283,17 @@ BEGIN
   GET DIAGNOSTICS n = ROW_COUNT;
   EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(ok AND n = 1, 'CAT-23', 'rule move waits for a paid hold; a teacher change does not');
+
+  -- CAT-24: a new weekly class cannot use a closed location.
+  INSERT INTO locations (id, studio_id, name, is_active) VALUES ('aaaaaaaa-1000-0000-0000-000000000024', pg_temp.id('studio_a'), 'Old Loft', false);
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  BEGIN
+    INSERT INTO schedule_rules (studio_id, offering_id, location_id, recurrence, day_of_week, start_time, end_time)
+    VALUES (pg_temp.id('studio_a'), 'aaaaaaaa-2000-0000-0000-000000000002', 'aaaaaaaa-1000-0000-0000-000000000024',
+            'weekly', 'monday', '08:00', '09:00');
+    ok := false;
+  EXCEPTION WHEN check_violation THEN ok := true;
+  END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(ok, 'CAT-24', 'closed location refused for a new rule');
 END $$;

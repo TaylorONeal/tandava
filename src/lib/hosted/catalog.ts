@@ -56,7 +56,12 @@ export interface CatalogLocation {
   id: string;
   name: string;
   is_primary: boolean | null;
+  is_active: boolean | null;
 }
+
+/** Locations a rule may use: open ones, plus the rule's current one when editing. */
+export const pickableLocations = <T extends Pick<CatalogLocation, "id" | "is_active">>(locations: T[], currentId?: string): T[] =>
+  locations.filter((l) => l.is_active !== false || l.id === currentId);
 export interface StaffName {
   profile_id: string;
   name: string;
@@ -75,7 +80,7 @@ export const CATALOG_COLUMNS = {
   class_pack_types: "id, name, class_count, price_cents, validity_days, is_active",
   membership_types: "id, name, billing_cycle, price_cents, classes_per_cycle, is_active",
   schedule_rules: "id, offering_id, location_id, teacher_id, day_of_week, start_time, end_time, recurrence, is_active",
-  locations: "id, name, is_primary",
+  locations: "id, name, is_primary, is_active",
 } as const;
 
 export type CatalogTable = "offerings" | "class_pack_types" | "membership_types" | "schedule_rules";
