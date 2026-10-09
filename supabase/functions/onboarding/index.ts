@@ -420,6 +420,42 @@ serve(async (req) => {
 
       case "offerings":
       case "pricing": {
+        // Pricing step: check the membership terms before writing anything, so
+        // a refused step saves nothing. The starter plan is the studio's first
+        // membership type; its billing and class limit never change once it
+        // exists (00042: someone may be buying it).
+        const dropInEarly = dollarsToCents(f.classPrice);
+        const packClassesEarly = intOf(f.packClasses, 10);
+        const unlimitedEarly = f.memberUnlimited === true || f.memberUnlimited === "true";
+        const membership = {
+          studio_id: studioId,
+          name: String(f.memberName ?? "").trim() || (unlimitedEarly ? "Unlimited" : "Membership"),
+          billing_cycle: String(f.memberCycle ?? "monthly"),
+          classes_per_cycle: unlimitedEarly ? null : packClassesEarly,
+          price_cents: f.memberPrice ? dollarsToCents(f.memberPrice) : (unlimitedEarly ? dropInEarly * 12 : dropInEarly * packClassesEarly),
+        };
+        const { data: starter } = step === "pricing"
+          ? await db.from("membership_types").select("id, billing_cycle, classes_per_cycle")
+              .eq("studio_id", studioId).order("created_at").limit(1).maybeSingle()
+          : { data: null };
+        if (starter && (starter.billing_cycle !== membership.billing_cycle
+                        || (starter.classes_per_cycle ?? null) !== membership.classes_per_cycle)) {
+          return json({
+            error: "Your membership already exists, so its billing and class limit cannot change here. Add a new membership in Classes and pricing (/manage/offerings) and turn the old one off.",
+          }, 409);
+        }
+
+        // Same value rules as 00042, checked up front so a bad value saves nothing.
+        const durationEarly = intOf(f.classDuration, 60);
+        const capacityEarly = intOf(f.classCapacity, 20);
+        const negative = [f.classPrice, f.packPrice, f.memberPrice]
+          .some((v) => v !== undefined && v !== null && v !== "" && dollarsToCents(v) < 0);
+        if (durationEarly < 1 || capacityEarly < 1 || negative
+            || (step === "pricing" && packClassesEarly < 1)
+            || (step === "pricing" && membership.classes_per_cycle !== null && membership.classes_per_cycle < 1)) {
+          return json({ error: "Length, capacity and class counts must be at least 1, and prices cannot be negative." }, 400);
+        }
+
         // Upsert a starter offering keyed by slug; set price on the pricing step.
         const style = String(f.classStyle ?? "Class");
         const offeringName = String(f.className ?? "").trim()
@@ -431,8 +467,8 @@ serve(async (req) => {
             slug: slugify(style),
             style,
             level: f.classLevel ?? "all",
-            duration_minutes: intOf(f.classDuration, 60),
-            capacity: intOf(f.classCapacity, 20),
+            duration_minutes: durationEarly,
+            capacity: capacityEarly,
             drop_in_price_cents: f.classPrice ? dollarsToCents(f.classPrice) : null,
           },
           { onConflict: "studio_id,slug" },
@@ -463,20 +499,10 @@ serve(async (req) => {
             : await db.from("class_pack_types").insert(pack);
           if (packErr) return json({ error: packErr.message }, 400);
 
-          const membership = {
-            studio_id: studioId,
-            name: String(f.memberName ?? "").trim() || (unlimited ? "Unlimited" : "Membership"),
-            billing_cycle: String(f.memberCycle ?? "monthly"),
-            classes_per_cycle: unlimited ? null : packClasses,
-            price_cents: f.memberPrice ? dollarsToCents(f.memberPrice) : (unlimited ? dropIn * 12 : dropIn * packClasses),
-          };
           // The starter plan is the studio's first membership type. Its billing
           // and class limit never change once it exists (00042: someone may be
           // buying it), so a re-save with new terms is refused with a pointer
           // to Classes and pricing; name and price update in place.
-          const { data: starter } = await db
-            .from("membership_types").select("id, billing_cycle, classes_per_cycle")
-            .eq("studio_id", studioId).order("created_at").limit(1).maybeSingle();
           if (!starter) {
             const { error: insErr } = await db.from("membership_types").insert(membership);
             if (insErr) return json({ error: insErr.message }, 400);
@@ -486,10 +512,6 @@ serve(async (req) => {
               .update({ name: membership.name, price_cents: membership.price_cents })
               .eq("id", starter.id);
             if (updErr) return json({ error: updErr.message }, 400);
-          } else {
-            return json({
-              error: "Your membership already exists, so its billing and class limit cannot change here. Add a new membership in Classes and pricing (/manage/offerings) and turn the old one off.",
-            }, 409);
           }
         }
         break;

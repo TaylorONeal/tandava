@@ -315,6 +315,11 @@ export function ruleFromForm(
   if (!WEEKDAYS.includes(f.day)) errors.push("Pick a day.");
   if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(f.start)) errors.push("Pick a start time.");
   if (!f.locationId) errors.push("Add a location in Settings first.");
+  // Only these repeat patterns generate classes (00037); saving another would
+  // cancel the rule's future classes.
+  if (f.recurrence && !["daily", "weekly", "biweekly"].includes(f.recurrence)) {
+    errors.push("This class repeats in a way the schedule editor cannot change yet. Contact support to edit it.");
+  }
   if (errors.length || !offering) return { errors };
   return {
     patch: {

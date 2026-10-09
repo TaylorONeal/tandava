@@ -241,6 +241,19 @@ BEGIN
      AND starts_at BETWEEN NOW() + interval '47 hours' AND NOW() + interval '49 hours';
   PERFORM pg_temp.ok(n = 1, 'CAT-20', 'booked class takes the new length, same start');
 
+  -- CAT-22: a class cannot be turned off while someone holds a seat in Checkout.
+  INSERT INTO seat_holds (class_occurrence_id, profile_id, studio_id, expires_at)
+  VALUES ('aaaaaaaa-3000-0000-0000-000000000002', pg_temp.id('student_b1'), pg_temp.id('studio_a'), NOW() + interval '30 minutes');
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  BEGIN
+    UPDATE offerings SET is_active = false WHERE id = 'aaaaaaaa-2000-0000-0000-000000000002';
+    ok := false;
+  EXCEPTION WHEN lock_not_available THEN ok := true;
+  END;
+  EXECUTE 'RESET ROLE';
+  UPDATE seat_holds SET status = 'released' WHERE class_occurrence_id = 'aaaaaaaa-3000-0000-0000-000000000002';
+  PERFORM pg_temp.ok(ok, 'CAT-22', 'turning a class off waits for an active paid hold');
+
   -- CAT-21: turning a class off cancels its unbooked one-off classes; booked ones stay.
   PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
   UPDATE offerings SET is_active = false WHERE id = 'aaaaaaaa-2000-0000-0000-000000000002';

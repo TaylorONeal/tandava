@@ -68,6 +68,11 @@ describe("schedule", () => {
       [{ id: "o1", duration_minutes: 60 }],
     );
     expect(r.patch?.recurrence).toBe("biweekly");
+    const monthly = ruleFromForm(
+      { offeringId: "o1", day: "tuesday", start: "07:30", teacherId: "", locationId: "l1", isActive: true, recurrence: "monthly" },
+      [{ id: "o1", duration_minutes: 60 }],
+    );
+    expect(monthly.errors).toHaveLength(1);
   });
   it("needs a class, a time and a location", () => {
     const r = ruleFromForm({ offeringId: "x", day: "tuesday", start: "7", teacherId: "", locationId: "", isActive: true }, []);

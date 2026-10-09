@@ -118,6 +118,24 @@ DECLARE
   v_taken INTEGER;
   v_held  INTEGER;
 BEGIN
+  -- Turning a class off while a customer is paying for one of its seats is
+  -- refused (try again once Checkout ends). Otherwise a class kept only for
+  -- that hold would stay on sale after the hold expired: holds have no expiry
+  -- hook, and one-off classes have no rule for the daily job to revisit.
+  -- Classes are locked first (book and hold lock the same row), then checked.
+  IF COALESCE(OLD.is_active, true) AND NEW.is_active = false THEN
+    PERFORM 1 FROM class_occurrences co
+     WHERE co.offering_id = NEW.id AND co.starts_at > NOW() AND NOT COALESCE(co.is_cancelled, false)
+     ORDER BY co.id
+       FOR UPDATE OF co;
+    IF EXISTS (SELECT 1 FROM seat_holds h JOIN class_occurrences co ON co.id = h.class_occurrence_id
+                WHERE co.offering_id = NEW.id AND co.starts_at > NOW() AND NOT COALESCE(co.is_cancelled, false)
+                  AND h.status = 'active' AND h.expires_at > NOW()) THEN
+      RAISE EXCEPTION 'Someone is paying for a spot in this class right now. Try again in a few minutes.'
+        USING ERRCODE = '55P03';
+    END IF;
+  END IF;
+
   -- Re-save each rule: end time follows the new length (TIME wraps past
   -- midnight, and generate_rule_occurrences then uses the class length), and
   -- the 00036 trigger reconciles its classes (capacity, on/off).
