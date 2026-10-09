@@ -634,6 +634,8 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 | "Paste the SQL" without a link | Taylor did not know where the SQL was | Hand the raw file link (`https://raw.githubusercontent.com/TaylorONeal/tandava/main/scripts/db/prod/apply-000NN.sql`) plus the SQL editor link |
 | Treating "hidden from Discover" as "private" | The storefront RPCs and express-book gate on `discoverable`, so a hidden studio has no public page and cannot sell. Found when the test studio's page said "Studio not available" | LP-2: separate "page is live" from "listed in Discover" |
 | Changing prod rows with `execute_sql` | The auto-mode guard blocks prod UPDATEs too ([Modify Shared Resources]), even for the test studio | Hand Taylor the product UI switch (e.g. /manage/settings), not SQL |
+| Asking Taylor to run a test the agent could drive | He wants agents to test, not him | Drive every step yourself (Stripe Workbench shell for triggers, read-only SQL to verify). Hand over only what a rule blocks, named once with why: typing a card number on Stripe Checkout |
+| Claude in Chrome tabs freezing | Screenshots and clicks time out ("script injection timed out") when the tab is not in front or the Mac sleeps | Work in one tab, re-navigate to wake it, and check results server-side (SQL, function logs) instead of screenshots |
 
 ## Quick Reference: Prevention Patterns
 

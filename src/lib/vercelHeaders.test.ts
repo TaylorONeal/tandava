@@ -41,4 +41,13 @@ describe("vercel.json frame headers", () => {
     expect(h["Strict-Transport-Security"]).toBeDefined();
     expect(h["X-Content-Type-Options"]).toBe("nosniff");
   });
+  it("lets Stripe.js and Turnstile load their frames", () => {
+    for (const path of ["/s/oxatl", "/embed/schedule/oxatl", "/auth/register"]) {
+      const csp = headersFor(path)["Content-Security-Policy"] ?? "";
+      const frameSrc = csp.split(";").map((d) => d.trim()).find((d) => d.startsWith("frame-src")) ?? "";
+      for (const origin of ["https://js.stripe.com", "https://hooks.stripe.com", "https://challenges.cloudflare.com"]) {
+        expect(frameSrc, `${path} ${origin}`).toContain(origin);
+      }
+    }
+  });
 });

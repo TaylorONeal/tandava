@@ -95,3 +95,9 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
   1. Taylor: merge #72 (https://github.com/TaylorONeal/tandava/pull/72). Merging deploys the frontend to tandavastudio.com.
   2. Taylor: `ANALYTICS_IP_SALT` (and `EXPRESS_IP_SALT`) at https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/functions/secrets, any long random value each.
   3. Automations stay in dry run until `AUTOMATIONS_CRON_SECRET`, `AUTOMATIONS_UNSUBSCRIBE_SECRET`, `EMAIL_PROVIDER=resend`, `RESEND_API_KEY` and then `AUTOMATIONS_ENABLED=true` are set, plus the hourly cron call (docs/OPERATOR_SETUP.md).
+
+## 2026-10-09 (later): LP-1 webhook proof
+- Stripe to prod webhook proven: `stripe trigger checkout.session.completed` from the Stripe Workbench shell (sandbox) reached stripe-webhook, signature verified, one `stripe_events` row (`evt_1UOWSyL4WU0kwuiFTRgw9ovT`), correctly ignored (no `metadata.type`).
+- Workbench shell rejects `--override` flags on `stripe trigger`, so it cannot send a session with our metadata. A fulfilled purchase needs a real Checkout session from our app.
+- Found: CSP `frame-src` blocked `https://js.stripe.com` on every page (console error on the storefront). Fixed in this PR with a header test.
+- Agents may not type card numbers, test cards included, on non-local pages, so the Checkout card step stays with Taylor (about 20 seconds).
