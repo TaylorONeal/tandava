@@ -2832,6 +2832,8 @@ export interface MyStudioRow {
   logo_url: string | null;
   express_booking_enabled: boolean;
   staff_role: UserRole;
+  /** Booking page live (00038). */
+  page_live: boolean;
 }
 
 type DatabaseTable<Row, Insert = Partial<Row>> = {
