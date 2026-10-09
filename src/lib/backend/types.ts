@@ -11,6 +11,7 @@
 
 import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyBookingRow, MyEntitlementRow, MyProfilePatch, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { StudioSettingsPatch, StudioSettingsRow } from "@/lib/hosted/studioSettings";
+import type { StudioCatalog, StaffName, CatalogTable } from "@/lib/hosted/catalog";
 import type { FeedbackType } from "@/types/database";
 import type { AttributionModel, AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
 
@@ -222,6 +223,13 @@ export interface DataProvider {
   getMyStudio(): Promise<DataResult<MyStudioRow>>;
   /** A studio the caller is an active owner/admin of (owner-only screens). */
   getMyAdminStudio(): Promise<DataResult<MyAdminStudioRow>>;
+
+  /** Classes, prices, weekly schedule and locations an owner edits (LP-5, 00042). */
+  getStudioCatalog(studioId: string): Promise<DataResult<StudioCatalog>>;
+  /** Active staff of a studio the caller owns or admins, for the teacher picker. */
+  getStudioStaffNames(studioId: string): Promise<DataResult<StaffName[]>>;
+  /** Insert (no id) or update (id) one catalog row of the caller's studio. RLS: owner/admin only. */
+  saveCatalogRow(table: CatalogTable, studioId: string, row: Record<string, unknown> & { id?: string }): Promise<MutationResult>;
 
   /** The owner-editable studio row for /manage/settings (RLS: staff read, owner/admin write). */
   getStudioSettings(studioId: string): Promise<DataResult<StudioSettingsRow>>;

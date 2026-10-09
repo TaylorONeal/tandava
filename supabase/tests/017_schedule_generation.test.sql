@@ -92,6 +92,8 @@ BEGIN
                      'GEN-11', 'class with only a cancelled booking is cancelled on retime');
 
   -- GEN-12: a class kept only by a seat hold is cancelled by the daily top-up once the hold lapses.
+  -- Server path (onboarding, cron): no signed-in user. Owner edits wait for holds instead (CAT-23).
+  PERFORM set_config('request.jwt.claim.sub', '', true);
   SELECT id INTO v_booked FROM class_occurrences
    WHERE schedule_rule_id = v_rule AND NOT is_cancelled ORDER BY starts_at LIMIT 1;
   INSERT INTO seat_holds (class_occurrence_id, profile_id, studio_id, expires_at)

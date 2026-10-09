@@ -18,6 +18,7 @@ import { safeNextPath } from "@/lib/auth/next";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
 import { STUDIO_SETTINGS_COLUMNS, type StudioSettingsRow } from "@/lib/hosted/studioSettings";
+import { CATALOG_COLUMNS, type StudioCatalog, type StaffName } from "@/lib/hosted/catalog";
 import type {
   AuthProvider,
   AuthUser,
@@ -420,6 +421,45 @@ const supabaseData: DataProvider = {
     const { data, error } = await getClient().rpc("get_my_admin_studio" as never);
     const rows = (data as MyAdminStudioRow[] | null) ?? [];
     return { data: rows[0] ?? null, error: error ? { message: error.message } : null };
+  },
+
+  async getStudioCatalog(studioId): Promise<DataResult<StudioCatalog>> {
+    const db = getClient();
+    const q = (table: keyof typeof CATALOG_COLUMNS) =>
+      db.from(table as never).select(CATALOG_COLUMNS[table]).eq("studio_id", studioId).order("created_at");
+    const [offerings, packs, memberships, rules, locations] = await Promise.all([
+      q("offerings"), q("class_pack_types"), q("membership_types"), q("schedule_rules"), q("locations"),
+    ]);
+    const failed = [offerings, packs, memberships, rules, locations].find((r) => r.error);
+    if (failed?.error) return { data: null, error: { message: failed.error.message } };
+    return {
+      data: {
+        offerings: (offerings.data ?? []) as unknown as StudioCatalog["offerings"],
+        packs: (packs.data ?? []) as unknown as StudioCatalog["packs"],
+        memberships: (memberships.data ?? []) as unknown as StudioCatalog["memberships"],
+        rules: (rules.data ?? []) as unknown as StudioCatalog["rules"],
+        locations: (locations.data ?? []) as unknown as StudioCatalog["locations"],
+      },
+      error: null,
+    };
+  },
+
+  async getStudioStaffNames(studioId): Promise<DataResult<StaffName[]>> {
+    const { data, error } = await getClient().rpc("get_studio_staff_names" as never, { p_studio_id: studioId } as never);
+    return { data: (data as StaffName[] | null) ?? [], error: error ? { message: error.message } : null };
+  },
+
+  async saveCatalogRow(table, studioId, row): Promise<MutationResult> {
+    const { id, ...fields } = row;
+    const db = getClient();
+    if (id) {
+      // .select() so a row RLS hid (0 rows updated) is reported, not silently ignored.
+      const { data, error } = await db.from(table as never).update(fields as never).eq("id", id).eq("studio_id", studioId).select("id");
+      if (error) return { error: { message: error.message } };
+      return { error: (data as unknown[] | null)?.length ? null : { message: "Not saved: you may not have permission to edit this studio." } };
+    }
+    const { error } = await db.from(table as never).insert({ ...fields, studio_id: studioId } as never);
+    return { error: error ? { message: error.message } : null };
   },
 
   async getStudioSettings(studioId): Promise<DataResult<StudioSettingsRow>> {

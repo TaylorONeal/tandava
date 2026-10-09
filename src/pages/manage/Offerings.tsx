@@ -1,3 +1,5 @@
+import LiveOfferings from "./LiveOfferings";
+import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 import { ManageLayout } from "@/components/manage/ManageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,7 +49,7 @@ const mockOfferings: OfferingItem[] = [
   { id: "9", name: "Prenatal Yoga", style: "Prenatal", level: "All Levels", duration: 60, capacity: 12, dropInPrice: 2500, isHeated: false, isActive: false, weeklySlots: 0, avgAttendance: 0 },
 ];
 
-export default function OfferingsManage() {
+function DemoOfferingsManage() {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -190,4 +192,10 @@ export default function OfferingsManage() {
       </div>
     </ManageLayout>
   );
+}
+
+/** Sample data in demo mode; the studio's real classes and prices when live (LP-5). */
+export default function OfferingsManage() {
+  const { isDemoMode } = useAuth();
+  return isDemoMode ? <DemoOfferingsManage /> : <LiveOfferings />;
 }

@@ -420,29 +420,74 @@ serve(async (req) => {
 
       case "offerings":
       case "pricing": {
+        // Pricing step: check the membership terms before writing anything, so
+        // a refused step saves nothing. The starter plan is the studio's first
+        // membership type; its billing and class limit never change once it
+        // exists (00042: someone may be buying it).
+        const dropInEarly = dollarsToCents(f.classPrice);
+        const packClassesEarly = intOf(f.packClasses, 10);
+        const unlimitedEarly = f.memberUnlimited === true || f.memberUnlimited === "true";
+        const membership = {
+          studio_id: studioId,
+          name: String(f.memberName ?? "").trim() || (unlimitedEarly ? "Unlimited" : "Membership"),
+          billing_cycle: String(f.memberCycle ?? "monthly"),
+          classes_per_cycle: unlimitedEarly ? null : packClassesEarly,
+          price_cents: f.memberPrice ? dollarsToCents(f.memberPrice) : (unlimitedEarly ? dropInEarly * 12 : dropInEarly * packClassesEarly),
+        };
+        // The wizard's own starter pack and plan, recorded when it created them
+        // (00042). A pack or plan the owner made in Classes and pricing is
+        // never overwritten here.
+        const { data: progress } = step === "pricing"
+          ? await db.from("studio_onboarding").select("starter_pack_type_id, starter_membership_type_id")
+              .eq("studio_id", studioId).maybeSingle()
+          : { data: null };
+        const { data: starter } = progress?.starter_membership_type_id
+          ? await db.from("membership_types").select("id, billing_cycle, classes_per_cycle")
+              .eq("id", progress.starter_membership_type_id).maybeSingle()
+          : { data: null };
+        if (starter && (starter.billing_cycle !== membership.billing_cycle
+                        || (starter.classes_per_cycle ?? null) !== membership.classes_per_cycle)) {
+          return json({
+            error: "Your membership already exists, so its billing and class limit cannot change here. Add a new membership in Classes and pricing (/manage/offerings) and turn the old one off.",
+          }, 409);
+        }
+
+        // Same value rules as 00042, checked up front so a bad value saves nothing.
+        const durationEarly = intOf(f.classDuration, 60);
+        const capacityEarly = intOf(f.classCapacity, 20);
+        const negative = [f.classPrice, f.packPrice, f.memberPrice]
+          .some((v) => v !== undefined && v !== null && v !== "" && dollarsToCents(v) < 0);
+        if (durationEarly < 1 || capacityEarly < 1 || negative
+            || (step === "pricing" && packClassesEarly < 1)
+            || (step === "pricing" && membership.classes_per_cycle !== null && membership.classes_per_cycle < 1)) {
+          return json({ error: "Length, capacity and class counts must be at least 1, and prices cannot be negative." }, 400);
+        }
+
         // Upsert a starter offering keyed by slug; set price on the pricing step.
         const style = String(f.classStyle ?? "Class");
         const offeringName = String(f.className ?? "").trim()
           || style.charAt(0).toUpperCase() + style.slice(1);
-        await db.from("offerings").upsert(
+        const { error: offeringErr } = await db.from("offerings").upsert(
           {
             studio_id: studioId,
             name: offeringName,
             slug: slugify(style),
             style,
             level: f.classLevel ?? "all",
-            duration_minutes: intOf(f.classDuration, 60),
-            capacity: intOf(f.classCapacity, 20),
+            duration_minutes: durationEarly,
+            capacity: capacityEarly,
             drop_in_price_cents: f.classPrice ? dollarsToCents(f.classPrice) : null,
           },
           { onConflict: "studio_id,slug" },
         );
+        // Checked: 00042 rejects zero or negative length, capacity and price.
+        if (offeringErr) return json({ error: offeringErr.message }, 400);
 
         if (step === "pricing") {
           const dropIn = dollarsToCents(f.classPrice);
           const packClasses = intOf(f.packClasses, 10);
           const unlimited = f.memberUnlimited === true || f.memberUnlimited === "true";
-          // Starter pricing — the owner refines these in Financials. Use the
+          // Starter pricing: the owner refines these in Classes and pricing (/manage/offerings). Use the
           // owner's numbers when given, else derive from the drop-in price.
           // Re-saving the step updates the starter plan instead of duplicating it.
           const pack = {
@@ -452,24 +497,40 @@ serve(async (req) => {
             price_cents: f.packPrice ? dollarsToCents(f.packPrice) : dropIn * packClasses,
             validity_days: 90,
           };
-          const { data: existingPack } = await db
-            .from("class_pack_types").select("id").eq("studio_id", studioId)
-            .order("created_at").limit(1).maybeSingle();
-          if (existingPack) await db.from("class_pack_types").update(pack).eq("id", existingPack.id);
-          else await db.from("class_pack_types").insert(pack);
+          // Checked: 00042 rejects negative prices and zero-class packs.
+          const packId = progress?.starter_pack_type_id ?? null;
+          const { data: savedPack, error: packErr } = packId
+            ? await db.from("class_pack_types").update(pack).eq("id", packId).select("id").maybeSingle()
+            : await db.from("class_pack_types").insert(pack).select("id").single();
+          if (packErr) return json({ error: packErr.message }, 400);
 
-          const membership = {
-            studio_id: studioId,
-            name: String(f.memberName ?? "").trim() || (unlimited ? "Unlimited" : "Membership"),
-            billing_cycle: String(f.memberCycle ?? "monthly"),
-            classes_per_cycle: unlimited ? null : packClasses,
-            price_cents: f.memberPrice ? dollarsToCents(f.memberPrice) : (unlimited ? dropIn * 12 : dropIn * packClasses),
+          // The starter plan is the studio's first membership type. Its billing
+          // and class limit never change once it exists (00042: someone may be
+          // buying it), so a re-save with new terms is refused with a pointer
+          // to Classes and pricing; name and price update in place.
+          let membershipId = starter?.id ?? null;
+          if (!starter) {
+            const { data: inserted, error: insErr } = await db.from("membership_types")
+              .insert(membership).select("id").single();
+            if (insErr) return json({ error: insErr.message }, 400);
+            membershipId = inserted?.id ?? null;
+          } else if (starter.billing_cycle === membership.billing_cycle
+                     && (starter.classes_per_cycle ?? null) === membership.classes_per_cycle) {
+            const { error: updErr } = await db.from("membership_types")
+              .update({ name: membership.name, price_cents: membership.price_cents })
+              .eq("id", starter.id);
+            if (updErr) return json({ error: updErr.message }, 400);
+          }
+          const starterIds = {
+            starter_pack_type_id: savedPack?.id ?? packId,
+            starter_membership_type_id: membershipId,
           };
-          const { data: existingMembership } = await db
-            .from("membership_types").select("id").eq("studio_id", studioId)
-            .order("created_at").limit(1).maybeSingle();
-          if (existingMembership) await db.from("membership_types").update(membership).eq("id", existingMembership.id);
-          else await db.from("membership_types").insert(membership);
+          const { data: onboardingRow } = await db.from("studio_onboarding").select("id")
+            .eq("studio_id", studioId).maybeSingle();
+          const { error: idsErr } = onboardingRow
+            ? await db.from("studio_onboarding").update(starterIds).eq("id", onboardingRow.id)
+            : await db.from("studio_onboarding").insert({ studio_id: studioId, ...starterIds });
+          if (idsErr) return json({ error: idsErr.message }, 500);
         }
         break;
       }
@@ -510,9 +571,9 @@ serve(async (req) => {
         const startTime = /^\d{2}:\d{2}/.test(String(f.schedTime ?? "")) ? String(f.schedTime) : "09:00";
         const duration = offering.duration_minutes ?? 60;
         const [h, m] = startTime.split(":").map(Number);
-        // Clamp to end-of-day: a TIME end before the start would read as a
-        // negative-length class downstream.
-        const endMinutes = Math.min(h * 60 + m + duration, 24 * 60 - 1);
+        // Wrap past midnight: generate_rule_occurrences reads an end at or
+        // before the start as an overnight class and uses the class length.
+        const endMinutes = (h * 60 + m + duration) % (24 * 60);
         const endTime = `${String(Math.floor(endMinutes / 60)).padStart(2, "0")}:${String(endMinutes % 60).padStart(2, "0")}`;
 
         // Only accept a teacher who is actually staff of this studio.
