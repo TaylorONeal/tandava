@@ -133,3 +133,15 @@ export function toPatch(
   };
   return errors.length ? { status: "invalid", errors } : { status: "ok", patch };
 }
+
+/**
+ * Settings tabs that save to the live backend. The others (locations,
+ * notifications, SEO) have no backing store yet, so a live studio does not
+ * see them: a tab that toasts "saved" without saving is worse than no tab.
+ */
+export const LIVE_SETTINGS_TABS = ["general", "policies", "branding", "billing"] as const;
+export type SettingsTab = typeof LIVE_SETTINGS_TABS[number] | "locations" | "notifications" | "seo";
+
+export function showSettingsTab(tab: SettingsTab, live: boolean): boolean {
+  return !live || (LIVE_SETTINGS_TABS as readonly string[]).includes(tab);
+}

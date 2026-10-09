@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMyStudio } from "@/hooks/useBooking";
 import { data as backendData, isBackendConfigured } from "@/lib/backend";
-import { toForm, toPatch, type StudioSettingsRow } from "@/lib/hosted/studioSettings";
+import { toForm, toPatch, type StudioSettingsRow, showSettingsTab } from "@/lib/hosted/studioSettings";
 import { ManageLayout } from "@/components/manage/ManageLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,6 +38,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
+import { PayoutsCard } from "@/components/manage/PayoutsCard";
 import { useToast } from "@/hooks/use-toast";
 import { OXATL_STUDIO } from "@/data/demo/oxatl-yoga";
 
@@ -215,8 +216,7 @@ export default function SettingsManage() {
           <p className="text-sm text-muted-foreground mt-1">Configure your studio preferences and policies</p>
           {live && (
             <p className="text-xs text-muted-foreground mt-2">
-              General, Policies, Branding and the booking page switches save to your studio. Locations, Notifications and SEO
-              settings are not saved yet.
+              Every setting on this page saves to your studio. Locations, notifications and SEO settings are coming later.
             </p>
           )}
         </div>
@@ -227,10 +227,12 @@ export default function SettingsManage() {
               <Building2 className="h-3.5 w-3.5 me-1.5" />
               General
             </TabsTrigger>
+            {showSettingsTab("locations", live) && (
             <TabsTrigger value="locations" className="text-xs">
               <MapPin className="h-3.5 w-3.5 me-1.5" />
               Locations
             </TabsTrigger>
+            )}
             <TabsTrigger value="policies" className="text-xs">
               <Shield className="h-3.5 w-3.5 me-1.5" />
               Policies
@@ -243,14 +245,18 @@ export default function SettingsManage() {
               <CreditCard className="h-3.5 w-3.5 me-1.5" />
               Billing
             </TabsTrigger>
+            {showSettingsTab("notifications", live) && (
             <TabsTrigger value="notifications" className="text-xs">
               <Bell className="h-3.5 w-3.5 me-1.5" />
               Notifications
             </TabsTrigger>
+            )}
+            {showSettingsTab("seo", live) && (
             <TabsTrigger value="seo" className="text-xs">
               <Search className="h-3.5 w-3.5 me-1.5" />
               SEO
             </TabsTrigger>
+            )}
           </TabsList>
 
           {/* General Settings */}
@@ -368,6 +374,8 @@ export default function SettingsManage() {
           </TabsContent>
 
           {/* Locations */}
+          {/* No backing store yet: shown in the demo only. */}
+          {showSettingsTab("locations", live) && (
           <TabsContent value="locations" className="space-y-6">
             <Card>
               <CardHeader>
@@ -399,6 +407,7 @@ export default function SettingsManage() {
               </CardContent>
             </Card>
           </TabsContent>
+          )}
 
           {/* Policies */}
           <TabsContent value="policies" className="space-y-6">
@@ -505,6 +514,9 @@ export default function SettingsManage() {
                   </div>
                 </div>
 
+                {/* Logo upload needs storage; demo only for now. */}
+                {!live && (
+                  <>
                 <Separator />
 
                 <div className="space-y-2">
@@ -515,6 +527,8 @@ export default function SettingsManage() {
                     <Button variant="outline" size="sm" className="mt-3" onClick={() => toast({ title: "Upload", description: "Logo upload requires Supabase Storage connection." })}>Upload Logo</Button>
                   </div>
                 </div>
+                  </>
+                )}
 
                 <div className="flex justify-end pt-2">
                   <Button onClick={handleSave} disabled={saving || (live && !loaded)}>
@@ -529,6 +543,10 @@ export default function SettingsManage() {
 
           {/* Billing / Stripe */}
           <TabsContent value="billing" className="space-y-6">
+            {live ? (
+              <PayoutsCard />
+            ) : (
+              <>
             <Card>
               <CardHeader>
                 <CardTitle>Payments</CardTitle>
@@ -548,9 +566,13 @@ export default function SettingsManage() {
                 </div>
               </CardContent>
             </Card>
+              </>
+            )}
           </TabsContent>
 
           {/* Notifications */}
+          {/* No backing store yet: shown in the demo only. */}
+          {showSettingsTab("notifications", live) && (
           <TabsContent value="notifications" className="space-y-6">
             <Card>
               <CardHeader>
@@ -584,8 +606,11 @@ export default function SettingsManage() {
               </CardContent>
             </Card>
           </TabsContent>
+          )}
 
           {/* SEO Settings */}
+          {/* No backing store yet: shown in the demo only. */}
+          {showSettingsTab("seo", live) && (
           <TabsContent value="seo" className="space-y-6">
             {/* SEO Score Card */}
             <Card className="border-primary/20">
@@ -764,6 +789,7 @@ export default function SettingsManage() {
               </CardContent>
             </Card>
           </TabsContent>
+          )}
         </Tabs>
       </div>
     </ManageLayout>
