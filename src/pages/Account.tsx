@@ -32,8 +32,10 @@ import {
   Award,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import LiveAccount from "@/pages/account/LiveAccount";
 
-// Mock user data
+// Sample data: demo mode only (DemoAccount). Live users get LiveAccount.
 const userData = {
   firstName: "Sarah",
   lastName: "Chen",
@@ -70,7 +72,7 @@ const packs = [
   { type: "Class Pack", name: "10-Class Pack", remaining: 6, expires: "Mar 15, 2026" },
 ];
 
-const Account = () => {
+const DemoAccount = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState(userData);
   const [preferences, setPreferences] = useState({
@@ -707,6 +709,12 @@ const Account = () => {
       </div>
     </AppLayout>
   );
+};
+
+/** Live: the person's real account. Demo: the sample account above. */
+const Account = () => {
+  const { isDemoMode } = useAuth();
+  return isDemoMode ? <DemoAccount /> : <LiveAccount />;
 };
 
 export default Account;

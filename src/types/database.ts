@@ -2820,6 +2820,46 @@ export interface MyAdminStudioRow {
   staff_role: string;
 }
 
+/** One of the caller's memberships or class packs, from get_my_entitlements() (00040). */
+export interface MyEntitlementRow {
+  kind: "membership" | "pack";
+  entitlement_id: string;
+  studio_id: string;
+  studio_name: string;
+  studio_slug: string;
+  currency: string | null;
+  name: string;
+  status: string;
+  price_cents: number | null;
+  billing_cycle: string | null;
+  ends_at: string | null;
+  classes_remaining: number | null;
+  has_subscription: boolean;
+}
+
+/** Fields a person may edit on their own profile from /account. */
+export type MyProfilePatch = Partial<Pick<Profile,
+  "first_name" | "last_name" | "phone" | "pronouns" | "date_of_birth" |
+  "emergency_contact_name" | "emergency_contact_phone" | "instagram_handle">>;
+
+/** One of the caller's bookings, from get_my_bookings() (00039). */
+export interface MyBookingRow {
+  booking_id: string;
+  status: "confirmed" | "waitlisted" | "cancelled" | "no_show" | "checked_in" | "late_cancel";
+  occurrence_id: string;
+  starts_at: string;
+  ends_at: string;
+  is_cancelled: boolean;
+  offering_name: string;
+  room: string | null;
+  location_name: string | null;
+  teacher_name: string | null;
+  studio_name: string;
+  studio_slug: string;
+  studio_timezone: string;
+  cancellation_minutes: number | null;
+}
+
 export interface MyStudioRow {
   studio_id: string;
   name: string;
@@ -2923,6 +2963,14 @@ export interface Database {
       get_my_studio: {
         Args: Record<string, never>;
         Returns: MyStudioRow[];
+      };
+      get_my_bookings: {
+        Args: { p_limit?: number };
+        Returns: MyBookingRow[];
+      };
+      get_my_entitlements: {
+        Args: Record<string, never>;
+        Returns: MyEntitlementRow[];
       };
       get_my_effective_role: {
         Args: Record<string, never>;
