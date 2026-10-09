@@ -107,3 +107,7 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - 00038: `studios.page_live`. Storefront, public schedule, guest booking lookup, free-class booking and visit tracking serve a studio by slug only when its page is live; `discoverable` only adds it to Discover. Trigger: listing turns the page on, turning the page off unlists. Backfill: listed studios keep a live page. Tests LIVE-01..08 (fail without the migration).
 - Settings: "Booking page live", "List on Tandava Discover" and "Guest booking" now sit on the General tab (were under Branding). Onboarding launch step: "Publish my booking page", on by default; the onboarding function saves it.
 - Prod after merge, in this order: Taylor runs `scripts/db/prod/apply-00038.sql`; then redeploy `onboarding`, `analytics-session` and `run-automations` via Supabase MCP (they read `page_live`, which does not exist before the SQL).
+
+## 2026-10-09 (later): LP-6 Settings shows only what saves
+- Live studios no longer see the Locations, Notifications and SEO tabs or the logo upload (they only toasted "saved"; the SEO tab showed a fake sitemap URL). The demo keeps them. `showSettingsTab` is unit-tested.
+- Billing tab (live) shows payout status from `stripe-connect`: ready only when Stripe has `charges_enabled` (what checkout requires), "Stripe review" when details are in but payments are not on yet ("Finish in Stripe" resumes onboarding), and "Open Stripe" goes to the owner's Stripe dashboard (Standard accounts).
