@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { toForm, toPatch, type StudioSettingsRow } from "./studioSettings";
+import { toForm, toPatch, showSettingsTab, type StudioSettingsRow } from "./studioSettings";
 
 const row: StudioSettingsRow = {
   id: "s1",
@@ -48,5 +48,15 @@ describe("studio settings mapping", () => {
     expect(r.status).toBe("invalid");
     if (r.status !== "invalid") return;
     expect(r.errors).toHaveLength(4);
+  });
+});
+
+describe("showSettingsTab", () => {
+  it("hides tabs with no backing store from a live studio", () => {
+    for (const t of ["locations", "notifications", "seo"] as const) expect(showSettingsTab(t, true)).toBe(false);
+    for (const t of ["general", "policies", "branding", "billing"] as const) expect(showSettingsTab(t, true)).toBe(true);
+  });
+  it("shows every tab in the demo", () => {
+    expect(showSettingsTab("seo", false)).toBe(true);
   });
 });
