@@ -7,7 +7,9 @@ BEGIN;
 --    and feature migrations). A function without a pinned search_path resolves
 --    unqualified names through the caller's search_path, so a caller who can
 --    create objects earlier in that path can hijack it. Pin every listed
---    function to `public` (pg_catalog is always searched first).
+--    function to `public, extensions` (pg_catalog is always searched first).
+--    `extensions` stays visible because hosted Supabase installs pgcrypto there
+--    and generate_check_in_code calls gen_random_bytes unqualified.
 -- 2. SECURITY DEFINER trigger functions callable over the API. Postgres checks
 --    EXECUTE on a trigger function only when the trigger is created, never when
 --    it fires, so revoking it from PUBLIC, anon and authenticated changes
@@ -42,7 +44,7 @@ BEGIN
          'update_video_rating', 'bookings_entitlement_sync')
        AND NOT EXISTS (SELECT 1 FROM unnest(COALESCE(p.proconfig, '{}')) c WHERE c LIKE 'search_path=%')
   LOOP
-    EXECUTE format('ALTER FUNCTION %s SET search_path = public', f.sig);
+    EXECUTE format('ALTER FUNCTION %s SET search_path = public, extensions', f.sig);
   END LOOP;
 
   FOR f IN
