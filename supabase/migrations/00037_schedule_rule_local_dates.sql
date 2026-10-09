@@ -45,6 +45,19 @@ CREATE TRIGGER schedule_rules_local_effective_from
 
 -- 4. Slot identity ----------------------------------------------------------------
 ALTER TABLE class_occurrences ADD COLUMN IF NOT EXISTS rule_slot_starts_at TIMESTAMPTZ;
+-- The backfill uses starts_at, which is only the original slot if the class
+-- was never moved. Overrides store only the new time, so a moved rule class
+-- cannot be backfilled safely: stop rather than guess. (None exist on
+-- tandava-prod: no code writes time_change yet.)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM schedule_overrides so
+               JOIN class_occurrences co ON co.id = so.class_occurrence_id
+              WHERE so.override_type = 'time_change' AND co.schedule_rule_id IS NOT NULL
+                AND co.rule_slot_starts_at IS NULL) THEN
+    RAISE EXCEPTION '00037: rule classes with time_change overrides need their original slot set by hand in rule_slot_starts_at before this migration';
+  END IF;
+END $$;
 UPDATE class_occurrences SET rule_slot_starts_at = starts_at
  WHERE schedule_rule_id IS NOT NULL AND rule_slot_starts_at IS NULL;
 CREATE UNIQUE INDEX IF NOT EXISTS uq_class_occurrences_rule_slot
@@ -129,6 +142,9 @@ BEGIN
   FOR v_occ IN
     SELECT id FROM class_occurrences
      WHERE schedule_rule_id = r.id AND starts_at > NOW()
+       -- Only slots still ahead are the rule's to manage: a class moved later
+       -- than its slot keeps running once that slot time has passed.
+       AND COALESCE(rule_slot_starts_at, starts_at) > NOW()
        AND NOT COALESCE(is_cancelled, false)
        AND NOT (COALESCE(rule_slot_starts_at, starts_at) = ANY (v_expected))
      ORDER BY id

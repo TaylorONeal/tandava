@@ -164,3 +164,23 @@ BEGIN
   PERFORM pg_temp.ok(n = 0 AND NOT (SELECT is_cancelled FROM class_occurrences WHERE id = v_moved),
                      'GEN-16', 'moved class stays and its old slot is not refilled');
 END $$;
+
+-- GEN-17 (00037): a class moved later the same day is kept after its original
+-- slot time has passed.
+DO $$
+DECLARE v_rule uuid := 'cccccccc-4000-0000-0000-000000000002'; v_moved uuid;
+BEGIN
+  SELECT id INTO v_moved FROM class_occurrences
+   WHERE schedule_rule_id = v_rule AND NOT is_cancelled ORDER BY starts_at OFFSET 2 LIMIT 1;
+  -- Simulate: slot was an hour ago, class moved to an hour from now.
+  UPDATE class_occurrences
+     SET rule_slot_starts_at = NOW() - interval '1 hour',
+         starts_at = NOW() + interval '1 hour', ends_at = NOW() + interval '2 hours'
+   WHERE id = v_moved;
+  INSERT INTO schedule_overrides (studio_id, class_occurrence_id, override_type, new_starts_at)
+  VALUES (pg_temp.id('studio_c'), v_moved, 'time_change', NOW() + interval '1 hour');
+  PERFORM set_config('request.jwt.claim.sub', '', true);
+  PERFORM generate_class_occurrences(NULL, 8);
+  PERFORM pg_temp.ok(NOT (SELECT is_cancelled FROM class_occurrences WHERE id = v_moved),
+                     'GEN-17', 'same-day moved class survives after its slot passes');
+END $$;
