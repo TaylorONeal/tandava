@@ -101,3 +101,9 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - Workbench shell rejects `--override` flags on `stripe trigger`, so it cannot send a session with our metadata. A fulfilled purchase needs a real Checkout session from our app.
 - Found: CSP `frame-src` blocked `https://js.stripe.com` on every page (console error on the storefront). Fixed in this PR with a header test.
 - Agents may not type card numbers, test cards included, on non-local pages, so the Checkout card step stays with Taylor (about 20 seconds).
+
+## 2026-10-09 (later): LP-8 advisor warnings
+- Security advisor on prod: 21 "Function Search Path Mutable", 13 anon and 28 authenticated "SECURITY DEFINER executable", 1 "Leaked password protection disabled".
+- 00041 pins search_path on the 21 functions, revokes EXECUTE on SECURITY DEFINER trigger functions (Postgres checks it only at CREATE TRIGGER), and makes book_free_class signed-in only. HARD-01..03 fail without it.
+- Kept by design (reasons in the migration): RLS helper functions (policies call them for every role), the public read RPCs, the authenticated booking RPCs.
+- Open: Taylor turns on leaked password protection in Supabase Auth (same page as the Turnstile secret).
