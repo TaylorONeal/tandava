@@ -25,3 +25,9 @@ export function loginHref(next: string): string {
 export function expressBookingPath(slug: string, occurrenceId: string): string {
   return `/s/${encodeURIComponent(slug)}/book/${encodeURIComponent(occurrenceId)}`;
 }
+
+/** The studio slug when a path is on a studio page (/s/<slug>/...), else undefined. */
+export function studioSlugFromPath(path: string | null | undefined): string | undefined {
+  const m = /^\/s\/([a-z0-9][a-z0-9-]{0,62})(?:[/?#]|$)/i.exec(path ?? "");
+  return m ? m[1].toLowerCase() : undefined;
+}

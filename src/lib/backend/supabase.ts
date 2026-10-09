@@ -33,7 +33,11 @@ import type {
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
+import type { AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
+
+/** Request header carrying the analytics session into booking RPCs (read by the bookings trigger, migration 00035). */
+const SESSION_HEADER = "x-tandava-session";
 
 // ---------------------------------------------------------------------------
 // Supabase client singleton
@@ -111,9 +115,12 @@ const supabaseAuth: AuthProvider = {
     return { error: mapError(error), requiresEmailConfirmation };
   },
 
-  async signInWithOAuth(provider, next) {
+  async signInWithOAuth(provider, next, consentNonce) {
     const path = safeNextPath(next);
-    const query = path === "/" ? "" : `?next=${encodeURIComponent(path)}`;
+    const params = new URLSearchParams();
+    if (path !== "/") params.set("next", path);
+    if (consentNonce) params.set("cn", consentNonce);
+    const query = params.toString() ? `?${params.toString()}` : "";
     const { error } = await getClient().auth.signInWithOAuth({
       provider,
       options: { redirectTo: `${window.location.origin}/auth/callback${query}` },
@@ -228,11 +235,14 @@ const supabaseData: DataProvider = {
   },
 
   async bookClass(input: BookClassInput): Promise<DataResult<Booking>> {
-    const { data, error } = await getClient().rpc("book_class", {
+    const call = getClient().rpc("book_class", {
       p_occurrence_id: input.occurrenceId,
       p_source_type: input.sourceType,
       p_source_id: input.sourceId,
     });
+    // The booking trigger reads this header to credit the visit (validated
+    // server side against the member's own linked visitors).
+    const { data, error } = await (input.sessionId ? call.setHeader(SESSION_HEADER, input.sessionId) : call);
 
     return {
       data: (data as Booking) ?? null,
@@ -240,18 +250,20 @@ const supabaseData: DataProvider = {
     };
   },
 
-  async bookClassAuto(occurrenceId: string): Promise<DataResult<BookClassAutoResult>> {
-    const { data, error } = await getClient().rpc("book_class_auto", { p_occurrence_id: occurrenceId } as never);
+  async bookClassAuto(occurrenceId, sessionId): Promise<DataResult<BookClassAutoResult>> {
+    const call = getClient().rpc("book_class_auto", { p_occurrence_id: occurrenceId } as never);
+    const { data, error } = await (sessionId ? call.setHeader(SESSION_HEADER, sessionId) : call);
     return {
       data: (data as BookClassAutoResult) ?? null,
       error: error ? { message: error.message } : null,
     };
   },
 
-  async bookFreeClass(occurrenceId): Promise<DataResult<Booking>> {
-    const { data, error } = await getClient().rpc("book_free_class", {
+  async bookFreeClass(occurrenceId, sessionId): Promise<DataResult<Booking>> {
+    const call = getClient().rpc("book_free_class", {
       p_occurrence_id: occurrenceId,
     });
+    const { data, error } = await (sessionId ? call.setHeader(SESSION_HEADER, sessionId) : call);
     return {
       data: (data as Booking) ?? null,
       error: error ? { message: error.message } : null,
@@ -309,6 +321,76 @@ const supabaseData: DataProvider = {
       data: rows[0] ?? null,
       error: error ? { message: error.message } : null,
     };
+  },
+
+  async linkMyVisitor(visitorId, via): Promise<MutationResult & { owned?: boolean | null }> {
+    const { data, error } = await getClient().rpc("link_my_visitor", {
+      p_visitor_id: visitorId,
+      p_via: via,
+    } as never);
+    return { error: error ? { message: error.message } : null, owned: error ? undefined : ((data as boolean | null) ?? null) };
+  },
+
+  async applyMySignupConsent(pending): Promise<MutationResult> {
+    const { error } = await getClient().rpc("apply_my_signup_consent", {
+      p_studio_slug: pending?.slug ?? null,
+      p_granted: pending?.granted ?? null,
+      p_started_at: pending?.startedAt ?? null,
+    } as never);
+    return { error: error ? { message: error.message } : null };
+  },
+
+  async getAttributionSources(studioId, from, to, model): Promise<DataResult<AttributionSourceRow[]>> {
+    const { data, error } = await getClient().rpc("get_attribution_sources", {
+      p_studio_id: studioId,
+      p_from: from.toISOString(),
+      p_to: to.toISOString(),
+      p_model: model,
+    } as never);
+    const rows = ((data as AttributionSourceRow[] | null) ?? []).map((r) => ({
+      ...r,
+      // bigint columns arrive as numbers or numeric strings depending on size.
+      sessions: Number(r.sessions),
+      new_people: Number(r.new_people),
+      bookings: Number(r.bookings),
+      purchases: Number(r.purchases),
+      revenue_cents: Number(r.revenue_cents),
+    }));
+    return { data: rows, error: error ? { message: error.message } : null };
+  },
+
+  async getMemberAttribution(studioId, profileId): Promise<DataResult<MemberAttribution>> {
+    const { data, error } = await getClient().rpc("get_member_attribution", {
+      p_studio_id: studioId,
+      p_profile_id: profileId,
+    } as never);
+    const rows = (data as MemberAttribution[] | null) ?? [];
+    return { data: rows[0] ?? null, error: error ? { message: error.message } : null };
+  },
+
+  async getAutomationSettings(studioId): Promise<DataResult<AutomationSettingsRow>> {
+    const { data, error } = await getClient()
+      .from("automation_settings" as never)
+      .select("studio_id, guest_to_member_enabled, first_visit_enabled, lapsed_enabled, lapsed_days_override, intro_offer_url")
+      .eq("studio_id", studioId)
+      .maybeSingle();
+    return {
+      data: (data as AutomationSettingsRow | null) ?? null,
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async saveAutomationSettings(row): Promise<MutationResult> {
+    const { error } = await getClient()
+      .from("automation_settings" as never)
+      .upsert({ ...row, updated_at: new Date().toISOString() } as never, { onConflict: "studio_id" });
+    return { error: error ? { message: error.message } : null };
+  },
+
+  async getMyAdminStudio(): Promise<DataResult<MyAdminStudioRow>> {
+    const { data, error } = await getClient().rpc("get_my_admin_studio" as never);
+    const rows = (data as MyAdminStudioRow[] | null) ?? [];
+    return { data: rows[0] ?? null, error: error ? { message: error.message } : null };
   },
 
   async getStudioSettings(studioId): Promise<DataResult<StudioSettingsRow>> {

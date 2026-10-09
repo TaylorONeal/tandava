@@ -29,6 +29,7 @@ import {
   Calendar,
   Mail,
   Plus,
+  Compass,
 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
@@ -83,6 +84,13 @@ const kpiCards = [
 ];
 
 const navCards = [
+  {
+    title: "Where students come from",
+    description: "Links, posts and sites that bring bookings and money",
+    icon: Compass,
+    href: "/manage/analytics/sources",
+    highlights: [] as { label: string; value: string }[],
+  },
   {
     title: "Member Analytics",
     description: "Understand your students",

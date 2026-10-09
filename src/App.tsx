@@ -121,6 +121,9 @@ function lazyWithReload<T extends ComponentType<any>>(load: () => Promise<{ defa
 const Home = lazyWithReload(() => import("./pages/Home"));
 const StudioStorefront = lazyWithReload(() => import("./pages/StudioStorefront"));
 const ExpressBooking = lazyWithReload(() => import("./pages/ExpressBooking"));
+const SaveDetails = lazyWithReload(() => import("./pages/SaveDetails"));
+const Unsubscribe = lazyWithReload(() => import("./pages/Unsubscribe"));
+const EmailUpdatesConfirm = lazyWithReload(() => import("./pages/EmailUpdatesConfirm"));
 const Index = lazyWithReload(() => import("./pages/Index"));
 const Schedule = lazyWithReload(() => import("./pages/Schedule"));
 const MySchedule = lazyWithReload(() => import("./pages/MySchedule"));
@@ -163,6 +166,8 @@ const MemberAnalyticsManage = lazyWithReload(() => import("./pages/manage/Member
 const SalesAnalyticsManage = lazyWithReload(() => import("./pages/manage/SalesAnalytics"));
 const FinancialAnalyticsManage = lazyWithReload(() => import("./pages/manage/FinancialAnalytics"));
 const SiteAnalyticsManage = lazyWithReload(() => import("./pages/manage/SiteAnalytics"));
+const AttributionSourcesManage = lazyWithReload(() => import("./pages/manage/AttributionSources"));
+const AutomationsManage = lazyWithReload(() => import("./pages/manage/Automations"));
 const DataConnectorsManage = lazyWithReload(() => import("./pages/manage/DataConnectors"));
 const ProductsManage = lazyWithReload(() => import("./pages/manage/Products"));
 const InventoryManage = lazyWithReload(() => import("./pages/manage/Inventory"));
@@ -246,6 +251,9 @@ const App = () => (
                        (PRD-020). Public by design — no ProtectedRoute. The
                        express-book Edge Function owns every write. ---- */}
                   <Route path="/s/:slug/book/:occurrenceId" element={<ExpressBooking />} />
+                  <Route path="/s/:slug/save-details" element={<SaveDetails />} />
+                  <Route path="/unsubscribe" element={<Unsubscribe />} />
+                  <Route path="/email-updates" element={<EmailUpdatesConfirm />} />
 
                   {/* ---- Blog (built but not yet linked in nav; noindex until
                        BLOG_PUBLISHED is flipped on in src/config/blog.ts) ---- */}
@@ -310,6 +318,8 @@ const App = () => (
                   <Route path="/manage/analytics/sales" element={<ProtectedRoute permission="studio.manage_settings"><SalesAnalyticsManage /></ProtectedRoute>} />
                   <Route path="/manage/analytics/financials" element={<ProtectedRoute permission="studio.manage_settings"><FinancialAnalyticsManage /></ProtectedRoute>} />
                   <Route path="/manage/analytics/site" element={<ProtectedRoute permission="studio.manage_schedule"><SiteAnalyticsManage /></ProtectedRoute>} />
+                  <Route path="/manage/analytics/sources" element={<ProtectedRoute permission="studio.manage_members"><AttributionSourcesManage /></ProtectedRoute>} />
+                  <Route path="/manage/automations" element={<ProtectedRoute permission="studio.manage_members"><AutomationsManage /></ProtectedRoute>} />
                   <Route path="/manage/connectors" element={<ProtectedRoute permission="studio.manage_settings"><DataConnectorsManage /></ProtectedRoute>} />
                   <Route path="/manage/products" element={<ProtectedRoute permission="studio.manage_schedule"><ProductsManage /></ProtectedRoute>} />
                   <Route path="/manage/inventory" element={<ProtectedRoute permission="studio.manage_schedule"><InventoryManage /></ProtectedRoute>} />

@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { auth } from "@/lib/backend";
 import { resolveAfterAuth } from "@/lib/authReturn";
 import { safeNextPath } from "@/lib/auth/next";
+import { applyOAuthSignupConsent } from "@/lib/analytics/session";
 import { readAuthLinkError, type AuthLinkError } from "@/lib/auth/linkError";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,20 +24,23 @@ export function AuthCallback() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const next = safeNextPath(searchParams.get("next"));
+  const consentNonce = searchParams.get("cn");
   const [linkError] = useState<AuthLinkError | null>(() =>
     typeof window === "undefined" ? null : readAuthLinkError(window.location.hash, window.location.search),
   );
 
   useEffect(() => {
     if (linkError) return;
-    auth.getSession().then(({ user }) => {
+    auth.getSession().then(async ({ user }) => {
       if (user) {
+        // A Google sign-up's marketing choice, only for this exact attempt.
+        await applyOAuthSignupConsent(user.id, consentNonce);
         navigate(resolveAfterAuth({ next: next === "/" ? null : next }), { replace: true });
       } else {
         navigate("/auth/login", { replace: true });
       }
     });
-  }, [navigate, next, linkError]);
+  }, [navigate, next, consentNonce, linkError]);
 
   if (linkError?.emailLink) return <LinkFailed error={linkError} next={next} />;
   if (linkError) return <SignInFailed next={next} />;

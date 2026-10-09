@@ -9,9 +9,10 @@
  * See docs/developer/backend-flexibility.md for architecture details.
  */
 
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { StudioSettingsPatch, StudioSettingsRow } from "@/lib/hosted/studioSettings";
 import type { FeedbackType } from "@/types/database";
+import type { AttributionModel, AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
 
 // ---------------------------------------------------------------------------
 // Auth Provider
@@ -31,6 +32,8 @@ export interface SignUpMetadata {
   first_name: string;
   last_name: string;
   marketing_consent?: boolean;
+  /** Slug of the studio page the sign-up started from; scopes marketing_consent to that studio. */
+  marketing_consent_studio?: string;
 }
 
 export interface AuthProvider {
@@ -51,7 +54,8 @@ export interface AuthProvider {
   ): Promise<{ error: AuthError | null; requiresEmailConfirmation?: boolean }>;
 
   /** Initiate OAuth flow (redirects the browser) */
-  signInWithOAuth(provider: "google" | "apple", next?: string): Promise<{ error: AuthError | null }>;
+  /** `consentNonce` rides on the callback URL so a sign-up's marketing choice applies only to that attempt. */
+  signInWithOAuth(provider: "google" | "apple", next?: string, consentNonce?: string): Promise<{ error: AuthError | null }>;
 
   /** Sign out the current user */
   signOut(): Promise<void>;
@@ -117,6 +121,8 @@ export interface BookClassInput {
   occurrenceId: string;
   sourceType: "membership" | "class_pack";
   sourceId: string;
+  /** The booking page's analytics session (PRD-024), credited as the converting visit. */
+  sessionId?: string;
 }
 
 /**
@@ -133,6 +139,9 @@ export interface ExpressBookInput {
   marketingConsent?: boolean;
   waiverAccepted?: boolean;
   utm?: { source?: string; medium?: string; campaign?: string };
+  /** First-party visitor id and the current analytics session (PRD-024). */
+  visitorId?: string;
+  sessionId?: string;
 }
 
 /** What the `express-book` function answers with. */
@@ -177,10 +186,10 @@ export interface DataProvider {
    */
   bookClass(input: BookClassInput): Promise<DataResult<Booking>>;
   /** Book with the best available source, or report that payment is needed. */
-  bookClassAuto(occurrenceId: string): Promise<DataResult<BookClassAutoResult>>;
+  bookClassAuto(occurrenceId: string, sessionId?: string): Promise<DataResult<BookClassAutoResult>>;
 
   /** Book the signed-in user into a zero-price class (book_free_class() RPC, migration 00023). */
-  bookFreeClass(occurrenceId: string): Promise<DataResult<Booking>>;
+  bookFreeClass(occurrenceId: string, sessionId?: string): Promise<DataResult<Booking>>;
 
   /** Cancel a booking via the cancel_booking() RPC (late-cancel detection + refund/fee). */
   cancelBooking(bookingId: string): Promise<DataResult<Booking>>;
@@ -205,6 +214,8 @@ export interface DataProvider {
    * owner-facing screens. Null when the caller has no active staff record.
    */
   getMyStudio(): Promise<DataResult<MyStudioRow>>;
+  /** A studio the caller is an active owner/admin of (owner-only screens). */
+  getMyAdminStudio(): Promise<DataResult<MyAdminStudioRow>>;
 
   /** The owner-editable studio row for /manage/settings (RLS: staff read, owner/admin write). */
   getStudioSettings(studioId: string): Promise<DataResult<StudioSettingsRow>>;
@@ -220,6 +231,33 @@ export interface DataProvider {
 
   /** A member's memberships + class packs (with their types joined) for entitlement resolution. */
   getMemberEntitlements(profileId: string, studioId: string): Promise<DataResult<MemberEntitlements>>;
+
+  /**
+   * Join this browser's anonymous visitor id to the signed-in person
+   * (link_my_visitor RPC, migration 00035), so visits before sign-in count
+   * toward their journey. Best effort; never rewrites another person's link.
+   */
+  /** owned: whether the caller owns the id afterwards (false: someone else does; null: not signed in). */
+  linkMyVisitor(visitorId: string, via: string): Promise<MutationResult & { owned?: boolean | null }>;
+
+  /**
+   * Record the sign-up marketing choice for the studio the person signed up
+   * from, once (migration 00035). Email sign-ups carry it in auth metadata;
+   * OAuth sign-ups pass the choice kept in the browser across the redirect.
+   */
+  applyMySignupConsent(pending?: { slug: string; granted: boolean; startedAt: string }): Promise<MutationResult>;
+
+  /** Owner/admin report: sessions, new people, bookings and revenue by channel + source + campaign. */
+  getAttributionSources(studioId: string, from: Date, to: Date, model: AttributionModel): Promise<DataResult<AttributionSourceRow[]>>;
+
+  /** How one person found the studio (staff only; null when they are not a member of the caller's studio). */
+  getMemberAttribution(studioId: string, profileId: string): Promise<DataResult<MemberAttribution>>;
+
+  /** The studio's automation switches; null data means no row yet (defaults apply). */
+  getAutomationSettings(studioId: string): Promise<DataResult<AutomationSettingsRow>>;
+
+  /** Create or update the studio's automation switches (owner/admin by RLS). */
+  saveAutomationSettings(row: AutomationSettingsRow): Promise<MutationResult>;
 }
 
 // ---------------------------------------------------------------------------

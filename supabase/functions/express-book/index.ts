@@ -52,6 +52,9 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { emailProviderReady, sendEmail } from "../email/provider.ts";
+import { signOptInConfirm } from "../../../src/lib/marketing/unsubscribeToken.ts";
+import { renderOptInConfirmEmail } from "../../../src/lib/marketing/optInEmail.ts";
 import Stripe from "https://esm.sh/stripe@14?target=deno";
 
 import {
@@ -67,6 +70,8 @@ const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const appUrl = Deno.env.get("APP_URL") ?? "http://localhost:8080";
 const ipSalt = Deno.env.get("EXPRESS_IP_SALT") ?? "";
+// Signs the opt-in confirmation link (same secret as the unsubscribe links).
+const optInSecret = Deno.env.get("AUTOMATIONS_UNSUBSCRIBE_SECRET") ?? "";
 const platformFeeBps = parseInt(Deno.env.get("PLATFORM_FEE_BPS") ?? "0", 10);
 
 const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
@@ -93,6 +98,8 @@ function json(body: unknown, status = 200): Response {
 const RATE_WINDOW_MINUTES = 60;
 const MAX_PER_EMAIL = 6;
 const MAX_PER_IP = 20;
+/** Longest a booking waits on the opt-in confirmation email. */
+const OPT_IN_EMAIL_TIMEOUT_MS = 3000;
 
 async function sha256Hex(input: string): Promise<string> {
   const bytes = new TextEncoder().encode(input);
@@ -310,12 +317,126 @@ serve(async (req) => {
       waitlistEnabled: Boolean(row.express_waitlist_enabled),
     };
 
-    const { data: studioRow } = await db.from("studios").select("id").eq("slug", slug).single();
+    const { data: studioRow } = await db.from("studios").select("id, name").eq("slug", slug).single();
     const studioId = studioRow?.id as string | undefined;
+    const studioName = (studioRow?.name as string | undefined) ?? "the studio";
     if (!studioId) return json({ error: "Class not found" }, 404);
 
     const ipHash = await hashIp(req);
     const utm = (payload.utm ?? {}) as Record<string, string | undefined>;
+    // First-party attribution (PRD-024). Both optional; both validated.
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    let visitorId = typeof payload.visitorId === "string" && UUID_RE.test(payload.visitorId) ? payload.visitorId : null;
+    const claimedSessionId = typeof payload.sessionId === "string" && UUID_RE.test(payload.sessionId) ? payload.sessionId : null;
+    // Only this browser's own visit at this studio may be credited.
+    let sessionId: string | null = null;
+    if (claimedSessionId && visitorId && studioId) {
+      const { data: ownSession } = await db
+        .from("analytics_sessions")
+        .select("id")
+        .eq("id", claimedSessionId)
+        .eq("studio_id", studioId)
+        .eq("visitor_id", visitorId)
+        .maybeSingle();
+      sessionId = ownSession?.id ?? null;
+    }
+
+    /**
+     * RPC with the error checked (supabase-js resolves failures as { error },
+     * it doesn't throw) and two quick retries for transient failures.
+     */
+    const rpcChecked = async (fn: string, args: Record<string, unknown>): Promise<boolean> => {
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const { error } = await db.rpc(fn, args);
+        if (!error) return true;
+        console.error(`express-book: ${fn} failed (attempt ${attempt + 1})`, error.message);
+        await new Promise((r) => setTimeout(r, 150 * (attempt + 1)));
+      }
+      return false;
+    };
+
+    /**
+     * Confirmed opt-in: a public form can't prove the address is the
+     * booker's, so a ticked box is only a request. It sends a confirmation
+     * email, and consent is recorded only when someone with that mailbox
+     * confirms (unsubscribe function, action "confirm"). An unticked box is an
+     * opt-out and applies at once: it must replace any older opt-in.
+     */
+    const requestOptInConfirmation = async (profileId: string) => {
+      if (!optInSecret) {
+        console.error("express-book: AUTOMATIONS_UNSUBSCRIBE_SECRET not set; opt-in confirmation not sent");
+        return;
+      }
+      // The console provider "succeeds" without delivering: say so instead of
+      // silently leaving the guest unable to confirm.
+      const provider = emailProviderReady();
+      if (!provider.ready) {
+        console.error(`express-book: email provider can't deliver (${provider.reason}); opt-in confirmation not sent`);
+        return;
+      }
+      try {
+        const token = await signOptInConfirm(studioId, profileId, optInSecret);
+        const email = renderOptInConfirmEmail({
+          studioName,
+          confirmUrl: `${appUrl.replace(/\/+$/, "")}/email-updates?c=${encodeURIComponent(token)}`,
+        });
+        // Auxiliary to a booking that already exists: never let a slow email
+        // provider hold back the checkout URL or the confirmation. A guest
+        // who misses it can tick the box on their next booking.
+        const timedOut = Symbol("timeout");
+        const sent = await Promise.race([
+          sendEmail({ to: guest.email, subject: email.subject, html: email.html, text: email.text, fromName: studioName }),
+          new Promise<typeof timedOut>((r) => setTimeout(() => r(timedOut), OPT_IN_EMAIL_TIMEOUT_MS)),
+        ]);
+        if (sent === timedOut) console.error("express-book: opt-in confirmation email timed out");
+        else if (!sent.success) console.error("express-book: opt-in confirmation email failed", sent.error);
+      } catch (err) {
+        console.error("express-book: opt-in confirmation failed", err);
+      }
+    };
+
+    /**
+     * Attribution and consent never fail a booking, but they are checked and
+     * retried.
+     */
+    const recordAttribution = async (profileId: string, bookingId: string | null, valueCents: number, bookedAt?: string | null) => {
+      try {
+        if (guest.marketingConsent) {
+          await requestOptInConfirmation(profileId);
+        } else {
+          const consentSaved = await rpcChecked("record_consent", {
+            p_studio_id: studioId, p_profile_id: profileId, p_visitor_id: visitorId,
+            p_purpose: "email_marketing", p_granted: false, p_source: "express_booking_form",
+            p_policy_version: "2026-10",
+          });
+          if (!consentSaved) {
+            // Loud on purpose: an unsaved opt-out must be fixed by hand before
+            // the next automation run (docs/OPERATOR_SETUP.md, automations).
+            console.error("express-book: CONSENT NOT SAVED", { studioId, profileId, granted: false });
+          }
+        }
+        if (visitorId) {
+          await rpcChecked("link_visitor", { p_profile_id: profileId, p_visitor_id: visitorId, p_via: "express_booking" });
+        }
+        if (bookingId) {
+          // The queueing wrapper: a failed write goes to conversion_retry_queue
+          // (drained hourly by run-automations) instead of being lost. The
+          // booking's own time travels with it.
+          const queued = await rpcChecked("record_conversion_or_queue", {
+            p_args: {
+              p_studio_id: studioId, p_profile_id: profileId, p_visitor_id: visitorId,
+              p_conversion_type: "guest_booking", p_value_cents: valueCents, p_currency: row.studio_currency ?? "USD",
+              p_entity_type: "booking", p_entity_id: bookingId, p_converting_session_id: sessionId,
+              // The booking's own commit time, not when this code got here.
+              p_member_source: "express", p_occurred_at: bookedAt ?? new Date().toISOString(),
+            },
+          });
+          if (!queued) console.error("express-book: CONVERSION NOT SAVED", { studioId, bookingId });
+        }
+      } catch (err) {
+        console.error("express-book: attribution failed", err);
+      }
+    };
 
     /** Record the attempt. Every exit path writes exactly one claim row. */
     const recordClaim = async (fields: Record<string, unknown>) => {
@@ -422,6 +543,21 @@ serve(async (req) => {
       profileId = identity.profileId;
     }
 
+    // A browser id that already belongs to another person (a copied embed
+    // link) must not credit this booking with their visit. Drop both the id
+    // and its session; the booking itself is unaffected.
+    if (visitorId) {
+      const { data: owner, error: ownerError } = await db
+        .from("profile_visitors")
+        .select("profile_id")
+        .eq("visitor_id", visitorId)
+        .maybeSingle();
+      if (ownerError || (owner && owner.profile_id !== profileId)) {
+        visitorId = null;
+        sessionId = null;
+      }
+    }
+
     // Paid drop-in: the booking is created by the existing stripe-webhook when
     // payment succeeds. The metadata shape is the drop_in contract that webhook
     // already understands, so no webhook change is needed to support guests.
@@ -464,6 +600,9 @@ serve(async (req) => {
           studio_id: studioId,
           amount_cents: String(decision.amountCents),
           express: "1",
+          // Carried to stripe-webhook, which records the paid conversion.
+          ...(visitorId ? { visitor_id: visitorId } : {}),
+          ...(sessionId ? { session_id: sessionId } : {}),
         },
         ...(connected
           ? {
@@ -475,6 +614,7 @@ serve(async (req) => {
           : {}),
       });
 
+      await recordAttribution(profileId, null, 0);
       await recordClaim({
         outcome: "pending_payment",
         profile_id: profileId,
@@ -501,6 +641,30 @@ serve(async (req) => {
     const outcome = created?.status === "waitlisted" ? "waitlisted" : "booked";
 
     await recordClaim({ outcome, profile_id: profileId, booking_id: created?.id ?? null });
+    if (outcome === "waitlisted" && created?.id) {
+      // Keep how this waitlist spot was made; the conversion is recorded at
+      // promotion (record_promoted_booking_conversion), maybe after the guest
+      // has saved an account or visited again.
+      // The row itself (origin "express") is written by the bookings trigger
+      // in the same transaction as the booking, so it can't be lost; here we
+      // only add the validated visit, with retries.
+      if (sessionId || visitorId) {
+        // The browser too, so a promotion without this visit still looks at
+        // this browser's visits and not a device linked later.
+        const ctx: Record<string, string> = {};
+        if (sessionId) ctx.session_id = sessionId;
+        if (visitorId) ctx.visitor_id = visitorId;
+        let saved = false;
+        for (let attempt = 0; attempt < 3 && !saved; attempt++) {
+          const { error: ctxError } = await db.from("booking_attribution_context")
+            .update(ctx).eq("booking_id", created.id);
+          saved = !ctxError;
+          if (ctxError) await new Promise((r) => setTimeout(r, 150 * (attempt + 1)));
+        }
+        if (!saved) console.error("express-book: waitlist visit not saved; promotion will use the latest visit before it", created.id);
+      }
+    }
+    await recordAttribution(profileId, outcome === "booked" ? created?.id ?? null : null, 0, created?.booked_at ?? created?.created_at ?? null);
 
     return json({
       outcome,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { expressBookingPath, loginHref, safeNextPath } from "./next";
+import { expressBookingPath, loginHref, safeNextPath, studioSlugFromPath } from "./next";
 
 describe("safeNextPath", () => {
   it("keeps same-origin paths with query strings", () => {
@@ -36,5 +36,16 @@ describe("loginHref", () => {
 describe("expressBookingPath", () => {
   it("encodes both segments", () => {
     expect(expressBookingPath("oxatl yoga", "a/b")).toBe("/s/oxatl%20yoga/book/a%2Fb");
+  });
+});
+
+describe("studioSlugFromPath", () => {
+  it("finds the studio on studio pages only", () => {
+    expect(studioSlugFromPath("/s/oxatl-yoga/book/123")).toBe("oxatl-yoga");
+    expect(studioSlugFromPath("/s/Oxatl")).toBe("oxatl");
+    expect(studioSlugFromPath("/s/oxatl?utm_source=ig")).toBe("oxatl");
+    expect(studioSlugFromPath("/my-schedule")).toBeUndefined();
+    expect(studioSlugFromPath("/s/")).toBeUndefined();
+    expect(studioSlugFromPath(null)).toBeUndefined();
   });
 });

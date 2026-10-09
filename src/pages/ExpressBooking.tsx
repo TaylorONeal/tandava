@@ -32,6 +32,7 @@ import { MemberBookingPanel } from "@/components/booking/MemberBookingPanel";
 import { ClassTime } from "@/components/time/ClassTime";
 import { AddToCalendar } from "@/components/calendar/AddToCalendar";
 import { HelpTip } from "@/components/help/HelpTip";
+import { captureSettled, currentSessionId, getVisitorId, trackVisit } from "@/lib/analytics/session";
 import type { ClassEventInput } from "@/lib/calendar/classEvent";
 import { expressBookingPath, loginHref } from "@/lib/auth/next";
 import { isBackendConfigured } from "@/lib/backend";
@@ -190,6 +191,12 @@ export default function ExpressBooking() {
   const signedIn = live && Boolean(user);
 
   const { data: fetched, isLoading, isError } = usePublicOccurrence(slug, occurrenceId);
+
+  // First-party visit capture (PRD-024). Adopts a visitor id handed over from
+  // the embed widget (tv) so the widget visit and this booking join.
+  useEffect(() => {
+    if (slug && live) void trackVisit(slug, "booking");
+  }, [slug, live]);
   const expressBook = useExpressBook();
 
   const [form, setForm] = useState<Form>(EMPTY_FORM);
@@ -255,6 +262,8 @@ export default function ExpressBooking() {
     }
     if (!slug || !occurrenceId) return;
 
+    // Let this visit's capture land first so the booking credits it.
+    if (live) await captureSettled(slug);
     const result = await expressBook.mutateAsync({
       slug,
       occurrenceId,
@@ -265,6 +274,8 @@ export default function ExpressBooking() {
       marketingConsent: form.marketingConsent,
       waiverAccepted: form.waiverAccepted,
       utm,
+      visitorId: live ? getVisitorId() : undefined,
+      sessionId: live && slug ? currentSessionId(slug) : undefined,
     });
 
     if (result.fields?.length) {
@@ -558,7 +569,7 @@ export default function ExpressBooking() {
                 checked={form.marketingConsent}
                 onCheckedChange={(v) => set("marketingConsent", v === true)}
               />
-              <span>Email me about new classes and offers from {row.studio_name}.</span>
+              <span>Email me about new classes and offers from {row.studio_name}. We'll send one email to confirm.</span>
             </label>
 
             {live && (
