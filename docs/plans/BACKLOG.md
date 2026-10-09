@@ -60,7 +60,7 @@ commands in [LAUNCH_RUNBOOK.md](LAUNCH_RUNBOOK.md).
 | W4-1 | `book_class_auto` | W3 | AUTO-01..06 | DONE (00026) |
 | W4-2 | Return-to-intent auth, storefront Book and Buy buttons | W4-1 | authReturn unit tests | DONE |
 | W4-3 | `hold_spot` then checkout so a paid drop-in cannot hit a full class | W4-1 | HOLD-01..11 | DONE (00027, checkout calls it) |
-| W4-6 | Turnstile on sign-up (Supabase Auth captcha). Needs `frame-src https://challenges.cloudflare.com` in vercel.json CSP and a site key env var | D7 | E2E | NEXT |
+| W4-6 | Turnstile on sign-up (Supabase Auth captcha). Needs `frame-src https://challenges.cloudflare.com` in vercel.json CSP and a site key env var | D7 | E2E | Widget DONE (#75, #76, live). Enforcement waits on the Turnstile secret in Supabase Auth > Attack Protection (Taylor) |
 | W4-4 | Playwright E2E-01 guest to booked | W4-2, D6 | E2E-01 | UI half DONE (`npm run test:e2e`, mocked Supabase, in CI). Full stack half needs local Supabase |
 | W4-5 | Wire real data into Schedule, MySchedule, Account (replace mocks) | W4-1 | E2E | LATER |
 
@@ -79,9 +79,9 @@ commands in [LAUNCH_RUNBOOK.md](LAUNCH_RUNBOOK.md).
 | ID | Task | Needs | Status |
 |---|---|---|---|
 | W6-1 | `setFunnelSink` at main.tsx next to initSentry | W4-2 | NEXT |
-| W6-2 | Prerender `/discover` and `/s/:slug`, sitemap, fix robots vs sitemap domain | none | LATER |
-| W6-3 | noindex on mock pages (/schedule, /events, /instructors, /my-schedule) | W4-5 | LATER |
-| W6-4 | `/for-studios` page, open source pitch under `/open-source` | none | LATER |
+| W6-2 | Prerender `/discover` and `/s/:slug`, sitemap, fix robots vs sitemap domain | none | Robots and sitemap on tandavastudio.com DONE (#74, #78). Prerender of `/discover` and `/s/:slug` LATER |
+| W6-3 | noindex on mock pages (/schedule, /events, /instructors, /my-schedule) | W4-5 | DONE for /schedule, /events, /instructors, /on-demand (#78, `DemoDataPage` wrapper). /my-schedule open: it sits behind ProtectedRoute, so crawlers get the sign-in redirect; add `noindex` when W4-5 wires its real data |
+| W6-4 | `/for-studios` page, open source pitch under `/open-source` | none | DONE (pages live, in sitemap) |
 
 ## W7 Pilot ops
 
@@ -96,9 +96,18 @@ commands in [LAUNCH_RUNBOOK.md](LAUNCH_RUNBOOK.md).
 | W7-7 | Idempotent page-view counts: `record_session` increments `page_views` on every call, so a retried capture whose first response was lost counts twice. Add a per-page-view request id (RPC signature change) so a retry is recognised (PR #72 review, deferred: page_views is display-only, not used for attribution or money) | PR #72 | LATER |
 | W7-8 | Self-hosted gateways: member booking RPCs send the converting session as an `x-tandava-session` header. Hosted Supabase reflects requested CORS headers (verified 2026-10-08), but a stock self-hosted Kong config would block the preflight. Move it into an RPC argument before anyone self-hosts (PR #72 review) | PR #72 | LATER |
 | W7-9 | Express booking after an embed handoff: the browser's displaced earlier visitor ids are linked only at sign-in, so an immediate guest booking's first-touch journey uses only the handoff id. Pass the displaced ids to express-book and include them in `record_conversion`'s journey (they link after the booking's commit time, so the `linked_at <= v_at` filter would drop them today; needs an RPC argument). Narrow case: prior anonymous visits on the app origin AND an embed handoff AND a guest booking in the same visit (PR #72 review) | PR #72 | LATER |
-| W7-10 | Late conversion retries and acquisition: when `conversion_retry_queue` replays an earlier conversion after a later one already set the member row, `studio_members` keeps the later source, first touch and `acquired_at` (COALESCE). Replace tracked acquisition fields when the replayed `acquired_at` is earlier, keeping `import` and `pre_tracking` rows. Needs a migration (00036); only hits conversions that failed to write first time (PR #72 review) | PR #72 | NEXT |
+| W7-10 | Late conversion retries and acquisition: when `conversion_retry_queue` replays an earlier conversion after a later one already set the member row, `studio_members` keeps the later source, first touch and `acquired_at` (COALESCE). Replace tracked acquisition fields when the replayed `acquired_at` is earlier, keeping `import` and `pre_tracking` rows. Needs a follow-up migration (00038 or later); only hits conversions that failed to write first time (PR #72 review) | PR #72 | NEXT |
 | W7-11 | Member detail on live data: `/manage/members/:id` still renders a fixture member. Load the routed member (profile, membership, bookings, notes), then put `MemberSourceStrip` back (removed in PR #72 so a real source never shows under the fixture name) | PR #72 | NEXT |
 
 ## Critical path
 
 W1 -> W3 -> W4-1 -> W4-3 -> W4-4 -> W5-2 -> W7-3 -> W7-4. W2 gates W4-3 and W5-2. W6 can run beside W5.
+
+- DONE (#82): Settings loads and saves the real `studios` row; Discover and Express Booking switches persist. Test SET-01..03.
+- NEXT: Settings tabs that still only toast (notifications, SEO, branding beyond the studios row) show placeholder data. The SEO tab shows a fake `https://{slug}.tandava.yoga/sitemap.xml`; replace with the real per-studio URL on tandavastudio.com or hide it.
+- NEXT: Demo sample data still uses `@tandava.yoga` emails and `https://tandava.yoga` defaults (Settings, Teachers, Tasks). Fine in demo mode; make sure none of it shows for a live studio.
+- DONE (00036): schedule rules generate bookable classes 8 weeks ahead (trigger, `generate_class_occurrences`, daily cron). GEN-01..09.
+- NEXT: Stripe Connect on Accounts v2 (`POST /v2/core/accounts`). Sandbox runs on the Accounts v1 opt-in; live mode must either get the same opt-in or move to v2 before the first real studio.
+- NEXT: after sign-in a real owner lands on `/schedule` (sample data). Send owners to `/manage`, students to their real bookings; the manage header must show the studio name, not "Tandava Yoga", and no sample notifications.
+- NEXT: Turnstile fails in Taylor's Chrome ("Verification failed"). Check widget hostnames (tandavastudio.com, www) before enforcing captcha in Supabase Auth.
+- LATER: `monthly` schedule rules are not generated (no UI creates them).

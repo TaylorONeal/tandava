@@ -19,14 +19,15 @@
     "importData": "นำเข้าข้อมูล",
     "smsInbox": "กล่องข้อความ SMS",
     "notifications": "การแจ้งเตือน",
-    "settings": "ตั้งค่า"
+    "settings": "ตั้งค่า",
+    "shareLinks": "ลิงก์การจอง",
+    "websiteEmbed": "ฝังในเว็บไซต์"
   },
   "title": "ผู้ดูแลสตูดิโอ",
   "studentView": "มุมมองนักเรียน",
   "myAccount": "บัญชีของฉัน",
   "studioSettings": "ตั้งค่าสตูดิโอ",
   "signOut": "ออกจากระบบ",
-
   "schedule": {
     "title": "ตารางคลาส",
     "subtitle": "สร้างและจัดการตารางคลาสของคุณ",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "ค้นหาประเภทคลาส...",
     "activeOfferings": "ประเภทที่ใช้งานอยู่"
   },
-
   "admin": {
     "platformAdmin": "ผู้ดูแลแพลตฟอร์ม",
     "platformDashboard": "แดชบอร์ดแพลตฟอร์ม",
@@ -60,7 +60,6 @@
     "sentryConfigured": "ติดตามข้อผิดพลาดด้วย Sentry",
     "setEnvVar": "กำหนดค่า {{key}} ในไฟล์ .env"
   },
-
   "studioManagement": "การจัดการสตูดิโอ",
   "owner": "เจ้าของ"
 }

@@ -19,14 +19,15 @@
     "importData": "Nhập dữ liệu",
     "smsInbox": "Hộp thư SMS",
     "notifications": "Thông báo",
-    "settings": "Cài đặt"
+    "settings": "Cài đặt",
+    "shareLinks": "Liên kết đặt chỗ",
+    "websiteEmbed": "Nhúng vào website"
   },
   "title": "Quản trị studio",
   "studentView": "Giao diện học viên",
   "myAccount": "Tài khoản của tôi",
   "studioSettings": "Cài đặt studio",
   "signOut": "Đăng xuất",
-
   "schedule": {
     "title": "Lịch lớp",
     "subtitle": "Tạo và quản lý lịch lớp học của bạn.",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "Tìm loại lớp...",
     "activeOfferings": "Loại lớp đang hoạt động"
   },
-
   "admin": {
     "platformAdmin": "Quản trị nền tảng",
     "platformDashboard": "Bảng điều khiển nền tảng",
@@ -60,7 +60,6 @@
     "sentryConfigured": "Giám sát lỗi Sentry",
     "setEnvVar": "Đặt {{key}} trong .env"
   },
-
   "studioManagement": "Quản lý studio",
   "owner": "Chủ studio"
 }

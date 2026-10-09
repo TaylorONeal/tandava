@@ -604,6 +604,33 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 | Navigating the browser pane away from a form the user is about to submit | Lost a filled secret form | Open a new tab for any other check while a hand-off is pending |
 | Secrets and auth captcha | Saving secrets, deploying and merging are blocked for the agent even with chat approval; captcha on without the widget locks everyone out | Fill the form, hand off the one click; ship the Turnstile widget before enabling captcha |
 
+## Merging and agent permissions (October 2026)
+
+| Mistake | Cost | Fix |
+|---|---|---|
+| Assuming a blocked merge was a login problem | Taylor asked for GitHub MCP, CLI login or browser login; none would help | Agent GitHub REST is already authenticated. The block is the Claude Code auto-mode guard, which stops merges to main even after chat approval. Say so in one line and hand over the PR links in order |
+| Trying to grant the agent merge rights from inside the session | Writing `.claude/settings.json` is blocked as [Self-Modification]; so is fetching a main that contains it | Only Taylor adds permission rules (GitHub web editor, commit to main; done in #83). They load when a session starts, so the next session gets them. Never route around the guard via auto_merge or the PR page |
+| Saying a commit was not on main after checking only the newest commits | Told Taylor his #83 had not landed when it had merged before #79 | Check a file's history (`git log origin/main -- <path>`), not the top of the log |
+| Asking Taylor to merge PRs that touch the same file in one batch | A later PR could conflict after an earlier merge | Give the order, say which pair shares a file, and re-check mergeability after each |
+
+## Frontend launch bugs (October 2026)
+
+| Mistake | Cost | Fix |
+|---|---|---|
+| Prerender scripts anchored on an inline script tag | Removing the inline service-worker script (CSP) broke the Vercel build (#78) | Explicit `<!-- /root -->` marker in index.html; the scripts throw if it is missing |
+| Reload-once guard for stale chunks stored its flag in sessionStorage without checking the write | Infinite reload loop when storage is blocked (Safari private, embedded webviews) | Reload only if the flag was actually stored (#79) |
+| A settings page that toasts "Saved" without saving | Owners could not unlist a studio after onboarding | Load the real row before enabling Save (`loaded` gate), persist only the field a switch owns, DB test for owner, other owner and student (#82, SET-01..03) |
+| Static `<link rel="canonical">` in index.html on an SPA | Every route told Google its canonical was the old domain's homepage | No static canonical; SEOHead sets one per page from `VITE_APP_URL` |
+| Copy promising a control the product does not have | #81 said "turn this off any time" before the toggle persisted | Check the code path before writing the promise |
+
+## First live studio (October 2026)
+
+| Mistake | Cost | Fix |
+|---|---|---|
+| Onboarding saved a weekly rule and nothing expanded it into classes | A new studio had a schedule with nothing to book; every booking and payment test was blocked | Seed one real studio end to end through the UI before calling a flow done. Rules now expand by trigger plus a daily job (00036, GEN tests) |
+| Stripe API defaults move under you | `accounts.create` (v1) is refused for new Connect platforms in 2026 | Read the function log (`query_logs`, source `function_logs`) before guessing; record the Stripe setting you rely on in PROGRESS |
+| Telling the user an account without checking | "Reset the app password" left Taylor guessing which account | Name the exact email and what it signs into; check `auth.users` read-only first |
+
 ## Quick Reference: Prevention Patterns
 
 | Issue Type | Prevention Pattern |

@@ -59,3 +59,23 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
   - Seed Purafield Studio as a hidden test studio (Taylor resets the purafieldstudio@gmail.com app password via /auth/reset, signs in, onboarding), then Stripe sandbox purchase, refund and webhook replay.
   - #72 (attribution phase 1) edits stripe-webhook and adds migration 00035: check it keeps fulfill_stripe_checkout before merging, and apply 00035 by hand.
   - Copy audit C-3 (translations) and C-5 (onboarding copy). `www.tandavastudio.com` missing from the Supabase redirect allow-list.
+
+## 2026-10-09: launch day 2 state
+- Merged to main and live (Vercel production READY on 8fda0c1): #77 (docs), #78 (CSP, fonts, noindex on mock pages, prerender anchor), #79 (no chunk-reload loop when sessionStorage is blocked), #80 (owner-signup translations, 17 locales), #81 (onboarding copy names Tandava Discover), #82 (Settings saves the real studio; Discover and Express Booking switches persist).
+- Removed the static `canonical` in index.html that pointed every route at `https://tandava.yoga`; SEOHead sets per-page canonicals on tandavastudio.com.
+- Merging: #83 added `.claude/settings.json` on main with a squash-merge allow rule. Sessions started after it landed should be able to merge on Taylor's explicit "merge" (rules in CLAUDE.md); not yet proven by a real merge. Sessions that started before it cannot, and hand Taylor the PR links in order.
+- `/demo` now sets its own canonical (it is in the sitemap and had none once the static one went).
+- Still open, in order:
+  1. Taylor: reset the purafieldstudio@gmail.com app password at https://tandavastudio.com/auth/reset (regular Chrome), sign in, reply "in". Then seed Purafield Studio as a hidden test studio and run the Stripe sandbox purchase, refund and webhook tests (W7-1).
+  2. Taylor: `EXPRESS_IP_SALT` at https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/functions/secrets (any long random value).
+  3. Taylor: Turnstile secret at https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/auth/protection
+  4. #72 (attribution phase 1): needs review. On merge, apply `scripts/db/prod/apply-00035.sql` by hand first, then redeploy stripe-webhook and any other changed function (deploy order is in its `docs/OPERATOR_SETUP.md`).
+  5. Settings tabs beyond the studios row still placeholder (BACKLOG).
+
+## 2026-10-09 (later): first live test studio
+- purafieldstudio@gmail.com reset and signed in. Onboarding created hidden studio "Purafield Studio (test)" (slug `purafield-studio-test-eejz`, discoverable off, America/Chicago): one offering (Test Vinyasa, $20 drop-in, capacity 10), a Saturday 10:00 weekly rule, a $99 membership and a 5-class pack.
+- Found: the weekly rule never became bookable classes (no code turned `schedule_rules` into `class_occurrences`). Fixed by 00036 (trigger on rules, owner/admin top-up RPC, daily pg_cron job, backfill). Applied to prod 2026-10-09 by Taylor via the SQL editor; verified: 8 Saturdays from 2026-10-10 10:00 CT, cron job `generate-class-occurrences` 07:15 UTC, anon cannot execute.
+- 00037 (rule start date in studio time) and an onboarding fix (re-saving the class step edits the studio's first rule instead of adding a second) follow from the #85 review. Prod: apply `scripts/db/prod/apply-00037.sql` and redeploy the `onboarding` edge function after merge.
+- Found: Stripe refused `stripe-connect` ("Accounts v1 not recommended for new Connect integrations"). Accounts v1 support turned on in the Purafield Studio sandbox (Taylor's call, 2026-10-09). Live mode needs the same setting or a move to Accounts v2 (BACKLOG).
+- Found: after sign-in a real owner lands on `/schedule` with Oxatl sample data, and the manage header says "Tandava Yoga" with sample notifications (BACKLOG).
+- Turnstile shows "Verification failed" in Taylor's Chrome. Do not add the Turnstile secret to Supabase Auth until the widget passes; check the widget hostnames first.

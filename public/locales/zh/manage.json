@@ -19,14 +19,15 @@
     "importData": "导入数据",
     "smsInbox": "短信收件箱",
     "notifications": "通知",
-    "settings": "设置"
+    "settings": "设置",
+    "shareLinks": "预约链接",
+    "websiteEmbed": "网站嵌入"
   },
   "title": "场馆管理后台",
   "studentView": "学员视图",
   "myAccount": "我的账户",
   "studioSettings": "场馆设置",
   "signOut": "退出登录",
-
   "schedule": {
     "title": "课程表",
     "subtitle": "创建和管理您的课程安排。",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "搜索课程产品...",
     "activeOfferings": "已启用的课程产品"
   },
-
   "admin": {
     "platformAdmin": "平台管理员",
     "platformDashboard": "平台仪表盘",
@@ -60,7 +60,6 @@
     "sentryConfigured": "Sentry 错误监控",
     "setEnvVar": "在 .env 中设置 {{key}}"
   },
-
   "studioManagement": "场馆管理",
   "owner": "馆主"
 }

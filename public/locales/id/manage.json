@@ -19,14 +19,15 @@
     "importData": "Impor Data",
     "smsInbox": "Kotak Masuk SMS",
     "notifications": "Notifikasi",
-    "settings": "Pengaturan"
+    "settings": "Pengaturan",
+    "shareLinks": "Tautan Pemesanan",
+    "websiteEmbed": "Sematan Situs Web"
   },
   "title": "Admin Studio",
   "studentView": "Tampilan Murid",
   "myAccount": "Akun Saya",
   "studioSettings": "Pengaturan Studio",
   "signOut": "Keluar",
-
   "schedule": {
     "title": "Jadwal",
     "subtitle": "Buat dan kelola jadwal kelas Anda.",
@@ -40,7 +41,6 @@
     "searchPlaceholder": "Cari penawaran...",
     "activeOfferings": "Penawaran Aktif"
   },
-
   "admin": {
     "platformAdmin": "Admin Platform",
     "platformDashboard": "Dasbor Platform",
@@ -60,7 +60,6 @@
     "sentryConfigured": "Pemantauan kesalahan Sentry",
     "setEnvVar": "Atur {{key}} di .env"
   },
-
   "studioManagement": "Manajemen Studio",
   "owner": "Pemilik"
 }
