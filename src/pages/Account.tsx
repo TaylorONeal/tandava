@@ -423,7 +423,7 @@ const Account = () => {
                             id="yttSchool"
                             value={formData.yttSchoolName}
                             onChange={(e) => setFormData({ ...formData, yttSchoolName: e.target.value })}
-                            placeholder="e.g., Haute Yoga Queen Anne, The Practice Bali"
+                            placeholder="e.g., Oxatl Yoga"
                           />
                         </div>
 
