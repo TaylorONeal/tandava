@@ -7,6 +7,11 @@ DO $$ BEGIN
   CREATE ROLE service_role NOLOGIN BYPASSRLS; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 CREATE SCHEMA IF NOT EXISTS auth;
 CREATE SCHEMA IF NOT EXISTS extensions;
+-- Like hosted Supabase: extensions live in their own schema, which is on the
+-- default search_path. A function pinned to `public` alone cannot see them (00041).
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
+GRANT USAGE ON SCHEMA extensions TO PUBLIC;
+DO $$ BEGIN EXECUTE format('ALTER DATABASE %I SET search_path = "$user", public, extensions', current_database()); END $$;
 CREATE TABLE IF NOT EXISTS auth.users (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   email text, encrypted_password text, raw_user_meta_data jsonb DEFAULT '{}'::jsonb,

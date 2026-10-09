@@ -636,6 +636,8 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 | Changing prod rows with `execute_sql` | The auto-mode guard blocks prod UPDATEs too ([Modify Shared Resources]), even for the test studio | Hand Taylor the product UI switch (e.g. /manage/settings), not SQL |
 | Asking Taylor to run a test the agent could drive | He wants agents to test, not him | Drive every step yourself (Stripe Workbench shell for triggers, read-only SQL to verify). Hand over only what a rule blocks, named once with why: typing a card number on Stripe Checkout |
 | Claude in Chrome tabs freezing | Screenshots and clicks time out ("script injection timed out") when the tab is not in front or the Mac sleeps | Work in one tab, re-navigate to wake it, and check results server-side (SQL, function logs) instead of screenshots |
+| Pinning `search_path = public` on a function that calls an extension | Hosted Supabase installs pgcrypto in `extensions`; `generate_check_in_code` would have failed with "gen_random_bytes does not exist" (Codex on #95) | Pin `public, extensions`. The test DB stub now installs pgcrypto in `extensions` like Supabase, so HARD-04 catches it |
+| Stacked PRs that all append to PROGRESS and BACKLOG | Every merge conflicted the next PR's docs | Resolve with the table-row and append-both rule (docs only), rerun the four checks, then merge the next |
 
 ## Quick Reference: Prevention Patterns
 
