@@ -111,3 +111,8 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 ## 2026-10-09 (later): LP-6 Settings shows only what saves
 - Live studios no longer see the Locations, Notifications and SEO tabs or the logo upload (they only toasted "saved"; the SEO tab showed a fake sitemap URL). The demo keeps them. `showSettingsTab` is unit-tested.
 - Billing tab (live) shows payout status from `stripe-connect`: ready only when Stripe has `charges_enabled` (what checkout requires), "Stripe review" when details are in but payments are not on yet ("Finish in Stripe" resumes onboarding), and "Open Stripe" goes to the owner's Stripe dashboard (Standard accounts).
+
+## 2026-10-09 (later): LP-3 owner and student landing
+- Both manage layouts show the studio the signed-in user manages (owner/admin, `get_my_admin_studio`), not "Tandava Yoga" or "Oxatl Yoga"; demo mode (including a demo build with backend variables) keeps the sample studio and the sample "5" on the bell.
+- Signed-in students (and owners before their studio exists) land on /discover instead of /schedule, which still shows Oxatl sample data (LP-4).
+- Owners already land on /manage: `get_my_effective_role` reads studio_staff, so the earlier /schedule landing was before onboarding created the studio.

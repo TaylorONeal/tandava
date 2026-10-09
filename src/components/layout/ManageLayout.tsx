@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useManageStudio } from "@/hooks/useManageStudio";
 import {
   LayoutDashboard,
   Calendar,
@@ -33,6 +34,7 @@ const navigation = [
 
 export function ManageLayout({ children }: ManageLayoutProps) {
   const location = useLocation();
+  const { studioName } = useManageStudio();
 
   const isActive = (href: string) => {
     if (href === "/manage") return location.pathname === "/manage";
@@ -45,7 +47,7 @@ export function ManageLayout({ children }: ManageLayoutProps) {
       <aside className="w-64 border-e border-border bg-card/50 p-4 flex flex-col">
         <div className="mb-6">
           <h2 className="text-lg font-bold tracking-tight">Studio Manager</h2>
-          <p className="text-xs text-muted-foreground">Oxatl Yoga</p>
+          <p className="text-xs text-muted-foreground">{studioName}</p>
         </div>
 
         <nav className="space-y-1 flex-1">

@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
+import { useManageStudio } from "@/hooks/useManageStudio";
 
 interface ManageLayoutProps {
   children: ReactNode;
@@ -74,6 +75,8 @@ const manageNavigation = [
 ];
 
 export function ManageLayout({ children }: ManageLayoutProps) {
+  // Live: the studio this owner/admin manages. Demo: the sample studio.
+  const { live, studioName } = useManageStudio();
   const location = useLocation();
   const { profile } = useAuth();
   const { t } = useTranslation('manage');
@@ -110,10 +113,10 @@ export function ManageLayout({ children }: ManageLayoutProps) {
             <div className="h-5 w-px bg-border mx-1" />
             <Link to="/manage" className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                <span className="text-sm font-bold text-primary-foreground">T</span>
+                <span className="text-sm font-bold text-primary-foreground">{(studioName || "T").charAt(0).toUpperCase()}</span>
               </div>
               <div className="hidden sm:block">
-                <p className="text-sm font-semibold leading-none">Tandava Yoga</p>
+                <p className="text-sm font-semibold leading-none">{studioName}</p>
                 <p className="text-xs text-muted-foreground">{t('studioManagement')}</p>
               </div>
             </Link>
@@ -122,9 +125,12 @@ export function ManageLayout({ children }: ManageLayoutProps) {
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
-              <span className="absolute -top-0.5 -end-0.5 h-4 w-4 rounded-full bg-accent-coral text-[9px] font-bold text-white flex items-center justify-center">
-                5
-              </span>
+              {/* Sample count in the demo only: live studios have no notification feed yet. */}
+              {!live && (
+                <span className="absolute -top-0.5 -end-0.5 h-4 w-4 rounded-full bg-accent-coral text-[9px] font-bold text-white flex items-center justify-center">
+                  5
+                </span>
+              )}
             </Button>
 
             <DropdownMenu>
