@@ -42,10 +42,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
-import { isBackendConfigured } from "@/lib/backend";
-import { useMyStudio } from "@/hooks/useBooking";
-import { OXATL_STUDIO } from "@/data/demo/oxatl-yoga";
-import { manageHeaderName } from "@/lib/homeMode";
+import { useManageStudio } from "@/hooks/useManageStudio";
 
 interface ManageLayoutProps {
   children: ReactNode;
@@ -78,10 +75,8 @@ const manageNavigation = [
 ];
 
 export function ManageLayout({ children }: ManageLayoutProps) {
-  // Live: the signed-in owner's studio. Demo: the sample studio.
-  const live = isBackendConfigured();
-  const { data: myStudio } = useMyStudio();
-  const studioName = manageHeaderName(live, myStudio?.name, OXATL_STUDIO.name);
+  // Live: the studio this owner/admin manages. Demo: the sample studio.
+  const { live, studioName } = useManageStudio();
   const location = useLocation();
   const { profile } = useAuth();
   const { t } = useTranslation('manage');

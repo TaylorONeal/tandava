@@ -103,6 +103,6 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - Agents may not type card numbers, test cards included, on non-local pages, so the Checkout card step stays with Taylor (about 20 seconds).
 
 ## 2026-10-09 (later): LP-3 owner and student landing
-- Manage header shows the signed-in owner's studio name (was hard-coded "Tandava Yoga"); the sample "5" on the bell shows only in the demo.
+- Both manage layouts show the studio the signed-in user manages (owner/admin, `get_my_admin_studio`), not "Tandava Yoga" or "Oxatl Yoga"; demo mode (including a demo build with backend variables) keeps the sample studio and the sample "5" on the bell.
 - Signed-in students (and owners before their studio exists) land on /discover instead of /schedule, which still shows Oxatl sample data (LP-4).
 - Owners already land on /manage: `get_my_effective_role` reads studio_staff, so the earlier /schedule landing was before onboarding created the studio.
