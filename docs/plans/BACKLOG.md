@@ -99,3 +99,8 @@ W1 -> W3 -> W4-1 -> W4-3 -> W4-4 -> W5-2 -> W7-3 -> W7-4. W2 gates W4-3 and W5-2
 - DONE (#82): Settings loads and saves the real `studios` row; Discover and Express Booking switches persist. Test SET-01..03.
 - NEXT: Settings tabs that still only toast (notifications, SEO, branding beyond the studios row) show placeholder data. The SEO tab shows a fake `https://{slug}.tandava.yoga/sitemap.xml`; replace with the real per-studio URL on tandavastudio.com or hide it.
 - NEXT: Demo sample data still uses `@tandava.yoga` emails and `https://tandava.yoga` defaults (Settings, Teachers, Tasks). Fine in demo mode; make sure none of it shows for a live studio.
+- DONE (00036): schedule rules generate bookable classes 8 weeks ahead (trigger, `generate_class_occurrences`, daily cron). GEN-01..09.
+- NEXT: Stripe Connect on Accounts v2 (`POST /v2/core/accounts`). Sandbox runs on the Accounts v1 opt-in; live mode must either get the same opt-in or move to v2 before the first real studio.
+- NEXT: after sign-in a real owner lands on `/schedule` (sample data). Send owners to `/manage`, students to their real bookings; the manage header must show the studio name, not "Tandava Yoga", and no sample notifications.
+- NEXT: Turnstile fails in Taylor's Chrome ("Verification failed"). Check widget hostnames (tandavastudio.com, www) before enforcing captcha in Supabase Auth.
+- LATER: `monthly` schedule rules are not generated (no UI creates them).
