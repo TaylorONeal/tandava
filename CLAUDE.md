@@ -156,7 +156,7 @@ Set up once, so nobody rediscovers it:
 
 | Need | Works | Does not | Use |
 |---|---|---|---|
-| GitHub PRs, checks, comments | `gh api repos/TaylorONeal/tandava/...` (REST) | `gh pr ...` and `gh auth status` (GraphQL blocked, GH_TOKEN reported invalid but REST is authenticated) | `gh api .../pulls/N`, `.../commits/SHA/check-runs`, `.../pulls/N/ccr/review_threads` |
+| GitHub PRs, checks, comments | `gh api repos/TaylorONeal/tandava/...` (REST) | `gh pr ...` and `gh auth status` (GraphQL blocked, GH_TOKEN reported invalid but REST is authenticated) | `gh api .../pulls/N`, `.../commits/SHA/check-runs`, `.../pulls/N/ccr/review_threads`; resolve with `POST .../pulls/N/ccr/comments/<first comment id>/resolve` |
 | Git push | `git push` | | Branch tracking needs `remote.origin.fetch` for the branch |
 | Edge function typecheck | `npm i -g deno`, `npm run check:edge` | github.com release downloads (403) | Install CLIs via npm, not release tarballs |
 | Supabase CLI | `npm i -g supabase` | | Local DB tests use `npm run test:db` (plain Postgres, no Docker needed) |
