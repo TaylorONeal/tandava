@@ -15,7 +15,7 @@ Launch means: one real pilot studio takes a real booking and a real payment on t
 | | LP-4 | Real data in MySchedule and Account (W4-5), `noindex` on /my-schedule | Claude | none | NEXT |
 | | LP-5 | Owner can edit classes, prices and schedule after onboarding (W5-1). Check on the test studio first, fix what fails | Claude | LP-1 | NEXT |
 | | LP-6 | Hide Settings tabs that only toast (fake sitemap URL included) instead of building them. Move the Discover and page-live switches from the Branding tab to General | Claude | none | NEXT |
-| | LP-14 | Funnel sink (W6-1) so pilot drop-off is visible from the first studio | Claude | none | NEXT |
+| | LP-14 | Funnel sink (W6-1) so pilot drop-off is visible from the first studio | Claude | none | Code DONE in PR: PostHog capture over fetch when `VITE_POSTHOG_KEY` is set. Taylor: create a PostHog project, then the key goes in Vercel |
 | 3 Trust and abuse | LP-7 | `EXPRESS_IP_SALT` secret; Turnstile hostnames (tandavastudio.com, www) then the secret in Supabase Auth | Taylor | none | NEXT |
 | | LP-8 | Advisor warnings: pin `search_path` on legacy functions (48 warnings). New migration, prod via SQL handoff | Claude, Taylor runs SQL | none | NEXT |
 | | LP-9 | Terms, privacy and studio refund policy pages reachable from checkout and signup | Claude drafts, Taylor approves | none | NEXT |

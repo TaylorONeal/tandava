@@ -101,3 +101,7 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - Workbench shell rejects `--override` flags on `stripe trigger`, so it cannot send a session with our metadata. A fulfilled purchase needs a real Checkout session from our app.
 - Found: CSP `frame-src` blocked `https://js.stripe.com` on every page (console error on the storefront). Fixed in this PR with a header test.
 - Agents may not type card numbers, test cards included, on non-local pages, so the Checkout card step stays with Taylor (about 20 seconds).
+
+## 2026-10-09 (later): LP-14 funnel sink
+- `setFunnelSink` wired in main.tsx: student funnel events (discover_viewed, class_opened, checkout_started, booking_completed...) go to PostHog's capture endpoint over plain fetch (no SDK) when `VITE_POSTHOG_KEY` is set, with the anonymous attribution visitor id. Without a key they are dropped. `.env.example` documents it.
+- Open: Taylor creates a PostHog project (https://us.posthog.com/signup, purafieldstudio@gmail.com), then the project API key is set as `VITE_POSTHOG_KEY` in Vercel (Production and Preview).
