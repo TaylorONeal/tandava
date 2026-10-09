@@ -8,13 +8,15 @@
 -- Fix:
 --   generate_rule_occurrences(rule, weeks)  internal: fills the next `weeks`
 --       weeks for one rule, idempotent (unique rule + start time).
---   schedule_rules trigger                   a saved or changed rule fills its
---       horizon at once; a rule that is deactivated, retimed or ended cancels
---       its future classes that nobody has booked or is holding.
+--   schedule_rules trigger                   any saved rule is reconciled at
+--       once: missing classes are added, unbooked ones refreshed from the rule
+--       (end, location, teacher, room, capacity), and ones the rule no longer
+--       produces are cancelled unless someone is booked or holding a seat.
 --   generate_class_occurrences(studio, weeks) owners/admins top up their own
 --       studio; with no studio and no signed-in user (cron) it tops up all.
 --   pg_cron job (when the extension is available) runs it daily so the
---       horizon keeps rolling forward.
+--       horizon rolls forward and classes kept only by a since-lapsed seat
+--       hold get cancelled.
 --
 -- Times: start_time/end_time are wall-clock in the studio's timezone, so a
 -- 10:00 class stays 10:00 across daylight saving changes.
@@ -26,6 +28,34 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_class_occurrences_rule_start
   ON class_occurrences (schedule_rule_id, starts_at)
   WHERE schedule_rule_id IS NOT NULL;
 
+-- Live interest: someone is booked, waitlisted, checked in, or holding a seat.
+-- Cancelled and late-cancelled bookings do not count.
+CREATE OR REPLACE FUNCTION occurrence_has_live_interest(p_occurrence_id UUID)
+RETURNS BOOLEAN
+LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public
+AS $$
+  SELECT EXISTS (SELECT 1 FROM bookings b
+                  WHERE b.class_occurrence_id = p_occurrence_id
+                    AND b.status IN ('confirmed', 'waitlisted', 'checked_in'))
+      OR EXISTS (SELECT 1 FROM seat_holds h
+                  WHERE h.class_occurrence_id = p_occurrence_id
+                    AND h.status = 'active' AND h.expires_at > NOW());
+$$;
+REVOKE ALL ON FUNCTION occurrence_has_live_interest(UUID) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION occurrence_has_live_interest(UUID) TO service_role;
+
+-- Reconcile one rule's future classes with the rule:
+--   1. expected start times = the rule's pattern from today to the horizon
+--      (or to the furthest class already generated, if later), within its
+--      effective dates; none if the rule or offering is inactive;
+--   2. a future class of the rule that is not expected and has no live
+--      interest is cancelled ('schedule_rule_changed');
+--   3. every expected time is inserted, or, if it exists without live
+--      interest, refreshed from the rule (end, location, teacher, room,
+--      capacity) and un-cancelled if the rule had cancelled it. Classes with
+--      live interest and classes staff cancelled themselves are left alone.
+-- Runs on every rule save and daily, so a class skipped because of a seat
+-- hold is cancelled once the hold lapses.
 CREATE OR REPLACE FUNCTION generate_rule_occurrences(p_rule_id UUID, p_weeks INTEGER DEFAULT 8)
 RETURNS INTEGER
 LANGUAGE plpgsql
@@ -43,6 +73,8 @@ DECLARE
   v_starts   TIMESTAMPTZ;
   v_ends     TIMESTAMPTZ;
   v_capacity INTEGER;
+  v_expected TIMESTAMPTZ[] := '{}';
+  v_valid    BOOLEAN;
   v_count    INTEGER := 0;
   v_rows     INTEGER;
 BEGIN
@@ -53,43 +85,71 @@ BEGIN
     JOIN offerings o ON o.id = sr.offering_id
     JOIN studios s ON s.id = sr.studio_id
    WHERE sr.id = p_rule_id;
+  IF NOT FOUND THEN RETURN 0; END IF;
 
-  IF NOT FOUND OR NOT COALESCE(r.is_active, true) OR NOT COALESCE(r.offering_active, true)
-     OR r.recurrence NOT IN ('daily', 'weekly', 'biweekly') THEN
-    RETURN 0;
-  END IF;
-
+  v_valid := COALESCE(r.is_active, true) AND COALESCE(r.offering_active, true)
+             AND r.recurrence IN ('daily', 'weekly', 'biweekly');
   v_tz := COALESCE(NULLIF(r.studio_tz, ''), 'UTC');
   v_today := (NOW() AT TIME ZONE v_tz)::date;
   v_from := GREATEST(r.effective_from, v_today);
-  v_to := LEAST(COALESCE(r.effective_until, v_today + p_weeks * 7), v_today + p_weeks * 7);
-  -- ISO day number of the rule (monday = 1 .. sunday = 7)
+  -- Cover the horizon, or further if classes were already generated further out.
+  v_to := GREATEST(v_today + p_weeks * 7,
+                   COALESCE((SELECT max(starts_at AT TIME ZONE v_tz)::date FROM class_occurrences
+                              WHERE schedule_rule_id = r.id AND starts_at > NOW()), v_today));
+  IF r.effective_until IS NOT NULL THEN v_to := LEAST(v_to, r.effective_until); END IF;
   v_dow := array_position(ARRAY['monday','tuesday','wednesday','thursday','friday','saturday','sunday'], r.day_of_week::text);
   v_capacity := COALESCE(r.capacity_override, r.offering_capacity, 20);
 
-  v_day := v_from;
-  WHILE v_day <= v_to LOOP
-    IF r.recurrence = 'daily'
-       OR (EXTRACT(ISODOW FROM v_day)::int = v_dow
-           AND (r.recurrence = 'weekly'
-                OR ((v_day - r.effective_from) / 7) % 2 = 0)) THEN
-      v_starts := (v_day + r.start_time) AT TIME ZONE v_tz;
-      v_ends := CASE WHEN r.end_time > r.start_time
-                     THEN (v_day + r.end_time) AT TIME ZONE v_tz
-                     ELSE v_starts + make_interval(mins => COALESCE(r.duration_minutes, 60)) END;
-      IF v_starts > NOW() THEN
-        INSERT INTO class_occurrences (studio_id, offering_id, schedule_rule_id, location_id, teacher_id,
-                                       starts_at, ends_at, room, capacity, instructor_role)
-        VALUES (r.studio_id, r.offering_id, r.id, r.location_id, r.teacher_id,
-                v_starts, v_ends, r.room, v_capacity, r.instructor_role)
-        ON CONFLICT (schedule_rule_id, starts_at) WHERE schedule_rule_id IS NOT NULL
-        DO UPDATE SET is_cancelled = false, cancellation_reason = NULL, cancelled_at = NULL
-          WHERE class_occurrences.cancellation_reason = 'schedule_rule_changed';
-        GET DIAGNOSTICS v_rows = ROW_COUNT;
-        v_count := v_count + v_rows;
+  IF v_valid THEN
+    v_day := v_from;
+    WHILE v_day <= v_to LOOP
+      IF r.recurrence = 'daily'
+         OR (EXTRACT(ISODOW FROM v_day)::int = v_dow
+             AND (r.recurrence = 'weekly' OR ((v_day - r.effective_from) / 7) % 2 = 0)) THEN
+        v_starts := (v_day + r.start_time) AT TIME ZONE v_tz;
+        IF v_starts > NOW() THEN
+          v_expected := v_expected || v_starts;
+        END IF;
       END IF;
-    END IF;
-    v_day := v_day + 1;
+      v_day := v_day + 1;
+    END LOOP;
+  END IF;
+
+  -- 2. Cancel future classes the rule no longer produces.
+  UPDATE class_occurrences co
+     SET is_cancelled = true, cancelled_at = NOW(), cancellation_reason = 'schedule_rule_changed'
+   WHERE co.schedule_rule_id = r.id
+     AND co.starts_at > NOW()
+     AND NOT COALESCE(co.is_cancelled, false)
+     AND NOT (co.starts_at = ANY (v_expected))
+     AND NOT occurrence_has_live_interest(co.id);
+
+  -- 3. Insert or refresh the expected classes.
+  FOREACH v_starts IN ARRAY v_expected LOOP
+    v_ends := CASE WHEN r.end_time > r.start_time
+                   THEN ((v_starts AT TIME ZONE v_tz)::date + r.end_time) AT TIME ZONE v_tz
+                   ELSE v_starts + make_interval(mins => COALESCE(r.duration_minutes, 60)) END;
+    INSERT INTO class_occurrences (studio_id, offering_id, schedule_rule_id, location_id, teacher_id,
+                                   starts_at, ends_at, room, capacity, instructor_role)
+    VALUES (r.studio_id, r.offering_id, r.id, r.location_id, r.teacher_id,
+            v_starts, v_ends, r.room, v_capacity, r.instructor_role)
+    ON CONFLICT (schedule_rule_id, starts_at) WHERE schedule_rule_id IS NOT NULL
+    DO UPDATE SET offering_id = EXCLUDED.offering_id, location_id = EXCLUDED.location_id,
+                  teacher_id = EXCLUDED.teacher_id, ends_at = EXCLUDED.ends_at, room = EXCLUDED.room,
+                  capacity = EXCLUDED.capacity, instructor_role = EXCLUDED.instructor_role,
+                  is_cancelled = false, cancellation_reason = NULL, cancelled_at = NULL,
+                  updated_at = NOW()
+      WHERE (NOT COALESCE(class_occurrences.is_cancelled, false)
+             OR class_occurrences.cancellation_reason = 'schedule_rule_changed')
+        AND NOT occurrence_has_live_interest(class_occurrences.id)
+        AND (class_occurrences.offering_id, class_occurrences.location_id, class_occurrences.teacher_id,
+             class_occurrences.ends_at, class_occurrences.room, class_occurrences.capacity,
+             class_occurrences.instructor_role, COALESCE(class_occurrences.is_cancelled, false))
+            IS DISTINCT FROM
+            (EXCLUDED.offering_id, EXCLUDED.location_id, EXCLUDED.teacher_id, EXCLUDED.ends_at,
+             EXCLUDED.room, EXCLUDED.capacity, EXCLUDED.instructor_role, false);
+    GET DIAGNOSTICS v_rows = ROW_COUNT;
+    v_count := v_count + v_rows;
   END LOOP;
 
   RETURN v_count;
@@ -98,9 +158,7 @@ END $$;
 REVOKE ALL ON FUNCTION generate_rule_occurrences(UUID, INTEGER) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION generate_rule_occurrences(UUID, INTEGER) TO service_role;
 
--- A saved rule fills its horizon. A changed rule first cancels its future
--- classes that no one has booked or is holding (booked ones stay for staff to
--- move or cancel with notice), then regenerates.
+-- Any saved rule (new, edited, deactivated) is reconciled at once.
 CREATE OR REPLACE FUNCTION schedule_rule_sync_occurrences()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -108,26 +166,6 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  IF TG_OP = 'UPDATE' AND (
-       NEW.is_active IS DISTINCT FROM OLD.is_active
-    OR NEW.day_of_week IS DISTINCT FROM OLD.day_of_week
-    OR NEW.start_time IS DISTINCT FROM OLD.start_time
-    OR NEW.end_time IS DISTINCT FROM OLD.end_time
-    OR NEW.recurrence IS DISTINCT FROM OLD.recurrence
-    OR NEW.effective_from IS DISTINCT FROM OLD.effective_from
-    OR NEW.effective_until IS DISTINCT FROM OLD.effective_until
-    OR NEW.offering_id IS DISTINCT FROM OLD.offering_id
-    OR NEW.location_id IS DISTINCT FROM OLD.location_id) THEN
-    UPDATE class_occurrences co
-       SET is_cancelled = true, cancelled_at = NOW(), cancellation_reason = 'schedule_rule_changed'
-     WHERE co.schedule_rule_id = NEW.id
-       AND co.starts_at > NOW()
-       AND NOT co.is_cancelled
-       AND NOT EXISTS (SELECT 1 FROM bookings b WHERE b.class_occurrence_id = co.id)
-       AND NOT EXISTS (SELECT 1 FROM seat_holds h WHERE h.class_occurrence_id = co.id
-                         AND h.status = 'active' AND h.expires_at > NOW());
-  END IF;
-
   PERFORM generate_rule_occurrences(NEW.id, 8);
   RETURN NEW;
 END $$;
@@ -162,9 +200,12 @@ BEGIN
   END IF;
 
   FOR v_rule IN
-    SELECT id FROM schedule_rules
-     WHERE COALESCE(is_active, true)
-       AND (p_studio_id IS NULL OR studio_id = p_studio_id)
+    SELECT sr.id FROM schedule_rules sr
+     WHERE (p_studio_id IS NULL OR sr.studio_id = p_studio_id)
+       AND (COALESCE(sr.is_active, true)
+            OR EXISTS (SELECT 1 FROM class_occurrences co
+                        WHERE co.schedule_rule_id = sr.id AND co.starts_at > NOW()
+                          AND NOT COALESCE(co.is_cancelled, false)))
   LOOP
     v_total := v_total + generate_rule_occurrences(v_rule, p_weeks);
   END LOOP;
