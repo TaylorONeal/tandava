@@ -105,5 +105,5 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 ## 2026-10-09 (later): LP-4a My Schedule on real bookings
 - 00039 `get_my_bookings()`: the caller's own bookings with class, studio, room, location and teacher names (SECURITY DEFINER, authenticated only). Tests MYB-01..03.
 - /my-schedule (live) lists real upcoming and past bookings in the studio's timezone, with the late-cancel deadline; Cancel calls `cancel_booking`. Demo keeps the sample list. Page is noindex.
-- Prod after merge: Taylor runs `scripts/db/prod/apply-00039.sql` (independent of 00038).
-- Found: /account shows a made-up profile ("Sarah Chen"), membership and pack to real users, and its Save buttons only toast. LP-4b.
+- Found: /account showed a made-up profile ("Sarah Chen"), membership and pack to real users, and its Save buttons only toasted. LP-4b in the same PR: live /account shows the person's real profile (saves to `profiles`, own row only, PROF-01) and their memberships and class packs across studios from 00040 `get_my_entitlements()` (ENT-01..03), with "Manage billing" (Stripe portal) on Stripe-billed memberships. Preferences and saved cards have no backing store, so the live page does not show them. Demo keeps the sample account.
+- Prod after merge: Taylor runs `scripts/db/prod/apply-00039-00040.sql` (independent of 00038).

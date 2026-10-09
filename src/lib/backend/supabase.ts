@@ -33,7 +33,7 @@ import type {
   ApiResult,
   Backend,
 } from "./types";
-import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyBookingRow, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
+import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyBookingRow, MyEntitlementRow, MyProfilePatch, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
 
 /** Request header carrying the analytics session into booking RPCs (read by the bookings trigger, migration 00035). */
@@ -284,6 +284,27 @@ const supabaseData: DataProvider = {
     const { data, error } = await getClient().rpc("get_my_bookings", { p_limit: 100 });
     return {
       data: (data as MyBookingRow[] | null) ?? [],
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async getMyEntitlements(): Promise<DataResult<MyEntitlementRow[]>> {
+    const { data, error } = await getClient().rpc("get_my_entitlements");
+    return {
+      data: (data as MyEntitlementRow[] | null) ?? [],
+      error: error ? { message: error.message } : null,
+    };
+  },
+
+  async updateMyProfile(userId: string, patch: MyProfilePatch): Promise<DataResult<Profile>> {
+    const { data, error } = await getClient()
+      .from("profiles")
+      .update(patch)
+      .eq("id", userId)
+      .select("*")
+      .single();
+    return {
+      data: (data as Profile | null) ?? null,
       error: error ? { message: error.message } : null,
     };
   },

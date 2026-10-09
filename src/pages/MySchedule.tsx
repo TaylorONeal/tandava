@@ -24,7 +24,8 @@ import {
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import { data as backendData, isBackendConfigured } from "@/lib/backend";
+import { data as backendData } from "@/lib/backend";
+import { useAuth } from "@/contexts/AuthContext";
 import { useMyBookings } from "@/hooks/useBooking";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { splitMyBookings, type MyBookingView } from "@/lib/myBookings";
@@ -264,7 +265,8 @@ const MySchedule = () => {
   const queryClient = useQueryClient();
 
   // Live: the signed-in student's real bookings. Demo: the sample list.
-  const live = isBackendConfigured();
+  const { isDemoMode } = useAuth();
+  const live = !isDemoMode;
   const { data: rows, isLoading, isError } = useMyBookings();
   const liveSplit = splitMyBookings(rows ?? []);
   const upcomingSource = live ? liveSplit.upcoming.map(toItem) : upcomingBookings;
