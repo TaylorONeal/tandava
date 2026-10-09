@@ -1,3 +1,5 @@
+import LiveSchedule from "./LiveSchedule";
+import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 import { ManageLayout } from "@/components/manage/ManageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -112,7 +114,7 @@ const availableSubs = [
   { id: "t5", name: "David Park", specialties: ["Ashtanga", "Vinyasa"] },
 ];
 
-export default function ScheduleManage() {
+function DemoScheduleManage() {
   const [selectedDay, setSelectedDay] = useState("Mon");
   const [searchQuery, setSearchQuery] = useState("");
   const [subDialogOpen, setSubDialogOpen] = useState(false);
@@ -607,4 +609,10 @@ export default function ScheduleManage() {
       </Dialog>
     </ManageLayout>
   );
+}
+
+/** Sample data in demo mode; the studio's real weekly schedule when live (LP-5). */
+export default function ScheduleManage() {
+  const { isDemoMode } = useAuth();
+  return isDemoMode ? <DemoScheduleManage /> : <LiveSchedule />;
 }

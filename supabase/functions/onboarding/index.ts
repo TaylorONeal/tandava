@@ -442,7 +442,7 @@ serve(async (req) => {
           const dropIn = dollarsToCents(f.classPrice);
           const packClasses = intOf(f.packClasses, 10);
           const unlimited = f.memberUnlimited === true || f.memberUnlimited === "true";
-          // Starter pricing — the owner refines these in Financials. Use the
+          // Starter pricing: the owner refines these in Classes and pricing (/manage/offerings). Use the
           // owner's numbers when given, else derive from the drop-in price.
           // Re-saving the step updates the starter plan instead of duplicating it.
           const pack = {

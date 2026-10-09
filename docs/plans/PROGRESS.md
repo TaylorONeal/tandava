@@ -132,3 +132,11 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - 00041 pins search_path on the 21 functions, revokes EXECUTE on SECURITY DEFINER trigger functions (Postgres checks it only at CREATE TRIGGER), and makes book_free_class signed-in only. HARD-01..03 fail without it.
 - Kept by design (reasons in the migration): RLS helper functions (policies call them for every role), the public read RPCs, the authenticated booking RPCs.
 - Open: Taylor turns on leaked password protection in Supabase Auth (same page as the Turnstile secret).
+
+## 2026-10-09 (later): LP-5 owners edit classes, prices and schedule
+- 00039, 00040 and 00041 confirmed on prod (read-only check): `get_my_bookings`, `get_my_entitlements` present, `book_free_class` signed-in only.
+- Found: after onboarding nothing could change. /manage/offerings and /manage/schedule showed sample data, and offerings, class_pack_types, membership_types and schedule_rules had read policies only.
+- 00042: owner/admin INSERT and UPDATE policies (no DELETE, "Off" keeps history), value checks, studio_id fixed, rules must use their own studio's class, location and staff, class length/capacity/off reach scheduled classes (capacity also reaches booked classes, never below bookings), `get_studio_staff_names` for the teacher picker. Tests CAT-01..12 (fail without the migration).
+- Live pages: "Classes and pricing" (classes, packs, memberships) and "Weekly schedule". Prices apply at the next checkout (checkout reads the rows). Booked classes keep their time and teacher when a rule changes.
+- Prod after merge: Taylor runs `scripts/db/prod/apply-00042.sql`.
+
