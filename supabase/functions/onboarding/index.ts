@@ -526,8 +526,10 @@ serve(async (req) => {
           teacherId = teacherRow?.profile_id ?? null;
         }
 
-        // Re-saving the step updates the matching rule instead of stacking a
-        // duplicate recurring class on the same slot.
+        // This step edits the studio's first recurring class. Re-saving it,
+        // even with a different class, day or time, updates that same rule, so
+        // an abandoned slot never stays on the schedule (classes follow the
+        // rule via the 00036 trigger).
         const rule = {
           studio_id: studioId,
           offering_id: offering.id,
@@ -538,14 +540,13 @@ serve(async (req) => {
           start_time: startTime,
           end_time: endTime,
           room: f.schedRoom ? String(f.schedRoom) : null,
+          is_active: true,
         };
         const { data: existingRule } = await db
           .from("schedule_rules")
           .select("id")
           .eq("studio_id", studioId)
-          .eq("offering_id", offering.id)
-          .eq("day_of_week", day)
-          .eq("start_time", startTime)
+          .order("created_at", { ascending: true })
           .limit(1)
           .maybeSingle();
         const { error: ruleErr } = existingRule

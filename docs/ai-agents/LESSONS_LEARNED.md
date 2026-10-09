@@ -620,6 +620,14 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 | Static `<link rel="canonical">` in index.html on an SPA | Every route told Google its canonical was the old domain's homepage | No static canonical; SEOHead sets one per page from `VITE_APP_URL` |
 | Copy promising a control the product does not have | #81 said "turn this off any time" before the toggle persisted | Check the code path before writing the promise |
 
+## First live studio (October 2026)
+
+| Mistake | Cost | Fix |
+|---|---|---|
+| Onboarding saved a weekly rule and nothing expanded it into classes | A new studio had a schedule with nothing to book; every booking and payment test was blocked | Seed one real studio end to end through the UI before calling a flow done. Rules now expand by trigger plus a daily job (00036, GEN tests) |
+| Stripe API defaults move under you | `accounts.create` (v1) is refused for new Connect platforms in 2026 | Read the function log (`query_logs`, source `function_logs`) before guessing; record the Stripe setting you rely on in PROGRESS |
+| Telling the user an account without checking | "Reset the app password" left Taylor guessing which account | Name the exact email and what it signs into; check `auth.users` read-only first |
+
 ## Quick Reference: Prevention Patterns
 
 | Issue Type | Prevention Pattern |
