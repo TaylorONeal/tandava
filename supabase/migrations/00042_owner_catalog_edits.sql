@@ -131,7 +131,8 @@ BEGIN
   -- its own capacity; schedule_overrides has no capacity type, so a sub or a
   -- moved time does not keep the old capacity). Below the number booked, everyone stays
   -- booked and the class shows full until it drops under the new capacity;
-  -- waitlist promotion only fills seats below capacity. A cut that would
+  -- waitlist promotion (00030/00033) only fills seats below capacity. A raise
+  -- promotes the waitlist before the new seats are offered to anyone else. A cut that would
   -- strand a customer paying in Checkout (an active seat hold) is refused, so
   -- no paid seat turns into a refund. Each class is locked first and counted
   -- in a later statement (fresh snapshot), like the 00037 reconcile, so a
@@ -157,6 +158,11 @@ BEGIN
           USING ERRCODE = '55P03';
       END IF;
       UPDATE class_occurrences SET capacity = NEW.capacity, updated_at = NOW() WHERE id = v_occ;
+      -- New seats go to the waitlist first (00033 promote_waitlist checks
+      -- capacity, so a cut never promotes anyone).
+      IF NEW.capacity > OLD.capacity THEN
+        PERFORM promote_waitlist(v_occ);
+      END IF;
     END LOOP;
   END IF;
   RETURN NEW;

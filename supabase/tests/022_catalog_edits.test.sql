@@ -210,4 +210,22 @@ BEGIN
    WHERE schedule_rule_id = v_rule AND NOT is_cancelled AND ends_at - starts_at <> interval '90 minutes';
   SELECT end_time INTO v_end FROM schedule_rules WHERE id = v_rule;
   PERFORM pg_temp.ok(n >= 8 AND m = 0 AND v_end = '01:00', 'CAT-17', 'overnight class keeps its length (' || n || ' classes, ' || m || ' wrong)');
+
+  -- CAT-18: below the bookings after a cut, a cancellation does not promote the waitlist.
+  INSERT INTO auth.users (id, email) VALUES ('a3000000-0000-0000-0000-0000000000a3', 'student-a3@test.dev');
+  INSERT INTO bookings (studio_id, class_occurrence_id, profile_id, status, waitlist_position)
+  VALUES (pg_temp.id('studio_a'), pg_temp.id('occ_a_open'), 'a3000000-0000-0000-0000-0000000000a3', 'waitlisted', 1);
+  UPDATE bookings SET status = 'cancelled', cancelled_at = NOW()
+   WHERE class_occurrence_id = pg_temp.id('occ_a_open') AND profile_id = pg_temp.id('student_a2');
+  SELECT status::text = 'waitlisted' INTO ok FROM bookings
+   WHERE class_occurrence_id = pg_temp.id('occ_a_open') AND profile_id = 'a3000000-0000-0000-0000-0000000000a3';
+  PERFORM pg_temp.ok(ok, 'CAT-18', 'cancellation while over the cut capacity promotes nobody');
+
+  -- CAT-19: raising capacity gives the new seat to the waitlist first.
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  UPDATE offerings SET capacity = 2 WHERE id = v_vinyasa;
+  EXECUTE 'RESET ROLE';
+  SELECT status::text = 'confirmed' INTO ok FROM bookings
+   WHERE class_occurrence_id = pg_temp.id('occ_a_open') AND profile_id = 'a3000000-0000-0000-0000-0000000000a3';
+  PERFORM pg_temp.ok(ok, 'CAT-19', 'raised capacity promotes the waitlisted student');
 END $$;
