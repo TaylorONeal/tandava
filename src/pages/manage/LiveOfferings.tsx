@@ -234,7 +234,7 @@ export default function LiveOfferings() {
                 <Field label="Length (minutes)" id="f-length-minutes">
                   <Input id="f-length-minutes" inputMode="numeric" value={editing.form.duration} onChange={(e) => setForm("duration", e.target.value)} />
                 </Field>
-                <Field label="Capacity" id="f-capacity">
+                <Field label="Capacity" id="f-capacity" hint="Lowering it never removes anyone. A class already over shows full.">
                   <Input id="f-capacity" inputMode="numeric" value={editing.form.capacity} onChange={(e) => setForm("capacity", e.target.value)} />
                 </Field>
               </div>

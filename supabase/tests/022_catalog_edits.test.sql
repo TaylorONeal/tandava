@@ -161,14 +161,25 @@ BEGIN
      AND expires_at BETWEEN NOW() + interval '29 days' AND NOW() + interval '31 days';
   PERFORM pg_temp.ok(n = 1, 'CAT-14', 'pack fulfilled with the terms sold at checkout');
 
-  -- CAT-15: lowering capacity keeps seats held by a customer in Checkout.
+  -- CAT-15: a capacity cut that would strand a seat being paid for is refused; once the
+  -- hold is gone the cut applies exactly, even below the bookings (class shows full).
   INSERT INTO seat_holds (class_occurrence_id, profile_id, studio_id, expires_at)
   VALUES (pg_temp.id('occ_a_open'), pg_temp.id('student_a2'), pg_temp.id('studio_a'), NOW() + interval '30 minutes');
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  BEGIN
+    UPDATE offerings SET capacity = 1 WHERE id = v_vinyasa;
+    ok := false;
+  EXCEPTION WHEN lock_not_available THEN ok := true;
+  END;
+  EXECUTE 'RESET ROLE';
+  UPDATE seat_holds SET status = 'released' WHERE class_occurrence_id = pg_temp.id('occ_a_open');
+  INSERT INTO bookings (studio_id, class_occurrence_id, profile_id, status)
+  VALUES (pg_temp.id('studio_a'), pg_temp.id('occ_a_open'), pg_temp.id('student_a2'), 'confirmed');
   PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
   UPDATE offerings SET capacity = 1 WHERE id = v_vinyasa;
   EXECUTE 'RESET ROLE';
   SELECT capacity INTO v_cap FROM class_occurrences WHERE id = pg_temp.id('occ_a_open');
-  PERFORM pg_temp.ok(v_cap = 2, 'CAT-15', 'capacity floor counts the booking and the live hold (got ' || v_cap || ')');
+  PERFORM pg_temp.ok(ok AND v_cap = 1, 'CAT-15', 'cut refused during a paid hold, then applied exactly (got ' || v_cap || ')');
 
   -- CAT-16: an owner cannot change an existing plan's class limit even before anyone joins;
   -- the onboarding function (no signed-in user) can re-save its starter plan.

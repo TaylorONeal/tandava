@@ -13,8 +13,8 @@
 --      staff.
 --   5. Editing a class (length, capacity, on/off) reaches its scheduled
 --      classes. Rules are re-saved so 00036/00037 reconcile them, and a new
---      capacity also reaches future classes that already have bookings
---      (never below the number booked).
+--      capacity is also set on future classes that already have bookings
+--      (refused while a cut would strand a seat being paid for).
 --   6. get_studio_staff_names: the schedule editor's teacher picker. Staff
 --      cannot read each other's profiles through RLS.
 --   7. Purchases keep the terms shown at checkout, and owners cannot change
@@ -113,6 +113,10 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+  v_occ   UUID;
+  v_taken INTEGER;
+  v_held  INTEGER;
 BEGIN
   -- Re-save each rule: end time follows the new length (TIME wraps past
   -- midnight, and generate_rule_occurrences then uses the class length), and
@@ -122,30 +126,38 @@ BEGIN
          updated_at = NOW()
    WHERE sr.offering_id = NEW.id;
 
-  -- Classes with bookings or holds are left alone by the reconcile. A capacity
-  -- change still applies to them, never below the seats already taken or held
-  -- (a paid Checkout holds its seat), unless the rule or the class has its own
-  -- capacity.
+  -- Classes with bookings or holds are left alone by the reconcile, so the
+  -- new capacity is set on them here, exactly as asked (unless the rule or
+  -- the class has its own capacity). Below the number booked, everyone stays
+  -- booked and the class shows full until it drops under the new capacity;
+  -- waitlist promotion only fills seats below capacity. A cut that would
+  -- strand a customer paying in Checkout (an active seat hold) is refused, so
+  -- no paid seat turns into a refund. Each class is locked first and counted
+  -- in a later statement (fresh snapshot), like the 00037 reconcile, so a
+  -- booking or hold that commits while we wait is seen.
   IF NEW.capacity IS DISTINCT FROM OLD.capacity THEN
-    UPDATE class_occurrences co
-       SET capacity = t.floor_cap, updated_at = NOW()
-      FROM (SELECT c.id,
-                   GREATEST(NEW.capacity,
-                            (SELECT count(*) FROM bookings b
-                              WHERE b.class_occurrence_id = c.id AND b.status IN ('confirmed', 'checked_in'))
-                          + (SELECT count(*) FROM seat_holds h
-                              WHERE h.class_occurrence_id = c.id AND h.status = 'active' AND h.expires_at > NOW())
-                   )::int AS floor_cap
-              FROM class_occurrences c
-             WHERE c.offering_id = NEW.id) t
-     WHERE t.id = co.id
-       AND co.offering_id = NEW.id
-       AND co.starts_at > NOW()
-       AND NOT COALESCE(co.is_cancelled, false)
-       AND co.capacity IS DISTINCT FROM t.floor_cap
-       AND NOT EXISTS (SELECT 1 FROM schedule_rules sr
-                        WHERE sr.id = co.schedule_rule_id AND sr.capacity_override IS NOT NULL)
-       AND NOT EXISTS (SELECT 1 FROM schedule_overrides so WHERE so.class_occurrence_id = co.id);
+    FOR v_occ IN
+      SELECT co.id FROM class_occurrences co
+       WHERE co.offering_id = NEW.id
+         AND co.starts_at > NOW()
+         AND NOT COALESCE(co.is_cancelled, false)
+         AND co.capacity IS DISTINCT FROM NEW.capacity
+         AND NOT EXISTS (SELECT 1 FROM schedule_rules sr
+                          WHERE sr.id = co.schedule_rule_id AND sr.capacity_override IS NOT NULL)
+         AND NOT EXISTS (SELECT 1 FROM schedule_overrides so WHERE so.class_occurrence_id = co.id)
+       ORDER BY co.id
+         FOR UPDATE OF co
+    LOOP
+      SELECT count(*) INTO v_taken FROM bookings
+       WHERE class_occurrence_id = v_occ AND status IN ('confirmed', 'checked_in');
+      SELECT count(*) INTO v_held FROM seat_holds
+       WHERE class_occurrence_id = v_occ AND status = 'active' AND expires_at > NOW();
+      IF v_held > 0 AND v_taken + v_held > NEW.capacity THEN
+        RAISE EXCEPTION 'Someone is paying for a spot in one of these classes right now. Try again in a few minutes.'
+          USING ERRCODE = '55P03';
+      END IF;
+      UPDATE class_occurrences SET capacity = NEW.capacity, updated_at = NOW() WHERE id = v_occ;
+    END LOOP;
   END IF;
   RETURN NEW;
 END $$;
