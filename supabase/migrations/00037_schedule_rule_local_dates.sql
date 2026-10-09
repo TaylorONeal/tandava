@@ -14,6 +14,9 @@
 --    edit recorded in schedule_overrides or marked is_subbed) is not refreshed
 --    from the rule. It is still cancelled if the rule stops producing it and
 --    nobody is booked.
+-- 4. Classes are matched to the rule by the slot they were generated for
+--    (rule_slot_starts_at), not by starts_at, so a class moved to another time
+--    still fills its original slot: it is neither cancelled nor duplicated.
 
 -- 1. Local start date ---------------------------------------------------------
 ALTER TABLE schedule_rules ALTER COLUMN effective_from DROP DEFAULT;
@@ -39,6 +42,15 @@ DROP TRIGGER IF EXISTS schedule_rules_local_effective_from ON schedule_rules;
 CREATE TRIGGER schedule_rules_local_effective_from
   BEFORE INSERT ON schedule_rules
   FOR EACH ROW EXECUTE FUNCTION schedule_rule_local_effective_from();
+
+-- 4. Slot identity ----------------------------------------------------------------
+ALTER TABLE class_occurrences ADD COLUMN IF NOT EXISTS rule_slot_starts_at TIMESTAMPTZ;
+UPDATE class_occurrences SET rule_slot_starts_at = starts_at
+ WHERE schedule_rule_id IS NOT NULL AND rule_slot_starts_at IS NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS uq_class_occurrences_rule_slot
+  ON class_occurrences (schedule_rule_id, rule_slot_starts_at)
+  WHERE schedule_rule_id IS NOT NULL;
+DROP INDEX IF EXISTS uq_class_occurrences_rule_start;
 
 -- 2 and 3. Reconcile with locks, leave one-off changes alone -------------------
 CREATE OR REPLACE FUNCTION occurrence_has_override(p_occurrence_id UUID)
@@ -91,8 +103,8 @@ BEGIN
   v_today := (NOW() AT TIME ZONE v_tz)::date;
   v_from := GREATEST(r.effective_from, v_today);
   v_to := GREATEST(v_today + p_weeks * 7,
-                   COALESCE((SELECT max(starts_at AT TIME ZONE v_tz)::date FROM class_occurrences
-                              WHERE schedule_rule_id = r.id AND starts_at > NOW()), v_today));
+                   COALESCE((SELECT max(rule_slot_starts_at AT TIME ZONE v_tz)::date FROM class_occurrences
+                              WHERE schedule_rule_id = r.id AND rule_slot_starts_at > NOW()), v_today));
   IF r.effective_until IS NOT NULL THEN v_to := LEAST(v_to, r.effective_until); END IF;
   v_dow := array_position(ARRAY['monday','tuesday','wednesday','thursday','friday','saturday','sunday'], r.day_of_week::text);
   v_capacity := COALESCE(r.capacity_override, r.offering_capacity, 20);
@@ -118,7 +130,7 @@ BEGIN
     SELECT id FROM class_occurrences
      WHERE schedule_rule_id = r.id AND starts_at > NOW()
        AND NOT COALESCE(is_cancelled, false)
-       AND NOT (starts_at = ANY (v_expected))
+       AND NOT (COALESCE(rule_slot_starts_at, starts_at) = ANY (v_expected))
      ORDER BY id
        FOR UPDATE
   LOOP
@@ -135,10 +147,10 @@ BEGIN
                    ELSE v_starts + make_interval(mins => COALESCE(r.duration_minutes, 60)) END;
 
     INSERT INTO class_occurrences (studio_id, offering_id, schedule_rule_id, location_id, teacher_id,
-                                   starts_at, ends_at, room, capacity, instructor_role)
+                                   starts_at, ends_at, room, capacity, instructor_role, rule_slot_starts_at)
     VALUES (r.studio_id, r.offering_id, r.id, r.location_id, r.teacher_id,
-            v_starts, v_ends, r.room, v_capacity, r.instructor_role)
-    ON CONFLICT (schedule_rule_id, starts_at) WHERE schedule_rule_id IS NOT NULL DO NOTHING;
+            v_starts, v_ends, r.room, v_capacity, r.instructor_role, v_starts)
+    ON CONFLICT (schedule_rule_id, rule_slot_starts_at) WHERE schedule_rule_id IS NOT NULL DO NOTHING;
     GET DIAGNOSTICS v_rows = ROW_COUNT;
     v_count := v_count + v_rows;
 
@@ -147,7 +159,7 @@ BEGIN
       -- is booked or holding, staff cancelled it, or it has a one-off change.
       SELECT id, is_cancelled, cancellation_reason INTO v_occ
         FROM class_occurrences
-       WHERE schedule_rule_id = r.id AND starts_at = v_starts
+       WHERE schedule_rule_id = r.id AND rule_slot_starts_at = v_starts
          FOR UPDATE;
       IF FOUND
          AND (NOT COALESCE(v_occ.is_cancelled, false) OR v_occ.cancellation_reason = 'schedule_rule_changed')

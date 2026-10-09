@@ -147,3 +147,20 @@ BEGIN
                      AND (SELECT count(*) FROM class_occurrences WHERE schedule_rule_id = v_rule AND room = 'Loft') >= 7,
                      'GEN-15', 'one-off change survives a rule edit; other classes refresh');
 END $$;
+
+-- GEN-16 (00037): a class moved to another time keeps its slot: the top-up
+-- neither cancels it nor recreates one at the original time.
+DO $$
+DECLARE v_rule uuid := 'cccccccc-4000-0000-0000-000000000002'; v_moved uuid; v_orig timestamptz; n int;
+BEGIN
+  SELECT id, starts_at INTO v_moved, v_orig FROM class_occurrences
+   WHERE schedule_rule_id = v_rule AND NOT is_cancelled ORDER BY starts_at OFFSET 1 LIMIT 1;
+  UPDATE class_occurrences SET starts_at = starts_at + interval '2 hours', ends_at = ends_at + interval '2 hours' WHERE id = v_moved;
+  INSERT INTO schedule_overrides (studio_id, class_occurrence_id, override_type, new_starts_at)
+  VALUES (pg_temp.id('studio_c'), v_moved, 'time_change', v_orig + interval '2 hours');
+  PERFORM set_config('request.jwt.claim.sub', '', true);
+  PERFORM generate_class_occurrences(NULL, 8);
+  SELECT count(*) INTO n FROM class_occurrences WHERE schedule_rule_id = v_rule AND starts_at = v_orig;
+  PERFORM pg_temp.ok(n = 0 AND NOT (SELECT is_cancelled FROM class_occurrences WHERE id = v_moved),
+                     'GEN-16', 'moved class stays and its old slot is not refilled');
+END $$;
