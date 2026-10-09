@@ -126,6 +126,20 @@ BEGIN
          updated_at = NOW()
    WHERE sr.offering_id = NEW.id;
 
+  -- The reconcile skips classes with bookings or holds. Their start stays put
+  -- (nobody is moved), but they take the new length too, unless their time
+  -- was changed by hand.
+  IF NEW.duration_minutes IS DISTINCT FROM OLD.duration_minutes THEN
+    UPDATE class_occurrences co
+       SET ends_at = co.starts_at + make_interval(mins => NEW.duration_minutes), updated_at = NOW()
+     WHERE co.offering_id = NEW.id
+       AND co.starts_at > NOW()
+       AND NOT COALESCE(co.is_cancelled, false)
+       AND co.ends_at IS DISTINCT FROM co.starts_at + make_interval(mins => NEW.duration_minutes)
+       AND NOT EXISTS (SELECT 1 FROM schedule_overrides so
+                        WHERE so.class_occurrence_id = co.id AND so.override_type = 'time_change');
+  END IF;
+
   -- Classes with bookings or holds are left alone by the reconcile, so the
   -- new capacity is set on them here, exactly as asked (unless the rule has
   -- its own capacity; schedule_overrides has no capacity type, so a sub or a

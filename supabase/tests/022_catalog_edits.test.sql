@@ -228,4 +228,13 @@ BEGIN
   SELECT status::text = 'confirmed' INTO ok FROM bookings
    WHERE class_occurrence_id = pg_temp.id('occ_a_open') AND profile_id = 'a3000000-0000-0000-0000-0000000000a3';
   PERFORM pg_temp.ok(ok, 'CAT-19', 'raised capacity promotes the waitlisted student');
+
+  -- CAT-20: a booked class keeps its start and takes the new length.
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  UPDATE offerings SET duration_minutes = 75 WHERE id = v_vinyasa;
+  EXECUTE 'RESET ROLE';
+  SELECT count(*) INTO n FROM class_occurrences
+   WHERE id = pg_temp.id('occ_a_open') AND ends_at - starts_at = interval '75 minutes'
+     AND starts_at BETWEEN NOW() + interval '47 hours' AND NOW() + interval '49 hours';
+  PERFORM pg_temp.ok(n = 1, 'CAT-20', 'booked class takes the new length, same start');
 END $$;
