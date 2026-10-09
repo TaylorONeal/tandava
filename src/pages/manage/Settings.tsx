@@ -39,16 +39,18 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { OXATL_STUDIO } from "@/data/demo/oxatl-yoga";
 
 export default function SettingsManage() {
   const { toast } = useToast();
-  const [studioName, setStudioName] = useState("Oxatl Yoga");
-  const [studioSlug, setStudioSlug] = useState("tandava-yoga");
-  const [studioEmail, setStudioEmail] = useState("hello@tandava.yoga");
-  const [studioPhone, setStudioPhone] = useState("+1 (415) 555-0100");
-  const [studioWebsite, setStudioWebsite] = useState("https://tandava.yoga");
-  const [timezone, setTimezone] = useState("America/Los_Angeles");
-  const [currency, setCurrency] = useState("USD");
+  // Demo defaults come from the canonical demo studio; a live studio's row replaces them.
+  const [studioName, setStudioName] = useState(OXATL_STUDIO.name);
+  const [studioSlug, setStudioSlug] = useState(OXATL_STUDIO.slug);
+  const [studioEmail, setStudioEmail] = useState(OXATL_STUDIO.email ?? "");
+  const [studioPhone, setStudioPhone] = useState(OXATL_STUDIO.phone ?? "");
+  const [studioWebsite, setStudioWebsite] = useState(OXATL_STUDIO.website ?? "");
+  const [timezone, setTimezone] = useState(OXATL_STUDIO.timezone);
+  const [currency, setCurrency] = useState(OXATL_STUDIO.currency);
 
   const [cancelMinutes, setCancelMinutes] = useState("120");
   const [lateCancelFee, setLateCancelFee] = useState("15");
