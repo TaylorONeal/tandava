@@ -79,3 +79,12 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - Found: Stripe refused `stripe-connect` ("Accounts v1 not recommended for new Connect integrations"). Accounts v1 support turned on in the Purafield Studio sandbox (Taylor's call, 2026-10-09). Live mode needs the same setting or a move to Accounts v2 (BACKLOG).
 - Found: after sign-in a real owner lands on `/schedule` with Oxatl sample data, and the manage header says "Tandava Yoga" with sample notifications (BACKLOG).
 - Turnstile shows "Verification failed" in Taylor's Chrome. Do not add the Turnstile secret to Supabase Auth until the widget passes; check the widget hostnames first.
+
+## 2026-10-09 (later): attribution phase 1 (#72) live in the database
+- 00035 applied to prod by Taylor (SQL editor, bundle `scripts/db/prod/apply-00035.sql`, sha 654754f0ed69). Verified read-only: checkout, renewal, claim and opt-in functions present, `automation_settings` present, `bookings.confirmed_at` present, `analytics_sessions.profile_id` FK is ON DELETE SET NULL, 0 RLS tables without a policy, anon cannot write conversions. 00036 and 00037 also on prod.
+- Edge functions deployed from the #72 branch via Supabase MCP, each bundled to one file with esbuild (`npx esbuild supabase/functions/<fn>/index.ts --bundle --format=esm --platform=neutral --external:'https://*'`): stripe-webhook v5, stripe-checkout v5, express-book v3, analytics-session v1 (new), unsubscribe v1 (new), run-automations v1 (new). verify_jwt off for all but stripe-checkout. Smoke-tested: webhook 400 without signature, checkout 401 "Not authenticated", express-book 404 for an unknown studio, analytics-session `{sessionId:null}` for an unknown studio, unsubscribe 400 invalid_link, run-automations 403 without the cron secret.
+- Codex review loop closed: 4aadad7 "Didn't find any major issues". Deferred: W7-7..W7-11 (W7-10 needs a migration).
+- Still open, in order:
+  1. Taylor: merge #72 (https://github.com/TaylorONeal/tandava/pull/72). Merging deploys the frontend to tandavastudio.com.
+  2. Taylor: `ANALYTICS_IP_SALT` (and `EXPRESS_IP_SALT`) at https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/functions/secrets, any long random value each.
+  3. Automations stay in dry run until `AUTOMATIONS_CRON_SECRET`, `AUTOMATIONS_UNSUBSCRIBE_SECRET`, `EMAIL_PROVIDER=resend`, `RESEND_API_KEY` and then `AUTOMATIONS_ENABLED=true` are set, plus the hourly cron call (docs/OPERATOR_SETUP.md).
