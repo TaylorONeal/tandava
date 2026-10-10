@@ -1,6 +1,7 @@
 /**
  * /terms, /privacy and /refunds (LP-9). Content lives in src/content/legal.
  */
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { MarketingShell } from "@/components/layout/MarketingShell";
 import { SEOHead } from "@/components/seo/SEOHead";
@@ -18,6 +19,10 @@ function Paragraph({ text }: { text: string }) {
 }
 
 export function LegalDocView({ doc }: { doc: LegalDoc }) {
+  // Moving between policies via the links at the bottom starts at the top.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [doc.slug]);
   if (!LEGAL_IDENTITY) {
     // A self-hosted deployment publishes its own policies; never show the hosted operator's.
     return (

@@ -18,8 +18,17 @@ export const LEGAL_UPDATED = "October 10, 2026";
  * deployment sets VITE_LEGAL_OPERATOR and VITE_LEGAL_CONTACT. Otherwise the
  * policy pages say none are published and the footer links are hidden.
  */
-export interface LegalIdentity { operator: string; contact: string }
-export const HOSTED_IDENTITY: LegalIdentity = { operator: "Purafield Studio", contact: "hello@purafieldstudio.com" };
+export interface LegalIdentity {
+  operator: string;
+  contact: string;
+  /** The site these policies govern, as named in them. */
+  site: string;
+  /** The hosted Tandava service (adds the open-source scope note). */
+  hosted: boolean;
+}
+export const HOSTED_IDENTITY: LegalIdentity = {
+  operator: "Purafield Studio", contact: "hello@purafieldstudio.com", site: "tandavastudio.com", hosted: true,
+};
 
 export function resolveLegalIdentity(
   env: { VITE_LEGAL_OPERATOR?: string; VITE_LEGAL_CONTACT?: string },
@@ -27,8 +36,9 @@ export function resolveLegalIdentity(
 ): LegalIdentity | null {
   const operator = env.VITE_LEGAL_OPERATOR?.trim();
   const contact = env.VITE_LEGAL_CONTACT?.trim();
-  if (operator && contact) return { operator, contact };
   if (hostname && /(^|\.)tandavastudio\.com$/i.test(hostname)) return HOSTED_IDENTITY;
+  // A self-hosted deployment's policies govern that deployment's own site.
+  if (operator && contact && hostname) return { operator, contact, site: hostname.replace(/^www\./, ""), hosted: false };
   return null;
 }
 
@@ -39,6 +49,7 @@ export const LEGAL_IDENTITY = resolveLegalIdentity(
 const identity = LEGAL_IDENTITY ?? HOSTED_IDENTITY;
 export const LEGAL_OPERATOR = identity.operator;
 export const LEGAL_CONTACT = identity.contact;
+const SITE = identity.site;
 
 export interface LegalSection {
   heading: string;
@@ -64,7 +75,7 @@ export const TERMS: LegalDoc = {
     {
       heading: "Who we are",
       body: [
-        `Tandava (tandavastudio.com) is run by ${LEGAL_OPERATOR} ("we", "us"). It lets people find and book classes at independent studios, and lets studios manage their schedule, members and payments. By creating an account or booking a class you agree to these terms.`,
+        `Tandava (${SITE}) is run by ${LEGAL_OPERATOR} ("we", "us"). It lets people find and book classes at independent studios, and lets studios manage their schedule, members and payments. By creating an account or booking a class you agree to these terms.`,
       ],
     },
     {
@@ -100,12 +111,19 @@ export const TERMS: LegalDoc = {
         "Do not misuse Tandava. That includes booking spots you do not intend to use to block others, using someone else's account or payment method, scraping or overloading the service, trying to get around security or access controls, posting unlawful or misleading content, and sending messages to people who did not agree to receive them.",
       ],
     },
-    {
-      heading: "Open source",
-      body: [
-        "The Tandava software is open source and its code is published under its own license. These terms cover the hosted service at tandavastudio.com, not copies of the code that others run.",
-      ],
-    },
+    ...(identity.hosted
+      ? [{
+          heading: "Open source",
+          body: [
+            "The Tandava software is open source and its code is published under its own license. These terms cover the hosted service at tandavastudio.com, not copies of the code that others run.",
+          ],
+        }]
+      : [{
+          heading: "Software",
+          body: [
+            `${SITE} runs Tandava, open-source studio software. ${LEGAL_OPERATOR} operates this site and is responsible for it; the Tandava project is not a party to these terms.`,
+          ],
+        }]),
     {
       heading: "Changes and ending your account",
       body: [

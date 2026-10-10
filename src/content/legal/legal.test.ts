@@ -28,8 +28,10 @@ describe("resolveLegalIdentity", () => {
     expect(resolveLegalIdentity({}, "nottandavastudio.com")).toBeNull();
   });
   it("lets a deployment publish its own identity", () => {
-    expect(resolveLegalIdentity({ VITE_LEGAL_OPERATOR: "Lotus Co", VITE_LEGAL_CONTACT: "hi@lotus.test" }, "lotus.test"))
-      .toEqual({ operator: "Lotus Co", contact: "hi@lotus.test" });
+    expect(resolveLegalIdentity({ VITE_LEGAL_OPERATOR: "Lotus Co", VITE_LEGAL_CONTACT: "hi@lotus.test" }, "www.lotus.test"))
+      .toEqual({ operator: "Lotus Co", contact: "hi@lotus.test", site: "lotus.test", hosted: false });
+    // The hosted site keeps the hosted identity even if the env is set.
+    expect(resolveLegalIdentity({ VITE_LEGAL_OPERATOR: "X", VITE_LEGAL_CONTACT: "x@x.test" }, "tandavastudio.com")).toEqual(HOSTED_IDENTITY);
     expect(resolveLegalIdentity({ VITE_LEGAL_OPERATOR: "Lotus Co" }, "lotus.test")).toBeNull();
   });
 });
