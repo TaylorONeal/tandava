@@ -133,7 +133,7 @@ export const PRIVACY: LegalDoc = {
     {
       heading: "Service providers",
       body: [
-        "We use providers to run Tandava, and they process data only for that purpose: Supabase (database and sign-in), Stripe (payments), Vercel (website hosting), Resend (email), Cloudflare Turnstile (bot checks on sign-in), PostHog (product analytics, only when enabled) and Sentry (error monitoring, only when enabled). Your data may be processed in the United States.",
+        "We use providers to run Tandava, and they process data only for that purpose: Supabase (database and sign-in), Google or Apple (only if you choose to sign in with them; they share your name and email with us), Stripe (payments), Vercel (website hosting), Resend (email), Cloudflare Turnstile (bot checks on sign-in), PostHog (product analytics, only when enabled) and Sentry (error monitoring, only when enabled). Your data may be processed in the United States.",
       ],
     },
     {
@@ -190,7 +190,7 @@ export const REFUNDS: LegalDoc = {
     {
       heading: "Charged twice, or charged for a full class",
       body: [
-        "If you were charged twice, or paid for a spot that was no longer available, you get a full refund. Our system flags these payments; if the refund has not arrived within 5 business days, email us.",
+        `If you were charged twice, or paid for a spot that was no longer available, you get a full refund. Email ${LEGAL_CONTACT} with the date and the email on your account and we will refund it.`,
       ],
     },
     {
