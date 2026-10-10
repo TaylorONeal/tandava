@@ -294,8 +294,9 @@ export async function run(env = process.env, {
           { status: "refunded", refunded_amount_cents: session.amount_total });
         if (txnsFixed.length) log(`cleanup: marked ${txnsFixed.length} smoke transaction(s) fully refunded`);
       } catch (err) { log(`cleanup failed, void the packs for session ${sessionId} by hand: ${err.message}`); }
-      try { await sweep("end"); } catch (err) { log(`end sweep failed (the next run retries it): ${err.message}`); }
     }
+    // After every run, pass or fail: catches anything an earlier run's late webhook created meanwhile.
+    try { await sweep("end"); } catch (err) { log(`end sweep failed (the next run retries it): ${err.message}`); }
   }
 }
 

@@ -283,6 +283,23 @@ test("sweeps leftovers from an earlier run before starting", async () => {
   assert.deepEqual([oldTxn.status, oldTxn.refunded_amount_cents], ["refunded", 8000]);
 });
 
+test("sweeps after a successful run too", async () => {
+  const b = fakeBackend();
+  let completions = 0;
+  const fetchImpl = async (url, init = {}) => {
+    const res = await b.fetchImpl(url, init);
+    if (String(url).endsWith("/functions/v1/stripe-webhook") && init.body.includes("checkout.session.completed")
+        && ++completions === 1) {
+      // An earlier run's webhook lands after this run's start sweep.
+      b.packs.push({ id: "late-pack", profile_id: "u1", status: "active", classes_remaining: 5 });
+    }
+    return res;
+  };
+  await run(ENV, { ...quiet, fetchImpl });
+  const late = b.packs.find((k) => k.id === "late-pack");
+  assert.deepEqual([late.status, late.classes_remaining], ["exhausted", 0]);
+});
+
 test("fails when the webhook rejects the signature", async () => {
   const b = fakeBackend();
   await assert.rejects(run({ ...ENV, STRIPE_WEBHOOK_SECRET: "whsec_other" }, { ...quiet, fetchImpl: b.fetchImpl }),
