@@ -157,12 +157,14 @@ export async function run(env = process.env, {
   expect(session.metadata?.type === "class_pack" && session.metadata?.class_pack_type_id === packTypeId,
     `Session metadata is not this pack: ${JSON.stringify(session.metadata)}`);
   // The terms Checkout sold must be the catalog's, not just self-consistent.
-  const catalog = (await rest(`class_pack_types?id=eq.${packTypeId}&select=price_cents,class_count,validity_days`)).body?.[0];
+  const catalog = (await rest(`class_pack_types?id=eq.${packTypeId}&select=price_cents,class_count,validity_days,studio_id`)).body?.[0];
   expect(catalog, `Pack type ${packTypeId} not found`);
   expect(session.amount_total === catalog.price_cents
       && Number(session.metadata?.class_count) === catalog.class_count
       && Number(session.metadata?.validity_days) === (catalog.validity_days ?? 90),
     `Checkout terms differ from the catalog: ${JSON.stringify({ amount: session.amount_total, meta: session.metadata, catalog })}`);
+  expect(session.metadata?.studio_id === catalog.studio_id,
+    `Session is for studio ${session.metadata?.studio_id}, pack belongs to ${catalog.studio_id}`);
   expect(session.metadata?.profile_id === userId,
     `Session is for ${session.metadata?.profile_id}, not the signed-in member ${userId}`);
   log(`2/4 checkout created ${sessionId} (${session.amount_total} ${session.currency})`);
@@ -189,16 +191,17 @@ export async function run(env = process.env, {
   let voidedVerified = false;
   try {
     await deliver(completed);
-    const txns = await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=id,status,class_pack_id,amount_cents,profile_id`);
+    const txns = await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=id,status,class_pack_id,amount_cents,profile_id,studio_id`);
     expect(txns.status === 200 && txns.body.length === 1, `Expected 1 transaction, got ${JSON.stringify(txns.body)}`);
     const txn = txns.body[0];
     expect(txn.status === "completed" && txn.class_pack_id, `Transaction not completed with a pack: ${JSON.stringify(txn)}`);
     expect(txn.amount_cents === session.amount_total, `Charged ${txn.amount_cents}, session says ${session.amount_total}`);
     expect(txn.profile_id === userId, `Transaction belongs to ${txn.profile_id}, not ${userId}`);
-    const pack = await rest(`class_packs?id=eq.${txn.class_pack_id}&select=status,classes_remaining,classes_total,profile_id,expires_at,class_pack_type_id`);
+    expect(txn.studio_id === catalog.studio_id, `Transaction is at studio ${txn.studio_id}, not ${catalog.studio_id}`);
+    const pack = await rest(`class_packs?id=eq.${txn.class_pack_id}&select=status,classes_remaining,classes_total,profile_id,expires_at,class_pack_type_id,studio_id`);
     const p = pack.body?.[0];
     expect(p?.status === "active" && p.classes_remaining === Number(session.metadata.class_count) && p.profile_id === userId
-        && p.class_pack_type_id === packTypeId,
+        && p.class_pack_type_id === packTypeId && p.studio_id === catalog.studio_id,
       `Pack not credited to the member: ${JSON.stringify(pack.body)}`);
     // Usable: expires validity_days from now (allow a day either side).
     const days = (Date.parse(p.expires_at) - Date.now()) / 86_400_000;
@@ -235,15 +238,22 @@ export async function run(env = process.env, {
         try { await deliver(refundEvent()); log("cleanup: refunded the smoke purchase after a failure"); }
         catch (err) { log(`cleanup refund failed: ${err.message}`); }
       }
-      // Whatever the webhook did, no usable smoke pack may survive the run.
+      // Whatever the webhook did, no usable smoke pack may survive the run. Find
+      // packs by the transaction's class_pack_id and by payment intent, so a
+      // regression in either field cannot hide one.
       try {
-        const left = await call(fetchImpl, `${supabaseUrl}/rest/v1/class_packs?stripe_payment_intent_id=eq.${pi}&classes_remaining=gt.0`, {
-          method: "PATCH", headers: { ...admin, Prefer: "return=representation" },
-          body: JSON.stringify({ classes_remaining: 0, status: "exhausted" }),
-        }, "cleanup");
-        if (left.status >= 300) throw new Error(`${left.status} ${JSON.stringify(left.body)}`);
-        if (left.body?.length) log(`cleanup: voided ${left.body.length} smoke pack(s) directly`);
-      } catch (err) { log(`cleanup failed, void packs for ${pi} (session ${sessionId}) by hand: ${err.message}`); }
+        const viaTxn = (await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=class_pack_id`)).body ?? [];
+        const viaPi = (await rest(`class_packs?stripe_payment_intent_id=eq.${pi}&select=id`)).body ?? [];
+        const ids = [...new Set([...viaTxn.map((r) => r.class_pack_id), ...viaPi.map((r) => r.id)].filter(Boolean))];
+        if (ids.length) {
+          const left = await call(fetchImpl, `${supabaseUrl}/rest/v1/class_packs?id=in.(${ids.join(",")})&classes_remaining=gt.0`, {
+            method: "PATCH", headers: { ...admin, Prefer: "return=representation" },
+            body: JSON.stringify({ classes_remaining: 0, status: "exhausted" }),
+          }, "cleanup");
+          if (left.status >= 300) throw new Error(`${left.status} ${JSON.stringify(left.body)}`);
+          if (left.body?.length) log(`cleanup: voided ${left.body.length} smoke pack(s) directly`);
+        }
+      } catch (err) { log(`cleanup failed, void the packs for session ${sessionId} by hand: ${err.message}`); }
     }
   }
 }

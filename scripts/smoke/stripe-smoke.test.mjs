@@ -13,7 +13,7 @@ const ENV = {
 };
 
 /** In-memory stand-in for Supabase + Stripe, mirroring fulfill_stripe_checkout / record_stripe_refund. */
-function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false, failAfterFulfil = false, reuseSession = false, packOwner = "u1", expiresDays = 90, catalogPrice = 8000, packType = "pack-type-1" } = {}) {
+function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false, failAfterFulfil = false, reuseSession = false, packOwner = "u1", expiresDays = 90, catalogPrice = 8000, packType = "pack-type-1", packStudio = "s1", piOnPack = true } = {}) {
   let refundFailed = false;
   let reused = false;
   const events = new Set();
@@ -53,10 +53,10 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
       events.add(ev.id);
       const o = ev.data.object;
       if (ev.type === "checkout.session.completed") {
-        const pack = { id: `pk${packs.length}`, status: "active", classes_remaining: 5, stripe_payment_intent_id: o.payment_intent,
-          profile_id: packOwner, class_pack_type_id: packType, expires_at: new Date(Date.now() + expiresDays * 86_400_000).toISOString() };
+        const pack = { id: `pk${packs.length}`, status: "active", classes_remaining: 5, stripe_payment_intent_id: piOnPack ? o.payment_intent : null,
+          studio_id: packStudio, profile_id: packOwner, class_pack_type_id: packType, expires_at: new Date(Date.now() + expiresDays * 86_400_000).toISOString() };
         packs.push(pack);
-        txns.push({ id: `t${txns.length}`, status: "completed", class_pack_id: pack.id, amount_cents: o.amount_total, profile_id: packOwner,
+        txns.push({ id: `t${txns.length}`, status: "completed", class_pack_id: pack.id, amount_cents: o.amount_total, profile_id: packOwner, studio_id: "s1",
           stripe_checkout_session_id: o.id });
         if (failAfterFulfil) return json(500, "Handler error");
       } else if (ev.type === "charge.refunded") {
@@ -71,14 +71,14 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
       return json(200, { received: true });
     }
     if (p.startsWith("/rest/v1/") && init.method === "PATCH") {
-      const pi = u.searchParams.get("stripe_payment_intent_id").replace(/^eq\./, "");
-      const hit = packs.filter((k) => k.stripe_payment_intent_id === pi && k.classes_remaining > 0);
+      const ids = /^in\.\((.*)\)$/.exec(u.searchParams.get("id"))[1].split(",");
+      const hit = packs.filter((k) => ids.includes(k.id) && k.classes_remaining > 0);
       hit.forEach((k) => Object.assign(k, JSON.parse(init.body)));
       return json(200, hit);
     }
     if (p.startsWith("/rest/v1/")) {
       const table = p.slice("/rest/v1/".length);
-      if (table === "class_pack_types") return json(200, [{ price_cents: catalogPrice, class_count: 5, validity_days: 90 }]);
+      if (table === "class_pack_types") return json(200, [{ price_cents: catalogPrice, class_count: 5, validity_days: 90, studio_id: "s1" }]);
       const rows = table === "transactions" ? txns : packs;
       const filters = [...u.searchParams].filter(([k]) => k !== "select");
       return json(200, rows.filter((r) => filters.every(([k, v]) => String(r[k]) === v.replace(/^eq\./, ""))));
@@ -176,6 +176,19 @@ test("fails when the pack is of a different catalog type", async () => {
 test("voids the pack directly when the refund answers 200 but leaves credits", async () => {
   const b = fakeBackend({ voidOnRefund: false, statusOnRefund: false });
   await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Pack not voided/);
+  assert.equal(b.packs[0].classes_remaining, 0);
+  assert.equal(b.packs[0].status, "exhausted");
+});
+
+test("fails when the pack is filed under another studio", async () => {
+  const b = fakeBackend({ packStudio: "s2" });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Pack not credited to the member/);
+  assert.equal(b.packs[0].classes_remaining, 0);
+});
+
+test("cleans up by pack id when the pack lost its payment intent", async () => {
+  const b = fakeBackend({ piOnPack: false });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }));
   assert.equal(b.packs[0].classes_remaining, 0);
   assert.equal(b.packs[0].status, "exhausted");
 });
