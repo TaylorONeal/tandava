@@ -90,7 +90,9 @@ function expect(cond, message) {
   if (!cond) throw new Error(message);
 }
 
-export async function run(env = process.env, { fetchImpl = fetch, log = console.log } = {}) {
+export async function run(env = process.env, {
+  fetchImpl = fetch, log = console.log, sleep = (ms) => new Promise((r) => setTimeout(r, ms)), now = Date.now,
+} = {}) {
   const supabaseUrl = need(env, "SUPABASE_URL").replace(/\/$/, "");
   const anonKey = need(env, "SUPABASE_ANON_KEY");
   const serviceKey = need(env, "SUPABASE_SERVICE_ROLE_KEY");
@@ -126,14 +128,26 @@ export async function run(env = process.env, { fetchImpl = fetch, log = console.
   expect(verified.status === 200 && accessToken, `Sign in smoke member: ${verified.status} ${JSON.stringify(verified.body)}`);
   log("1/4 signed in as the smoke member");
 
-  // 2. Start Checkout exactly as the storefront does.
-  const checkout = await call(fetchImpl, `${supabaseUrl}/functions/v1/stripe-checkout`, {
-    method: "POST",
-    headers: { apikey: anonKey, Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ type: "class_pack", classPackTypeId: packTypeId }),
-  }, "checkout");
-  expect(checkout.status === 200, `stripe-checkout: ${checkout.status} ${JSON.stringify(checkout.body)}`);
-  const sessionId = sessionIdFromUrl(checkout.body?.url);
+  // 2. Start Checkout exactly as the storefront does. stripe-checkout reuses a
+  // session for the same buyer and item within a minute, so if this one was
+  // already fulfilled by an earlier run, wait for the next minute and ask again.
+  const startCheckout = async () => {
+    const res = await call(fetchImpl, `${supabaseUrl}/functions/v1/stripe-checkout`, {
+      method: "POST",
+      headers: { apikey: anonKey, Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "class_pack", classPackTypeId: packTypeId }),
+    }, "checkout");
+    expect(res.status === 200, `stripe-checkout: ${res.status} ${JSON.stringify(res.body)}`);
+    return sessionIdFromUrl(res.body?.url);
+  };
+  const alreadyUsed = async (id) =>
+    ((await rest(`transactions?stripe_checkout_session_id=eq.${id}&select=id`)).body ?? []).length > 0;
+  let sessionId = await startCheckout();
+  if (await alreadyUsed(sessionId)) {
+    await sleep(60_000 - (now() % 60_000) + 2_000);
+    sessionId = await startCheckout();
+    expect(!(await alreadyUsed(sessionId)), `Checkout keeps returning used session ${sessionId}`);
+  }
   const stripeRes = await call(fetchImpl, `https://api.stripe.com/v1/checkout/sessions/${sessionId}`, {
     headers: { Authorization: `Bearer ${stripeKey}` },
   }, "retrieve session");
@@ -159,10 +173,11 @@ export async function run(env = process.env, { fetchImpl = fetch, log = console.
     id: `ch_smoke_${randomUUID().replace(/-/g, "")}`, object: "charge", livemode: false,
     payment_intent: pi, amount: session.amount_total, amount_refunded: session.amount_total,
   });
-  await deliver(completed);
-  // From here on, a failure must not leave a usable pack behind: always refund.
+  // From the first delivery on, a failure must not leave a usable pack behind:
+  // even a non-200 completion may have committed, so always try the refund.
   let refundSent = false;
   try {
+    await deliver(completed);
     const txns = await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=id,status,class_pack_id,amount_cents,profile_id`);
     expect(txns.status === 200 && txns.body.length === 1, `Expected 1 transaction, got ${JSON.stringify(txns.body)}`);
     const txn = txns.body[0];

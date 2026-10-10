@@ -13,8 +13,9 @@ const ENV = {
 };
 
 /** In-memory stand-in for Supabase + Stripe, mirroring fulfill_stripe_checkout / record_stripe_refund. */
-function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false } = {}) {
+function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false, failAfterFulfil = false, reuseSession = false } = {}) {
   let refundFailed = false;
+  let reused = false;
   const events = new Set();
   const txns = [];
   const packs = [];
@@ -30,7 +31,14 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
     if (p === "/auth/v1/admin/users") return json(422, { msg: "already registered" });
     if (p === "/auth/v1/admin/generate_link") return json(200, { properties: { hashed_token: "h" } });
     if (p === "/auth/v1/verify") return json(200, { access_token: "jwt" });
-    if (p === "/functions/v1/stripe-checkout") return json(200, { url: `https://checkout.stripe.com/c/pay/${session.id}#x` });
+    if (p === "/functions/v1/stripe-checkout") {
+      if (reuseSession && !reused) {
+        reused = true;
+        txns.push({ id: "old", status: "refunded", class_pack_id: "old-pack", amount_cents: 8000, stripe_checkout_session_id: "cs_test_old" });
+        return json(200, { url: "https://checkout.stripe.com/c/pay/cs_test_old#x" });
+      }
+      return json(200, { url: `https://checkout.stripe.com/c/pay/${session.id}#x` });
+    }
     if (p === `/v1/checkout/sessions/${session.id}`) return json(200, session);
     if (p === "/functions/v1/stripe-webhook") {
       const sig = init.headers["Stripe-Signature"];
@@ -49,6 +57,7 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
         packs.push(pack);
         txns.push({ id: `t${txns.length}`, status: "completed", class_pack_id: pack.id, amount_cents: o.amount_total,
           stripe_checkout_session_id: o.id });
+        if (failAfterFulfil) return json(500, "Handler error");
       } else if (ev.type === "charge.refunded") {
         if (failRefundOnce && !refundFailed) { refundFailed = true; return json(500, "Handler error"); }
         const pack = packs.find((k) => k.stripe_payment_intent_id === o.payment_intent);
@@ -112,6 +121,21 @@ test("retries the refund in cleanup when its first delivery fails", async () => 
   const b = fakeBackend({ failRefundOnce: true });
   await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /charge.refunded: 500/);
   assert.equal(b.packs[0].status, "exhausted");
+});
+
+test("refunds even when the completion commits but answers 500", async () => {
+  const b = fakeBackend({ failAfterFulfil: true });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /checkout.session.completed: 500/);
+  assert.equal(b.packs[0].status, "exhausted");
+});
+
+test("waits for a fresh checkout when the reused session was already fulfilled", async () => {
+  const b = fakeBackend({ reuseSession: true });
+  const waits = [];
+  await run(ENV, { ...quiet, fetchImpl: b.fetchImpl, sleep: async (ms) => { waits.push(ms); }, now: () => 30_000 });
+  assert.deepEqual(waits, [32_000]);
+  const fresh = b.txns.find((x) => x.stripe_checkout_session_id === "cs_test_abc123");
+  assert.equal(fresh.status, "refunded");
 });
 
 test("fails when the webhook rejects the signature", async () => {
