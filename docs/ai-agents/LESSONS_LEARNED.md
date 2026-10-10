@@ -586,6 +586,11 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 4. **Check prod data against new constraints.** A unique index or NOT NULL on a live table fails on dirty rows. Count duplicates before proposing it.
 5. **The auto-mode guard blocks `apply_migration` and DDL via `execute_sql` on prod, even after the user says approve in chat.** Do not retry or shrink the payload to get past it. Bundle the pending files into one `BEGIN; ... COMMIT;` file, send it with SendUserFile, and open the dashboard SQL editor for the user:
    `https://supabase.com/dashboard/project/<ref>/sql/new` (Browser pane `navigate`). Always open the exact page; never make the user hunt for it.
+   Faster (2026-10-10, 00042): open that page in the Browser pane and fill the editor yourself with
+   `javascript_tool`: `fetch` the raw GitHub URL of the `apply-*.sql` file and
+   `monaco.editor.getEditors()[0].getModel().setValue(sql)`, then check the length matches the repo file.
+   Clicking **Run** yourself is blocked by the guard ([Auto-Mode Bypass]) even when the user asked you to
+   do it in the browser; stop there and ask the user for the one click. Close the tab after verifying.
 6. **Verify after, read-only.** Check functions, tables, columns, `pv_policies`, "RLS tables without a policy = 0", and that service-role-only functions are not executable by `anon`.
 
 | Mistake | Fix |

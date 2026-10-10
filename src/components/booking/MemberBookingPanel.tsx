@@ -12,6 +12,7 @@
  * (resolvePaymentSources); book_class() re-checks server-side.
  */
 
+import { CheckoutTermsNote } from "@/components/legal/CheckoutTermsNote";
 import { useState } from "react";
 import { captureSettled, checkoutAttribution, currentSessionId } from "@/lib/analytics/session";
 import { useMemberEntitlements, useBookingSources, useBookClass } from "@/hooks/useBooking";
@@ -191,6 +192,7 @@ export function MemberBookingPanel({
                 Pay {priceLabel} drop-in
               </Button>
             )}
+            {dropIn && !isFree && priceLabel && <CheckoutTermsNote />}
             {!covering.length && !dropIn && (
               <p className="text-sm text-muted-foreground">
                 None of your passes cover this class and it has no drop-in price. Contact{" "}

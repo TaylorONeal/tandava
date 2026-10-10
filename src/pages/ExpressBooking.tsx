@@ -23,6 +23,8 @@
  * component's optimism.
  */
 
+import { LEGAL_PUBLISHED } from "@/content/legal";
+import { cancelWindowLabel } from "@/lib/myBookings";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { usePublicOccurrence, useExpressBook } from "@/hooks/useBooking";
@@ -608,6 +610,15 @@ export default function ExpressBooking() {
               )}
             </div>
 
+            {LEGAL_PUBLISHED && (
+            <p className="text-xs text-muted-foreground">
+              By booking you agree to the{" "}
+              <Link target="_blank" rel="noopener noreferrer" to="/terms" className="underline">Terms</Link> and{" "}
+              <Link target="_blank" rel="noopener noreferrer" to="/privacy" className="underline">Privacy Policy</Link>. Cancellations and refunds follow the{" "}
+              <Link target="_blank" rel="noopener noreferrer" to="/refunds" className="underline">refund policy</Link>.
+            </p>
+            )}
+
             {rejection && (
               <div
                 className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive"
@@ -846,6 +857,10 @@ function ClassSummary({
               <span>{[row.location_name, row.room].filter(Boolean).join(" · ")}</span>
             </div>
           )}
+          {/* Shown before any booking or payment; the late-cancel rule depends on it. */}
+          <p className="text-muted-foreground">
+            {cancelWindowLabel(row.cancellation_minutes)} Later than that, the class counts as used.
+          </p>
         </div>
       </CardContent>
     </Card>

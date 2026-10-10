@@ -22,6 +22,8 @@ import { isBackendConfigured } from "@/lib/backend";
 import { formatPrice } from "@/lib/reference-data";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { PurchaseButton } from "@/components/booking/PurchaseButton";
+import { CheckoutTermsNote } from "@/components/legal/CheckoutTermsNote";
+import { LEGAL_LINKS } from "@/content/legal";
 import { authHref } from "@/lib/authReturn";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -251,6 +253,7 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
               </Card>
             ))}
           </div>
+          <CheckoutTermsNote className="mt-3" />
         </Section>
       )}
 
@@ -297,8 +300,11 @@ function Shell({
       </header>
       <main className="max-w-5xl mx-auto px-6 py-8">{children}</main>
       <footer className="border-t border-border mt-16">
-        <div className="max-w-5xl mx-auto px-6 py-6 text-xs text-muted-foreground flex items-center gap-1.5">
-          <Calendar className="h-3.5 w-3.5" /> Powered by Tandava
+        <div className="max-w-5xl mx-auto px-6 py-6 text-xs text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-2">
+          <span className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" /> Powered by Tandava</span>
+          {LEGAL_LINKS.map((l) => (
+            <Link key={l.to} to={l.to} className="hover:text-foreground">{l.label}</Link>
+          ))}
         </div>
       </footer>
     </div>

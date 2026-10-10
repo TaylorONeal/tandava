@@ -8,6 +8,7 @@
  * Flow: Project intro → Who it's for → Feature showcase → Role picker → FAQ → About
  */
 
+import { LEGAL_LINKS } from "@/content/legal";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDemo } from "@/contexts/DemoContext";
@@ -786,10 +787,13 @@ export default function Demo() {
             <span>·</span>
             <span>Studio software and class discovery</span>
           </div>
-          <div className="flex items-center gap-4 text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
             <Link to="/for-studios" className="hover:text-foreground">For studios</Link>
             <Link to="/discover" className="hover:text-foreground">Find a class</Link>
             <Link to="/open-source" className="hover:text-foreground">Open source</Link>
+            {LEGAL_LINKS.map((l) => (
+              <Link key={l.to} to={l.to} className="hover:text-foreground">{l.label}</Link>
+            ))}
           </div>
         </div>
       </footer>

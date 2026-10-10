@@ -14,6 +14,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { LEGAL_LINKS } from "@/content/legal";
 import { Link2, Check, ShieldAlert, Calculator } from "lucide-react";
 import {
   CALC_ARTICLE,
@@ -350,6 +351,9 @@ export default function StudioCalculator() {
             <Link to="/open-source" className="text-primary hover:underline">
               Open source
             </Link>
+            {LEGAL_LINKS.map((l) => (
+              <Link key={l.to} to={l.to} className="text-primary hover:underline">{l.label}</Link>
+            ))}
             <a
               href="https://github.com/TaylorONeal/tandava/blob/main/DEPLOYMENT.md"
               className="text-primary hover:underline"

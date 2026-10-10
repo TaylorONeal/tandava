@@ -9,6 +9,7 @@
  */
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { LEGAL_LINKS } from "@/content/legal";
 
 const NAV = [
   { to: "/discover", label: "Find a class" },
@@ -57,6 +58,9 @@ export function MarketingShell({ children, maxWidth = "max-w-5xl" }: { children:
             <Link key={n.to} to={n.to} className="hover:underline">{n.label}</Link>
           ))}
           <Link to="/blog" className="hover:underline">Blog</Link>
+          {LEGAL_LINKS.map((l) => (
+            <Link key={l.to} to={l.to} className="hover:underline">{l.label}</Link>
+          ))}
         </div>
       </footer>
     </div>

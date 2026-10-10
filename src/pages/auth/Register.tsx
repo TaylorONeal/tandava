@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { LEGAL_PUBLISHED } from "@/content/legal";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,7 +51,7 @@ const Register = () => {
 
   // Check if form is valid for quick validation
   const isFormValid = formData.firstName && formData.lastName &&
-    formData.email && formData.password.length >= 8 && formData.agreeToTerms;
+    formData.email && formData.password.length >= 8 && (formData.agreeToTerms || !LEGAL_PUBLISHED);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,10 +59,11 @@ const Register = () => {
     // Honeypot guard: bots tend to fill hidden fields.
     if (formData._hp.trim()) return;
 
-    if (!formData.agreeToTerms) {
+    // Only where this deployment publishes policies (hosted); self-hosts write their own.
+    if (LEGAL_PUBLISHED && !formData.agreeToTerms) {
       toast({
         title: t('register.termsRequired'),
-        description: t('register.termsError'),
+        description: t('register.termsPrivacyError', { defaultValue: "Please agree to the Terms of Service and Privacy Policy to continue." }),
         variant: "destructive",
       });
       return;
@@ -218,6 +220,15 @@ const Register = () => {
   }
 
   const handleGoogleSignup = async () => {
+    // Google can create the account, so it needs the same agreement as email sign-up.
+    if (LEGAL_PUBLISHED && !formData.agreeToTerms) {
+      toast({
+        title: t('register.termsRequired'),
+        description: t('register.termsPrivacyError', { defaultValue: "Please agree to the Terms of Service and Privacy Policy to continue." }),
+        variant: "destructive",
+      });
+      return;
+    }
     setIsLoading(true);
 
     if (isDemoMode) {
@@ -388,6 +399,7 @@ const Register = () => {
 
             {/* Checkboxes - larger tap areas */}
             <div className="space-y-2 pt-2">
+              {LEGAL_PUBLISHED && (
               <label className="flex items-start gap-3 p-3 -mx-3 rounded-xl hover:bg-muted/50 cursor-pointer touch-manipulation">
                 <Checkbox
                   id="terms"
@@ -399,19 +411,17 @@ const Register = () => {
                 />
                 <span className="text-sm leading-tight">
                   {t('register.agreeToTerms')}{" "}
-                  <Link to="/terms" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
+                  <Link target="_blank" rel="noopener noreferrer" to="/terms" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
                     {t('register.termsOfService')}
                   </Link>{" "}
-                  {!isOwner && (
-                    <>
-                      {t('register.and')}{" "}
-                      <Link to="/waiver" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                        {t('register.studioWaiver')}
-                      </Link>
-                    </>
-                  )}
+                  {t('register.and')}{" "}
+                  {/* Studio waivers are accepted per studio when booking; /waiver never existed. */}
+                  <Link target="_blank" rel="noopener noreferrer" to="/privacy" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
+                    {t('register.privacyPolicy', { defaultValue: "Privacy Policy" })}
+                  </Link>
                 </span>
               </label>
+              )}
               <label className="flex items-start gap-3 p-3 -mx-3 rounded-xl hover:bg-muted/50 cursor-pointer touch-manipulation">
                 <Checkbox
                   id="marketing"
