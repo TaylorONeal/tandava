@@ -298,7 +298,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             &copy; {new Date().getFullYear()} {isDemoMode ? "Oxatl Yoga" : "Tandava"}.{" "}
             {t("footer.allRightsReserved")}
           </span>
-          <span className="flex gap-3">
+          <span className="flex flex-wrap justify-center gap-3">
             {LEGAL_LINKS.map((l) => (
               <Link key={l.to} to={l.to} className="hover:text-foreground">{l.label}</Link>
             ))}

@@ -139,7 +139,7 @@ export function BlogLayout({ children, activeCategory }: BlogLayoutProps) {
         </div>
         <div className="container mt-8 flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
           <span>&copy; {new Date().getFullYear()} Tandava. Studio software for yoga, pilates, and movement.</span>
-          <span className="flex gap-4">
+          <span className="flex flex-wrap justify-center gap-x-4 gap-y-2">
             <Link to="/for-studios" className="transition-colors hover:text-foreground">
               For studios
             </Link>

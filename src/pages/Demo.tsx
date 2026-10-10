@@ -787,7 +787,7 @@ export default function Demo() {
             <span>·</span>
             <span>Studio software and class discovery</span>
           </div>
-          <div className="flex items-center gap-4 text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
             <Link to="/for-studios" className="hover:text-foreground">For studios</Link>
             <Link to="/discover" className="hover:text-foreground">Find a class</Link>
             <Link to="/open-source" className="hover:text-foreground">Open source</Link>
