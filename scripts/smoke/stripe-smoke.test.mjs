@@ -13,7 +13,8 @@ const ENV = {
 };
 
 /** In-memory stand-in for Supabase + Stripe, mirroring fulfill_stripe_checkout / record_stripe_refund. */
-function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true } = {}) {
+function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false } = {}) {
+  let refundFailed = false;
   const events = new Set();
   const txns = [];
   const packs = [];
@@ -49,6 +50,7 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
         txns.push({ id: `t${txns.length}`, status: "completed", class_pack_id: pack.id, amount_cents: o.amount_total,
           stripe_checkout_session_id: o.id });
       } else if (ev.type === "charge.refunded") {
+        if (failRefundOnce && !refundFailed) { refundFailed = true; return json(500, "Handler error"); }
         const pack = packs.find((k) => k.stripe_payment_intent_id === o.payment_intent);
         if (!pack) return json(500, "refund for unknown payment intent");
         const txn = txns.find((x) => x.class_pack_id === pack.id);
@@ -103,6 +105,12 @@ test("still refunds the purchase when a check after fulfilment fails", async () 
   const b = fakeBackend({ reapply: true });
   await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Redelivery changed/);
   assert.equal(b.txns[0].status, "refunded");
+  assert.equal(b.packs[0].status, "exhausted");
+});
+
+test("retries the refund in cleanup when its first delivery fails", async () => {
+  const b = fakeBackend({ failRefundOnce: true });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /charge.refunded: 500/);
   assert.equal(b.packs[0].status, "exhausted");
 });
 

@@ -186,8 +186,8 @@ export async function run(env = process.env, { fetchImpl = fetch, log = console.
     log(`3/4 webhook credited ${pack.body[0].classes_remaining} classes once (redelivery ignored)`);
 
     // 4. Full refund voids the pack (and cleans up this run).
-    refundSent = true;
     await deliver(refundEvent());
+    refundSent = true; // only once delivered; otherwise the finally block retries
     const refunded = await rest(`transactions?id=eq.${txn.id}&select=status`);
     const voided = await rest(`class_packs?id=eq.${txn.class_pack_id}&select=status,classes_remaining`);
     expect(refunded.body?.[0]?.status === "refunded", `Refund not recorded: ${JSON.stringify(refunded.body)}`);
