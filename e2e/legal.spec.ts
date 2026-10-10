@@ -19,3 +19,15 @@ test("sign-up links to the terms and privacy pages", async ({ page }) => {
   await expect(page.locator('a[href="/privacy"]').first()).toBeVisible();
   await expect(page.locator('a[href="/waiver"]')).toHaveCount(0);
 });
+
+test("Google sign-up needs the terms box first", async ({ page }) => {
+  await mockSupabase(page);
+  let oauthStarted = false;
+  page.on("request", (r) => { if (r.url().includes("/auth/v1/authorize")) oauthStarted = true; });
+  await page.goto("/auth/register");
+  await page.getByRole("button", { name: /google/i }).first().click();
+  await expect(page.getByText("Terms Required").first()).toBeVisible();
+  await page.waitForTimeout(500);
+  expect(oauthStarted).toBe(false);
+  await expect(page).toHaveURL(/\/auth\/register/);
+});

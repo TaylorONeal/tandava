@@ -220,6 +220,15 @@ const Register = () => {
   }
 
   const handleGoogleSignup = async () => {
+    // Google can create the account, so it needs the same agreement as email sign-up.
+    if (LEGAL_PUBLISHED && !formData.agreeToTerms) {
+      toast({
+        title: t('register.termsRequired'),
+        description: t('register.termsError'),
+        variant: "destructive",
+      });
+      return;
+    }
     setIsLoading(true);
 
     if (isDemoMode) {
