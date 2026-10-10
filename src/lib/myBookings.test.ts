@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { toMyBookingView, splitMyBookings } from "./myBookings";
+import { toMyBookingView, splitMyBookings, cancelWindowLabel } from "./myBookings";
 import type { MyBookingRow } from "@/types/database";
 
 const NOW = new Date("2026-10-09T12:00:00Z");
@@ -61,5 +61,16 @@ describe("splitMyBookings", () => {
     const { upcoming, past } = splitMyBookings(rows, NOW);
     expect(upcoming.map((v) => v.id)).toEqual(["sooner", "later"]);
     expect(past.map((v) => v.id)).toEqual(["past"]);
+  });
+});
+
+describe("cancelWindowLabel", () => {
+  it("reads naturally and falls back to the 2-hour default", () => {
+    expect(cancelWindowLabel(null)).toBe("Cancel at least 2 hours before class.");
+    expect(cancelWindowLabel(60)).toContain("1 hour before");
+    expect(cancelWindowLabel(90)).toContain("90 minutes before");
+    expect(cancelWindowLabel(1440)).toContain("1 day before");
+    expect(cancelWindowLabel(2880)).toContain("2 days before");
+    expect(cancelWindowLabel(0)).toBe("Cancel any time before class starts.");
   });
 });

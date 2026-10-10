@@ -166,7 +166,7 @@ export const REFUNDS: LegalDoc = {
     {
       heading: "Cancelling a class",
       body: [
-        `Cancel from My Schedule (or, if you booked without an account, email ${LEGAL_CONTACT} from the email you booked with) before the studio's cancellation window (shown on the class, 2 hours if the studio has not set one). On time, a class from a pack or membership is returned to you, and a paid drop-in can be refunded on request. Inside the window, or if you do not show up, the class is used and the studio may charge its late-cancel or no-show fee.`,
+        `Cancel from My Schedule (or, if you booked without an account, email ${LEGAL_CONTACT} from the email you booked with) before the studio's cancellation window (shown on the booking page before you book; 2 hours if the studio has not set one). On time, a class from a pack or membership is returned to you, and a paid drop-in can be refunded on request. Inside the window, or if you do not show up, the class is used and the studio may charge its late-cancel or no-show fee.`,
       ],
     },
     {

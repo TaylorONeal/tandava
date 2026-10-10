@@ -23,6 +23,7 @@
  * component's optimism.
  */
 
+import { cancelWindowLabel } from "@/lib/myBookings";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { usePublicOccurrence, useExpressBook } from "@/hooks/useBooking";
@@ -853,6 +854,10 @@ function ClassSummary({
               <span>{[row.location_name, row.room].filter(Boolean).join(" · ")}</span>
             </div>
           )}
+          {/* Shown before any booking or payment; the late-cancel rule depends on it. */}
+          <p className="text-muted-foreground">
+            {cancelWindowLabel(row.cancellation_minutes)} Later than that, the class counts as used.
+          </p>
         </div>
       </CardContent>
     </Card>
