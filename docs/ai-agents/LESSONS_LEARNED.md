@@ -644,6 +644,13 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 | Pinning `search_path = public` on a function that calls an extension | Hosted Supabase installs pgcrypto in `extensions`; `generate_check_in_code` would have failed with "gen_random_bytes does not exist" (Codex on #95) | Pin `public, extensions`. The test DB stub now installs pgcrypto in `extensions` like Supabase, so HARD-04 catches it |
 | Stacked PRs that all append to PROGRESS and BACKLOG | Every merge conflicted the next PR's docs | Resolve with the table-row and append-both rule (docs only), rerun the four checks, then merge the next |
 
+## Automated payment testing (October 2026)
+
+- Agents never type card numbers (4242 included) into Stripe's hosted Checkout on a live site, even when asked. Automate below the card page instead: `npm run smoke:stripe` / the `Stripe smoke` workflow creates a real test-mode session through `stripe-checkout`, then POSTs Stripe-signed `checkout.session.completed` (twice) and `charge.refunded` to `stripe-webhook` and checks the rows.
+- Sign in a smoke member without captcha: admin `generate_link` (magiclink) then `POST /auth/v1/verify` with the `token_hash`. Password sign-in is captcha-gated on prod.
+- `stripeSignature()` is checked against `stripe` npm's `constructEventAsync`; keep it that way if you touch it.
+- Guard rails: test keys only, `livemode=false` sessions only. When prod goes live, the webhook's live secret stops matching the job's test secret and the job fails; repoint it at a staging project.
+
 ## Quick Reference: Prevention Patterns
 
 | Issue Type | Prevention Pattern |
