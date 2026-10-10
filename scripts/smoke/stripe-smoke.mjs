@@ -78,8 +78,11 @@ function need(env, name) {
   return v;
 }
 
+/** Each request gives up after this long, so cleanup always has time to run before the job limit. */
+export const REQUEST_TIMEOUT_MS = 20_000;
+
 async function call(fetchImpl, url, init, label) {
-  const res = await fetchImpl(url, init);
+  const res = await fetchImpl(url, { ...init, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
   const text = await res.text();
   let body;
   try { body = text ? JSON.parse(text) : null; } catch { body = text; }

@@ -233,6 +233,14 @@ test("cleanup marks the smoke transaction refunded when refunds keep failing", a
   assert.equal(b.packs[0].status, "exhausted");
 });
 
+test("every request carries a timeout signal", async () => {
+  const b = fakeBackend();
+  const signals = [];
+  await run(ENV, { ...quiet, fetchImpl: (url, init = {}) => { signals.push(init.signal); return b.fetchImpl(url, init); } });
+  assert.ok(signals.length > 5);
+  assert.ok(signals.every((sig) => sig instanceof AbortSignal));
+});
+
 test("fails when the webhook rejects the signature", async () => {
   const b = fakeBackend();
   await assert.rejects(run({ ...ENV, STRIPE_WEBHOOK_SECRET: "whsec_other" }, { ...quiet, fetchImpl: b.fetchImpl }),

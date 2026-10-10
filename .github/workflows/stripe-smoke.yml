@@ -18,7 +18,7 @@ jobs:
   smoke:
     name: stripe checkout -> webhook -> refund (test mode)
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10 # requests time out at 20s; leaves room for the refund and cleanup
     # Secrets live in the "stripe-smoke" environment, which only main may use,
     # so branch or PR code never receives them. The script is unit-tested in CI
     # (npm test) without secrets.
