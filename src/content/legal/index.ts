@@ -196,7 +196,7 @@ export const REFUNDS: LegalDoc = {
     {
       heading: "How to ask for a refund",
       body: [
-        `Contact the studio first; their contact details are on their page. If you cannot reach them or cannot agree, email ${LEGAL_CONTACT} with the studio name, the date and the email on your account, and we will help. Refunds go back to the original payment method and usually arrive in 5 to 10 business days.`,
+        `Email ${LEGAL_CONTACT} with the studio name, the class or purchase, the date and the email on your account. We work it out with the studio and reply within 2 business days. If you already know the studio's contact details, you can also ask them directly. Refunds go back to the original payment method and usually arrive in 5 to 10 business days.`,
       ],
     },
   ],
