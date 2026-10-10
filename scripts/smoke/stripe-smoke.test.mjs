@@ -13,7 +13,7 @@ const ENV = {
 };
 
 /** In-memory stand-in for Supabase + Stripe, mirroring fulfill_stripe_checkout / record_stripe_refund. */
-function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false } = {}) {
+function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false } = {}) {
   const events = new Set();
   const txns = [];
   const packs = [];
@@ -37,7 +37,10 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false } = 
       const expected = createHmac("sha256", ENV.STRIPE_WEBHOOK_SECRET).update(`${t}.${init.body}`).digest("hex");
       if (!sig.includes(`v1=${expected}`)) return json(400, "Invalid signature");
       const ev = JSON.parse(init.body);
-      if (dedupe && events.has(ev.id)) return json(200, { received: true });
+      if (dedupe && events.has(ev.id)) {
+        if (reapply) packs.forEach((k) => { k.classes_remaining += 5; });
+        return json(200, { received: true });
+      }
       events.add(ev.id);
       const o = ev.data.object;
       if (ev.type === "checkout.session.completed") {
@@ -77,6 +80,11 @@ test("passes end to end against a correct backend and cleans up its pack", async
 test("fails when a redelivered event credits a second pack", async () => {
   const b = fakeBackend({ dedupe: false });
   await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Expected 1 transaction|double-credited/);
+});
+
+test("fails when a redelivered event changes the existing pack", async () => {
+  const b = fakeBackend({ reapply: true });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Redelivery changed existing rows/);
 });
 
 test("fails when a refund leaves the credits usable", async () => {

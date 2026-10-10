@@ -163,11 +163,18 @@ export async function run(env = process.env, { fetchImpl = fetch, log = console.
   const pack = await rest(`class_packs?id=eq.${txn.class_pack_id}&select=status,classes_remaining,classes_total`);
   expect(pack.body?.[0]?.status === "active" && pack.body[0].classes_remaining === Number(session.metadata.class_count),
     `Pack not credited: ${JSON.stringify(pack.body)}`);
+  // Redelivery must change nothing: same rows, same values.
+  const snapshot = async () => ({
+    txns: (await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=*`)).body,
+    packs: (await rest(`class_packs?stripe_payment_intent_id=eq.${pi}&select=*`)).body,
+  });
+  const before = await snapshot();
   await deliver(completed);
-  const again = await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=id`);
-  const packs = await rest(`class_packs?stripe_payment_intent_id=eq.${pi}&select=id`);
-  expect(again.body?.length === 1 && packs.body?.length === 1,
-    `Redelivery double-credited: ${again.body?.length} transactions, ${packs.body?.length} packs`);
+  const after = await snapshot();
+  expect(after.txns?.length === 1 && after.packs?.length === 1,
+    `Redelivery double-credited: ${after.txns?.length} transactions, ${after.packs?.length} packs`);
+  expect(JSON.stringify(after) === JSON.stringify(before),
+    `Redelivery changed existing rows: ${JSON.stringify({ before, after })}`);
   log(`3/4 webhook credited ${pack.body[0].classes_remaining} classes once (redelivery ignored)`);
 
   // 4. Full refund voids the pack (and cleans up this run).

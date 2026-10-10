@@ -4,14 +4,11 @@ name: Stripe smoke
 # stripe-checkout, delivers the signed webhook events (paid, redelivered,
 # refunded) and checks the database. Stripe TEST mode only; the script refuses
 # live keys and live sessions. See scripts/smoke/stripe-smoke.mjs.
+# Runs only from main (schedule or manual), never on pull requests.
 on:
   workflow_dispatch:
   schedule:
     - cron: "17 9 * * *" # daily, 09:17 UTC
-  pull_request:
-    paths:
-      - scripts/smoke/**
-      - .github/workflows/stripe-smoke.yml
 
 concurrency:
   group: stripe-smoke
@@ -22,8 +19,11 @@ jobs:
     name: stripe checkout -> webhook -> refund (test mode)
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # Fork PRs get no secrets; skip rather than fail there.
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    # Secrets live in the "stripe-smoke" environment, which only main may use,
+    # so branch or PR code never receives them. The script is unit-tested in CI
+    # (npm test) without secrets.
+    if: github.ref == 'refs/heads/main'
+    environment: stripe-smoke
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
