@@ -241,6 +241,23 @@ test("every request carries a timeout signal", async () => {
   assert.ok(signals.every((sig) => sig instanceof AbortSignal));
 });
 
+test("cleanup waits for a completion that commits after the client gave up", async () => {
+  const b = fakeBackend();
+  let pending = null;
+  const fetchImpl = async (url, init = {}) => {
+    if (String(url).endsWith("/functions/v1/stripe-webhook") && init.body.includes("checkout.session.completed") && !pending) {
+      pending = () => b.fetchImpl(url, init); // commits later
+      throw new Error("The operation was aborted due to timeout");
+    }
+    return b.fetchImpl(url, init);
+  };
+  let sleeps = 0;
+  const sleep = async () => { sleeps += 1; if (sleeps === 2) await pending(); };
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl, sleep }), /aborted/);
+  assert.equal(b.txns[0].status, "refunded");
+  assert.equal(b.packs[0].status, "exhausted");
+});
+
 test("fails when the webhook rejects the signature", async () => {
   const b = fakeBackend();
   await assert.rejects(run({ ...ENV, STRIPE_WEBHOOK_SECRET: "whsec_other" }, { ...quiet, fetchImpl: b.fetchImpl }),

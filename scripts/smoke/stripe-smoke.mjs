@@ -246,7 +246,14 @@ export async function run(env = process.env, {
       // packs by the transaction's class_pack_id and by payment intent, so a
       // regression in either field cannot hide one.
       try {
-        const viaTxn = (await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=class_pack_id`)).body ?? [];
+        // A timed-out completion may still be committing server-side: give it
+        // up to a minute to land so cleanup does not run before it.
+        let viaTxn = [];
+        for (let i = 0; i < 7; i++) {
+          viaTxn = (await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=class_pack_id`)).body ?? [];
+          if (viaTxn.length || refundSent) break;
+          if (i < 6) await sleep(10_000);
+        }
         const viaPi = (await rest(`class_packs?stripe_payment_intent_id=eq.${pi}&select=id`)).body ?? [];
         const ids = [...new Set([...viaTxn.map((r) => r.class_pack_id), ...viaPi.map((r) => r.id)].filter(Boolean))];
         const patch = async (path, body) => {
