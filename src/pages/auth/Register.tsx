@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { LEGAL_PUBLISHED } from "@/content/legal";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,7 +51,7 @@ const Register = () => {
 
   // Check if form is valid for quick validation
   const isFormValid = formData.firstName && formData.lastName &&
-    formData.email && formData.password.length >= 8 && formData.agreeToTerms;
+    formData.email && formData.password.length >= 8 && (formData.agreeToTerms || !LEGAL_PUBLISHED);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,7 +59,8 @@ const Register = () => {
     // Honeypot guard: bots tend to fill hidden fields.
     if (formData._hp.trim()) return;
 
-    if (!formData.agreeToTerms) {
+    // Only where this deployment publishes policies (hosted); self-hosts write their own.
+    if (LEGAL_PUBLISHED && !formData.agreeToTerms) {
       toast({
         title: t('register.termsRequired'),
         description: t('register.termsError'),
@@ -388,6 +390,7 @@ const Register = () => {
 
             {/* Checkboxes - larger tap areas */}
             <div className="space-y-2 pt-2">
+              {LEGAL_PUBLISHED && (
               <label className="flex items-start gap-3 p-3 -mx-3 rounded-xl hover:bg-muted/50 cursor-pointer touch-manipulation">
                 <Checkbox
                   id="terms"
@@ -409,6 +412,7 @@ const Register = () => {
                   </Link>
                 </span>
               </label>
+              )}
               <label className="flex items-start gap-3 p-3 -mx-3 rounded-xl hover:bg-muted/50 cursor-pointer touch-manipulation">
                 <Checkbox
                   id="marketing"

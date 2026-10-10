@@ -21,17 +21,11 @@ describe("legal pages", () => {
 });
 
 describe("resolveLegalIdentity", () => {
-  it("names the hosted operator only on tandavastudio.com", () => {
+  it("publishes the hosted policies only on tandavastudio.com or a hosted build", () => {
     expect(resolveLegalIdentity({}, "tandavastudio.com")).toEqual(HOSTED_IDENTITY);
     expect(resolveLegalIdentity({}, "www.tandavastudio.com")).toEqual(HOSTED_IDENTITY);
+    expect(resolveLegalIdentity({ VITE_LEGAL_HOSTED: "true" }, "127.0.0.1")).toEqual(HOSTED_IDENTITY);
     expect(resolveLegalIdentity({}, "yoga.example.com")).toBeNull();
     expect(resolveLegalIdentity({}, "nottandavastudio.com")).toBeNull();
-  });
-  it("lets a deployment publish its own identity", () => {
-    expect(resolveLegalIdentity({ VITE_LEGAL_OPERATOR: "Lotus Co", VITE_LEGAL_CONTACT: "hi@lotus.test" }, "www.lotus.test"))
-      .toEqual({ operator: "Lotus Co", contact: "hi@lotus.test", site: "lotus.test", hosted: false });
-    // The hosted site keeps the hosted identity even if the env is set.
-    expect(resolveLegalIdentity({ VITE_LEGAL_OPERATOR: "X", VITE_LEGAL_CONTACT: "x@x.test" }, "tandavastudio.com")).toEqual(HOSTED_IDENTITY);
-    expect(resolveLegalIdentity({ VITE_LEGAL_OPERATOR: "Lotus Co" }, "lotus.test")).toBeNull();
   });
 });

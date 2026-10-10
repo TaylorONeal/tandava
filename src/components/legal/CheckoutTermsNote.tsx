@@ -3,8 +3,10 @@
  * agrees to and where refunds are explained (LP-9).
  */
 import { Link } from "react-router-dom";
+import { LEGAL_PUBLISHED } from "@/content/legal";
 
 export function CheckoutTermsNote({ className = "" }: { className?: string }) {
+  if (!LEGAL_PUBLISHED) return null;
   return (
     <p className={`text-xs text-muted-foreground ${className}`}>
       By paying you agree to the{" "}

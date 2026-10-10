@@ -23,6 +23,7 @@
  * component's optimism.
  */
 
+import { LEGAL_PUBLISHED } from "@/content/legal";
 import { cancelWindowLabel } from "@/lib/myBookings";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
@@ -609,12 +610,14 @@ export default function ExpressBooking() {
               )}
             </div>
 
+            {LEGAL_PUBLISHED && (
             <p className="text-xs text-muted-foreground">
               By booking you agree to the{" "}
               <Link target="_blank" rel="noopener noreferrer" to="/terms" className="underline">Terms</Link> and{" "}
               <Link target="_blank" rel="noopener noreferrer" to="/privacy" className="underline">Privacy Policy</Link>. Cancellations and refunds follow the{" "}
               <Link target="_blank" rel="noopener noreferrer" to="/refunds" className="underline">refund policy</Link>.
             </p>
+            )}
 
             {rejection && (
               <div

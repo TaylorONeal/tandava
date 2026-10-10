@@ -22,9 +22,8 @@ export default defineConfig({
       VITE_SUPABASE_URL: "http://127.0.0.1:54321",
       VITE_SUPABASE_ANON_KEY: "e2e-anon-key",
       VITE_HOME_MODE: "platform",
-      // The legal pages publish an identity only on tandavastudio.com or when these are set.
-      VITE_LEGAL_OPERATOR: "Purafield Studio",
-      VITE_LEGAL_CONTACT: "hello@purafieldstudio.com",
+      // The hosted policies publish only on tandavastudio.com or in a hosted build.
+      VITE_LEGAL_HOSTED: "true",
     },
   },
 });

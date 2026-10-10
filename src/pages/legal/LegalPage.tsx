@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { MarketingShell } from "@/components/layout/MarketingShell";
 import { SEOHead } from "@/components/seo/SEOHead";
-import { ALL_LEGAL_LINKS, LEGAL_DOCS, LEGAL_IDENTITY, LEGAL_OPERATOR, LEGAL_UPDATED, type LegalDoc } from "@/content/legal";
+import { ALL_LEGAL_LINKS, LEGAL_DOCS, LEGAL_PUBLISHED, LEGAL_OPERATOR, LEGAL_UPDATED, type LegalDoc } from "@/content/legal";
 
 function Paragraph({ text }: { text: string }) {
   if (text.startsWith("- ")) {
@@ -23,7 +23,7 @@ export function LegalDocView({ doc }: { doc: LegalDoc }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [doc.slug]);
-  if (!LEGAL_IDENTITY) {
+  if (!LEGAL_PUBLISHED) {
     // A self-hosted deployment publishes its own policies; never show the hosted operator's.
     return (
       <MarketingShell maxWidth="max-w-3xl">

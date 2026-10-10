@@ -12,33 +12,24 @@
 export const LEGAL_UPDATED = "October 10, 2026";
 
 /**
- * Who publishes these policies. The hosted service (tandavastudio.com) is run
- * by Purafield Studio. A self-hosted deployment must not show Purafield as its
- * operator, so the identity applies only on tandavastudio.com or when the
- * deployment sets VITE_LEGAL_OPERATOR and VITE_LEGAL_CONTACT. Otherwise the
- * policy pages say none are published and the footer links are hidden.
+ * These policies are the hosted service's: Purafield Studio runs
+ * tandavastudio.com. They are published only there (or in a build that sets
+ * VITE_LEGAL_HOSTED=true, such as the e2e run). A self-hosted deployment
+ * names other providers and another operator, so it gets no policy pages,
+ * no footer links and no consent checkbox; it writes its own (see
+ * docs/DEPLOYMENT.md) instead of inheriting ours.
  */
-export interface LegalIdentity {
-  operator: string;
-  contact: string;
-  /** The site these policies govern, as named in them. */
-  site: string;
-  /** The hosted Tandava service (adds the open-source scope note). */
-  hosted: boolean;
-}
+export interface LegalIdentity { operator: string; contact: string; site: string }
 export const HOSTED_IDENTITY: LegalIdentity = {
-  operator: "Purafield Studio", contact: "hello@purafieldstudio.com", site: "tandavastudio.com", hosted: true,
+  operator: "Purafield Studio", contact: "hello@purafieldstudio.com", site: "tandavastudio.com",
 };
 
 export function resolveLegalIdentity(
-  env: { VITE_LEGAL_OPERATOR?: string; VITE_LEGAL_CONTACT?: string },
+  env: { VITE_LEGAL_HOSTED?: string },
   hostname: string | undefined,
 ): LegalIdentity | null {
-  const operator = env.VITE_LEGAL_OPERATOR?.trim();
-  const contact = env.VITE_LEGAL_CONTACT?.trim();
+  if (env.VITE_LEGAL_HOSTED?.trim() === "true") return HOSTED_IDENTITY;
   if (hostname && /(^|\.)tandavastudio\.com$/i.test(hostname)) return HOSTED_IDENTITY;
-  // A self-hosted deployment's policies govern that deployment's own site.
-  if (operator && contact && hostname) return { operator, contact, site: hostname.replace(/^www\./, ""), hosted: false };
   return null;
 }
 
@@ -46,10 +37,11 @@ export const LEGAL_IDENTITY = resolveLegalIdentity(
   import.meta.env as Record<string, string | undefined>,
   typeof location !== "undefined" ? location.hostname : undefined,
 );
-const identity = LEGAL_IDENTITY ?? HOSTED_IDENTITY;
+/** True where this deployment publishes the policies (and asks people to agree to them). */
+export const LEGAL_PUBLISHED = LEGAL_IDENTITY !== null;
+const identity = HOSTED_IDENTITY;
 export const LEGAL_OPERATOR = identity.operator;
 export const LEGAL_CONTACT = identity.contact;
-const SITE = identity.site;
 
 export interface LegalSection {
   heading: string;
@@ -75,7 +67,7 @@ export const TERMS: LegalDoc = {
     {
       heading: "Who we are",
       body: [
-        `Tandava (${SITE}) is run by ${LEGAL_OPERATOR} ("we", "us"). It lets people find and book classes at independent studios, and lets studios manage their schedule, members and payments. By creating an account or booking a class you agree to these terms.`,
+        `Tandava (tandavastudio.com) is run by ${LEGAL_OPERATOR} ("we", "us"). It lets people find and book classes at independent studios, and lets studios manage their schedule, members and payments. By creating an account or booking a class you agree to these terms.`,
       ],
     },
     {
@@ -111,19 +103,12 @@ export const TERMS: LegalDoc = {
         "Do not misuse Tandava. That includes booking spots you do not intend to use to block others, using someone else's account or payment method, scraping or overloading the service, trying to get around security or access controls, posting unlawful or misleading content, and sending messages to people who did not agree to receive them.",
       ],
     },
-    ...(identity.hosted
-      ? [{
-          heading: "Open source",
-          body: [
-            "The Tandava software is open source and its code is published under its own license. These terms cover the hosted service at tandavastudio.com, not copies of the code that others run.",
-          ],
-        }]
-      : [{
-          heading: "Software",
-          body: [
-            `${SITE} runs Tandava, open-source studio software. ${LEGAL_OPERATOR} operates this site and is responsible for it; the Tandava project is not a party to these terms.`,
-          ],
-        }]),
+    {
+      heading: "Open source",
+      body: [
+        "The Tandava software is open source and its code is published under its own license. These terms cover the hosted service at tandavastudio.com, not copies of the code that others run.",
+      ],
+    },
     {
       heading: "Changes and ending your account",
       body: [
@@ -256,5 +241,5 @@ const ALL_LEGAL_LINKS = [
 ] as const;
 
 /** Footer links: only where this deployment has published policies. */
-export const LEGAL_LINKS: readonly (typeof ALL_LEGAL_LINKS)[number][] = LEGAL_IDENTITY ? ALL_LEGAL_LINKS : [];
+export const LEGAL_LINKS: readonly (typeof ALL_LEGAL_LINKS)[number][] = LEGAL_PUBLISHED ? ALL_LEGAL_LINKS : [];
 export { ALL_LEGAL_LINKS };
