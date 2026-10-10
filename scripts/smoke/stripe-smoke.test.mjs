@@ -74,9 +74,15 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
     if (p.startsWith("/rest/v1/") && init.method === "PATCH") {
       const body = JSON.parse(init.body);
       if (p.endsWith("/transactions")) {
-        const sid = u.searchParams.get("stripe_checkout_session_id").replace(/^eq\./, "");
-        const hit = txns.filter((x) => x.stripe_checkout_session_id === sid);
+        const eq = (k) => u.searchParams.get(k)?.replace(/^eq\./, "");
+        const hit = txns.filter((x) => (eq("stripe_checkout_session_id") ? x.stripe_checkout_session_id === eq("stripe_checkout_session_id") : x.id === eq("id")));
         hit.forEach((x) => Object.assign(x, body));
+        return json(200, hit);
+      }
+      if (u.searchParams.get("profile_id")) {
+        const owner = u.searchParams.get("profile_id").replace(/^eq\./, "");
+        const hit = packs.filter((k) => k.profile_id === owner && (k.status !== "exhausted" || k.classes_remaining > 0));
+        hit.forEach((k) => Object.assign(k, body));
         return json(200, hit);
       }
       const ids = /^in\.\((.*)\)$/.exec(u.searchParams.get("id"))[1].split(",");
@@ -90,7 +96,8 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
       if (table === "class_pack_types") return json(200, [{ price_cents: catalogPrice, class_count: 5, validity_days: 90, studio_id: "s1" }]);
       const rows = table === "transactions" ? txns : packs;
       const filters = [...u.searchParams].filter(([k]) => k !== "select");
-      return json(200, rows.filter((r) => filters.every(([k, v]) => String(r[k]) === v.replace(/^eq\./, ""))));
+      return json(200, rows.filter((r) => filters.every(([k, v]) => (v.startsWith("neq.")
+        ? String(r[k]) !== v.slice(4) : String(r[k]) === v.replace(/^eq\./, "")))));
     }
     return json(404, { path: p });
   };
@@ -262,6 +269,18 @@ test("cleanup waits for a completion that commits after the client gave up", asy
 test("fails when the transaction is recorded in another currency", async () => {
   const b = fakeBackend({ txnCurrency: "EUR" });
   await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Transaction currency EUR, session usd/);
+});
+
+test("sweeps leftovers from an earlier run before starting", async () => {
+  const b = fakeBackend();
+  b.packs.push({ id: "old-pack", profile_id: "u1", status: "active", classes_remaining: 5 });
+  b.txns.push({ id: "old-txn", profile_id: "u1", status: "completed", amount_cents: 8000, class_pack_id: "old-pack",
+    stripe_checkout_session_id: "cs_test_older" });
+  await run(ENV, { ...quiet, fetchImpl: b.fetchImpl });
+  const oldPack = b.packs.find((k) => k.id === "old-pack");
+  const oldTxn = b.txns.find((x) => x.id === "old-txn");
+  assert.deepEqual([oldPack.status, oldPack.classes_remaining], ["exhausted", 0]);
+  assert.deepEqual([oldTxn.status, oldTxn.refunded_amount_cents], ["refunded", 8000]);
 });
 
 test("fails when the webhook rejects the signature", async () => {

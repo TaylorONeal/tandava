@@ -132,6 +132,25 @@ export async function run(env = process.env, {
   expect(verified.status === 200 && accessToken && userId, `Sign in smoke member: ${verified.status} ${JSON.stringify(verified.body)}`);
   log("1/4 signed in as the smoke member");
 
+  // The smoke member is dedicated to this job, so anything it still holds is
+  // left over from an earlier run (for example a webhook that committed after
+  // that run's cleanup gave up). Neutralise it before and after every run.
+  const sweep = async (when) => {
+    const send = async (path, body) => {
+      const res = await call(fetchImpl, `${supabaseUrl}/rest/v1/${path}`, {
+        method: "PATCH", headers: { ...admin, Prefer: "return=representation" }, body: JSON.stringify(body),
+      }, "sweep");
+      if (res.status >= 300) throw new Error(`sweep ${path}: ${res.status} ${JSON.stringify(res.body)}`);
+      return res.body ?? [];
+    };
+    const packs = await send(`class_packs?profile_id=eq.${userId}&or=(status.neq.exhausted,classes_remaining.gt.0)`,
+      { classes_remaining: 0, status: "exhausted" });
+    const open = (await rest(`transactions?profile_id=eq.${userId}&status=neq.refunded&select=id,amount_cents`)).body ?? [];
+    for (const t of open) await send(`transactions?id=eq.${t.id}`, { status: "refunded", refunded_amount_cents: t.amount_cents });
+    if (packs.length || open.length) log(`sweep (${when}): neutralised ${packs.length} pack(s), ${open.length} transaction(s)`);
+  };
+  await sweep("start");
+
   // 2. Start Checkout exactly as the storefront does. stripe-checkout reuses a
   // session for the same buyer and item within a minute, so if this one was
   // already fulfilled by an earlier run, wait for the next minute and ask again.
@@ -275,6 +294,7 @@ export async function run(env = process.env, {
           { status: "refunded", refunded_amount_cents: session.amount_total });
         if (txnsFixed.length) log(`cleanup: marked ${txnsFixed.length} smoke transaction(s) fully refunded`);
       } catch (err) { log(`cleanup failed, void the packs for session ${sessionId} by hand: ${err.message}`); }
+      try { await sweep("end"); } catch (err) { log(`end sweep failed (the next run retries it): ${err.message}`); }
     }
   }
 }
