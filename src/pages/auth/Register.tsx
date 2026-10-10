@@ -63,7 +63,7 @@ const Register = () => {
     if (LEGAL_PUBLISHED && !formData.agreeToTerms) {
       toast({
         title: t('register.termsRequired'),
-        description: t('register.termsError'),
+        description: t('register.termsPrivacyError', { defaultValue: "Please agree to the Terms of Service and Privacy Policy to continue." }),
         variant: "destructive",
       });
       return;
@@ -224,7 +224,7 @@ const Register = () => {
     if (LEGAL_PUBLISHED && !formData.agreeToTerms) {
       toast({
         title: t('register.termsRequired'),
-        description: t('register.termsError'),
+        description: t('register.termsPrivacyError', { defaultValue: "Please agree to the Terms of Service and Privacy Policy to continue." }),
         variant: "destructive",
       });
       return;
