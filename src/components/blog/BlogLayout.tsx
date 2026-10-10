@@ -9,6 +9,7 @@
 import { ReactNode, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { LEGAL_LINKS } from "@/content/legal";
 import { getCategoriesWithCounts } from "@/lib/blog";
 
 interface BlogLayoutProps {
@@ -138,9 +139,14 @@ export function BlogLayout({ children, activeCategory }: BlogLayoutProps) {
         </div>
         <div className="container mt-8 flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
           <span>&copy; {new Date().getFullYear()} Tandava. Studio software for yoga, pilates, and movement.</span>
-          <Link to="/for-studios" className="transition-colors hover:text-foreground">
-            For studios
-          </Link>
+          <span className="flex gap-4">
+            <Link to="/for-studios" className="transition-colors hover:text-foreground">
+              For studios
+            </Link>
+            {LEGAL_LINKS.map((l) => (
+              <Link key={l.to} to={l.to} className="transition-colors hover:text-foreground">{l.label}</Link>
+            ))}
+          </span>
         </div>
       </footer>
     </div>

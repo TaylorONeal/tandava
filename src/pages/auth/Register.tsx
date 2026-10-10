@@ -399,12 +399,12 @@ const Register = () => {
                 />
                 <span className="text-sm leading-tight">
                   {t('register.agreeToTerms')}{" "}
-                  <Link to="/terms" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
+                  <Link target="_blank" rel="noopener noreferrer" to="/terms" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
                     {t('register.termsOfService')}
                   </Link>{" "}
                   {t('register.and')}{" "}
                   {/* Studio waivers are accepted per studio when booking; /waiver never existed. */}
-                  <Link to="/privacy" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
+                  <Link target="_blank" rel="noopener noreferrer" to="/privacy" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
                     {t('register.privacyPolicy', { defaultValue: "Privacy Policy" })}
                   </Link>
                 </span>

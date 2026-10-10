@@ -109,7 +109,7 @@ export const PRIVACY: LegalDoc = {
     {
       heading: "What we collect",
       body: [
-        "- Account details you give us: name, email, and optionally phone, pronouns, date of birth, emergency contact and Instagram handle.\n- Bookings, check-ins, memberships, class packs and purchase records.\n- Payment details are handled by Stripe. We receive the payment result, never your card number.\n- How you found a studio page: the page you landed on, the referring site, campaign tags in the link, and device type. A random visitor ID is kept in your browser to connect visits. We store a salted hash of your IP address for abuse limits, never the address itself.\n- If product analytics is on, the steps you take in sign-up and checkout (for example \"checkout started\"), tied to that random ID.",
+        "- Account details you give us: name, email, and optionally phone, pronouns, date of birth, emergency contact and Instagram handle.\n- Bookings, check-ins, memberships, class packs and purchase records.\n- Payment details are handled by Stripe. We receive the payment result, never your card number.\n- How you found a studio page: the page you landed on, the referring site, campaign tags in the link, and device type. A random visitor ID is kept in your browser to connect visits. We store a salted hash of your IP address for abuse limits, never the address itself.\n- If product analytics is on, the steps you take in sign-up and checkout (for example \"checkout started\"), tied to that random ID.\n- If error monitoring is on: errors, page performance, and for a small share of visits and for visits where an error happens, a replay of what was on screen (typed form fields are hidden). These are linked to your account ID and email so we can fix problems you hit.",
       ],
     },
     {
@@ -133,7 +133,7 @@ export const PRIVACY: LegalDoc = {
     {
       heading: "Service providers",
       body: [
-        "We use providers to run Tandava, and they process data only for that purpose: Supabase (database and sign-in), Stripe (payments), Vercel (website hosting), Resend (email), Cloudflare Turnstile (bot checks on sign-in), and PostHog (product analytics, only when enabled). Your data may be processed in the United States.",
+        "We use providers to run Tandava, and they process data only for that purpose: Supabase (database and sign-in), Stripe (payments), Vercel (website hosting), Resend (email), Cloudflare Turnstile (bot checks on sign-in), PostHog (product analytics, only when enabled) and Sentry (error monitoring, only when enabled). Your data may be processed in the United States.",
       ],
     },
     {
