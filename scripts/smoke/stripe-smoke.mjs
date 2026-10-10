@@ -155,39 +155,52 @@ export async function run(env = process.env, { fetchImpl = fetch, log = console.
     expect(res.status === 200, `stripe-webhook ${event.type}: ${res.status} ${JSON.stringify(res.body)}`);
   };
   const completed = stripeEvent("checkout.session.completed", paidSession(session, pi));
-  await deliver(completed);
-  const txns = await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=id,status,class_pack_id,amount_cents,profile_id`);
-  expect(txns.status === 200 && txns.body.length === 1, `Expected 1 transaction, got ${JSON.stringify(txns.body)}`);
-  const txn = txns.body[0];
-  expect(txn.status === "completed" && txn.class_pack_id, `Transaction not completed with a pack: ${JSON.stringify(txn)}`);
-  const pack = await rest(`class_packs?id=eq.${txn.class_pack_id}&select=status,classes_remaining,classes_total`);
-  expect(pack.body?.[0]?.status === "active" && pack.body[0].classes_remaining === Number(session.metadata.class_count),
-    `Pack not credited: ${JSON.stringify(pack.body)}`);
-  // Redelivery must change nothing: same rows, same values.
-  const snapshot = async () => ({
-    txns: (await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=*`)).body,
-    packs: (await rest(`class_packs?stripe_payment_intent_id=eq.${pi}&select=*`)).body,
-  });
-  const before = await snapshot();
-  await deliver(completed);
-  const after = await snapshot();
-  expect(after.txns?.length === 1 && after.packs?.length === 1,
-    `Redelivery double-credited: ${after.txns?.length} transactions, ${after.packs?.length} packs`);
-  expect(JSON.stringify(after) === JSON.stringify(before),
-    `Redelivery changed existing rows: ${JSON.stringify({ before, after })}`);
-  log(`3/4 webhook credited ${pack.body[0].classes_remaining} classes once (redelivery ignored)`);
-
-  // 4. Full refund voids the pack (and cleans up this run).
-  await deliver(stripeEvent("charge.refunded", {
+  const refundEvent = () => stripeEvent("charge.refunded", {
     id: `ch_smoke_${randomUUID().replace(/-/g, "")}`, object: "charge", livemode: false,
-    payment_intent: pi, amount: txn.amount_cents, amount_refunded: txn.amount_cents,
-  }));
-  const refunded = await rest(`transactions?id=eq.${txn.id}&select=status`);
-  const voided = await rest(`class_packs?id=eq.${txn.class_pack_id}&select=status,classes_remaining`);
-  expect(refunded.body?.[0]?.status === "refunded", `Refund not recorded: ${JSON.stringify(refunded.body)}`);
-  expect(voided.body?.[0]?.classes_remaining === 0, `Pack not voided: ${JSON.stringify(voided.body)}`);
-  log("4/4 refund recorded and pack voided");
-  return { sessionId, transactionId: txn.id };
+    payment_intent: pi, amount: session.amount_total, amount_refunded: session.amount_total,
+  });
+  await deliver(completed);
+  // From here on, a failure must not leave a usable pack behind: always refund.
+  let refundSent = false;
+  try {
+    const txns = await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=id,status,class_pack_id,amount_cents,profile_id`);
+    expect(txns.status === 200 && txns.body.length === 1, `Expected 1 transaction, got ${JSON.stringify(txns.body)}`);
+    const txn = txns.body[0];
+    expect(txn.status === "completed" && txn.class_pack_id, `Transaction not completed with a pack: ${JSON.stringify(txn)}`);
+    expect(txn.amount_cents === session.amount_total, `Charged ${txn.amount_cents}, session says ${session.amount_total}`);
+    const pack = await rest(`class_packs?id=eq.${txn.class_pack_id}&select=status,classes_remaining,classes_total`);
+    expect(pack.body?.[0]?.status === "active" && pack.body[0].classes_remaining === Number(session.metadata.class_count),
+      `Pack not credited: ${JSON.stringify(pack.body)}`);
+    // Redelivery must change nothing: same rows, same values.
+    const snapshot = async () => ({
+      txns: (await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=*`)).body,
+      packs: (await rest(`class_packs?stripe_payment_intent_id=eq.${pi}&select=*`)).body,
+    });
+    const before = await snapshot();
+    await deliver(completed);
+    const after = await snapshot();
+    expect(after.txns?.length === 1 && after.packs?.length === 1,
+      `Redelivery double-credited: ${after.txns?.length} transactions, ${after.packs?.length} packs`);
+    expect(JSON.stringify(after) === JSON.stringify(before),
+      `Redelivery changed existing rows: ${JSON.stringify({ before, after })}`);
+    log(`3/4 webhook credited ${pack.body[0].classes_remaining} classes once (redelivery ignored)`);
+
+    // 4. Full refund voids the pack (and cleans up this run).
+    refundSent = true;
+    await deliver(refundEvent());
+    const refunded = await rest(`transactions?id=eq.${txn.id}&select=status`);
+    const voided = await rest(`class_packs?id=eq.${txn.class_pack_id}&select=status,classes_remaining`);
+    expect(refunded.body?.[0]?.status === "refunded", `Refund not recorded: ${JSON.stringify(refunded.body)}`);
+    expect(voided.body?.[0]?.status === "exhausted" && voided.body[0].classes_remaining === 0,
+      `Pack not voided: ${JSON.stringify(voided.body)}`);
+    log("4/4 refund recorded and pack voided");
+    return { sessionId, transactionId: txn.id };
+  } finally {
+    if (!refundSent) {
+      try { await deliver(refundEvent()); log("cleanup: refunded the smoke purchase after a failure"); }
+      catch (err) { log(`cleanup refund failed, check ${sessionId} by hand: ${err.message}`); }
+    }
+  }
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {

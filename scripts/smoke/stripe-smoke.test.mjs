@@ -13,7 +13,7 @@ const ENV = {
 };
 
 /** In-memory stand-in for Supabase + Stripe, mirroring fulfill_stripe_checkout / record_stripe_refund. */
-function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false } = {}) {
+function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true } = {}) {
   const events = new Set();
   const txns = [];
   const packs = [];
@@ -50,9 +50,11 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
           stripe_checkout_session_id: o.id });
       } else if (ev.type === "charge.refunded") {
         const pack = packs.find((k) => k.stripe_payment_intent_id === o.payment_intent);
+        if (!pack) return json(500, "refund for unknown payment intent");
         const txn = txns.find((x) => x.class_pack_id === pack.id);
         txn.status = "refunded";
-        if (voidOnRefund) Object.assign(pack, { status: "exhausted", classes_remaining: 0 });
+        if (voidOnRefund) pack.classes_remaining = 0;
+        if (statusOnRefund) pack.status = "exhausted";
       }
       return json(200, { received: true });
     }
@@ -90,6 +92,18 @@ test("fails when a redelivered event changes the existing pack", async () => {
 test("fails when a refund leaves the credits usable", async () => {
   const b = fakeBackend({ voidOnRefund: false });
   await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Pack not voided/);
+});
+
+test("fails when a refund zeroes credits but leaves the pack active", async () => {
+  const b = fakeBackend({ statusOnRefund: false });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Pack not voided/);
+});
+
+test("still refunds the purchase when a check after fulfilment fails", async () => {
+  const b = fakeBackend({ reapply: true });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Redelivery changed/);
+  assert.equal(b.txns[0].status, "refunded");
+  assert.equal(b.packs[0].status, "exhausted");
 });
 
 test("fails when the webhook rejects the signature", async () => {
