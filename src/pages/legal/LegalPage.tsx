@@ -4,7 +4,7 @@
 import { Link } from "react-router-dom";
 import { MarketingShell } from "@/components/layout/MarketingShell";
 import { SEOHead } from "@/components/seo/SEOHead";
-import { LEGAL_DOCS, LEGAL_LINKS, LEGAL_OPERATOR, LEGAL_UPDATED, type LegalDoc } from "@/content/legal";
+import { ALL_LEGAL_LINKS, LEGAL_DOCS, LEGAL_IDENTITY, LEGAL_OPERATOR, LEGAL_UPDATED, type LegalDoc } from "@/content/legal";
 
 function Paragraph({ text }: { text: string }) {
   if (text.startsWith("- ")) {
@@ -18,6 +18,20 @@ function Paragraph({ text }: { text: string }) {
 }
 
 export function LegalDocView({ doc }: { doc: LegalDoc }) {
+  if (!LEGAL_IDENTITY) {
+    // A self-hosted deployment publishes its own policies; never show the hosted operator's.
+    return (
+      <MarketingShell maxWidth="max-w-3xl">
+        <SEOHead title={doc.title} description={doc.summary} noindex />
+        <article className="max-w-3xl mx-auto px-6 py-12 space-y-3">
+          <h1 className="text-3xl font-bold tracking-tight">{doc.title}</h1>
+          <p className="text-muted-foreground">
+            This site has not published its {doc.title.toLowerCase()} yet. Contact the studio that runs it.
+          </p>
+        </article>
+      </MarketingShell>
+    );
+  }
   return (
     <MarketingShell maxWidth="max-w-3xl">
       <SEOHead title={doc.title} description={doc.summary} />
@@ -36,7 +50,7 @@ export function LegalDocView({ doc }: { doc: LegalDoc }) {
           </section>
         ))}
         <nav aria-label="Policies" className="flex gap-4 border-t pt-6 text-sm">
-          {LEGAL_LINKS.filter((l) => l.to !== `/${doc.slug}`).map((l) => (
+          {ALL_LEGAL_LINKS.filter((l) => l.to !== `/${doc.slug}`).map((l) => (
             <Link key={l.to} to={l.to} className="text-primary hover:underline">{l.label}</Link>
           ))}
         </nav>

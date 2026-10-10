@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { LEGAL_DOCS, LEGAL_LINKS, LEGAL_CONTACT } from "./index";
+import { LEGAL_DOCS, ALL_LEGAL_LINKS, LEGAL_CONTACT, HOSTED_IDENTITY, resolveLegalIdentity } from "./index";
 
 describe("legal pages", () => {
   it("has a page for every footer link", () => {
-    for (const l of LEGAL_LINKS) {
+    for (const l of ALL_LEGAL_LINKS) {
       expect(LEGAL_DOCS[l.to.slice(1) as keyof typeof LEGAL_DOCS]).toBeDefined();
     }
   });
@@ -17,5 +17,19 @@ describe("legal pages", () => {
   it("matches the product: 2-hour default cancellation window and no card storage", () => {
     expect(JSON.stringify(LEGAL_DOCS.refunds)).toContain("2 hours");
     expect(JSON.stringify(LEGAL_DOCS.privacy)).toContain("never your card number");
+  });
+});
+
+describe("resolveLegalIdentity", () => {
+  it("names the hosted operator only on tandavastudio.com", () => {
+    expect(resolveLegalIdentity({}, "tandavastudio.com")).toEqual(HOSTED_IDENTITY);
+    expect(resolveLegalIdentity({}, "www.tandavastudio.com")).toEqual(HOSTED_IDENTITY);
+    expect(resolveLegalIdentity({}, "yoga.example.com")).toBeNull();
+    expect(resolveLegalIdentity({}, "nottandavastudio.com")).toBeNull();
+  });
+  it("lets a deployment publish its own identity", () => {
+    expect(resolveLegalIdentity({ VITE_LEGAL_OPERATOR: "Lotus Co", VITE_LEGAL_CONTACT: "hi@lotus.test" }, "lotus.test"))
+      .toEqual({ operator: "Lotus Co", contact: "hi@lotus.test" });
+    expect(resolveLegalIdentity({ VITE_LEGAL_OPERATOR: "Lotus Co" }, "lotus.test")).toBeNull();
   });
 });

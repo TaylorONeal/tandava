@@ -10,8 +10,35 @@
  */
 
 export const LEGAL_UPDATED = "October 10, 2026";
-export const LEGAL_OPERATOR = "Purafield Studio";
-export const LEGAL_CONTACT = "hello@purafieldstudio.com";
+
+/**
+ * Who publishes these policies. The hosted service (tandavastudio.com) is run
+ * by Purafield Studio. A self-hosted deployment must not show Purafield as its
+ * operator, so the identity applies only on tandavastudio.com or when the
+ * deployment sets VITE_LEGAL_OPERATOR and VITE_LEGAL_CONTACT. Otherwise the
+ * policy pages say none are published and the footer links are hidden.
+ */
+export interface LegalIdentity { operator: string; contact: string }
+export const HOSTED_IDENTITY: LegalIdentity = { operator: "Purafield Studio", contact: "hello@purafieldstudio.com" };
+
+export function resolveLegalIdentity(
+  env: { VITE_LEGAL_OPERATOR?: string; VITE_LEGAL_CONTACT?: string },
+  hostname: string | undefined,
+): LegalIdentity | null {
+  const operator = env.VITE_LEGAL_OPERATOR?.trim();
+  const contact = env.VITE_LEGAL_CONTACT?.trim();
+  if (operator && contact) return { operator, contact };
+  if (hostname && /(^|\.)tandavastudio\.com$/i.test(hostname)) return HOSTED_IDENTITY;
+  return null;
+}
+
+export const LEGAL_IDENTITY = resolveLegalIdentity(
+  import.meta.env as Record<string, string | undefined>,
+  typeof location !== "undefined" ? location.hostname : undefined,
+);
+const identity = LEGAL_IDENTITY ?? HOSTED_IDENTITY;
+export const LEGAL_OPERATOR = identity.operator;
+export const LEGAL_CONTACT = identity.contact;
 
 export interface LegalSection {
   heading: string;
@@ -172,7 +199,7 @@ export const REFUNDS: LegalDoc = {
     {
       heading: "When the studio cancels",
       body: [
-        "If the studio cancels a class you booked, you get the class back on your pack or membership, or a full refund for a paid drop-in.",
+        `If the studio cancels a class you booked, you get the class back on your pack or membership, or a full refund for a paid drop-in. Email ${LEGAL_CONTACT} with the class and date if it has not come back within 2 business days.`,
       ],
     },
     {
@@ -204,8 +231,12 @@ export const REFUNDS: LegalDoc = {
 
 export const LEGAL_DOCS = { terms: TERMS, privacy: PRIVACY, refunds: REFUNDS } as const;
 
-export const LEGAL_LINKS = [
+const ALL_LEGAL_LINKS = [
   { to: "/terms", label: "Terms" },
   { to: "/privacy", label: "Privacy" },
   { to: "/refunds", label: "Refunds" },
 ] as const;
+
+/** Footer links: only where this deployment has published policies. */
+export const LEGAL_LINKS: readonly (typeof ALL_LEGAL_LINKS)[number][] = LEGAL_IDENTITY ? ALL_LEGAL_LINKS : [];
+export { ALL_LEGAL_LINKS };
