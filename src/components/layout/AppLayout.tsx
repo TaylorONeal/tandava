@@ -33,6 +33,7 @@ import {
 
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
+import { LEGAL_LINKS } from "@/content/legal";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -51,7 +52,7 @@ const navigation = [
 export function AppLayout({ children }: AppLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { profile, permissions, signOut } = useAuth();
+  const { profile, permissions, signOut, isDemoMode } = useAuth();
   const { t } = useTranslation("common");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -293,8 +294,14 @@ export function AppLayout({ children }: AppLayoutProps) {
       <footer className="border-t border-border bg-card/50 py-6 mt-auto">
         <div className="container flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
           <span>
-            &copy; {new Date().getFullYear()} Oxatl Yoga.{" "}
+            {/* The sample studio's name belongs to the demo only. */}
+            &copy; {new Date().getFullYear()} {isDemoMode ? "Oxatl Yoga" : "Tandava"}.{" "}
             {t("footer.allRightsReserved")}
+          </span>
+          <span className="flex gap-3">
+            {LEGAL_LINKS.map((l) => (
+              <Link key={l.to} to={l.to} className="hover:text-foreground">{l.label}</Link>
+            ))}
           </span>
           <span>
             {t("footer.poweredBy")}{" "}

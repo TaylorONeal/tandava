@@ -402,14 +402,11 @@ const Register = () => {
                   <Link to="/terms" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
                     {t('register.termsOfService')}
                   </Link>{" "}
-                  {!isOwner && (
-                    <>
-                      {t('register.and')}{" "}
-                      <Link to="/waiver" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                        {t('register.studioWaiver')}
-                      </Link>
-                    </>
-                  )}
+                  {t('register.and')}{" "}
+                  {/* Studio waivers are accepted per studio when booking; /waiver never existed. */}
+                  <Link to="/privacy" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
+                    {t('register.privacyPolicy', { defaultValue: "Privacy Policy" })}
+                  </Link>
                 </span>
               </label>
               <label className="flex items-start gap-3 p-3 -mx-3 rounded-xl hover:bg-muted/50 cursor-pointer touch-manipulation">

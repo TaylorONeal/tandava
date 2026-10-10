@@ -608,6 +608,13 @@ export default function ExpressBooking() {
               )}
             </div>
 
+            <p className="text-xs text-muted-foreground">
+              By booking you agree to the{" "}
+              <Link to="/terms" className="underline">Terms</Link> and{" "}
+              <Link to="/privacy" className="underline">Privacy Policy</Link>. Cancellations and refunds follow the{" "}
+              <Link to="/refunds" className="underline">refund policy</Link>.
+            </p>
+
             {rejection && (
               <div
                 className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive"
