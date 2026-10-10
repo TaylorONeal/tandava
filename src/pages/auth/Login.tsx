@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { LEGAL_PUBLISHED } from "@/content/legal";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -216,6 +217,14 @@ const Login = () => {
               {t('apple')}
             </Button>
           </div>
+          {/* Google sign-in can create a new account, so say what continuing means. */}
+          {LEGAL_PUBLISHED && (
+            <p className="text-center text-xs text-muted-foreground">
+              By continuing with Google you agree to the{" "}
+              <Link to="/terms" target="_blank" rel="noopener noreferrer" className="underline">Terms</Link> and{" "}
+              <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="underline">Privacy Policy</Link>.
+            </p>
+          )}
 
           {/* Sign up link */}
           <p className="text-center text-sm text-muted-foreground">

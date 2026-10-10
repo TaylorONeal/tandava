@@ -84,3 +84,16 @@ export function splitMyBookings(rows: MyBookingRow[], now: Date = new Date()) {
   const past = views.filter((v) => !v.isUpcoming);
   return { upcoming, past };
 }
+
+/** "Cancel at least 2 hours before class.": the window shown before booking (LP-9). */
+export function cancelWindowLabel(minutes: number | null | undefined): string {
+  const m = minutes ?? DEFAULT_CANCELLATION_MINUTES;
+  if (m <= 0) return "Cancel any time before class starts.";
+  return `Cancel at least ${windowText(m)} before class.`;
+}
+
+function windowText(m: number): string {
+  if (m % 1440 === 0) return `${m / 1440} ${m === 1440 ? "day" : "days"}`;
+  if (m % 60 === 0) return `${m / 60} ${m === 60 ? "hour" : "hours"}`;
+  return `${m} minutes`;
+}

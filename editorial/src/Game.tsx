@@ -508,6 +508,12 @@ export default function Game() {
         >
           {reducedMotion ? "Motion off" : "Motion on"}
         </button>
+        {/* Standalone page: plain links to the hosted app's policies. */}
+        <nav aria-label="Policies" style={{ display: "flex", gap: "12px" }}>
+          <a href="/terms">Terms</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/refunds">Refunds</a>
+        </nav>
       </footer>
     </main>
   );

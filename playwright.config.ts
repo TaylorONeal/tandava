@@ -22,6 +22,8 @@ export default defineConfig({
       VITE_SUPABASE_URL: "http://127.0.0.1:54321",
       VITE_SUPABASE_ANON_KEY: "e2e-anon-key",
       VITE_HOME_MODE: "platform",
+      // The hosted policies publish only on tandavastudio.com or in a hosted build.
+      VITE_LEGAL_HOSTED: "true",
     },
   },
 });
