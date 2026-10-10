@@ -72,9 +72,17 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
       return json(200, { received: true });
     }
     if (p.startsWith("/rest/v1/") && init.method === "PATCH") {
+      const body = JSON.parse(init.body);
+      if (p.endsWith("/transactions")) {
+        const sid = u.searchParams.get("stripe_checkout_session_id").replace(/^eq\./, "");
+        const hit = txns.filter((x) => x.stripe_checkout_session_id === sid);
+        hit.forEach((x) => Object.assign(x, body));
+        return json(200, hit);
+      }
       const ids = /^in\.\((.*)\)$/.exec(u.searchParams.get("id"))[1].split(",");
-      const hit = packs.filter((k) => ids.includes(k.id) && k.classes_remaining > 0);
-      hit.forEach((k) => Object.assign(k, JSON.parse(init.body)));
+      const onlyWithCredits = u.searchParams.get("classes_remaining") === "gt.0";
+      const hit = packs.filter((k) => ids.includes(k.id) && (!onlyWithCredits || k.classes_remaining > 0));
+      hit.forEach((k) => Object.assign(k, body));
       return json(200, hit);
     }
     if (p.startsWith("/rest/v1/")) {
@@ -202,6 +210,27 @@ test("fails when the pack records the wrong total", async () => {
 test("fails when a refund leaves refunded_amount_cents unset", async () => {
   const b = fakeBackend({ refundAmount: false });
   await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Refund not recorded/);
+});
+
+test("cleanup exhausts a zero-credit pack left active", async () => {
+  const b = fakeBackend({ statusOnRefund: false });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Pack not voided/);
+  assert.equal(b.packs[0].status, "exhausted");
+});
+
+test("cleanup marks the smoke transaction refunded when refunds keep failing", async () => {
+  const b = fakeBackend({ failAfterFulfil: true });
+  const realFetch = b.fetchImpl;
+  const fetchImpl = async (url, init = {}) => {
+    if (String(url).endsWith("/functions/v1/stripe-webhook") && init.body.includes("charge.refunded")) {
+      return new Response("Handler error", { status: 500 });
+    }
+    return realFetch(url, init);
+  };
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl }));
+  assert.equal(b.txns[0].status, "refunded");
+  assert.equal(b.txns[0].refunded_amount_cents, 8000);
+  assert.equal(b.packs[0].status, "exhausted");
 });
 
 test("fails when the webhook rejects the signature", async () => {

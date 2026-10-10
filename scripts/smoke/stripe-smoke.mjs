@@ -246,14 +246,22 @@ export async function run(env = process.env, {
         const viaTxn = (await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=class_pack_id`)).body ?? [];
         const viaPi = (await rest(`class_packs?stripe_payment_intent_id=eq.${pi}&select=id`)).body ?? [];
         const ids = [...new Set([...viaTxn.map((r) => r.class_pack_id), ...viaPi.map((r) => r.id)].filter(Boolean))];
-        if (ids.length) {
-          const left = await call(fetchImpl, `${supabaseUrl}/rest/v1/class_packs?id=in.(${ids.join(",")})&classes_remaining=gt.0`, {
-            method: "PATCH", headers: { ...admin, Prefer: "return=representation" },
-            body: JSON.stringify({ classes_remaining: 0, status: "exhausted" }),
+        const patch = async (path, body) => {
+          const res = await call(fetchImpl, `${supabaseUrl}/rest/v1/${path}`, {
+            method: "PATCH", headers: { ...admin, Prefer: "return=representation" }, body: JSON.stringify(body),
           }, "cleanup");
-          if (left.status >= 300) throw new Error(`${left.status} ${JSON.stringify(left.body)}`);
-          if (left.body?.length) log(`cleanup: voided ${left.body.length} smoke pack(s) directly`);
+          if (res.status >= 300) throw new Error(`${res.status} ${JSON.stringify(res.body)}`);
+          return res.body ?? [];
+        };
+        if (ids.length) {
+          // Every smoke pack ends exhausted with no credits, whatever state it was left in.
+          const packsFixed = await patch(`class_packs?id=in.(${ids.join(",")})`, { classes_remaining: 0, status: "exhausted" });
+          log(`cleanup: set ${packsFixed.length} smoke pack(s) to exhausted`);
         }
+        // No money moved, so the synthetic purchase must not count as revenue either.
+        const txnsFixed = await patch(`transactions?stripe_checkout_session_id=eq.${sessionId}`,
+          { status: "refunded", refunded_amount_cents: session.amount_total });
+        if (txnsFixed.length) log(`cleanup: marked ${txnsFixed.length} smoke transaction(s) fully refunded`);
       } catch (err) { log(`cleanup failed, void the packs for session ${sessionId} by hand: ${err.message}`); }
     }
   }
