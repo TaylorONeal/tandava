@@ -94,7 +94,7 @@ export const TERMS: LegalDoc = {
     {
       heading: "For studios",
       body: [
-        "A studio account holder confirms they are authorized to act for the studio. Studios connect their own Stripe account to get paid and agree to Stripe's terms. We may charge a platform fee, shown in your studio settings before it applies. Studios are responsible for the accuracy of their listings and prices, for honoring bookings and their own refund policy, for their waivers and insurance, and for how they use their members' information (see the Privacy Policy).",
+        "A studio account holder confirms they are authorized to act for the studio. Studios connect their own Stripe account to get paid and agree to Stripe's terms. We may charge a platform fee on payments. We will email the studio account holder the fee and its start date at least 30 days before any fee applies. Studios are responsible for the accuracy of their listings and prices, for honoring bookings and their own refund policy, for their waivers and insurance, and for how they use their members' information (see the Privacy Policy).",
       ],
     },
     {
