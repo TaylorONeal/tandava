@@ -139,7 +139,7 @@ export const PRIVACY: LegalDoc = {
     {
       heading: "Keeping and deleting data",
       body: [
-        "We keep your data while your account is open. Ask us to delete your account and we will delete or anonymize your personal information within 30 days, except records we must keep by law, such as payment and tax records.",
+        "We keep your data while your account is open. If you booked as a guest without creating an account, we keep your booking details so the studio has its records, until you ask us to delete them. Ask us to delete your account or guest details and we will delete or anonymize your personal information within 30 days, except records we must keep by law, such as payment and tax records.",
         `To get a copy of your data, correct it, or delete it, email ${LEGAL_CONTACT} from the email on your account. You can update most details yourself on your Account page.`,
       ],
     },
@@ -166,7 +166,7 @@ export const REFUNDS: LegalDoc = {
     {
       heading: "Cancelling a class",
       body: [
-        "Cancel from My Schedule before the studio's cancellation window (shown on the class, 2 hours if the studio has not set one). On time, a class from a pack or membership is returned to you, and a paid drop-in can be refunded on request. Inside the window, or if you do not show up, the class is used and the studio may charge its late-cancel or no-show fee.",
+        `Cancel from My Schedule (or, if you booked without an account, email ${LEGAL_CONTACT} from the email you booked with) before the studio's cancellation window (shown on the class, 2 hours if the studio has not set one). On time, a class from a pack or membership is returned to you, and a paid drop-in can be refunded on request. Inside the window, or if you do not show up, the class is used and the studio may charge its late-cancel or no-show fee.`,
       ],
     },
     {
