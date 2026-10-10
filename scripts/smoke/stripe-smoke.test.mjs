@@ -97,7 +97,8 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
   return { fetchImpl, txns, packs };
 }
 
-const quiet = { log: () => {} };
+// No real waiting in unit tests: cleanup polling and fresh-checkout waits use this.
+const quiet = { log: () => {}, sleep: async () => {} };
 
 test("passes end to end against a correct backend and cleans up its pack", async () => {
   const b = fakeBackend();
