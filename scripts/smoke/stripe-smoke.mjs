@@ -194,10 +194,12 @@ export async function run(env = process.env, {
   let voidedVerified = false;
   try {
     await deliver(completed);
-    const txns = await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=id,status,class_pack_id,amount_cents,profile_id,studio_id`);
+    const txns = await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=id,status,class_pack_id,amount_cents,currency,profile_id,studio_id`);
     expect(txns.status === 200 && txns.body.length === 1, `Expected 1 transaction, got ${JSON.stringify(txns.body)}`);
     const txn = txns.body[0];
     expect(txn.status === "completed" && txn.class_pack_id, `Transaction not completed with a pack: ${JSON.stringify(txn)}`);
+    expect(String(txn.currency).toLowerCase() === String(session.currency).toLowerCase(),
+      `Transaction currency ${txn.currency}, session ${session.currency}`);
     expect(txn.amount_cents === session.amount_total, `Charged ${txn.amount_cents}, session says ${session.amount_total}`);
     expect(txn.profile_id === userId, `Transaction belongs to ${txn.profile_id}, not ${userId}`);
     expect(txn.studio_id === catalog.studio_id, `Transaction is at studio ${txn.studio_id}, not ${catalog.studio_id}`);

@@ -13,7 +13,7 @@ const ENV = {
 };
 
 /** In-memory stand-in for Supabase + Stripe, mirroring fulfill_stripe_checkout / record_stripe_refund. */
-function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false, failAfterFulfil = false, reuseSession = false, packOwner = "u1", expiresDays = 90, catalogPrice = 8000, packType = "pack-type-1", packStudio = "s1", piOnPack = true, packTotal = 5, refundAmount = true } = {}) {
+function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false, failAfterFulfil = false, reuseSession = false, packOwner = "u1", expiresDays = 90, catalogPrice = 8000, packType = "pack-type-1", packStudio = "s1", piOnPack = true, packTotal = 5, refundAmount = true, txnCurrency = "USD" } = {}) {
   let refundFailed = false;
   let reused = false;
   const events = new Set();
@@ -56,7 +56,7 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
         const pack = { id: `pk${packs.length}`, status: "active", classes_remaining: 5, classes_total: packTotal, stripe_payment_intent_id: piOnPack ? o.payment_intent : null,
           studio_id: packStudio, profile_id: packOwner, class_pack_type_id: packType, expires_at: new Date(Date.now() + expiresDays * 86_400_000).toISOString() };
         packs.push(pack);
-        txns.push({ id: `t${txns.length}`, status: "completed", class_pack_id: pack.id, amount_cents: o.amount_total, profile_id: packOwner, studio_id: "s1",
+        txns.push({ id: `t${txns.length}`, status: "completed", class_pack_id: pack.id, amount_cents: o.amount_total, currency: txnCurrency, profile_id: packOwner, studio_id: "s1",
           stripe_checkout_session_id: o.id });
         if (failAfterFulfil) return json(500, "Handler error");
       } else if (ev.type === "charge.refunded") {
@@ -257,6 +257,11 @@ test("cleanup waits for a completion that commits after the client gave up", asy
   await assert.rejects(run(ENV, { ...quiet, fetchImpl, sleep }), /aborted/);
   assert.equal(b.txns[0].status, "refunded");
   assert.equal(b.packs[0].status, "exhausted");
+});
+
+test("fails when the transaction is recorded in another currency", async () => {
+  const b = fakeBackend({ txnCurrency: "EUR" });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Transaction currency EUR, session usd/);
 });
 
 test("fails when the webhook rejects the signature", async () => {
