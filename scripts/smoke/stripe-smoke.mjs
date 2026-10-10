@@ -200,7 +200,8 @@ export async function run(env = process.env, {
     expect(txn.studio_id === catalog.studio_id, `Transaction is at studio ${txn.studio_id}, not ${catalog.studio_id}`);
     const pack = await rest(`class_packs?id=eq.${txn.class_pack_id}&select=status,classes_remaining,classes_total,profile_id,expires_at,class_pack_type_id,studio_id`);
     const p = pack.body?.[0];
-    expect(p?.status === "active" && p.classes_remaining === Number(session.metadata.class_count) && p.profile_id === userId
+    expect(p?.status === "active" && p.classes_remaining === catalog.class_count && p.classes_total === catalog.class_count
+        && p.profile_id === userId
         && p.class_pack_type_id === packTypeId && p.studio_id === catalog.studio_id,
       `Pack not credited to the member: ${JSON.stringify(pack.body)}`);
     // Usable: expires validity_days from now (allow a day either side).
@@ -224,9 +225,9 @@ export async function run(env = process.env, {
     // 4. Full refund voids the pack (and cleans up this run).
     await deliver(refundEvent());
     refundSent = true; // only once delivered; otherwise the finally block retries
-    const refunded = await rest(`transactions?id=eq.${txn.id}&select=status`);
+    const refunded = await rest(`transactions?id=eq.${txn.id}&select=status,refunded_amount_cents`);
     const voided = await rest(`class_packs?id=eq.${txn.class_pack_id}&select=status,classes_remaining`);
-    expect(refunded.body?.[0]?.status === "refunded", `Refund not recorded: ${JSON.stringify(refunded.body)}`);
+    expect(refunded.body?.[0]?.status === "refunded" && refunded.body[0].refunded_amount_cents === session.amount_total, `Refund not recorded: ${JSON.stringify(refunded.body)}`);
     expect(voided.body?.[0]?.status === "exhausted" && voided.body[0].classes_remaining === 0,
       `Pack not voided: ${JSON.stringify(voided.body)}`);
     voidedVerified = true;

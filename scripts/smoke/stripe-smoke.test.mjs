@@ -13,7 +13,7 @@ const ENV = {
 };
 
 /** In-memory stand-in for Supabase + Stripe, mirroring fulfill_stripe_checkout / record_stripe_refund. */
-function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false, failAfterFulfil = false, reuseSession = false, packOwner = "u1", expiresDays = 90, catalogPrice = 8000, packType = "pack-type-1", packStudio = "s1", piOnPack = true } = {}) {
+function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false, failAfterFulfil = false, reuseSession = false, packOwner = "u1", expiresDays = 90, catalogPrice = 8000, packType = "pack-type-1", packStudio = "s1", piOnPack = true, packTotal = 5, refundAmount = true } = {}) {
   let refundFailed = false;
   let reused = false;
   const events = new Set();
@@ -53,7 +53,7 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
       events.add(ev.id);
       const o = ev.data.object;
       if (ev.type === "checkout.session.completed") {
-        const pack = { id: `pk${packs.length}`, status: "active", classes_remaining: 5, stripe_payment_intent_id: piOnPack ? o.payment_intent : null,
+        const pack = { id: `pk${packs.length}`, status: "active", classes_remaining: 5, classes_total: packTotal, stripe_payment_intent_id: piOnPack ? o.payment_intent : null,
           studio_id: packStudio, profile_id: packOwner, class_pack_type_id: packType, expires_at: new Date(Date.now() + expiresDays * 86_400_000).toISOString() };
         packs.push(pack);
         txns.push({ id: `t${txns.length}`, status: "completed", class_pack_id: pack.id, amount_cents: o.amount_total, profile_id: packOwner, studio_id: "s1",
@@ -65,6 +65,7 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
         if (!pack) return json(500, "refund for unknown payment intent");
         const txn = txns.find((x) => x.class_pack_id === pack.id);
         txn.status = "refunded";
+        if (refundAmount) txn.refunded_amount_cents = o.amount_refunded;
         if (voidOnRefund) pack.classes_remaining = 0;
         if (statusOnRefund) pack.status = "exhausted";
       }
@@ -191,6 +192,16 @@ test("cleans up by pack id when the pack lost its payment intent", async () => {
   await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }));
   assert.equal(b.packs[0].classes_remaining, 0);
   assert.equal(b.packs[0].status, "exhausted");
+});
+
+test("fails when the pack records the wrong total", async () => {
+  const b = fakeBackend({ packTotal: 4 });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Pack not credited to the member/);
+});
+
+test("fails when a refund leaves refunded_amount_cents unset", async () => {
+  const b = fakeBackend({ refundAmount: false });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Refund not recorded/);
 });
 
 test("fails when the webhook rejects the signature", async () => {
