@@ -13,7 +13,7 @@ const ENV = {
 };
 
 /** In-memory stand-in for Supabase + Stripe, mirroring fulfill_stripe_checkout / record_stripe_refund. */
-function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false, failAfterFulfil = false, reuseSession = false } = {}) {
+function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false, failAfterFulfil = false, reuseSession = false, packOwner = "u1", expiresDays = 90 } = {}) {
   let refundFailed = false;
   let reused = false;
   const events = new Set();
@@ -22,7 +22,7 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
   const session = {
     id: "cs_test_abc123", object: "checkout.session", livemode, amount_total: 8000, currency: "usd",
     payment_status: "unpaid", status: "open",
-    metadata: { type: "class_pack", class_pack_type_id: "pack-type-1", class_count: "5", profile_id: "u1", studio_id: "s1" },
+    metadata: { type: "class_pack", class_pack_type_id: "pack-type-1", class_count: "5", validity_days: "90", profile_id: "u1", studio_id: "s1" },
   };
   const json = (status, body) => new Response(JSON.stringify(body), { status });
   const fetchImpl = async (url, init = {}) => {
@@ -30,7 +30,7 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
     const p = u.pathname;
     if (p === "/auth/v1/admin/users") return json(422, { msg: "already registered" });
     if (p === "/auth/v1/admin/generate_link") return json(200, { properties: { hashed_token: "h" } });
-    if (p === "/auth/v1/verify") return json(200, { access_token: "jwt" });
+    if (p === "/auth/v1/verify") return json(200, { access_token: "jwt", user: { id: "u1" } });
     if (p === "/functions/v1/stripe-checkout") {
       if (reuseSession && !reused) {
         reused = true;
@@ -53,9 +53,10 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
       events.add(ev.id);
       const o = ev.data.object;
       if (ev.type === "checkout.session.completed") {
-        const pack = { id: `pk${packs.length}`, status: "active", classes_remaining: 5, stripe_payment_intent_id: o.payment_intent };
+        const pack = { id: `pk${packs.length}`, status: "active", classes_remaining: 5, stripe_payment_intent_id: o.payment_intent,
+          profile_id: packOwner, expires_at: new Date(Date.now() + expiresDays * 86_400_000).toISOString() };
         packs.push(pack);
-        txns.push({ id: `t${txns.length}`, status: "completed", class_pack_id: pack.id, amount_cents: o.amount_total,
+        txns.push({ id: `t${txns.length}`, status: "completed", class_pack_id: pack.id, amount_cents: o.amount_total, profile_id: packOwner,
           stripe_checkout_session_id: o.id });
         if (failAfterFulfil) return json(500, "Handler error");
       } else if (ev.type === "charge.refunded") {
@@ -136,6 +137,23 @@ test("waits for a fresh checkout when the reused session was already fulfilled",
   assert.deepEqual(waits, [32_000]);
   const fresh = b.txns.find((x) => x.stripe_checkout_session_id === "cs_test_abc123");
   assert.equal(fresh.status, "refunded");
+});
+
+test("fails when the purchase is credited to someone else", async () => {
+  const b = fakeBackend({ packOwner: "someone-else" });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /belongs to someone-else/);
+  assert.equal(b.packs[0].status, "exhausted");
+});
+
+test("fails when the pack is created already expired", async () => {
+  const b = fakeBackend({ expiresDays: -1 });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Pack expires in -1\.0 days, sold as 90/);
+});
+
+test("fails when the pack is credited to someone else", async () => {
+  const b = fakeBackend();
+  b.packs.push = function (k) { return Array.prototype.push.call(this, { ...k, profile_id: "other" }); };
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Pack not credited to the member/);
 });
 
 test("fails when the webhook rejects the signature", async () => {

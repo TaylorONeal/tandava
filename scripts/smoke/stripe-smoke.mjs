@@ -125,7 +125,8 @@ export async function run(env = process.env, {
     body: JSON.stringify({ type: "magiclink", token_hash: tokenHash }),
   }, "verify");
   const accessToken = verified.body?.access_token;
-  expect(verified.status === 200 && accessToken, `Sign in smoke member: ${verified.status} ${JSON.stringify(verified.body)}`);
+  const userId = verified.body?.user?.id;
+  expect(verified.status === 200 && accessToken && userId, `Sign in smoke member: ${verified.status} ${JSON.stringify(verified.body)}`);
   log("1/4 signed in as the smoke member");
 
   // 2. Start Checkout exactly as the storefront does. stripe-checkout reuses a
@@ -155,6 +156,8 @@ export async function run(env = process.env, {
   const session = stripeRes.body;
   expect(session.metadata?.type === "class_pack" && session.metadata?.class_pack_type_id === packTypeId,
     `Session metadata is not this pack: ${JSON.stringify(session.metadata)}`);
+  expect(session.metadata?.profile_id === userId,
+    `Session is for ${session.metadata?.profile_id}, not the signed-in member ${userId}`);
   log(`2/4 checkout created ${sessionId} (${session.amount_total} ${session.currency})`);
 
   // 3. Deliver the signed completion, twice.
@@ -183,9 +186,15 @@ export async function run(env = process.env, {
     const txn = txns.body[0];
     expect(txn.status === "completed" && txn.class_pack_id, `Transaction not completed with a pack: ${JSON.stringify(txn)}`);
     expect(txn.amount_cents === session.amount_total, `Charged ${txn.amount_cents}, session says ${session.amount_total}`);
-    const pack = await rest(`class_packs?id=eq.${txn.class_pack_id}&select=status,classes_remaining,classes_total`);
-    expect(pack.body?.[0]?.status === "active" && pack.body[0].classes_remaining === Number(session.metadata.class_count),
-      `Pack not credited: ${JSON.stringify(pack.body)}`);
+    expect(txn.profile_id === userId, `Transaction belongs to ${txn.profile_id}, not ${userId}`);
+    const pack = await rest(`class_packs?id=eq.${txn.class_pack_id}&select=status,classes_remaining,classes_total,profile_id,expires_at`);
+    const p = pack.body?.[0];
+    expect(p?.status === "active" && p.classes_remaining === Number(session.metadata.class_count) && p.profile_id === userId,
+      `Pack not credited to the member: ${JSON.stringify(pack.body)}`);
+    // Usable: expires validity_days from now (allow a day either side).
+    const days = (Date.parse(p.expires_at) - Date.now()) / 86_400_000;
+    expect(Math.abs(days - Number(session.metadata.validity_days)) <= 1,
+      `Pack expires in ${days.toFixed(1)} days, sold as ${session.metadata.validity_days}`);
     // Redelivery must change nothing: same rows, same values.
     const snapshot = async () => ({
       txns: (await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=*`)).body,
