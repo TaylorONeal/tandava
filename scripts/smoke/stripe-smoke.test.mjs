@@ -13,7 +13,7 @@ const ENV = {
 };
 
 /** In-memory stand-in for Supabase + Stripe, mirroring fulfill_stripe_checkout / record_stripe_refund. */
-function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false, failAfterFulfil = false, reuseSession = false, packOwner = "u1", expiresDays = 90 } = {}) {
+function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false, failAfterFulfil = false, reuseSession = false, packOwner = "u1", expiresDays = 90, catalogPrice = 8000 } = {}) {
   let refundFailed = false;
   let reused = false;
   const events = new Set();
@@ -72,6 +72,7 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
     }
     if (p.startsWith("/rest/v1/")) {
       const table = p.slice("/rest/v1/".length);
+      if (table === "class_pack_types") return json(200, [{ price_cents: catalogPrice, class_count: 5, validity_days: 90 }]);
       const rows = table === "transactions" ? txns : packs;
       const filters = [...u.searchParams].filter(([k]) => k !== "select");
       return json(200, rows.filter((r) => filters.every(([k, v]) => String(r[k]) === v.replace(/^eq\./, ""))));
@@ -154,6 +155,11 @@ test("fails when the pack is credited to someone else", async () => {
   const b = fakeBackend();
   b.packs.push = function (k) { return Array.prototype.push.call(this, { ...k, profile_id: "other" }); };
   await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Pack not credited to the member/);
+});
+
+test("fails when checkout charges a price other than the catalog's", async () => {
+  const b = fakeBackend({ catalogPrice: 9000 });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Checkout terms differ from the catalog/);
 });
 
 test("fails when the webhook rejects the signature", async () => {

@@ -156,6 +156,13 @@ export async function run(env = process.env, {
   const session = stripeRes.body;
   expect(session.metadata?.type === "class_pack" && session.metadata?.class_pack_type_id === packTypeId,
     `Session metadata is not this pack: ${JSON.stringify(session.metadata)}`);
+  // The terms Checkout sold must be the catalog's, not just self-consistent.
+  const catalog = (await rest(`class_pack_types?id=eq.${packTypeId}&select=price_cents,class_count,validity_days`)).body?.[0];
+  expect(catalog, `Pack type ${packTypeId} not found`);
+  expect(session.amount_total === catalog.price_cents
+      && Number(session.metadata?.class_count) === catalog.class_count
+      && Number(session.metadata?.validity_days) === (catalog.validity_days ?? 90),
+    `Checkout terms differ from the catalog: ${JSON.stringify({ amount: session.amount_total, meta: session.metadata, catalog })}`);
   expect(session.metadata?.profile_id === userId,
     `Session is for ${session.metadata?.profile_id}, not the signed-in member ${userId}`);
   log(`2/4 checkout created ${sessionId} (${session.amount_total} ${session.currency})`);
