@@ -13,7 +13,7 @@ const ENV = {
 };
 
 /** In-memory stand-in for Supabase + Stripe, mirroring fulfill_stripe_checkout / record_stripe_refund. */
-function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false, failAfterFulfil = false, reuseSession = false, packOwner = "u1", expiresDays = 90, catalogPrice = 8000 } = {}) {
+function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, reapply = false, statusOnRefund = true, failRefundOnce = false, failAfterFulfil = false, reuseSession = false, packOwner = "u1", expiresDays = 90, catalogPrice = 8000, packType = "pack-type-1" } = {}) {
   let refundFailed = false;
   let reused = false;
   const events = new Set();
@@ -54,7 +54,7 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
       const o = ev.data.object;
       if (ev.type === "checkout.session.completed") {
         const pack = { id: `pk${packs.length}`, status: "active", classes_remaining: 5, stripe_payment_intent_id: o.payment_intent,
-          profile_id: packOwner, expires_at: new Date(Date.now() + expiresDays * 86_400_000).toISOString() };
+          profile_id: packOwner, class_pack_type_id: packType, expires_at: new Date(Date.now() + expiresDays * 86_400_000).toISOString() };
         packs.push(pack);
         txns.push({ id: `t${txns.length}`, status: "completed", class_pack_id: pack.id, amount_cents: o.amount_total, profile_id: packOwner,
           stripe_checkout_session_id: o.id });
@@ -69,6 +69,12 @@ function fakeBackend({ dedupe = true, voidOnRefund = true, livemode = false, rea
         if (statusOnRefund) pack.status = "exhausted";
       }
       return json(200, { received: true });
+    }
+    if (p.startsWith("/rest/v1/") && init.method === "PATCH") {
+      const pi = u.searchParams.get("stripe_payment_intent_id").replace(/^eq\./, "");
+      const hit = packs.filter((k) => k.stripe_payment_intent_id === pi && k.classes_remaining > 0);
+      hit.forEach((k) => Object.assign(k, JSON.parse(init.body)));
+      return json(200, hit);
     }
     if (p.startsWith("/rest/v1/")) {
       const table = p.slice("/rest/v1/".length);
@@ -160,6 +166,18 @@ test("fails when the pack is credited to someone else", async () => {
 test("fails when checkout charges a price other than the catalog's", async () => {
   const b = fakeBackend({ catalogPrice: 9000 });
   await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Checkout terms differ from the catalog/);
+});
+
+test("fails when the pack is of a different catalog type", async () => {
+  const b = fakeBackend({ packType: "other-type" });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Pack not credited to the member/);
+});
+
+test("voids the pack directly when the refund answers 200 but leaves credits", async () => {
+  const b = fakeBackend({ voidOnRefund: false, statusOnRefund: false });
+  await assert.rejects(run(ENV, { ...quiet, fetchImpl: b.fetchImpl }), /Pack not voided/);
+  assert.equal(b.packs[0].classes_remaining, 0);
+  assert.equal(b.packs[0].status, "exhausted");
 });
 
 test("fails when the webhook rejects the signature", async () => {

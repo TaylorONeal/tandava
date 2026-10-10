@@ -186,6 +186,7 @@ export async function run(env = process.env, {
   // From the first delivery on, a failure must not leave a usable pack behind:
   // even a non-200 completion may have committed, so always try the refund.
   let refundSent = false;
+  let voidedVerified = false;
   try {
     await deliver(completed);
     const txns = await rest(`transactions?stripe_checkout_session_id=eq.${sessionId}&select=id,status,class_pack_id,amount_cents,profile_id`);
@@ -194,9 +195,10 @@ export async function run(env = process.env, {
     expect(txn.status === "completed" && txn.class_pack_id, `Transaction not completed with a pack: ${JSON.stringify(txn)}`);
     expect(txn.amount_cents === session.amount_total, `Charged ${txn.amount_cents}, session says ${session.amount_total}`);
     expect(txn.profile_id === userId, `Transaction belongs to ${txn.profile_id}, not ${userId}`);
-    const pack = await rest(`class_packs?id=eq.${txn.class_pack_id}&select=status,classes_remaining,classes_total,profile_id,expires_at`);
+    const pack = await rest(`class_packs?id=eq.${txn.class_pack_id}&select=status,classes_remaining,classes_total,profile_id,expires_at,class_pack_type_id`);
     const p = pack.body?.[0];
-    expect(p?.status === "active" && p.classes_remaining === Number(session.metadata.class_count) && p.profile_id === userId,
+    expect(p?.status === "active" && p.classes_remaining === Number(session.metadata.class_count) && p.profile_id === userId
+        && p.class_pack_type_id === packTypeId,
       `Pack not credited to the member: ${JSON.stringify(pack.body)}`);
     // Usable: expires validity_days from now (allow a day either side).
     const days = (Date.parse(p.expires_at) - Date.now()) / 86_400_000;
@@ -224,12 +226,24 @@ export async function run(env = process.env, {
     expect(refunded.body?.[0]?.status === "refunded", `Refund not recorded: ${JSON.stringify(refunded.body)}`);
     expect(voided.body?.[0]?.status === "exhausted" && voided.body[0].classes_remaining === 0,
       `Pack not voided: ${JSON.stringify(voided.body)}`);
+    voidedVerified = true;
     log("4/4 refund recorded and pack voided");
     return { sessionId, transactionId: txn.id };
   } finally {
-    if (!refundSent) {
-      try { await deliver(refundEvent()); log("cleanup: refunded the smoke purchase after a failure"); }
-      catch (err) { log(`cleanup refund failed, check ${sessionId} by hand: ${err.message}`); }
+    if (!voidedVerified) {
+      if (!refundSent) {
+        try { await deliver(refundEvent()); log("cleanup: refunded the smoke purchase after a failure"); }
+        catch (err) { log(`cleanup refund failed: ${err.message}`); }
+      }
+      // Whatever the webhook did, no usable smoke pack may survive the run.
+      try {
+        const left = await call(fetchImpl, `${supabaseUrl}/rest/v1/class_packs?stripe_payment_intent_id=eq.${pi}&classes_remaining=gt.0`, {
+          method: "PATCH", headers: { ...admin, Prefer: "return=representation" },
+          body: JSON.stringify({ classes_remaining: 0, status: "exhausted" }),
+        }, "cleanup");
+        if (left.status >= 300) throw new Error(`${left.status} ${JSON.stringify(left.body)}`);
+        if (left.body?.length) log(`cleanup: voided ${left.body.length} smoke pack(s) directly`);
+      } catch (err) { log(`cleanup failed, void packs for ${pi} (session ${sessionId}) by hand: ${err.message}`); }
     }
   }
 }
