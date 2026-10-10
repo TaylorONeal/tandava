@@ -169,7 +169,7 @@ export const PRIVACY: LegalDoc = {
     {
       heading: "Keeping and deleting data",
       body: [
-        "We keep your data while your account is open. If you booked as a guest without creating an account, we keep your booking details so the studio has its records, until you ask us to delete them. Ask us to delete your account or guest details and we will delete or anonymize your personal information within 30 days, except records we must keep by law, such as payment and tax records.",
+        "We keep your data while your account is open. If you booked as a guest without creating an account, we keep your booking details so the studio has its records, until you ask us to delete them. Every booking attempt without an account, including ones that did not go through, is logged with the email used, browser details, a hashed IP address and the choices made on the form, for abuse prevention and the studio's records; these logs are kept until you ask us to delete them. Ask us to delete your account or guest details and we will delete or anonymize your personal information within 30 days, except records we must keep by law, such as payment and tax records.",
         `To get a copy of your data, correct it, or delete it, email ${LEGAL_CONTACT} from the email on your account. You can update most details yourself on your Account page.`,
       ],
     },
