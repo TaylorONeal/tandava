@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  classCancelledEmail, describeCancellation, describeFollowup, refundSentEmail, summarizeCancellation,
+  classCancelledEmail, describeCancellation, hasExternalRefund, describeFollowup, refundSentEmail, summarizeCancellation,
   type CancelFollowup, type CancelPerson,
 } from "./classCancel";
 
@@ -191,5 +191,18 @@ describe("refund updates", () => {
     expect(e.text).toContain("Your €22.00 refund for Flow <3");
     expect(e.html).toContain("Flow &lt;3");
     expect(e.html).not.toContain("Flow <3");
+  });
+});
+
+describe("hasExternalRefund", () => {
+  it("is true only for a live refund Tandava did not make", () => {
+    expect(hasExternalRefund([{ status: "succeeded", metadata: { refund_request_id: "r1" } }])).toBe(false);
+    expect(hasExternalRefund([{ status: "failed", metadata: {} }])).toBe(false);
+    expect(hasExternalRefund([{ status: "canceled", metadata: null }])).toBe(false);
+    expect(hasExternalRefund([
+      { status: "failed", metadata: { refund_request_id: "r1" } },
+      { status: "succeeded", metadata: {} },
+    ])).toBe(true);
+    expect(hasExternalRefund([{ status: "pending" }])).toBe(true);
   });
 });

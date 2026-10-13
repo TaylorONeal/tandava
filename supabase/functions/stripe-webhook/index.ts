@@ -46,6 +46,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import Stripe from "https://esm.sh/stripe@14?target=deno";
+import { hasExternalRefund } from "../../../src/lib/classCancel.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
   apiVersion: "2024-06-20",
@@ -143,12 +144,19 @@ async function handle(event: Stripe.Event) {
         p_amount: charge.amount,
         p_amount_refunded: charge.amount_refunded,
       });
-      // A class-cancel refund made by hand in Stripe settles its queued request (LP-1d).
-      await rpc("settle_class_cancel_refunds", {
-        p_payment_intent: charge.payment_intent as string,
-        p_amount: charge.amount,
-        p_amount_refunded: charge.amount_refunded,
-      });
+      // A full refund made by hand in Stripe settles any class-cancel refund
+      // queued for this payment (LP-1d). Only when a refund we did not make
+      // exists: our own refund's attempt must stay open to a later failure.
+      if (charge.amount_refunded >= charge.amount) {
+        const refunds = await stripe.refunds.list({ charge: charge.id, limit: 100 });
+        if (hasExternalRefund(refunds.data)) {
+          await rpc("settle_class_cancel_refunds", {
+            p_payment_intent: charge.payment_intent as string,
+            p_amount: charge.amount,
+            p_amount_refunded: charge.amount_refunded,
+          });
+        }
+      }
       return recorded;
     }
 
@@ -163,10 +171,16 @@ async function handle(event: Stripe.Event) {
       const requestId = refund.metadata?.refund_request_id;
       if (!requestId || (refund.status !== "failed" && refund.status !== "canceled")) return { status: "ignored" };
       const attempt = Number.parseInt(refund.metadata?.refund_attempt ?? "", 10);
+      // The charge as Stripe reports it now, so the payment stops counting the failed refund.
+      const charge = refund.charge
+        ? await stripe.charges.retrieve(typeof refund.charge === "string" ? refund.charge : refund.charge.id)
+        : null;
       const reopened = await rpc("reopen_failed_refund", {
         p_refund_request_id: requestId,
         p_stripe_refund_id: refund.id,
         p_refund_attempt: Number.isFinite(attempt) ? attempt : null,
+        p_charge_amount: charge?.amount ?? null,
+        p_amount_refunded: charge?.amount_refunded ?? null,
         p_error: `Refund ${refund.status}${refund.failure_reason ? `: ${refund.failure_reason}` : ""}`,
       });
       return { status: reopened ? "reopened" : "no matching sent refund" };

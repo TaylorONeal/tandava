@@ -641,7 +641,8 @@ $$;
 -- charge.refund.updated with status failed or canceled (stripe-webhook).
 -- The next attempt uses a fresh idempotency key; the old refund is dead.
 CREATE OR REPLACE FUNCTION reopen_failed_refund(
-  p_refund_request_id UUID, p_stripe_refund_id TEXT, p_refund_attempt INTEGER, p_error TEXT)
+  p_refund_request_id UUID, p_stripe_refund_id TEXT, p_refund_attempt INTEGER, p_error TEXT,
+  p_charge_amount INTEGER DEFAULT NULL, p_amount_refunded INTEGER DEFAULT NULL)
 RETURNS BOOLEAN
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -666,11 +667,22 @@ BEGIN
   -- goes through (the refund-sent email), and the owner sees it as owed.
   UPDATE class_cancel_notices SET refund_told = 'failed', updated_at = NOW()
    WHERE transaction_id = v_txn AND refund_told = 'sent';
+  -- The money is back with the studio: the payment's refund accounting
+  -- follows the charge as Stripe now reports it (charge.amount_refunded, the
+  -- same cumulative figure record_stripe_refund stores).
+  IF p_charge_amount IS NOT NULL AND p_amount_refunded IS NOT NULL THEN
+    UPDATE transactions SET
+      refunded_amount_cents = p_amount_refunded,
+      status = CASE WHEN p_amount_refunded <= 0 THEN 'completed'::transaction_status
+                    WHEN p_amount_refunded < p_charge_amount THEN 'partially_refunded'::transaction_status
+                    ELSE 'refunded'::transaction_status END
+     WHERE id = v_txn AND status IN ('completed', 'partially_refunded', 'refunded');
+  END IF;
   RETURN TRUE;
 END;
 $$;
-REVOKE ALL ON FUNCTION reopen_failed_refund(UUID, TEXT, INTEGER, TEXT) FROM PUBLIC, anon, authenticated;
-GRANT EXECUTE ON FUNCTION reopen_failed_refund(UUID, TEXT, INTEGER, TEXT) TO service_role;
+REVOKE ALL ON FUNCTION reopen_failed_refund(UUID, TEXT, INTEGER, TEXT, INTEGER, INTEGER) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION reopen_failed_refund(UUID, TEXT, INTEGER, TEXT, INTEGER, INTEGER) TO service_role;
 
 -- ---------------------------------------------------------------------------
 -- 9. The owner handled the rest themselves
@@ -718,9 +730,11 @@ GRANT EXECUTE ON FUNCTION class_cancel_mark_handled(UUID) TO authenticated, serv
 -- ---------------------------------------------------------------------------
 -- 10. Refunded in the Stripe dashboard
 -- ---------------------------------------------------------------------------
--- charge.refunded (stripe-webhook) for a fully refunded charge settles any
--- class-cancel refund still queued for that payment, so a refund the owner
--- made by hand is not retried (Stripe would refuse it) and stops showing as owed.
+-- charge.refunded (stripe-webhook) for a fully refunded charge that has a
+-- refund we did not make (no refund_request_id) settles any class-cancel
+-- refund queued for that payment, so a refund the owner made by hand is not
+-- retried (Stripe would refuse it) and stops showing as owed. Our own refund's
+-- charge.refunded never settles: its attempt must stay open to a later failure.
 CREATE OR REPLACE FUNCTION settle_class_cancel_refunds(p_payment_intent TEXT, p_amount INTEGER, p_amount_refunded INTEGER)
 RETURNS INTEGER
 LANGUAGE plpgsql

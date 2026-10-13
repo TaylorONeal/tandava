@@ -256,3 +256,13 @@ ${note ? `<p style="border-left:3px solid #4fd1c5;padding-left:12px;">A note fro
 <p><a href="${e(scheduleUrl)}">Find another class</a></p>`;
   return { subject, html, text };
 }
+
+/**
+ * Whether a charge has a live refund Tandava did not make (one made by hand in
+ * the Stripe dashboard). Only then may a full refund settle the class-cancel
+ * queue; our own refunds carry refund_request_id and must stay open to a
+ * later failure.
+ */
+export function hasExternalRefund(refunds: { status?: string | null; metadata?: Record<string, string> | null }[]): boolean {
+  return refunds.some((r) => !r.metadata?.refund_request_id && r.status !== "failed" && r.status !== "canceled");
+}
