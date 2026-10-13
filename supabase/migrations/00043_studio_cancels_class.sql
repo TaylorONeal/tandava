@@ -733,3 +733,30 @@ END;
 $$;
 REVOKE ALL ON FUNCTION settle_class_cancel_refunds(TEXT, INTEGER, INTEGER) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION settle_class_cancel_refunds(TEXT, INTEGER, INTEGER) TO service_role;
+
+-- ---------------------------------------------------------------------------
+-- 11. After a batch of sends: no notice may claim a refund that is not sent
+-- ---------------------------------------------------------------------------
+-- A refund can fail (webhook reopen) while that student's email is in flight;
+-- the reopen cannot see the notice's final refund_told yet. The edge function
+-- runs this after its sends, so either this or the reopen catches it.
+CREATE OR REPLACE FUNCTION class_cancel_reconcile_notices(p_occurrence_id UUID)
+RETURNS INTEGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_count INTEGER;
+BEGIN
+  UPDATE class_cancel_notices n
+     SET refund_told = 'failed', updated_at = NOW()
+    FROM refund_requests rr
+   WHERE rr.transaction_id = n.transaction_id AND rr.reason = 'class_cancelled'
+     AND n.occurrence_id = p_occurrence_id AND n.refund_told = 'sent' AND rr.status <> 'sent';
+  GET DIAGNOSTICS v_count = ROW_COUNT;
+  RETURN v_count;
+END;
+$$;
+REVOKE ALL ON FUNCTION class_cancel_reconcile_notices(UUID) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION class_cancel_reconcile_notices(UUID) TO service_role;

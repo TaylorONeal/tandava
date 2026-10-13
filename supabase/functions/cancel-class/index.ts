@@ -238,6 +238,9 @@ async function sendOutstandingNotices(db: Db, occurrenceId: string): Promise<voi
 
   for (const row of (firsts ?? []) as NoticeRow[]) if (await claimRow(row, false)) await send(row, false);
   for (const row of (updates ?? []) as NoticeRow[]) if (await claimRow(row, true)) await send(row, true);
+  // A refund that failed while its email was in flight must not stay announced as sent.
+  const { error: reconcileError } = await db.rpc("class_cancel_reconcile_notices", { p_occurrence_id: occurrenceId });
+  if (reconcileError) console.error("[cancel-class] could not reconcile notices:", reconcileError.message);
 }
 
 function errorStatus(code: string | undefined): number {

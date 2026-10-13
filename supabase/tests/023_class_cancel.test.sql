@@ -273,6 +273,14 @@ BEGIN
     ok AND n = 1 AND (SELECT status FROM refund_requests WHERE transaction_id = v_txn) = 'sent',
     'CC-19', 'dashboard refund settles the queue only when the charge is fully refunded');
 
+  -- CC-20: a notice that announced a refund which then failed is reopened by the post-send reconcile.
+  UPDATE refund_requests SET status = 'failed' WHERE transaction_id = v_txn;
+  UPDATE class_cancel_notices SET refund_told = 'sent' WHERE transaction_id = v_txn;
+  n := class_cancel_reconcile_notices(v_occ2);
+  PERFORM pg_temp.ok(n = 1 AND (SELECT refund_told FROM class_cancel_notices WHERE transaction_id = v_txn) = 'failed'
+                     AND class_cancel_reconcile_notices(v_occ2) = 0,
+                     'CC-20', 'reconcile reopens a notice whose announced refund failed, once');
+
   -- CC-10: anonymous callers cannot reach either function.
   PERFORM pg_temp.as_anon();
   BEGIN PERFORM preview_class_cancellation(v_occ2); ok := false;
