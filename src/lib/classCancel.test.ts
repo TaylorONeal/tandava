@@ -21,7 +21,7 @@ describe("summarizeCancellation", () => {
     ]);
     expect(s).toEqual({
       booked: 5, waitlisted: 1, packReturns: 2, membershipReturns: 1,
-      dropInRefunds: 1, refundCents: 2200, free: 1, currency: "USD", reachable: 5,
+      dropInRefunds: 1, refundCents: 2200, free: 1, currency: "USD", refundsByCurrency: { USD: 2200 }, reachable: 5,
     });
   });
 });
@@ -86,6 +86,25 @@ describe("classCancelledEmail", () => {
     expect(m.text.startsWith("Hi,")).toBe(true);
     expect(m.text).not.toContain("A note from");
     expect(m.text).toContain("nothing was charged");
+  });
+});
+
+describe("currencies", () => {
+  it("never adds refunds in different currencies together", () => {
+    const lines = describeCancellation(summarizeCancellation([
+      person({ source: "drop_in", refund_cents: 2000, currency: "eur" }),
+      person({ source: "drop_in", refund_cents: 2000, currency: "gbp" }),
+    ]));
+    expect(lines).toContain("2 drop-ins refunded in full: €20.00 + £20.00.");
+  });
+
+  it("reports sent refunds per currency", () => {
+    const r = describeFollowup({
+      occurrence_id: "o", starts_at: "x", class_name: "Flow", cancelled: true, people: [],
+      refunds_sent: 2, refunds_sent_cents: 4000, refunds_sent_by_currency: { GBP: 2000, EUR: 2000 }, refunds_outstanding: 0,
+      emails_sent: 0, emails_outstanding: 0, emails_failed: 0, emails_uncertain: 0, no_email_open: 0, refund_updates_owed: 0,
+    });
+    expect(r.done).toContain("€20.00 + £20.00 refunded to 2 cards.");
   });
 });
 

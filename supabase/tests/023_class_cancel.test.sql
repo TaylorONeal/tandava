@@ -146,6 +146,7 @@ BEGIN
           WHERE x ->> 'source' = 'drop_in' AND x ->> 'refund_status' = 'failed') = 1
     AND (res ->> 'refunds_outstanding')::int = 0 AND (res ->> 'refunds_sent')::int = 1
     AND (res ->> 'refunds_sent_cents')::int = 8000
+    AND (res -> 'refunds_sent_by_currency' ->> 'USD')::int = 8000
     AND (res ->> 'emails_sent')::int = m AND (res ->> 'emails_outstanding')::int = 0
     AND (SELECT count(*) FROM jsonb_array_elements(res -> 'people') x
           WHERE x ->> 'source' = 'drop_in' AND x ->> 'refund_status' = 'sent') = 1,
@@ -272,6 +273,10 @@ BEGIN
   n := settle_class_cancel_refunds('pi_cc_late', 2200, 2200);
   -- A delayed failure for the refund made before the dashboard refund does not reopen it.
   ok := ok AND NOT reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_old', m, 'late failure');
+  -- Already sent when the dashboard refund lands: the attempt is still retired.
+  m := (SELECT refund_attempt FROM refund_requests WHERE transaction_id = v_txn);
+  PERFORM settle_class_cancel_refunds('pi_cc_late', 2200, 2200);
+  ok := ok AND NOT reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_old2', m, 'late failure');
   PERFORM pg_temp.ok(
     ok AND n = 1 AND (SELECT status FROM refund_requests WHERE transaction_id = v_txn) = 'sent',
     'CC-19', 'dashboard refund settles the queue only when the charge is fully refunded');

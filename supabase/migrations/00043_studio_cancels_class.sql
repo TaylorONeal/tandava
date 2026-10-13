@@ -406,6 +406,13 @@ BEGIN
       WHERE n.occurrence_id = p_occurrence_id),
     'refunds_sent', (SELECT count(*) FROM refund_requests WHERE occurrence_id = p_occurrence_id AND status = 'sent'),
     'refunds_sent_cents', (SELECT COALESCE(sum(amount_cents), 0) FROM refund_requests WHERE occurrence_id = p_occurrence_id AND status = 'sent'),
+    -- Per currency: a studio can change its currency between two purchases.
+    'refunds_sent_by_currency', (
+      SELECT COALESCE(jsonb_object_agg(cur, cents), '{}'::jsonb) FROM (
+        SELECT upper(t.currency) AS cur, sum(rr.amount_cents) AS cents
+          FROM refund_requests rr JOIN transactions t ON t.id = rr.transaction_id
+         WHERE rr.occurrence_id = p_occurrence_id AND rr.status = 'sent'
+         GROUP BY 1) x),
     'refunds_outstanding', (SELECT count(*) FROM refund_requests WHERE occurrence_id = p_occurrence_id AND status <> 'sent'),
     'emails_sent', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status = 'sent'),
     'emails_outstanding', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status IN ('pending', 'sending', 'failed', 'unknown')),
@@ -730,7 +737,8 @@ BEGIN
      SET status = 'sent', last_error = 'Refunded in Stripe', refund_attempt = rr.refund_attempt + 1, updated_at = NOW()
     FROM transactions t
    WHERE rr.transaction_id = t.id AND t.stripe_payment_intent_id = p_payment_intent
-     AND rr.status <> 'sent';
+     AND rr.reason = 'class_cancelled';
+   -- Rows already marked sent are included: their attempt still has to be retired.
   GET DIAGNOSTICS v_count = ROW_COUNT;
   RETURN v_count;
 END;

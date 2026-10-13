@@ -41,6 +41,8 @@ export interface CancelFollowup {
   people: CancelPerson[];
   refunds_sent: number;
   refunds_sent_cents: number;
+  /** Sent refunds per ISO currency (refunds_sent_cents adds them up; do not show that). */
+  refunds_sent_by_currency?: Record<string, number>;
   refunds_outstanding: number;
   emails_sent: number;
   emails_outstanding: number;
@@ -72,8 +74,10 @@ export interface CancelSummary {
   dropInRefunds: number;
   refundCents: number;
   free: number;
-  /** Currency of the refunds (a studio charges in one currency). */
+  /** Currency of the last refund seen; use refundsByCurrency for totals. */
   currency: string;
+  /** Refund totals per ISO currency: a studio can change currency between purchases. */
+  refundsByCurrency: Record<string, number>;
   /** People with an email address we can tell. */
   reachable: number;
 }
@@ -81,7 +85,7 @@ export interface CancelSummary {
 export function summarizeCancellation(people: CancelPerson[]): CancelSummary {
   const s: CancelSummary = {
     booked: 0, waitlisted: 0, packReturns: 0, membershipReturns: 0,
-    dropInRefunds: 0, refundCents: 0, free: 0, currency: "USD", reachable: 0,
+    dropInRefunds: 0, refundCents: 0, free: 0, currency: "USD", refundsByCurrency: {}, reachable: 0,
   };
   for (const p of people) {
     if (p.email) s.reachable += 1;
@@ -93,6 +97,8 @@ export function summarizeCancellation(people: CancelPerson[]): CancelSummary {
       s.dropInRefunds += 1;
       s.refundCents += Math.max(0, p.refund_cents);
       if (p.currency) s.currency = p.currency.toUpperCase();
+      const code = (p.currency || "USD").toUpperCase();
+      s.refundsByCurrency[code] = (s.refundsByCurrency[code] ?? 0) + Math.max(0, p.refund_cents);
     }
     else s.free += 1;
   }
@@ -110,6 +116,14 @@ export function formatMoney(cents: number, currency?: string | null): string {
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
+/** "€20.00 + £20.00": never adds amounts in different currencies together. */
+export function formatTotals(byCurrency: Record<string, number>): string {
+  const parts = Object.entries(byCurrency).filter(([, cents]) => cents > 0)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([code, cents]) => formatMoney(cents, code));
+  return parts.length ? parts.join(" + ") : formatMoney(0);
+}
+
 /**
  * One line per consequence, in the order an owner cares about: who loses a
  * class, what comes back, what money goes out. Empty classes say so.
@@ -120,7 +134,7 @@ export function describeCancellation(s: CancelSummary): string[] {
   if (s.booked) lines.push(`${plural(s.booked, "person is", "people are")} booked.`);
   if (s.packReturns) lines.push(`${plural(s.packReturns, "class goes", "classes go")} back on class packs.`);
   if (s.membershipReturns) lines.push(`${plural(s.membershipReturns, "membership class goes", "membership classes go")} back for this period.`);
-  if (s.dropInRefunds) lines.push(`${plural(s.dropInRefunds, "drop-in")} refunded in full: ${formatMoney(s.refundCents, s.currency)}.`);
+  if (s.dropInRefunds) lines.push(`${plural(s.dropInRefunds, "drop-in")} refunded in full: ${formatTotals(s.refundsByCurrency)}.`);
   if (s.free) lines.push(`${plural(s.free, "free booking")} cancelled.`);
   if (s.waitlisted) lines.push(`${plural(s.waitlisted, "person", "people")} on the waitlist removed.`);
   const unreachable = s.booked + s.waitlisted - s.reachable;
@@ -137,7 +151,12 @@ export function describeFollowup(f: CancelFollowup, emailUnavailable = false): F
   const problems: string[] = [];
   const returned = s.packReturns + s.membershipReturns;
   if (returned) done.push(`${plural(returned, "class", "classes")} returned to packs and memberships.`);
-  if (f.refunds_sent) done.push(`${formatMoney(f.refunds_sent_cents, s.currency)} refunded to ${plural(f.refunds_sent, "card")}.`);
+  if (f.refunds_sent) {
+    const amount = f.refunds_sent_by_currency && Object.keys(f.refunds_sent_by_currency).length
+      ? formatTotals(f.refunds_sent_by_currency)
+      : formatMoney(f.refunds_sent_cents, s.currency);
+    done.push(`${amount} refunded to ${plural(f.refunds_sent, "card")}.`);
+  }
   if (f.emails_sent) done.push(`${plural(f.emails_sent, "email")} sent.`);
   if (s.booked + s.waitlisted === 0) done.push("Nobody was booked.");
 
