@@ -642,6 +642,8 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+  v_txn UUID;
 BEGIN
   -- Matched by the attempt the refund was made under (its metadata), so a
   -- failure that arrives before the edge function recorded "sent" still
@@ -652,8 +654,14 @@ BEGIN
    WHERE id = p_refund_request_id
      AND CASE WHEN p_refund_attempt IS NULL
               THEN stripe_refund_id = p_stripe_refund_id AND status = 'sent'
-              ELSE refund_attempt = p_refund_attempt END;
-  RETURN FOUND;
+              ELSE refund_attempt = p_refund_attempt END
+  RETURNING transaction_id INTO v_txn;
+  IF NOT FOUND THEN RETURN FALSE; END IF;
+  -- Whoever was told the refund is on its way is owed the update once a retry
+  -- goes through (the refund-sent email), and the owner sees it as owed.
+  UPDATE class_cancel_notices SET refund_told = 'failed', updated_at = NOW()
+   WHERE transaction_id = v_txn AND refund_told = 'sent';
+  RETURN TRUE;
 END;
 $$;
 REVOKE ALL ON FUNCTION reopen_failed_refund(UUID, TEXT, INTEGER, TEXT) FROM PUBLIC, anon, authenticated;
