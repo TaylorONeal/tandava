@@ -19,7 +19,7 @@ const PEOPLE = [
   { booking_id: "b3", profile_id: "p3", name: "Cy Moss", first_name: "Cy", email: null, status: "waitlisted", source: "waitlist", refund_cents: 0 },
 ];
 
-type Mode = "ok" | "refundFails" | "responseLost" | "overdue" | "emailFails";
+type Mode = "ok" | "refundFails" | "responseLost" | "overdue" | "emailFails" | "emailOff";
 const PAST_ID = "66666666-6666-6666-6666-666666666666";
 const pastStart = new Date(Date.now() - 86_400_000).toISOString();
 
@@ -57,6 +57,11 @@ async function setUp(page: Page, calls: { fn: string; body: Record<string, unkno
     }
     if (url.includes("/functions/v1/cancel-class")) {
       const body = req.postDataJSON();
+      if (body.statusOnly) {
+        calls.push({ fn: "status", body });
+        const known = cancelled || body.occurrenceId === PAST_ID;
+        return json({ cancelled: false, followup: known ? { ...current, occurrence_id: body.occurrenceId } : { ...current, cancelled: false }, emailUnavailable: mode === "emailOff" });
+      }
       calls.push({ fn: "cancel-class", body });
       if (body.resume) {
         if (body.occurrenceId === PAST_ID) pastOwed = false;
@@ -66,7 +71,8 @@ async function setUp(page: Page, calls: { fn: string; body: Record<string, unkno
       cancelled = true;
       if (body.message === "slow") await new Promise((r) => setTimeout(r, 1500));
       if (mode === "responseLost") return json({ error: "upstream timed out" }, 504);
-      current = state({ refundSent: mode !== "refundFails", emailsSent: true });
+      current = state({ refundSent: mode !== "refundFails", emailsSent: mode !== "emailOff" });
+      if (mode === "emailOff") return json({ cancelled: true, followup: current, emailUnavailable: true });
       if (mode === "emailFails") {
         current = {
           ...current, emails_sent: 1, emails_outstanding: 1, emails_failed: 1,
@@ -241,4 +247,18 @@ test("the dialog stays put while a cancel is in flight", async ({ page }) => {
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Class cancelled" })).toBeVisible();
+});
+
+test("reopening a cancellation says when email is not set up, before any retry", async ({ page }) => {
+  const calls: { fn: string; body: Record<string, unknown> }[] = [];
+  await setUp(page, calls, "emailOff");
+  await page.goto("/manage/schedule");
+  await page.getByTestId("upcoming-class").first().getByRole("button", { name: "Cancel" }).click();
+  await page.getByRole("button", { name: "Cancel and tell 2 people" }).click();
+  await expect(page.getByTestId("cancel-problems")).toContainText("Email is not set up");
+  await page.getByRole("button", { name: "Done" }).click();
+  await page.getByTestId("upcoming-class").first().getByRole("button", { name: "Finish follow-up" }).click();
+  await expect(page.getByTestId("cancel-problems")).toContainText("Email is not set up for this studio yet, so 2 people were not emailed.");
+  await expect(page.getByRole("button", { name: "Try again" })).toHaveCount(0);
+  expect(calls.filter((c) => c.fn === "cancel-class")).toHaveLength(1);
 });

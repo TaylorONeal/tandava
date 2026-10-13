@@ -23,6 +23,7 @@
  *
  * Request:  POST { occurrenceId, reason?, message? }   cancel, then follow up
  *           POST { occurrenceId, resume: true }       follow up an already-cancelled class
+ *           POST { occurrenceId, statusOnly: true }   read the follow-up state and email readiness
  * Response: { cancelled, followup, emailUnavailable }  followup = class_cancel_followup()
  *
  * verify_jwt: true. Secrets: STRIPE_SECRET_KEY, email provider (see ../email).
@@ -261,10 +262,18 @@ serve(async (req) => {
   const { data: { user } } = await asCaller.auth.getUser();
   if (!user) return json({ error: "Not authenticated" }, 401);
 
-  let body: { occurrenceId?: string; reason?: string; message?: string; resume?: boolean };
+  let body: { occurrenceId?: string; reason?: string; message?: string; resume?: boolean; statusOnly?: boolean };
   try { body = await req.json(); } catch { return json({ error: "Invalid JSON body" }, 400); }
   const occurrenceId = String(body.occurrenceId ?? "");
   if (!UUID.test(occurrenceId)) return json({ error: "Missing occurrenceId" }, 400);
+
+  // Read-only: the follow-up state plus whether email can go out, so the
+  // owner's screen gives the right guidance before anyone presses a button.
+  if (body.statusOnly) {
+    const { data, error } = await asCaller.rpc("class_cancel_followup", { p_occurrence_id: occurrenceId });
+    if (error) return json({ error: error.message }, errorStatus(error.code));
+    return json({ cancelled: false, followup: data, emailUnavailable: !emailProviderReady().ready });
+  }
 
   let cancelled = false;
   if (body.resume) {

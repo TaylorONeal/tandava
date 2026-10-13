@@ -160,7 +160,8 @@ function CancelClassDialog({
   const [working, setWorking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [followup, setFollowup] = useState<CancelFollowup | null>(null);
-  const [emailUnavailable, setEmailUnavailable] = useState(false);
+  // null until a call has said; then whether email can go out.
+  const [emailUnavailableSaid, setEmailUnavailable] = useState<boolean | null>(null);
 
   const alreadyCancelled = Boolean(target?.is_cancelled);
 
@@ -180,14 +181,11 @@ function CancelClassDialog({
     queryKey: ["class-cancel-followup", target?.id],
     enabled: Boolean(target) && alreadyCancelled,
     staleTime: 0,
-    queryFn: async (): Promise<CancelFollowup> => {
-      const { data, error: e } = await backendData.getClassCancelFollowup(target!.id);
-      if (e || !data) throw new Error(e?.message ?? "Could not load this cancellation");
-      return data;
-    },
+    queryFn: () => loadStatus(target!.id),
   });
 
-  const state = followup ?? followupQuery.data ?? null;
+  const state = followup ?? followupQuery.data?.followup ?? null;
+  const emailUnavailable = emailUnavailableSaid ?? followupQuery.data?.emailUnavailable ?? false;
 
   const people = previewQuery.data?.people ?? [];
   const summary = summarizeCancellation(people);
@@ -198,19 +196,33 @@ function CancelClassDialog({
   // Bumped on close, so a request still in flight cannot write into the next class's dialog.
   const session = useRef(0);
 
+  /**
+   * The follow-up state and whether email can go out (statusOnly). If the
+   * function cannot be reached, the database state alone, with email
+   * readiness unknown (treated as available; "Try again" then reports it).
+   */
+  async function loadStatus(occurrenceId: string): Promise<{ followup: CancelFollowup; emailUnavailable?: boolean }> {
+    const { data } = await backendApi.invoke<CancelResponse>("cancel-class", { occurrenceId, statusOnly: true });
+    if (data?.followup && !data.error) return { followup: data.followup, emailUnavailable: Boolean(data.emailUnavailable) };
+    const { data: db, error: e } = await backendData.getClassCancelFollowup(occurrenceId);
+    if (e || !db) throw new Error(e?.message ?? "Could not load this cancellation");
+    return { followup: db };
+  }
+
   const close = () => {
     if (working) return; // the request finishes first; the buttons are disabled meanwhile
     session.current += 1;
-    setNote(""); setError(null); setFollowup(null); setEmailUnavailable(false);
+    setNote(""); setError(null); setFollowup(null); setEmailUnavailable(null);
     onClose();
   };
 
   /** After an unclear response, read what actually happened instead of guessing. */
   const recover = async (fallback: string, mine: number) => {
-    const { data } = await backendData.getClassCancelFollowup(target!.id);
+    const status = await loadStatus(target!.id).catch(() => null);
     if (mine !== session.current) return;
-    if (data?.cancelled) {
-      setFollowup(data);
+    if (status?.followup.cancelled) {
+      setFollowup(status.followup);
+      if (status.emailUnavailable !== undefined) setEmailUnavailable(status.emailUnavailable);
       setError("The class is cancelled, but the follow-up may not have finished. Try again to finish it.");
       onDone();
     } else {
