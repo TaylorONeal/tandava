@@ -234,9 +234,10 @@ async function sendOutstandingNotices(db: Db, occurrenceId: string): Promise<voi
         ? { status: "unknown", last_error: detail?.slice(0, 500) }
         // Refused: a first email is retried; a refund update keeps its old status and stays owed.
         : { status: isUpdate ? row.status : "failed", last_error: detail?.slice(0, 500) };
+    // Only while still ours: an owner who marked it handled meanwhile wins.
     const { error: writeError } = await db.from("class_cancel_notices")
       .update({ ...patch, attempts: (row.attempts ?? 0) + 1, updated_at: new Date().toISOString() })
-      .eq("id", row.id);
+      .eq("id", row.id).eq("status", "sending");
     if (writeError) console.error(`[cancel-class] notice ${row.id} outcome not recorded:`, writeError.message);
   };
 
