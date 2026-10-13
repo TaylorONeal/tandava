@@ -511,6 +511,11 @@ const supabaseData: DataProvider = {
     return { data: (data as CancelFollowup | null) ?? null, error: error ? { message: error.message } : null };
   },
 
+  async markClassCancelHandled(occurrenceId): Promise<MutationResult> {
+    const { error } = await getClient().rpc("class_cancel_mark_handled" as never, { p_occurrence_id: occurrenceId } as never);
+    return { error: error ? { message: error.message } : null };
+  },
+
   async getStudioStaffNames(studioId): Promise<DataResult<StaffName[]>> {
     const { data, error } = await getClient().rpc("get_studio_staff_names" as never, { p_studio_id: studioId } as never);
     return { data: (data as StaffName[] | null) ?? [], error: error ? { message: error.message } : null };

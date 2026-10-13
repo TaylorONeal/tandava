@@ -227,6 +227,32 @@ BEGIN
   EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(ok, 'CC-17', 'staff cannot reopen refunds');
 
+  -- CC-18: the owner closes notices they handled themselves; others cannot.
+  UPDATE class_cancel_notices SET status = 'failed' WHERE occurrence_id = v_occ2 AND booking_id IS NOT NULL;
+  UPDATE class_cancel_notices SET status = 'sent', refund_told = 'failed' WHERE occurrence_id = v_occ2 AND booking_id IS NULL;
+  ok := true;
+  PERFORM pg_temp.as_user(pg_temp.id('staff_b'));
+  BEGIN PERFORM class_cancel_mark_handled(v_occ2); ok := false;
+  EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  n := class_cancel_mark_handled(v_occ2);
+  res := class_cancel_followup(v_occ2);
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(
+    ok AND n = 3 AND (res ->> 'emails_outstanding')::int = 0 AND (res ->> 'refund_updates_owed')::int = 0
+    AND NOT EXISTS (SELECT 1 FROM class_cancel_notices WHERE occurrence_id = v_occ2 AND (status = 'failed' OR refund_told = 'failed')),
+    'CC-18', 'owner marks the remaining notices handled; other studios cannot');
+
+  -- CC-19: a full refund made in the Stripe dashboard settles the queued request; a partial one does not.
+  SELECT id INTO v_txn FROM transactions WHERE stripe_payment_intent_id = 'pi_cc_late';
+  n := settle_class_cancel_refunds('pi_cc_late', 2200, 1000);
+  ok := n = 0 AND (SELECT status FROM refund_requests WHERE transaction_id = v_txn) = 'failed';
+  n := settle_class_cancel_refunds('pi_cc_late', 2200, 2200);
+  PERFORM pg_temp.ok(
+    ok AND n = 1 AND (SELECT status FROM refund_requests WHERE transaction_id = v_txn) = 'sent',
+    'CC-19', 'dashboard refund settles the queue only when the charge is fully refunded');
+
   -- CC-10: anonymous callers cannot reach either function.
   PERFORM pg_temp.as_anon();
   BEGIN PERFORM preview_class_cancellation(v_occ2); ok := false;

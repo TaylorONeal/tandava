@@ -93,7 +93,7 @@ describe("describeFollowup", () => {
   const base = (over: Partial<CancelFollowup>): CancelFollowup => ({
     occurrence_id: "o", starts_at: "2026-10-20T18:00:00Z", class_name: "Flow", cancelled: true,
     people: [], refunds_sent: 0, refunds_sent_cents: 0, refunds_outstanding: 0,
-    emails_sent: 0, emails_outstanding: 0, emails_failed: 0, refund_updates_owed: 0, ...over,
+    emails_sent: 0, emails_outstanding: 0, emails_failed: 0, emails_uncertain: 0, refund_updates_owed: 0, ...over,
   });
 
   it("reports a clean finish with nothing to retry", () => {
@@ -117,7 +117,7 @@ describe("describeFollowup", () => {
     }));
     expect(r.problems).toEqual([
       "1 refund did not go through yet. Until it does, those students are told you are arranging it. Try again, or refund them from Stripe.",
-      "1 email did not go out (Ana Diaz). Try again, or contact them directly.",
+      "1 email did not go out (Ana Diaz). Try again, or contact them directly and mark it handled.",
       "1 person has not been emailed yet.",
       "No email on file for Cy Moss. Contact them directly.",
     ]);
@@ -126,8 +126,18 @@ describe("describeFollowup", () => {
 
   it("does not offer an email retry when email is not set up", () => {
     const r = describeFollowup(base({ people: [person({ notice_status: "pending" })], emails_outstanding: 1 }), true);
-    expect(r.problems).toEqual(["Email is not set up for this studio yet, so 1 person was not emailed. Please let them know."]);
+    expect(r.problems).toEqual(["Email is not set up for this studio yet, so 1 person was not emailed. Please let them know, then mark it handled."]);
     expect(r.canRetry).toBe(false);
+    expect(r.canMarkHandled).toBe(true);
+  });
+
+  it("never offers to resend an email that may already have gone out", () => {
+    const r = describeFollowup(base({
+      people: [person({ name: "Ana Diaz", notice_status: "sending" })], emails_outstanding: 1, emails_uncertain: 1,
+    }));
+    expect(r.problems).toEqual(["1 email may not have gone out (Ana Diaz). Check with them, then mark it handled."]);
+    expect(r.canRetry).toBe(false);
+    expect(r.canMarkHandled).toBe(true);
   });
 });
 
@@ -136,7 +146,7 @@ describe("refund updates", () => {
     const r = describeFollowup({
       occurrence_id: "o", starts_at: "x", class_name: "Flow", cancelled: true, people: [],
       refunds_sent: 1, refunds_sent_cents: 2200, refunds_outstanding: 0,
-      emails_sent: 1, emails_outstanding: 0, emails_failed: 0, refund_updates_owed: 1,
+      emails_sent: 1, emails_outstanding: 0, emails_failed: 0, emails_uncertain: 0, refund_updates_owed: 1,
     });
     expect(r.problems).toEqual(["1 student has not been told their refund went through."]);
     expect(r.canRetry).toBe(true);

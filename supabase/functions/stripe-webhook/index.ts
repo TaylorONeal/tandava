@@ -6,7 +6,8 @@
  * writes in ONE database transaction and records the Stripe event id first:
  *
  *   checkout.session.completed / async_payment_succeeded -> fulfill_stripe_checkout
- *   charge.refunded                                      -> record_stripe_refund
+ *   charge.refunded                                      -> record_stripe_refund,
+ *                                                           settle_class_cancel_refunds
  *   charge.refund.updated (failed/canceled class-cancel refund) -> reopen_failed_refund
  *   invoice.paid (cycle renewals)                        -> renew_membership_cycle
  *   account.updated (Connect)                            -> set_studio_charges_enabled
@@ -134,13 +135,20 @@ async function handle(event: Stripe.Event) {
     case "charge.refunded": {
       const charge = event.data.object as Stripe.Charge;
       if (!charge.payment_intent) return { status: "no payment intent" };
-      return rpc("record_stripe_refund", {
+      const recorded = await rpc("record_stripe_refund", {
         p_event_id: event.id,
         p_payment_intent: charge.payment_intent as string,
         p_charge_id: charge.id,
         p_amount: charge.amount,
         p_amount_refunded: charge.amount_refunded,
       });
+      // A class-cancel refund made by hand in Stripe settles its queued request (LP-1d).
+      await rpc("settle_class_cancel_refunds", {
+        p_payment_intent: charge.payment_intent as string,
+        p_amount: charge.amount,
+        p_amount_refunded: charge.amount_refunded,
+      });
+      return recorded;
     }
 
     case "charge.refund.updated": {

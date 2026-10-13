@@ -19,7 +19,7 @@ const PEOPLE = [
   { booking_id: "b3", profile_id: "p3", name: "Cy Moss", first_name: "Cy", email: null, status: "waitlisted", source: "waitlist", refund_cents: 0 },
 ];
 
-type Mode = "ok" | "refundFails" | "responseLost" | "overdue";
+type Mode = "ok" | "refundFails" | "responseLost" | "overdue" | "emailFails";
 const PAST_ID = "66666666-6666-6666-6666-666666666666";
 const pastStart = new Date(Date.now() - 86_400_000).toISOString();
 
@@ -33,7 +33,7 @@ function state(over: { refundSent: boolean; emailsSent: boolean }) {
       { ...PEOPLE[2], notice_status: "no_email" },
     ],
     refunds_sent: refundSent ? 1 : 0, refunds_sent_cents: refundSent ? 2200 : 0, refunds_outstanding: refundSent ? 0 : 1,
-    emails_sent: emailsSent ? 2 : 0, emails_outstanding: emailsSent ? 0 : 2, emails_failed: 0, refund_updates_owed: 0,
+    emails_sent: emailsSent ? 2 : 0, emails_outstanding: emailsSent ? 0 : 2, emails_failed: 0, emails_uncertain: 0, refund_updates_owed: 0,
   };
 }
 
@@ -65,7 +65,13 @@ async function setUp(page: Page, calls: { fn: string; body: Record<string, unkno
       }
       cancelled = true;
       if (mode === "responseLost") return json({ error: "upstream timed out" }, 504);
-      current = state({ refundSent: mode === "ok", emailsSent: true });
+      current = state({ refundSent: mode !== "refundFails", emailsSent: true });
+      if (mode === "emailFails") {
+        current = {
+          ...current, emails_sent: 1, emails_outstanding: 1, emails_failed: 1,
+          people: current.people.map((p) => (p.name === "Ana Diaz" ? { ...p, notice_status: "failed" } : p)),
+        };
+      }
       return json({ cancelled: true, followup: current, emailUnavailable: false });
     }
     const table = new URL(url).pathname.split("/rest/v1/")[1] ?? "";
@@ -78,6 +84,14 @@ async function setUp(page: Page, calls: { fn: string; body: Record<string, unkno
     if (table === "rpc/preview_class_cancellation") {
       calls.push({ fn: "preview", body: req.postDataJSON() });
       return json({ occurrence_id: OCC_ID, starts_at: startsAt, class_name: "Vinyasa Flow", already_cancelled: false, started: false, people: PEOPLE });
+    }
+    if (table === "rpc/class_cancel_mark_handled") {
+      calls.push({ fn: "handled", body: req.postDataJSON() });
+      current = {
+        ...current, emails_outstanding: 0, emails_failed: 0,
+        people: current.people.map((p) => (p.notice_status === "failed" ? { ...p, notice_status: "handled" } : p)),
+      };
+      return json(1);
     }
     if (table === "rpc/class_cancel_followup") {
       calls.push({ fn: "followup", body: req.postDataJSON() });
@@ -196,4 +210,17 @@ test("a past cancelled class that still owes a refund stays on the list until fi
   await page.getByRole("button", { name: "Done" }).click();
   await expect(page.getByText("Still to finish")).toHaveCount(0);
   expect(calls.find((c) => c.fn === "cancel-class")?.body).toMatchObject({ occurrenceId: PAST_ID, resume: true });
+});
+
+test("an email that bounces can be closed once the owner tells them", async ({ page }) => {
+  const calls: { fn: string; body: Record<string, unknown> }[] = [];
+  await setUp(page, calls, "emailFails");
+  await page.goto("/manage/schedule");
+  await page.getByTestId("upcoming-class").first().getByRole("button", { name: "Cancel" }).click();
+  await page.getByRole("button", { name: "Cancel and tell 2 people" }).click();
+  await expect(page.getByTestId("cancel-problems")).toContainText("1 email did not go out (Ana Diaz).");
+  await page.getByRole("button", { name: "Mark as handled" }).click();
+  await expect(page.getByTestId("cancel-problems")).not.toContainText("Ana Diaz");
+  await expect(page.getByRole("button", { name: "Mark as handled" })).toHaveCount(0);
+  expect(calls.find((c) => c.fn === "handled")?.body).toMatchObject({ p_occurrence_id: OCC_ID });
 });

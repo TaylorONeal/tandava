@@ -45,6 +45,8 @@ export interface CancelFollowup {
   emails_sent: number;
   emails_outstanding: number;
   emails_failed: number;
+  /** Interrupted mid-send: may or may not have gone out, never resent automatically. */
+  emails_uncertain: number;
   /** Told "the studio is arranging your refund"; the refund has since gone through. */
   refund_updates_owed: number;
 }
@@ -56,6 +58,8 @@ export interface FollowupReport {
   problems: string[];
   /** Whether "try again" can make progress. */
   canRetry: boolean;
+  /** Whether there are notices the owner can close after contacting people themselves. */
+  canMarkHandled: boolean;
 }
 
 export interface CancelSummary {
@@ -138,12 +142,16 @@ export function describeFollowup(f: CancelFollowup, emailUnavailable = false): F
   if (f.refunds_outstanding) {
     problems.push(`${plural(f.refunds_outstanding, "refund")} did not go through yet. Until it does, those students are told you are arranging it. Try again, or refund them from Stripe.`);
   }
-  const failedNames = f.people.filter((p) => p.notice_status === "failed").map((p) => p.name ?? p.email ?? "a student");
-  const waiting = f.emails_outstanding - f.emails_failed;
+  const names = (status: CancelPerson["notice_status"]) =>
+    f.people.filter((p) => p.notice_status === status).map((p) => p.name ?? p.email ?? "a student").join(", ");
+  const uncertain = f.emails_uncertain ?? 0;
+  // In flight right now (claimed under five minutes ago) counts as not yet emailed.
+  const waiting = f.emails_outstanding - f.emails_failed - uncertain;
   if (emailUnavailable && f.emails_outstanding) {
-    problems.push(`Email is not set up for this studio yet, so ${plural(f.emails_outstanding, "person was", "people were")} not emailed. Please let them know.`);
+    problems.push(`Email is not set up for this studio yet, so ${plural(f.emails_outstanding, "person was", "people were")} not emailed. Please let them know, then mark it handled.`);
   } else {
-    if (f.emails_failed) problems.push(`${plural(f.emails_failed, "email")} did not go out (${failedNames.join(", ")}). Try again, or contact them directly.`);
+    if (f.emails_failed) problems.push(`${plural(f.emails_failed, "email")} did not go out (${names("failed")}). Try again, or contact them directly and mark it handled.`);
+    if (uncertain) problems.push(`${plural(uncertain, "email")} may not have gone out (${names("sending")}). Check with them, then mark it handled.`);
     if (waiting > 0) problems.push(`${plural(waiting, "person has", "people have")} not been emailed yet.`);
   }
   if (f.refund_updates_owed && !emailUnavailable) {
@@ -155,7 +163,9 @@ export function describeFollowup(f: CancelFollowup, emailUnavailable = false): F
   return {
     done,
     problems,
-    canRetry: f.refunds_outstanding > 0 || (!emailUnavailable && (f.emails_outstanding > 0 || f.refund_updates_owed > 0)),
+    canRetry: f.refunds_outstanding > 0
+      || (!emailUnavailable && (f.emails_outstanding - uncertain > 0 || f.refund_updates_owed > 0)),
+    canMarkHandled: f.emails_outstanding > 0 || f.refund_updates_owed > 0,
   };
 }
 

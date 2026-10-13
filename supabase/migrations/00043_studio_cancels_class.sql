@@ -80,11 +80,12 @@ CREATE TABLE IF NOT EXISTS class_cancel_notices (
   email         TEXT,
   message       TEXT,
   status        TEXT NOT NULL DEFAULT 'pending'
-                CHECK (status IN ('pending', 'sending', 'sent', 'failed', 'no_email')),
+                CHECK (status IN ('pending', 'sending', 'sent', 'failed', 'no_email', 'handled')),
   -- What the sent email said about the refund ('sent' or 'failed'). A notice
   -- that said 'failed' is owed a short "your refund is on its way" once the
   -- refund goes through.
-  refund_told   TEXT CHECK (refund_told IN ('sent', 'failed')),
+  -- 'handled': the owner told them themselves.
+  refund_told   TEXT CHECK (refund_told IN ('sent', 'failed', 'handled')),
   last_error    TEXT,
   attempts      INTEGER NOT NULL DEFAULT 0,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -408,6 +409,10 @@ BEGIN
     'emails_sent', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status = 'sent'),
     'emails_outstanding', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status IN ('pending', 'sending', 'failed')),
     'emails_failed', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status = 'failed'),
+    -- Claimed but never recorded (the function died mid-send): may or may not
+    -- have gone out, so never resent automatically. The owner checks and marks it handled.
+    'emails_uncertain', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id
+                           AND status = 'sending' AND updated_at < NOW() - INTERVAL '5 minutes'),
     -- Told "the studio is arranging your refund", and the refund has since gone through.
     'refund_updates_owed', (SELECT count(*) FROM class_cancel_notices n
                              JOIN refund_requests rr ON rr.transaction_id = n.transaction_id AND rr.reason = 'class_cancelled'
@@ -640,3 +645,63 @@ END;
 $$;
 REVOKE ALL ON FUNCTION reopen_failed_refund(UUID, TEXT, TEXT) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION reopen_failed_refund(UUID, TEXT, TEXT) TO service_role;
+
+-- ---------------------------------------------------------------------------
+-- 9. The owner handled the rest themselves
+-- ---------------------------------------------------------------------------
+-- After contacting people directly (bad address, an email that may or may not
+-- have gone out), the owner closes the remaining notices. Refunds are not
+-- closable here: they settle through Stripe (see 10).
+CREATE OR REPLACE FUNCTION class_cancel_mark_handled(p_occurrence_id UUID)
+RETURNS INTEGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_studio UUID;
+  v_count INTEGER;
+BEGIN
+  SELECT studio_id INTO v_studio FROM class_occurrences WHERE id = p_occurrence_id;
+  IF v_studio IS NULL THEN RAISE EXCEPTION 'Class not found' USING ERRCODE = 'P0002'; END IF;
+  PERFORM class_cancel_assert_staff(v_studio);
+  UPDATE class_cancel_notices
+     SET status = CASE WHEN status IN ('pending', 'sending', 'failed') THEN 'handled' ELSE status END,
+         refund_told = CASE WHEN refund_told = 'failed' THEN 'handled' ELSE refund_told END,
+         updated_at = NOW()
+   WHERE occurrence_id = p_occurrence_id
+     AND (status IN ('pending', 'sending', 'failed') OR refund_told = 'failed');
+  GET DIAGNOSTICS v_count = ROW_COUNT;
+  RETURN v_count;
+END;
+$$;
+REVOKE ALL ON FUNCTION class_cancel_mark_handled(UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION class_cancel_mark_handled(UUID) TO authenticated, service_role;
+
+-- ---------------------------------------------------------------------------
+-- 10. Refunded in the Stripe dashboard
+-- ---------------------------------------------------------------------------
+-- charge.refunded (stripe-webhook) for a fully refunded charge settles any
+-- class-cancel refund still queued for that payment, so a refund the owner
+-- made by hand is not retried (Stripe would refuse it) and stops showing as owed.
+CREATE OR REPLACE FUNCTION settle_class_cancel_refunds(p_payment_intent TEXT, p_amount INTEGER, p_amount_refunded INTEGER)
+RETURNS INTEGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_count INTEGER;
+BEGIN
+  IF p_payment_intent IS NULL OR p_amount_refunded < p_amount THEN RETURN 0; END IF;
+  UPDATE refund_requests rr
+     SET status = 'sent', last_error = 'Refunded in Stripe', updated_at = NOW()
+    FROM transactions t
+   WHERE rr.transaction_id = t.id AND t.stripe_payment_intent_id = p_payment_intent
+     AND rr.status <> 'sent';
+  GET DIAGNOSTICS v_count = ROW_COUNT;
+  RETURN v_count;
+END;
+$$;
+REVOKE ALL ON FUNCTION settle_class_cancel_refunds(TEXT, INTEGER, INTEGER) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION settle_class_cancel_refunds(TEXT, INTEGER, INTEGER) TO service_role;

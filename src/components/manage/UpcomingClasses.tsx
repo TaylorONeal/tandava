@@ -230,6 +230,18 @@ function CancelClassDialog({
   const confirm = () => run({ reason: note.trim() || undefined, message: note.trim() || undefined }, "Could not cancel the class.");
   const resume = () => run({ resume: true }, "Could not finish the follow-up.");
 
+  const markHandled = async () => {
+    if (!target) return;
+    setWorking(true);
+    setError(null);
+    const { error: e } = await backendData.markClassCancelHandled(target.id);
+    const { data } = await backendData.getClassCancelFollowup(target.id);
+    if (data) setFollowup(data);
+    if (e) setError(e.message);
+    else onDone();
+    setWorking(false);
+  };
+
   const when = target ? `${dayHeading(target.starts_at, timezone)}, ${timeOf(target.starts_at, timezone)}` : "";
   const report = state ? describeFollowup(state, emailUnavailable) : null;
 
@@ -259,6 +271,9 @@ function CancelClassDialog({
             )}
             {error && <p className="text-sm text-destructive">{error}</p>}
             <DialogFooter className="gap-2 sm:gap-0">
+              {report.canMarkHandled && (
+                <Button variant="ghost" onClick={() => void markHandled()} disabled={working}>Mark as handled</Button>
+              )}
               {report.canRetry && (
                 <Button variant="outline" onClick={() => void resume()} disabled={working}>
                   {working && <Loader2 className="h-4 w-4 me-2 animate-spin" />}Try again

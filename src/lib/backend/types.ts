@@ -262,6 +262,8 @@ export interface DataProvider {
   previewClassCancellation(occurrenceId: string): Promise<DataResult<ClassCancelPreview>>;
   /** What a cancellation has sent and still owes (class_cancel_followup, 00043). Staff only. */
   getClassCancelFollowup(occurrenceId: string): Promise<DataResult<CancelFollowup>>;
+  /** Close the remaining notices after contacting people directly (class_cancel_mark_handled). Staff only. */
+  markClassCancelHandled(occurrenceId: string): Promise<MutationResult>;
   /** Insert (no id) or update (id) one catalog row of the caller's studio. RLS: owner/admin only. */
   saveCatalogRow(table: CatalogTable, studioId: string, row: Record<string, unknown> & { id?: string }): Promise<MutationResult>;
 

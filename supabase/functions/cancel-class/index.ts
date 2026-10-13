@@ -18,7 +18,8 @@
  * the notices in the same transaction as the cancel, and this function only
  * works through what is still owed. If the response is lost or the function
  * dies halfway, { resume: true } finishes the job; nothing is sent twice
- * (refunds are idempotent by request id, notices are claimed before sending).
+ * (refunds are idempotent by request id, notices are claimed before sending
+ * and an interrupted send is left for the owner rather than resent).
  *
  * Request:  POST { occurrenceId, reason?, message? }   cancel, then follow up
  *           POST { occurrenceId, resume: true }       follow up an already-cancelled class
@@ -72,9 +73,6 @@ interface NoticeRow {
   attempts: number;
   refund_told: "sent" | "failed" | null;
 }
-
-/** A claimed notice left "sending" this long (the function died mid-send) can be claimed again. */
-const STALE_SENDING_MS = 5 * 60_000;
 
 /** Stripe said no (as opposed to the request not arriving): the next try needs a new idempotency key. */
 function stripeRefused(err: unknown): boolean {
@@ -165,13 +163,14 @@ async function sendOutstandingNotices(db: Db, occurrenceId: string): Promise<voi
   const refundSent = new Set(((refunds ?? []) as { transaction_id: string; status: string }[])
     .filter((r) => r.status === "sent").map((r) => r.transaction_id));
 
-  const now = new Date();
-  const staleBefore = new Date(now.getTime() - STALE_SENDING_MS).toISOString();
-  const claim = { status: "sending", updated_at: now.toISOString() };
+  // A row left "sending" (the function died mid-send) may already have been
+  // delivered, so it is never reclaimed: the owner sees it as uncertain and
+  // marks it handled after checking (class_cancel_mark_handled).
+  const claim = { status: "sending", updated_at: new Date().toISOString() };
   const [{ data: firsts, error: e1 }, { data: updates, error: e2 }] = await Promise.all([
     db.from("class_cancel_notices").update(claim)
       .eq("occurrence_id", occurrenceId)
-      .or(`status.in.(pending,failed),and(status.eq.sending,updated_at.lt.${staleBefore})`)
+      .in("status", ["pending", "failed"])
       .select(NOTICE_COLUMNS),
     refundSent.size
       ? db.from("class_cancel_notices").update(claim)
