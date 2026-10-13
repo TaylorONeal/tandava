@@ -33,6 +33,8 @@ import type {
   ApiProvider,
   ApiResult,
   Backend,
+  UpcomingClass,
+  ClassCancelPreview,
 } from "./types";
 import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyBookingRow, MyEntitlementRow, MyProfilePatch, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
@@ -442,6 +444,42 @@ const supabaseData: DataProvider = {
       },
       error: null,
     };
+  },
+
+  async getStudioClassesAhead(studioId, days): Promise<DataResult<UpcomingClass[]>> {
+    const now = new Date();
+    const until = new Date(now.getTime() + days * 86_400_000);
+    const { data, error } = await getClient()
+      .from("class_occurrences")
+      .select("id, starts_at, ends_at, capacity, is_cancelled, offering:offerings(name), studio:studios(timezone), bookings(status)")
+      .eq("studio_id", studioId)
+      .gte("starts_at", now.toISOString())
+      .lt("starts_at", until.toISOString())
+      .order("starts_at");
+    if (error) return { data: null, error: { message: error.message } };
+    type Row = {
+      id: string; starts_at: string; ends_at: string; capacity: number; is_cancelled: boolean | null;
+      offering: { name: string } | null; studio: { timezone: string | null } | null; bookings: { status: string }[] | null;
+    };
+    return {
+      data: ((data ?? []) as unknown as Row[]).map((r) => ({
+        id: r.id,
+        starts_at: r.starts_at,
+        ends_at: r.ends_at,
+        capacity: r.capacity,
+        is_cancelled: Boolean(r.is_cancelled),
+        class_name: r.offering?.name ?? "Class",
+        timezone: r.studio?.timezone ?? null,
+        booked: (r.bookings ?? []).filter((b) => b.status === "confirmed" || b.status === "checked_in").length,
+        waitlisted: (r.bookings ?? []).filter((b) => b.status === "waitlisted").length,
+      })),
+      error: null,
+    };
+  },
+
+  async previewClassCancellation(occurrenceId): Promise<DataResult<ClassCancelPreview>> {
+    const { data, error } = await getClient().rpc("preview_class_cancellation" as never, { p_occurrence_id: occurrenceId } as never);
+    return { data: (data as ClassCancelPreview | null) ?? null, error: error ? { message: error.message } : null };
   },
 
   async getStudioStaffNames(studioId): Promise<DataResult<StaffName[]>> {

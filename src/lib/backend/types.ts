@@ -20,6 +20,30 @@ import type { AttributionModel, AttributionSourceRow, AutomationSettingsRow, Mem
 // ---------------------------------------------------------------------------
 
 /** Minimal user identity — what the app needs from any auth system */
+import type { CancelPerson } from "@/lib/classCancel";
+
+export interface UpcomingClass {
+  id: string;
+  starts_at: string;
+  ends_at: string;
+  capacity: number;
+  is_cancelled: boolean;
+  class_name: string;
+  /** The studio's IANA time zone, for showing class times as the studio sees them. */
+  timezone: string | null;
+  booked: number;
+  waitlisted: number;
+}
+
+export interface ClassCancelPreview {
+  occurrence_id: string;
+  starts_at: string;
+  class_name: string;
+  already_cancelled: boolean;
+  started: boolean;
+  people: CancelPerson[];
+}
+
 export interface AuthUser {
   id: string;
   email: string;
@@ -228,6 +252,10 @@ export interface DataProvider {
   getStudioCatalog(studioId: string): Promise<DataResult<StudioCatalog>>;
   /** Active staff of a studio the caller owns or admins, for the teacher picker. */
   getStudioStaffNames(studioId: string): Promise<DataResult<StaffName[]>>;
+  /** The studio's classes in the next `days` days, with booked and waitlist counts (LP-1d). */
+  getStudioClassesAhead(studioId: string, days: number): Promise<DataResult<UpcomingClass[]>>;
+  /** Who a cancellation would affect, without changing anything (00043). Staff only. */
+  previewClassCancellation(occurrenceId: string): Promise<DataResult<ClassCancelPreview>>;
   /** Insert (no id) or update (id) one catalog row of the caller's studio. RLS: owner/admin only. */
   saveCatalogRow(table: CatalogTable, studioId: string, row: Record<string, unknown> & { id?: string }): Promise<MutationResult>;
 
