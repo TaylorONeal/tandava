@@ -1,6 +1,6 @@
 -- Apply 00043 (studio cancels a class, LP-1d) to tandava-prod. Needs 00033 (held_seats) and 00042.
 -- Paste all of it into https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new and Run.
--- Then deploy cancel-class (verify_jwt true) and stripe-webhook, and add charge.refund.updated to the Stripe webhook endpoint events.
+-- Then deploy cancel-class (verify_jwt true) and stripe-webhook, and add refund.updated and refund.failed (and charge.refund.updated) to the Stripe webhook endpoint events.
 BEGIN;
 -- 00043: The studio cancels a class (LP-1d).
 --

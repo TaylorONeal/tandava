@@ -8,7 +8,8 @@
  *   checkout.session.completed / async_payment_succeeded -> fulfill_stripe_checkout
  *   charge.refunded                                      -> record_stripe_refund,
  *                                                           settle_class_cancel_refunds
- *   charge.refund.updated (failed/canceled class-cancel refund) -> reopen_failed_refund
+ *   refund.updated, refund.failed, charge.refund.updated
+ *     (failed/canceled class-cancel refund)              -> reopen_failed_refund
  *   invoice.paid (cycle renewals)                        -> renew_membership_cycle
  *   account.updated (Connect)                            -> set_studio_charges_enabled
  *   customer.subscription.updated / .deleted, invoice.payment_failed
@@ -37,7 +38,7 @@
  * Stripe Dashboard -> Webhooks -> endpoint:
  *   URL: https://<project-ref>.supabase.co/functions/v1/stripe-webhook
  *   Events: checkout.session.completed, checkout.session.async_payment_succeeded,
- *           charge.refunded, charge.refund.updated, invoice.paid, invoice.payment_failed,
+ *           charge.refunded, refund.updated, refund.failed, charge.refund.updated, invoice.paid, invoice.payment_failed,
  *           customer.subscription.updated, customer.subscription.deleted,
  *           account.updated (Connect endpoint)
  */
@@ -151,6 +152,10 @@ async function handle(event: Stripe.Event) {
       return recorded;
     }
 
+    // refund.updated / refund.failed cover every payment method;
+    // charge.refund.updated only some. Reopening is idempotent per attempt.
+    case "refund.updated":
+    case "refund.failed":
     case "charge.refund.updated": {
       // A class-cancel refund (LP-1d) that Stripe later fails goes back on the
       // queue, so the owner sees it as still owed and can retry.
