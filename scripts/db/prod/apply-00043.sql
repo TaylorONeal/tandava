@@ -635,22 +635,29 @@ $$;
 -- ---------------------------------------------------------------------------
 -- charge.refund.updated with status failed or canceled (stripe-webhook).
 -- The next attempt uses a fresh idempotency key; the old refund is dead.
-CREATE OR REPLACE FUNCTION reopen_failed_refund(p_refund_request_id UUID, p_stripe_refund_id TEXT, p_error TEXT)
+CREATE OR REPLACE FUNCTION reopen_failed_refund(
+  p_refund_request_id UUID, p_stripe_refund_id TEXT, p_refund_attempt INTEGER, p_error TEXT)
 RETURNS BOOLEAN
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
+  -- Matched by the attempt the refund was made under (its metadata), so a
+  -- failure that arrives before the edge function recorded "sent" still
+  -- counts, and a stale or repeated event (attempt already moved on) does not.
   UPDATE refund_requests
-     SET status = 'failed', refund_attempt = refund_attempt + 1,
+     SET status = 'failed', refund_attempt = refund_attempt + 1, stripe_refund_id = p_stripe_refund_id,
          last_error = left(COALESCE(p_error, 'Refund failed at Stripe'), 500), updated_at = NOW()
-   WHERE id = p_refund_request_id AND stripe_refund_id = p_stripe_refund_id AND status = 'sent';
+   WHERE id = p_refund_request_id
+     AND CASE WHEN p_refund_attempt IS NULL
+              THEN stripe_refund_id = p_stripe_refund_id AND status = 'sent'
+              ELSE refund_attempt = p_refund_attempt END;
   RETURN FOUND;
 END;
 $$;
-REVOKE ALL ON FUNCTION reopen_failed_refund(UUID, TEXT, TEXT) FROM PUBLIC, anon, authenticated;
-GRANT EXECUTE ON FUNCTION reopen_failed_refund(UUID, TEXT, TEXT) TO service_role;
+REVOKE ALL ON FUNCTION reopen_failed_refund(UUID, TEXT, INTEGER, TEXT) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION reopen_failed_refund(UUID, TEXT, INTEGER, TEXT) TO service_role;
 
 -- ---------------------------------------------------------------------------
 -- 9. The owner handled the rest themselves

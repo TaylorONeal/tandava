@@ -157,9 +157,11 @@ async function handle(event: Stripe.Event) {
       const refund = event.data.object as Stripe.Refund;
       const requestId = refund.metadata?.refund_request_id;
       if (!requestId || (refund.status !== "failed" && refund.status !== "canceled")) return { status: "ignored" };
+      const attempt = Number.parseInt(refund.metadata?.refund_attempt ?? "", 10);
       const reopened = await rpc("reopen_failed_refund", {
         p_refund_request_id: requestId,
         p_stripe_refund_id: refund.id,
+        p_refund_attempt: Number.isFinite(attempt) ? attempt : null,
         p_error: `Refund ${refund.status}${refund.failure_reason ? `: ${refund.failure_reason}` : ""}`,
       });
       return { status: reopened ? "reopened" : "no matching sent refund" };

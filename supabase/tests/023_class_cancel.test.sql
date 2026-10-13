@@ -190,12 +190,15 @@ BEGIN
   PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
   prev := class_cancel_followup(v_occ2);
   EXECUTE 'RESET ROLE';
-  ok := NOT reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_other', 'x');
-  ok := ok AND reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_cc_late', 'insufficient funds');
-  ok := ok AND NOT reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_cc_late', 'again');
+  ok := NOT reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_other', NULL, 'x');
+  ok := ok AND NOT reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_cc_late', 3, 'stale attempt');
+  -- The failure can arrive before "sent" was recorded: matched by attempt.
+  UPDATE refund_requests SET status = 'pending', stripe_refund_id = NULL WHERE transaction_id = v_txn;
+  ok := ok AND reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_cc_late', 0, 'insufficient funds');
+  ok := ok AND NOT reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_cc_late', 0, 'again');
   PERFORM pg_temp.ok(
     ok AND (prev ->> 'refund_updates_owed')::int = 1
-    AND (SELECT status = 'failed' AND refund_attempt = 1 AND last_error = 'insufficient funds'
+    AND (SELECT status = 'failed' AND refund_attempt = 1 AND last_error = 'insufficient funds' AND stripe_refund_id = 're_cc_late'
            FROM refund_requests WHERE transaction_id = v_txn),
     'CC-16', 'refund update owed after a late success; a failed refund is reopened once with a new attempt');
 
@@ -222,7 +225,7 @@ BEGIN
 
   -- CC-17: only the service role can reopen a refund.
   PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
-  BEGIN PERFORM reopen_failed_refund(gen_random_uuid(), 're', 'x'); ok := false;
+  BEGIN PERFORM reopen_failed_refund(gen_random_uuid(), 're', 0, 'x'); ok := false;
   EXCEPTION WHEN insufficient_privilege THEN ok := true; END;
   EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(ok, 'CC-17', 'staff cannot reopen refunds');

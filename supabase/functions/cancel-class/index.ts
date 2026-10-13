@@ -66,7 +66,7 @@ interface RefundRow {
 
 interface NoticeRow {
   id: string;
-  /** For a refund update: the status before this run claimed it, restored if the email is refused. */
+  /** The status when read; the claim requires it unchanged, and a refused refund update restores it. */
   status: string;
   transaction_id: string | null;
   email: string | null;
@@ -108,7 +108,7 @@ async function sendOutstandingRefunds(db: Db, occurrenceId: string): Promise<voi
         payment_intent: pi,
         amount: row.amount_cents,
         reason: "requested_by_customer",
-        metadata: { refund_request_id: row.id, reason: "class_cancelled" },
+        metadata: { refund_request_id: row.id, refund_attempt: String(row.refund_attempt ?? 0), reason: "class_cancelled" },
         ...(intent.transfer_data?.destination ? { reverse_transfer: true } : {}),
         ...(intent.application_fee_amount ? { refund_application_fee: true } : {}),
       }, { idempotencyKey: `refund_request:${row.id}:${row.refund_attempt ?? 0}` });
@@ -165,30 +165,33 @@ async function sendOutstandingNotices(db: Db, occurrenceId: string): Promise<voi
   const refundSent = new Set(((refunds ?? []) as { transaction_id: string; status: string }[])
     .filter((r) => r.status === "sent").map((r) => r.transaction_id));
 
-  // A row left "sending" (the function died mid-send) may already have been
-  // delivered, so it is never reclaimed: the owner sees it as uncertain and
-  // marks it handled after checking (class_cancel_mark_handled).
-  const claim = { status: "sending", updated_at: new Date().toISOString() };
-  const claimUpdates = (from: "sent" | "handled") => db.from("class_cancel_notices").update(claim)
-    .eq("occurrence_id", occurrenceId).eq("status", from).eq("refund_told", "failed")
-    .not("email", "is", null).in("transaction_id", [...refundSent])
-    .select(NOTICE_COLUMNS)
-    // The claim returns the row as updated; remember the status to restore if the email is refused.
-    .then(({ data, error }) => ({ data: ((data ?? []) as NoticeRow[]).map((r) => ({ ...r, status: from })), error }));
-  const none = { data: [] as NoticeRow[], error: null };
-  const [{ data: firsts, error: e1 }, ...updateClaims] = await Promise.all([
-    db.from("class_cancel_notices").update(claim)
-      .eq("occurrence_id", occurrenceId)
-      .in("status", ["pending", "failed"])
-      .select(NOTICE_COLUMNS),
-    refundSent.size ? claimUpdates("sent") : Promise.resolve(none),
-    refundSent.size ? claimUpdates("handled") : Promise.resolve(none),
+  // Candidates are read first and each one is claimed (status "sending") just
+  // before its own send, so a run that dies partway leaves the untouched rows
+  // pending for "Try again". A row left "sending" died mid-send and may already
+  // have been delivered, so it is never reclaimed: the owner sees it as
+  // uncertain and marks it handled after checking (class_cancel_mark_handled).
+  const [{ data: firsts, error: e1 }, { data: updates, error: e2 }] = await Promise.all([
+    db.from("class_cancel_notices").select(NOTICE_COLUMNS)
+      .eq("occurrence_id", occurrenceId).in("status", ["pending", "failed"]),
+    refundSent.size
+      ? db.from("class_cancel_notices").select(NOTICE_COLUMNS)
+        .eq("occurrence_id", occurrenceId).in("status", ["sent", "handled"]).eq("refund_told", "failed")
+        .not("email", "is", null).in("transaction_id", [...refundSent])
+      : Promise.resolve({ data: [], error: null }),
   ]);
-  if (e1) console.error("[cancel-class] could not claim notices:", e1.message);
-  const updates = updateClaims.flatMap((c) => {
-    if (c.error) console.error("[cancel-class] could not claim refund updates:", c.error.message);
-    return c.data;
-  });
+  if (e1) console.error("[cancel-class] could not read notices:", e1.message);
+  if (e2) console.error("[cancel-class] could not read refund updates:", e2.message);
+
+  /** Claim one row if it is still in the state we read; false if another run took it. */
+  const claimRow = async (row: NoticeRow, isUpdate: boolean): Promise<boolean> => {
+    let q = db.from("class_cancel_notices")
+      .update({ status: "sending", updated_at: new Date().toISOString() })
+      .eq("id", row.id).eq("status", row.status);
+    if (isUpdate) q = q.eq("refund_told", "failed");
+    const { data, error } = await q.select("id");
+    if (error) console.error(`[cancel-class] could not claim notice ${row.id}:`, error.message);
+    return Boolean(data?.length);
+  };
 
   const o = occ as unknown as { starts_at: string; offering: { name: string } | null; studio: { slug: string; timezone: string | null; name: string } | null };
   const studioName = o.studio?.name ?? "Your studio";
@@ -212,14 +215,10 @@ async function sendOutstandingNotices(db: Db, occurrenceId: string): Promise<voi
       outcome = "failed";
       detail = "No email on file";
     } else {
-      try {
-        const r = await sendEmail({ to: row.email, ...msg, fromName: studioName, tags: { type: isUpdate ? "class_cancelled_refund" : "class_cancelled" } });
-        outcome = r.success ? "sent" : "failed";
-        detail = r.success ? null : String(r.error ?? "Email not accepted");
-      } catch (err) {
-        outcome = "unknown";
-        detail = `Delivery not confirmed: ${(err as Error).message}`;
-      }
+      const r = await sendEmail({ to: row.email, ...msg, fromName: studioName, tags: { type: isUpdate ? "class_cancelled_refund" : "class_cancelled" } })
+        .catch((err: Error) => ({ success: false, error: err.message, uncertain: true }));
+      outcome = r.success ? "sent" : r.uncertain ? "unknown" : "failed";
+      detail = r.success ? null : `${r.uncertain ? "Delivery not confirmed: " : ""}${r.error ?? "Email not accepted"}`;
     }
     const patch = outcome === "sent"
       ? { status: "sent", last_error: null, refund_told: isUpdate ? "sent" : refundNow }
@@ -233,8 +232,8 @@ async function sendOutstandingNotices(db: Db, occurrenceId: string): Promise<voi
     if (writeError) console.error(`[cancel-class] notice ${row.id} outcome not recorded:`, writeError.message);
   };
 
-  for (const row of (firsts ?? []) as NoticeRow[]) await send(row, false);
-  for (const row of (updates ?? []) as NoticeRow[]) await send(row, true);
+  for (const row of (firsts ?? []) as NoticeRow[]) if (await claimRow(row, false)) await send(row, false);
+  for (const row of (updates ?? []) as NoticeRow[]) if (await claimRow(row, true)) await send(row, true);
 }
 
 function errorStatus(code: string | undefined): number {
