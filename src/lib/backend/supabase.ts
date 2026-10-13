@@ -35,6 +35,7 @@ import type {
   Backend,
   UpcomingClass,
   ClassCancelPreview,
+  CancelFollowup,
 } from "./types";
 import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyBookingRow, MyEntitlementRow, MyProfilePatch, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
@@ -451,7 +452,7 @@ const supabaseData: DataProvider = {
     const until = new Date(now.getTime() + days * 86_400_000);
     const { data, error } = await getClient()
       .from("class_occurrences")
-      .select("id, starts_at, ends_at, capacity, is_cancelled, offering:offerings(name), studio:studios(timezone), bookings(status)")
+      .select("id, starts_at, ends_at, capacity, is_cancelled, offering:offerings(name), studio:studios(timezone), bookings(status), refund_requests(status), class_cancel_notices(status)")
       .eq("studio_id", studioId)
       .gte("starts_at", now.toISOString())
       .lt("starts_at", until.toISOString())
@@ -460,6 +461,7 @@ const supabaseData: DataProvider = {
     type Row = {
       id: string; starts_at: string; ends_at: string; capacity: number; is_cancelled: boolean | null;
       offering: { name: string } | null; studio: { timezone: string | null } | null; bookings: { status: string }[] | null;
+      refund_requests: { status: string }[] | null; class_cancel_notices: { status: string }[] | null;
     };
     return {
       data: ((data ?? []) as unknown as Row[]).map((r) => ({
@@ -472,6 +474,9 @@ const supabaseData: DataProvider = {
         timezone: r.studio?.timezone ?? null,
         booked: (r.bookings ?? []).filter((b) => b.status === "confirmed" || b.status === "checked_in").length,
         waitlisted: (r.bookings ?? []).filter((b) => b.status === "waitlisted").length,
+        followup_outstanding:
+          (r.refund_requests ?? []).filter((x) => x.status !== "sent").length
+          + (r.class_cancel_notices ?? []).filter((x) => ["pending", "sending", "failed"].includes(x.status)).length,
       })),
       error: null,
     };
@@ -480,6 +485,11 @@ const supabaseData: DataProvider = {
   async previewClassCancellation(occurrenceId): Promise<DataResult<ClassCancelPreview>> {
     const { data, error } = await getClient().rpc("preview_class_cancellation" as never, { p_occurrence_id: occurrenceId } as never);
     return { data: (data as ClassCancelPreview | null) ?? null, error: error ? { message: error.message } : null };
+  },
+
+  async getClassCancelFollowup(occurrenceId): Promise<DataResult<CancelFollowup>> {
+    const { data, error } = await getClient().rpc("class_cancel_followup" as never, { p_occurrence_id: occurrenceId } as never);
+    return { data: (data as CancelFollowup | null) ?? null, error: error ? { message: error.message } : null };
   },
 
   async getStudioStaffNames(studioId): Promise<DataResult<StaffName[]>> {

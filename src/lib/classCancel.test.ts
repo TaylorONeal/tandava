@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
-  classCancelledEmail, describeCancellation, summarizeCancellation, type CancelPerson,
+  classCancelledEmail, describeCancellation, describeFollowup, summarizeCancellation,
+  type CancelFollowup, type CancelPerson,
 } from "./classCancel";
 
 const person = (over: Partial<CancelPerson>): CancelPerson => ({
@@ -85,5 +86,47 @@ describe("classCancelledEmail", () => {
     expect(m.text.startsWith("Hi,")).toBe(true);
     expect(m.text).not.toContain("A note from");
     expect(m.text).toContain("nothing was charged");
+  });
+});
+
+describe("describeFollowup", () => {
+  const base = (over: Partial<CancelFollowup>): CancelFollowup => ({
+    occurrence_id: "o", starts_at: "2026-10-20T18:00:00Z", class_name: "Flow", cancelled: true,
+    people: [], refunds_sent: 0, refunds_sent_cents: 0, refunds_outstanding: 0,
+    emails_sent: 0, emails_outstanding: 0, emails_failed: 0, ...over,
+  });
+
+  it("reports a clean finish with nothing to retry", () => {
+    const r = describeFollowup(base({
+      people: [person({ source: "pack", notice_status: "sent" }), person({ source: "drop_in", refund_cents: 2200, refund_status: "sent", notice_status: "sent" })],
+      refunds_sent: 1, refunds_sent_cents: 2200, emails_sent: 2,
+    }));
+    expect(r.done).toEqual(["1 class returned to packs and memberships.", "$22.00 refunded to 1 card.", "2 emails sent."]);
+    expect(r.problems).toEqual([]);
+    expect(r.canRetry).toBe(false);
+  });
+
+  it("names who was not emailed and offers a retry for refunds and emails", () => {
+    const r = describeFollowup(base({
+      people: [
+        person({ name: "Ana Diaz", notice_status: "failed" }),
+        person({ name: "Ben Ito", notice_status: "pending" }),
+        person({ name: "Cy Moss", email: null, notice_status: "no_email" }),
+      ],
+      refunds_outstanding: 1, emails_outstanding: 2, emails_failed: 1,
+    }));
+    expect(r.problems).toEqual([
+      "1 refund did not go through yet. Until it does, those students are told you are arranging it. Try again, or refund them from Stripe.",
+      "1 email did not go out (Ana Diaz). Try again, or contact them directly.",
+      "1 person has not been emailed yet.",
+      "No email on file for Cy Moss. Contact them directly.",
+    ]);
+    expect(r.canRetry).toBe(true);
+  });
+
+  it("does not offer an email retry when email is not set up", () => {
+    const r = describeFollowup(base({ people: [person({ notice_status: "pending" })], emails_outstanding: 1 }), true);
+    expect(r.problems).toEqual(["Email is not set up for this studio yet, so 1 person was not emailed. Please let them know."]);
+    expect(r.canRetry).toBe(false);
   });
 });

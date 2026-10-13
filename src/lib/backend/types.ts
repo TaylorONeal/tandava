@@ -20,7 +20,7 @@ import type { AttributionModel, AttributionSourceRow, AutomationSettingsRow, Mem
 // ---------------------------------------------------------------------------
 
 /** Minimal user identity — what the app needs from any auth system */
-import type { CancelPerson } from "@/lib/classCancel";
+import type { CancelFollowup, CancelPerson } from "@/lib/classCancel";
 
 export interface UpcomingClass {
   id: string;
@@ -33,7 +33,11 @@ export interface UpcomingClass {
   timezone: string | null;
   booked: number;
   waitlisted: number;
+  /** For a cancelled class: refunds and emails still owed (finish with a resume). */
+  followup_outstanding: number;
 }
+
+export type { CancelFollowup };
 
 export interface ClassCancelPreview {
   occurrence_id: string;
@@ -256,6 +260,8 @@ export interface DataProvider {
   getStudioClassesAhead(studioId: string, days: number): Promise<DataResult<UpcomingClass[]>>;
   /** Who a cancellation would affect, without changing anything (00043). Staff only. */
   previewClassCancellation(occurrenceId: string): Promise<DataResult<ClassCancelPreview>>;
+  /** What a cancellation has sent and still owes (class_cancel_followup, 00043). Staff only. */
+  getClassCancelFollowup(occurrenceId: string): Promise<DataResult<CancelFollowup>>;
   /** Insert (no id) or update (id) one catalog row of the caller's studio. RLS: owner/admin only. */
   saveCatalogRow(table: CatalogTable, studioId: string, row: Record<string, unknown> & { id?: string }): Promise<MutationResult>;
 

@@ -119,6 +119,57 @@ BEGIN
   PERFORM pg_temp.ok((SELECT count(*) FROM refund_requests WHERE transaction_id = v_txn) = 1,
                      'CC-09', 'one refund request per payment per reason');
 
+  -- CC-12: everyone affected is queued to be told; no email on file is recorded, not queued.
+  PERFORM pg_temp.ok(
+    (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = v_occ) = 2
+    AND (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = v_occ2) = 2
+    AND NOT EXISTS (SELECT 1 FROM class_cancel_notices
+                    WHERE status <> CASE WHEN email IS NULL THEN 'no_email' ELSE 'pending' END),
+    'CC-12', 'a notice per affected booking, pending when there is an email');
+
+  -- CC-13: follow-up state reports what is still owed, then what went out.
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  prev := class_cancel_followup(v_occ2);
+  EXECUTE 'RESET ROLE';
+  UPDATE refund_requests SET status = 'sent' WHERE transaction_id = v_txn;
+  UPDATE class_cancel_notices SET status = 'sent' WHERE occurrence_id = v_occ2 AND status = 'pending';
+  GET DIAGNOSTICS m = ROW_COUNT;
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  res := class_cancel_followup(v_occ2);
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(
+    (prev ->> 'cancelled')::boolean
+    AND (prev ->> 'refunds_outstanding')::int = 1 AND (prev ->> 'refunds_sent')::int = 0
+    AND (prev ->> 'emails_outstanding')::int = m
+    AND jsonb_array_length(prev -> 'people') = 2
+    AND (SELECT count(*) FROM jsonb_array_elements(prev -> 'people') x
+          WHERE x ->> 'source' = 'drop_in' AND x ->> 'refund_status' = 'failed') = 1
+    AND (res ->> 'refunds_outstanding')::int = 0 AND (res ->> 'refunds_sent')::int = 1
+    AND (res ->> 'refunds_sent_cents')::int = 8000
+    AND (res ->> 'emails_sent')::int = m AND (res ->> 'emails_outstanding')::int = 0
+    AND (SELECT count(*) FROM jsonb_array_elements(res -> 'people') x
+          WHERE x ->> 'source' = 'drop_in' AND x ->> 'refund_status' = 'sent') = 1,
+    'CC-13', 'follow-up state: refund and emails owed, then sent');
+
+  -- CC-14: follow-up state and notices are the studio's staff only, never client-writable.
+  ok := true;
+  PERFORM pg_temp.as_user(pg_temp.id('student_a2'));
+  BEGIN PERFORM class_cancel_followup(v_occ2); ok := false;
+  EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+  SELECT count(*) INTO n FROM class_cancel_notices;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.as_user(pg_temp.id('staff_b'));
+  BEGIN PERFORM class_cancel_followup(v_occ2); ok := false;
+  EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+  SELECT n + count(*) INTO n FROM class_cancel_notices;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  UPDATE class_cancel_notices SET status = 'pending';
+  GET DIAGNOSTICS m = ROW_COUNT;
+  SELECT n + 10 * count(*) INTO n FROM class_cancel_notices;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(ok AND m = 0 AND n = 40, 'CC-14', 'follow-up and notices: own staff read only, no client writes');
+
   -- CC-11: an early check-in is unwound: credit back and the attendance it counted removed.
   UPDATE studio_members SET total_classes_attended = 3, last_class_at = NOW() - interval '7 days'
    WHERE studio_id = pg_temp.id('studio_a') AND profile_id = pg_temp.id('student_a2');
@@ -130,14 +181,15 @@ BEGIN
   UPDATE bookings SET status = 'checked_in', checked_in_at = NOW()
    WHERE class_occurrence_id = 'aaaaaaaa-3000-0000-0000-0000000000c1';
   PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
-  res := cancel_class('aaaaaaaa-3000-0000-0000-0000000000c1', NULL);
+  res := cancel_class('aaaaaaaa-3000-0000-0000-0000000000c1', NULL, '  See you Thursday  ');
   EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(
     (SELECT classes_remaining FROM class_packs WHERE id = pg_temp.id('pack_a2')) = 5
     AND (SELECT total_classes_attended FROM studio_members WHERE studio_id = pg_temp.id('studio_a') AND profile_id = pg_temp.id('student_a2')) = 3
     AND (SELECT status FROM bookings WHERE class_occurrence_id = 'aaaaaaaa-3000-0000-0000-0000000000c1') = 'cancelled'
-    AND res -> 'people' -> 0 ->> 'currency' = 'USD',
-    'CC-11', 'early check-in unwound: pack class back, attendance count restored, currency reported');
+    AND res -> 'people' -> 0 ->> 'currency' = 'USD'
+    AND (SELECT message FROM class_cancel_notices WHERE occurrence_id = 'aaaaaaaa-3000-0000-0000-0000000000c1') = 'See you Thursday',
+    'CC-11', 'early check-in unwound: pack class back, attendance count restored, currency and note kept');
 
   -- CC-10: anonymous callers cannot reach either function.
   PERFORM pg_temp.as_anon();

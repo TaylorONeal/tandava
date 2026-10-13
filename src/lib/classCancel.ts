@@ -23,6 +23,36 @@ export interface CancelPerson {
   currency?: string | null;
   /** Set after the refund was attempted: "failed" means it did not go through yet. */
   refund_status?: "sent" | "failed" | null;
+  /** Whether this person has been told (class_cancel_followup). */
+  notice_status?: "pending" | "sending" | "sent" | "failed" | "no_email" | null;
+}
+
+/**
+ * What a cancellation has done so far and what is still owed, read from the
+ * database (class_cancel_followup, 00043) after every cancel or resume, so the
+ * owner always sees the durable truth even after a lost response.
+ */
+export interface CancelFollowup {
+  occurrence_id: string;
+  starts_at: string;
+  class_name: string;
+  cancelled: boolean;
+  people: CancelPerson[];
+  refunds_sent: number;
+  refunds_sent_cents: number;
+  refunds_outstanding: number;
+  emails_sent: number;
+  emails_outstanding: number;
+  emails_failed: number;
+}
+
+export interface FollowupReport {
+  /** What happened, one line each. */
+  done: string[];
+  /** What still needs the owner, one line each. */
+  problems: string[];
+  /** Whether "try again" can make progress. */
+  canRetry: boolean;
 }
 
 export interface CancelSummary {
@@ -89,6 +119,38 @@ export function describeCancellation(s: CancelSummary): string[] {
     ? `Everyone with an email on file is told (${s.reachable} of ${s.booked + s.waitlisted}).`
     : "Everyone is told by email.");
   return lines;
+}
+
+/** The owner's after-cancel summary, from the durable follow-up state. */
+export function describeFollowup(f: CancelFollowup, emailUnavailable = false): FollowupReport {
+  const s = summarizeCancellation(f.people);
+  const done: string[] = [];
+  const problems: string[] = [];
+  const returned = s.packReturns + s.membershipReturns;
+  if (returned) done.push(`${plural(returned, "class", "classes")} returned to packs and memberships.`);
+  if (f.refunds_sent) done.push(`${formatMoney(f.refunds_sent_cents, s.currency)} refunded to ${plural(f.refunds_sent, "card")}.`);
+  if (f.emails_sent) done.push(`${plural(f.emails_sent, "email")} sent.`);
+  if (s.booked + s.waitlisted === 0) done.push("Nobody was booked.");
+
+  if (f.refunds_outstanding) {
+    problems.push(`${plural(f.refunds_outstanding, "refund")} did not go through yet. Until it does, those students are told you are arranging it. Try again, or refund them from Stripe.`);
+  }
+  const failedNames = f.people.filter((p) => p.notice_status === "failed").map((p) => p.name ?? p.email ?? "a student");
+  const waiting = f.emails_outstanding - f.emails_failed;
+  if (emailUnavailable && f.emails_outstanding) {
+    problems.push(`Email is not set up for this studio yet, so ${plural(f.emails_outstanding, "person was", "people were")} not emailed. Please let them know.`);
+  } else {
+    if (f.emails_failed) problems.push(`${plural(f.emails_failed, "email")} did not go out (${failedNames.join(", ")}). Try again, or contact them directly.`);
+    if (waiting > 0) problems.push(`${plural(waiting, "person has", "people have")} not been emailed yet.`);
+  }
+  const noEmail = f.people.filter((p) => p.notice_status === "no_email").map((p) => p.name ?? "a student");
+  if (noEmail.length) problems.push(`No email on file for ${noEmail.join(", ")}. Contact them directly.`);
+
+  return {
+    done,
+    problems,
+    canRetry: f.refunds_outstanding > 0 || (!emailUnavailable && f.emails_outstanding > 0),
+  };
 }
 
 export function escapeHtml(text: string): string {

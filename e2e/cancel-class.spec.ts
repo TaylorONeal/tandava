@@ -19,7 +19,23 @@ const PEOPLE = [
   { booking_id: "b3", profile_id: "p3", name: "Cy Moss", first_name: "Cy", email: null, status: "waitlisted", source: "waitlist", refund_cents: 0 },
 ];
 
-async function setUp(page: Page, calls: { fn: string; body: Record<string, unknown> }[], failFirstRefund = false) {
+type Mode = "ok" | "refundFails" | "responseLost";
+
+function state(over: { refundSent: boolean; emailsSent: boolean }) {
+  const { refundSent, emailsSent } = over;
+  return {
+    occurrence_id: OCC_ID, starts_at: startsAt, class_name: "Vinyasa Flow", cancelled: true,
+    people: [
+      { ...PEOPLE[0], notice_status: emailsSent ? "sent" : "pending" },
+      { ...PEOPLE[1], notice_status: emailsSent ? "sent" : "pending", refund_status: refundSent ? "sent" : "failed" },
+      { ...PEOPLE[2], notice_status: "no_email" },
+    ],
+    refunds_sent: refundSent ? 1 : 0, refunds_sent_cents: refundSent ? 2200 : 0, refunds_outstanding: refundSent ? 0 : 1,
+    emails_sent: emailsSent ? 2 : 0, emails_outstanding: emailsSent ? 0 : 2, emails_failed: 0,
+  };
+}
+
+async function setUp(page: Page, calls: { fn: string; body: Record<string, unknown> }[], mode: Mode = "ok") {
   const session = {
     access_token: "e2e-token", refresh_token: "e2e-refresh", token_type: "bearer",
     expires_in: 3600, expires_at: Math.floor(Date.now() / 1000) + 3600,
@@ -27,22 +43,26 @@ async function setUp(page: Page, calls: { fn: string; body: Record<string, unkno
   };
   await page.addInitScript((s) => window.localStorage.setItem("sb-127-auth-token", JSON.stringify(s)), session);
   let cancelled = false;
+  let current = state({ refundSent: false, emailsSent: false });
   await page.route("http://127.0.0.1:54321/**", async (route) => {
     const req = route.request();
     const url = req.url();
     const headers = { "access-control-allow-origin": "*", "content-type": "application/json" };
-    const json = (body: unknown) => route.fulfill({ status: 200, headers, body: JSON.stringify(body) });
+    const json = (body: unknown, status = 200) => route.fulfill({ status, headers, body: JSON.stringify(body) });
     if (req.method() === "OPTIONS") {
       return route.fulfill({ status: 204, headers: { "access-control-allow-origin": "*", "access-control-allow-headers": "*", "access-control-allow-methods": "*" } });
     }
     if (url.includes("/functions/v1/cancel-class")) {
       const body = req.postDataJSON();
       calls.push({ fn: "cancel-class", body });
-      if (body.retryRefunds) return json({ cancelled: false, refunds: { sent: 1, failed: 0, sentCents: 2200 } });
+      if (body.resume) {
+        current = state({ refundSent: true, emailsSent: true });
+        return json({ cancelled: false, followup: current, emailUnavailable: false });
+      }
       cancelled = true;
-      return failFirstRefund
-        ? json({ cancelled: true, people: PEOPLE, refunds: { sent: 0, failed: 1, sentCents: 0 }, emailed: 2, emailUnavailable: false })
-        : json({ cancelled: true, people: PEOPLE, refunds: { sent: 1, failed: 0, sentCents: 2200 }, emailed: 2, emailUnavailable: false });
+      if (mode === "responseLost") return json({ error: "upstream timed out" }, 504);
+      current = state({ refundSent: mode === "ok", emailsSent: true });
+      return json({ cancelled: true, followup: current, emailUnavailable: false });
     }
     const table = new URL(url).pathname.split("/rest/v1/")[1] ?? "";
     if (url.includes("/auth/v1/user")) return json(session.user);
@@ -55,11 +75,18 @@ async function setUp(page: Page, calls: { fn: string; body: Record<string, unkno
       calls.push({ fn: "preview", body: req.postDataJSON() });
       return json({ occurrence_id: OCC_ID, starts_at: startsAt, class_name: "Vinyasa Flow", already_cancelled: false, started: false, people: PEOPLE });
     }
+    if (table === "rpc/class_cancel_followup") {
+      calls.push({ fn: "followup", body: req.postDataJSON() });
+      return json(cancelled ? current : { ...current, cancelled: false });
+    }
     if (table === "class_occurrences") {
+      const refundRows = cancelled ? [{ status: current.refunds_outstanding ? "failed" : "sent" }] : [];
+      const noticeRows = cancelled ? current.people.map((p) => ({ status: p.notice_status })) : [];
       return json([{
         id: OCC_ID, starts_at: startsAt, ends_at: startsAt, capacity: 20, is_cancelled: cancelled,
         offering: { name: "Vinyasa Flow" }, studio: { timezone: "America/Chicago" },
         bookings: cancelled ? [] : [{ status: "confirmed" }, { status: "confirmed" }, { status: "waitlisted" }],
+        refund_requests: refundRows, class_cancel_notices: noticeRows,
       }]);
     }
     if (table === "offerings") return json([OFFERING]);
@@ -94,24 +121,52 @@ test("owner cancels a class and sees who gets what back", async ({ page }) => {
   await expect(result).toContainText("1 class returned to packs and memberships.");
   await expect(result).toContainText("$22.00 refunded to 1 card.");
   await expect(result).toContainText("2 emails sent.");
+  await expect(page.getByTestId("cancel-problems")).toHaveText("No email on file for Cy Moss. Contact them directly.");
+  await expect(page.getByRole("button", { name: "Try again" })).toHaveCount(0);
 
   const cancel = calls.find((c) => c.fn === "cancel-class");
   expect(cancel?.body).toMatchObject({ occurrenceId: OCC_ID, message: "Maya is unwell. See you Thursday!" });
   expect(calls.find((c) => c.fn === "preview")?.body).toMatchObject({ p_occurrence_id: OCC_ID });
 
   await page.getByRole("button", { name: "Done" }).click();
-  await expect(page.getByTestId("upcoming-class").first()).toContainText("Cancelled");
+  const after = page.getByTestId("upcoming-class").first();
+  await expect(after).toContainText("Cancelled");
+  await expect(after.getByRole("button", { name: "Finish follow-up" })).toHaveCount(0);
 });
 
 test("a refund that fails is flagged and can be retried", async ({ page }) => {
   const calls: { fn: string; body: Record<string, unknown> }[] = [];
-  await setUp(page, calls, true);
+  await setUp(page, calls, "refundFails");
   await page.goto("/manage/schedule");
   await page.getByTestId("upcoming-class").first().getByRole("button", { name: "Cancel" }).click();
   await page.getByRole("button", { name: "Cancel and tell 2 people" }).click();
-  await expect(page.getByRole("alert")).toContainText("1 refund did not go through yet");
-  await page.getByRole("button", { name: "Try refunds again" }).click();
+  await expect(page.getByTestId("cancel-problems")).toContainText("1 refund did not go through yet");
+  await page.getByRole("button", { name: "Try again" }).click();
   await expect(page.getByTestId("cancel-result")).toContainText("$22.00 refunded to 1 card.");
-  await expect(page.getByRole("button", { name: "Try refunds again" })).toHaveCount(0);
-  expect(calls.filter((c) => c.fn === "cancel-class").map((c) => c.body.retryRefunds ?? false)).toEqual([false, true]);
+  await expect(page.getByRole("button", { name: "Try again" })).toHaveCount(0);
+  expect(calls.filter((c) => c.fn === "cancel-class").map((c) => c.body.resume ?? false)).toEqual([false, true]);
+});
+
+test("a lost response is recovered and the follow-up can be finished later", async ({ page }) => {
+  const calls: { fn: string; body: Record<string, unknown> }[] = [];
+  await setUp(page, calls, "responseLost");
+  await page.goto("/manage/schedule");
+  await page.getByTestId("upcoming-class").first().getByRole("button", { name: "Cancel" }).click();
+  await page.getByRole("button", { name: "Cancel and tell 2 people" }).click();
+
+  // The dialog reads what really happened instead of saying the cancel failed.
+  await expect(page.getByRole("heading", { name: "Class cancelled" })).toBeVisible();
+  await expect(page.getByText("the follow-up may not have finished")).toBeVisible();
+  await expect(page.getByTestId("cancel-problems")).toContainText("2 people have not been emailed yet.");
+  await page.getByRole("button", { name: "Done" }).click();
+
+  // Later, from the schedule: the cancelled class says it still owes follow-up.
+  const row = page.getByTestId("upcoming-class").first();
+  await row.getByRole("button", { name: "Finish follow-up" }).click();
+  await expect(page.getByTestId("cancel-problems")).toContainText("1 refund did not go through yet");
+  await page.getByRole("button", { name: "Try again" }).click();
+  await expect(page.getByTestId("cancel-result")).toContainText("2 emails sent.");
+  await page.getByRole("button", { name: "Done" }).click();
+  await expect(row.getByRole("button", { name: "Finish follow-up" })).toHaveCount(0);
+  expect(calls.filter((c) => c.fn === "cancel-class").map((c) => c.body.resume ?? false)).toEqual([false, true]);
 });

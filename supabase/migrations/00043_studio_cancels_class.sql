@@ -12,7 +12,12 @@
 --     4. cancels every active booking with reason 'class_cancelled'; the
 --        ledger trigger (00030) returns pack classes and membership usage
 --     5. queues a full refund for every paid drop-in in refund_requests
---     6. returns who to tell and what happened, for the caller to email
+--     6. queues a notice for everyone affected in class_cancel_notices
+--     7. returns who to tell and what happened
+--
+--   class_cancel_followup(occurrence) reports what went out and what is still
+--   owed, so an interrupted cancel (lost response, function timeout) can be
+--   finished from the owner's screen.
 --
 --   preview_class_cancellation(occurrence) answers the same question without
 --   changing anything, so the owner sees exactly who is affected first.
@@ -52,6 +57,36 @@ ALTER TABLE refund_requests ENABLE ROW LEVEL SECURITY;
 -- created by cancel_class and updated by the edge function (service role).
 DROP POLICY IF EXISTS refund_requests_staff_read ON refund_requests;
 CREATE POLICY refund_requests_staff_read ON refund_requests
+  FOR SELECT TO authenticated
+  USING (studio_id IN (SELECT my_staff_studio_ids()));
+
+-- Who still has to be told, durably queued with the refunds, so an
+-- interrupted cancel can be finished later (class_cancel_followup + the
+-- cancel-class edge function's resume mode). One row per affected booking;
+-- person is the snapshot the email is written from.
+CREATE TABLE IF NOT EXISTS class_cancel_notices (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  studio_id     UUID NOT NULL REFERENCES studios(id) ON DELETE CASCADE,
+  occurrence_id UUID NOT NULL REFERENCES class_occurrences(id) ON DELETE CASCADE,
+  booking_id    UUID NOT NULL,
+  person        JSONB NOT NULL,
+  email         TEXT,
+  message       TEXT,
+  status        TEXT NOT NULL DEFAULT 'pending'
+                CHECK (status IN ('pending', 'sending', 'sent', 'failed', 'no_email')),
+  last_error    TEXT,
+  attempts      INTEGER NOT NULL DEFAULT 0,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (occurrence_id, booking_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_class_cancel_notices_studio_status ON class_cancel_notices (studio_id, status);
+
+ALTER TABLE class_cancel_notices ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS class_cancel_notices_staff_read ON class_cancel_notices;
+CREATE POLICY class_cancel_notices_staff_read ON class_cancel_notices
   FOR SELECT TO authenticated
   USING (studio_id IN (SELECT my_staff_studio_ids()));
 
@@ -212,7 +247,7 @@ GRANT EXECUTE ON FUNCTION preview_class_cancellation(UUID) TO authenticated, ser
 -- ---------------------------------------------------------------------------
 -- 5. Cancel
 -- ---------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION cancel_class(p_occurrence_id UUID, p_reason TEXT DEFAULT NULL)
+CREATE OR REPLACE FUNCTION cancel_class(p_occurrence_id UUID, p_reason TEXT DEFAULT NULL, p_message TEXT DEFAULT NULL)
 RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -222,6 +257,7 @@ DECLARE
   v_occ class_occurrences%ROWTYPE;
   v_people JSONB;
   v_reason TEXT := NULLIF(left(trim(COALESCE(p_reason, '')), 500), '');
+  v_message TEXT := NULLIF(left(trim(COALESCE(p_message, '')), 1000), '');
   r RECORD;
   v_refund INTEGER;
   v_refund_ids UUID[] := '{}';
@@ -293,6 +329,14 @@ BEGIN
     END IF;
   END LOOP;
 
+  -- Everyone affected is queued to be told; people with no email are recorded
+  -- so the owner can see who to contact themselves.
+  INSERT INTO class_cancel_notices (studio_id, occurrence_id, booking_id, person, email, message, status)
+  SELECT v_occ.studio_id, p_occurrence_id, (p->>'booking_id')::UUID, p, NULLIF(p->>'email', ''), v_message,
+         CASE WHEN NULLIF(p->>'email', '') IS NULL THEN 'no_email' ELSE 'pending' END
+  FROM jsonb_array_elements(v_people) AS p
+  ON CONFLICT (occurrence_id, booking_id) DO NOTHING;
+
   RETURN jsonb_build_object(
     'occurrence_id', v_occ.id,
     'starts_at', v_occ.starts_at,
@@ -304,8 +348,54 @@ BEGIN
   );
 END;
 $$;
-REVOKE ALL ON FUNCTION cancel_class(UUID, TEXT) FROM PUBLIC, anon;
-GRANT EXECUTE ON FUNCTION cancel_class(UUID, TEXT) TO authenticated, service_role;
+REVOKE ALL ON FUNCTION cancel_class(UUID, TEXT, TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION cancel_class(UUID, TEXT, TEXT) TO authenticated, service_role;
 
-COMMENT ON FUNCTION cancel_class(UUID, TEXT) IS
-  'Studio cancels a class: marks it cancelled, clears the waitlist, cancels bookings (ledger returns credits), queues drop-in refunds. LP-1d.';
+COMMENT ON FUNCTION cancel_class(UUID, TEXT, TEXT) IS
+  'Studio cancels a class: marks it cancelled, clears the waitlist, cancels bookings (ledger returns credits), queues drop-in refunds and notices. LP-1d.';
+
+-- ---------------------------------------------------------------------------
+-- 6. Follow-up state: what went out and what is still owed. Read after every
+--    cancel or resume, and when the owner reopens a cancelled class, so the
+--    screen always shows the durable truth rather than one call's response.
+-- ---------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION class_cancel_followup(p_occurrence_id UUID)
+RETURNS JSONB
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_occ class_occurrences%ROWTYPE;
+BEGIN
+  SELECT * INTO v_occ FROM class_occurrences WHERE id = p_occurrence_id;
+  IF NOT FOUND THEN RAISE EXCEPTION 'Class not found' USING ERRCODE = 'P0002'; END IF;
+  PERFORM class_cancel_assert_staff(v_occ.studio_id);
+
+  RETURN jsonb_build_object(
+    'occurrence_id', v_occ.id,
+    'starts_at', v_occ.starts_at,
+    'class_name', (SELECT name FROM offerings WHERE id = v_occ.offering_id),
+    'cancelled', COALESCE(v_occ.is_cancelled, FALSE),
+    -- refund_status: a drop-in refund not confirmed sent is reported as not sent.
+    'people', (
+      SELECT COALESCE(jsonb_agg(
+        n.person || jsonb_build_object(
+          'notice_status', n.status,
+          'refund_status', CASE WHEN rr.id IS NULL THEN NULL WHEN rr.status = 'sent' THEN 'sent' ELSE 'failed' END)
+        ORDER BY n.person->>'status' = 'waitlisted', n.person->>'first_name', n.booking_id), '[]'::jsonb)
+      FROM class_cancel_notices n
+      LEFT JOIN refund_requests rr ON rr.booking_id = n.booking_id AND rr.reason = 'class_cancelled'
+      WHERE n.occurrence_id = p_occurrence_id),
+    'refunds_sent', (SELECT count(*) FROM refund_requests WHERE occurrence_id = p_occurrence_id AND status = 'sent'),
+    'refunds_sent_cents', (SELECT COALESCE(sum(amount_cents), 0) FROM refund_requests WHERE occurrence_id = p_occurrence_id AND status = 'sent'),
+    'refunds_outstanding', (SELECT count(*) FROM refund_requests WHERE occurrence_id = p_occurrence_id AND status <> 'sent'),
+    'emails_sent', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status = 'sent'),
+    'emails_outstanding', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status IN ('pending', 'sending', 'failed')),
+    'emails_failed', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status = 'failed')
+  );
+END;
+$$;
+REVOKE ALL ON FUNCTION class_cancel_followup(UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION class_cancel_followup(UUID) TO authenticated, service_role;

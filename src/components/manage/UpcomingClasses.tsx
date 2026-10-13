@@ -5,13 +5,18 @@
  * person's payment before anything changes (preview_class_cancellation), then
  * the cancel-class edge function does it all at once: credits back, drop-ins
  * refunded, everyone emailed.
+ *
+ * What was sent is always read back from the database (class_cancel_followup),
+ * so a lost response or a half-finished run shows what is still owed, and a
+ * cancelled class with anything outstanding offers "Finish follow-up".
  */
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api as backendApi, data as backendData } from "@/lib/backend";
 import type { ClassCancelPreview, UpcomingClass } from "@/lib/backend/types";
 import {
-  describeCancellation, formatMoney, summarizeCancellation, type CancelPerson,
+  describeCancellation, describeFollowup, formatMoney, summarizeCancellation,
+  type CancelFollowup, type CancelPerson,
 } from "@/lib/classCancel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,11 +48,11 @@ function timeOf(iso: string, tz: string) {
   return new Intl.DateTimeFormat("en-US", { timeZone: tz, hour: "numeric", minute: "2-digit" }).format(new Date(iso));
 }
 
-interface CancelResult {
-  people: CancelPerson[];
-  refunds: { sent: number; failed: number; sentCents?: number };
-  emailed: number;
+interface CancelResponse {
+  cancelled?: boolean;
+  followup?: CancelFollowup;
   emailUnavailable?: boolean;
+  error?: string;
 }
 
 export function UpcomingClasses({ studioId }: { studioId: string }) {
@@ -108,7 +113,12 @@ export function UpcomingClasses({ studioId }: { studioId: string }) {
                         </p>
                       </div>
                       {c.is_cancelled ? (
-                        <Badge variant="secondary">Cancelled</Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary">Cancelled</Badge>
+                          {c.followup_outstanding > 0 && (
+                            <Button variant="outline" size="sm" onClick={() => setTarget(c)}>Finish follow-up</Button>
+                          )}
+                        </div>
                       ) : (
                         <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => setTarget(c)}>
                           Cancel
@@ -139,11 +149,14 @@ function CancelClassDialog({
   const [note, setNote] = useState("");
   const [working, setWorking] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<CancelResult | null>(null);
+  const [followup, setFollowup] = useState<CancelFollowup | null>(null);
+  const [emailUnavailable, setEmailUnavailable] = useState(false);
+
+  const alreadyCancelled = Boolean(target?.is_cancelled);
 
   const previewQuery = useQuery({
     queryKey: ["class-cancel-preview", target?.id],
-    enabled: Boolean(target),
+    enabled: Boolean(target) && !alreadyCancelled,
     staleTime: 0,
     queryFn: async (): Promise<ClassCancelPreview> => {
       const { data, error: e } = await backendData.previewClassCancellation(target!.id);
@@ -152,6 +165,20 @@ function CancelClassDialog({
     },
   });
 
+  // A class cancelled earlier: show what its follow-up still owes.
+  const followupQuery = useQuery({
+    queryKey: ["class-cancel-followup", target?.id],
+    enabled: Boolean(target) && alreadyCancelled,
+    staleTime: 0,
+    queryFn: async (): Promise<CancelFollowup> => {
+      const { data, error: e } = await backendData.getClassCancelFollowup(target!.id);
+      if (e || !data) throw new Error(e?.message ?? "Could not load this cancellation");
+      return data;
+    },
+  });
+
+  const state = followup ?? followupQuery.data ?? null;
+
   const people = previewQuery.data?.people ?? [];
   const summary = summarizeCancellation(people);
   const lines = describeCancellation(summary);
@@ -159,88 +186,87 @@ function CancelClassDialog({
   const toTell = summary.reachable;
 
   const close = () => {
-    setNote(""); setError(null); setResult(null); setWorking(false);
+    setNote(""); setError(null); setFollowup(null); setEmailUnavailable(false); setWorking(false);
     onClose();
   };
 
-  const retryRefunds = async () => {
-    if (!target || !result) return;
-    setWorking(true);
-    const { data, error: e } = await backendApi.invoke<{ refunds?: { sent: number; failed: number; sentCents?: number }; error?: string }>(
-      "cancel-class", { occurrenceId: target.id, retryRefunds: true },
-    );
-    setWorking(false);
-    if (!data?.refunds || data.error || e) {
-      setError(data?.error ?? e?.message ?? "Could not retry the refunds.");
-      return;
+  /** After an unclear response, read what actually happened instead of guessing. */
+  const recover = async (fallback: string) => {
+    const { data } = await backendData.getClassCancelFollowup(target!.id);
+    if (data?.cancelled) {
+      setFollowup(data);
+      setError("The class is cancelled, but the follow-up may not have finished. Try again to finish it.");
+      onDone();
+    } else {
+      setError(fallback);
     }
-    const r = data.refunds;
-    setError(null);
-    setResult({
-      ...result,
-      refunds: {
-        sent: result.refunds.sent + r.sent,
-        failed: r.failed,
-        sentCents: (result.refunds.sentCents ?? 0) + (r.sentCents ?? 0),
-      },
-    });
   };
 
-  const confirm = async () => {
+  const run = async (body: Record<string, unknown>, fallback: string) => {
     if (!target) return;
     setWorking(true);
     setError(null);
-    const { data, error: e } = await backendApi.invoke<CancelResult & { error?: string }>("cancel-class", {
-      occurrenceId: target.id,
-      reason: note.trim() || undefined,
-      message: note.trim() || undefined,
-    });
-    setWorking(false);
-    if (!data || data.error || e) {
-      setError(data?.error ?? e?.message ?? "Could not cancel the class.");
-      return;
+    const { data, error: e } = await backendApi.invoke<CancelResponse>("cancel-class", { occurrenceId: target.id, ...body });
+    if (data?.followup && !data.error && !e) {
+      setFollowup(data.followup);
+      setEmailUnavailable(Boolean(data.emailUnavailable));
+      onDone();
+    } else {
+      await recover(data?.error ?? e?.message ?? fallback);
     }
-    setResult(data);
-    onDone();
+    setWorking(false);
   };
 
+  const confirm = () => run({ reason: note.trim() || undefined, message: note.trim() || undefined }, "Could not cancel the class.");
+  const resume = () => run({ resume: true }, "Could not finish the follow-up.");
+
   const when = target ? `${dayHeading(target.starts_at, timezone)}, ${timeOf(target.starts_at, timezone)}` : "";
-  const done = result ? summarizeCancellation(result.people) : null;
+  const report = state ? describeFollowup(state, emailUnavailable) : null;
 
   return (
     <Dialog open={target !== null} onOpenChange={(open) => { if (!open) close(); }}>
       <DialogContent className="max-w-lg">
-        {result && done ? (
+        {state && report ? (
           <>
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-emerald-600" />Class cancelled</DialogTitle>
+              <DialogTitle className="flex items-center gap-2">
+                {report.problems.length
+                  ? <AlertTriangle className="h-5 w-5 text-amber-600" />
+                  : <CheckCircle2 className="h-5 w-5 text-emerald-600" />}
+                Class cancelled
+              </DialogTitle>
               <DialogDescription>{target?.class_name}, {when}</DialogDescription>
             </DialogHeader>
             <ul className="space-y-1.5 text-sm" data-testid="cancel-result">
-              {done.packReturns + done.membershipReturns > 0 && (
-                <li>{done.packReturns + done.membershipReturns} {done.packReturns + done.membershipReturns === 1 ? "class" : "classes"} returned to packs and memberships.</li>
-              )}
-              {result.refunds.sent > 0 && <li>{formatMoney(result.refunds.sentCents ?? 0, done.currency)} refunded to {result.refunds.sent} {result.refunds.sent === 1 ? "card" : "cards"}.</li>}
-              {result.emailUnavailable
-                ? <li className="text-destructive">Email is not set up for this studio yet, so nobody was emailed. Please let them know.</li>
-                : <li>{result.emailed} {result.emailed === 1 ? "email" : "emails"} sent.</li>}
-              {done.booked + done.waitlisted === 0 && <li>Nobody was booked.</li>}
+              {report.done.map((l) => <li key={l}>{l}</li>)}
             </ul>
-            {result.refunds.failed > 0 && (
-              <p className="flex items-start gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive" role="alert">
-                <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
-                {result.refunds.failed} {result.refunds.failed === 1 ? "refund" : "refunds"} did not go through yet. The bookings are cancelled and those students were told you are arranging it. Refund them from Stripe, or contact support.
-              </p>
+            {report.problems.length > 0 && (
+              <ul className="space-y-1.5 rounded-md bg-destructive/10 p-3 text-sm text-destructive" role="alert" data-testid="cancel-problems">
+                {report.problems.map((l) => (
+                  <li key={l} className="flex items-start gap-2"><AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />{l}</li>
+                ))}
+              </ul>
             )}
-            {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
+            {error && <p className="text-sm text-destructive">{error}</p>}
             <DialogFooter className="gap-2 sm:gap-0">
-              {result.refunds.failed > 0 && (
-                <Button variant="outline" onClick={() => void retryRefunds()} disabled={working}>
-                  {working && <Loader2 className="h-4 w-4 me-2 animate-spin" />}Try refunds again
+              {report.canRetry && (
+                <Button variant="outline" onClick={() => void resume()} disabled={working}>
+                  {working && <Loader2 className="h-4 w-4 me-2 animate-spin" />}Try again
                 </Button>
               )}
               <Button onClick={close}>Done</Button>
             </DialogFooter>
+          </>
+        ) : alreadyCancelled ? (
+          <>
+            <DialogHeader>
+              <DialogTitle>{target?.class_name}</DialogTitle>
+              <DialogDescription>{when}</DialogDescription>
+            </DialogHeader>
+            {followupQuery.error
+              ? <p className="text-sm text-destructive">{(followupQuery.error as Error).message}</p>
+              : <div className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" />Checking what went out</div>}
+            <DialogFooter><Button onClick={close}>Close</Button></DialogFooter>
           </>
         ) : (
           <>
