@@ -45,6 +45,8 @@ export interface CancelFollowup {
   emails_sent: number;
   emails_outstanding: number;
   emails_failed: number;
+  /** No email on file and not yet marked handled: the owner contacts them. */
+  no_email_open: number;
   /** Interrupted mid-send: may or may not have gone out, never resent automatically. */
   emails_uncertain: number;
   /** Told "the studio is arranging your refund"; the refund has since gone through. */
@@ -157,15 +159,14 @@ export function describeFollowup(f: CancelFollowup, emailUnavailable = false): F
   if (f.refund_updates_owed && !emailUnavailable) {
     problems.push(`${plural(f.refund_updates_owed, "student has", "students have")} not been told their refund went through.`);
   }
-  const noEmail = f.people.filter((p) => p.notice_status === "no_email").map((p) => p.name ?? "a student");
-  if (noEmail.length) problems.push(`No email on file for ${noEmail.join(", ")}. Contact them directly.`);
+  if (f.no_email_open) problems.push(`No email on file for ${names("no_email")}. Contact them directly, then mark it handled.`);
 
   return {
     done,
     problems,
     canRetry: f.refunds_outstanding > 0
       || (!emailUnavailable && (f.emails_outstanding - uncertain > 0 || f.refund_updates_owed > 0)),
-    canMarkHandled: f.emails_outstanding > 0 || f.refund_updates_owed > 0,
+    canMarkHandled: f.emails_outstanding > 0 || f.refund_updates_owed > 0 || f.no_email_open > 0,
   };
 }
 

@@ -230,6 +230,11 @@ BEGIN
   -- CC-18: the owner closes notices they handled themselves; others cannot.
   UPDATE class_cancel_notices SET status = 'failed' WHERE occurrence_id = v_occ2 AND booking_id IS NOT NULL;
   UPDATE class_cancel_notices SET status = 'sent', refund_told = 'failed' WHERE occurrence_id = v_occ2 AND booking_id IS NULL;
+  UPDATE refund_requests SET status = 'sent' WHERE transaction_id = (SELECT id FROM transactions WHERE stripe_payment_intent_id = 'pi_cc_late');
+  -- The original drop-in's notice promised a confirmation, but its refund has not gone through: stays open.
+  UPDATE refund_requests SET status = 'failed' WHERE transaction_id = (SELECT transaction_id FROM bookings WHERE id = v_bk_drop);
+  UPDATE class_cancel_notices SET status = 'sent', refund_told = 'failed' WHERE booking_id = v_bk_drop;
+  UPDATE class_cancel_notices SET status = 'no_email' WHERE occurrence_id = v_occ2 AND booking_id IS NOT NULL AND booking_id <> v_bk_drop;
   ok := true;
   PERFORM pg_temp.as_user(pg_temp.id('staff_b'));
   BEGIN PERFORM class_cancel_mark_handled(v_occ2); ok := false;
@@ -240,12 +245,16 @@ BEGIN
   res := class_cancel_followup(v_occ2);
   EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(
-    ok AND n = 3 AND (res ->> 'emails_outstanding')::int = 0 AND (res ->> 'refund_updates_owed')::int = 0
-    AND NOT EXISTS (SELECT 1 FROM class_cancel_notices WHERE occurrence_id = v_occ2 AND (status = 'failed' OR refund_told = 'failed')),
-    'CC-18', 'owner marks the remaining notices handled; other studios cannot');
+    ok AND n = 2 AND (res ->> 'emails_outstanding')::int = 0 AND (res ->> 'refund_updates_owed')::int = 0
+    AND (res ->> 'no_email_open')::int = 0
+    AND (SELECT refund_told FROM class_cancel_notices WHERE booking_id = v_bk_drop) = 'failed'
+    AND (SELECT refund_told FROM class_cancel_notices WHERE occurrence_id = v_occ2 AND booking_id IS NULL) = 'handled'
+    AND NOT EXISTS (SELECT 1 FROM class_cancel_notices WHERE occurrence_id = v_occ2 AND status IN ('failed', 'no_email')),
+    'CC-18', 'owner marks notices handled (no-email too); a confirmation still waiting on its refund stays open');
 
   -- CC-19: a full refund made in the Stripe dashboard settles the queued request; a partial one does not.
   SELECT id INTO v_txn FROM transactions WHERE stripe_payment_intent_id = 'pi_cc_late';
+  UPDATE refund_requests SET status = 'failed' WHERE transaction_id = v_txn;
   n := settle_class_cancel_refunds('pi_cc_late', 2200, 1000);
   ok := n = 0 AND (SELECT status FROM refund_requests WHERE transaction_id = v_txn) = 'failed';
   n := settle_class_cancel_refunds('pi_cc_late', 2200, 2200);

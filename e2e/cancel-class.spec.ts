@@ -33,7 +33,7 @@ function state(over: { refundSent: boolean; emailsSent: boolean }) {
       { ...PEOPLE[2], notice_status: "no_email" },
     ],
     refunds_sent: refundSent ? 1 : 0, refunds_sent_cents: refundSent ? 2200 : 0, refunds_outstanding: refundSent ? 0 : 1,
-    emails_sent: emailsSent ? 2 : 0, emails_outstanding: emailsSent ? 0 : 2, emails_failed: 0, emails_uncertain: 0, refund_updates_owed: 0,
+    emails_sent: emailsSent ? 2 : 0, emails_outstanding: emailsSent ? 0 : 2, emails_failed: 0, emails_uncertain: 0, no_email_open: 1, refund_updates_owed: 0,
   };
 }
 
@@ -88,8 +88,8 @@ async function setUp(page: Page, calls: { fn: string; body: Record<string, unkno
     if (table === "rpc/class_cancel_mark_handled") {
       calls.push({ fn: "handled", body: req.postDataJSON() });
       current = {
-        ...current, emails_outstanding: 0, emails_failed: 0,
-        people: current.people.map((p) => (p.notice_status === "failed" ? { ...p, notice_status: "handled" } : p)),
+        ...current, emails_outstanding: 0, emails_failed: 0, no_email_open: 0,
+        people: current.people.map((p) => (["failed", "no_email"].includes(p.notice_status) ? { ...p, notice_status: "handled" } : p)),
       };
       return json(1);
     }
@@ -148,16 +148,21 @@ test("owner cancels a class and sees who gets what back", async ({ page }) => {
   await expect(result).toContainText("1 class returned to packs and memberships.");
   await expect(result).toContainText("$22.00 refunded to 1 card.");
   await expect(result).toContainText("2 emails sent.");
-  await expect(page.getByTestId("cancel-problems")).toHaveText("No email on file for Cy Moss. Contact them directly.");
+  await expect(page.getByTestId("cancel-problems")).toHaveText("No email on file for Cy Moss. Contact them directly, then mark it handled.");
   await expect(page.getByRole("button", { name: "Try again" })).toHaveCount(0);
 
   const cancel = calls.find((c) => c.fn === "cancel-class");
   expect(cancel?.body).toMatchObject({ occurrenceId: OCC_ID, message: "Maya is unwell. See you Thursday!" });
   expect(calls.find((c) => c.fn === "preview")?.body).toMatchObject({ p_occurrence_id: OCC_ID });
 
+  // Cy has no email: the class keeps asking until the owner says they told them.
   await page.getByRole("button", { name: "Done" }).click();
   const after = page.getByTestId("upcoming-class").first();
   await expect(after).toContainText("Cancelled");
+  await after.getByRole("button", { name: "Finish follow-up" }).click();
+  await page.getByRole("button", { name: "Mark as handled" }).click();
+  await expect(page.getByTestId("cancel-problems")).toHaveCount(0);
+  await page.getByRole("button", { name: "Done" }).click();
   await expect(after.getByRole("button", { name: "Finish follow-up" })).toHaveCount(0);
 });
 
@@ -220,7 +225,7 @@ test("an email that bounces can be closed once the owner tells them", async ({ p
   await page.getByRole("button", { name: "Cancel and tell 2 people" }).click();
   await expect(page.getByTestId("cancel-problems")).toContainText("1 email did not go out (Ana Diaz).");
   await page.getByRole("button", { name: "Mark as handled" }).click();
-  await expect(page.getByTestId("cancel-problems")).not.toContainText("Ana Diaz");
+  await expect(page.getByTestId("cancel-problems")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Mark as handled" })).toHaveCount(0);
   expect(calls.find((c) => c.fn === "handled")?.body).toMatchObject({ p_occurrence_id: OCC_ID });
 });

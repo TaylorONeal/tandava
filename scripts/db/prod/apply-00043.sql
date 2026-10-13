@@ -413,6 +413,8 @@ BEGIN
     'emails_sent', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status = 'sent'),
     'emails_outstanding', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status IN ('pending', 'sending', 'failed')),
     'emails_failed', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status = 'failed'),
+    -- No email on file: the owner has to contact them, then marks it handled.
+    'no_email_open', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status = 'no_email'),
     -- Claimed but never recorded (the function died mid-send): may or may not
     -- have gone out, so never resent automatically. The owner checks and marks it handled.
     'emails_uncertain', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id
@@ -653,8 +655,8 @@ GRANT EXECUTE ON FUNCTION reopen_failed_refund(UUID, TEXT, TEXT) TO service_role
 -- ---------------------------------------------------------------------------
 -- 9. The owner handled the rest themselves
 -- ---------------------------------------------------------------------------
--- After contacting people directly (bad address, an email that may or may not
--- have gone out), the owner closes the remaining notices. Refunds are not
+-- After contacting people directly (no email on file, a bad address, an email
+-- that may or may not have gone out), the owner closes the remaining notices. Refunds are not
 -- closable here: they settle through Stripe (see 10).
 CREATE OR REPLACE FUNCTION class_cancel_mark_handled(p_occurrence_id UUID)
 RETURNS INTEGER
@@ -669,12 +671,17 @@ BEGIN
   SELECT studio_id INTO v_studio FROM class_occurrences WHERE id = p_occurrence_id;
   IF v_studio IS NULL THEN RAISE EXCEPTION 'Class not found' USING ERRCODE = 'P0002'; END IF;
   PERFORM class_cancel_assert_staff(v_studio);
-  UPDATE class_cancel_notices
-     SET status = CASE WHEN status IN ('pending', 'sending', 'failed') THEN 'handled' ELSE status END,
-         refund_told = CASE WHEN refund_told = 'failed' THEN 'handled' ELSE refund_told END,
+  -- Not yet told (including no email on file) -> handled. A "your refund went
+  -- through" update is closed only once it is actually owed (the refund has
+  -- gone through); one still waiting on its refund stays open.
+  UPDATE class_cancel_notices n
+     SET status = CASE WHEN n.status IN ('pending', 'sending', 'failed', 'no_email') THEN 'handled' ELSE n.status END,
+         refund_told = CASE WHEN n.refund_told = 'failed' AND rr.status = 'sent' THEN 'handled' ELSE n.refund_told END,
          updated_at = NOW()
-   WHERE occurrence_id = p_occurrence_id
-     AND (status IN ('pending', 'sending', 'failed') OR refund_told = 'failed');
+    FROM class_cancel_notices n2
+    LEFT JOIN refund_requests rr ON rr.transaction_id = n2.transaction_id AND rr.reason = 'class_cancelled'
+   WHERE n.id = n2.id AND n.occurrence_id = p_occurrence_id
+     AND (n.status IN ('pending', 'sending', 'failed', 'no_email') OR (n.refund_told = 'failed' AND rr.status = 'sent'));
   GET DIAGNOSTICS v_count = ROW_COUNT;
   RETURN v_count;
 END;

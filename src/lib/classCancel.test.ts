@@ -93,7 +93,7 @@ describe("describeFollowup", () => {
   const base = (over: Partial<CancelFollowup>): CancelFollowup => ({
     occurrence_id: "o", starts_at: "2026-10-20T18:00:00Z", class_name: "Flow", cancelled: true,
     people: [], refunds_sent: 0, refunds_sent_cents: 0, refunds_outstanding: 0,
-    emails_sent: 0, emails_outstanding: 0, emails_failed: 0, emails_uncertain: 0, refund_updates_owed: 0, ...over,
+    emails_sent: 0, emails_outstanding: 0, emails_failed: 0, emails_uncertain: 0, no_email_open: 0, refund_updates_owed: 0, ...over,
   });
 
   it("reports a clean finish with nothing to retry", () => {
@@ -113,13 +113,13 @@ describe("describeFollowup", () => {
         person({ name: "Ben Ito", notice_status: "pending" }),
         person({ name: "Cy Moss", email: null, notice_status: "no_email" }),
       ],
-      refunds_outstanding: 1, emails_outstanding: 2, emails_failed: 1,
+      refunds_outstanding: 1, emails_outstanding: 2, emails_failed: 1, no_email_open: 1,
     }));
     expect(r.problems).toEqual([
       "1 refund did not go through yet. Until it does, those students are told you are arranging it. Try again, or refund them from Stripe.",
       "1 email did not go out (Ana Diaz). Try again, or contact them directly and mark it handled.",
       "1 person has not been emailed yet.",
-      "No email on file for Cy Moss. Contact them directly.",
+      "No email on file for Cy Moss. Contact them directly, then mark it handled.",
     ]);
     expect(r.canRetry).toBe(true);
   });
@@ -146,7 +146,7 @@ describe("refund updates", () => {
     const r = describeFollowup({
       occurrence_id: "o", starts_at: "x", class_name: "Flow", cancelled: true, people: [],
       refunds_sent: 1, refunds_sent_cents: 2200, refunds_outstanding: 0,
-      emails_sent: 1, emails_outstanding: 0, emails_failed: 0, emails_uncertain: 0, refund_updates_owed: 1,
+      emails_sent: 1, emails_outstanding: 0, emails_failed: 0, emails_uncertain: 0, no_email_open: 0, refund_updates_owed: 1,
     });
     expect(r.problems).toEqual(["1 student has not been told their refund went through."]);
     expect(r.canRetry).toBe(true);
