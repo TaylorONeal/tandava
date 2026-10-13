@@ -258,12 +258,14 @@ ${note ? `<p style="border-left:3px solid #4fd1c5;padding-left:12px;">A note fro
 }
 
 /**
- * Whether a fully refunded charge was settled by hand (Stripe dashboard): no
- * refund Tandava made (refund_request_id) is live. Only then may it settle
+ * Whether a fully refunded charge was settled by hand (Stripe dashboard): a
+ * refund made by hand is live and no refund Tandava made (refund_request_id) is. Only then may it settle
  * the class-cancel queue. If our own refund is live it supplied (part of) the
  * full refund, and its attempt must stay open to a later failure, even when
  * an earlier partial refund was made by hand.
  */
 export function settledByHand(refunds: { status?: string | null; metadata?: Record<string, string> | null }[]): boolean {
-  return !refunds.some((r) => r.metadata?.refund_request_id && r.status !== "failed" && r.status !== "canceled");
+  const live = (r: { status?: string | null }) => r.status !== "failed" && r.status !== "canceled";
+  return refunds.some((r) => !r.metadata?.refund_request_id && live(r))
+    && !refunds.some((r) => r.metadata?.refund_request_id && live(r));
 }

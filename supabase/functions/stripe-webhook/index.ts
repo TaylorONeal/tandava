@@ -147,13 +147,18 @@ async function handle(event: Stripe.Event) {
       // A full refund made by hand in Stripe settles any class-cancel refund
       // queued for this payment (LP-1d). Only when no refund of ours is live:
       // our own refund's attempt must stay open to a later failure.
+      // Events arrive out of order and are snapshots, so decide on the charge
+      // and its refunds as Stripe has them now.
       if (charge.amount_refunded >= charge.amount) {
-        const refunds = await stripe.refunds.list({ charge: charge.id, limit: 100 });
-        if (settledByHand(refunds.data)) {
+        const [current, refunds] = await Promise.all([
+          stripe.charges.retrieve(charge.id),
+          stripe.refunds.list({ charge: charge.id, limit: 100 }),
+        ]);
+        if (current.amount_refunded >= current.amount && settledByHand(refunds.data)) {
           await rpc("settle_class_cancel_refunds", {
             p_payment_intent: charge.payment_intent as string,
-            p_amount: charge.amount,
-            p_amount_refunded: charge.amount_refunded,
+            p_amount: current.amount,
+            p_amount_refunded: current.amount_refunded,
           });
         }
       }

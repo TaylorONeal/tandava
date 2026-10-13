@@ -206,4 +206,9 @@ describe("settledByHand", () => {
     expect(settledByHand([{ status: "failed", metadata: { refund_request_id: "r1" } }, { status: "succeeded", metadata: {} }])).toBe(true);
     expect(settledByHand([{ status: "succeeded", metadata: null }])).toBe(true);
   });
+
+  it("is false when nothing live was made by hand (our refund failed, no other refund)", () => {
+    expect(settledByHand([{ status: "failed", metadata: { refund_request_id: "r1" } }])).toBe(false);
+    expect(settledByHand([])).toBe(false);
+  });
 });
