@@ -1,0 +1,271 @@
+/**
+ * Studio cancels a class (LP-1d): the rules both the owner's screen and the
+ * cancel-class edge function use. Plain TypeScript with no imports, so the
+ * edge function can import it directly (as express-book does with express.ts).
+ *
+ * The database decides what happens (cancel_class, migration 00043); this
+ * module only describes it: the owner's summary before and after, and the
+ * email each affected person gets.
+ */
+
+export type CancelSource = "pack" | "membership" | "drop_in" | "free" | "waitlist";
+
+export interface CancelPerson {
+  /** null for someone who paid after the class was cancelled (no booking). */
+  booking_id: string | null;
+  profile_id: string;
+  name: string | null;
+  first_name: string | null;
+  email: string | null;
+  status: string;
+  source: CancelSource;
+  refund_cents: number;
+  /** Currency of the payment (or the studio), ISO code. */
+  currency?: string | null;
+  /** Set after the refund was attempted: "failed" means it did not go through yet. */
+  refund_status?: "sent" | "failed" | null;
+  /** Whether this person has been told (class_cancel_followup). */
+  notice_status?: "pending" | "sending" | "sent" | "failed" | "unknown" | "no_email" | "handled" | null;
+}
+
+/**
+ * What a cancellation has done so far and what is still owed, read from the
+ * database (class_cancel_followup, 00043) after every cancel or resume, so the
+ * owner always sees the durable truth even after a lost response.
+ */
+export interface CancelFollowup {
+  occurrence_id: string;
+  starts_at: string;
+  class_name: string;
+  cancelled: boolean;
+  people: CancelPerson[];
+  refunds_sent: number;
+  refunds_sent_cents: number;
+  /** Sent refunds per ISO currency (refunds_sent_cents adds them up; do not show that). */
+  refunds_sent_by_currency?: Record<string, number>;
+  refunds_outstanding: number;
+  emails_sent: number;
+  emails_outstanding: number;
+  emails_failed: number;
+  /** No email on file and not yet marked handled: the owner contacts them. */
+  no_email_open: number;
+  /** Interrupted mid-send: may or may not have gone out, never resent automatically. */
+  emails_uncertain: number;
+  /** Told "the studio is arranging your refund"; the refund has since gone through. */
+  refund_updates_owed: number;
+}
+
+export interface FollowupReport {
+  /** What happened, one line each. */
+  done: string[];
+  /** What still needs the owner, one line each. */
+  problems: string[];
+  /** Whether "try again" can make progress. */
+  canRetry: boolean;
+  /** Whether there are notices the owner can close after contacting people themselves. */
+  canMarkHandled: boolean;
+}
+
+export interface CancelSummary {
+  booked: number;
+  waitlisted: number;
+  packReturns: number;
+  membershipReturns: number;
+  dropInRefunds: number;
+  refundCents: number;
+  free: number;
+  /** Currency of the last refund seen; use refundsByCurrency for totals. */
+  currency: string;
+  /** Refund totals per ISO currency: a studio can change currency between purchases. */
+  refundsByCurrency: Record<string, number>;
+  /** People with an email address we can tell. */
+  reachable: number;
+}
+
+export function summarizeCancellation(people: CancelPerson[]): CancelSummary {
+  const s: CancelSummary = {
+    booked: 0, waitlisted: 0, packReturns: 0, membershipReturns: 0,
+    dropInRefunds: 0, refundCents: 0, free: 0, currency: "USD", refundsByCurrency: {}, reachable: 0,
+  };
+  for (const p of people) {
+    if (p.email) s.reachable += 1;
+    if (p.source === "waitlist") { s.waitlisted += 1; continue; }
+    s.booked += 1;
+    if (p.source === "pack") s.packReturns += 1;
+    else if (p.source === "membership") s.membershipReturns += 1;
+    else if (p.source === "drop_in") {
+      s.dropInRefunds += 1;
+      s.refundCents += Math.max(0, p.refund_cents);
+      if (p.currency) s.currency = p.currency.toUpperCase();
+      const code = (p.currency || "USD").toUpperCase();
+      s.refundsByCurrency[code] = (s.refundsByCurrency[code] ?? 0) + Math.max(0, p.refund_cents);
+    }
+    else s.free += 1;
+  }
+  return s;
+}
+
+export function formatMoney(cents: number, currency?: string | null): string {
+  const code = (currency || "USD").toUpperCase();
+  try {
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: code }).format(cents / 100);
+  } catch {
+    return `${(cents / 100).toFixed(2)} ${code}`;
+  }
+}
+
+const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+
+/** "€20.00 + £20.00": never adds amounts in different currencies together. */
+export function formatTotals(byCurrency: Record<string, number>): string {
+  const parts = Object.entries(byCurrency).filter(([, cents]) => cents > 0)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([code, cents]) => formatMoney(cents, code));
+  return parts.length ? parts.join(" + ") : formatMoney(0);
+}
+
+/**
+ * One line per consequence, in the order an owner cares about: who loses a
+ * class, what comes back, what money goes out. Empty classes say so.
+ */
+export function describeCancellation(s: CancelSummary): string[] {
+  if (s.booked === 0 && s.waitlisted === 0) return ["Nobody is booked. The class just comes off the schedule."];
+  const lines: string[] = [];
+  if (s.booked) lines.push(`${plural(s.booked, "person is", "people are")} booked.`);
+  if (s.packReturns) lines.push(`${plural(s.packReturns, "class goes", "classes go")} back on class packs.`);
+  if (s.membershipReturns) lines.push(`${plural(s.membershipReturns, "membership class goes", "membership classes go")} back for this period.`);
+  if (s.dropInRefunds) lines.push(`${plural(s.dropInRefunds, "drop-in")} refunded in full: ${formatTotals(s.refundsByCurrency)}.`);
+  if (s.free) lines.push(`${plural(s.free, "free booking")} cancelled.`);
+  if (s.waitlisted) lines.push(`${plural(s.waitlisted, "person", "people")} on the waitlist removed.`);
+  const unreachable = s.booked + s.waitlisted - s.reachable;
+  lines.push(unreachable > 0
+    ? `Everyone with an email on file is told (${s.reachable} of ${s.booked + s.waitlisted}).`
+    : "Everyone is told by email.");
+  return lines;
+}
+
+/** The owner's after-cancel summary, from the durable follow-up state. */
+export function describeFollowup(f: CancelFollowup, emailUnavailable = false): FollowupReport {
+  const s = summarizeCancellation(f.people);
+  const done: string[] = [];
+  const problems: string[] = [];
+  const returned = s.packReturns + s.membershipReturns;
+  if (returned) done.push(`${plural(returned, "class", "classes")} returned to packs and memberships.`);
+  if (f.refunds_sent) {
+    const amount = f.refunds_sent_by_currency && Object.keys(f.refunds_sent_by_currency).length
+      ? formatTotals(f.refunds_sent_by_currency)
+      : formatMoney(f.refunds_sent_cents, s.currency);
+    done.push(`${amount} refunded to ${plural(f.refunds_sent, "card")}.`);
+  }
+  if (f.emails_sent) done.push(`${plural(f.emails_sent, "email")} sent.`);
+  if (s.booked + s.waitlisted === 0) done.push("Nobody was booked.");
+
+  if (f.refunds_outstanding) {
+    problems.push(`${plural(f.refunds_outstanding, "refund")} did not go through yet. Until it does, those students are told you are arranging it. Try again, or refund them from Stripe.`);
+  }
+  const names = (...statuses: CancelPerson["notice_status"][]) =>
+    f.people.filter((p) => statuses.includes(p.notice_status)).map((p) => p.name ?? p.email ?? "a student").join(", ");
+  const uncertain = f.emails_uncertain ?? 0;
+  // In flight right now (claimed under five minutes ago) counts as not yet emailed.
+  const waiting = f.emails_outstanding - f.emails_failed - uncertain;
+  if (emailUnavailable && f.emails_outstanding) {
+    problems.push(`Email is not set up for this studio yet, so ${plural(f.emails_outstanding, "person was", "people were")} not emailed. Please let them know, then mark it handled.`);
+  } else {
+    if (f.emails_failed) problems.push(`${plural(f.emails_failed, "email")} did not go out (${names("failed")}). Try again, or contact them directly and mark it handled.`);
+    if (uncertain) problems.push(`${plural(uncertain, "email")} may not have gone out (${names("unknown", "sending")}). Check with them, then mark it handled.`);
+    if (waiting > 0) problems.push(`${plural(waiting, "person has", "people have")} not been emailed yet.`);
+  }
+  if (f.refund_updates_owed) {
+    problems.push(`${plural(f.refund_updates_owed, "student has", "students have")} not been told their refund went through.${
+      emailUnavailable ? " Email is not set up, so please tell them, then mark it handled." : ""}`);
+  }
+  if (f.no_email_open) problems.push(`No email on file for ${names("no_email")}. Contact them directly, then mark it handled.`);
+
+  return {
+    done,
+    problems,
+    canRetry: f.refunds_outstanding > 0
+      || (!emailUnavailable && (f.emails_outstanding - uncertain > 0 || f.refund_updates_owed > 0)),
+    canMarkHandled: f.emails_outstanding > 0 || f.refund_updates_owed > 0 || f.no_email_open > 0,
+  };
+}
+
+export function escapeHtml(text: string): string {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+/** What happens to this person's payment, in their words. */
+export function personOutcome(p: CancelPerson): string {
+  switch (p.source) {
+    case "pack": return "The class is back on your class pack.";
+    case "membership": return "The class is back on your membership for this period.";
+    case "drop_in":
+      return p.refund_status === "failed"
+        ? `The studio is arranging your ${formatMoney(p.refund_cents, p.currency)} refund and will confirm when it is sent.`
+        : `Your ${formatMoney(p.refund_cents, p.currency)} is being refunded to your card. It usually shows in 5 to 10 business days.`;
+    case "waitlist": return "You were on the waitlist, so nothing was charged.";
+    default: return "Nothing was charged.";
+  }
+}
+
+/** For someone who was told the studio is arranging their refund, once it has gone through. */
+export function refundSentEmail(input: Omit<CancelEmailInput, "message">): { subject: string; html: string; text: string } {
+  const { person, className, studioName, when, scheduleUrl } = input;
+  const hi = person.first_name?.trim() ? `Hi ${person.first_name.trim()},` : "Hi,";
+  const amount = formatMoney(person.refund_cents, person.currency);
+  const subject = `Refund sent: ${className}, ${when}`;
+  const body = `Your ${amount} refund for ${className} on ${when}, which ${studioName} cancelled, has been sent to your card. It usually shows in 5 to 10 business days.`;
+  const text = [hi, "", body, "", `Find another class: ${scheduleUrl}`].join("\n");
+  const e = escapeHtml;
+  const html = `<p>${e(hi)}</p>
+<p>${e(body)}</p>
+<p><a href="${e(scheduleUrl)}">Find another class</a></p>`;
+  return { subject, html, text };
+}
+
+export interface CancelEmailInput {
+  person: CancelPerson;
+  className: string;
+  studioName: string;
+  /** Already formatted in the studio's time zone, e.g. "Tue, Oct 14, 6:00 PM". */
+  when: string;
+  /** Optional note from the studio. */
+  message?: string | null;
+  scheduleUrl: string;
+}
+
+export function classCancelledEmail(input: CancelEmailInput): { subject: string; html: string; text: string } {
+  const { person, className, studioName, when, scheduleUrl } = input;
+  const hi = person.first_name?.trim() ? `Hi ${person.first_name.trim()},` : "Hi,";
+  const note = input.message?.trim() ? input.message.trim().slice(0, 1000) : "";
+  const outcome = personOutcome(person);
+  const subject = `Cancelled: ${className}, ${when}`;
+  const text = [
+    hi, "",
+    `${studioName} has cancelled ${className} on ${when}.`,
+    ...(note ? ["", `A note from ${studioName}: ${note}`] : []),
+    "", outcome, "",
+    `Find another class: ${scheduleUrl}`,
+  ].join("\n");
+  const e = escapeHtml;
+  const html = `<p>${e(hi)}</p>
+<p><strong>${e(studioName)}</strong> has cancelled <strong>${e(className)}</strong> on ${e(when)}.</p>
+${note ? `<p style="border-left:3px solid #4fd1c5;padding-left:12px;">A note from ${e(studioName)}: ${e(note)}</p>` : ""}
+<p>${e(outcome)}</p>
+<p><a href="${e(scheduleUrl)}">Find another class</a></p>`;
+  return { subject, html, text };
+}
+
+/**
+ * Whether a fully refunded charge was settled by hand (Stripe dashboard): a
+ * refund made by hand is live and no refund Tandava made (refund_request_id) is. Only then may it settle
+ * the class-cancel queue. If our own refund is live it supplied (part of) the
+ * full refund, and its attempt must stay open to a later failure, even when
+ * an earlier partial refund was made by hand.
+ */
+export function settledByHand(refunds: { status?: string | null; metadata?: Record<string, string> | null }[]): boolean {
+  const live = (r: { status?: string | null }) => r.status !== "failed" && r.status !== "canceled";
+  return refunds.some((r) => !r.metadata?.refund_request_id && live(r))
+    && !refunds.some((r) => r.metadata?.refund_request_id && live(r));
+}

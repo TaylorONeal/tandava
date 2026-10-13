@@ -6,7 +6,10 @@
  * writes in ONE database transaction and records the Stripe event id first:
  *
  *   checkout.session.completed / async_payment_succeeded -> fulfill_stripe_checkout
- *   charge.refunded                                      -> record_stripe_refund
+ *   charge.refunded                                      -> record_stripe_refund,
+ *                                                           settle_class_cancel_refunds
+ *   refund.updated, refund.failed, charge.refund.updated
+ *     (failed/canceled class-cancel refund)              -> reopen_failed_refund
  *   invoice.paid (cycle renewals)                        -> renew_membership_cycle
  *   account.updated (Connect)                            -> set_studio_charges_enabled
  *   customer.subscription.updated / .deleted, invoice.payment_failed
@@ -35,7 +38,7 @@
  * Stripe Dashboard -> Webhooks -> endpoint:
  *   URL: https://<project-ref>.supabase.co/functions/v1/stripe-webhook
  *   Events: checkout.session.completed, checkout.session.async_payment_succeeded,
- *           charge.refunded, invoice.paid, invoice.payment_failed,
+ *           charge.refunded, refund.updated, refund.failed, charge.refund.updated, invoice.paid, invoice.payment_failed,
  *           customer.subscription.updated, customer.subscription.deleted,
  *           account.updated (Connect endpoint)
  */
@@ -43,6 +46,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import Stripe from "https://esm.sh/stripe@14?target=deno";
+import { settledByHand } from "../../../src/lib/classCancel.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
   apiVersion: "2024-06-20",
@@ -73,6 +77,16 @@ async function verify(body: string, signature: string): Promise<Stripe.Event> {
 }
 
 /** Throw on any database error so the caller answers 5xx and Stripe retries. */
+/** The charge as Stripe has it now; null if Stripe does not know it (a signed test event). Other errors throw, so Stripe retries. */
+async function currentCharge(id: string): Promise<Stripe.Charge | null> {
+  try {
+    return await stripe.charges.retrieve(id);
+  } catch (err) {
+    if ((err as { code?: string }).code === "resource_missing") return null;
+    throw err;
+  }
+}
+
 async function rpc(name: string, args: Record<string, unknown>) {
   const { data, error } = await supabase.rpc(name, args);
   if (error) throw new Error(`${name}: ${error.message}`);
@@ -131,15 +145,63 @@ async function handle(event: Stripe.Event) {
     }
 
     case "charge.refunded": {
-      const charge = event.data.object as Stripe.Charge;
-      if (!charge.payment_intent) return { status: "no payment intent" };
-      return rpc("record_stripe_refund", {
+      const snapshot = event.data.object as Stripe.Charge;
+      if (!snapshot.payment_intent) return { status: "no payment intent" };
+      // Events arrive out of order and are snapshots: record the charge as
+      // Stripe has it now, so an older event cannot undo a later refund
+      // failure. An unknown charge (a signed test event) falls back to the snapshot.
+      const current = await currentCharge(snapshot.id);
+      const amount = current?.amount ?? snapshot.amount;
+      const refunded = current?.amount_refunded ?? snapshot.amount_refunded;
+      if (refunded <= 0) return { status: "nothing refunded on the charge now" };
+      const recorded = await rpc("record_stripe_refund", {
         p_event_id: event.id,
-        p_payment_intent: charge.payment_intent as string,
-        p_charge_id: charge.id,
-        p_amount: charge.amount,
-        p_amount_refunded: charge.amount_refunded,
+        p_payment_intent: snapshot.payment_intent as string,
+        p_charge_id: snapshot.id,
+        p_amount: amount,
+        p_amount_refunded: refunded,
       });
+      // A full refund made by hand in Stripe settles any class-cancel refund
+      // queued for this payment (LP-1d): only on the live charge, and only when
+      // a refund made by hand is live and none of ours is (our own refund's
+      // attempt must stay open to a later failure).
+      if (current && refunded >= amount) {
+        const refunds = await stripe.refunds.list({ charge: snapshot.id, limit: 100 });
+        if (settledByHand(refunds.data)) {
+          await rpc("settle_class_cancel_refunds", {
+            p_payment_intent: snapshot.payment_intent as string,
+            p_amount: amount,
+            p_amount_refunded: refunded,
+          });
+        }
+      }
+      return recorded;
+    }
+
+    // refund.updated / refund.failed cover every payment method;
+    // charge.refund.updated only some. Reopening is idempotent per attempt.
+    case "refund.updated":
+    case "refund.failed":
+    case "charge.refund.updated": {
+      // A class-cancel refund (LP-1d) that Stripe later fails goes back on the
+      // queue, so the owner sees it as still owed and can retry.
+      const refund = event.data.object as Stripe.Refund;
+      const requestId = refund.metadata?.refund_request_id;
+      if (!requestId || (refund.status !== "failed" && refund.status !== "canceled")) return { status: "ignored" };
+      const attempt = Number.parseInt(refund.metadata?.refund_attempt ?? "", 10);
+      // The charge as Stripe reports it now, so the payment stops counting the failed refund.
+      const charge = refund.charge
+        ? await currentCharge(typeof refund.charge === "string" ? refund.charge : refund.charge.id)
+        : null;
+      const reopened = await rpc("reopen_failed_refund", {
+        p_refund_request_id: requestId,
+        p_stripe_refund_id: refund.id,
+        p_refund_attempt: Number.isFinite(attempt) ? attempt : null,
+        p_charge_amount: charge?.amount ?? null,
+        p_amount_refunded: charge?.amount_refunded ?? null,
+        p_error: `Refund ${refund.status}${refund.failure_reason ? `: ${refund.failure_reason}` : ""}`,
+      });
+      return { status: reopened ? "reopened" : "no matching sent refund" };
     }
 
     case "invoice.paid": {
