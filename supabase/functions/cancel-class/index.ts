@@ -125,10 +125,14 @@ async function sendOutstandingRefunds(db: Db, occurrenceId: string): Promise<voi
         ...(stripeRefused(err) ? { refund_attempt: (row.refund_attempt ?? 0) + 1 } : {}),
       };
     }
-    const { error: writeError } = await db.from("refund_requests")
+    // Only if nothing moved the request on meanwhile: the webhook may already
+    // have reopened this attempt's refund as failed (charge.refund.updated).
+    const { data: written, error: writeError } = await db.from("refund_requests")
       .update({ ...patch, attempts: (row.attempts ?? 0) + 1, updated_at: new Date().toISOString() })
-      .eq("id", row.id);
+      .eq("id", row.id).eq("refund_attempt", row.refund_attempt ?? 0).in("status", ["pending", "failed"])
+      .select("id");
     if (writeError) console.error(`[cancel-class] refund ${row.id} outcome not recorded:`, writeError.message);
+    else if (!written?.length) console.warn(`[cancel-class] refund ${row.id} changed meanwhile; outcome not written`);
   }
 }
 

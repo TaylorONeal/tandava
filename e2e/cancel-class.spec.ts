@@ -64,6 +64,7 @@ async function setUp(page: Page, calls: { fn: string; body: Record<string, unkno
         return json({ cancelled: false, followup: current, emailUnavailable: false });
       }
       cancelled = true;
+      if (body.message === "slow") await new Promise((r) => setTimeout(r, 1500));
       if (mode === "responseLost") return json({ error: "upstream timed out" }, 504);
       current = state({ refundSent: mode !== "refundFails", emailsSent: true });
       if (mode === "emailFails") {
@@ -228,4 +229,16 @@ test("an email that bounces can be closed once the owner tells them", async ({ p
   await expect(page.getByTestId("cancel-problems")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Mark as handled" })).toHaveCount(0);
   expect(calls.find((c) => c.fn === "handled")?.body).toMatchObject({ p_occurrence_id: OCC_ID });
+});
+
+test("the dialog stays put while a cancel is in flight", async ({ page }) => {
+  const calls: { fn: string; body: Record<string, unknown> }[] = [];
+  await setUp(page, calls);
+  await page.goto("/manage/schedule");
+  await page.getByTestId("upcoming-class").first().getByRole("button", { name: "Cancel" }).click();
+  await page.getByLabel("Note to students (optional)").fill("slow");
+  await page.getByRole("button", { name: "Cancel and tell 2 people" }).click();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Class cancelled" })).toBeVisible();
 });

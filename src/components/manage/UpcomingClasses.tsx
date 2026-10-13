@@ -10,7 +10,7 @@
  * so a lost response or a half-finished run shows what is still owed, and a
  * cancelled class with anything outstanding offers "Finish follow-up".
  */
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api as backendApi, data as backendData } from "@/lib/backend";
 import type { ClassCancelPreview, UpcomingClass } from "@/lib/backend/types";
@@ -195,14 +195,20 @@ function CancelClassDialog({
   const affected = summary.booked + summary.waitlisted;
   const toTell = summary.reachable;
 
+  // Bumped on close, so a request still in flight cannot write into the next class's dialog.
+  const session = useRef(0);
+
   const close = () => {
-    setNote(""); setError(null); setFollowup(null); setEmailUnavailable(false); setWorking(false);
+    if (working) return; // the request finishes first; the buttons are disabled meanwhile
+    session.current += 1;
+    setNote(""); setError(null); setFollowup(null); setEmailUnavailable(false);
     onClose();
   };
 
   /** After an unclear response, read what actually happened instead of guessing. */
-  const recover = async (fallback: string) => {
+  const recover = async (fallback: string, mine: number) => {
     const { data } = await backendData.getClassCancelFollowup(target!.id);
+    if (mine !== session.current) return;
     if (data?.cancelled) {
       setFollowup(data);
       setError("The class is cancelled, but the follow-up may not have finished. Try again to finish it.");
@@ -214,15 +220,17 @@ function CancelClassDialog({
 
   const run = async (body: Record<string, unknown>, fallback: string) => {
     if (!target) return;
+    const mine = session.current;
     setWorking(true);
     setError(null);
     const { data, error: e } = await backendApi.invoke<CancelResponse>("cancel-class", { occurrenceId: target.id, ...body });
+    if (mine !== session.current) return;
     if (data?.followup && !data.error && !e) {
       setFollowup(data.followup);
       setEmailUnavailable(Boolean(data.emailUnavailable));
       onDone();
     } else {
-      await recover(data?.error ?? e?.message ?? fallback);
+      await recover(data?.error ?? e?.message ?? fallback, mine);
     }
     setWorking(false);
   };
@@ -232,10 +240,12 @@ function CancelClassDialog({
 
   const markHandled = async () => {
     if (!target) return;
+    const mine = session.current;
     setWorking(true);
     setError(null);
     const { error: e } = await backendData.markClassCancelHandled(target.id);
     const { data } = await backendData.getClassCancelFollowup(target.id);
+    if (mine !== session.current) return;
     if (data) setFollowup(data);
     if (e) setError(e.message);
     else onDone();
@@ -279,7 +289,7 @@ function CancelClassDialog({
                   {working && <Loader2 className="h-4 w-4 me-2 animate-spin" />}Try again
                 </Button>
               )}
-              <Button onClick={close}>Done</Button>
+              <Button onClick={close} disabled={working}>Done</Button>
             </DialogFooter>
           </>
         ) : alreadyCancelled ? (
