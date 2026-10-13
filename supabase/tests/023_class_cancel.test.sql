@@ -268,7 +268,10 @@ BEGIN
   UPDATE refund_requests SET status = 'failed' WHERE transaction_id = v_txn;
   n := settle_class_cancel_refunds('pi_cc_late', 2200, 1000);
   ok := n = 0 AND (SELECT status FROM refund_requests WHERE transaction_id = v_txn) = 'failed';
+  m := (SELECT refund_attempt FROM refund_requests WHERE transaction_id = v_txn);
   n := settle_class_cancel_refunds('pi_cc_late', 2200, 2200);
+  -- A delayed failure for the refund made before the dashboard refund does not reopen it.
+  ok := ok AND NOT reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_old', m, 'late failure');
   PERFORM pg_temp.ok(
     ok AND n = 1 AND (SELECT status FROM refund_requests WHERE transaction_id = v_txn) = 'sent',
     'CC-19', 'dashboard refund settles the queue only when the charge is fully refunded');

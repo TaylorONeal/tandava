@@ -725,7 +725,9 @@ DECLARE
 BEGIN
   IF p_payment_intent IS NULL OR p_amount_refunded < p_amount THEN RETURN 0; END IF;
   UPDATE refund_requests rr
-     SET status = 'sent', last_error = 'Refunded in Stripe', updated_at = NOW()
+     -- Moving the attempt on retires any refund we made before: a late failure
+     -- event for it no longer matches (reopen_failed_refund), so this stays settled.
+     SET status = 'sent', last_error = 'Refunded in Stripe', refund_attempt = rr.refund_attempt + 1, updated_at = NOW()
     FROM transactions t
    WHERE rr.transaction_id = t.id AND t.stripe_payment_intent_id = p_payment_intent
      AND rr.status <> 'sent';
