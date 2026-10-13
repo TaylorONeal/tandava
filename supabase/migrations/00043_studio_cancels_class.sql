@@ -427,7 +427,7 @@ BEGIN
     -- Told "the studio is arranging your refund", and the refund has since gone through.
     'refund_updates_owed', (SELECT count(*) FROM class_cancel_notices n
                              JOIN refund_requests rr ON rr.transaction_id = n.transaction_id AND rr.reason = 'class_cancelled'
-                            WHERE n.occurrence_id = p_occurrence_id AND n.status IN ('sent', 'handled')
+                            WHERE n.occurrence_id = p_occurrence_id AND n.status IN ('sent', 'handled', 'no_email')
                               AND n.refund_told = 'failed' AND rr.status = 'sent')
   );
 END;
@@ -665,8 +665,11 @@ BEGIN
   IF NOT FOUND THEN RETURN FALSE; END IF;
   -- Whoever was told the refund is on its way is owed the update once a retry
   -- goes through (the refund-sent email), and the owner sees it as owed.
+  -- So is anyone the owner told by hand (or who has no email) while the
+  -- refund looked sent: they are owed word once a retry goes through.
   UPDATE class_cancel_notices SET refund_told = 'failed', updated_at = NOW()
-   WHERE transaction_id = v_txn AND refund_told = 'sent';
+   WHERE transaction_id = v_txn
+     AND (refund_told = 'sent' OR (refund_told IS NULL AND status IN ('handled', 'no_email')));
   -- The money is back with the studio: the payment's refund accounting
   -- follows the charge as Stripe now reports it (charge.amount_refunded, the
   -- same cumulative figure record_stripe_refund stores).
@@ -730,9 +733,9 @@ GRANT EXECUTE ON FUNCTION class_cancel_mark_handled(UUID) TO authenticated, serv
 -- ---------------------------------------------------------------------------
 -- 10. Refunded in the Stripe dashboard
 -- ---------------------------------------------------------------------------
--- charge.refunded (stripe-webhook) for a fully refunded charge that has a
--- refund we did not make (no refund_request_id) settles any class-cancel
--- refund queued for that payment, so a refund the owner made by hand is not
+-- charge.refunded (stripe-webhook) for a fully refunded charge with no live
+-- refund of ours (no refund_request_id refund succeeded or pending), so the
+-- money went back by hand, settles any class-cancel refund queued for that payment, so a refund the owner made by hand is not
 -- retried (Stripe would refuse it) and stops showing as owed. Our own refund's
 -- charge.refunded never settles: its attempt must stay open to a later failure.
 CREATE OR REPLACE FUNCTION settle_class_cancel_refunds(p_payment_intent TEXT, p_amount INTEGER, p_amount_refunded INTEGER)

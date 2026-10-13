@@ -195,7 +195,8 @@ BEGIN
   ok := ok AND NOT reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_cc_late', 3, 'stale attempt');
   -- The failure can arrive before "sent" was recorded: matched by attempt.
   UPDATE refund_requests SET status = 'pending', stripe_refund_id = NULL WHERE transaction_id = v_txn;
-  UPDATE class_cancel_notices SET refund_told = 'sent' WHERE transaction_id = v_txn;
+  -- Told by hand while the refund looked sent: reopened too.
+  UPDATE class_cancel_notices SET status = 'handled', refund_told = NULL WHERE transaction_id = v_txn;
   UPDATE transactions SET status = 'refunded', refunded_amount_cents = 2200 WHERE id = v_txn;
   ok := ok AND reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_cc_late', 0, 'insufficient funds', 2200, 0);
   ok := ok AND (SELECT status = 'completed' AND refunded_amount_cents = 0 FROM transactions WHERE id = v_txn);

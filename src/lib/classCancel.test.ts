@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  classCancelledEmail, describeCancellation, hasExternalRefund, describeFollowup, refundSentEmail, summarizeCancellation,
+  classCancelledEmail, describeCancellation, settledByHand, describeFollowup, refundSentEmail, summarizeCancellation,
   type CancelFollowup, type CancelPerson,
 } from "./classCancel";
 
@@ -194,15 +194,16 @@ describe("refund updates", () => {
   });
 });
 
-describe("hasExternalRefund", () => {
-  it("is true only for a live refund Tandava did not make", () => {
-    expect(hasExternalRefund([{ status: "succeeded", metadata: { refund_request_id: "r1" } }])).toBe(false);
-    expect(hasExternalRefund([{ status: "failed", metadata: {} }])).toBe(false);
-    expect(hasExternalRefund([{ status: "canceled", metadata: null }])).toBe(false);
-    expect(hasExternalRefund([
-      { status: "failed", metadata: { refund_request_id: "r1" } },
-      { status: "succeeded", metadata: {} },
-    ])).toBe(true);
-    expect(hasExternalRefund([{ status: "pending" }])).toBe(true);
+describe("settledByHand", () => {
+  it("is false while a refund Tandava made is live", () => {
+    expect(settledByHand([{ status: "succeeded", metadata: { refund_request_id: "r1" } }])).toBe(false);
+    expect(settledByHand([{ status: "pending", metadata: { refund_request_id: "r1" } }])).toBe(false);
+    // An earlier partial refund by hand does not change that.
+    expect(settledByHand([{ status: "succeeded", metadata: {} }, { status: "succeeded", metadata: { refund_request_id: "r1" } }])).toBe(false);
+  });
+
+  it("is true when only refunds made by hand are live", () => {
+    expect(settledByHand([{ status: "failed", metadata: { refund_request_id: "r1" } }, { status: "succeeded", metadata: {} }])).toBe(true);
+    expect(settledByHand([{ status: "succeeded", metadata: null }])).toBe(true);
   });
 });

@@ -46,7 +46,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import Stripe from "https://esm.sh/stripe@14?target=deno";
-import { hasExternalRefund } from "../../../src/lib/classCancel.ts";
+import { settledByHand } from "../../../src/lib/classCancel.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
   apiVersion: "2024-06-20",
@@ -145,11 +145,11 @@ async function handle(event: Stripe.Event) {
         p_amount_refunded: charge.amount_refunded,
       });
       // A full refund made by hand in Stripe settles any class-cancel refund
-      // queued for this payment (LP-1d). Only when a refund we did not make
-      // exists: our own refund's attempt must stay open to a later failure.
+      // queued for this payment (LP-1d). Only when no refund of ours is live:
+      // our own refund's attempt must stay open to a later failure.
       if (charge.amount_refunded >= charge.amount) {
         const refunds = await stripe.refunds.list({ charge: charge.id, limit: 100 });
-        if (hasExternalRefund(refunds.data)) {
+        if (settledByHand(refunds.data)) {
           await rpc("settle_class_cancel_refunds", {
             p_payment_intent: charge.payment_intent as string,
             p_amount: charge.amount,
