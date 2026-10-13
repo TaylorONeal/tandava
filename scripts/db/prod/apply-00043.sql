@@ -422,7 +422,7 @@ BEGIN
     -- Told "the studio is arranging your refund", and the refund has since gone through.
     'refund_updates_owed', (SELECT count(*) FROM class_cancel_notices n
                              JOIN refund_requests rr ON rr.transaction_id = n.transaction_id AND rr.reason = 'class_cancelled'
-                            WHERE n.occurrence_id = p_occurrence_id AND n.status = 'sent'
+                            WHERE n.occurrence_id = p_occurrence_id AND n.status IN ('sent', 'handled')
                               AND n.refund_told = 'failed' AND rr.status = 'sent')
   );
 END;
@@ -676,7 +676,13 @@ BEGIN
   -- gone through); one still waiting on its refund stays open.
   UPDATE class_cancel_notices n
      SET status = CASE WHEN n.status IN ('pending', 'sending', 'failed', 'no_email') THEN 'handled' ELSE n.status END,
-         refund_told = CASE WHEN n.refund_told = 'failed' AND rr.status = 'sent' THEN 'handled' ELSE n.refund_told END,
+         refund_told = CASE
+           WHEN n.refund_told = 'failed' AND rr.status = 'sent' THEN 'handled'
+           -- Told by hand while the refund is still owed: they are owed the
+           -- "your refund went through" update once it goes through.
+           WHEN n.refund_told IS NULL AND n.status IN ('pending', 'sending', 'failed', 'no_email')
+                AND rr.id IS NOT NULL AND rr.status <> 'sent' THEN 'failed'
+           ELSE n.refund_told END,
          updated_at = NOW()
     FROM class_cancel_notices n2
     LEFT JOIN refund_requests rr ON rr.transaction_id = n2.transaction_id AND rr.reason = 'class_cancelled'

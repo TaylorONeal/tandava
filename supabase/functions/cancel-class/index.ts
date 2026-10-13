@@ -66,6 +66,8 @@ interface RefundRow {
 
 interface NoticeRow {
   id: string;
+  /** For a refund update: the status before this run claimed it, restored if the email is refused. */
+  status: string;
   transaction_id: string | null;
   email: string | null;
   person: CancelPerson;
@@ -141,7 +143,7 @@ function formatWhen(iso: string, timeZone: string | null): string {
   }
 }
 
-const NOTICE_COLUMNS = "id, transaction_id, email, person, message, attempts, refund_told";
+const NOTICE_COLUMNS = "id, status, transaction_id, email, person, message, attempts, refund_told";
 
 /**
  * Tell everyone not yet told, and tell anyone who heard "the studio is
@@ -167,20 +169,26 @@ async function sendOutstandingNotices(db: Db, occurrenceId: string): Promise<voi
   // delivered, so it is never reclaimed: the owner sees it as uncertain and
   // marks it handled after checking (class_cancel_mark_handled).
   const claim = { status: "sending", updated_at: new Date().toISOString() };
-  const [{ data: firsts, error: e1 }, { data: updates, error: e2 }] = await Promise.all([
+  const claimUpdates = (from: "sent" | "handled") => db.from("class_cancel_notices").update(claim)
+    .eq("occurrence_id", occurrenceId).eq("status", from).eq("refund_told", "failed")
+    .not("email", "is", null).in("transaction_id", [...refundSent])
+    .select(NOTICE_COLUMNS)
+    // The claim returns the row as updated; remember the status to restore if the email is refused.
+    .then(({ data, error }) => ({ data: ((data ?? []) as NoticeRow[]).map((r) => ({ ...r, status: from })), error }));
+  const none = { data: [] as NoticeRow[], error: null };
+  const [{ data: firsts, error: e1 }, ...updateClaims] = await Promise.all([
     db.from("class_cancel_notices").update(claim)
       .eq("occurrence_id", occurrenceId)
       .in("status", ["pending", "failed"])
       .select(NOTICE_COLUMNS),
-    refundSent.size
-      ? db.from("class_cancel_notices").update(claim)
-        .eq("occurrence_id", occurrenceId).eq("status", "sent").eq("refund_told", "failed")
-        .in("transaction_id", [...refundSent])
-        .select(NOTICE_COLUMNS)
-      : Promise.resolve({ data: [], error: null }),
+    refundSent.size ? claimUpdates("sent") : Promise.resolve(none),
+    refundSent.size ? claimUpdates("handled") : Promise.resolve(none),
   ]);
   if (e1) console.error("[cancel-class] could not claim notices:", e1.message);
-  if (e2) console.error("[cancel-class] could not claim refund updates:", e2.message);
+  const updates = updateClaims.flatMap((c) => {
+    if (c.error) console.error("[cancel-class] could not claim refund updates:", c.error.message);
+    return c.data;
+  });
 
   const o = occ as unknown as { starts_at: string; offering: { name: string } | null; studio: { slug: string; timezone: string | null; name: string } | null };
   const studioName = o.studio?.name ?? "Your studio";
@@ -195,14 +203,30 @@ async function sendOutstandingNotices(db: Db, occurrenceId: string): Promise<voi
     const msg = isUpdate
       ? refundSentEmail({ person, className, studioName, when, scheduleUrl })
       : classCancelledEmail({ person, className, studioName, when, message: row.message, scheduleUrl });
-    const result: { success: boolean; error?: string } = row.email
-      ? await sendEmail({ to: row.email, ...msg, fromName: studioName, tags: { type: isUpdate ? "class_cancelled_refund" : "class_cancelled" } })
-        .catch((err: Error) => ({ success: false, error: err.message }))
-      : { success: false, error: "No email on file" };
-    const patch = result.success
+    // Sent, refused (safe to retry), or unknown: the request failed in
+    // transit, so it may have been delivered. Unknown stays "sending" and is
+    // never resent automatically; the owner checks and marks it handled.
+    let outcome: "sent" | "failed" | "unknown";
+    let detail: string | null = null;
+    if (!row.email) {
+      outcome = "failed";
+      detail = "No email on file";
+    } else {
+      try {
+        const r = await sendEmail({ to: row.email, ...msg, fromName: studioName, tags: { type: isUpdate ? "class_cancelled_refund" : "class_cancelled" } });
+        outcome = r.success ? "sent" : "failed";
+        detail = r.success ? null : String(r.error ?? "Email not accepted");
+      } catch (err) {
+        outcome = "unknown";
+        detail = `Delivery not confirmed: ${(err as Error).message}`;
+      }
+    }
+    const patch = outcome === "sent"
       ? { status: "sent", last_error: null, refund_told: isUpdate ? "sent" : refundNow }
-      // A failed update stays owed ("sent" + refund_told failed); a failed first email is retried.
-      : { status: isUpdate ? "sent" : "failed", last_error: String(result.error ?? "Email not accepted").slice(0, 500) };
+      : outcome === "unknown"
+        ? { last_error: detail?.slice(0, 500) }
+        // Refused: a first email is retried; a refund update keeps its old status and stays owed.
+        : { status: isUpdate ? row.status : "failed", last_error: detail?.slice(0, 500) };
     const { error: writeError } = await db.from("class_cancel_notices")
       .update({ ...patch, attempts: (row.attempts ?? 0) + 1, updated_at: new Date().toISOString() })
       .eq("id", row.id);
