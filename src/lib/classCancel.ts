@@ -156,8 +156,9 @@ export function describeFollowup(f: CancelFollowup, emailUnavailable = false): F
     if (uncertain) problems.push(`${plural(uncertain, "email")} may not have gone out (${names("sending")}). Check with them, then mark it handled.`);
     if (waiting > 0) problems.push(`${plural(waiting, "person has", "people have")} not been emailed yet.`);
   }
-  if (f.refund_updates_owed && !emailUnavailable) {
-    problems.push(`${plural(f.refund_updates_owed, "student has", "students have")} not been told their refund went through.`);
+  if (f.refund_updates_owed) {
+    problems.push(`${plural(f.refund_updates_owed, "student has", "students have")} not been told their refund went through.${
+      emailUnavailable ? " Email is not set up, so please tell them, then mark it handled." : ""}`);
   }
   if (f.no_email_open) problems.push(`No email on file for ${names("no_email")}. Contact them directly, then mark it handled.`);
 

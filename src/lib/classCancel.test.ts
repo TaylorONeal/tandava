@@ -152,6 +152,17 @@ describe("refund updates", () => {
     expect(r.canRetry).toBe(true);
   });
 
+  it("still asks the owner to tell them when email is not set up", () => {
+    const r = describeFollowup({
+      occurrence_id: "o", starts_at: "x", class_name: "Flow", cancelled: true, people: [],
+      refunds_sent: 1, refunds_sent_cents: 2200, refunds_outstanding: 0,
+      emails_sent: 1, emails_outstanding: 0, emails_failed: 0, emails_uncertain: 0, no_email_open: 0, refund_updates_owed: 1,
+    }, true);
+    expect(r.problems).toEqual(["1 student has not been told their refund went through. Email is not set up, so please tell them, then mark it handled."]);
+    expect(r.canRetry).toBe(false);
+    expect(r.canMarkHandled).toBe(true);
+  });
+
   it("confirms the amount and escapes the studio's words", () => {
     const e = refundSentEmail({
       person: person({ source: "drop_in", refund_cents: 2200, currency: "eur", first_name: "Ana" }),
