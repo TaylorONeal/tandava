@@ -1,0 +1,42 @@
+name: Stripe smoke
+
+# LP-1 automation: buys a test class pack on the hosted project through
+# stripe-checkout, delivers the signed webhook events (paid, redelivered,
+# refunded) and checks the database. Stripe TEST mode only; the script refuses
+# live keys and live sessions. See scripts/smoke/stripe-smoke.mjs.
+# Runs only from main (schedule or manual), never on pull requests.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 9 * * *" # daily, 09:17 UTC
+
+concurrency:
+  group: stripe-smoke
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    name: stripe checkout -> webhook -> refund (test mode)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10 # requests time out at 20s; leaves room for the refund and cleanup
+    # Secrets live in the "stripe-smoke" environment, which only main may use,
+    # so branch or PR code never receives them. The script is unit-tested in CI
+    # (npm test) without secrets.
+    if: github.ref == 'refs/heads/main'
+    environment: stripe-smoke
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run smoke test
+        env:
+          SUPABASE_URL: https://mkaixgjwakfufmmwembn.supabase.co
+          # Public key (it ships in the web app).
+          SUPABASE_ANON_KEY: sb_publishable_smxJQAecc4igEus6VvZQxA_eKKI3lwg
+          # Test studio "purafield-studio-test-eejz", Test 5-Class Pack.
+          SMOKE_CLASS_PACK_TYPE_ID: fd8935f2-160b-403e-8169-b3e6be96999d
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SMOKE_SUPABASE_SECRET_KEY }}
+          STRIPE_TEST_KEY: ${{ secrets.SMOKE_STRIPE_TEST_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.SMOKE_STRIPE_WEBHOOK_SECRET }}
+        run: node scripts/smoke/stripe-smoke.mjs
