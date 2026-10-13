@@ -60,6 +60,7 @@ type Db = ReturnType<typeof createClient<any>>;
 interface RefundRow {
   id: string;
   amount_cents: number;
+  stripe_refund_id: string | null;
   attempts: number;
   refund_attempt: number;
   transaction: { stripe_payment_intent_id: string | null } | null;
@@ -96,7 +97,7 @@ function stripeRefused(err: unknown): boolean {
  */
 async function sendOutstandingRefunds(db: Db, occurrenceId: string): Promise<void> {
   const { data, error } = await db.from("refund_requests")
-    .select("id, amount_cents, attempts, refund_attempt, transaction:transactions(stripe_payment_intent_id)")
+    .select("id, amount_cents, stripe_refund_id, attempts, refund_attempt, transaction:transactions(stripe_payment_intent_id)")
     .eq("occurrence_id", occurrenceId).in("status", ["pending", "failed"]);
   if (error) {
     console.error("[cancel-class] could not read refund requests:", error.message);
@@ -110,6 +111,25 @@ async function sendOutstandingRefunds(db: Db, occurrenceId: string): Promise<voi
     try {
       if (!stripe) throw new Error("Payments are not configured");
       if (!pi) throw new Error("No card payment to refund");
+      // A refund already made for this attempt (it needed action, or its
+      // outcome was not recorded) is resolved first, as Stripe has it now.
+      if (row.stripe_refund_id) {
+        const existing = await stripe.refunds.retrieve(row.stripe_refund_id);
+        if (existing.metadata?.refund_attempt === String(attempt)) {
+          if (existing.status === "succeeded" || existing.status === "pending") {
+            patch = { status: "sent", last_error: null };
+          } else if (existing.status === "requires_action") {
+            patch = { status: "failed", last_error: "Refund needs action in Stripe" };
+          } else {
+            patch = { status: "failed", refund_attempt: attempt + 1, last_error: `Refund ${existing.status}${existing.failure_reason ? `: ${existing.failure_reason}` : ""}` };
+          }
+          const { error: e } = await db.from("refund_requests")
+            .update({ ...patch, attempts: (row.attempts ?? 0) + 1, updated_at: new Date().toISOString() })
+            .eq("id", row.id).eq("refund_attempt", attempt).in("status", ["pending", "failed"]);
+          if (e) console.error(`[cancel-class] refund ${row.id} outcome not recorded:`, e.message);
+          continue;
+        }
+      }
       const intent = await stripe.paymentIntents.retrieve(pi, { expand: ["latest_charge"] });
       // Never more than the charge still holds: a partial refund made by hand
       // in Stripe since this was queued shrinks what is left to send.
@@ -146,7 +166,10 @@ async function sendOutstandingRefunds(db: Db, occurrenceId: string): Promise<voi
       }, { idempotencyKey: `refund_request:${row.id}:${attempt}` });
       patch = refund.status === "succeeded" || refund.status === "pending"
         ? { status: "sent", stripe_refund_id: refund.id, last_error: null }
-        : {
+        // Not terminal: stays on this attempt (and key) until Stripe resolves it.
+        : refund.status === "requires_action"
+          ? { status: "failed", stripe_refund_id: refund.id, last_error: "Refund needs action in Stripe" }
+          : {
           status: "failed", stripe_refund_id: refund.id, refund_attempt: attempt + 1,
           last_error: `Refund ${refund.status}${refund.failure_reason ? `: ${refund.failure_reason}` : ""}`,
         };

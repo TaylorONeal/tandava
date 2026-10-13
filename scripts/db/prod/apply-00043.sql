@@ -673,7 +673,7 @@ BEGIN
   -- refund looked sent: they are owed word once a retry goes through.
   UPDATE class_cancel_notices SET refund_told = 'failed', updated_at = NOW()
    WHERE transaction_id = v_txn
-     AND (refund_told = 'sent' OR (refund_told IS NULL AND status IN ('handled', 'no_email')));
+     AND (refund_told IN ('sent', 'handled') OR (refund_told IS NULL AND status IN ('handled', 'no_email')));
   -- The money is back with the studio: the payment's refund accounting
   -- follows the charge as Stripe now reports it (charge.amount_refunded, the
   -- same cumulative figure record_stripe_refund stores).
