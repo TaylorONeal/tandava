@@ -104,49 +104,64 @@ async function sendOutstandingRefunds(db: Db, occurrenceId: string): Promise<voi
   }
   for (const row of (data ?? []) as unknown as RefundRow[]) {
     const pi = row.transaction?.stripe_payment_intent_id;
+    // The attempt this run works under; every write below requires it unchanged.
+    let attempt = row.refund_attempt ?? 0;
     let patch: Record<string, unknown>;
     try {
       if (!stripe) throw new Error("Payments are not configured");
       if (!pi) throw new Error("No card payment to refund");
       const intent = await stripe.paymentIntents.retrieve(pi, { expand: ["latest_charge"] });
       // Never more than the charge still holds: a partial refund made by hand
-      // in Stripe since this was queued shrinks what is owed.
+      // in Stripe since this was queued shrinks what is left to send.
       const charge = intent.latest_charge && typeof intent.latest_charge !== "string" ? intent.latest_charge : null;
       const left = charge ? Math.max(0, charge.amount - charge.amount_refunded) : row.amount_cents;
       const amount = Math.min(row.amount_cents, left);
       if (amount <= 0) {
+        // Nothing left on the charge. The attempt is kept: if what emptied it
+        // was our own earlier try whose write was lost, its later failure must
+        // still be able to reopen this.
         await db.from("refund_requests")
           .update({ status: "sent", last_error: "Already refunded in Stripe", attempts: (row.attempts ?? 0) + 1, updated_at: new Date().toISOString() })
-          .eq("id", row.id).eq("refund_attempt", row.refund_attempt ?? 0).in("status", ["pending", "failed"]);
+          .eq("id", row.id).eq("refund_attempt", attempt).in("status", ["pending", "failed"]);
         continue;
+      }
+      if (amount !== row.amount_cents) {
+        // A different amount is a different refund: start a new attempt (new
+        // key and metadata), so a late failure of an earlier full-amount try
+        // cannot reopen this one. amount_cents keeps the total owed.
+        const { data: moved } = await db.from("refund_requests")
+          .update({ refund_attempt: attempt + 1, updated_at: new Date().toISOString() })
+          .eq("id", row.id).eq("refund_attempt", attempt).in("status", ["pending", "failed"])
+          .select("id");
+        if (!moved?.length) continue; // changed meanwhile; the next run sees the new state
+        attempt += 1;
       }
       const refund = await stripe.refunds.create({
         payment_intent: pi,
         amount,
         reason: "requested_by_customer",
-        metadata: { refund_request_id: row.id, refund_attempt: String(row.refund_attempt ?? 0), reason: "class_cancelled" },
+        metadata: { refund_request_id: row.id, refund_attempt: String(attempt), reason: "class_cancelled" },
         ...(intent.transfer_data?.destination ? { reverse_transfer: true } : {}),
         ...(intent.application_fee_amount ? { refund_application_fee: true } : {}),
-        // The amount is part of the key: a resized refund is a new request to Stripe.
-      }, { idempotencyKey: `refund_request:${row.id}:${row.refund_attempt ?? 0}${amount === row.amount_cents ? "" : `:${amount}`}` });
+      }, { idempotencyKey: `refund_request:${row.id}:${attempt}` });
       patch = refund.status === "succeeded" || refund.status === "pending"
-        ? { status: "sent", stripe_refund_id: refund.id, last_error: null, amount_cents: amount }
+        ? { status: "sent", stripe_refund_id: refund.id, last_error: null }
         : {
-          status: "failed", stripe_refund_id: refund.id, refund_attempt: (row.refund_attempt ?? 0) + 1,
+          status: "failed", stripe_refund_id: refund.id, refund_attempt: attempt + 1,
           last_error: `Refund ${refund.status}${refund.failure_reason ? `: ${refund.failure_reason}` : ""}`,
         };
     } catch (err) {
       patch = {
         status: "failed",
         last_error: (err as Error).message.slice(0, 500),
-        ...(stripeRefused(err) ? { refund_attempt: (row.refund_attempt ?? 0) + 1 } : {}),
+        ...(stripeRefused(err) ? { refund_attempt: attempt + 1 } : {}),
       };
     }
     // Only if nothing moved the request on meanwhile: the webhook may already
-    // have reopened this attempt's refund as failed (charge.refund.updated).
+    // have reopened this attempt's refund as failed (refund.failed and friends).
     const { data: written, error: writeError } = await db.from("refund_requests")
       .update({ ...patch, attempts: (row.attempts ?? 0) + 1, updated_at: new Date().toISOString() })
-      .eq("id", row.id).eq("refund_attempt", row.refund_attempt ?? 0).in("status", ["pending", "failed"])
+      .eq("id", row.id).eq("refund_attempt", attempt).in("status", ["pending", "failed"])
       .select("id");
     if (writeError) console.error(`[cancel-class] refund ${row.id} outcome not recorded:`, writeError.message);
     else if (!written?.length) console.warn(`[cancel-class] refund ${row.id} changed meanwhile; outcome not written`);
