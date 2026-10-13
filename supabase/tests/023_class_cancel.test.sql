@@ -170,6 +170,35 @@ BEGIN
   EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(ok AND m = 0 AND n = 40, 'CC-14', 'follow-up and notices: own staff read only, no client writes');
 
+  -- CC-15: a drop-in paid after the class was cancelled gets its refund and notice queued.
+  res := fulfill_stripe_checkout('evt_cc_late', 'checkout.session.completed', jsonb_build_object(
+    'id', 'cs_cc_late', 'payment_intent', 'pi_cc_late', 'amount_total', 2200, 'currency', 'usd',
+    'metadata', jsonb_build_object('type', 'drop_in', 'studio_id', pg_temp.id('studio_a'),
+                                   'profile_id', pg_temp.id('student_a1'), 'occurrence_id', v_occ2)));
+  SELECT id INTO v_txn FROM transactions WHERE stripe_payment_intent_id = 'pi_cc_late';
+  PERFORM pg_temp.ok(
+    res ->> 'status' = 'processed'
+    AND NOT EXISTS (SELECT 1 FROM bookings WHERE transaction_id = v_txn)
+    AND (SELECT amount_cents FROM refund_requests WHERE transaction_id = v_txn AND occurrence_id = v_occ2 AND status = 'pending') = 2200
+    AND (SELECT count(*) FROM class_cancel_notices WHERE transaction_id = v_txn AND occurrence_id = v_occ2 AND booking_id IS NULL) = 1,
+    'CC-15', 'paid after cancel: no booking, refund and notice queued');
+
+  -- CC-16: a student told "arranging" is owed an update once the refund goes
+  -- through; a refund Stripe later fails is reopened once, for the matching refund only.
+  UPDATE refund_requests SET status = 'sent', stripe_refund_id = 're_cc_late' WHERE transaction_id = v_txn;
+  UPDATE class_cancel_notices SET status = 'sent', refund_told = 'failed' WHERE transaction_id = v_txn;
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  prev := class_cancel_followup(v_occ2);
+  EXECUTE 'RESET ROLE';
+  ok := NOT reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_other', 'x');
+  ok := ok AND reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_cc_late', 'insufficient funds');
+  ok := ok AND NOT reopen_failed_refund((SELECT id FROM refund_requests WHERE transaction_id = v_txn), 're_cc_late', 'again');
+  PERFORM pg_temp.ok(
+    ok AND (prev ->> 'refund_updates_owed')::int = 1
+    AND (SELECT status = 'failed' AND refund_attempt = 1 AND last_error = 'insufficient funds'
+           FROM refund_requests WHERE transaction_id = v_txn),
+    'CC-16', 'refund update owed after a late success; a failed refund is reopened once with a new attempt');
+
   -- CC-11: an early check-in is unwound: credit back and the attendance it counted removed.
   UPDATE studio_members SET total_classes_attended = 3, last_class_at = NOW() - interval '7 days'
    WHERE studio_id = pg_temp.id('studio_a') AND profile_id = pg_temp.id('student_a2');
@@ -190,6 +219,13 @@ BEGIN
     AND res -> 'people' -> 0 ->> 'currency' = 'USD'
     AND (SELECT message FROM class_cancel_notices WHERE occurrence_id = 'aaaaaaaa-3000-0000-0000-0000000000c1') = 'See you Thursday',
     'CC-11', 'early check-in unwound: pack class back, attendance count restored, currency and note kept');
+
+  -- CC-17: only the service role can reopen a refund.
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  BEGIN PERFORM reopen_failed_refund(gen_random_uuid(), 're', 'x'); ok := false;
+  EXCEPTION WHEN insufficient_privilege THEN ok := true; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(ok, 'CC-17', 'staff cannot reopen refunds');
 
   -- CC-10: anonymous callers cannot reach either function.
   PERFORM pg_temp.as_anon();

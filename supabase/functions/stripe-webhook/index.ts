@@ -7,6 +7,7 @@
  *
  *   checkout.session.completed / async_payment_succeeded -> fulfill_stripe_checkout
  *   charge.refunded                                      -> record_stripe_refund
+ *   charge.refund.updated (failed/canceled class-cancel refund) -> reopen_failed_refund
  *   invoice.paid (cycle renewals)                        -> renew_membership_cycle
  *   account.updated (Connect)                            -> set_studio_charges_enabled
  *   customer.subscription.updated / .deleted, invoice.payment_failed
@@ -35,7 +36,7 @@
  * Stripe Dashboard -> Webhooks -> endpoint:
  *   URL: https://<project-ref>.supabase.co/functions/v1/stripe-webhook
  *   Events: checkout.session.completed, checkout.session.async_payment_succeeded,
- *           charge.refunded, invoice.paid, invoice.payment_failed,
+ *           charge.refunded, charge.refund.updated, invoice.paid, invoice.payment_failed,
  *           customer.subscription.updated, customer.subscription.deleted,
  *           account.updated (Connect endpoint)
  */
@@ -140,6 +141,20 @@ async function handle(event: Stripe.Event) {
         p_amount: charge.amount,
         p_amount_refunded: charge.amount_refunded,
       });
+    }
+
+    case "charge.refund.updated": {
+      // A class-cancel refund (LP-1d) that Stripe later fails goes back on the
+      // queue, so the owner sees it as still owed and can retry.
+      const refund = event.data.object as Stripe.Refund;
+      const requestId = refund.metadata?.refund_request_id;
+      if (!requestId || (refund.status !== "failed" && refund.status !== "canceled")) return { status: "ignored" };
+      const reopened = await rpc("reopen_failed_refund", {
+        p_refund_request_id: requestId,
+        p_stripe_refund_id: refund.id,
+        p_error: `Refund ${refund.status}${refund.failure_reason ? `: ${refund.failure_reason}` : ""}`,
+      });
+      return { status: reopened ? "reopened" : "no matching sent refund" };
     }
 
     case "invoice.paid": {

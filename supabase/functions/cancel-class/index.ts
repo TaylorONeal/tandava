@@ -31,7 +31,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import Stripe from "https://esm.sh/stripe@14?target=deno";
 import { emailProviderReady, sendEmail } from "../email/provider.ts";
-import { classCancelledEmail, type CancelFollowup, type CancelPerson } from "../../../src/lib/classCancel.ts";
+import { classCancelledEmail, refundSentEmail, type CancelFollowup, type CancelPerson } from "../../../src/lib/classCancel.ts";
 
 const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
 const stripe = stripeKey ? new Stripe(stripeKey, { apiVersion: "2024-06-20" }) : null;
@@ -59,30 +59,39 @@ interface RefundRow {
   id: string;
   amount_cents: number;
   attempts: number;
+  refund_attempt: number;
   transaction: { stripe_payment_intent_id: string | null } | null;
 }
 
 interface NoticeRow {
   id: string;
-  booking_id: string;
+  transaction_id: string | null;
   email: string | null;
   person: CancelPerson;
   message: string | null;
   attempts: number;
+  refund_told: "sent" | "failed" | null;
 }
 
 /** A claimed notice left "sending" this long (the function died mid-send) can be claimed again. */
 const STALE_SENDING_MS = 5 * 60_000;
 
+/** Stripe said no (as opposed to the request not arriving): the next try needs a new idempotency key. */
+function stripeRefused(err: unknown): boolean {
+  const type = (err as { type?: string })?.type ?? "";
+  return type.startsWith("Stripe") && type !== "StripeConnectionError" && type !== "StripeAPIError";
+}
+
 /**
- * Send every refund still owed for this class. A refund only counts once its
- * row says "sent": if Stripe accepted it but the write failed, the row stays
- * owed and the next resume gets the same refund back from Stripe (same
- * idempotency key) and records it.
+ * Send every refund still owed for this class. A refund counts as sent only
+ * when Stripe reports it succeeded or pending AND its row says so; a refund
+ * that fails later is reopened by the webhook (charge.refund.updated). The
+ * idempotency key changes only after a definite failure, so a retry after a
+ * lost response or a failed write gets the same refund back, never a second.
  */
 async function sendOutstandingRefunds(db: Db, occurrenceId: string): Promise<void> {
   const { data, error } = await db.from("refund_requests")
-    .select("id, amount_cents, attempts, transaction:transactions(stripe_payment_intent_id)")
+    .select("id, amount_cents, attempts, refund_attempt, transaction:transactions(stripe_payment_intent_id)")
     .eq("occurrence_id", occurrenceId).in("status", ["pending", "failed"]);
   if (error) {
     console.error("[cancel-class] could not read refund requests:", error.message);
@@ -102,10 +111,19 @@ async function sendOutstandingRefunds(db: Db, occurrenceId: string): Promise<voi
         metadata: { refund_request_id: row.id, reason: "class_cancelled" },
         ...(intent.transfer_data?.destination ? { reverse_transfer: true } : {}),
         ...(intent.application_fee_amount ? { refund_application_fee: true } : {}),
-      }, { idempotencyKey: `refund_request:${row.id}` });
-      patch = { status: "sent", stripe_refund_id: refund.id, last_error: null };
+      }, { idempotencyKey: `refund_request:${row.id}:${row.refund_attempt ?? 0}` });
+      patch = refund.status === "succeeded" || refund.status === "pending"
+        ? { status: "sent", stripe_refund_id: refund.id, last_error: null }
+        : {
+          status: "failed", stripe_refund_id: refund.id, refund_attempt: (row.refund_attempt ?? 0) + 1,
+          last_error: `Refund ${refund.status}${refund.failure_reason ? `: ${refund.failure_reason}` : ""}`,
+        };
     } catch (err) {
-      patch = { status: "failed", last_error: (err as Error).message.slice(0, 500) };
+      patch = {
+        status: "failed",
+        last_error: (err as Error).message.slice(0, 500),
+        ...(stripeRefused(err) ? { refund_attempt: (row.refund_attempt ?? 0) + 1 } : {}),
+      };
     }
     const { error: writeError } = await db.from("refund_requests")
       .update({ ...patch, attempts: (row.attempts ?? 0) + 1, updated_at: new Date().toISOString() })
@@ -125,72 +143,75 @@ function formatWhen(iso: string, timeZone: string | null): string {
   }
 }
 
+const NOTICE_COLUMNS = "id, transaction_id, email, person, message, attempts, refund_told";
+
 /**
- * Tell everyone not yet told. Rows are claimed (status "sending") with one
- * conditional update first, so two concurrent runs never email the same
- * person. Each email states the refund as it actually stands right now.
+ * Tell everyone not yet told, and tell anyone who heard "the studio is
+ * arranging your refund" once it has gone through. Rows are claimed (status
+ * "sending") with a conditional update first, so two runs never email the
+ * same person. Each email states the refund as it stands right now.
  */
 async function sendOutstandingNotices(db: Db, occurrenceId: string): Promise<void> {
-  const now = new Date();
-  const staleBefore = new Date(now.getTime() - STALE_SENDING_MS).toISOString();
-  const { data: claimed, error } = await db.from("class_cancel_notices")
-    .update({ status: "sending", updated_at: now.toISOString() })
-    .eq("occurrence_id", occurrenceId)
-    .or(`status.in.(pending,failed),and(status.eq.sending,updated_at.lt.${staleBefore})`)
-    .select("id, booking_id, email, person, message, attempts");
-  if (error) {
-    console.error("[cancel-class] could not claim notices:", error.message);
-    return;
-  }
-  const rows = (claimed ?? []) as NoticeRow[];
-  if (!rows.length) return;
-
-  const release = async (reason: string) => {
-    await db.from("class_cancel_notices")
-      .update({ status: "failed", last_error: reason, updated_at: new Date().toISOString() })
-      .in("id", rows.map((r) => r.id));
-  };
-
   const [{ data: occ, error: occError }, { data: refunds, error: refundError }] = await Promise.all([
     db.from("class_occurrences")
       .select("starts_at, offering:offerings(name), studio:studios(slug, timezone, name)")
       .eq("id", occurrenceId).single(),
-    db.from("refund_requests").select("booking_id, status").eq("occurrence_id", occurrenceId),
+    db.from("refund_requests").select("transaction_id, status").eq("occurrence_id", occurrenceId),
   ]);
   if (occError || refundError || !occ) {
-    await release("Could not load the class or its refunds");
+    console.error("[cancel-class] could not load the class or its refunds; notices left queued");
     return;
   }
+  const refundSent = new Set(((refunds ?? []) as { transaction_id: string; status: string }[])
+    .filter((r) => r.status === "sent").map((r) => r.transaction_id));
+
+  const now = new Date();
+  const staleBefore = new Date(now.getTime() - STALE_SENDING_MS).toISOString();
+  const claim = { status: "sending", updated_at: now.toISOString() };
+  const [{ data: firsts, error: e1 }, { data: updates, error: e2 }] = await Promise.all([
+    db.from("class_cancel_notices").update(claim)
+      .eq("occurrence_id", occurrenceId)
+      .or(`status.in.(pending,failed),and(status.eq.sending,updated_at.lt.${staleBefore})`)
+      .select(NOTICE_COLUMNS),
+    refundSent.size
+      ? db.from("class_cancel_notices").update(claim)
+        .eq("occurrence_id", occurrenceId).eq("status", "sent").eq("refund_told", "failed")
+        .in("transaction_id", [...refundSent])
+        .select(NOTICE_COLUMNS)
+      : Promise.resolve({ data: [], error: null }),
+  ]);
+  if (e1) console.error("[cancel-class] could not claim notices:", e1.message);
+  if (e2) console.error("[cancel-class] could not claim refund updates:", e2.message);
+
   const o = occ as unknown as { starts_at: string; offering: { name: string } | null; studio: { slug: string; timezone: string | null; name: string } | null };
-  const refundSent = new Set(((refunds ?? []) as { booking_id: string | null; status: string }[])
-    .filter((r) => r.status === "sent" && r.booking_id).map((r) => r.booking_id as string));
   const studioName = o.studio?.name ?? "Your studio";
+  const className = o.offering?.name ?? "Your class";
   const when = formatWhen(o.starts_at, o.studio?.timezone ?? null);
   const scheduleUrl = o.studio?.slug ? `${appUrl}/s/${o.studio.slug}` : `${appUrl}/discover`;
 
-  for (const row of rows) {
-    const person: CancelPerson = row.person.source === "drop_in"
-      ? { ...row.person, refund_status: refundSent.has(row.booking_id) ? "sent" : "failed" }
-      : row.person;
-    let result: { success: boolean; error?: string };
-    if (!row.email) {
-      result = { success: false, error: "No email on file" };
-    } else {
-      const msg = classCancelledEmail({
-        person, className: o.offering?.name ?? "Your class", studioName, when,
-        message: row.message, scheduleUrl,
-      });
-      result = await sendEmail({ to: row.email, ...msg, fromName: studioName, tags: { type: "class_cancelled" } })
-        .catch((err: Error) => ({ success: false, error: err.message }));
-    }
-    const { error: writeError } = await db.from("class_cancel_notices").update({
-      status: result.success ? "sent" : "failed",
-      last_error: result.success ? null : String(result.error ?? "Email not accepted").slice(0, 500),
-      attempts: (row.attempts ?? 0) + 1,
-      updated_at: new Date().toISOString(),
-    }).eq("id", row.id);
+  const send = async (row: NoticeRow, isUpdate: boolean) => {
+    const dropIn = row.person.source === "drop_in";
+    const refundNow = dropIn ? (row.transaction_id && refundSent.has(row.transaction_id) ? "sent" : "failed") : null;
+    const person: CancelPerson = dropIn ? { ...row.person, refund_status: refundNow } : row.person;
+    const msg = isUpdate
+      ? refundSentEmail({ person, className, studioName, when, scheduleUrl })
+      : classCancelledEmail({ person, className, studioName, when, message: row.message, scheduleUrl });
+    const result: { success: boolean; error?: string } = row.email
+      ? await sendEmail({ to: row.email, ...msg, fromName: studioName, tags: { type: isUpdate ? "class_cancelled_refund" : "class_cancelled" } })
+        .catch((err: Error) => ({ success: false, error: err.message }))
+      : { success: false, error: "No email on file" };
+    const patch = result.success
+      ? { status: "sent", last_error: null, refund_told: isUpdate ? "sent" : refundNow }
+      // A failed update stays owed ("sent" + refund_told failed); a failed first email is retried.
+      : { status: isUpdate ? "sent" : "failed", last_error: String(result.error ?? "Email not accepted").slice(0, 500) };
+    const { error: writeError } = await db.from("class_cancel_notices")
+      .update({ ...patch, attempts: (row.attempts ?? 0) + 1, updated_at: new Date().toISOString() })
+      .eq("id", row.id);
     if (writeError) console.error(`[cancel-class] notice ${row.id} outcome not recorded:`, writeError.message);
-  }
+  };
+
+  for (const row of (firsts ?? []) as NoticeRow[]) await send(row, false);
+  for (const row of (updates ?? []) as NoticeRow[]) await send(row, true);
 }
 
 function errorStatus(code: string | undefined): number {

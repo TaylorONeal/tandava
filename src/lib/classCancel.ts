@@ -11,7 +11,8 @@
 export type CancelSource = "pack" | "membership" | "drop_in" | "free" | "waitlist";
 
 export interface CancelPerson {
-  booking_id: string;
+  /** null for someone who paid after the class was cancelled (no booking). */
+  booking_id: string | null;
   profile_id: string;
   name: string | null;
   first_name: string | null;
@@ -44,6 +45,8 @@ export interface CancelFollowup {
   emails_sent: number;
   emails_outstanding: number;
   emails_failed: number;
+  /** Told "the studio is arranging your refund"; the refund has since gone through. */
+  refund_updates_owed: number;
 }
 
 export interface FollowupReport {
@@ -143,13 +146,16 @@ export function describeFollowup(f: CancelFollowup, emailUnavailable = false): F
     if (f.emails_failed) problems.push(`${plural(f.emails_failed, "email")} did not go out (${failedNames.join(", ")}). Try again, or contact them directly.`);
     if (waiting > 0) problems.push(`${plural(waiting, "person has", "people have")} not been emailed yet.`);
   }
+  if (f.refund_updates_owed && !emailUnavailable) {
+    problems.push(`${plural(f.refund_updates_owed, "student has", "students have")} not been told their refund went through.`);
+  }
   const noEmail = f.people.filter((p) => p.notice_status === "no_email").map((p) => p.name ?? "a student");
   if (noEmail.length) problems.push(`No email on file for ${noEmail.join(", ")}. Contact them directly.`);
 
   return {
     done,
     problems,
-    canRetry: f.refunds_outstanding > 0 || (!emailUnavailable && f.emails_outstanding > 0),
+    canRetry: f.refunds_outstanding > 0 || (!emailUnavailable && (f.emails_outstanding > 0 || f.refund_updates_owed > 0)),
   };
 }
 
@@ -170,6 +176,21 @@ export function personOutcome(p: CancelPerson): string {
     case "waitlist": return "You were on the waitlist, so nothing was charged.";
     default: return "Nothing was charged.";
   }
+}
+
+/** For someone who was told the studio is arranging their refund, once it has gone through. */
+export function refundSentEmail(input: Omit<CancelEmailInput, "message">): { subject: string; html: string; text: string } {
+  const { person, className, studioName, when, scheduleUrl } = input;
+  const hi = person.first_name?.trim() ? `Hi ${person.first_name.trim()},` : "Hi,";
+  const amount = formatMoney(person.refund_cents, person.currency);
+  const subject = `Refund sent: ${className}, ${when}`;
+  const body = `Your ${amount} refund for ${className} on ${when}, which ${studioName} cancelled, has been sent to your card. It usually shows in 5 to 10 business days.`;
+  const text = [hi, "", body, "", `Find another class: ${scheduleUrl}`].join("\n");
+  const e = escapeHtml;
+  const html = `<p>${e(hi)}</p>
+<p>${e(body)}</p>
+<p><a href="${e(scheduleUrl)}">Find another class</a></p>`;
+  return { subject, html, text };
 }
 
 export interface CancelEmailInput {

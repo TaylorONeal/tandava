@@ -33,7 +33,7 @@ export interface UpcomingClass {
   timezone: string | null;
   booked: number;
   waitlisted: number;
-  /** For a cancelled class: refunds and emails still owed (finish with a resume). */
+  /** For a cancelled class: refunds and emails still owed, including "your refund went through" (finish with a resume). */
   followup_outstanding: number;
 }
 

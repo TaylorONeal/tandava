@@ -19,7 +19,9 @@ const PEOPLE = [
   { booking_id: "b3", profile_id: "p3", name: "Cy Moss", first_name: "Cy", email: null, status: "waitlisted", source: "waitlist", refund_cents: 0 },
 ];
 
-type Mode = "ok" | "refundFails" | "responseLost";
+type Mode = "ok" | "refundFails" | "responseLost" | "overdue";
+const PAST_ID = "66666666-6666-6666-6666-666666666666";
+const pastStart = new Date(Date.now() - 86_400_000).toISOString();
 
 function state(over: { refundSent: boolean; emailsSent: boolean }) {
   const { refundSent, emailsSent } = over;
@@ -31,7 +33,7 @@ function state(over: { refundSent: boolean; emailsSent: boolean }) {
       { ...PEOPLE[2], notice_status: "no_email" },
     ],
     refunds_sent: refundSent ? 1 : 0, refunds_sent_cents: refundSent ? 2200 : 0, refunds_outstanding: refundSent ? 0 : 1,
-    emails_sent: emailsSent ? 2 : 0, emails_outstanding: emailsSent ? 0 : 2, emails_failed: 0,
+    emails_sent: emailsSent ? 2 : 0, emails_outstanding: emailsSent ? 0 : 2, emails_failed: 0, refund_updates_owed: 0,
   };
 }
 
@@ -44,6 +46,7 @@ async function setUp(page: Page, calls: { fn: string; body: Record<string, unkno
   await page.addInitScript((s) => window.localStorage.setItem("sb-127-auth-token", JSON.stringify(s)), session);
   let cancelled = false;
   let current = state({ refundSent: false, emailsSent: false });
+  let pastOwed = mode === "overdue";
   await page.route("http://127.0.0.1:54321/**", async (route) => {
     const req = route.request();
     const url = req.url();
@@ -56,6 +59,7 @@ async function setUp(page: Page, calls: { fn: string; body: Record<string, unkno
       const body = req.postDataJSON();
       calls.push({ fn: "cancel-class", body });
       if (body.resume) {
+        if (body.occurrenceId === PAST_ID) pastOwed = false;
         current = state({ refundSent: true, emailsSent: true });
         return json({ cancelled: false, followup: current, emailUnavailable: false });
       }
@@ -77,11 +81,20 @@ async function setUp(page: Page, calls: { fn: string; body: Record<string, unkno
     }
     if (table === "rpc/class_cancel_followup") {
       calls.push({ fn: "followup", body: req.postDataJSON() });
-      return json(cancelled ? current : { ...current, cancelled: false });
+      const asked = req.postDataJSON()?.p_occurrence_id;
+      return json(cancelled || asked === PAST_ID ? { ...current, occurrence_id: asked } : { ...current, cancelled: false });
+    }
+    if (table === "refund_requests") return json(pastOwed ? [{ occurrence_id: PAST_ID }] : []);
+    if (table === "class_occurrences" && url.includes("id=in.")) {
+      return json([{
+        id: PAST_ID, starts_at: pastStart, ends_at: pastStart, capacity: 20, is_cancelled: true,
+        offering: { name: "Yin" }, studio: { timezone: "America/Chicago" }, bookings: [],
+        refund_requests: [{ status: pastOwed ? "failed" : "sent" }], class_cancel_notices: [],
+      }]);
     }
     if (table === "class_occurrences") {
       const refundRows = cancelled ? [{ status: current.refunds_outstanding ? "failed" : "sent" }] : [];
-      const noticeRows = cancelled ? current.people.map((p) => ({ status: p.notice_status })) : [];
+      const noticeRows = cancelled ? current.people.map((p) => ({ status: p.notice_status, refund_told: null })) : [];
       return json([{
         id: OCC_ID, starts_at: startsAt, ends_at: startsAt, capacity: 20, is_cancelled: cancelled,
         offering: { name: "Vinyasa Flow" }, studio: { timezone: "America/Chicago" },
@@ -169,4 +182,18 @@ test("a lost response is recovered and the follow-up can be finished later", asy
   await page.getByRole("button", { name: "Done" }).click();
   await expect(row.getByRole("button", { name: "Finish follow-up" })).toHaveCount(0);
   expect(calls.filter((c) => c.fn === "cancel-class").map((c) => c.body.resume ?? false)).toEqual([false, true]);
+});
+
+test("a past cancelled class that still owes a refund stays on the list until finished", async ({ page }) => {
+  const calls: { fn: string; body: Record<string, unknown> }[] = [];
+  await setUp(page, calls, "overdue");
+  await page.goto("/manage/schedule");
+  await expect(page.getByText("Still to finish")).toBeVisible();
+  const row = page.getByTestId("upcoming-class").filter({ hasText: "Yin" });
+  await row.getByRole("button", { name: "Finish follow-up" }).click();
+  await page.getByRole("button", { name: "Try again" }).click();
+  await expect(page.getByTestId("cancel-result")).toContainText("$22.00 refunded to 1 card.");
+  await page.getByRole("button", { name: "Done" }).click();
+  await expect(page.getByText("Still to finish")).toHaveCount(0);
+  expect(calls.find((c) => c.fn === "cancel-class")?.body).toMatchObject({ occurrenceId: PAST_ID, resume: true });
 });

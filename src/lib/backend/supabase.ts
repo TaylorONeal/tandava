@@ -450,21 +450,39 @@ const supabaseData: DataProvider = {
   async getStudioClassesAhead(studioId, days): Promise<DataResult<UpcomingClass[]>> {
     const now = new Date();
     const until = new Date(now.getTime() + days * 86_400_000);
-    const { data, error } = await getClient()
-      .from("class_occurrences")
-      .select("id, starts_at, ends_at, capacity, is_cancelled, offering:offerings(name), studio:studios(timezone), bookings(status), refund_requests(status), class_cancel_notices(status)")
-      .eq("studio_id", studioId)
-      .gte("starts_at", now.toISOString())
-      .lt("starts_at", until.toISOString())
-      .order("starts_at");
-    if (error) return { data: null, error: { message: error.message } };
+    const db = getClient();
+    const columns = "id, starts_at, ends_at, capacity, is_cancelled, offering:offerings(name), studio:studios(timezone), bookings(status), refund_requests(status), class_cancel_notices(status, refund_told)";
     type Row = {
       id: string; starts_at: string; ends_at: string; capacity: number; is_cancelled: boolean | null;
       offering: { name: string } | null; studio: { timezone: string | null } | null; bookings: { status: string }[] | null;
-      refund_requests: { status: string }[] | null; class_cancel_notices: { status: string }[] | null;
+      refund_requests: { status: string }[] | null;
+      class_cancel_notices: { status: string; refund_told: string | null }[] | null;
     };
+    // Cancelled classes whose time has passed but which still owe a refund or an
+    // email stay on the list, so the owner can always finish them.
+    const [ahead, owedRefunds, owedNotices] = await Promise.all([
+      db.from("class_occurrences").select(columns)
+        .eq("studio_id", studioId).gte("starts_at", now.toISOString()).lt("starts_at", until.toISOString())
+        .order("starts_at"),
+      db.from("refund_requests").select("occurrence_id").eq("studio_id", studioId).neq("status", "sent"),
+      db.from("class_cancel_notices").select("occurrence_id").eq("studio_id", studioId)
+        .or("status.in.(pending,sending,failed),and(status.eq.sent,refund_told.eq.failed)"),
+    ]);
+    const error = ahead.error ?? owedRefunds.error ?? owedNotices.error;
+    if (error) return { data: null, error: { message: error.message } };
+    const aheadRows = (ahead.data ?? []) as unknown as Row[];
+    const seen = new Set(aheadRows.map((r) => r.id));
+    const owedIds = [...new Set([...(owedRefunds.data ?? []), ...(owedNotices.data ?? [])]
+      .map((r) => (r as { occurrence_id: string | null }).occurrence_id)
+      .filter((id): id is string => Boolean(id) && !seen.has(id as string)))];
+    let pastRows: Row[] = [];
+    if (owedIds.length) {
+      const past = await db.from("class_occurrences").select(columns).in("id", owedIds).order("starts_at");
+      if (past.error) return { data: null, error: { message: past.error.message } };
+      pastRows = (past.data ?? []) as unknown as Row[];
+    }
     return {
-      data: ((data ?? []) as unknown as Row[]).map((r) => ({
+      data: [...pastRows, ...aheadRows].map((r) => ({
         id: r.id,
         starts_at: r.starts_at,
         ends_at: r.ends_at,
@@ -476,7 +494,8 @@ const supabaseData: DataProvider = {
         waitlisted: (r.bookings ?? []).filter((b) => b.status === "waitlisted").length,
         followup_outstanding:
           (r.refund_requests ?? []).filter((x) => x.status !== "sent").length
-          + (r.class_cancel_notices ?? []).filter((x) => ["pending", "sending", "failed"].includes(x.status)).length,
+          + (r.class_cancel_notices ?? []).filter((x) =>
+            ["pending", "sending", "failed"].includes(x.status) || (x.status === "sent" && x.refund_told === "failed")).length,
       })),
       error: null,
     };

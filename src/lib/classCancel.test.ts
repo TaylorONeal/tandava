@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  classCancelledEmail, describeCancellation, describeFollowup, summarizeCancellation,
+  classCancelledEmail, describeCancellation, describeFollowup, refundSentEmail, summarizeCancellation,
   type CancelFollowup, type CancelPerson,
 } from "./classCancel";
 
@@ -93,7 +93,7 @@ describe("describeFollowup", () => {
   const base = (over: Partial<CancelFollowup>): CancelFollowup => ({
     occurrence_id: "o", starts_at: "2026-10-20T18:00:00Z", class_name: "Flow", cancelled: true,
     people: [], refunds_sent: 0, refunds_sent_cents: 0, refunds_outstanding: 0,
-    emails_sent: 0, emails_outstanding: 0, emails_failed: 0, ...over,
+    emails_sent: 0, emails_outstanding: 0, emails_failed: 0, refund_updates_owed: 0, ...over,
   });
 
   it("reports a clean finish with nothing to retry", () => {
@@ -128,5 +128,28 @@ describe("describeFollowup", () => {
     const r = describeFollowup(base({ people: [person({ notice_status: "pending" })], emails_outstanding: 1 }), true);
     expect(r.problems).toEqual(["Email is not set up for this studio yet, so 1 person was not emailed. Please let them know."]);
     expect(r.canRetry).toBe(false);
+  });
+});
+
+describe("refund updates", () => {
+  it("offers to tell students their refund went through", () => {
+    const r = describeFollowup({
+      occurrence_id: "o", starts_at: "x", class_name: "Flow", cancelled: true, people: [],
+      refunds_sent: 1, refunds_sent_cents: 2200, refunds_outstanding: 0,
+      emails_sent: 1, emails_outstanding: 0, emails_failed: 0, refund_updates_owed: 1,
+    });
+    expect(r.problems).toEqual(["1 student has not been told their refund went through."]);
+    expect(r.canRetry).toBe(true);
+  });
+
+  it("confirms the amount and escapes the studio's words", () => {
+    const e = refundSentEmail({
+      person: person({ source: "drop_in", refund_cents: 2200, currency: "eur", first_name: "Ana" }),
+      className: "Flow <3", studioName: "Oxatl Yoga", when: "Tue, Oct 20, 6:00 PM", scheduleUrl: "https://x.test/s/oxatl",
+    });
+    expect(e.subject).toBe("Refund sent: Flow <3, Tue, Oct 20, 6:00 PM");
+    expect(e.text).toContain("Your €22.00 refund for Flow <3");
+    expect(e.html).toContain("Flow &lt;3");
+    expect(e.html).not.toContain("Flow <3");
   });
 });

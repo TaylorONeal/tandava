@@ -70,14 +70,44 @@ export function UpcomingClasses({ studioId }: { studioId: string }) {
 
   const timezone = classesQuery.data?.[0]?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  const byDay = useMemo(() => {
+  // Past cancelled classes come back only while they still owe a refund or an email.
+  const { overdue, byDay } = useMemo(() => {
+    const now = Date.now();
     const groups = new Map<string, UpcomingClass[]>();
+    const late: UpcomingClass[] = [];
     for (const c of classesQuery.data ?? []) {
+      if (new Date(c.starts_at).getTime() < now) { late.push(c); continue; }
       const k = dayKey(c.starts_at, timezone);
       groups.set(k, [...(groups.get(k) ?? []), c]);
     }
-    return [...groups.values()];
+    return { overdue: late, byDay: [...groups.values()] };
   }, [classesQuery.data, timezone]);
+
+  const renderRow = (c: UpcomingClass, past = false) => (
+    <div key={c.id} className="flex items-center gap-3 px-4 py-3" data-testid="upcoming-class">
+      <span className="w-20 shrink-0 text-sm tabular-nums">{past ? dayHeading(c.starts_at, timezone).split(",")[0] : timeOf(c.starts_at, timezone)}</span>
+      <div className="min-w-0 flex-1">
+        <p className={`truncate text-sm font-medium ${c.is_cancelled ? "line-through text-muted-foreground" : ""}`}>{c.class_name}</p>
+        <p className="text-xs text-muted-foreground">
+          {past
+            ? `${dayHeading(c.starts_at, timezone)}, ${timeOf(c.starts_at, timezone)}`
+            : `${c.booked} of ${c.capacity} booked${c.waitlisted ? ` · ${c.waitlisted} waiting` : ""}`}
+        </p>
+      </div>
+      {c.is_cancelled ? (
+        <div className="flex items-center gap-2">
+          <Badge variant="secondary">Cancelled</Badge>
+          {c.followup_outstanding > 0 && (
+            <Button variant="outline" size="sm" onClick={() => setTarget(c)}>Finish follow-up</Button>
+          )}
+        </div>
+      ) : (
+        <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => setTarget(c)}>
+          Cancel
+        </Button>
+      )}
+    </div>
+  );
 
   return (
     <section className="space-y-3" aria-labelledby="upcoming-heading">
@@ -92,42 +122,22 @@ export function UpcomingClasses({ studioId }: { studioId: string }) {
         <div className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" />Loading classes</div>
       ) : classesQuery.error ? (
         <p className="text-sm text-destructive">Could not load upcoming classes: {(classesQuery.error as Error).message}</p>
-      ) : byDay.length === 0 ? (
-        <Card><CardContent className="py-6 text-sm text-muted-foreground">No classes in the next two weeks yet.</CardContent></Card>
       ) : (
         <div className="space-y-4">
-          {byDay.map((classes) => (
+          {overdue.length > 0 && (
+            <div className="space-y-1.5">
+              <h3 className="text-xs font-medium uppercase tracking-wide text-amber-700">Still to finish</h3>
+              <Card><CardContent className="p-0 divide-y">{overdue.map((c) => renderRow(c, true))}</CardContent></Card>
+            </div>
+          )}
+          {byDay.length === 0 ? (
+            <Card><CardContent className="py-6 text-sm text-muted-foreground">No classes in the next two weeks yet.</CardContent></Card>
+          ) : byDay.map((classes) => (
             <div key={classes[0].id} className="space-y-1.5">
               <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 {dayHeading(classes[0].starts_at, timezone)}
               </h3>
-              <Card>
-                <CardContent className="p-0 divide-y">
-                  {classes.map((c) => (
-                    <div key={c.id} className="flex items-center gap-3 px-4 py-3" data-testid="upcoming-class">
-                      <span className="w-20 shrink-0 text-sm tabular-nums">{timeOf(c.starts_at, timezone)}</span>
-                      <div className="min-w-0 flex-1">
-                        <p className={`truncate text-sm font-medium ${c.is_cancelled ? "line-through text-muted-foreground" : ""}`}>{c.class_name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {c.booked} of {c.capacity} booked{c.waitlisted ? ` · ${c.waitlisted} waiting` : ""}
-                        </p>
-                      </div>
-                      {c.is_cancelled ? (
-                        <div className="flex items-center gap-2">
-                          <Badge variant="secondary">Cancelled</Badge>
-                          {c.followup_outstanding > 0 && (
-                            <Button variant="outline" size="sm" onClick={() => setTarget(c)}>Finish follow-up</Button>
-                          )}
-                        </div>
-                      ) : (
-                        <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => setTarget(c)}>
-                          Cancel
-                        </Button>
-                      )}
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
+              <Card><CardContent className="p-0 divide-y">{classes.map((c) => renderRow(c))}</CardContent></Card>
             </div>
           ))}
         </div>
