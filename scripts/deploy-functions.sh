@@ -10,7 +10,7 @@ fi
 cd "$(dirname "$0")/.."
 SB="npx --yes supabase@latest"
 # Browser and user-called functions keep JWT verification on (default).
-for f in stripe-checkout stripe-connect stripe-portal onboarding email; do
+for f in stripe-checkout stripe-connect stripe-portal onboarding email cancel-class; do
   $SB functions deploy "$f" --project-ref "$REF" --use-api
 done
 # Stripe calls the webhook without a Supabase JWT; it verifies the Stripe signature itself.

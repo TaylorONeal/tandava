@@ -21,6 +21,7 @@ import {
 } from "@/lib/hosted/catalog";
 import { Link } from "react-router-dom";
 import { Loader2, Pencil, Plus } from "lucide-react";
+import { UpcomingClasses } from "@/components/manage/UpcomingClasses";
 
 const NO_TEACHER = "none";
 
@@ -30,7 +31,7 @@ function Field({ label, id, children }: { label: string; id?: string; children: 
 
 export default function LiveSchedule() {
   const { toast } = useToast();
-  const { catalog, staff, isLoading, error, noStudio, save } = useStudioCatalog();
+  const { studio, catalog, staff, isLoading, error, noStudio, save } = useStudioCatalog();
   const [editing, setEditing] = useState<{ id?: string; form: RuleForm } | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -138,6 +139,7 @@ export default function LiveSchedule() {
             <Button size="sm" onClick={startNew}><Plus className="h-4 w-4 me-2" />Add weekly class</Button>
           )}
         </div>
+        {studio && catalog && <UpcomingClasses studioId={studio.studio_id} />}
         {body}
       </div>
 

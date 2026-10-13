@@ -33,6 +33,9 @@ import type {
   ApiProvider,
   ApiResult,
   Backend,
+  UpcomingClass,
+  ClassCancelPreview,
+  CancelFollowup,
 } from "./types";
 import type { Profile, Booking, ClassOccurrence, Membership, ClassPack, PublicScheduleRow, PublicOccurrenceRow, MyStudioRow, MyBookingRow, MyEntitlementRow, MyProfilePatch, MyAdminStudioRow, StudioStorefront, DiscoverClassRow, DiscoverClassesArgs, BookClassAutoResult } from "@/types/database";
 import type { AttributionSourceRow, AutomationSettingsRow, MemberAttribution } from "@/types/attribution";
@@ -442,6 +445,75 @@ const supabaseData: DataProvider = {
       },
       error: null,
     };
+  },
+
+  async getStudioClassesAhead(studioId, days): Promise<DataResult<UpcomingClass[]>> {
+    const now = new Date();
+    const until = new Date(now.getTime() + days * 86_400_000);
+    const db = getClient();
+    const columns = "id, starts_at, ends_at, capacity, is_cancelled, offering:offerings(name), studio:studios(timezone), bookings(status), refund_requests(status), class_cancel_notices(status, refund_told)";
+    type Row = {
+      id: string; starts_at: string; ends_at: string; capacity: number; is_cancelled: boolean | null;
+      offering: { name: string } | null; studio: { timezone: string | null } | null; bookings: { status: string }[] | null;
+      refund_requests: { status: string }[] | null;
+      class_cancel_notices: { status: string; refund_told: string | null }[] | null;
+    };
+    // Cancelled classes whose time has passed but which still owe a refund or an
+    // email stay on the list, so the owner can always finish them.
+    const [ahead, owedRefunds, owedNotices] = await Promise.all([
+      db.from("class_occurrences").select(columns)
+        .eq("studio_id", studioId).gte("starts_at", now.toISOString()).lt("starts_at", until.toISOString())
+        .order("starts_at"),
+      db.from("refund_requests").select("occurrence_id").eq("studio_id", studioId).neq("status", "sent"),
+      db.from("class_cancel_notices").select("occurrence_id").eq("studio_id", studioId)
+        .or("status.in.(pending,sending,failed,unknown,no_email),and(status.in.(sent,handled),refund_told.eq.failed)"),
+    ]);
+    const error = ahead.error ?? owedRefunds.error ?? owedNotices.error;
+    if (error) return { data: null, error: { message: error.message } };
+    const aheadRows = (ahead.data ?? []) as unknown as Row[];
+    const seen = new Set(aheadRows.map((r) => r.id));
+    const owedIds = [...new Set([...(owedRefunds.data ?? []), ...(owedNotices.data ?? [])]
+      .map((r) => (r as { occurrence_id: string | null }).occurrence_id)
+      .filter((id): id is string => Boolean(id) && !seen.has(id as string)))];
+    let pastRows: Row[] = [];
+    if (owedIds.length) {
+      const past = await db.from("class_occurrences").select(columns).in("id", owedIds).order("starts_at");
+      if (past.error) return { data: null, error: { message: past.error.message } };
+      pastRows = (past.data ?? []) as unknown as Row[];
+    }
+    return {
+      data: [...pastRows, ...aheadRows].map((r) => ({
+        id: r.id,
+        starts_at: r.starts_at,
+        ends_at: r.ends_at,
+        capacity: r.capacity,
+        is_cancelled: Boolean(r.is_cancelled),
+        class_name: r.offering?.name ?? "Class",
+        timezone: r.studio?.timezone ?? null,
+        booked: (r.bookings ?? []).filter((b) => b.status === "confirmed" || b.status === "checked_in").length,
+        waitlisted: (r.bookings ?? []).filter((b) => b.status === "waitlisted").length,
+        followup_outstanding:
+          (r.refund_requests ?? []).filter((x) => x.status !== "sent").length
+          + (r.class_cancel_notices ?? []).filter((x) =>
+            ["pending", "sending", "failed", "unknown", "no_email"].includes(x.status) || (["sent", "handled"].includes(x.status) && x.refund_told === "failed")).length,
+      })),
+      error: null,
+    };
+  },
+
+  async previewClassCancellation(occurrenceId): Promise<DataResult<ClassCancelPreview>> {
+    const { data, error } = await getClient().rpc("preview_class_cancellation" as never, { p_occurrence_id: occurrenceId } as never);
+    return { data: (data as ClassCancelPreview | null) ?? null, error: error ? { message: error.message } : null };
+  },
+
+  async getClassCancelFollowup(occurrenceId): Promise<DataResult<CancelFollowup>> {
+    const { data, error } = await getClient().rpc("class_cancel_followup" as never, { p_occurrence_id: occurrenceId } as never);
+    return { data: (data as CancelFollowup | null) ?? null, error: error ? { message: error.message } : null };
+  },
+
+  async markClassCancelHandled(occurrenceId): Promise<MutationResult> {
+    const { error } = await getClient().rpc("class_cancel_mark_handled" as never, { p_occurrence_id: occurrenceId } as never);
+    return { error: error ? { message: error.message } : null };
   },
 
   async getStudioStaffNames(studioId): Promise<DataResult<StaffName[]>> {

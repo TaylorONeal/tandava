@@ -42,6 +42,12 @@ export interface EmailResult {
   messageId?: string;
   error?: string;
   provider: string;
+  /**
+   * The provider threw (network error, lost response) instead of answering:
+   * the message may have been delivered. Callers that retry should not resend
+   * automatically. A provider that answered "no" leaves this unset.
+   */
+  uncertain?: boolean;
 }
 
 interface EmailProviderAdapter {
@@ -251,6 +257,6 @@ export async function sendEmail(message: EmailMessage): Promise<EmailResult> {
   } catch (err) {
     const errorMsg = err instanceof Error ? err.message : String(err);
     console.error(`[email] ${provider.name} failed:`, errorMsg);
-    return { success: false, error: errorMsg, provider: provider.name };
+    return { success: false, error: errorMsg, provider: provider.name, uncertain: true };
   }
 }
