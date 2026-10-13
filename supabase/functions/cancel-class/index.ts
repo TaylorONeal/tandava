@@ -108,17 +108,29 @@ async function sendOutstandingRefunds(db: Db, occurrenceId: string): Promise<voi
     try {
       if (!stripe) throw new Error("Payments are not configured");
       if (!pi) throw new Error("No card payment to refund");
-      const intent = await stripe.paymentIntents.retrieve(pi);
+      const intent = await stripe.paymentIntents.retrieve(pi, { expand: ["latest_charge"] });
+      // Never more than the charge still holds: a partial refund made by hand
+      // in Stripe since this was queued shrinks what is owed.
+      const charge = intent.latest_charge && typeof intent.latest_charge !== "string" ? intent.latest_charge : null;
+      const left = charge ? Math.max(0, charge.amount - charge.amount_refunded) : row.amount_cents;
+      const amount = Math.min(row.amount_cents, left);
+      if (amount <= 0) {
+        await db.from("refund_requests")
+          .update({ status: "sent", last_error: "Already refunded in Stripe", attempts: (row.attempts ?? 0) + 1, updated_at: new Date().toISOString() })
+          .eq("id", row.id).eq("refund_attempt", row.refund_attempt ?? 0).in("status", ["pending", "failed"]);
+        continue;
+      }
       const refund = await stripe.refunds.create({
         payment_intent: pi,
-        amount: row.amount_cents,
+        amount,
         reason: "requested_by_customer",
         metadata: { refund_request_id: row.id, refund_attempt: String(row.refund_attempt ?? 0), reason: "class_cancelled" },
         ...(intent.transfer_data?.destination ? { reverse_transfer: true } : {}),
         ...(intent.application_fee_amount ? { refund_application_fee: true } : {}),
-      }, { idempotencyKey: `refund_request:${row.id}:${row.refund_attempt ?? 0}` });
+        // The amount is part of the key: a resized refund is a new request to Stripe.
+      }, { idempotencyKey: `refund_request:${row.id}:${row.refund_attempt ?? 0}${amount === row.amount_cents ? "" : `:${amount}`}` });
       patch = refund.status === "succeeded" || refund.status === "pending"
-        ? { status: "sent", stripe_refund_id: refund.id, last_error: null }
+        ? { status: "sent", stripe_refund_id: refund.id, last_error: null, amount_cents: amount }
         : {
           status: "failed", stripe_refund_id: refund.id, refund_attempt: (row.refund_attempt ?? 0) + 1,
           last_error: `Refund ${refund.status}${refund.failure_reason ? `: ${refund.failure_reason}` : ""}`,
