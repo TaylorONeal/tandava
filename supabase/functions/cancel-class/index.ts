@@ -79,7 +79,11 @@ interface NoticeRow {
 /** Stripe said no (as opposed to the request not arriving): the next try needs a new idempotency key. */
 function stripeRefused(err: unknown): boolean {
   const type = (err as { type?: string })?.type ?? "";
-  return type.startsWith("Stripe") && type !== "StripeConnectionError" && type !== "StripeAPIError";
+  // Not definite: the request may not have run (connection, API error), or
+  // another request with the same key is still running (idempotency conflict,
+  // which Stripe says to retry with the same key).
+  return type.startsWith("Stripe")
+    && !["StripeConnectionError", "StripeAPIError", "StripeIdempotencyError", "StripeRateLimitError"].includes(type);
 }
 
 /**

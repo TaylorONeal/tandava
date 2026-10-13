@@ -77,6 +77,16 @@ async function verify(body: string, signature: string): Promise<Stripe.Event> {
 }
 
 /** Throw on any database error so the caller answers 5xx and Stripe retries. */
+/** The charge as Stripe has it now; null if Stripe does not know it (a signed test event). Other errors throw, so Stripe retries. */
+async function currentCharge(id: string): Promise<Stripe.Charge | null> {
+  try {
+    return await stripe.charges.retrieve(id);
+  } catch (err) {
+    if ((err as { code?: string }).code === "resource_missing") return null;
+    throw err;
+  }
+}
+
 async function rpc(name: string, args: Record<string, unknown>) {
   const { data, error } = await supabase.rpc(name, args);
   if (error) throw new Error(`${name}: ${error.message}`);
@@ -135,30 +145,33 @@ async function handle(event: Stripe.Event) {
     }
 
     case "charge.refunded": {
-      const charge = event.data.object as Stripe.Charge;
-      if (!charge.payment_intent) return { status: "no payment intent" };
+      const snapshot = event.data.object as Stripe.Charge;
+      if (!snapshot.payment_intent) return { status: "no payment intent" };
+      // Events arrive out of order and are snapshots: record the charge as
+      // Stripe has it now, so an older event cannot undo a later refund
+      // failure. An unknown charge (a signed test event) falls back to the snapshot.
+      const current = await currentCharge(snapshot.id);
+      const amount = current?.amount ?? snapshot.amount;
+      const refunded = current?.amount_refunded ?? snapshot.amount_refunded;
+      if (refunded <= 0) return { status: "nothing refunded on the charge now" };
       const recorded = await rpc("record_stripe_refund", {
         p_event_id: event.id,
-        p_payment_intent: charge.payment_intent as string,
-        p_charge_id: charge.id,
-        p_amount: charge.amount,
-        p_amount_refunded: charge.amount_refunded,
+        p_payment_intent: snapshot.payment_intent as string,
+        p_charge_id: snapshot.id,
+        p_amount: amount,
+        p_amount_refunded: refunded,
       });
       // A full refund made by hand in Stripe settles any class-cancel refund
-      // queued for this payment (LP-1d). Only when no refund of ours is live:
-      // our own refund's attempt must stay open to a later failure.
-      // Events arrive out of order and are snapshots, so decide on the charge
-      // and its refunds as Stripe has them now.
-      if (charge.amount_refunded >= charge.amount) {
-        const [current, refunds] = await Promise.all([
-          stripe.charges.retrieve(charge.id),
-          stripe.refunds.list({ charge: charge.id, limit: 100 }),
-        ]);
-        if (current.amount_refunded >= current.amount && settledByHand(refunds.data)) {
+      // queued for this payment (LP-1d): only on the live charge, and only when
+      // a refund made by hand is live and none of ours is (our own refund's
+      // attempt must stay open to a later failure).
+      if (current && refunded >= amount) {
+        const refunds = await stripe.refunds.list({ charge: snapshot.id, limit: 100 });
+        if (settledByHand(refunds.data)) {
           await rpc("settle_class_cancel_refunds", {
-            p_payment_intent: charge.payment_intent as string,
-            p_amount: current.amount,
-            p_amount_refunded: current.amount_refunded,
+            p_payment_intent: snapshot.payment_intent as string,
+            p_amount: amount,
+            p_amount_refunded: refunded,
           });
         }
       }
@@ -178,7 +191,7 @@ async function handle(event: Stripe.Event) {
       const attempt = Number.parseInt(refund.metadata?.refund_attempt ?? "", 10);
       // The charge as Stripe reports it now, so the payment stops counting the failed refund.
       const charge = refund.charge
-        ? await stripe.charges.retrieve(typeof refund.charge === "string" ? refund.charge : refund.charge.id)
+        ? await currentCharge(typeof refund.charge === "string" ? refund.charge : refund.charge.id)
         : null;
       const reopened = await rpc("reopen_failed_refund", {
         p_refund_request_id: requestId,
