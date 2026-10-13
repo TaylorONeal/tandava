@@ -119,6 +119,26 @@ BEGIN
   PERFORM pg_temp.ok((SELECT count(*) FROM refund_requests WHERE transaction_id = v_txn) = 1,
                      'CC-09', 'one refund request per payment per reason');
 
+  -- CC-11: an early check-in is unwound: credit back and the attendance it counted removed.
+  UPDATE studio_members SET total_classes_attended = 3, last_class_at = NOW() - interval '7 days'
+   WHERE studio_id = pg_temp.id('studio_a') AND profile_id = pg_temp.id('student_a2');
+  INSERT INTO class_occurrences (id, studio_id, offering_id, location_id, starts_at, ends_at, capacity)
+  VALUES ('aaaaaaaa-3000-0000-0000-0000000000c1', pg_temp.id('studio_a'), 'aaaaaaaa-2000-0000-0000-000000000001',
+          'aaaaaaaa-1000-0000-0000-000000000001', NOW() + interval '30 minutes', NOW() + interval '90 minutes', 5);
+  INSERT INTO bookings (studio_id, class_occurrence_id, profile_id, status, class_pack_id)
+  VALUES (pg_temp.id('studio_a'), 'aaaaaaaa-3000-0000-0000-0000000000c1', pg_temp.id('student_a2'), 'confirmed', pg_temp.id('pack_a2'));
+  UPDATE bookings SET status = 'checked_in', checked_in_at = NOW()
+   WHERE class_occurrence_id = 'aaaaaaaa-3000-0000-0000-0000000000c1';
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  res := cancel_class('aaaaaaaa-3000-0000-0000-0000000000c1', NULL);
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(
+    (SELECT classes_remaining FROM class_packs WHERE id = pg_temp.id('pack_a2')) = 5
+    AND (SELECT total_classes_attended FROM studio_members WHERE studio_id = pg_temp.id('studio_a') AND profile_id = pg_temp.id('student_a2')) = 3
+    AND (SELECT status FROM bookings WHERE class_occurrence_id = 'aaaaaaaa-3000-0000-0000-0000000000c1') = 'cancelled'
+    AND res -> 'people' -> 0 ->> 'currency' = 'USD',
+    'CC-11', 'early check-in unwound: pack class back, attendance count restored, currency reported');
+
   -- CC-10: anonymous callers cannot reach either function.
   PERFORM pg_temp.as_anon();
   BEGIN PERFORM preview_class_cancellation(v_occ2); ok := false;

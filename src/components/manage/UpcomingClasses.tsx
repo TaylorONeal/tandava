@@ -45,8 +45,9 @@ function timeOf(iso: string, tz: string) {
 
 interface CancelResult {
   people: CancelPerson[];
-  refunds: { sent: number; failed: number };
+  refunds: { sent: number; failed: number; sentCents?: number };
   emailed: number;
+  emailUnavailable?: boolean;
 }
 
 export function UpcomingClasses({ studioId }: { studioId: string }) {
@@ -162,6 +163,29 @@ function CancelClassDialog({
     onClose();
   };
 
+  const retryRefunds = async () => {
+    if (!target || !result) return;
+    setWorking(true);
+    const { data, error: e } = await backendApi.invoke<{ refunds?: { sent: number; failed: number; sentCents?: number }; error?: string }>(
+      "cancel-class", { occurrenceId: target.id, retryRefunds: true },
+    );
+    setWorking(false);
+    if (!data?.refunds || data.error || e) {
+      setError(data?.error ?? e?.message ?? "Could not retry the refunds.");
+      return;
+    }
+    const r = data.refunds;
+    setError(null);
+    setResult({
+      ...result,
+      refunds: {
+        sent: result.refunds.sent + r.sent,
+        failed: r.failed,
+        sentCents: (result.refunds.sentCents ?? 0) + (r.sentCents ?? 0),
+      },
+    });
+  };
+
   const confirm = async () => {
     if (!target) return;
     setWorking(true);
@@ -196,17 +220,27 @@ function CancelClassDialog({
               {done.packReturns + done.membershipReturns > 0 && (
                 <li>{done.packReturns + done.membershipReturns} {done.packReturns + done.membershipReturns === 1 ? "class" : "classes"} returned to packs and memberships.</li>
               )}
-              {result.refunds.sent > 0 && <li>{formatMoney(done.refundCents)} refunded to {result.refunds.sent} {result.refunds.sent === 1 ? "card" : "cards"}.</li>}
-              <li>{result.emailed} {result.emailed === 1 ? "email" : "emails"} sent.</li>
+              {result.refunds.sent > 0 && <li>{formatMoney(result.refunds.sentCents ?? 0, done.currency)} refunded to {result.refunds.sent} {result.refunds.sent === 1 ? "card" : "cards"}.</li>}
+              {result.emailUnavailable
+                ? <li className="text-destructive">Email is not set up for this studio yet, so nobody was emailed. Please let them know.</li>
+                : <li>{result.emailed} {result.emailed === 1 ? "email" : "emails"} sent.</li>}
               {done.booked + done.waitlisted === 0 && <li>Nobody was booked.</li>}
             </ul>
             {result.refunds.failed > 0 && (
               <p className="flex items-start gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive" role="alert">
                 <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
-                {result.refunds.failed} {result.refunds.failed === 1 ? "refund" : "refunds"} did not go through. The bookings are cancelled; try the refund again from Stripe or contact support.
+                {result.refunds.failed} {result.refunds.failed === 1 ? "refund" : "refunds"} did not go through yet. The bookings are cancelled and those students were told you are arranging it. Refund them from Stripe, or contact support.
               </p>
             )}
-            <DialogFooter><Button onClick={close}>Done</Button></DialogFooter>
+            {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
+            <DialogFooter className="gap-2 sm:gap-0">
+              {result.refunds.failed > 0 && (
+                <Button variant="outline" onClick={() => void retryRefunds()} disabled={working}>
+                  {working && <Loader2 className="h-4 w-4 me-2 animate-spin" />}Try refunds again
+                </Button>
+              )}
+              <Button onClick={close}>Done</Button>
+            </DialogFooter>
           </>
         ) : (
           <>
@@ -230,7 +264,7 @@ function CancelClassDialog({
                       <li key={p.booking_id} className="flex items-center justify-between gap-3 px-3 py-2">
                         <span className="truncate">{p.name ?? p.email ?? "Student"}</span>
                         <Badge variant={p.source === "drop_in" ? "default" : "secondary"} className="shrink-0">
-                          {p.source === "drop_in" ? `${SOURCE_LABEL.drop_in} ${formatMoney(p.refund_cents)}` : SOURCE_LABEL[p.source]}
+                          {p.source === "drop_in" ? `${SOURCE_LABEL.drop_in} ${formatMoney(p.refund_cents, p.currency)}` : SOURCE_LABEL[p.source]}
                         </Badge>
                       </li>
                     ))}

@@ -169,10 +169,13 @@ AS $$
                   ELSE 'free'
                 END,
       'refund_cents', CASE WHEN b.status = 'waitlisted' THEN 0
-                           ELSE class_cancel_refund_cents(b.transaction_id) END
+                           ELSE class_cancel_refund_cents(b.transaction_id) END,
+      'currency', COALESCE(t.currency, s.currency, 'USD')
     ) ORDER BY b.status = 'waitlisted', p.first_name, p.last_name), '[]'::jsonb)
   FROM bookings b
   LEFT JOIN profiles p ON p.id = b.profile_id
+  LEFT JOIN transactions t ON t.id = b.transaction_id
+  LEFT JOIN studios s ON s.id = b.studio_id
   WHERE b.class_occurrence_id = p_occurrence_id
     AND b.status IN ('confirmed', 'checked_in', 'waitlisted');
 $$;
@@ -253,10 +256,23 @@ BEGIN
      SET status = 'cancelled', cancelled_at = NOW(), cancel_reason = 'class_cancelled', waitlist_position = NULL
    WHERE class_occurrence_id = p_occurrence_id AND status = 'waitlisted';
 
-  -- An early check-in still holds its credit; step it back to confirmed so the
-  -- ledger trigger releases that credit on the cancel below.
-  UPDATE bookings SET status = 'confirmed', checked_in_at = NULL, checked_in_by = NULL
-   WHERE class_occurrence_id = p_occurrence_id AND status = 'checked_in';
+  -- An early check-in (allowed before the start) still holds its credit and
+  -- has counted as attendance. Undo the attendance the check-in trigger added
+  -- (00001 update_member_stats_on_checkin), then step the booking back to
+  -- confirmed so the ledger trigger releases the credit on the cancel below.
+  FOR r IN
+    SELECT id, studio_id, profile_id FROM bookings
+    WHERE class_occurrence_id = p_occurrence_id AND status = 'checked_in'
+    FOR UPDATE
+  LOOP
+    UPDATE studio_members sm SET
+      total_classes_attended = GREATEST(0, COALESCE(sm.total_classes_attended, 0) - 1),
+      last_class_at = (SELECT max(b.checked_in_at) FROM bookings b
+                        WHERE b.studio_id = r.studio_id AND b.profile_id = r.profile_id
+                          AND b.status = 'checked_in' AND b.id <> r.id)
+     WHERE sm.studio_id = r.studio_id AND sm.profile_id = r.profile_id;
+    UPDATE bookings SET status = 'confirmed', checked_in_at = NULL, checked_in_by = NULL WHERE id = r.id;
+  END LOOP;
 
   FOR r IN
     SELECT id, transaction_id FROM bookings

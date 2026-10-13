@@ -19,7 +19,7 @@ const PEOPLE = [
   { booking_id: "b3", profile_id: "p3", name: "Cy Moss", first_name: "Cy", email: null, status: "waitlisted", source: "waitlist", refund_cents: 0 },
 ];
 
-async function setUp(page: Page, calls: { fn: string; body: Record<string, unknown> }[]) {
+async function setUp(page: Page, calls: { fn: string; body: Record<string, unknown> }[], failFirstRefund = false) {
   const session = {
     access_token: "e2e-token", refresh_token: "e2e-refresh", token_type: "bearer",
     expires_in: 3600, expires_at: Math.floor(Date.now() / 1000) + 3600,
@@ -36,9 +36,13 @@ async function setUp(page: Page, calls: { fn: string; body: Record<string, unkno
       return route.fulfill({ status: 204, headers: { "access-control-allow-origin": "*", "access-control-allow-headers": "*", "access-control-allow-methods": "*" } });
     }
     if (url.includes("/functions/v1/cancel-class")) {
-      calls.push({ fn: "cancel-class", body: req.postDataJSON() });
+      const body = req.postDataJSON();
+      calls.push({ fn: "cancel-class", body });
+      if (body.retryRefunds) return json({ cancelled: false, refunds: { sent: 1, failed: 0, sentCents: 2200 } });
       cancelled = true;
-      return json({ cancelled: true, people: PEOPLE, refunds: { sent: 1, failed: 0, pendingIds: ["r1"] }, emailed: 2 });
+      return failFirstRefund
+        ? json({ cancelled: true, people: PEOPLE, refunds: { sent: 0, failed: 1, sentCents: 0 }, emailed: 2, emailUnavailable: false })
+        : json({ cancelled: true, people: PEOPLE, refunds: { sent: 1, failed: 0, sentCents: 2200 }, emailed: 2, emailUnavailable: false });
     }
     const table = new URL(url).pathname.split("/rest/v1/")[1] ?? "";
     if (url.includes("/auth/v1/user")) return json(session.user);
@@ -97,4 +101,17 @@ test("owner cancels a class and sees who gets what back", async ({ page }) => {
 
   await page.getByRole("button", { name: "Done" }).click();
   await expect(page.getByTestId("upcoming-class").first()).toContainText("Cancelled");
+});
+
+test("a refund that fails is flagged and can be retried", async ({ page }) => {
+  const calls: { fn: string; body: Record<string, unknown> }[] = [];
+  await setUp(page, calls, true);
+  await page.goto("/manage/schedule");
+  await page.getByTestId("upcoming-class").first().getByRole("button", { name: "Cancel" }).click();
+  await page.getByRole("button", { name: "Cancel and tell 2 people" }).click();
+  await expect(page.getByRole("alert")).toContainText("1 refund did not go through yet");
+  await page.getByRole("button", { name: "Try refunds again" }).click();
+  await expect(page.getByTestId("cancel-result")).toContainText("$22.00 refunded to 1 card.");
+  await expect(page.getByRole("button", { name: "Try refunds again" })).toHaveCount(0);
+  expect(calls.filter((c) => c.fn === "cancel-class").map((c) => c.body.retryRefunds ?? false)).toEqual([false, true]);
 });

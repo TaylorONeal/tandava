@@ -20,7 +20,7 @@ describe("summarizeCancellation", () => {
     ]);
     expect(s).toEqual({
       booked: 5, waitlisted: 1, packReturns: 2, membershipReturns: 1,
-      dropInRefunds: 1, refundCents: 2200, free: 1, reachable: 5,
+      dropInRefunds: 1, refundCents: 2200, free: 1, currency: "USD", reachable: 5,
     });
   });
 });
@@ -54,6 +54,19 @@ describe("classCancelledEmail", () => {
     expect(m.subject).toBe("Cancelled: Vinyasa Flow, Tue, Oct 14, 6:00 PM");
     expect(m.text).toContain("Your $22.00 is being refunded");
     expect(m.text).toContain("Hi Ana,");
+  });
+
+  it("never promises a refund that did not go through", () => {
+    const m = classCancelledEmail({ ...base, person: person({ source: "drop_in", refund_cents: 2200, refund_status: "failed" }) });
+    expect(m.text).not.toContain("is being refunded to your card");
+    expect(m.text).toContain("The studio is arranging your $22.00 refund");
+  });
+
+  it("shows the payment's currency", () => {
+    const m = classCancelledEmail({ ...base, person: person({ source: "drop_in", refund_cents: 1800, currency: "eur" }) });
+    expect(m.text).toContain("€18.00");
+    const s = summarizeCancellation([person({ source: "drop_in", refund_cents: 1800, currency: "gbp" })]);
+    expect(describeCancellation(s)).toContain("1 drop-in refunded in full: £18.00.");
   });
 
   it("escapes the studio's note and names", () => {

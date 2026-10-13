@@ -24,7 +24,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import Stripe from "https://esm.sh/stripe@14?target=deno";
-import { sendEmail } from "../email/provider.ts";
+import { emailProviderReady, sendEmail } from "../email/provider.ts";
 import { classCancelledEmail, type CancelPerson } from "../../../src/lib/classCancel.ts";
 
 const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
@@ -54,13 +54,24 @@ interface RefundRow {
   amount_cents: number;
   status: string;
   attempts: number;
+  booking_id: string | null;
   transaction: { stripe_payment_intent_id: string | null } | null;
 }
 
+interface RefundOutcome {
+  sent: number;
+  failed: number;
+  sentCents: number;
+  /** booking id -> outcome, so each student's email says what really happened. */
+  byBooking: Record<string, "sent" | "failed">;
+}
+
 /** Send each refund to Stripe once; record the outcome on the request row. */
-async function sendRefunds(db: Db, rows: RefundRow[]) {
+async function sendRefunds(db: Db, rows: RefundRow[]): Promise<RefundOutcome> {
   let sent = 0;
   let failed = 0;
+  let sentCents = 0;
+  const byBooking: Record<string, "sent" | "failed"> = {};
   for (const row of rows) {
     const pi = row.transaction?.stripe_payment_intent_id;
     let patch: Record<string, unknown>;
@@ -78,15 +89,31 @@ async function sendRefunds(db: Db, rows: RefundRow[]) {
       }, { idempotencyKey: `refund_request:${row.id}` });
       patch = { status: "sent", stripe_refund_id: refund.id, last_error: null };
       sent += 1;
+      sentCents += row.amount_cents;
+      if (row.booking_id) byBooking[row.booking_id] = "sent";
     } catch (err) {
       patch = { status: "failed", last_error: (err as Error).message.slice(0, 500) };
       failed += 1;
+      if (row.booking_id) byBooking[row.booking_id] = "failed";
     }
     await db.from("refund_requests")
       .update({ ...patch, attempts: (row.attempts ?? 0) + 1, updated_at: new Date().toISOString() })
       .eq("id", row.id);
   }
-  return { sent, failed };
+  return { sent, failed, sentCents, byBooking };
+}
+
+/** Load queued refunds; a failed read counts every one of them as failed (they stay pending for a retry). */
+async function loadAndSend(db: Db, query: PromiseLike<{ data: unknown; error: { message: string } | null }>, expected: number): Promise<RefundOutcome> {
+  const { data, error } = await query;
+  if (error) {
+    console.error("[cancel-class] could not read refund requests:", error.message);
+    return { sent: 0, failed: expected, sentCents: 0, byBooking: {} };
+  }
+  const rows = (data ?? []) as RefundRow[];
+  const outcome = await sendRefunds(db, rows);
+  // Requested but not returned by the read: still pending, so report them as not sent.
+  return { ...outcome, failed: outcome.failed + Math.max(0, expected - rows.length) };
 }
 
 function formatWhen(iso: string, timeZone: string | null): string {
@@ -115,16 +142,16 @@ serve(async (req) => {
   if (!UUID.test(occurrenceId)) return json({ error: "Missing occurrenceId" }, 400);
 
   const db = createClient(supabaseUrl, serviceKey);
-  const refundSelect = "id, amount_cents, status, attempts, transaction:transactions(stripe_payment_intent_id)";
+  const refundSelect = "id, amount_cents, status, attempts, booking_id, transaction:transactions(stripe_payment_intent_id)";
 
   // Retry: the caller must still be staff of the class's studio (the preview checks that).
   if (body.retryRefunds) {
     const { error: authError } = await asCaller.rpc("preview_class_cancellation", { p_occurrence_id: occurrenceId });
     if (authError) return json({ error: authError.message }, authError.code === "42501" ? 403 : 400);
-    const { data: rows } = await db.from("refund_requests").select(refundSelect)
+    const query = db.from("refund_requests").select(refundSelect)
       .eq("occurrence_id", occurrenceId).in("status", ["pending", "failed"]);
-    const refunds = await sendRefunds(db, (rows ?? []) as unknown as RefundRow[]);
-    return json({ cancelled: false, refunds });
+    const refunds = await loadAndSend(db, query, 0);
+    return json({ cancelled: false, refunds: { sent: refunds.sent, failed: refunds.failed, sentCents: refunds.sentCents } });
   }
 
   // 1. Cancel, as the caller.
@@ -142,11 +169,14 @@ serve(async (req) => {
   };
 
   // 2. Refunds.
-  let refunds = { sent: 0, failed: 0 };
-  if (res.refund_request_ids?.length) {
-    const { data: rows } = await db.from("refund_requests").select(refundSelect).in("id", res.refund_request_ids);
-    refunds = await sendRefunds(db, (rows ?? []) as unknown as RefundRow[]);
+  let refunds: RefundOutcome = { sent: 0, failed: 0, sentCents: 0, byBooking: {} };
+  const requested = res.refund_request_ids?.length ?? 0;
+  if (requested) {
+    refunds = await loadAndSend(db, db.from("refund_requests").select(refundSelect).in("id", res.refund_request_ids), requested);
   }
+  // Each person's refund as it actually went; anything not confirmed sent is "failed" (not promised).
+  const people: CancelPerson[] = (res.people ?? []).map((p) =>
+    p.source === "drop_in" ? { ...p, refund_status: refunds.byBooking[p.booking_id] === "sent" ? "sent" : "failed" } : p);
 
   // 3. Tell people.
   const { data: occ } = await db.from("class_occurrences")
@@ -155,7 +185,9 @@ serve(async (req) => {
   const when = formatWhen(res.starts_at, studio?.timezone ?? null);
   const scheduleUrl = studio?.slug ? `${appUrl}/s/${studio.slug}` : `${appUrl}/discover`;
   let emailed = 0;
-  for (const person of res.people ?? []) {
+  // The console adapter "succeeds" without delivering: only count real sends.
+  const emailUnavailable = !emailProviderReady().ready;
+  for (const person of emailUnavailable ? [] : people) {
     if (!person.email) continue;
     const msg = classCancelledEmail({
       person, className: res.class_name, studioName: res.studio_name, when,
@@ -170,8 +202,9 @@ serve(async (req) => {
 
   return json({
     cancelled: true,
-    people: res.people ?? [],
-    refunds: { ...refunds, pendingIds: res.refund_request_ids ?? [] },
+    people,
+    refunds: { sent: refunds.sent, failed: refunds.failed, sentCents: refunds.sentCents },
     emailed,
+    emailUnavailable,
   });
 });

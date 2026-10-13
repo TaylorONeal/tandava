@@ -19,6 +19,10 @@ export interface CancelPerson {
   status: string;
   source: CancelSource;
   refund_cents: number;
+  /** Currency of the payment (or the studio), ISO code. */
+  currency?: string | null;
+  /** Set after the refund was attempted: "failed" means it did not go through yet. */
+  refund_status?: "sent" | "failed" | null;
 }
 
 export interface CancelSummary {
@@ -29,6 +33,8 @@ export interface CancelSummary {
   dropInRefunds: number;
   refundCents: number;
   free: number;
+  /** Currency of the refunds (a studio charges in one currency). */
+  currency: string;
   /** People with an email address we can tell. */
   reachable: number;
 }
@@ -36,7 +42,7 @@ export interface CancelSummary {
 export function summarizeCancellation(people: CancelPerson[]): CancelSummary {
   const s: CancelSummary = {
     booked: 0, waitlisted: 0, packReturns: 0, membershipReturns: 0,
-    dropInRefunds: 0, refundCents: 0, free: 0, reachable: 0,
+    dropInRefunds: 0, refundCents: 0, free: 0, currency: "USD", reachable: 0,
   };
   for (const p of people) {
     if (p.email) s.reachable += 1;
@@ -44,14 +50,23 @@ export function summarizeCancellation(people: CancelPerson[]): CancelSummary {
     s.booked += 1;
     if (p.source === "pack") s.packReturns += 1;
     else if (p.source === "membership") s.membershipReturns += 1;
-    else if (p.source === "drop_in") { s.dropInRefunds += 1; s.refundCents += Math.max(0, p.refund_cents); }
+    else if (p.source === "drop_in") {
+      s.dropInRefunds += 1;
+      s.refundCents += Math.max(0, p.refund_cents);
+      if (p.currency) s.currency = p.currency.toUpperCase();
+    }
     else s.free += 1;
   }
   return s;
 }
 
-export function formatMoney(cents: number, currency = "USD"): string {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(cents / 100);
+export function formatMoney(cents: number, currency?: string | null): string {
+  const code = (currency || "USD").toUpperCase();
+  try {
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: code }).format(cents / 100);
+  } catch {
+    return `${(cents / 100).toFixed(2)} ${code}`;
+  }
 }
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
@@ -66,7 +81,7 @@ export function describeCancellation(s: CancelSummary): string[] {
   if (s.booked) lines.push(`${plural(s.booked, "person is", "people are")} booked.`);
   if (s.packReturns) lines.push(`${plural(s.packReturns, "class goes", "classes go")} back on class packs.`);
   if (s.membershipReturns) lines.push(`${plural(s.membershipReturns, "membership class goes", "membership classes go")} back for this period.`);
-  if (s.dropInRefunds) lines.push(`${plural(s.dropInRefunds, "drop-in")} refunded in full: ${formatMoney(s.refundCents)}.`);
+  if (s.dropInRefunds) lines.push(`${plural(s.dropInRefunds, "drop-in")} refunded in full: ${formatMoney(s.refundCents, s.currency)}.`);
   if (s.free) lines.push(`${plural(s.free, "free booking")} cancelled.`);
   if (s.waitlisted) lines.push(`${plural(s.waitlisted, "person", "people")} on the waitlist removed.`);
   const unreachable = s.booked + s.waitlisted - s.reachable;
@@ -86,7 +101,10 @@ export function personOutcome(p: CancelPerson): string {
   switch (p.source) {
     case "pack": return "The class is back on your class pack.";
     case "membership": return "The class is back on your membership for this period.";
-    case "drop_in": return `Your ${formatMoney(p.refund_cents)} is being refunded to your card. It usually shows in 5 to 10 business days.`;
+    case "drop_in":
+      return p.refund_status === "failed"
+        ? `The studio is arranging your ${formatMoney(p.refund_cents, p.currency)} refund and will confirm when it is sent.`
+        : `Your ${formatMoney(p.refund_cents, p.currency)} is being refunded to your card. It usually shows in 5 to 10 business days.`;
     case "waitlist": return "You were on the waitlist, so nothing was charged.";
     default: return "Nothing was charged.";
   }
