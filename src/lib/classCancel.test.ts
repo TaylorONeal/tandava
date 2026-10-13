@@ -133,7 +133,7 @@ describe("describeFollowup", () => {
 
   it("never offers to resend an email that may already have gone out", () => {
     const r = describeFollowup(base({
-      people: [person({ name: "Ana Diaz", notice_status: "sending" })], emails_outstanding: 1, emails_uncertain: 1,
+      people: [person({ name: "Ana Diaz", notice_status: "unknown" })], emails_outstanding: 1, emails_uncertain: 1,
     }));
     expect(r.problems).toEqual(["1 email may not have gone out (Ana Diaz). Check with them, then mark it handled."]);
     expect(r.canRetry).toBe(false);

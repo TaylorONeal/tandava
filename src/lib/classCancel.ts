@@ -25,7 +25,7 @@ export interface CancelPerson {
   /** Set after the refund was attempted: "failed" means it did not go through yet. */
   refund_status?: "sent" | "failed" | null;
   /** Whether this person has been told (class_cancel_followup). */
-  notice_status?: "pending" | "sending" | "sent" | "failed" | "no_email" | null;
+  notice_status?: "pending" | "sending" | "sent" | "failed" | "unknown" | "no_email" | "handled" | null;
 }
 
 /**
@@ -144,8 +144,8 @@ export function describeFollowup(f: CancelFollowup, emailUnavailable = false): F
   if (f.refunds_outstanding) {
     problems.push(`${plural(f.refunds_outstanding, "refund")} did not go through yet. Until it does, those students are told you are arranging it. Try again, or refund them from Stripe.`);
   }
-  const names = (status: CancelPerson["notice_status"]) =>
-    f.people.filter((p) => p.notice_status === status).map((p) => p.name ?? p.email ?? "a student").join(", ");
+  const names = (...statuses: CancelPerson["notice_status"][]) =>
+    f.people.filter((p) => statuses.includes(p.notice_status)).map((p) => p.name ?? p.email ?? "a student").join(", ");
   const uncertain = f.emails_uncertain ?? 0;
   // In flight right now (claimed under five minutes ago) counts as not yet emailed.
   const waiting = f.emails_outstanding - f.emails_failed - uncertain;
@@ -153,7 +153,7 @@ export function describeFollowup(f: CancelFollowup, emailUnavailable = false): F
     problems.push(`Email is not set up for this studio yet, so ${plural(f.emails_outstanding, "person was", "people were")} not emailed. Please let them know, then mark it handled.`);
   } else {
     if (f.emails_failed) problems.push(`${plural(f.emails_failed, "email")} did not go out (${names("failed")}). Try again, or contact them directly and mark it handled.`);
-    if (uncertain) problems.push(`${plural(uncertain, "email")} may not have gone out (${names("sending")}). Check with them, then mark it handled.`);
+    if (uncertain) problems.push(`${plural(uncertain, "email")} may not have gone out (${names("unknown", "sending")}). Check with them, then mark it handled.`);
     if (waiting > 0) problems.push(`${plural(waiting, "person has", "people have")} not been emailed yet.`);
   }
   if (f.refund_updates_owed) {

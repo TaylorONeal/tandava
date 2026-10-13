@@ -273,6 +273,16 @@ BEGIN
     ok AND n = 1 AND (SELECT status FROM refund_requests WHERE transaction_id = v_txn) = 'sent',
     'CC-19', 'dashboard refund settles the queue only when the charge is fully refunded');
 
+  -- CC-21: an unconfirmed delivery counts as uncertain at once, and can be marked handled.
+  UPDATE class_cancel_notices SET status = 'unknown', updated_at = NOW() WHERE transaction_id = v_txn;
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  res := class_cancel_followup(v_occ2);
+  n := class_cancel_mark_handled(v_occ2);
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok((res ->> 'emails_uncertain')::int = 1 AND (res ->> 'emails_outstanding')::int >= 1 AND n >= 1
+                     AND (SELECT status FROM class_cancel_notices WHERE transaction_id = v_txn) = 'handled',
+                     'CC-21', 'unconfirmed delivery is uncertain immediately and closable');
+
   -- CC-20: a notice that announced a refund which then failed is reopened by the post-send reconcile.
   UPDATE refund_requests SET status = 'failed' WHERE transaction_id = v_txn;
   UPDATE class_cancel_notices SET refund_told = 'sent' WHERE transaction_id = v_txn;

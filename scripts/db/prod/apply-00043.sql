@@ -84,7 +84,8 @@ CREATE TABLE IF NOT EXISTS class_cancel_notices (
   email         TEXT,
   message       TEXT,
   status        TEXT NOT NULL DEFAULT 'pending'
-                CHECK (status IN ('pending', 'sending', 'sent', 'failed', 'no_email', 'handled')),
+                -- unknown: the provider call failed in transit, so it may have been delivered.
+                CHECK (status IN ('pending', 'sending', 'sent', 'failed', 'unknown', 'no_email', 'handled')),
   -- What the sent email said about the refund ('sent' or 'failed'). A notice
   -- that said 'failed' is owed a short "your refund is on its way" once the
   -- refund goes through.
@@ -411,14 +412,15 @@ BEGIN
     'refunds_sent_cents', (SELECT COALESCE(sum(amount_cents), 0) FROM refund_requests WHERE occurrence_id = p_occurrence_id AND status = 'sent'),
     'refunds_outstanding', (SELECT count(*) FROM refund_requests WHERE occurrence_id = p_occurrence_id AND status <> 'sent'),
     'emails_sent', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status = 'sent'),
-    'emails_outstanding', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status IN ('pending', 'sending', 'failed')),
+    'emails_outstanding', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status IN ('pending', 'sending', 'failed', 'unknown')),
     'emails_failed', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status = 'failed'),
     -- No email on file: the owner has to contact them, then marks it handled.
     'no_email_open', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id AND status = 'no_email'),
-    -- Claimed but never recorded (the function died mid-send): may or may not
-    -- have gone out, so never resent automatically. The owner checks and marks it handled.
+    -- Delivery not confirmed (the provider call failed in transit) or claimed
+    -- but never recorded (the function died mid-send): may or may not have gone
+    -- out, so never resent automatically. The owner checks and marks it handled.
     'emails_uncertain', (SELECT count(*) FROM class_cancel_notices WHERE occurrence_id = p_occurrence_id
-                           AND status = 'sending' AND updated_at < NOW() - INTERVAL '5 minutes'),
+                           AND (status = 'unknown' OR (status = 'sending' AND updated_at < NOW() - INTERVAL '5 minutes'))),
     -- Told "the studio is arranging your refund", and the refund has since gone through.
     'refund_updates_owed', (SELECT count(*) FROM class_cancel_notices n
                              JOIN refund_requests rr ON rr.transaction_id = n.transaction_id AND rr.reason = 'class_cancelled'
@@ -690,19 +692,19 @@ BEGIN
   -- through" update is closed only once it is actually owed (the refund has
   -- gone through); one still waiting on its refund stays open.
   UPDATE class_cancel_notices n
-     SET status = CASE WHEN n.status IN ('pending', 'sending', 'failed', 'no_email') THEN 'handled' ELSE n.status END,
+     SET status = CASE WHEN n.status IN ('pending', 'sending', 'failed', 'unknown', 'no_email') THEN 'handled' ELSE n.status END,
          refund_told = CASE
            WHEN n.refund_told = 'failed' AND rr.status = 'sent' THEN 'handled'
            -- Told by hand while the refund is still owed: they are owed the
            -- "your refund went through" update once it goes through.
-           WHEN n.refund_told IS NULL AND n.status IN ('pending', 'sending', 'failed', 'no_email')
+           WHEN n.refund_told IS NULL AND n.status IN ('pending', 'sending', 'failed', 'unknown', 'no_email')
                 AND rr.id IS NOT NULL AND rr.status <> 'sent' THEN 'failed'
            ELSE n.refund_told END,
          updated_at = NOW()
     FROM class_cancel_notices n2
     LEFT JOIN refund_requests rr ON rr.transaction_id = n2.transaction_id AND rr.reason = 'class_cancelled'
    WHERE n.id = n2.id AND n.occurrence_id = p_occurrence_id
-     AND (n.status IN ('pending', 'sending', 'failed', 'no_email') OR (n.refund_told = 'failed' AND rr.status = 'sent'));
+     AND (n.status IN ('pending', 'sending', 'failed', 'unknown', 'no_email') OR (n.refund_told = 'failed' AND rr.status = 'sent'));
   GET DIAGNOSTICS v_count = ROW_COUNT;
   RETURN v_count;
 END;

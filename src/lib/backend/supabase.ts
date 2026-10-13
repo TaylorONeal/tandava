@@ -466,7 +466,7 @@ const supabaseData: DataProvider = {
         .order("starts_at"),
       db.from("refund_requests").select("occurrence_id").eq("studio_id", studioId).neq("status", "sent"),
       db.from("class_cancel_notices").select("occurrence_id").eq("studio_id", studioId)
-        .or("status.in.(pending,sending,failed,no_email),and(status.in.(sent,handled),refund_told.eq.failed)"),
+        .or("status.in.(pending,sending,failed,unknown,no_email),and(status.in.(sent,handled),refund_told.eq.failed)"),
     ]);
     const error = ahead.error ?? owedRefunds.error ?? owedNotices.error;
     if (error) return { data: null, error: { message: error.message } };
@@ -495,7 +495,7 @@ const supabaseData: DataProvider = {
         followup_outstanding:
           (r.refund_requests ?? []).filter((x) => x.status !== "sent").length
           + (r.class_cancel_notices ?? []).filter((x) =>
-            ["pending", "sending", "failed", "no_email"].includes(x.status) || (["sent", "handled"].includes(x.status) && x.refund_told === "failed")).length,
+            ["pending", "sending", "failed", "unknown", "no_email"].includes(x.status) || (["sent", "handled"].includes(x.status) && x.refund_told === "failed")).length,
       })),
       error: null,
     };

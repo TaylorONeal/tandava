@@ -211,7 +211,7 @@ async function sendOutstandingNotices(db: Db, occurrenceId: string): Promise<voi
       ? refundSentEmail({ person, className, studioName, when, scheduleUrl })
       : classCancelledEmail({ person, className, studioName, when, message: row.message, scheduleUrl });
     // Sent, refused (safe to retry), or unknown: the request failed in
-    // transit, so it may have been delivered. Unknown stays "sending" and is
+    // transit, so it may have been delivered. Unknown is shown as such and is
     // never resent automatically; the owner checks and marks it handled.
     let outcome: "sent" | "failed" | "unknown";
     let detail: string | null = null;
@@ -227,7 +227,7 @@ async function sendOutstandingNotices(db: Db, occurrenceId: string): Promise<voi
     const patch = outcome === "sent"
       ? { status: "sent", last_error: null, refund_told: isUpdate ? "sent" : refundNow }
       : outcome === "unknown"
-        ? { last_error: detail?.slice(0, 500) }
+        ? { status: "unknown", last_error: detail?.slice(0, 500) }
         // Refused: a first email is retried; a refund update keeps its old status and stays owed.
         : { status: isUpdate ? row.status : "failed", last_error: detail?.slice(0, 500) };
     const { error: writeError } = await db.from("class_cancel_notices")
