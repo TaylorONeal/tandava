@@ -1,3 +1,5 @@
+import { useAuth } from "@/contexts/AuthContext";
+import { TeachingClasses } from "@/components/teach/TeachingClasses";
 import { useState } from "react";
 import { TeachLayout } from "@/components/teach/TeachLayout";
 import { useToast } from "@/hooks/use-toast";
@@ -178,7 +180,7 @@ const mockSchedule: ScheduledClass[] = [
   },
 ];
 
-export default function TeachSchedule() {
+function DemoTeachSchedule() {
   const { toast } = useToast();
   const [viewMode, setViewMode] = useState<ViewMode>("week");
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
@@ -528,4 +530,9 @@ export default function TeachSchedule() {
       </Dialog>
     </TeachLayout>
   );
+}
+
+export default function TeachSchedule() {
+  const { isDemoMode } = useAuth();
+  return isDemoMode ? <DemoTeachSchedule /> : <TeachingClasses title="My teaching schedule" />;
 }
