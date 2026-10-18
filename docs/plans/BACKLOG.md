@@ -143,5 +143,5 @@ W1 -> W3 -> W4-1 -> W4-3 -> W4-4 -> W5-2 -> W7-3 -> W7-4. W2 gates W4-3 and W5-2
 
 | Task | State | Acceptance / remaining gate |
 |---|---|---|
-| Assigned teacher schedule → roster → recorded attendance | Implemented locally, pending SQL validation and deployment | 00044: active assigned teacher/owner/admin only; narrow roster; existing check_in_booking authoritative window/status. Browser mocks cover failure, recovery, duplicate clicks and student denial. Run TEACH-01..15 with full DB suite, then review/apply migration before deploying UI. |
+| Assigned teacher schedule → roster → recorded attendance | Implemented and locally/CI validated, pending deployment | 00044: active assigned teacher/owner/admin only; narrow roster; existing check_in_booking authoritative window/status. Browser mocks cover failure, recovery, duplicate clicks and student denial. TEACH-01..15 and full DB suite passed locally and in PR100 CI; review/apply migration before deploying UI. |
 | Teacher availability, substitutes, earnings and teacher profile | Deferred, explicitly unavailable in live UI | Demo unchanged. Separate real contracts needed; no false-save controls exposed live. |

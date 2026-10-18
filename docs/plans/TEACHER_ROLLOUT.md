@@ -8,7 +8,7 @@ Prepared only. No hosted SQL, deployment, credentials, Stripe events, or workflo
 - GitHub Vercel commit status reports success for main at deployment `HrDS9DXSLc6xvqZfgxUhi7s1jaW8`: https://vercel.com/tayloroneal-1467s-projects/tandava/HrDS9DXSLc6xvqZfgxUhi7s1jaW8 . Public `/teach` returns HTTP200 SPA HTML; this alone does not verify authenticated operation.
 - Existing Supabase CLI authentication returns403 for `functions list --project-ref mkaixgjwakfufmmwembn`. No source download was attempted after denial. Migration00043 and deployed function versions remain unverified, not assumed absent.
 - Migration00044 exists only locally; its three teacher RPCs are not on upstream main. New teacher frontend has not been deployed.
-- Local checks: TypeScript and focused ESLint pass;526 application+32 script tests pass;23 browser tests pass with2 workers (including390×844 teacher attendance). Database tests remain unexecuted: PostgreSQL server tooling is unavailable. Do not deploy on browser mocks alone.
+- Local checks: TypeScript and focused ESLint pass;526 application+32 script tests pass;23 browser tests pass with2 workers (including390×844 teacher attendance). Full SQL suite now passes in a fresh isolated PostgreSQL16 cluster:251 PASS lines including all15 teacher cases; PR100 CI also passes all four jobs. Temporary server/data were cleaned up.
 
 ## Reviewable artifacts
 
@@ -22,7 +22,7 @@ Prepared only. No hosted SQL, deployment, credentials, Stripe events, or workflo
 
 ## Dependency order after approval
 
-1. Complete local clean-database migration+full SQL suite using a disposable database. Preserve existing production migration history; earlier production SQL was manually applied, so do not issue blind `db push` or migration repair.
+1. Local clean-database migration+full SQL suite completed successfully in a disposable PostgreSQL16 cluster; PR100 CI independently passed. Preserve existing production migration history; earlier production SQL was manually applied, so do not issue blind `db push` or migration repair.
 2. Project owner runs the read-only verification query and supplies function metadata (name/version/JWT mode) for `cancel-class` and `stripe-webhook`. Compare deployed source/definitions to main. Presence alone is not proof of matching implementation. Any absent or drifted prerequisite must be reviewed before writing.
 3. If00043 is not installed, review and apply its established bundle first. Deploy matching `cancel-class` with JWT verification and `stripe-webhook` with Stripe signature verification (no JWT). Owner confirms webhook subscriptions include `refund.updated`, `refund.failed`, `charge.refund.updated`. These are state changes requiring approval. Do not run the broad deploy-functions script merely to update these two functions.
 4. Review and apply00044 after its tests pass. The teacher feature requires no Edge Function deployment, new credential, or global role-permission change. New RPCs require active assigned teacher/owner/admin; existing general staff check-in RPC permissions remain unchanged.
@@ -32,3 +32,8 @@ Prepared only. No hosted SQL, deployment, credentials, Stripe events, or workflo
 ## Payment proof remains separate
 
 Latest scheduled Stripe smoke (2026-10-18): https://github.com/TaylorONeal/tandava/actions/runs/39131170968 . It fails before the flow starts because `SUPABASE_SERVICE_ROLE_KEY` is missing, mapped from GitHub environment `stripe-smoke` secret `SMOKE_SUPABASE_SECRET_KEY`. Also required: `SMOKE_STRIPE_TEST_KEY`, `SMOKE_STRIPE_WEBHOOK_SECRET` (presence unverified). Supply values directly through GitHub environment settings, never chat. This workflow mutates hosted sandbox test data and requires authorization before manual dispatch. A passing mock flow does not prove checkout/refund/webhook behavior live.
+
+
+## Validated PR
+
+https://github.com/TaylorONeal/tandava/pull/100 — CI https://github.com/TaylorONeal/tandava/actions/runs/39176946297 passed all jobs. PostgreSQL tests must use a fresh cluster per app: role objects are cluster-global even when app databases differ. The initial shared-cluster fixture mismatch was corrected by isolating test clusters, not by changing production roles or payment logic.
