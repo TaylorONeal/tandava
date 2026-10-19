@@ -6,6 +6,14 @@ Status: **decided Oct 8, 2026; nothing built yet.** Bundle ids are registered wi
 
 This file replaces the per-studio white-label guide (archived as `ARCHIVED-white-label-guide.md`).
 
+## Submission target and verified starting point — 2026-10-19
+
+Taylor's current target is **submit both apps by October 20, 2026 (Asia/Makassar / Bali)**, contingent on passing QA and accurate store material. This supersedes passive deferral of store execution; it does not turn hosted web checks into native acceptance.
+
+Targeted read-only Apple API inspection on October19 returned no App Store Connect app records for either `com.tandava.app` or `com.tandava.studio`. The registered bundle resources **WJF8DWPMZW** and **Q29237U4L4** exist; these are bundle IDs, not App Store app IDs or build IDs. No uploaded candidate or submission version is available through those bundles. Actual local repositories `tandava`, `tandava-independent-20260916`, and `tandava-blog-game` have no ios/android directories or Capacitor configuration. This agrees with the current released main, not just an old plan statement.
+
+Critical path: implement the already-planned two Capacitor role-specific apps → create the two App Store Connect records under existing registered IDs → produce signed candidates using the existing authorized signing setup → install and verify real device member/Studio journeys, auth/deep links/persistence and actual native value → capture separate truthful screenshots/walkthroughs → finish metadata/privacy/reviewer access → submit only passing candidates. New paid build capacity, credentials, security grants or agreements need their own authorization; none were created by this inspection. No native build or submission was attempted.
+
 ## The two apps
 
 | | **Tandava** (members) | **Tandava Studio** (owners and staff) |
