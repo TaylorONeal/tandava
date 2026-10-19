@@ -2,6 +2,8 @@
 
 Status: **decided Oct 8, 2026; nothing built yet.** Bundle ids are registered with Apple. No native project exists in this repo. Cross-app launch tracking lives in the private `app-launch-playbook` repo (`prds/P3-TANDAVA-STORES.md`, `DECISIONS.md`).
 
+**2026-10-19 checkpoint:** Hosted cancellation and assigned-teacher controls are released (PR100; see [progress](../plans/PROGRESS.md)). Sandbox payment acceptance and signed-in role walkthroughs remain open. No native project, device-tested release, store-ready screenshot set or store submission was verified. Keep member and Studio screenshot/walkthrough packets separate; use [the existing screenshot brief](screenshots/README.md), checking current platform requirements when producing assets.
+
 This file replaces the per-studio white-label guide (archived as `ARCHIVED-white-label-guide.md`).
 
 ## The two apps
