@@ -15,7 +15,7 @@ A student who lands on the platform cannot find a class and book it. Mindbody ha
 | Money is correct under retries, refunds, races | PAY-*, BOOK-* DB tests green in CI |
 | No tenant can read or write another tenant's data, and anon sees only public RPC output | SEC-*, ISO-* tests green in CI |
 
-Non-goals for v1: native apps, on-demand video sales, SMS marketing, multi-location chains, a white-label build per studio (see decision D2).
+Hosted v1 non-goals: native apps (the separate, already-decided member and Studio store releases are tracked in [STORE-APPS](../app-store/STORE-APPS.md), gated on the web pilot), on-demand video sales, SMS marketing, multi-location chains, a white-label build per studio (see decision D2).
 
 ## 3. Users
 
