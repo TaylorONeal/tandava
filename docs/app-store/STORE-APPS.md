@@ -124,3 +124,41 @@ accurate privacy declarations; real candidate screenshots; app icon/launch asset
 ASC app records; signed SDK26+ archives and upload; device acceptance. Existing
 bundle IDs alone are not ASC app records or uploaded builds. No store writes,
 new credentials, paid native builds or legal acceptance occurred here.
+
+#### Configured unsigned artifacts and verification receipt
+
+Source `12c9e538ea7654e06c31fa5479d42902ba70521a`, built 2026-10-19,
+Xcode 27.1 / `iphonesimulator27.1`, Debug, `CODE_SIGNING_ALLOWED=NO`.
+Both configured targets report **BUILD SUCCEEDED**. Existing public publishable
+Supabase and Turnstile settings were reused from the authorized deployment for
+project `mkaixgjwakfufmmwembn` in ignored `.env.native.local`; no keys are recorded
+here. These are simulator `.app` artifacts, not signed device/store archives.
+
+| Artifact | Executable SHA-256 | Complete app-tree SHA-256 |
+| --- | --- | --- |
+| Member | `4354c8fececb26b371ac20f5cd286652003770e5a8e22ffeb6f22cb9a1024048` | `6156ea7468b55fa0da5129f7a63aa495b713aade6016464a4edd4bd4cf6f1bf1` |
+| Studio | `9dd04d2a43d543cfc95a82ddee29270f6d9f7c76e38baf43f0e53823b231e7fb` | `6e946992e6a680068c0081fce46b4c5574e1065f34cc797ee02804064573883a` |
+
+Tree hash: SHA-256 of newline-joined sorted `relative-path SHA256(file)` records,
+with a trailing newline. Local artifact paths are
+`/tmp/tandava-{member,studio}-derived/Build/Products/Debug-iphonesimulator/App.app`.
+Workspace evidence: `evidence/tandava/native-candidates.json`.
+
+| Check | Result and limit |
+| --- | --- |
+| Full JS suite | 43 files / 537 tests plus 32 script tests passed before the final isolated payment/telemetry tests were added. |
+| Native routing/payment | 4 tests passed: member stays in member flow even with owner permissions; Studio manager/teacher/no-role routing; malicious deep links rejected; native ambiguous checkout blocked while web/other APIs remain enabled. These are deterministic tests, not logged-in device observations. |
+| Auth cache | 3 adversarial tests passed: identity switch/offline clearing, late old-user request cancellation, same-user refresh preserving cache. |
+| Deletion | 5 unit tests + 9 SQL checks passed; full disposable PostgreSQL suite passed. No real account deletion or production migration performed. |
+| Telemetry | 2 tests passed: no initialization without DSN; configured monitoring has no replay integration and sends no email identity. |
+| TypeScript/lint | Typecheck and focused changed-source lint passed. |
+| Native compile | Both configured local simulator targets passed; no signing/upload. |
+| Simulator installation/launch | **Uncertain installation / launch unverified.** After user-approved Xcode installation, device listing worked and iPhone17ProMax iOS26.2 `7DA5FDCC-3FF5-4800-A65F-64271F49BE38` boot completed. The subsequent chained install/install/launch command exited134 because `CoreSimulatorUtilities.framework/Versions/A/CoreSimulatorUtilities` was missing. Simulator.app was also absent from supported CUA inventory and Xcode's expected Applications path. No resets or repeated recovery attempted. |
+| Actual member/teacher/manager workflows | Blocked by runtime installation and absence of approved existing reviewer/test identities. CAPTCHA compatibility, persisted results, plugin sharing and offline recovery remain unobserved. |
+
+The temporary simulator-installation improvement supersedes the initial missing
+`simctl` failure, but does **not** prove a complete runtime installation. Verify
+installation completion and installed bundle state before retrying. Preserve
+other apps/devices. Store icons/splash are generated scaffold defaults, not approved
+brand assets. Dependency installation reported audit findings (23 total); no broad
+`audit fix` or claim of completed dependency hardening was made.
