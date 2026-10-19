@@ -86,3 +86,41 @@ In the member app the same flow applies: guest booking for a first class, then t
 
 - Production host for links (`tandavastudio.com` vs another domain). The app links have to match whatever the pilot ships on.
 - Whether the owner app ships before or after the member app. Default: member app first (studios can run from the web; members expect an app).
+
+### 2026-10-19 local implementation checkpoint (not a submission candidate)
+
+`codex/native-two-apps` adds separate Capacitor 8 iOS source projects under
+`native/member/ios` (`com.tandava.app`) and `native/studio/ios`
+(`com.tandava.studio`). They bundle local web assets; no remote-server wrapper.
+Member entry resolves to discovery / My Schedule; Studio resolves to login / the
+permitted management or teacher workspace. Native builds offer first-party email
+sign-in only; web social sign-in remains unchanged. Native sharing, an offline
+banner and validated studio-link handling are implemented. Associated-domain
+entitlements and cold-launch link delivery still require candidate testing.
+
+Build with existing **public** Supabase configuration in the environment using
+`npm run native -- member sync` and `npm run native -- studio sync`. No service
+credential belongs in the bundle. Direct Vite builds performed without backend
+configuration are compile-only artifacts, not usable release candidates.
+
+Safety changes include auth-identity cache cancellation/clearing and stale-result
+protection, removal of Sentry replay and email identification, and a native-only
+block on Stripe checkout / guest checkout / portal calls. No IAP or verified
+in-person-only product contract is present: native purchases must remain blocked
+until the product catalog and payment flow have been reviewed. Existing-credit
+and free signed-in booking paths remain available for verification.
+
+Account deletion initiation is implemented with recent-authentication checks,
+own-request RLS, sole-owner protection and durable status. The feature defaults
+OFF. **This does not satisfy release acceptance yet:** implement and rehearse the
+actual fulfillment/retention process in [the deletion runbook](../operations/ACCOUNT-DELETION.md)
+before enabling it. Migration 00045 is local only and is outside the previously
+approved 00043/00044 production release.
+
+Remaining October 20 gates: public native config and CAPTCHA compatibility;
+actual deletion fulfillment; paid/digital catalog policy; clean reviewer accounts
+and observed member/teacher/manager journeys; persistence and offline recovery;
+accurate privacy declarations; real candidate screenshots; app icon/launch assets;
+ASC app records; signed SDK26+ archives and upload; device acceptance. Existing
+bundle IDs alone are not ASC app records or uploaded builds. No store writes,
+new credentials, paid native builds or legal acceptance occurred here.

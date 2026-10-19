@@ -24,16 +24,12 @@ export function initSentry() {
     environment: import.meta.env.MODE,
     integrations: [
       Sentry.browserTracingIntegration(),
-      Sentry.replayIntegration({
-        maskAllText: false,
-        blockAllMedia: false,
-      }),
     ],
     // Performance: capture 10% of transactions in production
     tracesSampleRate: import.meta.env.PROD ? 0.1 : 1.0,
-    // Session Replay: capture 1% of sessions, 100% of errors
-    replaysSessionSampleRate: 0.01,
-    replaysOnErrorSampleRate: 1.0,
+    // No session replay: roster, auth, booking and account data are sensitive.
+    replaysSessionSampleRate: 0,
+    replaysOnErrorSampleRate: 0,
     // Don't send in development unless explicitly configured
     enabled: Boolean(DSN),
     // Filter out noisy browser errors
@@ -65,5 +61,5 @@ export function captureError(error: Error, context?: Record<string, unknown>) {
 /** Set the authenticated user for Sentry context */
 export function setSentryUser(user: { id: string; email: string } | null) {
   if (!DSN) return;
-  Sentry.setUser(user);
+  Sentry.setUser(user ? { id: user.id } : null);
 }

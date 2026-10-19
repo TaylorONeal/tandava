@@ -184,3 +184,16 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 ### October20 Bali submission target: native candidate inventory
 
 Taylor authorized pursuing both passing store submissions by October20 Bali, including fixes/testing/capture preparation. Targeted existing-credential Apple API GETs on October19: `/v1/apps?filter[bundleId]=com.tandava.app` and `com.tandava.studio` both returned empty data; corresponding `/v1/bundleIds` queries returned registered resources WJF8DWPMZW/Q29237U4L4. No app/version/build IDs exist in this account for those two bundles. Local primary and two alternate Tandava checkouts lack ios/android/Capacitor configs. No credentials printed/changed; no native builds, store writes, submissions or paid calls performed. Updated existing STORE-APPS critical path and backlog deadline; do not infer candidate availability from unrelated cross-app historical build counts.
+
+### 2026-10-19 — Two native app source foundations and privacy remediation (local)
+
+Generated distinct Capacitor iOS projects for the already-decided member and Studio
+apps; native email-only auth, role entry, sharing and offline status added. Query
+caches now clear across auth identity transitions, stale profile results are
+rejected, and Sentry replay/email identification are removed. Native ambiguous
+checkout is blocked pending catalog/payment review. Deletion initiation added
+behind a default-off flag with a local-only migration and operational runbook.
+Focused tests: 11 native-routing/cache/deletion unit cases passed; deletion agent's
+full disposable PostgreSQL suite passed including nine authorization/retention
+cases. No signed archive, device acceptance, ASC candidate, or deployed deletion
+is claimed. See `docs/app-store/STORE-APPS.md` for the updated release gates.

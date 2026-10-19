@@ -1,0 +1,46 @@
+\i helpers.sql
+BEGIN;
+DO $$
+DECLARE result account_deletion_requests; again account_deletion_requests; msg text; n integer;
+BEGIN
+  PERFORM pg_temp.as_anon();
+  BEGIN PERFORM request_account_deletion('DELETE'); EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(msg LIKE 'permission denied%', 'DELETE-01', 'anonymous requests denied');
+  PERFORM pg_temp.as_user(pg_temp.id('student_a1'));
+  msg := NULL;
+  BEGIN PERFORM request_account_deletion('DELETE'); EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(msg LIKE 'Sign in again%', 'DELETE-02', 'missing AMR fails closed');
+  PERFORM set_config('request.jwt.claims', jsonb_build_object('iat', extract(epoch FROM now()), 'amr', jsonb_build_array(jsonb_build_object('method', 'password', 'timestamp', extract(epoch FROM now())::bigint - 700)))::text, true);
+  PERFORM pg_temp.as_user(pg_temp.id('student_a1')); msg := NULL;
+  BEGIN PERFORM request_account_deletion('DELETE'); EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(msg LIKE 'Sign in again%', 'DELETE-03', 'fresh token with stale sign-in denied');
+  PERFORM set_config('request.jwt.claims', jsonb_build_object('amr', jsonb_build_array(jsonb_build_object('method', 'oauth', 'timestamp', extract(epoch FROM now())::bigint)))::text, true);
+  PERFORM pg_temp.as_user(pg_temp.id('student_a1')); msg := NULL;
+  BEGIN PERFORM request_account_deletion('delete'); EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(msg = 'Type DELETE to confirm', 'DELETE-04', 'explicit case-sensitive confirmation required');
+  PERFORM pg_temp.as_user(pg_temp.id('student_a1'));
+  SELECT * INTO result FROM request_account_deletion('DELETE');
+  SELECT * INTO again FROM request_account_deletion('DELETE');
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(result.profile_id = pg_temp.id('student_a1') AND result.id = again.id AND result.status = 'pending', 'DELETE-05', 'request belongs to caller and duplicate is idempotent');
+  PERFORM pg_temp.ok(EXISTS(SELECT 1 FROM profiles WHERE id = result.profile_id), 'DELETE-06', 'request does not cascade delete account or records');
+  PERFORM pg_temp.as_user(pg_temp.id('student_a2'));
+  SELECT count(*) INTO n FROM account_deletion_requests; msg := NULL;
+  BEGIN INSERT INTO account_deletion_requests(profile_id) VALUES (pg_temp.id('student_a2')); EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(n = 0 AND msg LIKE 'permission denied%', 'DELETE-07', 'other users cannot see or directly insert requests');
+  UPDATE studio_staff SET role = 'owner' WHERE profile_id = pg_temp.id('staff_a');
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a')); msg := NULL;
+  BEGIN PERFORM request_account_deletion('DELETE'); EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(msg LIKE 'Transfer studio ownership%', 'DELETE-08', 'sole active studio owner rejected');
+  PERFORM pg_temp.as_user(pg_temp.id('student_a1')); msg := NULL;
+  BEGIN UPDATE account_deletion_requests SET status = 'completed', completed_at = now(); EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(msg LIKE 'permission denied%', 'DELETE-09', 'caller cannot self-mark request fulfilled');
+END $$;
+ROLLBACK;
