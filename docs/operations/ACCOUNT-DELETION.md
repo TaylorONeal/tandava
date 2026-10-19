@@ -25,3 +25,20 @@ Local tests to accompany implementation: anonymous/member operator denial, missi
 The preview includes single-column profile-ID foreign keys and explicitly counts unsupported composite/alternate-key references. Recording is refused when unsupported references exist. It does not enumerate indirect dependencies or discover PII hidden in arbitrary JSON/free-text fields; these remain explicit unresolved categories. Same-count content changes and concurrent writes are not detected by this discovery snapshot. No receipt authorizes erasure, records a completed deletion, or changes request status. Production deployment and real account deletion remain unauthorized.
 
 Remaining implementation: stages 3–5, approved retention policy, assigned fulfillment operator/timeline, Auth/storage/processor coverage and complete end-to-end rehearsal. Keep the UI feature flag OFF. Neither migration 00045 nor 00046 makes account deletion store-ready by itself.
+
+### Required decisions before execution can be implemented/enabled
+
+| Decision | Responsible role to assign | Required artifact / acceptance evidence |
+| --- | --- | --- |
+| Retention rules | Product owner with the applicable privacy/accounting policy owner | Versioned per-category policy identifying what is erased, retained, why, expiry and processor; no invented retention duration. Cover financial transactions, bookings/attendance, messages, waivers/emergency data, audit records and backups. |
+| Fulfillment ownership | Named operations owner and backup | Restricted operator identity, request triage schedule, verified contact channel and approved processing timeline. Ticket labels in migration00046 do not establish operator identity. |
+| Auth and write cutoff | Backend owner | Supported Auth administration design for session revocation/account disablement, a tested write barrier, failure recovery and verification that old sessions cannot repopulate data. No new production access is implied. |
+| Data/processor coverage | Backend and integration owners | Versioned erasure manifest covering direct/indirect FKs, JSON/free text, storage, email/SMS, Stripe and backups; every unresolved category prevents completion. |
+| Safe execution | Backend owner plus independent reviewer | Disposable synthetic rehearsal of idempotent checkpoints, partial failures/retries, ownership transfer, financial invariance and independent verification. No cascading profile/auth delete. |
+| Enablement | Authorized release owner | Reviewed migration deployment, assigned operational workflow and observed end-to-end deletion of an explicitly disposable test account. Only then enable the UI flag and make accurate store/privacy claims. |
+
+Next engineering milestone: after the versioned policy and fulfillment owner are
+supplied, implement stages3–5 against injectable Auth/storage/processor adapters
+and synthetic fixtures first. Keep dry-run inventory separate from execution.
+Any production deployment, account disablement or real erasure needs its own
+explicit authorization; the local access-rule test approval does not cover it.
