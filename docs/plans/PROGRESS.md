@@ -197,3 +197,10 @@ Focused tests: 11 native-routing/cache/deletion unit cases passed; deletion agen
 full disposable PostgreSQL suite passed including nine authorization/retention
 cases. No signed archive, device acceptance, ASC candidate, or deployed deletion
 is claimed. See `docs/app-store/STORE-APPS.md` for the updated release gates.
+
+Configured unsigned member and Studio iOS simulator compilations subsequently
+passed at source `12c9e538`; exact artifact hashes and detailed test scope are in
+`docs/app-store/STORE-APPS.md`. User-approved Xcode component installation briefly
+restored simulator discovery/boot, but installation/launch failed with a missing
+CoreSimulatorUtilities library; install outcome is uncertain and launch not
+verified. No role/device acceptance, submission or production deletion is claimed.
