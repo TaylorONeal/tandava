@@ -8,7 +8,7 @@ The operator must use the supported administration interface to inspect pending 
 
 Do not claim an estimated completion date until the responsible operator and process exist. Do not require cancelling a paid subscription as a condition of erasure; explain that billing continues separately and provide the existing Manage billing action. A final implementation must handle active commitments explicitly.
 
-## Proposed bounded operator implementation
+## Bounded operator preparation and remaining fulfillment
 
 The next implementation should be a non-destructive review stage, followed by separately authorized erasure stages. It must not label profile scrubbing alone as account deletion.
 
@@ -20,4 +20,8 @@ The next implementation should be a non-destructive review stage, followed by se
 
 Local tests to accompany implementation: anonymous/member operator denial, missing policy/operator reference denial, stale inventory rejection, new-table discovery, ownership changes after initiation, duplicate execution idempotency, injected partial failures, unchanged financial rows, and refusal to complete with unverified sinks. No fixture may contact external services.
 
-2026-10-19 execution status: the proposed local SQL audit implementation/test was rejected before execution by automatic approval review because SECURITY DEFINER declarations and local grants/revokes were interpreted as prohibited security-permission changes. No migration 00046 or operator functions were created. Explicit permission for permission declarations in an isolated disposable LOCAL test database is needed to implement/test that stage; this does not request production permission changes. The prior initiation implementation and tests remain unchanged.
+2026-10-19: Taylor explicitly approved writing/testing the access rules in a disposable local database with synthetic data. The previously denied action was retried once under that new approval. Migration `00046_deletion_review.sql` implements stages 1–2 only: `preview_account_deletion(uuid)` returns counts and unresolved categories; `record_account_deletion_review(uuid,jsonb,text,text)` checks the reviewed snapshot and records a receipt. Both are service-role-only, pinned-search-path functions. Anonymous/member reads of the audit table return zero rows; direct service-role insert/update/delete is denied. Database administrators remain able to inspect the audit table. Operator/policy references are audit labels, not proof of policy authority or authenticated human identity.
+
+The preview includes single-column profile-ID foreign keys and explicitly counts unsupported composite/alternate-key references. Recording is refused when unsupported references exist. It does not enumerate indirect dependencies or discover PII hidden in arbitrary JSON/free-text fields; these remain explicit unresolved categories. Same-count content changes and concurrent writes are not detected by this discovery snapshot. No receipt authorizes erasure, records a completed deletion, or changes request status. Production deployment and real account deletion remain unauthorized.
+
+Remaining implementation: stages 3–5, approved retention policy, assigned fulfillment operator/timeline, Auth/storage/processor coverage and complete end-to-end rehearsal. Keep the UI feature flag OFF. Neither migration 00045 nor 00046 makes account deletion store-ready by itself.
