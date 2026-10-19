@@ -1,6 +1,6 @@
 # Tandava in the app stores: two apps, one backend
 
-Status: **decided Oct 8, 2026; nothing built yet.** Bundle ids are registered with Apple. No native project exists in this repo. Cross-app launch tracking lives in the private `app-launch-playbook` repo (`prds/P3-TANDAVA-STORES.md`, `DECISIONS.md`).
+Status: **decided Oct 8, 2026; nothing built yet.** Bundle ids are registered with Apple. No native project exists in this repo. Cross-app launch tracking lives in the private `app-launch-playbook` repo ([store brief](https://github.com/TaylorONeal/app-launch-playbook/blob/main/prds/P3-TANDAVA-STORES.md), [decisions](https://github.com/TaylorONeal/app-launch-playbook/blob/main/DECISIONS.md)); release acceptance uses its [final launch checklist](https://github.com/TaylorONeal/app-launch-playbook/blob/main/03-OPERATING-TEMPLATES.md#8-final-launch-checklist).
 
 **2026-10-19 checkpoint:** Hosted cancellation and assigned-teacher controls are released (PR100; see [progress](../plans/PROGRESS.md)). Sandbox payment acceptance and signed-in role walkthroughs remain open. No native project, device-tested release, store-ready screenshot set or store submission was verified. Keep member and Studio screenshot/walkthrough packets separate; use [the existing screenshot brief](screenshots/README.md), checking current platform requirements when producing assets.
 
