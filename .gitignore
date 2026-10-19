@@ -35,3 +35,10 @@ subagents/
 # Playwright
 test-results/
 playwright-report/
+
+# Generated native assets and local builds
+dist-native/
+native/**/App/public/
+native/**/build/
+native/**/DerivedData/
+native/**/xcuserdata/

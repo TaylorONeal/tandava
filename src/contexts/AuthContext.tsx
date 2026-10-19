@@ -1,4 +1,6 @@
-import { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { createAuthCacheBoundary } from "@/lib/authCache";
+import { Fragment, createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
 import { auth, data, isBackendConfigured } from "@/lib/backend";
 import type { AuthUser, AuthError, SignUpMetadata } from "@/lib/backend";
 import type { Profile } from "@/types/database";
@@ -49,6 +51,9 @@ interface AuthContextValue extends AuthState {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const queryClient = useQueryClient();
+  const boundary = useRef(createAuthCacheBoundary(queryClient)).current;
+  const [cacheEpoch, setCacheEpoch] = useState(0);
   const demo = useDemo();
   const isDemoMode = demo.isDemoMode || !isBackendConfigured();
 
@@ -95,15 +100,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const userId = state.user?.id;
     if (!userId) return;
 
+    const revision = boundary.revision;
     const profile = await fetchProfile(userId);
-    if (profile) {
+    if (profile && boundary.isCurrent(revision)) {
       setState((prev) => ({
         ...prev,
         profile,
         permissions: getPermissionsForUserRole(profile.role),
       }));
     }
-  }, [state.user?.id, fetchProfile]);
+  }, [state.user?.id, fetchProfile, boundary]);
 
   // -----------------------------------------------------------------------
   // Auth state listener (production mode only)
@@ -111,61 +117,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isDemoMode) return;
 
-    const unsubscribe = auth.onAuthStateChange(async (user) => {
-      let profile: Profile | null = null;
-      let permissions: Permission[] = [];
-
-      // Signed out without this tab's signOut() (expired session, another
-      // tab): the browser id is linked to that person, so start a fresh one
-      // before anonymous visits join their journey.
-      if (!user && lastUserId.current) forgetVisitor();
+    let active = true;
+    const applyUser = async (user: AuthUser | null) => {
+      if (!active) return;
+      const transition = boundary.transition(user?.id ?? null);
+      setCacheEpoch(transition.epoch);
+      // Remove the previous profile immediately while the next read is pending.
+      setState({ user, profile: null, permissions: [], isLoading: !!user, isDemoMode: false });
+      if (lastUserId.current && lastUserId.current !== user?.id) forgetVisitor();
       lastUserId.current = user?.id ?? null;
-
-      if (user) {
-        void linkVisitorOnce(user.id);
-        profile = await fetchProfile(user.id);
-        if (profile) {
-          permissions = getPermissionsForUserRole(profile.role);
-        }
-      }
-
+      resolveVisitorIdentity(user?.id ?? null);
+      if (user) void linkVisitorOnce(user.id);
+      const profile = user ? await fetchProfile(user.id) : null;
+      if (!active || !boundary.isCurrent(transition.revision)) return;
       setState({
-        user,
-        profile,
-        permissions,
-        isLoading: false,
-        isDemoMode: false,
+        user, profile,
+        permissions: profile ? getPermissionsForUserRole(profile.role) : [],
+        isLoading: false, isDemoMode: false,
       });
+    };
+    const initialRevision = boundary.revision;
+    const unsubscribe = auth.onAuthStateChange((user) => { void applyUser(user); });
+    void auth.getSession().then(({ user }) => {
+      // A slow initial session must not overwrite a newer auth event.
+      if (active && boundary.isCurrent(initialRevision)) void applyUser(user);
     });
-
-    // Initial session check
-    auth.getSession().then(async ({ user }) => {
-      if (user) lastUserId.current = user.id;
-      // Tell visit capture who is signed in on this load. A cold load that is
-      // already signed out rotates an id still owned by the previous account
-      // (no auth event will), and page views waiting on it are released.
-      if (user || !lastUserId.current) resolveVisitorIdentity(user?.id ?? null);
-      let profile: Profile | null = null;
-      let permissions: Permission[] = [];
-
-      if (user) {
-        profile = await fetchProfile(user.id);
-        if (profile) {
-          permissions = getPermissionsForUserRole(profile.role);
-        }
-      }
-
-      setState({
-        user,
-        profile,
-        permissions,
-        isLoading: false,
-        isDemoMode: false,
-      });
-    });
-
-    return unsubscribe;
-  }, [isDemoMode, fetchProfile]);
+    return () => {
+      active = false;
+      boundary.invalidate();
+      unsubscribe();
+    };
+  }, [isDemoMode, fetchProfile, boundary]);
 
   // -----------------------------------------------------------------------
   // Auth methods
@@ -218,6 +200,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     if (isDemoMode) return;
+    const transition = boundary.transition(null);
+    setCacheEpoch(transition.epoch);
+    setState({ user: null, profile: null, permissions: [], isLoading: false, isDemoMode: false });
     await auth.signOut();
     forgetVisitor();
   };
@@ -264,7 +249,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         refreshProfile,
       }}
     >
-      {children}
+      <Fragment key={cacheEpoch}>{children}</Fragment>
     </AuthContext.Provider>
   );
 }
