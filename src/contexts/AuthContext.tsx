@@ -200,11 +200,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     if (isDemoMode) return;
-    const transition = boundary.transition(null);
-    setCacheEpoch(transition.epoch);
-    setState({ user: null, profile: null, permissions: [], isLoading: false, isDemoMode: false });
+    const signingOutUser = state.user?.id;
+    // Evict private data immediately, but authentication remains valid until
+    // the provider confirms sign-out. A rejected request must remain retryable.
+    setCacheEpoch(boundary.purge().epoch);
     await auth.signOut();
-    forgetVisitor();
+    // The auth listener normally applies SIGNED_OUT. Do not overwrite a newer
+    // identity if another auth event arrived while this request was pending.
+    if (lastUserId.current === signingOutUser) {
+      setCacheEpoch(boundary.transition(null).epoch);
+      lastUserId.current = null;
+      setState({ user: null, profile: null, permissions: [], isLoading: false, isDemoMode: false });
+      forgetVisitor();
+    }
   };
 
   const resetPassword = async (email: string, options?: { next?: string; claim?: boolean }) => {

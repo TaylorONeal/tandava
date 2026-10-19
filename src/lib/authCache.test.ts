@@ -53,3 +53,23 @@ describe('auth cache isolation', () => {
     expect(boundary.isCurrent(signedOut.revision)).toBe(false);
   });
 });
+
+it('purges pending private reads without pretending the current identity signed out', async () => {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const boundary = createAuthCacheBoundary(client);
+  const authenticated = boundary.transition('A');
+  let resolve!: (value: string) => void;
+  const pending = client.fetchQuery({ queryKey: ['my-bookings'], queryFn: () => new Promise<string>(r => { resolve = r; }) }).catch(() => undefined);
+  const purged = boundary.purge();
+  resolve('old-private-data');
+  await pending;
+  expect(client.getQueryData(['my-bookings'])).toBeUndefined();
+  expect(boundary.isCurrent(authenticated.revision)).toBe(false);
+  // A failed sign-out leaves A authenticated. Same-identity refresh must not
+  // become a new identity transition; a later B must still clear fresh A data.
+  expect(boundary.transition('A').epoch).toBe(purged.epoch);
+  client.setQueryData(['my-bookings'], 'fresh-A');
+  expect(boundary.transition('B').epoch).toBeGreaterThan(purged.epoch);
+  expect(client.getQueryData(['my-bookings'])).toBeUndefined();
+  client.clear();
+});
