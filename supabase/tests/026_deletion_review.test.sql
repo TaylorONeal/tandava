@@ -1,0 +1,45 @@
+\i helpers.sql
+BEGIN;
+DO $$
+DECLARE req uuid; snapshot jsonb; rid uuid; msg text; financial_before jsonb; financial_after jsonb; n bigint;
+BEGIN
+  INSERT INTO account_deletion_requests(profile_id) VALUES(pg_temp.id('student_a1')) RETURNING id INTO req;
+  SELECT jsonb_agg(to_jsonb(t) ORDER BY id) INTO financial_before FROM transactions t;
+  snapshot := preview_account_deletion(req);
+  PERFORM pg_temp.ok(snapshot->>'can_complete' = 'false' AND jsonb_array_length(snapshot->'unverified_sinks') = 5, 'ERASE-01', 'dry-run never claims completion');
+  PERFORM pg_temp.ok(EXISTS(SELECT 1 FROM jsonb_array_elements(snapshot->'references') r WHERE r->>'table' = 'transactions'), 'ERASE-02', 'catalog includes financial FK');
+  PERFORM pg_temp.as_user(pg_temp.id('student_a1'));
+  BEGIN PERFORM preview_account_deletion(req); EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(msg LIKE 'permission denied%', 'ERASE-03', 'users cannot run operator inventory');
+  msg := NULL;
+  BEGIN PERFORM record_account_deletion_review(req, snapshot, '', 'local-test'); EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
+  PERFORM pg_temp.ok(msg IS NOT NULL, 'ERASE-04', 'missing retention-policy reference denied');
+  EXECUTE 'SET LOCAL ROLE service_role';
+  rid := record_account_deletion_review(req, snapshot, 'TEST POLICY ONLY', 'local-fixture-operator');
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(rid IS NOT NULL AND (SELECT status FROM account_deletion_requests WHERE id=req) = 'pending', 'ERASE-05', 'service audit does not claim processing or completion');
+  UPDATE account_deletion_requests SET status = 'processing' WHERE id=req;
+  msg := NULL;
+  BEGIN PERFORM record_account_deletion_review(req, snapshot, 'TEST', 'TEST'); EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
+  PERFORM pg_temp.ok(msg LIKE 'Inventory changed%', 'ERASE-06', 'stale inventory refused');
+  INSERT INTO studio_staff(studio_id,profile_id,role,is_active) VALUES(pg_temp.id('studio_c'),pg_temp.id('student_a1'),'owner',true);
+  snapshot := preview_account_deletion(req); msg := NULL;
+  BEGIN PERFORM record_account_deletion_review(req,snapshot,'TEST','TEST'); EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
+  PERFORM pg_temp.ok(msg LIKE 'Transfer studio ownership%', 'ERASE-07', 'ownership rechecked after initiation');
+  SELECT jsonb_agg(to_jsonb(t) ORDER BY id) INTO financial_after FROM transactions t;
+  PERFORM pg_temp.ok(financial_before IS NOT DISTINCT FROM financial_after, 'ERASE-08', 'financial rows unchanged');
+  PERFORM pg_temp.as_user(pg_temp.id('student_a1'));
+  SELECT count(*) INTO n FROM account_deletion_reviews;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(n = 0, 'ERASE-09', 'operator receipts hidden from members');
+  EXECUTE 'SET LOCAL ROLE service_role'; msg := NULL;
+  BEGIN DELETE FROM account_deletion_reviews WHERE id=rid; EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(msg LIKE 'permission denied%', 'ERASE-10', 'service cannot remove audit receipt');
+  PERFORM pg_temp.as_anon(); msg := NULL;
+  BEGIN PERFORM preview_account_deletion(req); EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(msg LIKE 'permission denied%', 'ERASE-11', 'anonymous operator access denied');
+END $$;
+ROLLBACK;
