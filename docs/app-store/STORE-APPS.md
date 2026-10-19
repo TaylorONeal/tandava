@@ -140,8 +140,10 @@ here. These are simulator `.app` artifacts, not signed device/store archives.
 | Studio | `9dd04d2a43d543cfc95a82ddee29270f6d9f7c76e38baf43f0e53823b231e7fb` | `6e946992e6a680068c0081fce46b4c5574e1065f34cc797ee02804064573883a` |
 
 Tree hash: SHA-256 of newline-joined sorted `relative-path SHA256(file)` records,
-with a trailing newline. Local artifact paths are
-`/tmp/tandava-{member,studio}-derived/Build/Products/Debug-iphonesimulator/App.app`.
+with a trailing newline. Persistent workspace artifact paths are
+`evidence/tandava/native/member/App.app` and
+`evidence/tandava/native/studio/App.app` (under the parent task workspace, outside
+the application repo). Both copied trees were rehashed and match the values above.
 Workspace evidence: `evidence/tandava/native-candidates.json`.
 
 | Check | Result and limit |
