@@ -25,6 +25,8 @@ import type {
   AuthError,
   SignUpMetadata,
   DataProvider,
+  TeachingClass,
+  TeachingAttendee,
   DataResult,
   MutationResult,
   CreateMessageInput,
@@ -133,7 +135,8 @@ const supabaseAuth: AuthProvider = {
   },
 
   async signOut() {
-    await getClient().auth.signOut();
+    const { error } = await getClient().auth.signOut();
+    if (error) throw new Error(error.message);
   },
 
   async resetPassword(email, options) {
@@ -184,6 +187,18 @@ const supabaseAuth: AuthProvider = {
 // ---------------------------------------------------------------------------
 
 const supabaseData: DataProvider = {
+  async getMyTeachingClasses(): Promise<DataResult<TeachingClass[]>> {
+    const { data, error } = await getClient().rpc("get_my_teaching_classes" as never);
+    return { data: data as TeachingClass[] | null, error: error ? { message: error.message } : null };
+  },
+  async getTeachingRoster(occurrenceId): Promise<DataResult<TeachingAttendee[]>> {
+    const { data, error } = await getClient().rpc("get_teaching_roster" as never, { p_occurrence_id: occurrenceId } as never);
+    return { data: data as TeachingAttendee[] | null, error: error ? { message: error.message } : null };
+  },
+  async checkInTeachingBooking(bookingId): Promise<DataResult<Booking>> {
+    const { data, error } = await getClient().rpc("check_in_teaching_booking" as never, { p_booking_id: bookingId } as never);
+    return { data: data as Booking | null, error: error ? { message: error.message } : null };
+  },
   async markProfileClaimed(userId): Promise<MutationResult> {
     // RLS "Users can update own profile" scopes this to the caller. The
     // is_guest filter keeps claimed_at the first-claim time.

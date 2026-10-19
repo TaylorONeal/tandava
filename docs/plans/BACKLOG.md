@@ -138,3 +138,10 @@ W1 -> W3 -> W4-1 -> W4-3 -> W4-4 -> W5-2 -> W7-3 -> W7-4. W2 gates W4-3 and W5-2
 - NEXT: after sign-in a real owner lands on `/schedule` (sample data). Send owners to `/manage`, students to their real bookings; the manage header must show the studio name, not "Tandava Yoga", and no sample notifications.
 - NEXT: Turnstile fails in Taylor's Chrome ("Verification failed"). Check widget hostnames (tandavastudio.com, www) before enforcing captcha in Supabase Auth.
 - LATER: `monthly` schedule rules are not generated (no UI creates them).
+
+## Teacher portal first working slice (2026-10-18)
+
+| Task | State | Acceptance / remaining gate |
+|---|---|---|
+| Assigned teacher schedule → roster → recorded attendance | Implemented and locally/CI validated, pending deployment | 00044: active assigned teacher/owner/admin only; narrow roster; existing check_in_booking authoritative window/status. Browser mocks cover failure, recovery, duplicate clicks and student denial. TEACH-01..15 and full DB suite passed locally and in PR100 CI; review/apply migration before deploying UI. |
+| Teacher availability, substitutes, earnings and teacher profile | Deferred, explicitly unavailable in live UI | Demo unchanged. Separate real contracts needed; no false-save controls exposed live. |

@@ -1,3 +1,5 @@
+import { useAuth } from "@/contexts/AuthContext";
+import { TeachingClasses } from "@/components/teach/TeachingClasses";
 import { useState } from "react";
 import { TeachLayout } from "@/components/teach/TeachLayout";
 import { useToast } from "@/hooks/use-toast";
@@ -203,7 +205,7 @@ const earningsSummary = {
 // Studio setting: tips enabled (in production this would come from studio settings)
 const TIPS_ENABLED = false;
 
-export default function TeachDashboard() {
+function DemoTeachDashboard() {
   const { toast } = useToast();
   const [checkInClassId, setCheckInClassId] = useState<string | null>(null);
   const [students, setStudents] = useState<Record<string, BookedStudent[]>>(mockStudents);
@@ -759,4 +761,9 @@ export default function TeachDashboard() {
       </div>
     </TeachLayout>
   );
+}
+
+export default function TeachDashboard() {
+  const { isDemoMode } = useAuth();
+  return isDemoMode ? <DemoTeachDashboard /> : <TeachingClasses title="Teaching dashboard" />;
 }

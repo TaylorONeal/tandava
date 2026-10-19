@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -24,6 +24,7 @@ import {
   X,
   Settings,
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface TeachLayoutProps {
@@ -41,8 +42,21 @@ const teachNavigation = [
 
 export function TeachLayout({ children }: TeachLayoutProps) {
   const location = useLocation();
-  const { profile } = useAuth();
+  const { profile, isDemoMode, signOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const handleSignOut = async () => {
+    if (signingOut) return;
+    setSigningOut(true);
+    try {
+      await signOut();
+      navigate("/auth/login", { replace: true });
+    } catch (error) {
+      toast({ title: "Couldn't sign out", description: error instanceof Error ? error.message : "Please try again.", variant: "destructive" });
+    } finally { setSigningOut(false); }
+  };
 
   const isActive = (href: string) => {
     if (href === "/teach") return location.pathname === "/teach";
@@ -50,7 +64,8 @@ export function TeachLayout({ children }: TeachLayoutProps) {
   };
 
   const profileName = profile?.display_name
-    || (profile ? `${profile.first_name} ${profile.last_name}` : "Instructor");
+    || [profile?.first_name, profile?.last_name].filter(Boolean).join(" ")
+    || "Instructor";
 
   const initials = profileName
     .split(" ")
@@ -85,23 +100,23 @@ export function TeachLayout({ children }: TeachLayoutProps) {
                   Teacher Portal
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Oxatl Yoga
+                  {isDemoMode ? "Oxatl Yoga" : "Your teaching studios"}
                 </p>
               </div>
             </Link>
           </div>
 
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="relative">
+            {isDemoMode && <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
               <span className="absolute -top-0.5 -end-0.5 h-4 w-4 rounded-full bg-accent-coral text-[9px] font-bold text-white flex items-center justify-center">
                 3
               </span>
-            </Button>
+            </Button>}
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                <Button aria-label="Teacher account menu" variant="ghost" className="relative h-9 w-9 rounded-full">
                   <Avatar className="h-9 w-9 border-2 border-accent-sage/20">
                     <AvatarImage src={profile?.avatar_url ?? undefined} />
                     <AvatarFallback className="bg-accent-sage/20 text-foreground text-xs font-semibold">
@@ -120,7 +135,7 @@ export function TeachLayout({ children }: TeachLayoutProps) {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild className="rounded-lg">
                   <Link
-                    to="/teach/profile"
+                    to={isDemoMode ? "/teach/profile" : "/account"}
                     className="flex items-center gap-2 cursor-pointer"
                   >
                     <User className="h-4 w-4" />
@@ -137,14 +152,9 @@ export function TeachLayout({ children }: TeachLayoutProps) {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild className="rounded-lg">
-                  <Link
-                    to="/auth/login"
-                    className="flex items-center gap-2 cursor-pointer text-destructive"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Sign out
-                  </Link>
+                <DropdownMenuItem disabled={signingOut} onSelect={() => void handleSignOut()} className="rounded-lg text-destructive">
+                  <LogOut className="h-4 w-4 me-2" />
+                  {signingOut ? "Signing out…" : "Sign out"}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -172,12 +182,12 @@ export function TeachLayout({ children }: TeachLayoutProps) {
                 </Avatar>
                 <div className="min-w-0">
                   <p className="text-sm font-semibold truncate">{profileName}</p>
-                  <p className="text-xs text-muted-foreground">E-RYT 500</p>
+                  <p className="text-xs text-muted-foreground">{isDemoMode ? "E-RYT 500" : "Instructor"}</p>
                 </div>
               </div>
             </div>
 
-            {teachNavigation.map((item) => (
+            {teachNavigation.filter(item => isDemoMode || ["/teach", "/teach/schedule"].includes(item.href)).map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
@@ -205,7 +215,9 @@ export function TeachLayout({ children }: TeachLayoutProps) {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 min-w-0 p-4 lg:p-6">{children}</main>
+        <main className="flex-1 min-w-0 p-4 lg:p-6">{isDemoMode || ["/teach", "/teach/schedule"].includes(location.pathname.replace(/\/$/, ""))
+          ? children
+          : <div className="space-y-3"><h1 className="text-2xl font-bold">Not available yet</h1><p>This part of the teacher portal is not available for live studios yet.</p><Button asChild><Link to="/teach">View my classes</Link></Button></div>}</main>
       </div>
     </div>
   );
