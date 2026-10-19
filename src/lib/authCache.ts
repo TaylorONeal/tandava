@@ -19,6 +19,13 @@ export function createAuthCacheBoundary(client: QueryClient) {
       }
       return { revision, epoch };
     },
+    purge() {
+      revision += 1;
+      epoch += 1;
+      void client.cancelQueries();
+      client.clear();
+      return { revision, epoch };
+    },
     isCurrent(value: number) { return revision === value; },
     invalidate() { revision += 1; },
   };
