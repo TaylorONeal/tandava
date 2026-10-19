@@ -22,6 +22,27 @@ import type { AttributionModel, AttributionSourceRow, AutomationSettingsRow, Mem
 /** Minimal user identity — what the app needs from any auth system */
 import type { CancelFollowup, CancelPerson } from "@/lib/classCancel";
 
+export interface TeachingClass {
+  occurrence_id: string;
+  offering_name: string;
+  studio_name: string;
+  studio_timezone: string;
+  location_name: string | null;
+  room: string | null;
+  starts_at: string;
+  ends_at: string;
+  capacity: number;
+  is_cancelled: boolean;
+  booked: number;
+  checked_in: number;
+}
+
+export interface TeachingAttendee {
+  booking_id: string;
+  student_name: string;
+  status: "confirmed" | "checked_in" | "waitlisted";
+}
+
 export interface UpcomingClass {
   id: string;
   starts_at: string;
@@ -195,6 +216,9 @@ export interface MemberEntitlements {
 }
 
 export interface DataProvider {
+  getMyTeachingClasses(): Promise<DataResult<TeachingClass[]>>;
+  getTeachingRoster(occurrenceId: string): Promise<DataResult<TeachingAttendee[]>>;
+  checkInTeachingBooking(bookingId: string): Promise<DataResult<Booking>>;
   /** Fetch a user profile by ID */
   getProfile(userId: string): Promise<DataResult<Profile>>;
 
