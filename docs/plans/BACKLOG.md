@@ -4,6 +4,8 @@ Rules: one slice per commit (`W4-2a`), a test lands with the code, a DB change i
 
 ## Current release checkpoint — 2026-10-19
 
+**Deadline update:** Taylor now targets both Tandava native submissions for October20 Bali. [STORE-APPS](../app-store/STORE-APPS.md#submission-target-and-verified-starting-point--2026-10-19) records the checked critical path: bundle IDs exist, but targeted Apple API queries find no App Store app records/candidates and inspected repositories have no native projects. Submission remains contingent on passing native QA and accurate listings.
+
 This is the execution backlog; [PROGRESS](PROGRESS.md) holds receipts, [PRD](PRD-launch-v1.md) defines hosted scope, and [STORE-APPS](../app-store/STORE-APPS.md) defines the two follow-on native apps. Older status text below is historical where this checkpoint supersedes it. Cross-project GTM acceptance remains [Final launch checklist](https://github.com/TaylorONeal/app-launch-playbook/blob/main/03-OPERATING-TEMPLATES.md#8-final-launch-checklist), [Hosted GTM PRD](https://github.com/TaylorONeal/app-launch-playbook/blob/main/prds/P3-TANDAVA-HOSTED.md), and [two-app store brief](https://github.com/TaylorONeal/app-launch-playbook/blob/main/prds/P3-TANDAVA-STORES.md). Use those gates for audience/claims, real-device tasks, support/privacy, payment/persistence, rights/store forms, rollback and authorized publication. Historical build counts are not new-build evidence.
 
 | Surface / gate | Verified now | Next acceptance gate |
