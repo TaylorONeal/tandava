@@ -42,3 +42,32 @@ supplied, implement stages3–5 against injectable Auth/storage/processor adapte
 and synthetic fixtures first. Keep dry-run inventory separate from execution.
 Any production deployment, account disablement or real erasure needs its own
 explicit authorization; the local access-rule test approval does not cover it.
+
+## October 20 synthetic fulfillment executor
+
+`scripts/deletion/fulfillment.mjs` now implements the execution ordering and
+verification contract for a **disposable synthetic rehearsal only**. It is not
+imported by the frontend or an Edge Function and supplies no live adapter. Both
+the manifest and adapters must identify the disposable synthetic environment;
+production execution is rejected. Tests run through `npm run test:scripts`.
+
+The versioned manifest binds the request, subject, schema fingerprint, policy and
+operator references. It requires explicit Auth, database, storage, free-text/JSON,
+processor and backup coverage. Unknown inventory steps or unresolved sinks block
+execution. Under a request lock, it verifies a write barrier and authentication
+denial before scrubbing, rechecks sole ownership/inventory during execution, and
+uses operation keys plus independent read-back to recover a lost response without
+repeating a successful mutation. Checkpoints are not accepted as proof: every sink
+is verified again before the final receipt, and a financial digest must remain
+unchanged. Retention requires a reason, processor and expiry and leaves the receipt
+`awaiting-retention`; expiry alone never counts as verified erasure.
+
+Twelve failure/retry tests exercise these invariants, including schema drift,
+ownership changes, missing cutoffs, partial failure, duplicate execution, changed
+manifests, processor failure, financial mutation and data repopulation. A passing
+receipt is named `verified-synthetic`, never a completed real account deletion.
+The test journal and adapters are in-memory fixtures; they do not establish durable
+production checkpoints, a real cross-process lock, session revocation or exhaustive
+schema/processor coverage. Actual per-table adapters and the approved retention
+manifest remain required, followed by real disposable-account acceptance under
+separate hosted authorization. Keep the deletion UI feature flag OFF.
