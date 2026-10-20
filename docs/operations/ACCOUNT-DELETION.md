@@ -71,3 +71,75 @@ production checkpoints, a real cross-process lock, session revocation or exhaust
 schema/processor coverage. Actual per-table adapters and the approved retention
 manifest remain required, followed by real disposable-account acceptance under
 separate hosted authorization. Keep the deletion UI feature flag OFF.
+
+## October 20 production database stage (review only, NOT deployed)
+
+Migration `00047_deletion_execution.sql` adds real database-side execution state
+and a profile erasure adapter. Unlike the synthetic executor, these functions use
+the actual `profiles`, booking, credit and financial tables. They have only been
+executed in a fresh disposable PostgreSQL cluster with synthetic fixtures.
+
+`begin_account_deletion_execution(request, review, manifest)` is service-role-only.
+It binds an immutable manifest to migration46's matching review, rechecks inventory
+and sole ownership, and leases the work for15minutes with a rotating fencing token.
+A current token is required for the profile stage; an expired worker cannot reuse
+its token after another worker acquires the lease. The private execution table has
+no direct worker write access. Workers also lose direct completion-status writes
+on the request table; no completion RPC is supplied by this migration.
+
+A BEFORE trigger on each existing public table serializes writes by authenticated
+JWT subject with the cutoff transaction and rejects that subject's later writes,
+including writes inside SECURITY DEFINER booking functions. Other members retain
+normal write access. Begin refuses new tables that lack this guard. Normal writers use shared advisory locks; an exclusive cutoff rejects new writers
+with a retry error instead of waiting while they hold row locks. This needs performance review
+before deployment. It is **not** a blanket service-role, webhook, storage or
+processor cutoff. Those channels still require subject-aware adapters and checks.
+The auto-book RPC now calls the same cutoff guard before its entitlement fallback,
+so a blocked account gets an error instead of a misleading `needs_payment` result.
+The existing membership/pack selection behavior is retained. Service-side payment
+and processor requests still require their own subject checks.
+
+
+`scrub_account_deletion_profile(request, token)` requires an active Auth ban and
+no remaining Auth sessions, rechecks ownership, and refuses an unknown profile
+column. The test Auth ban/session rows are local stand-ins, not a supported way to
+modify hosted Auth. Production must establish these prerequisites through reviewed
+Auth administration. The function tombstones contact/emergency/biographical fields,
+reads them back, preserves the profile/auth keys and compares protected financial
+and booking rows before/after under table locks. It never deletes `auth.users` or
+`profiles`, and returns `account_completed: false`. Repeat execution is idempotent
+for the scrubbed fields. The request stays `processing`; the write barrier stays on.
+There is no production rollback/unblock procedure yet; resolve unexpected cutoffs
+through a separately reviewed recovery process before enabling a worker.
+
+Nineteen SQL assertions plus a two-session cutoff race cover operator denial, missing retention details, active
+lease exclusion, old-JWT profile/booking writes, unaffected users, missing Auth ban,
+remaining sessions, changed ownership/schema, tombstone and financial invariance,
+stale-token rejection, immutable policy, protected history and no completion-toggle
+shortcut. The complete existing SQL suite also passes with this migration applied
+locally. The two-session test verifies a stale writer fails fast during an exclusive cutoff
+without a row-lock deadlock. Full workflow concurrency and the remaining adapters are
+still required; these passes do not close account deletion for store submission.
+
+### Concrete retention and delivery decisions still needed
+
+The published hosted privacy text already promises deletion/anonymization within
+30days except legally required records (`src/content/legal/index.ts`, “Keeping and
+deleting data”). Implement the workflow against that existing promise or obtain an
+explicit approved policy change; do not invent another timeline in code.
+
+| Category | Implementation disposition / required decision |
+| --- | --- |
+| Profile contact, emergency and biography fields | Actual tombstone adapter implemented; not deployed. Created/updated timestamps and opaque identity keys remain. |
+| Transactions, memberships, class packs, credits and bookings | Currently preserved byte-for-byte by the profile stage, **not approved for indefinite retention**. Supply a policy reference, exact category/reason/expiry and responsible processor. Related descriptions/metadata may contain personal data and need explicit scrubbing rules. |
+| Attendance, member notes/tags, waivers, messages, teacher/staff attribution | Per-table and indirect-FK erasure/anonymization manifest and appropriate retention decisions still required. No generic cascading deletion. |
+| Auth identity, sessions and stale tokens | Select/rehearse supported Auth administration and PII erasure strategy while preserving financial FK relationships. Ban/session checks alone do not finish identity deletion. |
+| Storage, email/SMS, Stripe and analytics | Inventory linked identifiers and objects, disable repopulating writers, add idempotent adapters and independent evidence. No processor contact occurred in these tests. |
+| Backups and retained records | Identify actual provider retention/expiry and restore suppression procedure; record deferred obligations. Expiry alone is not proof of erasure. |
+| Operations | Assign primary/backup fulfillment operators and a queue/reconciliation cadence capable of meeting the published30-day promise. Labels in a manifest are not authenticated operator identity. |
+
+Next milestone: approved per-category manifest plus Auth/service-writer cutoff and
+remaining data/processor adapters, then a complete disposable rehearsal with crash/
+resume and concurrency. Only a verified complete workflow can enable the UI flag
+or justify hosted disposable-account deletion acceptance. Production deployment,
+real-account disablement/deletion and feature enablement remain unauthorized.
