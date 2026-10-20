@@ -164,3 +164,56 @@ installation completion and installed bundle state before retrying. Preserve
 other apps/devices. Store icons/splash are generated scaffold defaults, not approved
 brand assets. Dependency installation reported audit findings (23 total); no broad
 `audit fix` or claim of completed dependency hardening was made.
+
+### 2026-10-20 native launch verification
+
+Apple API read returned no app records for either Tandava bundle. Existing bundle
+registrations remain separate from App Store records. No App Review submission
+or production SQL was executed.
+
+Both existing 1.0(1) simulator apps now launch and render on iPhone 17 Pro Max,
+iOS26.2. Member reaches configured discovery with no classes; Studio reaches
+first-party email sign-in. Their executable hashes match the earlier configured
+artifacts. This clears the old CoreSimulator launch blocker; it does not prove
+signed-in booking, roster/check-in, or persistence acceptance.
+
+A clean local checkout at aef28e8 plus a native discovery-copy correction was
+rebuilt as 1.0(2) using the existing public configuration recovered from the
+installed bundle. Both simulator targets compile successfully with SDK27.1.
+The configuration is ignored and contains no service credential. Typecheck,
+changed-file lint and ten focused native/auth-cache/telemetry tests passed.
+The native copy no longer tells installed app users that no app is needed.
+
+Owner access was restored and verified on October20: `purafieldstudio@gmail.com`,
+Purafield Studio organization `nopyuyyzzvffhxlamsch`, project `tandava-prod` /
+`mkaixgjwakfufmmwembn`. The Auth Users page now loads. Use the canonical account
+and direct links in [Operator Setup](../OPERATOR_SETUP.md#existing-hosted-service-account-and-entry-points)
+before asking for another login. Reviewer identities and seed acceptance remain
+separate from dashboard access. No accounts or permissions were created.
+
+Remaining acceptance: actual account-deletion fulfillment and approved hosted
+rollout; native CAPTCHA and reviewer sign-in; member booking/reopen and Studio
+teacher/manager roster/check-in; reviewed purchase scope; approved icon/launch
+assets; App Store app records; existing-team provisioning for both new bundle
+IDs; signed device candidates; accurate privacy and support details; separate
+iPhone and iPad screenshot sets. Empty discovery and login captures are test
+evidence, not a finished marketing set.
+
+#### Listing copy staged for acceptance (not uploaded)
+
+Keep these separate; confirm the corresponding signed-in native journey before
+publishing its claims. Native checkout is intentionally unavailable in this
+candidate, so these drafts make no purchase, payment, video or offline-booking claim.
+
+| Field | Tandava Member | Tandava Studio |
+| --- | --- | --- |
+| Name | Tandava | Tandava Studio |
+| Subtitle | Find classes. Plan practice. | Schedules, rosters, check-in |
+| Description draft | Find participating yoga and movement studios, browse their classes, and keep your upcoming bookings together. Sign in with your existing studio account to manage your schedule. Class availability depends on participating studios. | Manage your studio day from your phone. View your teaching schedule and class rosters, and check in students with the access assigned by your studio. Sign in with an existing staff account; available tools depend on your role. |
+| First screenshot captions | Find your next class; Your studio schedule; Your upcoming practice | Your teaching day; Class rosters; Student check-in |
+| Required proof before publication | Reviewer sign-in, free/existing-credit booking, saved booking after process restart | Teacher and manager authorization, roster visibility, synthetic check-in and saved attendance |
+
+Privacy URL: https://tandavastudio.com/privacy. Verify the live response and final
+build data flows before populating Apple privacy declarations. Support contact
+and reviewer credentials still need a verified owner-maintained handoff; never
+put reviewer passwords in source.

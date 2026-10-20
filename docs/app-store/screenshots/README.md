@@ -1,5 +1,26 @@
 # App Store Screenshots
 
+## October 20, 2026 candidate capture gate
+
+Keep Member and Studio sets separate. Native build2 was captured at1320×2868
+on iPhone17ProMax/iOS26.2; Member shows empty discovery and Studio shows sign-in.
+These are truthful QA captures, not an accepted marketing set. Do not use the
+old combined instructor/member sequence below for the two separate listings.
+
+The current [Apple screenshot requirements](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/)
+specify an iPhone Dynamic Island medium display set and a13-inch iPad set when
+iPad is supported; review accepted dimensions and scaling in the live listing.
+All three inspected app artifacts support iPhone and iPad. Capture required
+iPad layouts and share behavior rather than omitting tablet coverage. The older
+device-size table below is historical guidance, not the current submission gate.
+
+Member capture sequence after reviewer access: discovery with synthetic classes,
+class detail, successful free/existing-credit booking, saved My Schedule.
+Studio: staff sign-in, assigned teaching schedule, synthetic class roster,
+saved check-in. Keep real customer data, credentials, empty-state placeholders
+and unverified payment claims out of listing assets.
+
+
 This folder contains screenshot templates and guidelines for app store submissions.
 
 ## Required Screenshots
