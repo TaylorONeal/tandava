@@ -103,14 +103,19 @@ and `slug`. Catalog writes retain their existing RLS and validation triggers.
   reads; teacher schedule status and owner follow-up RPC succeed.
 - Reset target guard rejects remote/query/override targets. Duplicate migration
   version regression passes before any DB connection.
-- SQL equivalents of PostgREST joins are tested, **not real HTTP PostgREST** or
-  provider calls. Several server mutation probes use zero matching rows and prove
+- Real PostgREST16.5 HTTP over private Unix sockets now passes 34 checks,
+  including the exact schedule embedding and status filters, Member profile
+  PATCH, Teacher sensitive-column/RPC denials, Owner settings UPSERT and follow-up
+  RPC, service-role reads/updates, and direct-write denials. Each server uses a
+  fixed database role plus a fixture-only claims hook; no credentials/JWTs are
+  created. This verifies HTTP authorization, **not hosted JWT sign-in** or
+  external provider calls. Several server mutation probes use zero matching rows and prove
   privilege availability, not provider-side behavior. Existing app UI/e2e CI
   checks use their configured test environment, not deployed permission proof.
 
 Before any production approval: identify deployed ledger and object creators;
 read table/column/default ACLs plus role memberships; reconcile PR102 separately;
-verify hosted PostgREST behavior using an isolated synthetic Supabase environment
+verify hosted version/JWT behavior using an isolated synthetic Supabase environment
 with this complete migration chain; review any out-of-repo consumers of the 131
 RPC-only/ungranted tables. A production rollout may break undocumented direct
 consumers: it intentionally removes their prior broad grants. No automatic SQL
@@ -153,3 +158,25 @@ Columns in parentheses are column grants; all other entries are table grants.
 | `studio_staff` | — | SELECT (studio_id, profile_id, role, is_active) | SELECT; INSERT; UPDATE |
 | `studios` | — | SELECT (id, name, slug, email, phone, website, timezone, currency, brand_primary_color, brand_secondary_color, default_cancellation_minutes, late_cancel_fee_cents, no_show_fee_cents, waitlist_enabled, max_waitlist_size, discoverable, express_booking_enabled, page_live); UPDATE (name, email, phone, website, timezone, currency, brand_primary_color, brand_secondary_color, default_cancellation_minutes, late_cancel_fee_cents, no_show_fee_cents, waitlist_enabled, max_waitlist_size, discoverable, express_booking_enabled, page_live) | SELECT; INSERT; UPDATE |
 | `waiver_templates` | — | — | SELECT; INSERT; UPDATE |
+
+## Repeat the isolated HTTP checks
+
+Install/use PostgreSQL and an official PostgREST executable, then run:
+
+```sh
+POSTGREST_BIN=/path/to/postgrest bash scripts/db-http-test.sh
+```
+
+Put PostgreSQL's `initdb`, `pg_ctl`, `createdb`, `psql` and Python3 on PATH. The
+runner creates a new mode-0700 temporary directory, private PostgreSQL socket and
+three private HTTP Unix sockets. It accepts no database URL, opens no TCP
+listener, ignores inherited libpq routing options, creates no credentials, loads
+all migrations plus synthetic fixtures, and stops all servers on exit. The
+fixture hook is a test-support file, never an application migration. Do not load
+it on a hosted project. The retained temporary logs/data are synthetic only.
+
+HTTP denials in this no-JWT setup return 401 with SQLSTATE42501 because each
+server uses its configured anonymous database role; they are checked as actual
+permission failures, not accepted on arbitrary status/errors. A first UPSERT
+returns 201; its conflict-update returns 200 in PostgREST16.5. Both persisted
+values are checked. Hosted auth/session behavior remains separate.
