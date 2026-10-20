@@ -20,7 +20,7 @@ cleanup() { q -c "$CLEAN" >/dev/null 2>&1 || true; }
 trap cleanup EXIT
 
 failed=0
-for f in 010_isolation 015_baseline 016_studio_settings 017_schedule_generation 018_page_live 019_my_bookings 020_discover 021_function_hardening 022_catalog_edits 023_class_cancel 024_teacher_attendance 025_account_deletion 026_deletion_review 030_booking 035_booking_integrity 037_book_auto 038_seat_holds 060_payments; do
+for f in 010_isolation 015_baseline 016_studio_settings 017_schedule_generation 018_page_live 019_my_bookings 020_discover 021_function_hardening 022_catalog_edits 023_class_cancel 024_teacher_attendance 025_account_deletion 026_deletion_review 027_deletion_execution 030_booking 035_booking_integrity 037_book_auto 038_seat_holds 060_payments; do
   echo "== $f"
   cleanup
   q -f fixtures.sql >/dev/null || { echo "fixtures failed"; exit 2; }
@@ -56,6 +56,11 @@ wait $pid
 left=$(q -t -A -c "SELECT classes_remaining FROM class_packs WHERE id = 'aaaaaaaa-5000-0000-0000-0000000000a1'")
 held=$(q -t -A -c "SELECT count(*) FROM bookings WHERE profile_id = 'a1000000-0000-0000-0000-0000000000a1' AND status = 'confirmed'")
 if [ "$left" = "0" ] && [ "$held" = "1" ]; then echo "PASS BOOK-15  one credit buys exactly one class (pack 0, 1 confirmed)"; else echo "FAIL BOOK-15  pack=$left confirmed=$held"; failed=1; fi
+
+echo "== 080_deletion_cutoff_race (exclusive worker versus stale JWT write)"
+cleanup
+q -f fixtures.sql >/dev/null || { echo "fixtures failed"; exit 2; }
+DATABASE_URL="$DB_URL" bash deletion_lock_race.sh || failed=1
 
 if [ $failed -ne 0 ]; then echo "RESULT: FAILED"; exit 1; fi
 echo "RESULT: all database tests passed"
