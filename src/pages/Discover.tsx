@@ -12,6 +12,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Calendar, Clock, Flame, Loader2, MapPin, Search } from "lucide-react";
+import { HelpTip } from "@/components/help/HelpTip";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { MarketingShell } from "@/components/layout/MarketingShell";
 import { Button } from "@/components/ui/button";
@@ -49,7 +50,7 @@ function formatTime(iso: string, timeZone: string): string {
 export default function Discover() {
   const [style, setStyle] = useState("");
   const [query, setQuery] = useState("");
-  const { data, isLoading, isError } = useDiscoverClasses(DEFAULT_CITY);
+  const { data, isLoading, isError, isFetching, refetch } = useDiscoverClasses(DEFAULT_CITY);
 
   useEffect(() => {
     trackFunnel("discover_viewed");
@@ -70,7 +71,10 @@ export default function Discover() {
       />
 
       <section className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Find a class in {DEFAULT_CITY}</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Find a class in {DEFAULT_CITY}</h1>
+          <HelpTip id="discovery-availability" />
+        </div>
         <p className="mt-2 text-muted-foreground max-w-2xl">
           Independent yoga and movement studios. Pick a class, book on the studio's page.
           {nativeApp === null && " Works in your browser, no app needed."}
@@ -79,16 +83,19 @@ export default function Discover() {
 
       {!isBackendConfigured() ? (
         <Notice
-          title="Discover needs a live backend"
-          body="This build has no connected backend, so there are no studios to show. Try the demo instead."
-          cta={{ to: "/demo", label: "Explore the demo" }}
+          title="Class discovery is unavailable"
+          body="This version cannot connect to class listings. Use your studio’s usual booking page while discovery is unavailable."
         />
       ) : isLoading ? (
         <div className="flex items-center justify-center py-24 text-muted-foreground" role="status" aria-label="Loading classes">
           <Loader2 className="h-6 w-6 animate-spin" />
         </div>
       ) : isError ? (
-        <Notice title="We couldn't load classes" body="Please refresh in a moment." />
+        <Notice
+          title="We couldn't load classes"
+          body="Check your connection and try again. We haven't confirmed whether classes are available."
+          action={{ label: isFetching ? "Trying again…" : "Try again", onClick: () => { void refetch(); }, disabled: isFetching }}
+        />
       ) : (
         <>
           <div className="mb-6 space-y-3">
@@ -121,23 +128,25 @@ export default function Discover() {
             )}
           </div>
 
-          {thin && (
+          {thin && rows.length > 0 && (
             <Notice
               tone="soft"
-              title="More studios are opening soon"
-              body={`We're onboarding independent ${DEFAULT_CITY} studios now. The list below is everything live today.`}
+              title="Showing available classes"
+              body={`These are the upcoming ${DEFAULT_CITY} classes currently listed on Tandava. For other options, ask your studio for its booking link.`}
             />
           )}
 
           {groups.length === 0 ? (
             <Notice
-              title={rows.length === 0 ? "No classes yet" : "No classes match"}
+              title={rows.length === 0 ? "No studio classes are listed here yet" : "No classes match"}
               body={
                 rows.length === 0
-                  ? "Studios will appear here as soon as they publish their schedule."
+                  ? "There are no upcoming public classes to book in Austin right now. Ask your studio for its usual booking link, or check here again later. Signing up does not unlock more listings."
                   : "Try a different style or clear the search."
               }
-              cta={rows.length === 0 ? { to: "/for-studios", label: "Own a studio? Get listed" } : undefined}
+              action={rows.length === 0
+                ? { label: isFetching ? "Checking…" : "Check again", onClick: () => { void refetch(); }, disabled: isFetching }
+                : { label: "Clear filters", onClick: () => { setStyle(""); setQuery(""); } }}
             />
           ) : (
             groups.map((g) => (
@@ -223,17 +232,20 @@ function Notice({
   title,
   body,
   cta,
+  action,
   tone,
 }: {
   title: string;
   body: string;
   cta?: { to: string; label: string };
+  action?: { label: string; onClick: () => void; disabled?: boolean };
   tone?: "soft";
 }) {
   return (
     <div className={`rounded-xl border border-border p-6 mb-6 ${tone === "soft" ? "bg-secondary/40" : "text-center py-16"}`}>
       <h2 className="font-semibold">{title}</h2>
       <p className="mt-1 text-sm text-muted-foreground max-w-md mx-auto">{body}</p>
+      {action && <Button variant="outline" className="mt-4" onClick={action.onClick} disabled={action.disabled}>{action.label}</Button>}
       {cta && (
         <Button asChild variant="outline" className="mt-4">
           <Link to={cta.to}>{cta.label}</Link>
