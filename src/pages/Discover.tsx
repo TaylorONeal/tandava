@@ -22,6 +22,7 @@ import { isBackendConfigured } from "@/lib/backend";
 import { formatPrice } from "@/lib/reference-data";
 import { useDiscoverClasses } from "@/hooks/useDiscover";
 import { trackFunnel } from "@/lib/funnel";
+import { nativeApp } from "@/lib/native/platform";
 import {
   availableStyles,
   classHref,
@@ -64,14 +65,15 @@ export default function Discover() {
     <Shell>
       <SEOHead
         title={`Find a yoga class in ${DEFAULT_CITY}`}
-        description={`Browse upcoming classes at independent studios in ${DEFAULT_CITY} and book in your browser. No app to install.`}
+        description={`Browse upcoming classes at independent studios in ${DEFAULT_CITY} and find your next class.`}
         canonical="/discover"
       />
 
       <section className="mb-8">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Find a class in {DEFAULT_CITY}</h1>
         <p className="mt-2 text-muted-foreground max-w-2xl">
-          Independent yoga and movement studios. Pick a class, book on the studio's page. Works in your browser, no app needed.
+          Independent yoga and movement studios. Pick a class, book on the studio's page.
+          {nativeApp === null && " Works in your browser, no app needed."}
         </p>
       </section>
 
