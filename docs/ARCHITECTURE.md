@@ -43,7 +43,7 @@ graph TB
 | Surface | Routes (from `src/App.tsx`) | Key pages | Guards |
 |---|---|---|---|
 | Studio operations | `/manage`, `/manage/schedule`, `/manage/students`, `/manage/teachers`, `/manage/offerings`, `/manage/financials`, `/manage/reports`, `/manage/import`, `/manage/settings`, `/manage/onboarding`, `/manage/members/:id`, `/manage/promo-codes`, `/manage/events`, `/manage/landing-pages`, `/manage/analytics` (+ `/members`, `/sales`, `/financials`, `/site`, `/sources`), `/manage/automations`, `/manage/connectors`, `/manage/products`, `/manage/inventory`, `/manage/purchase-orders`, `/manage/notification-settings`, `/manage/sms-inbox`, `/manage/utm-builder`, `/manage/campaigns`, `/manage/tasks`, `/manage/on-demand`, `/manage/feature-settings`, `/manage/audit-logs`, `/manage/data-dictionary`, `/manage/definitions`, `/manage/embed`, `/manage/share`; `/admin`, `/admin/studios`, `/admin/users`, `/admin/billing`, `/admin/feedback`, `/admin/settings`; `/staff/checkin`, `/staff/waitlist`; `/teach`, `/teach/schedule`, `/teach/availability`, `/teach/subs`, `/teach/earnings`, `/teach/profile` | `src/pages/manage/` (45 pages), `src/pages/admin/*`, `StaffCheckin`, `StaffWaitlist`, `src/pages/teach/*` | `studio.manage_schedule` (owner + admin day-to-day), `studio.manage_settings` (owner only), `platform.admin`, `studio.checkin`, `studio.manage_waitlist`, `studio.teach` |
-| Discover marketplace | `/discover`, `/instructors`, `/instructors/:id`, `/events`, `/events/:id`, `/s/:slug`, `/on-demand`, `/schedule`; `/` shows the platform landing or the Discover experience per `VITE_HOME_MODE` | `Discover.tsx`, `Instructors.tsx`, `InstructorDetail.tsx`, `StudioStorefront.tsx`, `StudioDetail.tsx`, `OnDemand.tsx`, `Schedule.tsx` | Public; storefront gated on `studios.discoverable` |
+| Discover marketplace | `/discover`, `/instructors`, `/instructors/:id`, `/events`, `/events/:id`, `/s/:slug`, `/on-demand`, `/schedule`; `/` shows the platform landing or the Discover experience per `VITE_HOME_MODE` | `Discover.tsx`, `Instructors.tsx`, `InstructorDetail.tsx`, `StudioStorefront.tsx`, `StudioDetail.tsx`, `OnDemand.tsx`, `Schedule.tsx` | Public; storefront gated on `studios.page_live`; `discoverable` controls Discover inclusion (migration `00038`) |
 | Customer booking | `/my-schedule`, `/account`, `/account/notifications`, `/community`, `/home`; `/s/:slug/book/:occurrenceId`, `/s/:slug/save-details`; `/embed/schedule/:slug`, `/embed/event/:id`; `/kiosk/:studioId` | `MySchedule.tsx`, `Account.tsx`, `src/pages/account/*`, `ExpressBooking.tsx` (login-free guest booking, PRD-020), `Kiosk.tsx`, `src/pages/embed/*` | `member.view_profile` for account pages; booking routes public by design |
 
 External touchpoints that cross the SPA boundary: the embeddable widget (`public/embed.js`, `public/widget.js`, `<tandava-schedule>`; see `docs/guides/website-embed.md`), per-studio subdomains via `VITE_ROOT_DOMAIN` (e.g. `oxatl.tandavastudio.com`, wildcard DNS; see `docs/OPERATOR_SETUP.md`), and storefront deep links (`/s/<slug>`, `/s/<slug>/book/<occurrenceId>`) that double as the planned native apps' universal links.
@@ -58,10 +58,9 @@ graph LR
     D -->|"trackFunnel(discover_viewed)"| F["Funnel sink (optional)"]
     D --> E["ExpressBooking<br/>/s/:slug/book/:occurrenceId"]
     E -->|"guest checkout,<br/>no login required"| EB["express-book<br/>edge function"]
-    EB -->|"owns every write"| RPC["book_class RPC<br/>(migration 00012)"]
-    RPC --> DB[("bookings, credits,<br/>memberships, transactions")]
-    EB --> SC["stripe-checkout<br/>edge function"]
-    SC --> Stripe["Stripe Connect<br/>(studio's own account)"]
+    EB -->|"free or waitlisted"| RPC["create_guest_booking RPC"]
+    RPC --> DB[("bookings and related state")]
+    EB -->|"paid: stripe.checkout.sessions.create"| Stripe["Stripe Checkout<br/>(studio's connected account)"]
     Stripe --> WH["stripe-webhook<br/>edge function"]
     WH --> DB
     DB --> K["Kiosk / StaffCheckin<br/>/kiosk/:studioId, /staff/checkin"]
@@ -154,8 +153,8 @@ For the full domain model with mermaid diagrams, see `docs/developer/01-domain-m
 
 ## Demo mode
 
-`VITE_DEMO_MODE=true` loads mock data from `src/data/demo/` (the fictional Oxatl Yoga studio: 3 locations, 18 teachers, 500 members) and bypasses all backend calls. Demo and production code never mix at runtime. The live demo at tandava-flame.vercel.app runs in this mode. See `docs/architecture/DEMO_SEPARATION.md`.
+`VITE_DEMO_MODE=true` loads mock data from `src/data/demo/` (the fictional Oxatl Yoga studio: 3 locations, 18 teachers, 500 members) and bypasses all backend calls. Some public routes (`/schedule`, `/events`, `/instructors`, `/on-demand`) still use inline sample content or demo entitlement state. Disabling demo mode is not proof that every reachable route uses live data. The live demo at tandava-flame.vercel.app runs in this mode. See `docs/architecture/DEMO_SEPARATION.md`.
 
 ## Planned native apps
 
-`docs/app-store/STORE-APPS.md`: "two apps, one backend". **Tandava** for members (`com.tandava.app`) and **Tandava Studio** for owners and staff (`com.tandava.studio`). Status: **decided Oct 8, 2026; nothing built yet**; bundle IDs registered with Apple; no native code in this repo. Recommended shell: Capacitor (same as the sibling Purafield apps). Storefront deep links (`/s/<slug>`, `/s/<slug>/book/<occurrenceId>`) are the future universal links; no new URL shape is planned.
+`docs/app-store/STORE-APPS.md`: "two apps, one backend". **Tandava** for members (`com.tandava.app`) and **Tandava Studio** for owners and staff (`com.tandava.studio`). The base branch records the Oct 8 plan; native implementation is under separate review in PR #102 and is not part of this documentation PR. Check that PR and `docs/app-store/STORE-APPS.md` for dated build and release evidence. Recommended shell: Capacitor (same as the sibling Purafield apps). Storefront deep links (`/s/<slug>`, `/s/<slug>/book/<occurrenceId>`) are the future universal links; no new URL shape is planned.

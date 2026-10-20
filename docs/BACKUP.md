@@ -8,54 +8,37 @@ Last verified: 2026-10-20 (against repo HEAD `d694b2ba6`).
 
 The backup story for the production database behind Tandava. It covers the Supabase Postgres that holds every studio's operational data. It does not cover the static frontend (rebuildable from git) or the demo mock data (`src/data/demo/`).
 
-## The tier strategy (from `docs/architecture/RELIABILITY.md`)
+## Strategy versus verified coverage
 
-| Tier | Mechanism | RPO | RTO |
-|---|---|---|---|
-| Tier 1: real-time replication | Supabase streaming read replicas | ~0 seconds | < 5 minutes |
-| Tier 2: point-in-time recovery | Automated daily snapshots | 24 hours | < 1 hour |
-| Tier 3: long-term archive | Encrypted backups to cold storage | (weekly cadence) | (restore from archive) |
+`docs/architecture/RELIABILITY.md` describes replication, point-in-time recovery and
+long-term archives as targets. Their RPO/RTO figures are design targets, not measured
+recovery guarantees. Replication is not a substitute for an independent backup.
+This documentation review did not inspect the hosted plan, retained backups or a
+restore receipt. The three workflows in this source revision do not include a
+scheduled backup. That does not establish what the provider performs outside GitHub.
 
-Tier 3 retention: 1 year. Target data durability in `RELIABILITY.md`: 99.999999999% annual.
+## Supported recovery entry points
 
-## The gap
+Follow the current [Supabase backup guide](https://supabase.com/docs/guides/platform/backups)
+(checked October 20, 2026). Daily backups and PITR are different capabilities;
+availability and retention depend on the project's configuration. In the Dashboard,
+open **Database → Backups**, inspect available recovery points, and use the applicable
+daily-backup or point-in-time restore flow. Restoring makes the project inaccessible
+while recovery runs and rolls data back to the selected point. The Management API is
+also documented by Supabase; the old `supabase db restore` and `supabase db backups`
+examples in the architecture strategy are not executable instructions for this runbook.
 
-`.github/workflows/` contains exactly `ci.yml`, `platform-independence.yml`, and `stripe-smoke.yml`. There is **no scheduled backup workflow and no in-repo verification** that any tier is actually running. The strategy relies entirely on Supabase platform features:
+Before a production restore, confirm the project, approved recovery point and expected
+data loss; preserve available current evidence and obtain incident-owner authorization.
+Rehearse on an isolated destination using the provider's supported recovery workflow.
+Record backup identity, source time, destination, duration, integrity checks and app
+smoke results. For table-level recovery, recover into isolation and prepare a reviewed
+reconciliation of rows and dependent records; do not pipe a table dump directly into
+production as a generic repair.
 
-- What Supabase provides: the tiers above are Supabase platform capabilities (replication, daily snapshots/PITR, and whatever archive the plan includes). [VERIFY: the actual Supabase plan of the production project was not confirmed in this pass. `LAUNCH_RUNBOOK.md` notes that Pro ($25/mo) adds backups, which implies the free tier's backup story is thinner. Confirm which plan the production project is on before relying on Tier 2/3.]
-- What needs proving: that snapshots are taken, that a restore actually works, and that someone would notice if either stopped. Nothing in the repo proves any of this today.
-- What exists on paper: `RELIABILITY.md` prescribes monthly backup verification (restore to a test environment, run integrity checks, verify app functionality, document results), and `AUDIT_COMPLIANCE.md` prescribes quarterly restore testing. Neither has evidenced runs in the repo.
-
-## Restore procedures (from `docs/architecture/RELIABILITY.md`)
-
-Point-in-time recovery:
-
-```bash
-# Preview first
-supabase db restore \
-  --target-time "2026-02-05T14:30:00Z" \
-  --dry-run
-
-# Execute
-supabase db restore \
-  --target-time "2026-02-05T14:30:00Z" \
-  --confirm
-```
-
-Full restore from a backup:
-
-```bash
-supabase db backups list
-supabase db restore --backup-id <id>
-```
-
-Table-level recovery (for a single-table incident, e.g. a bad migration touching `bookings`):
-
-```bash
-# 1. Create temp database from backup, 2. export the table, 3. import into production
-pg_dump -t bookings backup_db > bookings_backup.sql
-psql production_db < bookings_backup.sql
-```
+Database backups exclude Storage API object contents. Inventory those objects and
+establish their separate recovery procedure. Hosted backup settings, encrypted offsite
+copies, alert delivery and successful restore evidence remain to be verified for Tandava.
 
 ## Proposed verification workflow (sketch)
 
@@ -74,8 +57,8 @@ graph TB
 Concrete options, cheapest first:
 
 1. **Calendar-owned drill (no code):** put the monthly restore drill on the operator's calendar with a runbook (the procedures above), and record each run's date, backup id, and outcome in the repo or ops log. This satisfies the `RELIABILITY.md` checklist and the `AUDIT_COMPLIANCE.md` quarterly testing with the least machinery.
-2. **Scheduled CI workflow:** a monthly GitHub Actions workflow that restores to a throwaway Supabase project, runs `scripts/db-test.sh`-style checks plus a booking smoke test, and posts the result. Heavier; do this once the hosted service has paying studios.
-3. **Repo-owned `pg_dump` artifact:** a scheduled workflow that dumps the database and stores an encrypted copy outside Supabase (defense against platform-level failure). This is the Tier 3 "cold archive" made concrete and evidenced. Note it needs careful secret handling and is only worth it for the hosted production database.
+2. **Scheduled CI workflow:** a monthly GitHub Actions workflow that restores to a throwaway Supabase project, runs `scripts/db-test.sh`-style checks plus a booking smoke test, and posts the result. This is proposed work, not an existing or verified drill.
+3. **Repo-owned `pg_dump` artifact:** a scheduled workflow that dumps the database and stores an encrypted copy outside Supabase (defense against platform-level failure). This is the Tier 3 "cold archive" made concrete and evidenced. Note it needs careful secret handling and is a separate operational change requiring an approved destination and retention policy.
 
 ## What to verify before relying on this doc
 
@@ -87,5 +70,5 @@ Concrete options, cheapest first:
 
 - `docs/architecture/RELIABILITY.md`: full strategy, SLA targets, incident response, performance budgets
 - `docs/architecture/AUDIT_COMPLIANCE.md`: quarterly restore testing prescription
-- `LAUNCH_RUNBOOK.md`: plan notes (Pro $25/mo adds backups)
+- `LAUNCH_RUNBOOK.md`: historical plan notes; verify current provider configuration
 - `docs/architecture/ROLE_ACCESS_CONTROL.md`, `docs/architecture/MULTI_TENANCY.md`: why a restore must preserve RLS isolation between studios

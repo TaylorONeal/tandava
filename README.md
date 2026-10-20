@@ -71,9 +71,9 @@ The "three apps" you will see described elsewhere are **three route groups** ser
 
 Studios also reach customers outside the app: the embeddable booking widget (`public/embed.js`, `public/widget.js`, the `<tandava-schedule>` element; see `docs/guides/website-embed.md`), per-studio subdomains via `VITE_ROOT_DOMAIN` (e.g. `oxatl.tandavastudio.com`), and storefront deep links (`/s/<slug>`, `/s/<slug>/book/<occurrenceId>`) that will become the native apps' universal links.
 
-### Planned native apps (decided, not built)
+### Native apps (separate implementation review)
 
-Two store apps are planned, following the "two apps, one backend" model: **Tandava** for members (`com.tandava.app`) and **Tandava Studio** for owners and staff (`com.tandava.studio`). Status per `docs/app-store/STORE-APPS.md`: **decided Oct 8, 2026; nothing built yet.** Bundle IDs are registered with Apple; no native project exists in this repo. The recommended shell is Capacitor, the same approach used by the sibling Purafield apps.
+Two store apps are planned, following the "two apps, one backend" model: **Tandava** for members (`com.tandava.app`) and **Tandava Studio** for owners and staff (`com.tandava.studio`). The base branch documents the Oct 8 plan; native implementation is being reviewed separately in PR #102. No native project is included in this documentation PR. Consult that PR and `docs/app-store/STORE-APPS.md` for current build and release evidence. The recommended shell is Capacitor, the same approach used by the sibling Purafield apps.
 
 ```mermaid
 graph TB
@@ -87,7 +87,7 @@ graph TB
     EF --> DB
     EF --> Stripe["Stripe Connect (Standard)"]
     SPA --> Widget["Embed widget<br/>public/embed.js, public/widget.js"]
-    SPA -->|"optional sink<br/>(no key yet)"| PH["PostHog funnel events"]
+    SPA -->|"optional sink<br/>(requires configured key)"| PH["PostHog funnel events"]
 ```
 
 ---
@@ -105,7 +105,7 @@ The demo loads a complete fictional studio (Oxatl Yoga, Austin TX) with 3 locati
 | Front Desk | Class check-in, waitlist management |
 | Member | Browse classes, book, view schedule, track progress |
 
-No signup, no backend, no database. Everything runs client-side with mock data (set `VITE_DEMO_MODE=true`; mock data lives in `src/data/demo/` and never mixes with production code paths).
+No signup, no backend, no database. Everything runs client-side with mock data (set `VITE_DEMO_MODE=true`; demo fixtures live in `src/data/demo/`; some public routes also contain inline sample data, so disabling demo mode alone does not remove every sample-data surface).
 
 ---
 
@@ -145,7 +145,7 @@ Opens at `http://localhost:8080` with sample data.
 | Backend | Supabase (PostgreSQL + Auth + Storage + Edge Functions) |
 | Payments | Stripe Connect (Standard) |
 | Hosting | Any static host (Vercel, Netlify, Cloudflare Pages, self-hosted) |
-| Analytics | PostHog funnel events via plain fetch, no SDK (optional; key not yet set); Sentry (optional) |
+| Analytics | PostHog funnel events via plain fetch, no SDK (optional; deployment configuration not verified here); Sentry (optional) |
 
 No Node.js server runtime needed in production. The frontend is a static SPA (`vercel.json`); all backend logic runs in Supabase (PostgreSQL + Edge Functions). Application code imports from `src/lib/backend/` (a provider interface), never from Supabase directly, so the backend is swappable in principle.
 
@@ -189,7 +189,7 @@ All scripts verified in `package.json`:
 
 ## Testing and CI
 
-`.github/workflows/` has three workflows: `ci.yml` (typecheck, lint, vitest, build, DB migration tests on postgres:16, Deno edge typecheck), `platform-independence.yml` (runs `scripts/check-platform-independence.sh`, which greps for Lovable/Replit remnants on every push/PR), and `stripe-smoke.yml` (Stripe smoke test). Agent working rules live in `CLAUDE.md` and `docs/ai-agents/AGENTS.md` (read-before-write, extend don't duplicate, commit format `<type>: <desc>` plus a claude.ai session link).
+`.github/workflows/` has three workflows: `ci.yml` (typecheck, lint, vitest, build, DB migration tests on postgres:16, Deno edge typecheck), `platform-independence.yml` (runs `scripts/check-platform-independence.sh`, which greps for unsupported platform dependencies on every push/PR), and `stripe-smoke.yml` (Stripe smoke test). Agent working rules live in `CLAUDE.md` and `docs/ai-agents/AGENTS.md` (read-before-write, extend don't duplicate, commit format `<type>: <desc>` plus a claude.ai session link).
 
 ---
 

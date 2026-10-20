@@ -4,7 +4,7 @@ Tandava's product analytics is a small, deliberate system: six funnel events def
 
 Last verified: 2026-10-20 (against repo HEAD `d694b2ba6`).
 
-## The funnel: six events
+## The funnel: six defined names, partial instrumentation
 
 `src/lib/funnel.ts` defines the event vocabulary. Names are fixed in code so dashboards and tests agree. (One-line meanings below follow the acquisition-to-activation order; the props each event carries were not verified in this pass, [VERIFY].)
 
@@ -14,8 +14,8 @@ Last verified: 2026-10-20 (against repo HEAD `d694b2ba6`).
 | `discover_filtered` | A visitor applied a filter on Discover (style, teacher, time, etc.) |
 | `class_opened` | A visitor opened a class detail (storefront or schedule) |
 | `checkout_started` | A visitor began checkout for a booking |
-| `booking_completed` | A booking was completed (including express guest booking) |
-| `first_attended` | A member attended their first class (activation) |
+| `booking_completed` | Emitted by `BookClassButton`; express guest bookings do not currently emit this event |
+| `first_attended` | Defined activation event; no production emitter at this source revision |
 
 Events are emitted with `trackFunnel(event, props)`, which calls the installed sink inside a try/catch: on any error it does nothing. The header comment is explicit: "Analytics must never break the booking path."
 
@@ -47,17 +47,17 @@ graph LR
     S -- "key empty" --> DROP["events dropped<br/>(deliberate, by design)"]
 ```
 
-## Open item: the PostHog project does not exist yet
+## Deployment configuration and validation
 
-The code has been in place since 2026-10-09, but `.env.example` ships `VITE_POSTHOG_KEY=` empty, and `funnelSinkFromEnv` returns `null` without a key, so **no funnel events are being collected anywhere today**. This is a known open launch item (tracked in the repo's progress notes).
+The example configuration leaves `VITE_POSTHOG_KEY` empty and `funnelSinkFromEnv` returns `null` without a key. This does not establish the deployed environment or whether a PostHog project already exists; verify existing operator configuration before creating anything.
 
 Steps to close (no key is exposed here, and none should be committed):
 
-1. Create the PostHog project (US cloud default; EU cloud if the studio base is in the EU).
+1. Confirm whether an approved PostHog project already exists and which region it uses. Create one only if needed and authorized.
 2. Add the project API key to the hosting environment as `VITE_POSTHOG_KEY` (e.g. Vercel env for the deployed app; `.env.local` for local verification). Never commit the key.
 3. Rebuild/redeploy so the build-time `VITE_` variable is baked in.
-4. Walk the funnel once (Discover view, filter, class open, checkout, booking, first check-in) and confirm all six events arrive in the PostHog project.
-5. Mark the open item closed in the launch tracker.
+4. Exercise the instrumented paths: Discover view/filter/class opening, `PurchaseButton` or `BookClassButton` checkout, and successful `BookClassButton` booking. Check the expected events in the configured sink. `first_attended` has no production emitter and `ExpressBooking` does not call `trackFunnel`; do not expect those conversions until separately implemented.
+5. Record the verified paths and remaining instrumentation gaps separately in the launch tracker.
 
 ## Sentry (optional)
 
