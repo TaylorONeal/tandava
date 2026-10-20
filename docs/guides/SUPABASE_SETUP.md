@@ -308,6 +308,16 @@ For local development, add:
 - Verify RLS policies in **Database > Policies**
 - Use Supabase dashboard to test queries as authenticated user
 
+### "permission denied for table" (error 42501)
+- Since 30 Oct 2026 Supabase no longer exposes new `public` tables to the
+  Data API automatically; a table needs an explicit Postgres `GRANT`
+  before supabase-js / PostgREST can see it, separate from RLS policies.
+- Migration `00045_data_api_grants.sql` re-states those grants for every
+  existing table and sequence. If you built this project from migrations
+  and see 42501, make sure 00045 has been applied.
+- New tables (migration 00046 onwards): add the `GRANT` in the same
+  migration that creates the table. Do not fix 42501 by disabling RLS.
+
 ---
 
 ## Production Checklist
