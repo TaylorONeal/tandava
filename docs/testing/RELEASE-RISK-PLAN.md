@@ -52,7 +52,8 @@ result and evidence path. Any test retry records its first failure too.
 3. Finish approved Apple records using existing bundle IDs and profiles. Validate
    each signed IPA, then use the authorized distribution path. Current Member
    validation FAILED because its App Store app record is missing. Studio validation
-   NOT RUN: automatic approval denied transmission; explicit payload approval pending.
+   NOT RUN: conditional payload approval has since been received, but its app record
+   is still absent.
 4. Verify physical iPhone identities and preserve installed data. TestFlight109
    belongs to TeacherTree; Tandava build2 has not been uploaded. No generic
    reinstall/reset instruction is an acceptable substitute for diagnosis.
@@ -97,3 +98,13 @@ mirrored in `docs/FAQ.md`. Absence of class rows does not prove a studio has clo
 - These UI changes are review-branch source only. Previously exported build2
   IPAs predate this discovery copy; regenerate a candidate after source approval
   and recheck the changed discovery flow before using its store screenshots.
+
+### Additional review findings
+
+EXEC-21 now passes in the full disposable SQL suite: a slow profile write that
+outlives its lease rolls back both profile changes and its execution checkpoint.
+The [reviewer walkthrough](../app-store/REVIEWER-WALKTHROUGH.md) also identifies
+a seed prerequisite: the unlisted synthetic studio has no explicit `page_live`
+value, so its public booking page defaults OFF and cannot support the Member
+booking journey. Resolve approved page visibility before provisioning; no RLS or
+hosted visibility change was made. All physical journeys remain NOT RUN.

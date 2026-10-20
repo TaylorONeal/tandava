@@ -143,3 +143,12 @@ remaining data/processor adapters, then a complete disposable rehearsal with cra
 resume and concurrency. Only a verified complete workflow can enable the UI flag
 or justify hosted disposable-account deletion acceptance. Production deployment,
 real-account disablement/deletion and feature enablement remain unauthorized.
+
+### Lease expiry during execution
+
+The profile stage rechecks lease time after potentially blocking relation locks
+and after its writes/read-back. Expiry during the mutation raises an exception
+and rolls back both personal-data changes and the checkpoint. EXEC-21 injects a
+slow synthetic row trigger to verify this; an entry-time check alone cannot fence
+a worker that spends the rest of its lease waiting or writing. The request and
+execution row locks prevent another worker rotating the token during the stage.
