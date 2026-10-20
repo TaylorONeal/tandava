@@ -59,10 +59,10 @@ BEGIN
   GET DIAGNOSTICS n = ROW_COUNT;
   UPDATE membership_types SET price_cents = 16000, is_active = false WHERE studio_id = pg_temp.id('studio_a');
   GET DIAGNOSTICS m = ROW_COUNT;
-  DELETE FROM offerings WHERE id = v_off;
+  PERFORM pg_temp.expect_denied(format('DELETE FROM offerings WHERE id = %L', v_off), 'CAT-05');
   EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(n = 1 AND m = 1 AND EXISTS (SELECT 1 FROM offerings WHERE id = v_off),
-                     'CAT-05', 'pack and membership prices editable, delete does nothing');
+                     'CAT-05', 'pack and membership prices editable, delete is denied');
 
   -- CAT-06: values are checked.
   PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
