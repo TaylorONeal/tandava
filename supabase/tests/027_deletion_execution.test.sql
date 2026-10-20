@@ -63,6 +63,20 @@ BEGIN
   BEGIN PERFORM scrub_account_deletion_profile(req,token); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
   PERFORM pg_temp.ok(msg LIKE 'Profile schema changed%','EXEC-12','new profile column requires adapter review');
   ALTER TABLE profiles DROP COLUMN unreviewed_personal_data;
+  -- A synthetic slow row trigger expires the lease after entry. The scrub and
+  -- checkpoint must roll back together; checking only at entry is insufficient.
+  CREATE FUNCTION pg_temp.slow_profile_write() RETURNS trigger LANGUAGE plpgsql AS $slow$
+  BEGIN PERFORM pg_sleep(1); RETURN NEW; END $slow$;
+  CREATE TRIGGER test_slow_profile_write BEFORE UPDATE ON profiles FOR EACH ROW EXECUTE FUNCTION pg_temp.slow_profile_write();
+  UPDATE account_deletion_executions SET lease_until=clock_timestamp()+interval '500 milliseconds' WHERE request_id=req;
+  msg:=NULL;
+  BEGIN PERFORM scrub_account_deletion_profile(req,token); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  DROP TRIGGER test_slow_profile_write ON profiles;
+  PERFORM pg_temp.ok(msg='Execution lease expired during profile mutation'
+    AND (SELECT to_jsonb(p) FROM profiles p WHERE id=pg_temp.id('student_a1'))=profile_before
+    AND (SELECT state FROM account_deletion_executions WHERE request_id=req)='access_blocked',
+    'EXEC-21','expiry during a slow profile write rolls back personal-data changes and checkpoint');
+  UPDATE account_deletion_executions SET lease_until=clock_timestamp()+interval '15 minutes' WHERE request_id=req;
   SELECT jsonb_agg(to_jsonb(t) ORDER BY id) INTO before_financial FROM transactions t;
   EXECUTE 'SET LOCAL ROLE service_role'; result:=scrub_account_deletion_profile(req,token); EXECUTE 'RESET ROLE';
   SELECT jsonb_agg(to_jsonb(t) ORDER BY id) INTO after_financial FROM transactions t;

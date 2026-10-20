@@ -118,6 +118,9 @@ BEGIN
     THEN RAISE EXCEPTION 'Profile schema changed; erasure adapter review required'; END IF;
   -- Freeze the protected financial relation set during this narrow operation.
   LOCK TABLE transactions, memberships, class_packs, credits, bookings IN SHARE MODE;
+  -- Table/advisory lock waits can outlive the lease checked at entry.
+  IF execution.lease_until <= clock_timestamp()
+    THEN RAISE EXCEPTION 'Execution lease expired before profile mutation'; END IF;
   SELECT jsonb_build_object('transactions',(SELECT jsonb_agg(to_jsonb(x) ORDER BY id) FROM transactions x WHERE profile_id=req.profile_id),
     'memberships',(SELECT jsonb_agg(to_jsonb(x) ORDER BY id) FROM memberships x WHERE profile_id=req.profile_id),
     'class_packs',(SELECT jsonb_agg(to_jsonb(x) ORDER BY id) FROM class_packs x WHERE profile_id=req.profile_id),
@@ -142,6 +145,10 @@ BEGIN
     'credits',(SELECT jsonb_agg(to_jsonb(x) ORDER BY id) FROM credits x WHERE profile_id=req.profile_id),
     'bookings',(SELECT jsonb_agg(to_jsonb(x) ORDER BY id) FROM bookings x WHERE profile_id=req.profile_id)) INTO after_financial;
   IF before_financial IS DISTINCT FROM after_financial THEN RAISE EXCEPTION 'Financial invariance failed'; END IF;
+  -- If the write itself outlives the lease, abort the entire transaction rather
+  -- than acknowledging work performed by an expired worker.
+  IF execution.lease_until <= clock_timestamp()
+    THEN RAISE EXCEPTION 'Execution lease expired during profile mutation'; END IF;
   UPDATE account_deletion_executions SET state='profile_scrubbed',profile_scrubbed_at=COALESCE(profile_scrubbed_at,clock_timestamp()) WHERE request_id=p_request_id;
   RETURN jsonb_build_object('request_id',p_request_id,'profile_scrubbed',true,'account_completed',false,
     'remaining',jsonb_build_array('other database tables and indirect identifiers','Auth identity PII','storage','processors','backups and retention'));
