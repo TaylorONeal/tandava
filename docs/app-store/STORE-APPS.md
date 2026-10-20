@@ -1,6 +1,6 @@
 # Tandava in the app stores: two apps, one backend
 
-Current status (October 20, 2026): **Member and Studio 1.0 (2) build and launch in the iPhone simulator; both unsigned Release archives and signed development builds pass. Neither app is uploaded or submitted.** Native projects are on review PR102. Signed device builds, reviewer role acceptance, account-deletion fulfillment and final store assets remain open. See the dated checkpoints below.
+Current status (October 20, 2026): **Member and Studio 1.0 (2) build and launch in the iPhone simulator; development builds and App Store IPAs are signed and verified locally. Neither app is uploaded or submitted.** Distribution profiles are active: Member `46Q9M5ZNWW`, Studio `4SXLAU94C9`, reusing the existing distribution certificate. App records remain pending the Apple website sign-in handoff; Member Apple validation reported a missing app record. Studio Apple validation has not executed because automatic approval review requires approval for transmitting its IPA. Native projects remain on draft review PR102. Physical reviewer role acceptance, complete deletion fulfillment and store assets remain open. See [risk-based acceptance](../testing/RELEASE-RISK-PLAN.md).
 
 Historical planning baseline (October 8): bundle IDs were registered, before the native projects were implemented. Cross-app launch tracking lives in the private `app-launch-playbook` repo ([store brief](https://github.com/TaylorONeal/app-launch-playbook/blob/main/prds/P3-TANDAVA-STORES.md), [decisions](https://github.com/TaylorONeal/app-launch-playbook/blob/main/DECISIONS.md)); release acceptance uses its [final launch checklist](https://github.com/TaylorONeal/app-launch-playbook/blob/main/03-OPERATING-TEMPLATES.md#8-final-launch-checklist).
 
@@ -248,3 +248,20 @@ development signing or synthetic tests.
 Account deletion has a tested synthetic execution contract now; see
 [the fulfillment checkpoint](../operations/ACCOUNT-DELETION.md#october-20-synthetic-fulfillment-executor).
 Production adapters, policy/operator decisions and hosted acceptance remain open.
+
+### October 20 approved distribution-profile export
+
+After Taylor's explicit approval, both App Store distribution profiles were created
+for the existing bundle IDs and existing Apple Distribution certificate; no new
+certificate or key. Both1.0(2) App Store IPAs exported successfully and passed local
+strict signature verification (`get-task-allow=false`). No build upload or review
+submission occurred. Their app records are still pending because the Apple website
+session is stuck at sign-in; app creation is a website operation, not supported by
+the public Apps API. Member validation reported the missing app record. Studio
+validation was not executed: automatic approval review required separate consent
+to transmit its binary to Apple. That exact transmission is pending approval.
+
+Deletion work now includes a production-oriented execution journal, JWT-subject
+write cutoff and real profile tombstone adapter with19 passing disposable SQL
+assertions. Remaining per-table/Auth/processor/retention work still blocks release;
+see [the production database stage](../operations/ACCOUNT-DELETION.md#october-20-production-database-stage-review-only-not-deployed).
