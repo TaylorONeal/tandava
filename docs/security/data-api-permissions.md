@@ -45,7 +45,7 @@ Definer RPCs continue accessing their underlying tables as their existing owner.
 No new function EXECUTE grants are introduced.
 
 - **anon:** INSERT messages only (public contact form); discovery remains RPC-based.
-- **authenticated:** existing runtime reads on 17 tables, including five column
+- **authenticated:** existing runtime reads on 16 tables, including five column
   projections below; catalog INSERT/UPDATE on five tables; column-limited profile
   and studio UPDATE; INSERT messages. No direct DELETE or booking/payment writes.
 - **service_role:** direct SELECT on 27 tables, INSERT on 13, UPDATE on 17, DELETE
