@@ -10,8 +10,8 @@ until the actual uploaded candidate passes each required journey.
 |---|---|
 | Member bundle | `com.tandava.app` |
 | Studio bundle | `com.tandava.studio` |
-| Local candidates |1.0 (2), signed development builds and App Store exports; simulator launch observed |
-| Source changes after export | Discovery empty/error guidance changed after build2; rebuild before accepting that screen in a store candidate |
+| Local candidates |1.0 (3) signed App Store exports verified; build2 development signatures and simulator launch carried forward |
+| Exported source | Build3 from270a0a1 includes discovery guidance; physical acceptance remains NOT RUN |
 | Upload / App Store IDs | NOT RUN / absent at latest API check. Creating records and conditional binary validation/TestFlight transmission are approved. This does not approve public App Review submission. |
 | Runtime | Intended existing backend; no hidden review-only backend or post-review switch |
 | Identities | Member, assigned teacher and owner must each be verified against existing synthetic Auth identities; none is established by the local browser mocks |

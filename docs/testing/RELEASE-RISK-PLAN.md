@@ -95,9 +95,9 @@ mirrored in `docs/FAQ.md`. Absence of class rows does not prove a studio has clo
   successful build2 simulator launches and strict local binary signatures.
 - NOT RUN: physical authenticated acceptance, full offline/accessibility matrix,
   external sandbox delivery and complete deletion adapters.
-- These UI changes are review-branch source only. Previously exported build2
-  IPAs predate this discovery copy; regenerate a candidate after source approval
-  and recheck the changed discovery flow before using its store screenshots.
+- Build3 IPAs now include the discovery changes and pass strict local signatures.
+  Their source is270a0a1. Physical acceptance and Apple validation/upload remain
+  NOT RUN; build2 simulator evidence is carried forward only for its original scope.
 
 ### Additional review findings
 
