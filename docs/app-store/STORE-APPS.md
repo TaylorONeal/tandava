@@ -1,6 +1,6 @@
 # Tandava in the app stores: two apps, one backend
 
-Current status (October 20, 2026): **Member and Studio 1.0 (2) build and launch in the iPhone simulator; both unsigned Release archives pass. Neither app is uploaded or submitted.** Native projects are on review PR102. Signed device builds, reviewer role acceptance, account-deletion fulfillment and final store assets remain open. See the dated checkpoints below.
+Current status (October 20, 2026): **Member and Studio 1.0 (2) build and launch in the iPhone simulator; both unsigned Release archives and signed development builds pass. Neither app is uploaded or submitted.** Native projects are on review PR102. Signed device builds, reviewer role acceptance, account-deletion fulfillment and final store assets remain open. See the dated checkpoints below.
 
 Historical planning baseline (October 8): bundle IDs were registered, before the native projects were implemented. Cross-app launch tracking lives in the private `app-launch-playbook` repo ([store brief](https://github.com/TaylorONeal/app-launch-playbook/blob/main/prds/P3-TANDAVA-STORES.md), [decisions](https://github.com/TaylorONeal/app-launch-playbook/blob/main/DECISIONS.md)); release acceptance uses its [final launch checklist](https://github.com/TaylorONeal/app-launch-playbook/blob/main/03-OPERATING-TEMPLATES.md#8-final-launch-checklist).
 
@@ -219,3 +219,32 @@ Privacy URL: https://tandavastudio.com/privacy. Verify the live response and fin
 build data flows before populating Apple privacy declarations. Support contact
 and reviewer credentials still need a verified owner-maintained handoff; never
 put reviewer passwords in source.
+
+### October 20 continuation — existing signing and synthetic role acceptance
+
+Both Member and Studio 1.0 (2) now build for `iphoneos` with valid development
+signatures using the **existing** wildcard development profile and existing team.
+No provisioning update or new credential was used. The existing profile includes
+the connected iPhone12mini. These candidates have not been installed on that phone;
+it remains reserved for the TeacherTree TestFlight diagnosis.
+
+Nine existing synthetic browser journeys passed for member cancellation, teacher
+attendance/recovery/authorization and owner catalog/schedule edits. Two additional
+member journeys verify free and existing-class-pack booking, server rejection then
+retry, and confirmed bookings after reopening My Schedule. All database suites
+passed in a fresh PostgreSQL cluster on a private local Unix socket, including
+booking/credit concurrency, teacher permissions, ownership and deletion access.
+These are mocked-browser and disposable-database results, not native signed-in
+acceptance or proof that production reviewer credentials work.
+
+No App Store distribution profile is associated with either registered Tandava
+bundle in the current Apple API response. The exact signing decision is to create
+two App Store distribution profiles for the existing bundle IDs and existing Apple
+Distribution certificate, plus the missing App Store Connect app records. No new
+certificate is needed. Profile creation is still pending the explicit authorization
+required by the original no-new-credentials restriction. This does not block local
+development signing or synthetic tests.
+
+Account deletion has a tested synthetic execution contract now; see
+[the fulfillment checkpoint](../operations/ACCOUNT-DELETION.md#october-20-synthetic-fulfillment-executor).
+Production adapters, policy/operator decisions and hosted acceptance remain open.
