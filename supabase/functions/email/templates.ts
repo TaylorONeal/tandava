@@ -62,6 +62,29 @@ export interface TemplateResult {
   text: string;
 }
 
+/** Return an existing member to normal sign-in with their selected class preserved. */
+export function expressContinueEmail(data: { url: string }): TemplateResult {
+  const url = new URL(data.url);
+  const localHttp = url.protocol === "http:" && ["localhost", "127.0.0.1"].includes(url.hostname);
+  if ((url.protocol !== "https:" && !localHttp) || url.username || url.password) {
+    throw new Error("Invalid continuation email data");
+  }
+  const entities: Record<string, string> = {
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  };
+  const safeUrl = url.href.replace(/[&<>"']/g, (character) => entities[character]);
+  return {
+    subject: "Sign in to finish your booking",
+    html: layout(`
+      <h1 style="color:${TEXT_COLOR};font-size:24px;margin:0 0 16px;">Sign in to finish your booking</h1>
+      <p>Sign in to continue booking your selected class.</p>
+      ${button("Sign in and book", safeUrl)}
+      <p style="color:${MUTED_COLOR};font-size:14px;">If you didn't request this, you can ignore this email.</p>
+    `),
+    text: `Sign in to finish your booking\n\nSign in to continue booking your selected class: ${url.href}\n\nIf you didn't request this, you can ignore this email.`,
+  };
+}
+
 /** Welcome email after registration */
 export function welcomeEmail(data: {
   firstName: string;
