@@ -324,3 +324,30 @@ The original `tandava` checkout and its unrelated files were preserved.
   not established by this pass.
 - No production deployment, real customer-data mutation, customer message,
   payment, remote merge or App Review submission occurred in this work.
+
+### PR and CI receipt
+
+[Draft PR #109](https://github.com/TaylorONeal/tandava/pull/109) is open; it is not
+merged or ready for store submission. CI run
+[39535005842](https://github.com/TaylorONeal/tandava/actions/runs/39535005842) passed
+all four jobs at source `714bc70b9efffc2a6ce6d9ffa2be26941c7fe40a`:
+
+- 591 application tests passed; 53 script tests passed, with the optional real-SQL
+  adapter case skipped in that script run (separate local SQL integration passed).
+- 36/36 browser cases passed, including the new booking and Studio cases.
+- All migration/SQL tests passed with 822 PASS assertions.
+- TypeScript, lint, production build/postbuild and all 14 edge checks passed.
+
+Vercel reports the PR preview deployed successfully; this does not establish
+authenticated hosted acceptance or production deployment. PR review-thread lookup
+returned no threads, which is not an independent review approval. No merge was
+requested. This follow-up changes documentation only; it does not change the
+product source covered by the CI receipt.
+
+Additional purchase audit: TypeScript declares delivery-mode fields, but the
+actual occurrence/catalog migrations do not persist that classification. Packs
+and memberships can cover all current/future offerings without a physical-only
+redemption contract. Location presence is insufficient. A first-release sales
+scope decision is pending Taylor's answer; persist and enforce the chosen scope
+server-side before enabling native checkout, and verify browser return against
+the server's actual booking state. The existing block remains in place.

@@ -7,7 +7,8 @@ for `com.tandava.app` and `com.tandava.studio`. Two browser-control attempts tim
 out, so App Store Connect login state is **unknown**, not proven signed out.
 Existing bundle IDs/profiles are retained; do not recreate signing credentials.
 
-Local `codex/app-store-excellence` integrates current main, native PR #102 and scoped
+[Draft PR #109](https://github.com/TaylorONeal/tandava/pull/109) on
+`codex/app-store-excellence` integrates current main, native PR #102 and scoped
 permissions PR #106. Its source fixes require a **new candidate** after acceptance;
 the signed 1.0(3) exports below do not include these changes. Xcode 27.1 and a paired
 physical iPhone are available; the inspected installed simulator Member is 1.0(2).
