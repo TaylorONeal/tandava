@@ -111,3 +111,8 @@ role journeys, native authentication/link delivery, complete account-deletion
 fulfillment/retention/recovery, accurate payment scope and privacy declarations.
 Use `docs/testing/RELEASE-RISK-PLAN.md` for the broader matrix. Profile scrubbing,
 mocked browser tests, a signature check or an uploaded binary do not close these gates.
+
+October 21 access follow-up: browser control recovered on a bounded retry, but
+Apple’s sign-in widget remained a spinner without a usable form, including after
+one reload. No authenticated account/app list or new record was reached. This
+supersedes the earlier browser-control timeout as the current access blocker.
