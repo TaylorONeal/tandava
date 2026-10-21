@@ -8,6 +8,11 @@ export const nativeApp = parseNativeApp(import.meta.env.VITE_NATIVE_APP);
 export const isNativeApp = () => nativeApp !== null && Capacitor.isNativePlatform();
 // Native release uses first-party email authentication only. Web OAuth remains unchanged.
 export const offersSocialAuth = () => nativeApp === null;
+// Email links must open a reachable website, never the bundled capacitor://localhost.
+// Native auth handoff requires separately configured and verified app links.
+export function authRedirectOrigin(app: NativeApp | null, browserOrigin: string): string {
+  return app === null ? browserOrigin : 'https://tandavastudio.com';
+}
 export function nativeHome(app: NativeApp, signedIn: boolean, canManage: boolean, canTeach: boolean): string {
   if (app === 'member') return signedIn ? '/my-schedule' : '/discover';
   if (!signedIn) return '/auth/login?next=%2F';

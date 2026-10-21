@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { nativeHome, nativeLink, parseNativeApp, blocksNativePayment } from './platform';
+import { nativeHome, nativeLink, parseNativeApp, blocksNativePayment, authRedirectOrigin } from './platform';
 describe('native app separation', () => {
   it('keeps members in member flows even when also an owner', () => {
     expect(nativeHome('member', true, true, true)).toBe('/my-schedule');
@@ -16,6 +16,15 @@ describe('native app separation', () => {
     expect(nativeLink('https://tandavastudio.com/s/studio?class=abc')).toBe('/s/studio?class=abc');
     expect(parseNativeApp('wrong')).toBeNull();
   });
+});
+
+it('sends native email recovery and confirmation to a reachable hosted origin', () => {
+  for (const app of ['member', 'studio'] as const) {
+    expect(authRedirectOrigin(app, 'capacitor://localhost')).toBe('https://tandavastudio.com');
+    expect(authRedirectOrigin(app, 'null')).toBe('https://tandavastudio.com');
+  }
+  expect(authRedirectOrigin(null, 'https://self-hosted.example')).toBe('https://self-hosted.example');
+  expect(authRedirectOrigin(null, 'http://localhost:8080')).toBe('http://localhost:8080');
 });
 
 it('blocks ambiguous native payments without disabling web or other APIs', () => {

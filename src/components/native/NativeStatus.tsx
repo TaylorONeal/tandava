@@ -1,13 +1,20 @@
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Share } from '@capacitor/share';
 import { App } from '@capacitor/app';
 import { Network } from '@capacitor/network';
 import { isNativeApp, nativeLink } from '@/lib/native/platform';
 
+// Auth changes remount this component; the OS launch intent belongs to the runtime.
+let launchUrlRead: ReturnType<typeof App.getLaunchUrl> | null = null;
+let launchLinkHandled = false;
+
 /** Native lifecycle and offline status. Does not cache private records across identities. */
 export function NativeStatus() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const navigateRef = useRef(navigate);
+  navigateRef.current = navigate;
   const [offline, setOffline] = useState(false);
   useEffect(() => {
     if (!isNativeApp()) return;
@@ -18,15 +25,22 @@ export function NativeStatus() {
       if (!h) return;
       if (disposed) await h.remove(); else removers.push(() => h.remove());
     };
-    void Network.getStatus().then(s => { if (!disposed) setOffline(!s.connected); }).catch(() => setOffline(true));
-    void keep(Network.addListener('networkStatusChange', s => setOffline(!s.connected)));
+    void Network.getStatus().then(s => { if (!disposed) setOffline(!s.connected); }).catch(() => { if (!disposed) setOffline(true); });
+    void keep(Network.addListener('networkStatusChange', s => { if (!disposed) setOffline(!s.connected); }));
     void keep(App.addListener('appUrlOpen', ({ url }) => {
       const path = nativeLink(url);
-      if (path) window.location.assign(path);
+      if (!disposed && path) {
+        launchLinkHandled = true;
+        navigateRef.current(path);
+      }
     }));
-    void App.getLaunchUrl().then(result => {
+    launchUrlRead ??= App.getLaunchUrl().catch(() => undefined);
+    void launchUrlRead.then(result => {
+      if (disposed || launchLinkHandled) return;
+      launchLinkHandled = true;
       const path = result && nativeLink(result.url);
-      if (!disposed && path) window.location.assign(path);
+      // Keep the bridge alive. Reloading would request the same launch URL again.
+      if (path) navigateRef.current(path, { replace: true });
     }).catch(() => undefined);
     return () => { disposed = true; removers.forEach(remove => { void remove().catch(() => undefined); }); };
   }, []);
