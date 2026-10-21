@@ -18,7 +18,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import webpush from "https://esm.sh/web-push@3.6.7";
+import * as webpush from "https://esm.sh/web-push@3.6.7";
 import { isServiceRequest } from "../_shared/service-auth.ts";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
