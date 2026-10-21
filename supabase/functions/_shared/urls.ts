@@ -21,7 +21,13 @@ export function safeReturnUrl(candidate: unknown, fallback: string, appUrl: stri
 
   // A path on the app: "/account?checkout=success"
   if (candidate.startsWith("/") && !candidate.startsWith("//") && !candidate.includes("\\")) {
-    return new URL(candidate, app).href;
+    try {
+      const url = new URL(candidate, app);
+      // URL parsing removes tabs/newlines, which can turn a path into //host.
+      return url.origin === app.origin && !url.username && !url.password ? url.href : fallback;
+    } catch {
+      return fallback;
+    }
   }
 
   let url: URL;
