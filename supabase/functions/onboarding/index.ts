@@ -326,12 +326,13 @@ serve(async (req) => {
 
   const db = createClient(supabaseUrl, serviceKey);
 
-  // Resolve the caller's studio (as owner), creating it on the 'studio' step.
+  // Resolve only an active owner; removed staff must not retain service-role access.
   const { data: ownerRow } = await db
     .from("studio_staff")
     .select("studio_id")
     .eq("profile_id", user.id)
     .eq("role", "owner")
+    .eq("is_active", true)
     .limit(1)
     .maybeSingle();
 
