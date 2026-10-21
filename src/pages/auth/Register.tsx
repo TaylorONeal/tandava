@@ -1,4 +1,4 @@
-import { offersSocialAuth } from '@/lib/native/platform';
+import { nativeApp, offersSocialAuth } from '@/lib/native/platform';
 import { useEffect, useState } from "react";
 import { LEGAL_PUBLISHED } from "@/content/legal";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -132,6 +132,7 @@ const Register = () => {
               <p className="text-muted-foreground">
                 {t('register.confirmEmailBody', { email: formData.email })}
               </p>
+              {nativeApp && <p className="text-sm text-muted-foreground">Open the confirmation link in your browser, then return to {nativeApp === "studio" ? "Tandava Studio" : "Tandava"} and sign in here to continue.</p>}
             </div>
 
             <div className="space-y-3 pt-4">

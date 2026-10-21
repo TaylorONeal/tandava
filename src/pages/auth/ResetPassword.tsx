@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { Turnstile, useCaptchaReady } from "@/components/auth/Turnstile";
 import { AuthCard } from "@/components/auth/AuthCard";
+import { nativeApp } from "@/lib/native/platform";
 
 /** /auth/reset: ask for the account email and send a recovery link. */
 export default function ResetPassword() {
@@ -29,6 +30,7 @@ export default function ResetPassword() {
   if (sent) {
     return (
       <AuthCard title="Check your email" subtitle={`If an account exists for ${email.trim()}, we sent a link to set a new password.`}>
+        {nativeApp && <p className="text-sm text-muted-foreground">Open the link in your browser to choose a new password, then return to {nativeApp === "studio" ? "Tandava Studio" : "Tandava"} and sign in here.</p>}
         <Button asChild variant="outline" className="w-full"><Link to="/auth/login">Back to sign in</Link></Button>
       </AuthCard>
     );
