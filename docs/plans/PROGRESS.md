@@ -351,3 +351,19 @@ redemption contract. Location presence is insufficient. A first-release sales
 scope decision is pending Taylor's answer; persist and enforce the chosen scope
 server-side before enabling native checkout, and verify browser return against
 the server's actual booking state. The existing block remains in place.
+
+### Final readback and store access
+
+The documentation-only follow-up `9d200d5` also passed every check in CI run
+[39535418387](https://github.com/TaylorONeal/tandava/actions/runs/39535418387); the
+product source is unchanged from the earlier passing receipt. The PR remains
+draft and unmerged.
+
+After local checks finished, one bounded App Store Connect retry restored browser
+control. Apple’s login page stayed on a spinner with an empty sign-in iframe,
+including after one reload and a wait for the form. No authenticated account,
+app list, record creation or submission was reached. Account access is therefore
+unverified; the current blocker is the unusable Apple sign-in screen, replacing
+the earlier control timeout. The complete isolated Supabase smoke fixture also
+remains unprovisioned; no Docker runtime was found on PATH or at the standard Mac
+application location. No runtime installation or provider configuration occurred.

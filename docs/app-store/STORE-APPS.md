@@ -3,8 +3,11 @@
 ## Current integration checkpoint — October 21, 2026
 
 Neither app is submitted. A fresh Apple API lookup returned zero App Store records
-for `com.tandava.app` and `com.tandava.studio`. Two browser-control attempts timed
-out, so App Store Connect login state is **unknown**, not proven signed out.
+for `com.tandava.app` and `com.tandava.studio`. Browser control initially timed
+out. A later bounded retry restored control and reached Apple’s login URL, but
+the sign-in widget stayed on a spinner, including after one reload; no usable
+form or authenticated app list appeared. Account identity/access remains
+**unverified**. No record was created.
 Existing bundle IDs/profiles are retained; do not recreate signing credentials.
 
 [Draft PR #109](https://github.com/TaylorONeal/tandava/pull/109) on
