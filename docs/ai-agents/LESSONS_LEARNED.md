@@ -651,6 +651,22 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 - `stripeSignature()` is checked against `stripe` npm's `constructEventAsync`; keep it that way if you touch it.
 - Guard rails: test keys only, `livemode=false` sessions only. When prod goes live, the webhook's live secret stops matching the job's test secret and the job fails; repoint it at a staging project.
 
+## Two-app release hardening (October 21, 2026)
+
+- Reconcile all pending migration branches together: main already owns 00045;
+  scoped grants use 00046 and native deletion uses 00047–00049 in the integration.
+  Preserve all SQL suites when resolving the runner, then rehearse the combined chain.
+- Validate the parsed URL origin, even for strings beginning with `/`; embedded
+  control characters can become a different origin after URL normalization.
+- A booking response needs both an ID and its actual supported status. Waitlisted
+  is not confirmed, missing data is not success, and a delayed action must not cross
+  an account/class boundary. Protect the pre-attribution interval from double taps.
+- Native cold-launch handling must survive AuthProvider subtree remounts. A local
+  WebView origin is not a usable email destination; hosted email fallback still
+  requires explicit browser/app session acceptance.
+- Do not restore broad production privileges to keep a test cleanup script
+  working. Separate disposable-test inspection from runtime service permissions.
+
 ## Quick Reference: Prevention Patterns
 
 | Issue Type | Prevention Pattern |

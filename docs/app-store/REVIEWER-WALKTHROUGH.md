@@ -1,6 +1,6 @@
 # Member and Studio reviewer walkthrough — preparation, not acceptance
 
-October 20, 2026. Applies to the two native apps on draft PR102. This document is
+Updated October 21, 2026. Applies to the two native apps, now integrated locally with current main and PR #106 on `codex/app-store-excellence`. This document is
 an internal execution packet. Do not paste it into App Review as completed notes
 until the actual uploaded candidate passes each required journey.
 
@@ -12,7 +12,7 @@ until the actual uploaded candidate passes each required journey.
 | Studio bundle | `com.tandava.studio` |
 | Local candidates |1.0 (3) signed App Store exports verified; build2 development signatures and simulator launch carried forward |
 | Exported source | Build3 from270a0a1 includes discovery guidance; physical acceptance remains NOT RUN |
-| Upload / App Store IDs | NOT RUN / absent at latest API check. Creating records and conditional binary validation/TestFlight transmission are approved. This does not approve public App Review submission. |
+| Upload / App Store IDs | NOT RUN / absent at latest API check. October 21 request targets submission after quality acceptance. Records remain absent at the latest API read; browser control unavailable, actual sign-in unknown. Do not submit a candidate with open P0 gates. |
 | Runtime | Intended existing backend; no hidden review-only backend or post-review switch |
 | Identities | Member, assigned teacher and owner must each be verified against existing synthetic Auth identities; none is established by the local browser mocks |
 | Credentials | Enter directly in the store's secure review-information fields after verifying each account; never put passwords in this repo, screenshots, logs or chat |
