@@ -12,7 +12,7 @@ vi.mock("../../supabase/functions/email/provider.ts", () => ({ sendEmail: mocks.
 vi.mock("../../supabase/functions/sms/provider.ts", () => ({ sendSms: mocks.sms }));
 vi.mock("https://esm.sh/@supabase/supabase-js@2", () => ({ createClient: mocks.createClient }));
 vi.mock("https://esm.sh/web-push@3.6.7", () => ({
-  default: { setVapidDetails: vi.fn(), sendNotification: mocks.push },
+  setVapidDetails: vi.fn(), sendNotification: mocks.push,
 }));
 
 const senders = [
