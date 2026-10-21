@@ -84,11 +84,12 @@ serve(async (req) => {
 
   const db = createClient(supabaseUrl, serviceKey);
 
-  // Authorize: the caller must be studio staff. Derive the studio if not given.
+  // Require active staff: their auth account survives studio deactivation.
   let staffQuery = db
     .from("studio_staff")
     .select("studio_id, role")
     .eq("profile_id", user.id)
+    .eq("is_active", true)
     .in("role", STAFF_ROLES);
   if (payload.studioId) staffQuery = staffQuery.eq("studio_id", payload.studioId);
 
