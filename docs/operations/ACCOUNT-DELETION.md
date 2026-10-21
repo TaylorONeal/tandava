@@ -152,3 +152,115 @@ and rolls back both personal-data changes and the checkpoint. EXEC-21 injects a
 slow synthetic row trigger to verify this; an entry-time check alone cannot fence
 a worker that spends the rest of its lease waiting or writing. The request and
 execution row locks prevent another worker rotating the token during the stage.
+
+## Proposed hosted deletion policy and workflow — October 21, 2026
+
+**Draft for Taylor's review, requested October 21. Not approved, deployed or enabled.**
+This is the policy proposal for the first-party Tandava Member and Studio service;
+self-hosting operators remain responsible for their own deployments. The existing
+published promise is deletion/anonymization within 30 days except required records.
+This proposal keeps that limit. It does not certify legal compliance or invent a
+statutory retention duration for independent studios.
+
+### Proposed user-facing policy
+
+Members and studio staff can initiate deletion from Account → Delete account.
+The app explains the effect, shows active memberships/bookings and confirms the
+request with recent authentication. A request receives a reference and expected
+completion date. Users do not have to email or call support to request deletion.
+Deleting an account removes its authentication access and associated personal
+information, including guest-account data, except the specific records we must
+retain for a documented legal obligation. A disabled login alone is not deletion.
+
+We will delete or irreversibly anonymize the covered personal data within 30 days
+of receipt, except specific records subject to a documented legal obligation. We identify
+any retained categories, purpose and retention period in the request's receipt.
+We provide confirmation only after the account and covered personal data have
+been removed or irreversibly anonymized and remaining obligations are explicit.
+A provider outage or incomplete step remains an open request; it cannot produce
+a misleading completion notice.
+
+Deletion and billing must be explained together. The app provides the actual
+subscription-management path and states how pending bookings, credits, refunds
+and recurring billing will be handled. It must accept the request without making
+someone first buy, renew or cancel a subscription. A sole studio owner's business
+records require an ownership-transfer or studio-closure path; this must be a
+supported in-app resolution, not an indefinite refusal or a support-only maze.
+
+### Proposed retention schedule
+
+| Category | Proposed treatment | Required evidence before enforcement |
+|---|---|---|
+| Login identity, sessions, recovery tokens | Revoke sessions and remove authentication PII/access as part of deletion; preserve only a restricted pseudonymous key where necessary for lawful ledger relations, governed by the approved retention schedule | Supported Auth admin adapter, token/session denial and independent identity readback |
+| Profile/contact/emergency details, avatars, biography, personal preferences | Erase within the 30-day request window; no general retention exception | Actual table/storage inventory, manifest and independent scrub readback |
+| Messages, reviews, member notes/tags, marketing/analytics identifiers and free-text copies | Erase or irreversibly anonymize within 30 days; stop marketing and prevent repopulation | Direct/indirect references and JSON/free-text coverage; provider-specific deletion receipts |
+| Bookings, attendance, waivers, teaching/staff attribution | Remove personal linkage unless a documented legal or dispute-specific obligation requires identified fields | Each retained field needs legal/policy reference, expiry, responsible controller and access restriction; do not preserve the full record by default |
+| Financial ledger and payment processor records | Retain the minimum fields necessary for the applicable accounting, tax, refund or dispute obligation; scrub unrelated descriptions and metadata | **Unresolved owner decision:** retention period and jurisdiction for each controller/category. No universal 7-year duration is assumed. Until approved, enforcement stays disabled rather than retaining indefinitely or deleting required records. |
+| Storage and external processors | Remove linked personal data within the request window except explicitly documented obligations | Inventory actual Supabase Storage, Stripe, email/SMS and analytics processors; approved idempotent adapters and independent receipts |
+| Backups | Keep only for the provider's documented bounded recovery schedule; apply deletion suppression before any restored data becomes accessible | **Unresolved provider evidence:** actual backup expiry and tested restore-suppression procedure. Provider retention beyond 30 days is not itself a legal exception. Meet the published promise or obtain an explicit policy change before enablement; disclose remaining backup obligations. Time passing alone is not an erasure receipt. |
+| Deletion audit | Keep request reference, policy version, stage outcomes, timestamps and minimal non-personal verification records; exclude raw user content and credentials | Approve audit retention period and restricted operator access; hashes/references are not automatically anonymous |
+
+### Proposed operating workflow
+
+1. **Receive and confirm in-app.** Accept one durable request per account, record
+   its timestamp and 30-day deadline, show active commitments and explain the next
+   steps. Keep confirmation copy neutral and make progress available without
+   requiring the user to open a support ticket.
+2. **Review daily.** Proposed primary owner is Purafield Studio operations, with
+   Taylor as the initial accountable owner. Taylor must accept that assignment
+   and name a backup before launch. Review new requests daily, including weekends;
+   flag provider failures and unresolved ownership/retention decisions promptly.
+   This is a proposal, not a configured automation or staffed service.
+3. **Freeze the approved scope.** Inspect the actual data inventory, resolve
+   ownership and active commitments, bind the versioned retention manifest and
+   verify that every retained category has its reason/expiry. Unknown data sinks
+   block execution. Use the existing review receipt and leased execution design.
+4. **Cut off access safely.** Apply supported authentication/session revocation
+   and tested subject-aware write barriers, including service writers. Rehearse
+   recovery before enabling this step. Do not issue raw cascading Auth/profile
+   deletes that would remove financial history.
+5. **Execute and resume.** Use idempotent per-sink operations with durable
+   checkpoints, current fencing tokens and independent readback. Interrupted work
+   resumes from verified state. No operator manually toggles a request to complete.
+6. **Verify and notify.** Independently verify identity denial, personal-data
+   removal, protected-ledger invariance and processor/storage results. Record
+   any required retention obligations and their expiry. Once non-retained sinks
+   pass, an account-closure receipt may explain the remaining lawful retention;
+   it must not say all data is erased or mark the request complete. Keep the
+   existing `awaiting-retention` stage while obligations remain. Send final
+   completion only after every sink and retention obligation has independently
+   passed, through the authorized transactional channel.
+7. **Reconcile exceptions.** Review approaching deadlines and failed steps daily;
+   mark a missed 30-day deadline overdue and provide the user an accurate update.
+   A missed deadline does not silently extend the commitment.
+   Escalate retained-data expiry and verify erasure when the obligation ends.
+   Restore exercises must demonstrate deletion suppression before reopening data.
+
+### Implementation gaps before this policy can take effect
+
+The current sole-owner request RPC rejects the request instead of preserving it
+for ownership transfer or closure. Guest identity verification, request-status
+access after Auth removal, safe receipt delivery after contact erasure, and the
+full Auth/storage/processor adapters are not complete. Resolve and rehearse each
+of these before publishing the proposed in-app workflow or enabling it.
+
+### Exact decisions needed to approve this proposal
+
+- Accept the 30-day policy and daily operational review; confirm the primary owner
+  and name a backup with the necessary restricted operator access.
+- Supply/approve the retention schedule for financial, waiver/dispute and audit
+  records, including the applicable controller/jurisdiction and expiry. A lawyer
+  or accounting policy owner should validate these specific requirements.
+- Confirm the actual processors and backup retention schedule, then approve the
+  technical manifest and recovery runbook after disposable rehearsal.
+
+Approval of this text alone does not approve production account deletion, a
+production migration, new credentials, or enabling the UI. Implementation and
+end-to-end evidence remain required. No customer messages were sent by preparing
+this proposal.
+
+Apple allows a manual backend process with a disclosed reasonable completion
+period, but requires accessible in-app initiation and actual account/data deletion;
+ordinary apps cannot require a support conversation as the only route. This is
+why adding a request button or telling people to email us does not close the gate.
+[Apple account-deletion guidance, checked October 21](https://developer.apple.com/help/app-review/guideline-reference/5-1-1-account-deletion).

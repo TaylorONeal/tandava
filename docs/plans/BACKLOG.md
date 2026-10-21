@@ -2,22 +2,39 @@
 
 Rules: one slice per commit (`W4-2a`), a test lands with the code, a DB change is a new migration, nothing starts before its `Needs` are done. Status: DONE, NEXT, LATER. See [PRD](PRD-launch-v1.md).
 
-## Current release checkpoint — 2026-10-19
+## Current release checkpoint — October 21, 2026
 
-**Deadline update:** Taylor now targets both Tandava native submissions for October20 Bali. [STORE-APPS](../app-store/STORE-APPS.md#submission-target-and-verified-starting-point--2026-10-19) records the checked critical path: bundle IDs exist, but targeted Apple API queries find no App Store app records/candidates and inspected repositories have no native projects. Submission remains contingent on passing native QA and accurate listings.
+Taylor confirmed the endpoint: submit **both** the first-party hosted Member
+marketplace and Studio management apps for App Review after a secure, polished,
+low-friction release passes acceptance. Published open-source code remains part
+of the model. The [PRD](PRD-launch-v1.md) records this direction; it supersedes old
+single-app/non-native scope statements and expired submission dates below.
 
-This is the execution backlog; [PROGRESS](PROGRESS.md) holds receipts, [PRD](PRD-launch-v1.md) defines hosted scope, and [STORE-APPS](../app-store/STORE-APPS.md) defines the two follow-on native apps. Older status text below is historical where this checkpoint supersedes it. Cross-project GTM acceptance remains [Final launch checklist](https://github.com/TaylorONeal/app-launch-playbook/blob/main/03-OPERATING-TEMPLATES.md#8-final-launch-checklist), [Hosted GTM PRD](https://github.com/TaylorONeal/app-launch-playbook/blob/main/prds/P3-TANDAVA-HOSTED.md), and [two-app store brief](https://github.com/TaylorONeal/app-launch-playbook/blob/main/prds/P3-TANDAVA-STORES.md). Use those gates for audience/claims, real-device tasks, support/privacy, payment/persistence, rights/store forms, rollback and authorized publication. Historical build counts are not new-build evidence.
+Work is integrated locally on `codex/app-store-excellence` in the separate
+`tandava-app-store` worktree: current main `c982696`, native PR #102 `4aea122`, and
+restricted Data API grants PR #106 `6c5375b`. Neither PR was merged remotely.
+Migration 45 on main remains historical; scoped grants are 46; native deletion
+migrations are renumbered 47–49 to remove duplicate versions. No hosted SQL was run.
+[PROGRESS](PROGRESS.md) owns results. [RELEASE-RISK-PLAN](../testing/RELEASE-RISK-PLAN.md)
+owns test procedures; [STORE-APPS](../app-store/STORE-APPS.md) owns store candidates.
 
-| Surface / gate | Verified now | Next acceptance gate |
+| Priority / task | Verified state | Next acceptance / unblock condition |
 |---|---|---|
-| Studio owner cancellation / LP-1d | 00043 and cancel-class deployed; webhook updated; PR100 frontend released | Owner signs into Stripe; verify Purafield Studio **sandbox**, add only refund.updated, refund.failed, charge.refund.updated to existing Your-account endpoint; preserve Connect endpoint. Then authorized sandbox scenario proof, separately from deployment checks. |
-| Teacher schedule / roster / check-in | 00044 deployed; assignment/staff authorization SQL tests pass; PR100 deployed | Real assigned-teacher and denied-role walkthrough in an explicitly designated test studio; local/mock tests are not signed-in production acceptance. Earnings/substitution remain deferred. |
-| Member discovery / booking / schedule | Existing hosted flows plus PR100 cancellation retry recovery released | Complete sandbox booking/payment/refund/idempotency gates LP-1/LP-1a/LP-1b; smoke workflow still needs its authorized test credentials. No live-money readiness claim. |
-| Hosted release checks | PR100 green; 526 app + 32 script + 23 browser tests; 251 SQL assertions. Production catalogs/RLS and anonymous rejection verified | Capture a role-by-role walkthrough after remaining sandbox setup, with no real customer records in evidence. |
-| Native member + Studio apps | Two apps decided; identifiers documented in STORE-APPS; **no native projects/builds verified** | Web pilot gate, native implementation/device testing, review accounts, deep links and required sign-in flows. Batch paid builds only when separately approved. |
-| Screenshots / walkthrough / marketing | Existing screenshot guide is a brief, not completed assets | Capture real member booking/My Schedule and Studio schedule/roster/check-in screens from validated builds; produce separate app sets and short walkthroughs. Recheck current store sizes/policies at production time. Marketing copy must only claim verified features; publishing requires separate authorization. |
+| P0 endpoint and tenant security | Restricted-grant and native migrations integrated; new local fixes cover redirects, inactive staff, generic sender authorization and imported member identity | Finish integrated checks and review; approve merge/hosted rollout separately. Inspect production catalogs/consumers before tightening permissions. No live disclosure established by synthetic tests. |
+| P0 truthful booking and sign-out | Local fixes and 11 browser checks pass for waitlist/missing-response handling, Studio logout and setup | Exact final revision CI/review, then physical candidate acceptance; browser fixtures do not prove hosted operation |
+| P1 onboarding and native recovery | Preserve current design; repair unnamed phone setup steps, scrollable management navigation and unusable native email return origins | Same-task phone/desktop before/after inspection; verify real native email delivery, CAPTCHA and app/browser session boundaries |
+| P0 payment acceptance | Latest scheduled smoke 39438453726 failed before checkout with missing test credentials; no provider payment outcome observed | Local isolated-harness repair and regression checks pass; runtime grants remain restricted. Provision the disposable local Supabase fixture and matching sandbox inputs before the retained schedule can run. Then prove actual hosted checkout/webhook/refund delivery separately. |
+| P0 account deletion | Initiation/review/profile-stage code exists; UI OFF; full fulfillment incomplete | Approved per-category retention rules and responsible operator; complete Auth, data, storage, processor and backup adapters plus recovery and disposable-account proof. Pending/profile scrubbing cannot count as deletion. |
+| P0 native purchase scope | Existing native candidate blocks checkout/express/portal | Enforce physical-service versus digital-service classification, implement a supported native purchase/return path and test it. Do not advertise purchase capability while blocked. |
+| P0 reviewer environment | Role fixtures and page prerequisite are documented; real acceptance remains NOT RUN | Verified synthetic identities and authorized reachable studio page; actual Member, Teacher and Owner journeys, persistence and denial checks |
+| P0 Apple records and candidates | October 21 Apple API returned zero app records for both existing bundle IDs; local signed 1.0(3) is older source 270a0a1 | App Store Connect browser control unavailable in this run (login state unknown). Create records when access works, rebuild after accepted source fixes, validate/upload and perform physical acceptance. |
+| P1 complete advertised studio paths | Phone setup/navigation checks pass; currency options remain limited; advanced routes require a current real-data inventory | Verify every exposed launch action; fix or explicitly withhold unsupported paths and remove misleading global/full-featured claims |
+| P1 final assets and declarations | Existing listing drafts are conditional; no complete authenticated screenshot set | Capture real accepted candidate journeys for each app, finish accurate privacy/support/reviewer fields, then submit only with P0 gates closed |
 
-Release verification issued no charges, refunds, class cancellations or emails. Stripe live activation, credentials, pricing and pilot recruitment remain the existing LP-10..13 gates; the 2026-10-19 release did not complete them.
+The historical tables below explain dependency IDs and prior implementation; old
+NEXT/DONE labels are not new release evidence. No real payment, customer message,
+customer-data mutation, production deployment or App Review submission occurred
+in this local integration pass.
 
 ## Launch path (2026-10-09, supersedes the loose NEXT lines at the bottom)
 

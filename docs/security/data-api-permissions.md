@@ -1,4 +1,4 @@
-# Data API permission correction (PR106)
+# Data API permission correction (PR #106)
 
 **Review candidate only. Merge and production SQL require separate approval.**
 No live privilege inventory, real account data, or deployed migration ledger was
@@ -20,8 +20,8 @@ correction; it is tested after the actual 00045, including an upgrade/reapply
 probe. The old manual `apply-00045.sql` now fails closed rather than reopening the
 broad privileges. Its verification companion is only a read-only inventory.
 
-PR106 is independent of PR102. It contains none of PR102's native/deletion changes.
-PR102's pending 00045/00046/00047 migrations still require their own ledger check
+PR #106 is independent of PR #102. It contains none of PR #102's native/deletion changes.
+PR #102's pending 00045/00046/00047 migrations still require their own ledger check
 and renumbering before integration. This candidate reserves 00046, not those
 unmerged deletion migrations. Duplicate versions now fail before a reset connects.
 Coordination is recorded on [PR107](https://github.com/TaylorONeal/tandava/pull/107#issuecomment-6289255515).
@@ -114,7 +114,7 @@ and `slug`. Catalog writes retain their existing RLS and validation triggers.
   checks use their configured test environment, not deployed permission proof.
 
 Before any production approval: identify deployed ledger and object creators;
-read table/column/default ACLs plus role memberships; reconcile PR102 separately;
+read table/column/default ACLs plus role memberships; reconcile PR #102 separately;
 verify hosted version/JWT behavior using an isolated synthetic Supabase environment
 with this complete migration chain; review any out-of-repo consumers of the 131
 RPC-only/ungranted tables. A production rollout may break undocumented direct
@@ -180,3 +180,38 @@ server uses its configured anonymous database role; they are checked as actual
 permission failures, not accepted on arbitrary status/errors. A first UPSERT
 returns 201; its conflict-update returns 200 in PostgREST16.5. Both persisted
 values are checked. Hosted auth/session behavior remains separate.
+
+
+## October 21 local release integration and endpoint corrections
+
+PR #106's scoped-grant source is now integrated locally with main and native PR #102
+on `codex/app-store-excellence`; no remote merge or production SQL occurred.
+Deletion migrations were renumbered 47–49 after grants 46. The integrated disposable
+SQL suite passed, including the privilege tests and deletion/capacity/credit races.
+Prior PostgREST HTTP 34-check evidence above remains scoped to its original PR #106
+revision, not the new native integration or hosted JWT acceptance.
+
+Additional source findings were reproduced with isolated mocks and corrected:
+
+| Risk | Correction | Regression evidence |
+|---|---|---|
+| High: unauthenticated or ordinary-user generic email/SMS/push dispatch | Low-level sending endpoints require the trusted service bearer before reading/dispatching payloads. Existing in-repo express continuation service caller remains supported. Browser wrappers have no in-repo consumers; external consumers must be checked at rollout. | Actual handlers deny missing, member and forged-role credentials without provider calls; trusted synthetic service path works. |
+| High: cross-studio shared-profile modification by CSV import | Existing profiles may gain the authorized studio-membership link but no imported global contact overwrite; only newly created profiles receive initial import fields. | Existing-person sentinel contacts remain unchanged; new-person initialization still succeeds. |
+| High: inactive studio staff in privileged Edge handlers | stripe-connect, onboarding and import-members require active staff in the claimed studio and the appropriate role. | Inactive staff cannot reach service-backed mutation; authorized active paths preserved. |
+| Medium: checkout/portal return redirect escapes | Parse then enforce the intended origin for relative paths, including stripped control characters; portal uses shared validation. | Malformed slash/tab/newline and external destinations fall back; valid application returns remain. |
+| Broken returning-guest path | Register the continuation template and use the existing sign-in-with-return-to-class URL. No fake unconsumed token/expiry. | Template and actual handler tests verify the destination and best-effort provider error handling. |
+
+These are source/synthetic findings; no live exploitation or customer impact was
+established, and no test message was sent. Deployment needs separate review and
+acceptance, especially trusted out-of-repository callers. `check:edge` now covers
+all changed handlers including push; its namespace import matches the checked
+module exports. Current exact checks/limits are recorded in PROGRESS.
+
+The scheduled Stripe smoke failed before network activity because its test
+credentials were absent. It also assumes direct service-role reads/cleanup of
+financial tables that grants 46 deliberately removes. The integrated harness now uses a loopback-only, explicitly marked disposable
+database adapter for fixed inspection/cleanup SQL; it does not restore runtime
+privileges. Local regression and SQL checks pass. The scheduled workflow still
+requires provisioned local Supabase fixtures and matching sandbox inputs before
+it can run, and does not establish hosted provider delivery. See the maintained
+[Stripe setup procedure](../developer/stripe-setup.md).

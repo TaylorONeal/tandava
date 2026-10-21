@@ -1,6 +1,38 @@
 # Tandava in the app stores: two apps, one backend
 
-Current status (October 20, 2026): **Member and Studio 1.0 (3) App Store IPAs are signed, exported and verified locally, including the updated discovery guidance. Neither app is uploaded or submitted.** Build2 simulator launch and development signing remain carried-forward evidence; build3 physical acceptance is NOT RUN. Distribution profiles are active: Member `46Q9M5ZNWW`, Studio `4SXLAU94C9`, reusing the existing distribution certificate. Both App Store app records remain absent at the latest API check. Conditional approval for validation/TestFlight transmission is recorded; it does not establish successful validation or approve public App Review. Native projects remain on draft PR102. Physical reviewer role acceptance, complete deletion fulfillment and store assets remain open. See [risk-based acceptance](../testing/RELEASE-RISK-PLAN.md) and the [reviewer walkthrough](REVIEWER-WALKTHROUGH.md).
+## Current integration checkpoint — October 21, 2026
+
+Neither app is submitted. A fresh Apple API lookup returned zero App Store records
+for `com.tandava.app` and `com.tandava.studio`. Two browser-control attempts timed
+out, so App Store Connect login state is **unknown**, not proven signed out.
+Existing bundle IDs/profiles are retained; do not recreate signing credentials.
+
+Local `codex/app-store-excellence` integrates current main, native PR #102 and scoped
+permissions PR #106. Its source fixes require a **new candidate** after acceptance;
+the signed 1.0(3) exports below do not include these changes. Xcode 27.1 and a paired
+physical iPhone are available; the inspected installed simulator Member is 1.0(2).
+No current integrated binary or authenticated physical acceptance exists yet.
+
+Native source now emits reachable hosted HTTPS confirmation/recovery links and
+explains browser completion followed by returning to the app. Universal links are
+still unconfigured: no AASA/associated-domain entitlement or custom URL scheme was
+found. Source lifecycle tests do not prove delivery from Mail/Safari into iOS.
+Account deletion, reviewed purchase scope, real reviewer identities/page, final
+assets and actual device/provider acceptance remain open. See the current
+[backlog](../plans/BACKLOG.md), [results](../plans/PROGRESS.md) and the draft
+[deletion policy and workflow](../operations/ACCOUNT-DELETION.md#proposed-hosted-deletion-policy-and-workflow--october-21-2026).
+
+Prepared App Store record fields for the existing team: iOS; English (US); names
+**Tandava** and **Tandava Studio**; existing bundle IDs above; proposed unique SKUs
+`tandava-member-ios` and `tandava-studio-ios`. Verify name/SKU availability in
+[App Store Connect → Apps](https://appstoreconnect.apple.com/apps) before creation.
+No record was created in this run. Taylor's October 21 request authorizes working
+toward submission after quality acceptance; the old approval descriptions below
+remain historical and do not mean unfinished candidates should be submitted.
+
+## Prior signed candidate evidence
+
+Current status (October 20, 2026): **Member and Studio 1.0 (3) App Store IPAs are signed, exported and verified locally, including the updated discovery guidance. Neither app is uploaded or submitted.** Build2 simulator launch and development signing remain carried-forward evidence; build3 physical acceptance is NOT RUN. Distribution profiles are active: Member `46Q9M5ZNWW`, Studio `4SXLAU94C9`, reusing the existing distribution certificate. Both App Store app records remain absent at the latest API check. Conditional approval for validation/TestFlight transmission is recorded; it does not establish successful validation or approve public App Review. Native projects remain on draft PR #102. Physical reviewer role acceptance, complete deletion fulfillment and store assets remain open. See [risk-based acceptance](../testing/RELEASE-RISK-PLAN.md) and the [reviewer walkthrough](REVIEWER-WALKTHROUGH.md).
 
 Build3 source is `270a0a1` (later documentation does not change its provenance). SDK27.1, Release archive, manual export with existing approved profiles; strict signatures verified outside the filesystem sandbox using the unchanged macOS trust store. Both report team`3S98UN76JW`, `get-task-allow=false`, version1.0/build3 and the expected bundle IDs. No new key/certificate, paid build or production SQL execution.
 

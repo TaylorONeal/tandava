@@ -1,6 +1,6 @@
 # Tandava Studio and Member release acceptance
 
-Updated October 20, 2026. Review branch `codex/native-two-apps`, draft PR102.
+Updated October 21, 2026. Local integration branch `codex/app-store-excellence` combines main with draft PR #102 and held draft PR #106. Current execution receipts are in [PROGRESS](../plans/PROGRESS.md). Historical candidate evidence below keeps its original source/build.
 This is an acceptance plan and evidence ledger, not a claim of release readiness.
 Every pass names its layer. Local mocks and synthetic database fixtures do not
 establish hosted configuration, payment delivery or native reviewer acceptance.
@@ -108,3 +108,37 @@ a seed prerequisite: the unlisted synthetic studio has no explicit `page_live`
 value, so its public booking page defaults OFF and cannot support the Member
 booking journey. Resolve approved page visibility before provisioning; no RLS or
 hosted visibility change was made. All physical journeys remain NOT RUN.
+
+## Integrated release regression procedures — October 21
+
+- Run all migration versions in order, including scoped Data API grants 46 and
+  deletion 47–49, against one fresh disposable PostgreSQL cluster. Run the restricted
+  API-role/column tests and the native deletion cutoff tests together; separate
+  branch passes cannot establish integration. Never use a hosted database URL.
+- Execute the actual Edge handlers with synthetic injected clients: normalized
+  external return URLs fail closed; inactive studio staff cannot connect, onboard
+  or import; generic email/SMS/push endpoints reject ordinary caller tokens;
+  importing an existing member does not modify that person's shared profile.
+- For both free-class and class-pack member booking, exercise server rejection,
+  confirmed, waitlisted and missing responses. Waitlisting must never say a spot
+  is confirmed or offer a confirmed calendar entry. Missing responses must link
+  to My Schedule without inventing success. Reopen My Schedule and check status.
+- On a 390×844 phone viewport, setup steps have visible names and selected-step
+  semantics; the last navigation action is reachable by scrolling. Studio logout
+  reports a failed backend request, permits retry and removes the private session
+  only after confirmed success. Repeat setup inspection on desktop.
+- Native lifecycle tests cover cold link, warm link, teardown and cold/warm races.
+  Email recovery links must use reachable HTTPS origins. Hosted browser completion
+  and native app sign-in are separate sessions until universal auth links are
+  configured and verified. Use the actual signed candidate for final acceptance.
+- Recheck the affected browser paths and final production build after all source
+  edits. Local fixtures are not hosted email delivery, provider acceptance or
+  physical-device proof. Severe host contention may require sequential checks;
+  record interrupted runs as unexecuted, not passed.
+
+- For smoke-harness changes, run `node --test scripts/smoke/*.test.mjs` and
+  `bash scripts/smoke/local-store.integration.sh`. The latter provisions only a
+  fresh synthetic PostgreSQL cluster. Verify no network calls for unsafe targets,
+  restricted financial-table grants, marker enforcement, read/cleanup scope and
+  failed-cleanup reporting. Provisioning a complete local Supabase fixture and
+  real sandbox delivery are separate acceptance steps, not implied by these tests.
