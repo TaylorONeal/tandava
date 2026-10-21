@@ -1,3 +1,4 @@
+import { offersSocialAuth } from '@/lib/native/platform';
 import { useEffect, useState } from "react";
 import { LEGAL_PUBLISHED } from "@/content/legal";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -174,6 +175,7 @@ const Login = () => {
             </Button>
           </form>
 
+          {offersSocialAuth() && <>
           {/* Divider */}
           <div className="relative">
             <Separator />
@@ -225,6 +227,8 @@ const Login = () => {
               <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="underline">Privacy Policy</Link>.
             </p>
           )}
+
+          </>}
 
           {/* Sign up link */}
           <p className="text-center text-sm text-muted-foreground">

@@ -1,3 +1,4 @@
+import { nativeApp, blocksNativePayment } from '@/lib/native/platform';
 /**
  * Supabase Backend Provider
  *
@@ -626,6 +627,11 @@ const supabaseData: DataProvider = {
 
 const supabaseApi: ApiProvider = {
   async invoke<T = unknown>(functionName: string, body: Record<string, unknown>): Promise<ApiResult<T>> {
+    // No IAP or verified in-person-only product contract exists for native yet.
+    // Fail before creating a Checkout session; web checkout is unchanged.
+    if (blocksNativePayment(nativeApp, functionName)) {
+      return { data: null, error: { message: 'Purchases are not available in this app yet. Sign in to book with existing credits or choose a free class.' } };
+    }
     const { data, error } = await getClient().functions.invoke(functionName, { body });
 
     return {

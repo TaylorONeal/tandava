@@ -18,6 +18,7 @@ import { data as backendData } from "@/lib/backend";
 import { openCustomerPortal } from "@/lib/stripe";
 import { profileToForm, formToPatch, toEntitlementView, type MyProfileForm } from "@/lib/myAccount";
 import type { MyEntitlementRow } from "@/types/database";
+import { AccountDeletion } from "./AccountDeletion";
 import { Loader2, Package } from "lucide-react";
 
 const FIELDS: { key: keyof MyProfileForm; label: string; type?: string; placeholder?: string }[] = [
@@ -160,6 +161,7 @@ export default function LiveAccount() {
             )}
           </CardContent>
         </Card>
+        {user && import.meta.env.VITE_ACCOUNT_DELETION_REQUESTS_ENABLED === "true" && <AccountDeletion userId={user.id} />}
       </div>
     </AppLayout>
   );

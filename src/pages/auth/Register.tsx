@@ -1,3 +1,4 @@
+import { offersSocialAuth } from '@/lib/native/platform';
 import { useEffect, useState } from "react";
 import { LEGAL_PUBLISHED } from "@/content/legal";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -459,6 +460,7 @@ const Register = () => {
             </Button>
           </form>
 
+          {offersSocialAuth() && <>
           {/* Divider */}
           <div className="relative py-2">
             <Separator />
@@ -502,6 +504,8 @@ const Register = () => {
               {t('apple')}
             </Button>
           </div>
+
+          </>}
 
           {/* Login link - larger tap area */}
           <div className="text-center py-2">
