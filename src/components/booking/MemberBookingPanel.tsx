@@ -13,7 +13,9 @@
  */
 
 import { CheckoutTermsNote } from "@/components/legal/CheckoutTermsNote";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { captureSettled, checkoutAttribution, currentSessionId } from "@/lib/analytics/session";
 import { useMemberEntitlements, useBookingSources, useBookClass } from "@/hooks/useBooking";
 import { api as backendApi, data as backendData } from "@/lib/backend";
@@ -21,7 +23,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
-import type { PublicOccurrenceRow } from "@/types/database";
+import type { Booking, PublicOccurrenceRow } from "@/types/database";
 import { AddToCalendar } from "@/components/calendar/AddToCalendar";
 import type { ClassEventInput } from "@/lib/calendar/classEvent";
 
@@ -42,7 +44,16 @@ export function MemberBookingPanel({
 }) {
   const { user, profile, signOut } = useAuth();
   const studioId = row.studio_id ?? undefined;
-  const { data: entitlements, isLoading } = useMemberEntitlements(user?.id, studioId);
+  const { data: entitlements, isLoading, isError: entitlementsFailed, isFetching, refetch } = useMemberEntitlements(user?.id, studioId);
+  const queryClient = useQueryClient();
+  const actionPending = useRef(false);
+  const mounted = useRef(true);
+  const latestScope = useRef({ userId: user?.id, occurrenceId });
+  latestScope.current = { userId: user?.id, occurrenceId };
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
   const sources = useBookingSources(
     {
       offering_id: row.offering_id ?? "",
@@ -54,51 +65,67 @@ export function MemberBookingPanel({
     entitlements,
   );
   const bookClass = useBookClass();
-  const [state, setState] = useState<"idle" | "working" | "booked" | "error">("idle");
+  const [state, setState] = useState<"idle" | "working" | "booked" | "waitlisted" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
 
   const covering = sources.filter((s) => s.covers && s.type !== "DROP_IN");
   const dropIn = sources.find((s) => s.type === "DROP_IN") ?? null;
   const name = profile?.first_name || user?.email || "you";
 
-  const bookWith = async (sourceId: string, type: "MEMBERSHIP" | "CLASS_PACK") => {
+  const acceptBooking = (booking: Booking | null) => {
+    if (!booking?.id || !["confirmed", "waitlisted"].includes(booking.status)) {
+      throw new Error("We could not verify your booking. Check My Schedule before trying again.");
+    }
+    setState(booking.status === "waitlisted" ? "waitlisted" : "booked");
+    for (const key of ["my-bookings", "entitlements", "upcoming-classes", "public-schedule", "public-occurrence"]) {
+      void queryClient.invalidateQueries({ queryKey: [key] });
+    }
+  };
+
+  const runAction = async (action: (isCurrent: () => boolean) => Promise<void>) => {
+    if (actionPending.current || !user) return;
+    const userId = user.id;
+    const isCurrent = () => mounted.current && latestScope.current.userId === userId && latestScope.current.occurrenceId === occurrenceId;
+    actionPending.current = true;
     setState("working");
     setError(null);
     try {
-      // The conversion is credited from the visit; let its capture land first.
-      await captureSettled(row.studio_slug ?? undefined);
-      await bookClass.mutateAsync({
-        sessionId: currentSessionId(row.studio_slug),
-        occurrenceId,
-        sourceType: type === "MEMBERSHIP" ? "membership" : "class_pack",
-        sourceId,
-      });
-      setState("booked");
+      await action(isCurrent);
     } catch (err) {
+      if (!isCurrent()) return;
       setState("error");
-      setError(err instanceof Error ? err.message : "Could not book this class.");
+      setError(err instanceof Error ? err.message : "Could not book this class. Check My Schedule before trying again.");
+    } finally {
+      actionPending.current = false;
     }
   };
+
+  const bookWith = (sourceId: string, type: "MEMBERSHIP" | "CLASS_PACK") => runAction(async (isCurrent) => {
+    await captureSettled(row.studio_slug ?? undefined);
+    if (!isCurrent()) return;
+    const booking = await bookClass.mutateAsync({
+      sessionId: currentSessionId(row.studio_slug),
+      occurrenceId,
+      sourceType: type === "MEMBERSHIP" ? "membership" : "class_pack",
+      sourceId,
+    });
+    if (isCurrent()) acceptBooking(booking);
+  });
 
   const isFree = row.drop_in_price_cents === 0;
 
-  const bookFree = async () => {
-    setState("working");
-    setError(null);
+  const bookFree = () => runAction(async (isCurrent) => {
     await captureSettled(row.studio_slug ?? undefined);
-    const { error: freeError } = await backendData.bookFreeClass(occurrenceId, currentSessionId(row.studio_slug));
-    if (freeError) {
-      setState("error");
-      setError(freeError.message);
-      return;
-    }
-    setState("booked");
-  };
+    if (!isCurrent()) return;
+    const { data: booking, error: freeError } = await backendData.bookFreeClass(occurrenceId, currentSessionId(row.studio_slug));
+    if (!isCurrent()) return;
+    if (freeError) throw new Error(freeError.message);
+    acceptBooking(booking);
+  });
 
-  const payDropIn = async () => {
-    setState("working");
-    setError(null);
+  const payDropIn = () => runAction(async (isCurrent) => {
     await captureSettled(row.studio_slug ?? undefined);
+    if (!isCurrent()) return;
     const origin = window.location.origin;
     const { data, error: invokeError } = await backendApi.invoke<{ url?: string; error?: string }>(
       "stripe-checkout",
@@ -110,26 +137,26 @@ export function MemberBookingPanel({
         cancelUrl: `${origin}${returnPath}?cancelled=1`,
       },
     );
-    if (data?.url) {
-      window.location.assign(data.url);
-      return;
-    }
-    setState("error");
-    setError(data?.error ?? invokeError?.message ?? "Could not start payment.");
-  };
+    if (!isCurrent()) return;
+    if (!data?.url) throw new Error(data?.error ?? invokeError?.message ?? "Could not start payment.");
+    window.location.assign(data.url);
+  });
 
-  if (state === "booked") {
+  if (state === "booked" || state === "waitlisted") {
     return (
       <Card className="border-emerald-500/40 bg-emerald-500/5">
         <CardContent className="pt-6 flex items-start gap-3">
           <CheckCircle2 className="h-5 w-5 shrink-0" aria-hidden="true" />
           <div>
-            <h2 className="font-semibold leading-tight">You're booked</h2>
+            <h2 className="font-semibold leading-tight">{state === "waitlisted" ? "You're on the waitlist" : "You're booked"}</h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Your spot in {row.offering_name} is confirmed. It's in My Schedule.
+              {state === "waitlisted"
+                ? `You don't have a confirmed spot in ${row.offering_name} yet. Check My Schedule for your booking status.`
+                : `Your spot in ${row.offering_name} is confirmed. It's in My Schedule.`}
             </p>
-            <div className="mt-4">
-              <AddToCalendar event={{ ...calendarEvent, manageUrl: `${window.location.origin}/my-schedule` }} />
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <Button asChild variant="outline"><Link to="/my-schedule">View My Schedule</Link></Button>
+              {state === "booked" && <AddToCalendar event={{ ...calendarEvent, manageUrl: `${window.location.origin}/my-schedule` }} />}
             </div>
           </div>
         </CardContent>
@@ -153,6 +180,13 @@ export function MemberBookingPanel({
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             {isLoading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
             {isLoading ? "Checking your passes" : "This studio's booking details aren't available yet."}
+          </div>
+        ) : entitlementsFailed ? (
+          <div className="space-y-2">
+            <p role="alert" className="text-sm text-destructive">We couldn't check your passes. Try again before booking.</p>
+            <Button variant="outline" disabled={isFetching} onClick={() => void refetch()}>
+              {isFetching ? "Checking passes…" : "Try again"}
+            </Button>
           </div>
         ) : (
           <div className="space-y-2">
@@ -205,13 +239,13 @@ export function MemberBookingPanel({
         {error && (
           <p role="alert" className="flex items-start gap-2 text-sm text-destructive">
             <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" aria-hidden="true" />
-            {error}
+            <span>{error} <Link className="underline" to="/my-schedule">View My Schedule</Link></span>
           </p>
         )}
 
         <p className="text-xs text-muted-foreground">
           Not {name}?{" "}
-          <button type="button" className="underline" onClick={() => void signOut()}>
+          <button type="button" className="underline" disabled={busy} onClick={() => void signOut().catch(() => setError("Could not sign out. Try again."))}>
             Sign out
           </button>{" "}
           to book as a guest.

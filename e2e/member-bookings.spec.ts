@@ -47,7 +47,8 @@ test("member sees their bookings and cancels only after server confirmation", as
 });
 
 for (const source of ['free', 'class_pack'] as const) {
-  test(`member books with ${source} and sees the confirmed booking after reopening`, async ({ page }) => {
+  for (const outcome of ['confirmed', 'waitlisted', 'missing'] as const) {
+  test(`member books with ${source}: ${outcome} response stays truthful after reopening`, async ({ page }) => {
     const user = { id: '0a000000-0000-0000-0000-00000000000b', email: 'member@test.dev', aud: 'authenticated', role: 'authenticated', app_metadata: {}, user_metadata: {} };
     await page.addInitScript(user => localStorage.setItem('sb-127-auth-token', JSON.stringify({
       access_token: 'e2e-token', refresh_token: 'e2e-refresh', token_type: 'bearer', expires_in: 3600,
@@ -67,6 +68,8 @@ for (const source of ['free', 'class_pack'] as const) {
     let booked = false;
     let reject = true;
     let calls = 0;
+    let missingResponse = outcome === 'missing';
+    const status = outcome === 'waitlisted' ? 'waitlisted' : 'confirmed';
     await page.route('http://127.0.0.1:54321/**', async route => {
       const req = route.request(); const url = req.url();
       const headers = { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'access-control-allow-methods': '*' };
@@ -85,11 +88,12 @@ for (const source of ['free', 'class_pack'] as const) {
         expect(req.postDataJSON()).toMatchObject({ p_occurrence_id: occurrence.occurrence_id });
         if (source === 'class_pack') expect(req.postDataJSON()).toMatchObject({ p_source_type: 'class_pack', p_source_id: packId });
         if (reject) return json({ message: 'Synthetic booking unavailable' }, 400);
+        if (missingResponse) return json(null);
         booked = true;
-        return json({ id: '22222222-2222-2222-2222-222222222222', status: 'confirmed' });
+        return json({ id: '22222222-2222-2222-2222-222222222222', status });
       }
       if (url.includes('/rpc/get_my_bookings')) return json(booked ? [{ ...occurrence,
-        booking_id: '22222222-2222-2222-2222-222222222222', status: 'confirmed', cancellation_minutes: 120,
+        booking_id: '22222222-2222-2222-2222-222222222222', status, cancellation_minutes: 120,
       }] : []);
       if (url.includes('/functions/v1/stripe-')) throw new Error('Synthetic booking must not create a payment');
       return json([]);
@@ -101,10 +105,22 @@ for (const source of ['free', 'class_pack'] as const) {
     expect(booked).toBe(false);
     reject = false;
     await button.click();
-    await expect(page.getByRole('heading', { name: "You're booked" })).toBeVisible();
-    expect(calls).toBe(2);
+    if (missingResponse) {
+      await expect(page.getByRole('alert')).toContainText('could not verify');
+      await expect(page.getByRole('heading', { name: "You're booked" })).toHaveCount(0);
+      expect(booked).toBe(false);
+      missingResponse = false;
+      await button.click();
+    }
+    await expect(page.getByRole('heading', { name: status === 'waitlisted' ? "You're on the waitlist" : "You're booked" })).toBeVisible();
+    if (status === 'waitlisted') {
+      await expect(page.getByText(/Your spot in .* is confirmed/)).toHaveCount(0);
+      await expect(page.getByRole('button', { name: /Add to calendar/i })).toHaveCount(0);
+    }
+    expect(calls).toBe(outcome === 'missing' ? 3 : 2);
     await page.goto('/my-schedule');
     await page.reload();
     await expect(page.getByRole('heading', { name: 'Synthetic Review Flow' })).toBeVisible();
   });
+}
 }
