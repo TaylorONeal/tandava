@@ -221,41 +221,36 @@ async function createGuestIdentity(
 // ---------------------------------------------------------------------------
 
 /**
- * Email a signed link to an address that already has an account, instead of
+ * Email a sign-in link to an address that already has an account, instead of
  * booking. Anyone can type anyone's email into a public form, so the only safe
  * response is one that requires control of the mailbox.
  *
- * Only the token's hash is stored: a database read cannot be turned into
- * someone else's booking session.
+ * Standard sign-in establishes identity and returns to the selected class.
+ * This link grants no session and uses no unimplemented token-redemption flow.
  */
-async function sendContinueLink(
+export async function sendContinueLink(
   db: SupabaseClient,
   email: string,
   slug: string,
   occurrenceId: string,
-): Promise<{ tokenHash: string; expiresAt: string }> {
-  const raw = crypto.randomUUID() + crypto.randomUUID();
-  const tokenHash = await sha256Hex(raw);
-  const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
+): Promise<void> {
+  const next = `/s/${encodeURIComponent(slug)}/book/${encodeURIComponent(occurrenceId)}`;
+  const url = `${appUrl}/auth/login?next=${encodeURIComponent(next)}`;
 
-  const url = `${appUrl}/s/${encodeURIComponent(slug)}/book/${encodeURIComponent(occurrenceId)}?continue=${raw}`;
-
-  // Best effort: a mail provider outage must not strand the visitor with a
-  // booking that silently did not happen. The response is the same either way,
-  // and the claim row records the attempt.
+  // Keep delivery details private; the public response also offers direct
+  // sign-in. A claim records the attempt, never proof of email delivery.
   try {
-    await db.functions.invoke("email", {
+    const { error } = await db.functions.invoke("email", {
       body: {
         to: email,
         template: "express_continue",
-        data: { url, expires_minutes: 30 },
+        data: { url },
       },
     });
-  } catch (err) {
-    console.error("express-book: continue link email failed", err);
+    if (error) console.error("express-book: continue link email failed");
+  } catch {
+    console.error("express-book: continue link email failed");
   }
-
-  return { tokenHash, expiresAt };
 }
 
 // ---------------------------------------------------------------------------
@@ -519,16 +514,14 @@ serve(async (req) => {
     }
 
     if (decision.action === "email_continue_link") {
-      const { tokenHash, expiresAt } = await sendContinueLink(db, guest.email, slug, occurrenceId);
+      await sendContinueLink(db, guest.email, slug, occurrenceId);
       await recordClaim({
         outcome: "continue_link_sent",
         profile_id: existingProfile?.id ?? null,
-        continue_token_hash: tokenHash,
-        continue_token_expires_at: expiresAt,
       });
       return json({
         outcome: "continue_link_sent",
-        message: "Check your email. We sent you a link to finish booking this class.",
+        message: "Check your email for a sign-in link, or sign in directly to finish booking.",
       });
     }
 
