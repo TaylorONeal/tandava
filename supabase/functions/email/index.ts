@@ -10,16 +10,21 @@
  * A request must be one of:
  *   - Internal: header `x-email-secret` matching EMAIL_FUNCTION_SECRET
  *     (constant-time compare, same pattern as run-automations'
- *     `x-cron-secret`). For database webhooks and other server-side
- *     callers. Internal callers may use either request form below.
+ *     `x-cron-secret`), or an `Authorization: Bearer` service-role key
+ *     (how server-side functions call in: express-book invokes this
+ *     function via its service-role client, db.functions.invoke).
+ *     For database webhooks and other server-side callers. Internal
+ *     callers may use either request form below.
  *   - Staff: a valid user JWT (sent automatically by supabase-js
  *     `functions.invoke`) whose user is studio staff in `studio_staff`
  *     (owner / admin / front_desk, the check import-members uses).
  *     Staff callers may use the template form only; the raw form would
  *     let any staff account send arbitrary content from the domain.
- * Other edge functions do not call this over HTTP: cancel-class,
- * express-book and run-automations import sendEmail from provider.ts
- * directly, so they are unaffected by this gate.
+ * Other edge functions mostly bypass this HTTP entry point:
+ * cancel-class and run-automations import sendEmail from provider.ts
+ * directly, and express-book uses provider.ts for its booking email;
+ * its continue-link email does invoke this function, through its
+ * service-role client, so the service-role path above covers it.
  * The internal check runs first and fails closed: when
  * EMAIL_FUNCTION_SECRET is unset, no header value can match.
  *
@@ -107,10 +112,16 @@ serve(async (req) => {
   }
 
   // ---- Authorize the caller (see header comment) ----
-  const isInternal = sameSecret(
-    req.headers.get("x-email-secret") ?? "",
-    emailFunctionSecret,
+  const bearer = (req.headers.get("Authorization") ?? "").replace(
+    /^Bearer\s+/i,
+    "",
   );
+  const isInternal =
+    sameSecret(req.headers.get("x-email-secret") ?? "", emailFunctionSecret) ||
+    // Server-side callers invoke with the service-role key as Bearer
+    // (express-book's db.functions.invoke("email", ...)): that key is
+    // already fully trusted (it bypasses RLS), so it counts as internal.
+    sameSecret(bearer, serviceKey);
   if (!isInternal) {
     // Identify the caller from their JWT (stripe-checkout / import-members).
     const authHeader = req.headers.get("Authorization") ?? "";
