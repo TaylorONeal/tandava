@@ -8,7 +8,7 @@
  *                checkout at the server-side price.
  */
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,15 @@ export function BookClassButton({ occurrenceId, studioSlug, className }: Props) 
   const book = useBookClassAuto();
   const [done, setDone] = useState<"confirmed" | "waitlisted" | null>(null);
   const [redirecting, setRedirecting] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const pending = useRef(false);
+  const mounted = useRef(true);
+  const latestScope = useRef({ userId: user?.id, occurrenceId });
+  latestScope.current = { userId: user?.id, occurrenceId };
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
 
   if (!user) {
     return (
@@ -51,10 +60,17 @@ export function BookClassButton({ occurrenceId, studioSlug, className }: Props) 
   }
 
   const onClick = async () => {
+    if (pending.current) return;
+    const userId = user.id;
+    const isCurrent = () => mounted.current && latestScope.current.userId === userId && latestScope.current.occurrenceId === occurrenceId;
+    pending.current = true;
+    setSubmitting(true);
     try {
       // The booking is credited to the visit that brought them; let its capture land first.
       await captureSettled(studioSlug);
+      if (!isCurrent()) return;
       const result = await book.mutateAsync({ occurrenceId, sessionId: currentSessionId(studioSlug) });
+      if (!isCurrent()) return;
       if (result.result === "booked") {
         setDone(result.status);
         trackFunnel("booking_completed", { source: result.source_type, status: result.status });
@@ -72,22 +88,26 @@ export function BookClassButton({ occurrenceId, studioSlug, className }: Props) 
       trackFunnel("checkout_started", { kind: "drop_in", price_cents: result.drop_in_price_cents });
       setRedirecting(true);
       const { error } = await checkoutDropIn(occurrenceId, studioSlug);
+      if (!isCurrent()) return;
       if (error) {
         setRedirecting(false);
         toast({ title: "Couldn't start checkout", description: error, variant: "destructive" });
       }
     } catch (err) {
-      const message = (err as Error).message;
-      if (message.startsWith("Already booked")) setDone("confirmed");
+      if (!isCurrent()) return;
+      const message = err instanceof Error ? err.message : "Could not book this class. Check My Schedule before trying again.";
       toast({
-        title: message.startsWith("Already booked") ? "You're already booked" : "Couldn't book this class",
-        description: message.startsWith("Already booked") ? undefined : message,
+        title: message.startsWith("Already booked") ? "You already have a booking" : "Couldn't book this class",
+        description: message.startsWith("Already booked") ? "Check My Schedule for your current booking status." : message,
         variant: message.startsWith("Already booked") ? "default" : "destructive",
       });
+    } finally {
+      pending.current = false;
+      if (isCurrent()) setSubmitting(false);
     }
   };
 
-  const busy = book.isPending || redirecting;
+  const busy = submitting || book.isPending || redirecting;
   return (
     <Button variant="outline" size="sm" className={className} onClick={onClick} disabled={busy}>
       {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Book"}

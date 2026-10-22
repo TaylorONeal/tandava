@@ -1,3 +1,4 @@
+import { nativeApp, blocksNativePayment, authRedirectOrigin } from '@/lib/native/platform';
 /**
  * Supabase Backend Provider
  *
@@ -113,7 +114,7 @@ const supabaseAuth: AuthProvider = {
         ...captchaOption(),
         // The confirmation link lands on the callback, which forwards to `next`
         // (e.g. the class someone was booking when they registered).
-        emailRedirectTo: `${window.location.origin}/auth/callback${path === "/" ? "" : `?next=${encodeURIComponent(path)}`}`,
+        emailRedirectTo: `${authRedirectOrigin(nativeApp, window.location.origin)}/auth/callback${path === "/" ? "" : `?next=${encodeURIComponent(path)}`}`,
       },
     });
     // A user without a session means Supabase is waiting for email confirmation.
@@ -145,7 +146,7 @@ const supabaseAuth: AuthProvider = {
     if (options?.claim) params.set("claim", "1");
     const query = params.toString();
     const { error } = await getClient().auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-confirm${query ? `?${query}` : ""}`,
+      redirectTo: `${authRedirectOrigin(nativeApp, window.location.origin)}/auth/reset-confirm${query ? `?${query}` : ""}`,
       ...captchaOption(),
     });
     return { error: mapError(error) };
@@ -162,7 +163,7 @@ const supabaseAuth: AuthProvider = {
       type: "signup",
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback${path === "/" ? "" : `?next=${encodeURIComponent(path)}`}`,
+        emailRedirectTo: `${authRedirectOrigin(nativeApp, window.location.origin)}/auth/callback${path === "/" ? "" : `?next=${encodeURIComponent(path)}`}`,
         ...captchaOption(),
       },
     });
@@ -626,6 +627,11 @@ const supabaseData: DataProvider = {
 
 const supabaseApi: ApiProvider = {
   async invoke<T = unknown>(functionName: string, body: Record<string, unknown>): Promise<ApiResult<T>> {
+    // No IAP or verified in-person-only product contract exists for native yet.
+    // Fail before creating a Checkout session; web checkout is unchanged.
+    if (blocksNativePayment(nativeApp, functionName)) {
+      return { data: null, error: { message: 'Purchases are not available in this app yet. Sign in to book with existing credits or choose a free class.' } };
+    }
     const { data, error } = await getClient().functions.invoke(functionName, { body });
 
     return {

@@ -18,16 +18,22 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:db": "bash scripts/db-test.sh",
-    "check:edge": "deno check --config supabase/functions/deno.json supabase/functions/stripe-webhook/index.ts supabase/functions/stripe-checkout/index.ts supabase/functions/stripe-connect/index.ts supabase/functions/stripe-portal/index.ts supabase/functions/analytics-session/index.ts supabase/functions/email/index.ts supabase/functions/express-book/index.ts supabase/functions/import-members/index.ts supabase/functions/onboarding/index.ts supabase/functions/run-automations/index.ts supabase/functions/sms/index.ts supabase/functions/unsubscribe/index.ts supabase/functions/cancel-class/index.ts",
+    "check:edge": "deno check --config supabase/functions/deno.json supabase/functions/stripe-webhook/index.ts supabase/functions/stripe-checkout/index.ts supabase/functions/stripe-connect/index.ts supabase/functions/stripe-portal/index.ts supabase/functions/analytics-session/index.ts supabase/functions/email/index.ts supabase/functions/express-book/index.ts supabase/functions/import-members/index.ts supabase/functions/onboarding/index.ts supabase/functions/run-automations/index.ts supabase/functions/sms/index.ts supabase/functions/push/index.ts supabase/functions/unsubscribe/index.ts supabase/functions/cancel-class/index.ts",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "dev:marketing": "VITE_BLOG_GAMES=true vite",
     "build:marketing": "VITE_BLOG_GAMES=true npm run build",
     "test:editorial": "vitest run --config editorial/vitest.config.ts",
     "typecheck:editorial": "tsc -p editorial/tsconfig.json",
     "check:blog-game-build": "node scripts/check-blog-game-build.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "native": "node scripts/native.mjs"
   },
   "dependencies": {
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/ios": "8.5.3",
+    "@capacitor/network": "8.0.1",
+    "@capacitor/share": "8.0.3",
     "@fontsource/dm-sans": "^5.2.8",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.11",
@@ -95,6 +101,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@capacitor/cli": "8.5.3",
     "@eslint/js": "^9.32.0",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/typography": "^0.5.16",

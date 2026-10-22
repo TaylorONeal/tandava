@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ManageLayout } from "@/components/manage/ManageLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { api, isBackendConfigured } from "@/lib/backend";
 import { Textarea } from "@/components/ui/textarea";
+import { TimeZoneSelect } from "@/components/time/TimeZoneSelect";
+import { localTimeZone } from "@/lib/time/timeZones";
 import { Link } from "react-router-dom";
 import {
   Building2, MapPin, Palette, Tag, CalendarClock, DollarSign, Users,
@@ -101,11 +103,12 @@ function Sel({ label, value, onChange, options, placeholder, disabled }: {
   label: string; value: string; onChange: (val: string) => void;
   options: [string, string][]; placeholder?: string; disabled?: boolean;
 }) {
+  const id = useId();
   return (
     <div className="space-y-2">
-      <Label>{label}</Label>
+      <Label htmlFor={id}>{label}</Label>
       <Select value={value} onValueChange={onChange} disabled={disabled}>
-        <SelectTrigger><SelectValue placeholder={placeholder} /></SelectTrigger>
+        <SelectTrigger id={id}><SelectValue placeholder={placeholder} /></SelectTrigger>
         <SelectContent>
           {options.map(([v, l]) => <SelectItem key={v} value={v}>{l}</SelectItem>)}
         </SelectContent>
@@ -123,13 +126,13 @@ export default function Onboarding() {
   const production = isBackendConfigured();
   const [step, setStep] = useState(0);
   const [done, setDone] = useState<Set<number>>(new Set());
-  const [f, setF] = useState<Record<string, string>>({
-    timezone: "America/Los_Angeles", currency: "USD", rooms: "Main Studio, Hot Room",
+  const [f, setF] = useState<Record<string, string>>(() => ({
+    timezone: localTimeZone(), currency: "USD", rooms: "Main Studio, Hot Room",
     classStyle: "vinyasa", classLevel: "all", classDuration: "60", classCapacity: "25",
     classPrice: "25", schedDay: "monday", schedTime: "09:00", memberCycle: "monthly",
     packClasses: "10", waiverName: "Liability Waiver",
     primaryColor: "#4fd1c5", secondaryColor: "#f687b3",
-  });
+  }));
   const [memberUnlimited, setMemberUnlimited] = useState(true);
   const [discoverable, setDiscoverable] = useState(false);
   // Booking page live (00038): on by default at launch, so a studio can sell
@@ -403,8 +406,12 @@ export default function Onboarding() {
             <Label htmlFor="studioDesc">Description</Label>
             <Textarea id="studioDesc" placeholder="A brief description of your studio..." value={f.studioDesc ?? ""} onChange={set("studioDesc")} rows={3} />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Sel label="Timezone" value={f.timezone ?? ""} onChange={sel("timezone")} options={[["America/New_York","Eastern (ET)"],["America/Chicago","Central (CT)"],["America/Denver","Mountain (MT)"],["America/Los_Angeles","Pacific (PT)"]]} />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="min-w-0 space-y-2">
+              <Label htmlFor="studio-timezone">Timezone</Label>
+              <TimeZoneSelect id="studio-timezone" value={f.timezone ?? "UTC"} onChange={sel("timezone")} />
+              <p className="text-xs text-muted-foreground">Choose your studio's local time. This is how class times appear to members.</p>
+            </div>
             <Sel label="Currency" value={f.currency ?? ""} onChange={sel("currency")} options={[["USD","USD ($)"],["EUR","EUR"],["GBP","GBP"],["CAD","CAD"]]} />
           </div>
         </StepCard>
@@ -428,15 +435,6 @@ export default function Onboarding() {
                 </div>
               </div>
             ))}
-          </div>
-          <Separator />
-          <div className="space-y-2">
-            <Label>Logo</Label>
-            <div className="border-2 border-dashed border-border rounded-xl p-8 text-center">
-              <p className="text-sm text-muted-foreground">Drag and drop your logo, or click to upload</p>
-              <p className="text-xs text-muted-foreground mt-1">PNG, SVG, or JPG (512x512px recommended)</p>
-              <Button variant="outline" size="sm" className="mt-3">Upload Logo</Button>
-            </div>
           </div>
         </StepCard>
       );
@@ -626,19 +624,19 @@ export default function Onboarding() {
           <div className="lg:w-64 shrink-0">
             <Card>
               <CardContent className="p-3">
-                <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-x-visible pb-1 lg:pb-0">
+                <nav aria-label="Studio setup steps" className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-x-visible pb-1 lg:pb-0">
                   {STEPS.map((s, i) => {
                     const isCurrent = i === step;
                     const isDone = done.has(i);
                     const Icon = s.icon;
                     return (
-                      <button key={s.key} onClick={() => setStep(i)} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-start text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 lg:shrink lg:whitespace-normal w-full ${isCurrent ? "bg-primary text-primary-foreground shadow-sm" : isDone ? "text-foreground hover:bg-secondary" : "text-muted-foreground hover:text-foreground hover:bg-secondary"}`}>
-                        <span className="shrink-0">{isDone && !isCurrent ? <Check className="h-4 w-4 text-primary" /> : <Icon className="h-4 w-4" />}</span>
-                        <span className="hidden sm:inline text-xs lg:text-sm">{s.label}</span>
+                      <button key={s.key} type="button" aria-current={isCurrent ? "step" : undefined} onClick={() => setStep(i)} className={`flex min-h-11 items-center gap-2.5 px-3 py-2 rounded-xl text-start text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 lg:shrink lg:whitespace-normal lg:w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${isCurrent ? "bg-primary text-primary-foreground shadow-sm" : isDone ? "text-foreground hover:bg-secondary" : "text-muted-foreground hover:text-foreground hover:bg-secondary"}`}>
+                        <span className="shrink-0" aria-hidden="true">{isDone && !isCurrent ? <Check className="h-4 w-4 text-primary" /> : <Icon className="h-4 w-4" />}</span>
+                        <span>{s.label}</span>
                       </button>
                     );
                   })}
-                </div>
+                </nav>
               </CardContent>
             </Card>
             <div className="mt-3 px-1">

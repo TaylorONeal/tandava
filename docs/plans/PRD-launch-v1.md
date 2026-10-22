@@ -2,20 +2,39 @@
 
 Status: living document. Owner: Taylor. Backlog with IDs: [BACKLOG.md](BACKLOG.md). Progress: [PROGRESS.md](PROGRESS.md). Diagrams: [07-launch-architecture](../developer/07-launch-architecture.md).
 
-## 1. Problem
+## 1. Product direction confirmed October 21, 2026
 
-A student who lands on the platform cannot find a class and book it. Mindbody has the same hole (you need their app first). Studios need a place to run schedule, memberships and payments without a vendor lock. Tandava is open source; the hosted version is how most studios will actually use it.
+Tandava publishes its source code and also operates its own hosted service, like
+WordPress's open-source and managed-service model. The hosted product includes a
+member marketplace app and a separate studio management app, backed by the same
+service. Publishing the code does not replace operating and supporting those apps.
 
-## 2. Goals and non-goals
+Taylor's requested endpoint is **both iOS apps submitted for App Review after
+release acceptance**. Competitiveness with Mindbody and Arketa is a product goal,
+not an established comparison or permission to advertise unfinished capabilities.
+The member's primary job is finding, booking and returning to a class. The studio's
+primary job is turning a new signup into a bookable schedule, then reliably managing
+people, attendance and money. Open-source installation is a separate developer path.
 
-| Goal | Measure |
+## 2. Quality and scope
+
+| Requirement | Acceptance |
 |---|---|
-| A stranger finds a class and books it in under 3 minutes, signing up only at the last step | E2E-01 passes; funnel `discover_view` to `booking_confirmed` instrumented |
-| A studio goes from signup to a bookable public schedule in under 30 minutes | Pilot timing, W5 |
-| Money is correct under retries, refunds, races | PAY-*, BOOK-* DB tests green in CI |
-| No tenant can read or write another tenant's data, and anon sees only public RPC output | SEC-*, ISO-* tests green in CI |
+| Low-friction discovery and booking | Browse without signup; preserve selected class through authentication; show price, time zone, location and cancellation terms; confirm only the server's actual booking/waitlist result. Target first booking under 3 minutes. |
+| Easeful studio onboarding | Clearly named steps, recoverable errors and saved progress; reach a real bookable schedule without developer setup. Target observed onboarding under 30 minutes. |
+| Useful, coherent native apps | Distinct Member and Studio navigation; working sign-in, recovery, sign-out, links and persistence on the actual release candidates; usable on small phones and iPad, including large text and assistive technology. |
+| Complete advertised paths | Every exposed launch action works on real data. Placeholder success, sample people in live accounts, dead purchases and fake notifications are release failures. Track unsupported capabilities explicitly; do not call a demo full featured. |
+| Security and money correctness | Denied cross-tenant and inactive-role actions, protected personal data, replay-safe payments, accurate capacity/credits and verified hosted sandbox checkout/refund delivery. Local mocks alone do not pass this gate. |
+| Growth through product value | Shareable studio/class links, returning-member continuity, accurate reminders, simple imports and a supported studio onboarding path. Analytics require accurate privacy/consent behavior. |
+| App Store acceptance preparation | Complete deletion workflow, accurate purchase classification and privacy disclosures, live reviewer access, authentic assets and successful native review journeys. Submission, approval and public release are separate states. |
 
-Non-goals for v1: native apps, on-demand video sales, SMS marketing, multi-location chains, a white-label build per studio (see decision D2).
+The two shared apps are in scope; a separately branded binary for every studio is
+not. On-demand digital sales, unsupported marketing tools and multi-location chains
+must not be advertised as implemented. Native payment support remains unresolved
+until physical-service versus digital-service products are enforced and the actual
+native checkout/return path passes. Do not enable a blanket Stripe path to bypass
+Apple's digital-purchase rules. The backlog owns execution order; the risk plan owns
+candidate-specific acceptance and STORE-APPS owns store artifacts.
 
 ## 3. Users
 
@@ -27,12 +46,12 @@ Student (guest then member), Studio owner/admin, Front desk, Teacher. Platform o
 |---|---|---|
 | "Marketplace is just a page" | The page was real but every write behind it was mock or unsafe. Audit found 10 tables with no RLS, studio rows readable by anon, free classes via waitlist, double refunds | W1 to W3 built first, before any new UI |
 | "Fix bugs as found" | Bugs clustered by root cause (no ledger, two waitlist paths, no idempotency). Patching leaves the cause | One entitlement ledger, one waitlist path, one fulfilment path |
-| "White label the studio app" | Two builds double the support surface before there are 5 customers | Decision D2: one app, studio-branded storefront at `/s/:slug` and custom domains later |
+| "White label every studio" | Per-studio binaries multiply review and support work | Decision D2: two shared apps, Member and Studio; studio-branded storefronts within the shared platform |
 | "Guest checkout is easy" | Paying before a seat is held can charge for a full class | Built: `hold_spot` takes the seat before checkout (00027). Edge: a hold that lapses before payment still flags a refund |
 | "Tests exist" | They did not run anywhere | CI runs web and database jobs (W0) |
 | "Take rate model" | Not decided and drives Stripe Connect design | D1 open; code supports `platform_fee_cents` either way |
 
-## 5. Scope by wave
+## 5. Original hosted implementation waves (historical; current state in BACKLOG)
 
 Waves are ordered by dependency, not by visibility. A later wave may not start on a table or flow that an earlier wave has not secured.
 
@@ -56,7 +75,7 @@ Waves are ordered by dependency, not by visibility. A later wave may not start o
 5. **Public data only via narrow RPCs.** Anon never reads tables.
 6. **Return to intent.** `?next=` plus a one hour localStorage stash, same-site relative paths only (open-redirect safe).
 
-## 7. Risks
+## 7. Original hosted risks (historical; current blockers in BACKLOG)
 
 | Risk | Why it matters | Mitigation | Owner wave |
 |---|---|---|---|
@@ -73,13 +92,13 @@ Waves are ordered by dependency, not by visibility. A later wave may not start o
 
 ## 8. Decisions
 
-Answered 2026-10-04: D5 keep edits after a prod schema diff (blocked: no Tandava project in the connected Supabase account), D6 Playwright yes, D7 Turnstile yes, D9 preview bypass yes (done). D1 and D2 stay at the defaults below until Taylor says otherwise.
+Answered 2026-10-04: D5 keep edits after a prod schema diff (blocked: no Tandava project in the connected Supabase account), D6 Playwright yes, D7 Turnstile yes, D9 preview bypass yes (done). D1 remains undecided; the latest two-app direction supersedes the old D2 default.
 
 
 | ID | Decision | Default I would take |
 |---|---|---|
 | D1 | $99/mo flat vs 2% take | Flat; matches HOSTED_PRODUCT_REVIEW |
-| D2 | White label vs one app | One app plus custom domains |
+| D2 | Shared products versus per-studio binaries | Confirmed October 21: one shared Member app and one shared Studio management app; published source remains available |
 | D3 | First metro | Austin |
 | D4 | Flip home to discover at 5 discoverable studios | Keep threshold |
 | D5 | Approve edited migrations 00005/00008/00009, least privilege on 00008 | Approve after a prod schema diff |

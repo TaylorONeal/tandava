@@ -84,11 +84,12 @@ serve(async (req) => {
 
   const db = createClient(supabaseUrl, serviceKey);
 
-  // Authorize: the caller must be studio staff. Derive the studio if not given.
+  // Require active staff: their auth account survives studio deactivation.
   let staffQuery = db
     .from("studio_staff")
     .select("studio_id, role")
     .eq("profile_id", user.id)
+    .eq("is_active", true)
     .in("role", STAFF_ROLES);
   if (payload.studioId) staffQuery = staffQuery.eq("studio_id", payload.studioId);
 
@@ -133,6 +134,7 @@ serve(async (req) => {
 
       // Find an existing profile by email, else create the auth user.
       let profileId: string | null = null;
+      let createdProfile = false;
       const { data: existing } = await db
         .from("profiles")
         .select("id")
@@ -153,19 +155,23 @@ serve(async (req) => {
           continue;
         }
         profileId = created.user.id;
+        createdProfile = true;
       }
 
-      // Fill in the rest of the profile (the trigger only sets name + email).
-      await db
-        .from("profiles")
-        .update({
-          phone: rec.phone || null,
-          date_of_birth: rec.date_of_birth || null,
-          pronouns: rec.pronouns || null,
-          emergency_contact_name: rec.emergency_contact_name || null,
-          emergency_contact_phone: rec.emergency_contact_phone || null,
-        })
-        .eq("id", profileId);
+      // Existing profiles are member-owned across studios. Import authority
+      // permits a studio link, not overwriting that person's global identity.
+      if (createdProfile) {
+        await db
+          .from("profiles")
+          .update({
+            phone: rec.phone || null,
+            date_of_birth: rec.date_of_birth || null,
+            pronouns: rec.pronouns || null,
+            emergency_contact_name: rec.emergency_contact_name || null,
+            emergency_contact_phone: rec.emergency_contact_phone || null,
+          })
+          .eq("id", profileId);
+      }
 
       // Link to the studio (dedupe on UNIQUE(studio_id, profile_id)).
       const tags = (rec.tags ?? "").split(/[;,|]/).map((t) => t.trim()).filter(Boolean);

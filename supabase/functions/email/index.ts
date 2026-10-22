@@ -45,6 +45,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { sendEmail } from "./provider.ts";
+import { isServiceRequest } from "../_shared/service-auth.ts";
 import {
   welcomeEmail,
   bookingConfirmationEmail,
@@ -53,6 +54,7 @@ import {
   waitlistPromotedEmail,
   passwordResetEmail,
   studioInquiryNotificationEmail,
+  expressContinueEmail,
   type TemplateResult,
 } from "./templates.ts";
 
@@ -87,6 +89,7 @@ const templates: Record<string, TemplateFn> = {
   passwordReset: (d) => passwordResetEmail(d as Parameters<typeof passwordResetEmail>[0]),
   studioInquiryNotification: (d) =>
     studioInquiryNotificationEmail(d as Parameters<typeof studioInquiryNotificationEmail>[0]),
+  express_continue: (d) => expressContinueEmail(d as Parameters<typeof expressContinueEmail>[0]),
 };
 
 const corsHeaders = {
@@ -109,6 +112,9 @@ serve(async (req) => {
   }
   if (req.method !== "POST") {
     return json({ error: "Method not allowed" }, 405);
+  }
+  if (!isServiceRequest(req, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY"))) {
+    return json({ error: "Forbidden" }, 403);
   }
 
   // ---- Authorize the caller (see header comment) ----
@@ -167,7 +173,12 @@ serve(async (req) => {
   if (payload.template) {
     const tpl = templates[String(payload.template)];
     if (!tpl) return json({ error: `Unknown template: ${payload.template}` }, 400);
-    const rendered = tpl((payload.data as Record<string, unknown>) ?? {});
+    let rendered: TemplateResult;
+    try {
+      rendered = tpl((payload.data as Record<string, unknown>) ?? {});
+    } catch {
+      return json({ error: "Invalid template data" }, 400);
+    }
     subject = rendered.subject;
     html = rendered.html;
     text = rendered.text;
