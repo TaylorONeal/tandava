@@ -15,6 +15,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import Stripe from "https://esm.sh/stripe@14?target=deno";
+import { safeReturnUrl } from "../_shared/urls.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
   apiVersion: "2024-06-20",
@@ -64,7 +65,7 @@ serve(async (req) => {
     // body is optional
   }
   const studioId = String(payload.studioId ?? "");
-  const returnUrl = (payload.returnUrl as string) ?? `${appUrl}/account`;
+  const returnUrl = safeReturnUrl(payload.returnUrl, `${appUrl}/account`, appUrl);
 
   const db = createClient(supabaseUrl, serviceKey);
 
