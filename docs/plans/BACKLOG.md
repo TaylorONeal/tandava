@@ -2,6 +2,23 @@
 
 Rules: one slice per commit (`W4-2a`), a test lands with the code, a DB change is a new migration, nothing starts before its `Needs` are done. Status: DONE, NEXT, LATER. See [PRD](PRD-launch-v1.md).
 
+## Current release checkpoint — 2026-10-19
+
+**Deadline update:** Taylor now targets both Tandava native submissions for October20 Bali. [STORE-APPS](../app-store/STORE-APPS.md#submission-target-and-verified-starting-point--2026-10-19) records the checked critical path: bundle IDs exist, but targeted Apple API queries find no App Store app records/candidates and inspected repositories have no native projects. Submission remains contingent on passing native QA and accurate listings.
+
+This is the execution backlog; [PROGRESS](PROGRESS.md) holds receipts, [PRD](PRD-launch-v1.md) defines hosted scope, and [STORE-APPS](../app-store/STORE-APPS.md) defines the two follow-on native apps. Older status text below is historical where this checkpoint supersedes it. Cross-project GTM acceptance remains [Final launch checklist](https://github.com/TaylorONeal/app-launch-playbook/blob/main/03-OPERATING-TEMPLATES.md#8-final-launch-checklist), [Hosted GTM PRD](https://github.com/TaylorONeal/app-launch-playbook/blob/main/prds/P3-TANDAVA-HOSTED.md), and [two-app store brief](https://github.com/TaylorONeal/app-launch-playbook/blob/main/prds/P3-TANDAVA-STORES.md). Use those gates for audience/claims, real-device tasks, support/privacy, payment/persistence, rights/store forms, rollback and authorized publication. Historical build counts are not new-build evidence.
+
+| Surface / gate | Verified now | Next acceptance gate |
+|---|---|---|
+| Studio owner cancellation / LP-1d | 00043 and cancel-class deployed; webhook updated; PR100 frontend released | Owner signs into Stripe; verify Purafield Studio **sandbox**, add only refund.updated, refund.failed, charge.refund.updated to existing Your-account endpoint; preserve Connect endpoint. Then authorized sandbox scenario proof, separately from deployment checks. |
+| Teacher schedule / roster / check-in | 00044 deployed; assignment/staff authorization SQL tests pass; PR100 deployed | Real assigned-teacher and denied-role walkthrough in an explicitly designated test studio; local/mock tests are not signed-in production acceptance. Earnings/substitution remain deferred. |
+| Member discovery / booking / schedule | Existing hosted flows plus PR100 cancellation retry recovery released | Complete sandbox booking/payment/refund/idempotency gates LP-1/LP-1a/LP-1b; smoke workflow still needs its authorized test credentials. No live-money readiness claim. |
+| Hosted release checks | PR100 green; 526 app + 32 script + 23 browser tests; 251 SQL assertions. Production catalogs/RLS and anonymous rejection verified | Capture a role-by-role walkthrough after remaining sandbox setup, with no real customer records in evidence. |
+| Native member + Studio apps | Two apps decided; identifiers documented in STORE-APPS; **no native projects/builds verified** | Web pilot gate, native implementation/device testing, review accounts, deep links and required sign-in flows. Batch paid builds only when separately approved. |
+| Screenshots / walkthrough / marketing | Existing screenshot guide is a brief, not completed assets | Capture real member booking/My Schedule and Studio schedule/roster/check-in screens from validated builds; produce separate app sets and short walkthroughs. Recheck current store sizes/policies at production time. Marketing copy must only claim verified features; publishing requires separate authorization. |
+
+Release verification issued no charges, refunds, class cancellations or emails. Stripe live activation, credentials, pricing and pilot recruitment remain the existing LP-10..13 gates; the 2026-10-19 release did not complete them.
+
 ## Launch path (2026-10-09, supersedes the loose NEXT lines at the bottom)
 
 Launch means: one real pilot studio takes a real booking and a real payment on tandavastudio.com, without being listed in Discover. Discover as a home page (W7-4) comes after 5 studios. Gates run in order; items inside a gate run in parallel. Claude works the code items while Taylor clears his batch.
