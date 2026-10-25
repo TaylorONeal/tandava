@@ -1,8 +1,18 @@
 # Tandava in the app stores: two apps, one backend
 
-Status: **decided Oct 8, 2026; nothing built yet.** Bundle ids are registered with Apple. No native project exists in this repo. Cross-app launch tracking lives in the private `app-launch-playbook` repo (`prds/P3-TANDAVA-STORES.md`, `DECISIONS.md`).
+Status: **decided Oct 8, 2026; nothing built yet.** Bundle ids are registered with Apple. No native project exists in this repo. Cross-app launch tracking lives in the private `app-launch-playbook` repo ([store brief](https://github.com/TaylorONeal/app-launch-playbook/blob/main/prds/P3-TANDAVA-STORES.md), [decisions](https://github.com/TaylorONeal/app-launch-playbook/blob/main/DECISIONS.md)); release acceptance uses its [final launch checklist](https://github.com/TaylorONeal/app-launch-playbook/blob/main/03-OPERATING-TEMPLATES.md#8-final-launch-checklist).
+
+**2026-10-19 checkpoint:** Hosted cancellation and assigned-teacher controls are released (PR100; see [progress](../plans/PROGRESS.md)). Sandbox payment acceptance and signed-in role walkthroughs remain open. No native project, device-tested release, store-ready screenshot set or store submission was verified. Keep member and Studio screenshot/walkthrough packets separate; use [the existing screenshot brief](screenshots/README.md), checking current platform requirements when producing assets.
 
 This file replaces the per-studio white-label guide (archived as `ARCHIVED-white-label-guide.md`).
+
+## Submission target and verified starting point — 2026-10-19
+
+Taylor's current target is **submit both apps by October 20, 2026 (Asia/Makassar / Bali)**, contingent on passing QA and accurate store material. This supersedes passive deferral of store execution; it does not turn hosted web checks into native acceptance.
+
+Targeted read-only Apple API inspection on October19 returned no App Store Connect app records for either `com.tandava.app` or `com.tandava.studio`. The registered bundle resources **WJF8DWPMZW** and **Q29237U4L4** exist; these are bundle IDs, not App Store app IDs or build IDs. No uploaded candidate or submission version is available through those bundles. Actual local repositories `tandava`, `tandava-independent-20260916`, and `tandava-blog-game` have no ios/android directories or Capacitor configuration. This agrees with the current released main, not just an old plan statement.
+
+Critical path: implement the already-planned two Capacitor role-specific apps → create the two App Store Connect records under existing registered IDs → produce signed candidates using the existing authorized signing setup → install and verify real device member/Studio journeys, auth/deep links/persistence and actual native value → capture separate truthful screenshots/walkthroughs → finish metadata/privacy/reviewer access → submit only passing candidates. New paid build capacity, credentials, security grants or agreements need their own authorization; none were created by this inspection. No native build or submission was attempted.
 
 ## The two apps
 
