@@ -374,6 +374,28 @@ See **[CONTRIBUTING.md](CONTRIBUTING.md)** for complete guidelines and governanc
 
 ---
 
+## The rest of the yoga stack
+
+Two teacher-facing companions to Tandava, each usable on its own.
+
+| Project | For | Where |
+|---|---|---|
+| [ai-yoga](https://github.com/TaylorONeal/ai-yoga) | Individual teachers: bios, class reconstruction, feedback, practice logs | [Open the toolkit](https://tayloroneal.github.io/ai-yoga/) |
+| CueCraft | Teachers planning and cueing classes | [cuecraftyoga.com](https://cuecraftyoga.com) |
+
+Mobile apps are in review, not yet on the App Store or Google Play. The web apps above work today.
+
+## More from me
+
+I'm Taylor O'Neal, a yoga teacher and a product person, which is the whole reason this
+exists. I build the tools I wanted and could not find.
+
+- [tayloroneal.com](https://www.tayloroneal.com) for what I'm working on and how to reach me
+- [@businesstaylor](https://x.com/businesstaylor) on X, where I post build notes
+- [@grizzpm](https://www.youtube.com/@grizzpm) on YouTube
+
+If this saved you time, a star helps other people find it. Issues and PRs are welcome.
+
 ## License
 
 Tandava is licensed under the [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0).
