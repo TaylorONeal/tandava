@@ -1,5 +1,37 @@
 # Operator Setup — Running the Hosted Tandava
 
+## Existing hosted service: account and entry points
+
+Verified in regular Chrome on October 20, 2026. Use this section for the existing
+hosted service; the setup instructions below are for a new deployment.
+
+| Item | Verified value / entry point |
+| --- | --- |
+| Supabase owner login | `purafieldstudio@gmail.com` |
+| Organization | Purafield Studio, ID `nopyuyyzzvffhxlamsch` |
+| Project | `tandava-prod`, reference `mkaixgjwakfufmmwembn`, production branch `main` |
+| Project home | https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn |
+| App users and reviewer identities | https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/auth/users |
+| Database inspection | https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/editor |
+| SQL editor | https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql |
+| Hosted app | https://tandavastudio.com |
+
+The personal Supabase login `taylor.oneal@gmail.com` is a different account.
+It can show an empty organization also named Purafield Studio (ID
+`rgsnotophnfukpcrvpaj`); that is not Tandava's backend. Match the project and
+organization IDs, not the display name. Do not create a replacement project.
+
+Before asking for another login, inspect the current Chrome account menu and
+open the direct project link. Wait for loading to finish and verify the header
+shows `tandava-prod` in the organization above. Reuse a working owner session.
+Mac CLI authentication is separate and was previously on the personal account;
+a CLI 403 does not prove the owner browser session is unavailable. Supabase
+dashboard login is also separate from an app member/teacher/owner login.
+
+Keep passwords, API tokens and service keys out of this document. Production
+migrations, account creation, permission changes and account deletion still
+require the applicable authorization; knowing the correct account grants none.
+
 This is the **one-time** setup for whoever operates the hosted service (e.g. `tandavastudio.com`) that studios sign up for. You do this **once**. After it, every studio owner just visits the URL, signs up, and completes the setup wizard — they never touch any of the below.
 
 If instead you're a single studio deploying Tandava only for yourself, use [DEPLOYMENT.md](../DEPLOYMENT.md) — it's the same building blocks with less to configure.

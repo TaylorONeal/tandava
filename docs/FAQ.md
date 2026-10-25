@@ -4,6 +4,18 @@ Frequently asked questions for studio owners and admins.
 
 ---
 
+## Finding classes
+
+### Why can't I find my studio or a class?
+
+Discover shows upcoming public classes listed on Tandava for Austin. An empty list
+means no upcoming public classes were returned for that city; it does not prove
+that a studio has closed or that an existing booking was cancelled. Signing up
+does not unlock additional listings. Ask your studio for its usual booking link.
+If classes fail to load, check your connection and use **Try again**. If a search
+has no matches, use **Clear filters**. **Check again** refreshes an empty list.
+No launch date, hidden inventory or waitlist notification is promised.
+
 ## Getting Started
 
 ### What is Tandava?
