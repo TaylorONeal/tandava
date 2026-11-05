@@ -514,3 +514,24 @@ dashboard/import checks, TypeScript/lint and the rebuilt browser bundle pass.
 The final phone mapping and settled desktop dashboard were visually inspected.
 The full 50-case result above precedes this layout-only adjustment; only affected
 journeys were rerun locally. CI will test the final commit in full.
+
+
+### November 5 external access boundary
+
+After source `a64de06` was pushed to draft PR #109, the browser opened the exact
+Supabase project URL and was redirected to sign-in. No Supabase/Stripe connector
+is exposed in this session. Hosted schema, backup/processor settings and deletion
+inventory therefore remain unverified. A precise sign-in handoff was presented
+for the Purafield Studio project; no credentials were requested in chat or entered.
+App Store Connect also redirected to login; its Apple-account form now renders,
+but no authenticated app list was obtained. The old zero-record API result is
+historical, not a fresh assertion that records are absent. No settings changed.
+
+At this checkpoint, code revision `a64de06` has passing cloud unit/build, edge,
+migration/SQL and repository checks; the cloud browser job was still installing
+Chromium. Local 50-case browser proof and the focused final phone checks are
+recorded above. No independent PR review has been posted. The isolated local
+PostgreSQL test process was stopped cleanly. No continuous-release automation
+was created; the separate existing Stripe smoke schedule is not a continuation
+of this work. The next dependent action is authenticated read-only hosted
+inspection, followed by the retained deletion/provider/native acceptance gates.
