@@ -469,3 +469,48 @@ build and all 16 edge entry points. The edge compiler caught an overly generic
 client type during this change; corrected before commit. Browser/SQL evidence is
 carried forward because this slice changes neither layer. At `1595aed`, all six
 GitHub checks pass, including the full migration/SQL and 43-case browser jobs.
+
+
+### November 5 live Studio surface and CSV import
+
+The route audit found that live management still rendered fixture customers,
+revenue, attendance, retail inventory and campaigns. A phone baseline confirmed
+the fabricated dashboard totals/alerts. Live management now has an explicit
+supported-route boundary, permission-filtered navigation and a dashboard that
+uses the actual studio with schedule/pricing/share/settings actions. Unsupported
+deep links show an unavailable state and dashboard return. Explicit demo screens
+remain. This narrows the honest first-release surface; deferred CRM, reports,
+events and retail tools are not implemented or claimed complete.
+
+The import journey exposed a real upload crash: the column selector's empty
+option was invalid. A non-empty Skip sentinel repairs it. A separate regression
+then reproduced the false success after a failed import. Live import now sends
+the displayed studio ID, requires a valid server result, returns to preview on
+failure and reports confirmed counts. Only member import is offered. Sample
+history is demo-only; demo validation never dispatches a member import.
+
+Five Studio boundary tests failed before correction. The import test first
+reproduced the upload crash, then separately failed on missing retry after the
+failed request with only the selector fix applied. Final local source passes
+657 application tests, 53 script tests (one optional integration skipped),
+TypeScript/lint/build and all 50 browser tests. New coverage includes missing
+studio, failed load/retry, phone/desktop navigation, unsupported direct links,
+CSV mapping, service failure, missing result and successful retry. Phone and
+desktop dashboard captures were visually inspected using synthetic data.
+Unchanged edge/SQL evidence is carried forward from the preceding security
+revision/CI; this slice does not change those layers. No hosted deployment or
+new native-device acceptance occurred.
+
+Remaining release prerequisites are recorded in BACKLOG: complete deletion
+fulfillment/validated retention/provider inventory; reviewed source integration
+and hosted rollout; classified pilot catalog/safe Stripe configuration; real
+payment delivery and authenticated Member/Studio device journeys; current Apple
+records and final accurate assets. The narrower supported Studio surface must
+be reflected in listings and reviewer material.
+
+A final phone check measured import overflow at 548px on a 390px viewport.
+Wrapping the step indicator and stacking column mappings fixed it; focused
+dashboard/import checks, TypeScript/lint and the rebuilt browser bundle pass.
+The final phone mapping and settled desktop dashboard were visually inspected.
+The full 50-case result above precedes this layout-only adjustment; only affected
+journeys were rerun locally. CI will test the final commit in full.
