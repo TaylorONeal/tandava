@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 const rpc = vi.hoisted(() => vi.fn());
 vi.mock('@/lib/supabase', () => ({ supabase: { rpc } }));
-import { parseDeletionRequest, requestAccountDeletion } from './accountDeletion';
+import { deletionExpectedBy, parseDeletionRequest, requestAccountDeletion } from './accountDeletion';
 describe('account deletion initiation', () => {
   beforeEach(() => { rpc.mockReset(); });
   it('requires explicit confirmation before calling server', async () => {
@@ -29,4 +29,9 @@ describe('account deletion initiation', () => {
       expect(() => parseDeletionRequest(result)).toThrow('could not be verified');
     }
   });
+});
+
+it('keeps the 30-day deadline tied to receipt even across month boundaries', () => {
+  expect(deletionExpectedBy('2026-11-05T10:00:00Z').toISOString()).toBe('2026-12-05T10:00:00.000Z');
+  expect(() => deletionExpectedBy('invalid')).toThrow('could not be verified');
 });

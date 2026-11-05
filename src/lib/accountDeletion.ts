@@ -2,6 +2,11 @@
 import { supabase } from '@/lib/supabase';
 
 export interface DeletionRequest { id: string; requested_at: string; status: 'pending' | 'processing' | 'completed' }
+export function deletionExpectedBy(requestedAt: string): Date {
+  const received = Date.parse(requestedAt);
+  if (!Number.isFinite(received)) throw new Error('Deletion request date could not be verified.');
+  return new Date(received + 30 * 24 * 60 * 60 * 1000);
+}
 export function parseDeletionRequest(value: unknown): DeletionRequest {
   if (!value || typeof value !== 'object') throw new Error('Deletion request could not be verified. Refresh before retrying.');
   const row = value as Record<string, unknown>;

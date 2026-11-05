@@ -407,3 +407,20 @@ migration/deployment, classified synthetic inventory, actual Stripe delivery and
 both signed iPhone journeys are still NOT RUN for this source. October Apple
 access/artifact observations are carried forward only; no November store lookup
 or submission is implied. PR #109 remains the owning draft; no remote merge.
+
+
+### November 5 native compilation and sole-owner request repair
+
+At source `b3dff7e`, Member and Studio Debug iOS Simulator builds both succeeded
+with signing disabled after native bundle compilation and plugin synchronization.
+These are compile fixtures without hosted configuration, not installed, signed or
+reviewer-ready release candidates. No old 1.0(3) device result is promoted.
+
+A focused regression reproduced the sole-owner request rejection before the fix.
+Migration 51 accepts one idempotent pending request while retaining the ownership
+inventory and fulfillment guards. The disabled deletion UI no longer instructs
+users to cancel/transfer before requesting; it shows a receipt-based 30-day date
+and distinguishes a request from completed deletion. Six adapter/deadline tests
+and all focused initiation/review/execution SQL checks pass. Full transfer/closure,
+Auth, storage, processor, backup and retention fulfillment remain incomplete;
+the deletion enablement switch remains off.

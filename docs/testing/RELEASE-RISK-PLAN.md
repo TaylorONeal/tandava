@@ -172,3 +172,12 @@ hosted visibility change was made. All physical journeys remain NOT RUN.
 - Browser plugin API: [Capacitor Browser](https://capacitorjs.com/docs/apis/browser);
   custom-scheme registration: [Capacitor App](https://capacitorjs.com/docs/apis/app).
   Source tests and plugin synchronization are not signed/device acceptance.
+
+
+### Sole-owner deletion initiation (migration 51)
+
+Verify a recently authenticated sole owner can submit/retry one pending request,
+keeping the original receipt/deadline. No ownership, studio or financial row is
+deleted by initiation. Operator inventory must still identify sole ownership and
+review/execution must refuse unsafe fulfillment. Verify the disabled UI's receipt
+and 30-day date without representing the pending request as completed deletion.
