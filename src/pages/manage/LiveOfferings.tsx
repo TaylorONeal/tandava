@@ -19,7 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { useStudioCatalog } from "@/hooks/useStudioCatalog";
 import {
-  BILLING_CYCLES, cycleNoun, emptyMembershipForm, emptyOfferingForm, emptyPackForm, formatPrice, membershipFromForm,
+  purchaseScopeLabel, type PurchaseScope, BILLING_CYCLES, cycleNoun, emptyMembershipForm, emptyOfferingForm, emptyPackForm, formatPrice, membershipFromForm,
   membershipToForm, offeringFromForm, offeringToForm, packFromForm, packToForm, uniqueSlug,
   type BillingCycle, type CatalogMembership, type CatalogOffering, type CatalogPack, type CatalogTable,
   type MembershipForm, type OfferingForm, type PackForm,
@@ -120,6 +120,7 @@ export default function LiveOfferings() {
                   <div className="flex items-start justify-between gap-2">
                     <h3 className="text-sm font-semibold">{o.name}</h3>
                     <div className="flex items-center gap-1">
+                      <Badge variant="outline">{purchaseScopeLabel(o.purchase_scope)}</Badge>
                       <OffBadge active={o.is_active} />
                       <Button variant="ghost" size="icon" className="h-7 w-7" aria-label={`Edit ${o.name}`}
                         onClick={() => setEditing({ kind: "offering", id: o.id, form: offeringToForm(o) })}>
@@ -155,6 +156,7 @@ export default function LiveOfferings() {
                 <CardContent className="p-4 flex items-center justify-between gap-2">
                   <div>
                     <p className="text-sm font-medium">{p.name}</p>
+                    <p className="text-xs text-muted-foreground">{purchaseScopeLabel(p.purchase_scope)}</p>
                     <p className="text-xs text-muted-foreground">{p.class_count} classes, valid {p.validity_days} days</p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -182,6 +184,7 @@ export default function LiveOfferings() {
                 <CardContent className="p-4 flex items-center justify-between gap-2">
                   <div>
                     <p className="text-sm font-medium">{m.name}</p>
+                    <p className="text-xs text-muted-foreground">{purchaseScopeLabel(m.purchase_scope)}</p>
                     <p className="text-xs text-muted-foreground">
                       {m.classes_per_cycle === null ? "Unlimited" : `${m.classes_per_cycle} classes`} per {cycleNoun(m.billing_cycle)}
                     </p>
@@ -203,6 +206,11 @@ export default function LiveOfferings() {
     );
   }
 
+  const savedScope = editing?.id && catalog
+    ? (editing.kind === "offering" ? catalog.offerings : editing.kind === "pack" ? catalog.packs : catalog.memberships)
+        .find((item) => item.id === editing.id)?.purchase_scope
+    : undefined;
+  const scopeLocked = Boolean(savedScope && savedScope !== "unknown");
   const title = editing
     ? `${editing.id ? "Edit" : "Add"} ${editing.kind === "offering" ? "class" : editing.kind === "pack" ? "class pack" : "membership"}`
     : "";
@@ -218,11 +226,27 @@ export default function LiveOfferings() {
       </div>
 
       <Dialog open={editing !== null} onOpenChange={(open) => { if (!open) setEditing(null); }}>
-        <DialogContent>
+        <DialogContent className="max-h-[90dvh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>Nothing is deleted. Turn it off to stop selling or scheduling it.</DialogDescription>
           </DialogHeader>
+
+          {editing && (
+            <Field label="Delivery format" id="f-delivery-format"
+              hint={scopeLocked ? "This format is fixed to protect purchases. Create a new product for a different format."
+                : "In-person only means no online classes or recordings. Packs and memberships with this format can only be used for in-person classes. Saving a format makes it permanent."}>
+              <Select value={editing.form.purchaseScope} disabled={scopeLocked || saving}
+                onValueChange={(value: PurchaseScope) => setForm("purchaseScope", value)}>
+                <SelectTrigger id="f-delivery-format"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="unknown">Not set — unavailable for app purchases</SelectItem>
+                  <SelectItem value="in_person">In-person only</SelectItem>
+                  <SelectItem value="digital_or_mixed">Online or mixed</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
+          )}
 
           {editing?.kind === "offering" && (
             <div className="space-y-4">

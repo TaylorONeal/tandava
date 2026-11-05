@@ -27,7 +27,11 @@ export function nativeLink(raw: string): string | null {
   } catch { return null; }
 }
 
-/** Until catalog delivery types are enforceable, native must not create web checkout. */
-export function blocksNativePayment(app: NativeApp | null, functionName: string): boolean {
-  return app !== null && ['stripe-checkout', 'express-book', 'stripe-portal'].includes(functionName);
+// Enable only for a candidate backed by migration 50 + native-checkout and a
+// verified native handoff. This is a release switch, never a server authorization.
+export const nativePhysicalPayments = import.meta.env.VITE_NATIVE_PHYSICAL_PAYMENTS === 'true';
+/** Ambiguous endpoints remain blocked; physical checkout has its own endpoint. */
+export function blocksNativePayment(app: NativeApp | null, functionName: string, physicalEnabled = nativePhysicalPayments): boolean {
+  return app !== null && (['express-book', 'stripe-portal'].includes(functionName)
+    || (['stripe-checkout', 'native-checkout'].includes(functionName) && !physicalEnabled));
 }

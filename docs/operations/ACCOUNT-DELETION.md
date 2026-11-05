@@ -153,16 +153,18 @@ slow synthetic row trigger to verify this; an entry-time check alone cannot fenc
 a worker that spends the rest of its lease waiting or writing. The request and
 execution row locks prevent another worker rotating the token during the stage.
 
-## Proposed hosted deletion policy and workflow — October 21, 2026
+## Hosted deletion policy and workflow — direction approved November 5, 2026
 
-**Draft for Taylor's review, requested October 21. Not approved, deployed or enabled.**
+**Taylor approved the recommended 30-day policy and operator-assisted workflow on November 5. Not deployed or enabled.**
+The product/operating direction is approved; category-specific legal retention and
+verified provider/backup facts remain implementation prerequisites, not presumed approvals.
 This is the policy proposal for the first-party Tandava Member and Studio service;
 self-hosting operators remain responsible for their own deployments. The existing
 published promise is deletion/anonymization within 30 days except required records.
 This proposal keeps that limit. It does not certify legal compliance or invent a
 statutory retention duration for independent studios.
 
-### Proposed user-facing policy
+### Approved policy direction
 
 Members and studio staff can initiate deletion from Account → Delete account.
 The app explains the effect, shows active memberships/bookings and confirms the
@@ -187,7 +189,7 @@ someone first buy, renew or cancel a subscription. A sole studio owner's busines
 records require an ownership-transfer or studio-closure path; this must be a
 supported in-app resolution, not an indefinite refusal or a support-only maze.
 
-### Proposed retention schedule
+### Retention schedule for legal and operational validation
 
 | Category | Proposed treatment | Required evidence before enforcement |
 |---|---|---|
@@ -200,17 +202,17 @@ supported in-app resolution, not an indefinite refusal or a support-only maze.
 | Backups | Keep only for the provider's documented bounded recovery schedule; apply deletion suppression before any restored data becomes accessible | **Unresolved provider evidence:** actual backup expiry and tested restore-suppression procedure. Provider retention beyond 30 days is not itself a legal exception. Meet the published promise or obtain an explicit policy change before enablement; disclose remaining backup obligations. Time passing alone is not an erasure receipt. |
 | Deletion audit | Keep request reference, policy version, stage outcomes, timestamps and minimal non-personal verification records; exclude raw user content and credentials | Approve audit retention period and restricted operator access; hashes/references are not automatically anonymous |
 
-### Proposed operating workflow
+### Approved operating workflow direction
 
 1. **Receive and confirm in-app.** Accept one durable request per account, record
    its timestamp and 30-day deadline, show active commitments and explain the next
    steps. Keep confirmation copy neutral and make progress available without
    requiring the user to open a support ticket.
-2. **Review daily.** Proposed primary owner is Purafield Studio operations, with
-   Taylor as the initial accountable owner. Taylor must accept that assignment
-   and name a backup before launch. Review new requests daily, including weekends;
+2. **Review daily.** Purafield Studio operations owns fulfillment, with Taylor
+   as the initial accountable owner in the approved proposal. A named, trained
+   backup with restricted access is still required before launch. Review new requests daily, including weekends;
    flag provider failures and unresolved ownership/retention decisions promptly.
-   This is a proposal, not a configured automation or staffed service.
+   Approval is not proof of configured automation, staffing or access.
 3. **Freeze the approved scope.** Inspect the actual data inventory, resolve
    ownership and active commitments, bind the versioned retention manifest and
    verify that every retained category has its reason/expiry. Unknown data sinks
@@ -244,17 +246,17 @@ access after Auth removal, safe receipt delivery after contact erasure, and the
 full Auth/storage/processor adapters are not complete. Resolve and rehearse each
 of these before publishing the proposed in-app workflow or enabling it.
 
-### Exact decisions needed to approve this proposal
+### Remaining prerequisites before activation
 
-- Accept the 30-day policy and daily operational review; confirm the primary owner
-  and name a backup with the necessary restricted operator access.
+- Record the named backup and prove primary/backup access and the daily review
+  process. The 30-day policy and workflow direction do not need reapproval.
 - Supply/approve the retention schedule for financial, waiver/dispute and audit
   records, including the applicable controller/jurisdiction and expiry. A lawyer
   or accounting policy owner should validate these specific requirements.
 - Confirm the actual processors and backup retention schedule, then approve the
   technical manifest and recovery runbook after disposable rehearsal.
 
-Approval of this text alone does not approve production account deletion, a
+Approval of this policy does not approve production account deletion, a
 production migration, new credentials, or enabling the UI. Implementation and
 end-to-end evidence remain required. No customer messages were sent by preparing
 this proposal.

@@ -627,12 +627,13 @@ const supabaseData: DataProvider = {
 
 const supabaseApi: ApiProvider = {
   async invoke<T = unknown>(functionName: string, body: Record<string, unknown>): Promise<ApiResult<T>> {
-    // No IAP or verified in-person-only product contract exists for native yet.
-    // Fail before creating a Checkout session; web checkout is unchanged.
+    // Native purchase routing cannot be disabled by a request body.
     if (blocksNativePayment(nativeApp, functionName)) {
       return { data: null, error: { message: 'Purchases are not available in this app yet. Sign in to book with existing credits or choose a free class.' } };
     }
-    const { data, error } = await getClient().functions.invoke(functionName, { body });
+    const endpoint = nativeApp && functionName === 'stripe-checkout' ? 'native-checkout' : functionName;
+    const requestBody = nativeApp && endpoint === 'native-checkout' ? { ...body, nativeApp } : body;
+    const { data, error } = await getClient().functions.invoke(endpoint, { body: requestBody });
 
     return {
       data: data as T | null,

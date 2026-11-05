@@ -1,3 +1,4 @@
+import { openCheckoutUrl } from "@/lib/native/checkout";
 /**
  * Stripe Client Configuration
  *
@@ -71,8 +72,7 @@ export async function checkoutDropIn(occurrenceId: string, studioSlug?: string):
   if (error) return { error: error.message };
 
   if (data?.url) {
-    window.location.href = data.url;
-    return {};
+    return openCheckoutUrl(data.url);
   }
 
   return { error: "No checkout URL returned" };
@@ -94,8 +94,7 @@ export async function checkoutMembership(
   if (error) return { error: error.message };
 
   if (data?.url) {
-    window.location.href = data.url;
-    return {};
+    return openCheckoutUrl(data.url);
   }
 
   return { error: "No checkout URL returned" };
@@ -117,8 +116,7 @@ export async function checkoutClassPack(
   if (error) return { error: error.message };
 
   if (data?.url) {
-    window.location.href = data.url;
-    return {};
+    return openCheckoutUrl(data.url);
   }
 
   return { error: "No checkout URL returned" };
@@ -140,8 +138,7 @@ export async function checkoutEvent(params: {
   if (error) return { error: error.message };
 
   if (data?.url) {
-    window.location.href = data.url;
-    return {};
+    return openCheckoutUrl(data.url);
   }
 
   return { error: "No checkout URL returned" };

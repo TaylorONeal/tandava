@@ -23,6 +23,7 @@ vi.mock('@/hooks/useBooking', () => ({
   useBookingSources: () => [{ id: 'pack-a', name: 'Test pass', type: 'CLASS_PACK', covers: true }, { type: 'DROP_IN' }],
   useBookClass: () => ({ mutateAsync: state.covered }),
 }));
+vi.mock('@/lib/native/checkout', () => ({ openCheckoutUrl: vi.fn().mockResolvedValue({}) }));
 vi.mock('@/lib/backend', () => ({ data: { bookFreeClass: state.free }, api: { invoke: state.invoke } }));
 vi.mock('@/lib/analytics/session', () => ({ captureSettled: state.capture, currentSessionId: () => undefined, checkoutAttribution: () => ({}) }));
 
