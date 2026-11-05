@@ -1,3 +1,4 @@
+import { openCheckoutUrl } from "@/lib/native/checkout";
 /**
  * Signed-in booking for one class, shown on the Express Booking page
  * (/s/:slug/book/:occurrenceId) when the visitor is already signed in.
@@ -139,7 +140,8 @@ export function MemberBookingPanel({
     );
     if (!isCurrent()) return;
     if (!data?.url) throw new Error(data?.error ?? invokeError?.message ?? "Could not start payment.");
-    window.location.assign(data.url);
+    const opened = await openCheckoutUrl(data.url);
+    if (opened.error) throw new Error(opened.error);
   });
 
   if (state === "booked" || state === "waitlisted") {

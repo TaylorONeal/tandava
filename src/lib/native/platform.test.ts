@@ -36,3 +36,13 @@ it('blocks ambiguous native payments without disabling web or other APIs', () =>
     expect(blocksNativePayment(target, 'cancel-class')).toBe(false);
   }
 });
+
+it('only permits the dedicated physical route when explicitly enabled', () => {
+  for (const target of ['member', 'studio'] as const) {
+    expect(blocksNativePayment(target, 'stripe-checkout', true)).toBe(false);
+    expect(blocksNativePayment(target, 'native-checkout', true)).toBe(false);
+    expect(blocksNativePayment(target, 'native-checkout', false)).toBe(true);
+    expect(blocksNativePayment(target, 'express-book', true)).toBe(true);
+    expect(blocksNativePayment(target, 'stripe-portal', true)).toBe(true);
+  }
+});

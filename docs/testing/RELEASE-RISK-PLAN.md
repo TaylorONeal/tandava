@@ -142,3 +142,33 @@ hosted visibility change was made. All physical journeys remain NOT RUN.
   restricted financial-table grants, marker enforcement, read/cleanup scope and
   failed-cleanup reporting. Provisioning a complete local Supabase fixture and
   real sandbox delivery are separate acceptance steps, not implied by these tests.
+
+
+## November 5 physical-service purchase checks
+
+- Migration 50: start with unclassified legacy catalog/entitlements. Only the owning
+  active owner/admin can classify. Once set, format cannot change; a physical
+  occurrence cannot be rebound. A signed checkout snapshots format; replay creates
+  one entitlement. A pre-migration session retains unknown scope. Physical packs and
+  memberships reject unknown/online class redemption, including direct writes and
+  waitlist insertion, without consuming credit. Cancellation still returns credit.
+- Native endpoint: reject unclassified/digital/mixed and unsupported purchase types
+  before holds/Stripe calls, irrespective of client-supplied scope. Use fixed hosted
+  return URLs; isolate native/web idempotency. Preserve web purchase behavior.
+- Owner phone flow: format is visibly unset for legacy products, classification has
+  an explicit permanence/restriction explanation, saved format persists; locked
+  products cannot silently widen. Member/Stripe copy discloses physical-only terms.
+- Browser return: verify trusted Stripe URL, open failure, Done/cancel, warm and cold
+  app return, interrupted app process and teardown on both real iOS candidates.
+  A URL/query parameter never confirms a purchase. Query the authenticated backend
+  after return and verify delayed webhooks; do not repeat a charge merely because
+  fulfillment is delayed. Custom schemes carry no session token or customer data.
+- Rollout order: review/apply migration 50, deploy stripe-checkout + native-checkout,
+  deploy the hosted /checkout/return page, classify the synthetic studio catalog,
+  then build a candidate with VITE_NATIVE_PHYSICAL_PAYMENTS=true for sandbox/device
+  acceptance. Keep the default false until evidence passes. Native express checkout
+  and the unrestricted billing portal remain blocked; a safe billing-management
+  path/configuration is still a launch prerequisite.
+- Browser plugin API: [Capacitor Browser](https://capacitorjs.com/docs/apis/browser);
+  custom-scheme registration: [Capacitor App](https://capacitorjs.com/docs/apis/app).
+  Source tests and plugin synchronization are not signed/device acceptance.

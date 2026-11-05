@@ -89,8 +89,8 @@ export function BookClassButton({ occurrenceId, studioSlug, className }: Props) 
       setRedirecting(true);
       const { error } = await checkoutDropIn(occurrenceId, studioSlug);
       if (!isCurrent()) return;
+      setRedirecting(false);
       if (error) {
-        setRedirecting(false);
         toast({ title: "Couldn't start checkout", description: error, variant: "destructive" });
       }
     } catch (err) {

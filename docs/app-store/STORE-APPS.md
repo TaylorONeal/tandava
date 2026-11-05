@@ -1,6 +1,17 @@
 # Tandava in the app stores: two apps, one backend
 
-## Current integration checkpoint — October 21, 2026
+## November 5 source update
+
+Taylor approved in-person drop-ins, packs and memberships for the first release of
+both apps; paid online/mixed products are deferred. Migration 50 and a dedicated
+native checkout enforce that scope. Custom schemes `tandava-member://checkout-return`
+and `tandava-studio://checkout-return` are checkout-only return signals with no
+credentials; they do not implement universal links or Auth handoff. The default
+native purchase switch remains off pending hosted and actual iPhone acceptance.
+The existing signed 1.0(3) artifacts do not contain these changes. No app was uploaded
+or submitted in this source pass. See [current results](../plans/PROGRESS.md).
+
+## Carried-forward integration checkpoint — October 21, 2026
 
 Neither app is submitted. A fresh Apple API lookup returned zero App Store records
 for `com.tandava.app` and `com.tandava.studio`. Browser control initially timed

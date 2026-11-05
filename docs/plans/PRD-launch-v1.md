@@ -16,6 +16,20 @@ The member's primary job is finding, booking and returning to a class. The studi
 primary job is turning a new signup into a bookable schedule, then reliably managing
 people, attendance and money. Open-source installation is a separate developer path.
 
+### November 5 approved release scope
+
+Taylor accepted the recommended first release: in-person drop-ins, class packs and
+memberships in both native apps. Paid online group classes, recordings and mixed
+digital subscriptions are deferred. Unknown products must fail closed for native
+purchase; physical-only entitlements cannot be spent on online/unknown classes.
+Catalog format and the format sold at checkout must be durable server-side facts.
+
+Taylor also accepted the proposed 30-day account-deletion policy and operator-assisted
+workflow. The policy decision is settled; legal retention durations, actual processor/
+backup evidence, a staffed backup and complete tested fulfillment remain prerequisites.
+See [the owning deletion procedure](../operations/ACCOUNT-DELETION.md). Approval does
+not turn a request button or profile scrub into completed deletion.
+
 ## 2. Quality and scope
 
 | Requirement | Acceptance |

@@ -367,3 +367,43 @@ unverified; the current blocker is the unusable Apple sign-in screen, replacing
 the earlier control timeout. The complete isolated Supabase smoke fixture also
 remains unprovisioned; no Docker runtime was found on PATH or at the standard Mac
 application location. No runtime installation or provider configuration occurred.
+
+
+## 2026-11-05: approved physical-service scope and source implementation
+
+Taylor accepted in-person drop-ins, class packs and memberships for both apps,
+with paid digital/mixed products deferred, and accepted the 30-day deletion policy
+and operator-assisted workflow. Legal retention durations, processor/backup facts,
+a staffed backup and complete deletion fulfillment remain prerequisites.
+
+The isolated continuation of `codex/app-store-excellence` reconciled main
+`0e45ab9` in merge `8b525ba`. Email retains upstream internal-secret and active-staff
+callers, rejects inactive staff and keeps raw messages internal. The primary clone
+and the earlier integration worktree were preserved.
+
+New source adds migration 50: explicit immutable catalog format, checkout-time
+entitlement snapshots, physical-only pack/membership redemption and public format
+labels. Legacy products remain unknown. Native checkout uses a separate endpoint,
+forces hosted return pages and keeps native/member/studio idempotency separate
+while preserving web keys. Both projects register checkout-only return schemes and
+the official Browser plugin. Return signals refresh server data and never claim
+payment. Owner phone forms explain permanent format and member/Stripe copy states
+physical-only terms. Native payment enablement remains false by default.
+
+Validation on this working source: 624 application tests, 53 script tests (one
+optional integration test skipped), all 39 mocked browser checks, full local SQL
+suite including 15 new scope assertions, TypeScript, lint and all 15 edge entry
+points passed. The new checkout tests first failed against the unguarded handler
+(10 failures), then passed with enforcement. The first browser attempt could not
+launch the missing bundled Chromium; rerunning in isolated installed Chrome
+profiles passed. Local-only PostgreSQL was used; no hosted SQL or customer data.
+Both native web bundles compile and Capacitor synchronizes Browser 8.0.5. These
+compile fixtures have no configured hosted backend and are not release candidates.
+Unsigned iOS compile results follow separately; no new signing, install or upload.
+
+Next: complete source review, fix the sole-owner deletion initiation barrier, then
+finish the remaining deletion/operations and billing-management gates. Hosted
+migration/deployment, classified synthetic inventory, actual Stripe delivery and
+both signed iPhone journeys are still NOT RUN for this source. October Apple
+access/artifact observations are carried forward only; no November store lookup
+or submission is implied. PR #109 remains the owning draft; no remote merge.

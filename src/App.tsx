@@ -1,3 +1,5 @@
+import { NativeCheckout } from "./components/native/NativeCheckout";
+import { CheckoutReturn, CheckoutStatus } from "./pages/CheckoutReturn";
 import { NativeStatus } from './components/native/NativeStatus';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -235,6 +237,7 @@ const App = () => (
               <Sonner />
               <BrowserRouter>
                 <NativeStatus />
+                <NativeCheckout />
                 <DemoRoleBar />
                 <Suspense fallback={<RouteLoadingFallback />}>
                 <Routes>
@@ -245,6 +248,8 @@ const App = () => (
                   <Route path="/demo" element={<Demo />} />
                   <Route path="/open-source" element={<OpenSource />} />
                   <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/checkout/return" element={<CheckoutReturn />} />
+                  <Route path="/checkout/status" element={<ProtectedRoute><CheckoutStatus /></ProtectedRoute>} />
                   <Route path="/privacy" element={<PrivacyPage />} />
                   <Route path="/refunds" element={<RefundsPage />} />
                   <Route path="/for-studios" element={<ForStudios />} />
