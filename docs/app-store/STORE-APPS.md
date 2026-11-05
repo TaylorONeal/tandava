@@ -13,6 +13,18 @@ native purchase switch remains off pending hosted and actual iPhone acceptance.
 The existing signed 1.0(3) artifacts do not contain these changes. No app was uploaded
 or submitted in this source pass. See [current results](../plans/PROGRESS.md).
 
+Live Studio source now excludes sample-only CRM, financial reports, events,
+inventory, campaigns and other unsupported tools, including direct links. The
+dashboard exposes working schedule/pricing/share/settings paths. The store
+listing and screenshots must reflect this narrower implemented scope; do not
+claim complete Mindbody/Arketa feature parity. CSV import supports member records
+only. Review actual hosted operation before advertising these features.
+
+Apple's [current review guidelines](https://developer.apple.com/app-store/review/guidelines/)
+and [account-deletion guidance](https://developer.apple.com/help/app-review/guideline-reference/5-1-1-account-deletion)
+were rechecked November 5: a complete, reviewable candidate and real account/data
+deletion remain necessary. Source fixes and a request receipt are not approval.
+
 ## Carried-forward integration checkpoint — October 21, 2026
 
 Neither app is submitted. A fresh Apple API lookup returned zero App Store records
@@ -37,7 +49,7 @@ found. Source lifecycle tests do not prove delivery from Mail/Safari into iOS.
 Account deletion, reviewed purchase scope, real reviewer identities/page, final
 assets and actual device/provider acceptance remain open. See the current
 [backlog](../plans/BACKLOG.md), [results](../plans/PROGRESS.md) and the draft
-[deletion policy and workflow](../operations/ACCOUNT-DELETION.md#proposed-hosted-deletion-policy-and-workflow--october-21-2026).
+[deletion policy and workflow](../operations/ACCOUNT-DELETION.md#hosted-deletion-policy-and-workflow--direction-approved-november-5-2026).
 
 Prepared App Store record fields for the existing team: iOS; English (US); names
 **Tandava** and **Tandava Studio**; existing bundle IDs above; proposed unique SKUs

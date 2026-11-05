@@ -19,7 +19,7 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 
 ## Quick Links
 
-- [Release acceptance](testing/RELEASE-RISK-PLAN.md) — Candidate-specific checks for Member and Studio, including physical purchases and native returns
+- [Release acceptance](testing/RELEASE-RISK-PLAN.md) — Candidate-specific checks for Member and Studio, including physical purchases, native returns and live Studio/import recovery
 - [Reviewer walkthrough](app-store/REVIEWER-WALKTHROUGH.md) — Real-account journeys and review setup
 - [Data API permissions](security/data-api-permissions.md) — Restricted access rollout, staff email boundaries and verification
 - [Account deletion](operations/ACCOUNT-DELETION.md) — Approved 30-day direction, fulfillment procedure and remaining retention/processor gates

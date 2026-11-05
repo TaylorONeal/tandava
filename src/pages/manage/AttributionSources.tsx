@@ -47,8 +47,8 @@ export default function AttributionSources() {
     <ManageLayout>
       <div className="space-y-6 max-w-5xl">
         <div>
-          <Link to="/manage/analytics" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="h-4 w-4" /> Analytics
+          <Link to="/manage" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="h-4 w-4" /> Dashboard
           </Link>
           <div className="mt-2 flex items-center gap-2">
             <h1 className="text-2xl font-semibold">Where students come from</h1>

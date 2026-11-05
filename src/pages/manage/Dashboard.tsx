@@ -1,3 +1,5 @@
+import { useAuth } from "@/contexts/AuthContext";
+import LiveDashboard from "./LiveDashboard";
 import { ManageLayout } from "@/components/manage/ManageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -57,6 +59,8 @@ const recentActivity = [
 ];
 
 export default function ManageDashboard() {
+  const { isDemoMode } = useAuth();
+  if (!isDemoMode) return <LiveDashboard />;
   return (
     <ManageLayout>
       <div className="space-y-6">

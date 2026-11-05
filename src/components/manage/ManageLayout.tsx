@@ -1,3 +1,4 @@
+import { canOpenLiveStudioRoute } from "@/lib/hosted/studioRoutes";
 import { ReactNode, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -80,7 +81,7 @@ export function ManageLayout({ children }: ManageLayoutProps) {
   const { live, studioName } = useManageStudio();
   const location = useLocation();
   const navigate = useNavigate();
-  const { profile, signOut } = useAuth();
+  const { profile, signOut, permissions } = useAuth();
   const { toast } = useToast();
   const { t } = useTranslation('manage');
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -114,7 +115,7 @@ export function ManageLayout({ children }: ManageLayoutProps) {
 
   const navigation = (
     <nav aria-label="Studio navigation" className="flex min-h-0 flex-col gap-1 overflow-y-auto overscroll-contain p-3">
-      {manageNavigation.map((item) => (
+      {manageNavigation.filter(item => !live || canOpenLiveStudioRoute(item.href, permissions)).map((item) => (
         <Link
           key={item.nameKey}
           to={item.href}

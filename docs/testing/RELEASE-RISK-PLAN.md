@@ -212,3 +212,20 @@ never dispatch. Verify server-owned app links, escaped user text, unsafe-link
 rejection and unchanged plain-text content. Preserve internal secret/service
 callers and the returning-guest continuation destination. Before rollout,
 inventory external callers and rehearse the contract with synthetic recipients.
+
+
+### Live Studio honesty and import recovery
+
+At phone and desktop sizes, verify the live dashboard uses the actual studio name
+and supported actions without sample revenue, customer records or notifications.
+Check missing-studio setup, loading failure/retry and permission-filtered navigation.
+Open sample-only product, campaign, financial and member-detail URLs directly: they
+must render the unavailable state with a working dashboard return, never sample
+records or false-save controls. Keep these screens in explicit demo mode only.
+
+Upload a synthetic member CSV and exercise column mapping, including Skip. A
+non-success response or missing result must leave a retryable preview, not a
+completion screen. Verify the current studio ID accompanies the request and only
+confirmed server counts appear. Demo validation must never dispatch imports and
+must be labeled unsaved. Only member imports are offered; history must not show
+fixtures in live mode.
