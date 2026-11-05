@@ -215,3 +215,20 @@ privileges. Local regression and SQL checks pass. The scheduled workflow still
 requires provisioned local Supabase fixtures and matching sandbox inputs before
 it can run, and does not establish hosted provider delivery. See the maintained
 [Stripe setup procedure](../developer/stripe-setup.md).
+
+
+## November 5 staff email boundary
+
+The current integration preserves upstream service-bearer/internal-secret email
+callers. Staff JWT callers must now provide `studioId` and `recipientProfileId`,
+hold an active owner/admin/front-desk role in that studio, and address the exact
+email of a linked studio member. Only welcome, booking confirmation/cancellation,
+class reminder and waitlist promotion templates are available to staff. Auth-link,
+inquiry and raw templates remain internal; staff cannot override reply-to or the
+server-owned `APP_URL`. Template text and HTML attributes are escaped; action
+URLs reject unsafe schemes and embedded credentials. SMS/push remain service-only.
+
+There are no in-repository consumers of the frontend dispatch helper. Express
+continuation keeps its existing service caller and verified destination. Check
+external staff integrations against this stricter contract before deployment;
+no compatibility is inferred for unlisted consumers. No real messages were sent.

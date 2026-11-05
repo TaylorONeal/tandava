@@ -201,3 +201,14 @@ and 30-day date without representing the pending request as completed deletion.
   than submitting to the intentionally blocked guest checkout endpoint.
 - On member sign-out failure, show an error, retain the current route and permit
   retry. Only navigate away after provider-confirmed sign-out.
+
+
+### Staff email boundary
+
+Exercise the real email handler with an active authorized studio/member pair,
+an inactive staff user, a foreign studio, an unrelated recipient, a mismatched
+address, reply-to override and service-only templates. Rejected requests must
+never dispatch. Verify server-owned app links, escaped user text, unsafe-link
+rejection and unchanged plain-text content. Preserve internal secret/service
+callers and the returning-guest continuation destination. Before rollout,
+inventory external callers and rehearse the contract with synthetic recipients.

@@ -44,10 +44,20 @@ function layout(body: string): string {
 </html>`;
 }
 
+function escapeHtml(value: unknown): string {
+  const entities: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  return String(value ?? '').replace(/[&<>"']/g, character => entities[character]);
+}
+
 function button(text: string, url: string): string {
+  const destination = new URL(url);
+  const localHttp = destination.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(destination.hostname);
+  if ((destination.protocol !== 'https:' && !localHttp) || destination.username || destination.password) {
+    throw new Error('Invalid email link');
+  }
   return `<table cellpadding="0" cellspacing="0" style="margin:24px 0;">
   <tr><td style="background:${BRAND_COLOR};border-radius:8px;padding:14px 32px;">
-    <a href="${url}" style="color:${BG_COLOR};text-decoration:none;font-weight:600;font-size:16px;">${text}</a>
+    <a href="${escapeHtml(destination.href)}" style="color:${BG_COLOR};text-decoration:none;font-weight:600;font-size:16px;">${escapeHtml(text)}</a>
   </td></tr>
 </table>`;
 }
@@ -69,16 +79,12 @@ export function expressContinueEmail(data: { url: string }): TemplateResult {
   if ((url.protocol !== "https:" && !localHttp) || url.username || url.password) {
     throw new Error("Invalid continuation email data");
   }
-  const entities: Record<string, string> = {
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
-  };
-  const safeUrl = url.href.replace(/[&<>"']/g, (character) => entities[character]);
   return {
     subject: "Sign in to finish your booking",
     html: layout(`
       <h1 style="color:${TEXT_COLOR};font-size:24px;margin:0 0 16px;">Sign in to finish your booking</h1>
       <p>Sign in to continue booking your selected class.</p>
-      ${button("Sign in and book", safeUrl)}
+      ${button("Sign in and book", url.href)}
       <p style="color:${MUTED_COLOR};font-size:14px;">If you didn't request this, you can ignore this email.</p>
     `),
     text: `Sign in to finish your booking\n\nSign in to continue booking your selected class: ${url.href}\n\nIf you didn't request this, you can ignore this email.`,
@@ -93,7 +99,7 @@ export function welcomeEmail(data: {
   return {
     subject: `Welcome to Tandava, ${data.firstName}!`,
     html: layout(`
-      <h1 style="color:${TEXT_COLOR};font-size:24px;margin:0 0 16px;">Welcome, ${data.firstName}!</h1>
+      <h1 style="color:${TEXT_COLOR};font-size:24px;margin:0 0 16px;">Welcome, ${escapeHtml(data.firstName)}!</h1>
       <p>We're excited to have you join our yoga community. Here's what you can do next:</p>
       <ul style="padding-left:20px;">
         <li>Browse studios and find classes near you</li>
@@ -121,13 +127,13 @@ export function bookingConfirmationEmail(data: {
   return {
     subject: `Booking Confirmed: ${data.className}`,
     html: layout(`
-      <h1 style="color:${TEXT_COLOR};font-size:24px;margin:0 0 16px;">You're booked, ${data.firstName}!</h1>
+      <h1 style="color:${TEXT_COLOR};font-size:24px;margin:0 0 16px;">You're booked, ${escapeHtml(data.firstName)}!</h1>
       <table cellpadding="0" cellspacing="0" style="width:100%;background:rgba(79,209,197,0.1);border-radius:12px;padding:20px;margin:16px 0;">
         <tr><td>
-          <p style="margin:0 0 8px;font-weight:600;font-size:18px;color:${BRAND_COLOR};">${data.className}</p>
-          <p style="margin:0 0 4px;color:${TEXT_COLOR};">${data.dateTime} &bull; ${data.duration} min</p>
-          <p style="margin:0 0 4px;color:${TEXT_COLOR};">with ${data.instructor}</p>
-          <p style="margin:0;color:${MUTED_COLOR};">${data.studioName} &bull; ${data.address}</p>
+          <p style="margin:0 0 8px;font-weight:600;font-size:18px;color:${BRAND_COLOR};">${escapeHtml(data.className)}</p>
+          <p style="margin:0 0 4px;color:${TEXT_COLOR};">${escapeHtml(data.dateTime)} &bull; ${escapeHtml(data.duration)} min</p>
+          <p style="margin:0 0 4px;color:${TEXT_COLOR};">with ${escapeHtml(data.instructor)}</p>
+          <p style="margin:0;color:${MUTED_COLOR};">${escapeHtml(data.studioName)} &bull; ${escapeHtml(data.address)}</p>
         </td></tr>
       </table>
       ${button("View My Schedule", `${data.appUrl}/my-schedule`)}
@@ -149,8 +155,8 @@ export function bookingCancellationEmail(data: {
     subject: `Booking Cancelled: ${data.className}`,
     html: layout(`
       <h1 style="color:${TEXT_COLOR};font-size:24px;margin:0 0 16px;">Booking Cancelled</h1>
-      <p>Hi ${data.firstName}, your booking has been cancelled:</p>
-      <p style="color:${MUTED_COLOR};">${data.className} at ${data.studioName}<br/>${data.dateTime}</p>
+      <p>Hi ${escapeHtml(data.firstName)}, your booking has been cancelled:</p>
+      <p style="color:${MUTED_COLOR};">${escapeHtml(data.className)} at ${escapeHtml(data.studioName)}<br/>${escapeHtml(data.dateTime)}</p>
       <p>We hope to see you in another class soon!</p>
       ${button("Browse Classes", `${data.appUrl}/schedule`)}
     `),
@@ -173,13 +179,13 @@ export function classReminderEmail(data: {
     subject: `Reminder: ${data.className} in ${data.timeUntil}`,
     html: layout(`
       <h1 style="color:${TEXT_COLOR};font-size:24px;margin:0 0 16px;">Class Reminder</h1>
-      <p>Hi ${data.firstName}, your class starts in <strong>${data.timeUntil}</strong>:</p>
+      <p>Hi ${escapeHtml(data.firstName)}, your class starts in <strong>${escapeHtml(data.timeUntil)}</strong>:</p>
       <table cellpadding="0" cellspacing="0" style="width:100%;background:rgba(79,209,197,0.1);border-radius:12px;padding:20px;margin:16px 0;">
         <tr><td>
-          <p style="margin:0 0 8px;font-weight:600;font-size:18px;color:${BRAND_COLOR};">${data.className}</p>
-          <p style="margin:0 0 4px;color:${TEXT_COLOR};">${data.dateTime}</p>
-          <p style="margin:0 0 4px;color:${TEXT_COLOR};">with ${data.instructor}</p>
-          <p style="margin:0;color:${MUTED_COLOR};">${data.studioName} &bull; ${data.address}</p>
+          <p style="margin:0 0 8px;font-weight:600;font-size:18px;color:${BRAND_COLOR};">${escapeHtml(data.className)}</p>
+          <p style="margin:0 0 4px;color:${TEXT_COLOR};">${escapeHtml(data.dateTime)}</p>
+          <p style="margin:0 0 4px;color:${TEXT_COLOR};">with ${escapeHtml(data.instructor)}</p>
+          <p style="margin:0;color:${MUTED_COLOR};">${escapeHtml(data.studioName)} &bull; ${escapeHtml(data.address)}</p>
         </td></tr>
       </table>
       ${button("View Details", `${data.appUrl}/my-schedule`)}
@@ -200,9 +206,9 @@ export function waitlistPromotedEmail(data: {
     subject: `A spot opened up: ${data.className}!`,
     html: layout(`
       <h1 style="color:${TEXT_COLOR};font-size:24px;margin:0 0 16px;">You're In!</h1>
-      <p>Great news, ${data.firstName}! A spot opened up and you've been moved from the waitlist to confirmed for:</p>
-      <p style="font-weight:600;color:${BRAND_COLOR};font-size:18px;">${data.className}</p>
-      <p style="color:${MUTED_COLOR};">${data.studioName} &bull; ${data.dateTime}</p>
+      <p>Great news, ${escapeHtml(data.firstName)}! A spot opened up and you've been moved from the waitlist to confirmed for:</p>
+      <p style="font-weight:600;color:${BRAND_COLOR};font-size:18px;">${escapeHtml(data.className)}</p>
+      <p style="color:${MUTED_COLOR};">${escapeHtml(data.studioName)} &bull; ${escapeHtml(data.dateTime)}</p>
       ${button("View My Schedule", `${data.appUrl}/my-schedule`)}
     `),
     text: `You're in! A spot opened for ${data.className} at ${data.studioName}\n${data.dateTime}\n\nView schedule: ${data.appUrl}/my-schedule`,
@@ -218,7 +224,7 @@ export function passwordResetEmail(data: {
     subject: "Reset Your Password",
     html: layout(`
       <h1 style="color:${TEXT_COLOR};font-size:24px;margin:0 0 16px;">Reset Your Password</h1>
-      <p>Hi ${data.firstName}, we received a request to reset your password. Click the button below to create a new one:</p>
+      <p>Hi ${escapeHtml(data.firstName)}, we received a request to reset your password. Click the button below to create a new one:</p>
       ${button("Reset Password", data.resetUrl)}
       <p style="color:${MUTED_COLOR};font-size:14px;">This link expires in 1 hour. If you didn't request this, you can safely ignore this email.</p>
     `),
@@ -239,12 +245,12 @@ export function studioInquiryNotificationEmail(data: {
     subject: `New inquiry for ${data.studioName}: ${data.messageSubject}`,
     html: layout(`
       <h1 style="color:${TEXT_COLOR};font-size:24px;margin:0 0 16px;">New Studio Inquiry</h1>
-      <p>You have a new message for <strong>${data.studioName}</strong>:</p>
+      <p>You have a new message for <strong>${escapeHtml(data.studioName)}</strong>:</p>
       <table cellpadding="0" cellspacing="0" style="width:100%;background:rgba(255,255,255,0.05);border-radius:12px;padding:20px;margin:16px 0;">
         <tr><td>
-          <p style="margin:0 0 8px;font-weight:600;color:${TEXT_COLOR};">${data.messageSubject}</p>
-          <p style="margin:0 0 8px;color:${TEXT_COLOR};">${data.messageBody}</p>
-          <p style="margin:0;color:${MUTED_COLOR};">From: ${data.senderName} (${data.senderEmail})</p>
+          <p style="margin:0 0 8px;font-weight:600;color:${TEXT_COLOR};">${escapeHtml(data.messageSubject)}</p>
+          <p style="margin:0 0 8px;color:${TEXT_COLOR};">${escapeHtml(data.messageBody)}</p>
+          <p style="margin:0;color:${MUTED_COLOR};">From: ${escapeHtml(data.senderName)} (${escapeHtml(data.senderEmail)})</p>
         </td></tr>
       </table>
       ${button("View in Inbox", data.manageUrl)}

@@ -1,6 +1,6 @@
 # Account deletion initiation (not yet launch-ready)
 
-Migration 00047 provides an authenticated, durable request, visible only to its requester. Account → Delete account requires exact DELETE confirmation and a password/OAuth/OTP/MFA authentication event in the last ten minutes. Refreshing a JWT alone does not satisfy this check. A sole active studio owner must transfer ownership first. Duplicate submission returns the same reference. No profile, auth identity, booking, entitlement, or payment record is deleted by initiation.
+Migration 00047 provides an authenticated, durable request, visible only to its requester. Account → Delete account requires exact DELETE confirmation and a password/OAuth/OTP/MFA authentication event in the last ten minutes. Refreshing a JWT alone does not satisfy this check. Migration 51 supersedes the original sole-owner initiation restriction: an owner can request deletion before transferring ownership, while execution still requires safe transfer or closure. Duplicate submission returns the same reference. No profile, auth identity, booking, entitlement, or payment record is deleted by initiation.
 
 **Release blocker:** assign an actual fulfillment operator, publish an achievable processing timeline, and implement/rehearse fulfillment before enabling this feature for launch. There is currently no automatic worker or established staffed queue. Pending is not deletion, and this implementation alone must not be represented as satisfying store account-deletion acceptance.
 

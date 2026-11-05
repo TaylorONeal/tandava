@@ -9,6 +9,9 @@
 import { api } from "@/lib/backend";
 
 export interface EmailDispatch {
+  /** Staff callers must identify their studio and an existing member. */
+  studioId?: string;
+  recipientProfileId?: string;
   to: string;
   template?: string;
   data?: Record<string, unknown>;

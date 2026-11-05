@@ -451,3 +451,21 @@ TypeScript/lint/16 edge checks and the web build pass. Full SQL passed after mig
 Phone member-navigation and checkout-return captures use synthetic fixtures; they
 are design evidence, not store assets or physical acceptance. Native compile proof
 remains at `b3dff7e` for the unchanged plugin projects, not a new signed candidate.
+
+
+### November 5 staff email isolation
+
+The handler now binds staff messages to an active role in the requested studio
+and an exact linked member address; staff cannot send auth-link/raw templates or
+override the reply-to/app destination. Shared templates escape HTML content and
+validate action URLs. Internal callers remain supported. No provider messages
+were sent; there is no evidence of live exploitation. External staff consumers
+need contract verification before deployment.
+
+The new boundary tests first failed against the prior handler; all five template
+safety tests also failed before repair. Latest local checks pass: 657 application
+tests, 53 script tests (one optional integration skipped), TypeScript, lint, web
+build and all 16 edge entry points. The edge compiler caught an overly generic
+client type during this change; corrected before commit. Browser/SQL evidence is
+carried forward because this slice changes neither layer. At `1595aed`, all six
+GitHub checks pass, including the full migration/SQL and 43-case browser jobs.
