@@ -43,6 +43,7 @@ it('only permits the dedicated physical route when explicitly enabled', () => {
     expect(blocksNativePayment(target, 'native-checkout', true)).toBe(false);
     expect(blocksNativePayment(target, 'native-checkout', false)).toBe(true);
     expect(blocksNativePayment(target, 'express-book', true)).toBe(true);
-    expect(blocksNativePayment(target, 'stripe-portal', true)).toBe(true);
+    expect(blocksNativePayment(target, 'stripe-portal', true)).toBe(false);
+    expect(blocksNativePayment(target, 'native-portal', false)).toBe(true);
   }
 });

@@ -32,6 +32,6 @@ export function nativeLink(raw: string): string | null {
 export const nativePhysicalPayments = import.meta.env.VITE_NATIVE_PHYSICAL_PAYMENTS === 'true';
 /** Ambiguous endpoints remain blocked; physical checkout has its own endpoint. */
 export function blocksNativePayment(app: NativeApp | null, functionName: string, physicalEnabled = nativePhysicalPayments): boolean {
-  return app !== null && (['express-book', 'stripe-portal'].includes(functionName)
-    || (['stripe-checkout', 'native-checkout'].includes(functionName) && !physicalEnabled));
+  return app !== null && (functionName === 'express-book'
+    || (['stripe-checkout', 'native-checkout', 'stripe-portal', 'native-portal'].includes(functionName) && !physicalEnabled));
 }

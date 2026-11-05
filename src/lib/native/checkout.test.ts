@@ -2,23 +2,30 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 const mocks = vi.hoisted(() => ({ open: vi.fn(), native: true, assign: vi.fn() }));
 vi.mock('@capacitor/browser', () => ({ Browser: { open: mocks.open } }));
 vi.mock('./platform', () => ({ isNativeApp: () => mocks.native }));
-import { openCheckoutUrl, consumeCheckoutReturn, isCheckoutReturn } from './checkout';
+import { openCheckoutUrl, openBillingUrl, consumePaymentReturn, isCheckoutReturn, paymentReturnPath } from './checkout';
 describe('checkout browser handoff', () => {
-  beforeEach(() => { vi.clearAllMocks(); mocks.native = true; mocks.open.mockResolvedValue(undefined); consumeCheckoutReturn(); vi.stubGlobal('window', { location: { assign: mocks.assign } }); });
+  beforeEach(() => { vi.clearAllMocks(); mocks.native = true; mocks.open.mockResolvedValue(undefined); consumePaymentReturn(); vi.stubGlobal('window', { location: { assign: mocks.assign } }); });
   afterEach(() => vi.unstubAllGlobals());
   it('keeps the native app alive and waits for a return without asserting payment', async () => {
     expect(await openCheckoutUrl('https://checkout.stripe.com/c/pay/test')).toEqual({});
     expect(mocks.open).toHaveBeenCalledWith({ url: 'https://checkout.stripe.com/c/pay/test' });
     expect(mocks.assign).not.toHaveBeenCalled();
-    expect(consumeCheckoutReturn()).toBe(true); expect(consumeCheckoutReturn()).toBe(false);
+    expect(consumePaymentReturn()).toBe('/checkout/status'); expect(consumePaymentReturn()).toBeNull();
   });
   it('recovers when the browser cannot open', async () => {
     mocks.open.mockRejectedValue(new Error('unavailable'));
     expect((await openCheckoutUrl('https://checkout.stripe.com/test')).error).toMatch(/try again/);
-    expect(consumeCheckoutReturn()).toBe(false);
+    expect(consumePaymentReturn()).toBeNull();
   });
   it.each(['javascript:alert(1)', 'http://checkout.stripe.com/test', 'https://checkout.stripe.com.evil.test', 'https://user@checkout.stripe.com/test', 'https://checkout.stripe.com:8443/test'])('rejects an unsafe destination %s', async (url) => {
     expect((await openCheckoutUrl(url)).error).toBeDefined(); expect(mocks.open).not.toHaveBeenCalled(); expect(mocks.assign).not.toHaveBeenCalled();
+  });
+  it('opens billing in the browser and returns to account rather than claiming a purchase', async () => {
+    expect(await openBillingUrl('https://billing.stripe.com/session/test')).toEqual({});
+    expect(mocks.open).toHaveBeenCalledWith({ url: 'https://billing.stripe.com/session/test' });
+    expect(consumePaymentReturn()).toBe('/account');
+    expect(paymentReturnPath('tandava-member://billing-return', 'member')).toBe('/account');
+    expect(paymentReturnPath('tandava-member://billing-return?cancelled=true', 'member')).toBeNull();
   });
   it('retains web checkout navigation', async () => {
     mocks.native = false; await openCheckoutUrl('https://checkout.stripe.com/test');

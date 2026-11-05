@@ -1,4 +1,4 @@
-import { openCheckoutUrl } from "@/lib/native/checkout";
+import { openCheckoutUrl, openBillingUrl } from "@/lib/native/checkout";
 /**
  * Stripe Client Configuration
  *
@@ -145,16 +145,16 @@ export async function checkoutEvent(params: {
 }
 
 /** Open the Stripe Customer Portal for self-service billing management */
-export async function openCustomerPortal(studioId: string): Promise<{ error?: string }> {
+export async function openCustomerPortal(studioId: string, membershipId?: string): Promise<{ error?: string }> {
   const { data, error } = await api.invoke<{ url: string }>("stripe-portal", {
     studioId,
+    ...(membershipId ? { membershipId } : {}),
   });
 
   if (error) return { error: error.message };
 
   if (data?.url) {
-    window.location.href = data.url;
-    return {};
+    return openBillingUrl(data.url);
   }
 
   return { error: "No portal URL returned" };

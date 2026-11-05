@@ -13,3 +13,10 @@ test('studio return selects the studio app and rejects arbitrary app names', asy
   await page.goto('/checkout/return?app=javascript:alert(1)');
   await expect(page.getByRole('link')).toHaveCount(0);
 });
+
+test('billing return links to account management without claiming cancellation', async ({ page }) => {
+  await page.goto('/checkout/return?app=member&billing=1&cancelled=true');
+  await expect(page.getByRole('heading', { name: 'Back to your membership' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Return to Tandava', exact: true })).toHaveAttribute('href', 'tandava-member://billing-return');
+  await expect(page.getByText(/subscription cancelled|membership cancelled/i)).toHaveCount(0);
+});

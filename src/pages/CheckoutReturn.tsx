@@ -9,13 +9,14 @@ import { parseNativeApp } from '@/lib/native/platform';
 export function CheckoutReturn() {
   const [params] = useSearchParams();
   const app = parseNativeApp(params.get('app'));
+  const billing = params.get('billing') === '1';
   return <main className="min-h-dvh bg-background px-6 flex items-center justify-center">
     <SEOHead noindex />
     <div className="max-w-sm text-center space-y-5">
       <p className="text-sm text-muted-foreground">Tandava</p>
-      <h1 className="text-3xl font-semibold">Return to your practice</h1>
-      <p className="text-muted-foreground">Your booking and purchase status are in the app. Payment confirmation can take a moment.</p>
-      {app && <Button asChild className="w-full"><a href={checkoutReturnScheme(app)}>Return to {app === 'studio' ? 'Tandava Studio' : 'Tandava'}</a></Button>}
+      <h1 className="text-3xl font-semibold">{billing ? 'Back to your membership' : 'Return to your practice'}</h1>
+      <p className="text-muted-foreground">{billing ? 'Return to your account to see your current membership status.' : 'Your booking and purchase status are in the app. Payment confirmation can take a moment.'}</p>
+      {app && <Button asChild className="w-full"><a href={checkoutReturnScheme(app, billing)}>Return to {app === 'studio' ? 'Tandava Studio' : 'Tandava'}</a></Button>}
       <p className="text-sm text-muted-foreground">You can also tap Done to close this window and return to the app.</p>
     </div>
   </main>;
