@@ -25,6 +25,11 @@ and [account-deletion guidance](https://developer.apple.com/help/app-review/guid
 were rechecked November 5: a complete, reviewable candidate and real account/data
 deletion remain necessary. Source fixes and a request receipt are not approval.
 
+November 5 account access: App Store Connect redirects to login and now renders
+the Apple-account form, but no authenticated record list was obtained. Supabase
+also requires sign-in for the project. No credentials, records, provider settings
+or submission state were changed. The October observations below remain historical.
+
 ## Carried-forward integration checkpoint — October 21, 2026
 
 Neither app is submitted. A fresh Apple API lookup returned zero App Store records
