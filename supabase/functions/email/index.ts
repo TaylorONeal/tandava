@@ -18,6 +18,9 @@
  *   - Staff: a valid user JWT (sent automatically by supabase-js
  *     `functions.invoke`) whose user is studio staff in `studio_staff`
  *     (owner / admin / front_desk, the check import-members uses).
+ *     Staff callers must name their studio and recipientProfileId; the address
+ *     must match that studio member. Only non-auth transactional templates
+ *     are allowed, with server-owned app links and no replyTo override.
  *     Staff callers may use the template form only; the raw form would
  *     let any staff account send arbitrary content from the domain.
  * Other edge functions mostly bypass this HTTP entry point:
@@ -113,6 +116,17 @@ serve(async (req) => {
     return json({ error: "Method not allowed" }, 405);
   }
 
+  let payload: Record<string, unknown>;
+  try {
+    const body: unknown = await req.json();
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return json({ error: "Expected a JSON object" }, 400);
+    }
+    payload = body as Record<string, unknown>;
+  } catch {
+    return json({ error: "Invalid JSON body" }, 400);
+  }
+
   // ---- Authorize the caller (see header comment) ----
   const bearer = (req.headers.get("Authorization") ?? "").replace(
     /^Bearer\s+/i,
@@ -138,30 +152,48 @@ serve(async (req) => {
       return json({ error: "Not authenticated" }, 401);
     }
 
-    // Authorize: the caller must be studio staff (import-members check).
-    const db = createClient(supabaseUrl, serviceKey);
-    const { data: staffRows, error: staffError } = await db
+    if (typeof payload.studioId !== "string" || !payload.studioId) {
+      return json({ error: "Choose an authorized studio and member" }, 403);
+    }
+    // A role at one studio never authorizes messages for another studio.
+    const staffDatabase = createClient(supabaseUrl, serviceKey);
+    const { data: staffRows, error: staffError } = await staffDatabase
       .from("studio_staff")
       .select("studio_id, role")
       .eq("profile_id", user.id)
+      .eq("studio_id", payload.studioId)
       .eq("is_active", true)
       .in("role", STAFF_ROLES)
       .limit(1);
-    if (staffError) return json({ error: staffError.message }, 500);
+    if (staffError) return json({ error: "Could not verify studio access" }, 500);
     if (!staffRows || staffRows.length === 0) {
       return json({ error: "Not authorized to send email" }, 403);
     }
   }
 
-  let payload: Record<string, unknown>;
-  try {
-    payload = await req.json();
-  } catch {
-    return json({ error: "Invalid JSON body" }, 400);
-  }
-
   const to = String(payload.to ?? "");
   if (!to) return json({ error: "Missing 'to' address" }, 400);
+
+  let templateData = (payload.data as Record<string, unknown>) ?? {};
+  if (!isInternal) {
+    const allowedTemplates = ["welcome", "bookingConfirmation", "bookingCancellation", "classReminder", "waitlistPromoted"];
+    if (typeof payload.studioId !== "string" || !allowedTemplates.includes(String(payload.template)) || payload.replyTo
+        || typeof payload.recipientProfileId !== "string" || !payload.recipientProfileId) {
+      return json({ error: "This message requires an internal caller or verified studio member" }, 403);
+    }
+    const recipientDatabase = createClient(supabaseUrl, serviceKey);
+    const { data: member, error: memberError } = await recipientDatabase
+      .from("studio_members").select("profiles!inner(email)")
+      .eq("studio_id", payload.studioId).eq("profile_id", payload.recipientProfileId).maybeSingle();
+    if (memberError) return json({ error: "Could not verify the recipient" }, 500);
+    const recipient = Array.isArray(member?.profiles) ? member.profiles[0] : member?.profiles;
+    if (typeof recipient?.email !== "string" || recipient.email.toLowerCase() !== to.trim().toLowerCase()) {
+      return json({ error: "Recipient is not a member of this studio" }, 403);
+    }
+    const appUrl = Deno.env.get("APP_URL");
+    if (!appUrl) return json({ error: "Email links are not configured" }, 503);
+    templateData = { ...templateData, appUrl };
+  }
 
   let subject: string;
   let html: string;
@@ -172,7 +204,7 @@ serve(async (req) => {
     if (!tpl) return json({ error: `Unknown template: ${payload.template}` }, 400);
     let rendered: TemplateResult;
     try {
-      rendered = tpl((payload.data as Record<string, unknown>) ?? {});
+      rendered = tpl(templateData);
     } catch {
       return json({ error: "Invalid template data" }, 400);
     }

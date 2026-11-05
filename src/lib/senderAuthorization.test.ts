@@ -89,10 +89,9 @@ describe('upstream email caller compatibility', () => {
     const response = await invoke('email', senders[0].body, undefined, { 'x-email-secret': 'internal-test-secret' });
     expect(response.status).toBe(200); expect(mocks.email).toHaveBeenCalledOnce(); expect(mocks.createClient).not.toHaveBeenCalled();
   });
-  it('allows an authenticated active staff template request', async () => {
+  it('does not let an active staff JWT send an unscoped authentication link', async () => {
     const response = await invoke('email', { to: 'member@example.test', template: 'express_continue', data: { url: 'https://tandavastudio.com/auth/login' } }, 'Bearer staff-session');
-    expect(response.status).toBe(200); expect(mocks.email).toHaveBeenCalledOnce();
-    expect(mocks.createClient.mock.results[0].value.from().eq).toHaveBeenCalledWith('is_active', true);
+    expect(response.status).toBe(403); expect(mocks.email).not.toHaveBeenCalled();
   });
   it('rejects an authenticated user without an active staff role', async () => {
     const query = { select: () => query, eq: () => query, in: () => query, limit: async () => ({ data: [], error: null }) };
