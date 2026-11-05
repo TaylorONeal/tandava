@@ -6,7 +6,9 @@ Taylor approved in-person drop-ins, packs and memberships for the first release 
 both apps; paid online/mixed products are deferred. Migration 50 and a dedicated
 native checkout enforce that scope. Custom schemes `tandava-member://checkout-return`
 and `tandava-studio://checkout-return` are checkout-only return signals with no
-credentials; they do not implement universal links or Auth handoff. The default
+credentials. Matching `billing-return` signals return to Account. Neither implements
+universal links or Auth handoff. Native billing requires an explicit safe Stripe
+configuration, selected owned physical membership and verified provider operation. The default
 native purchase switch remains off pending hosted and actual iPhone acceptance.
 The existing signed 1.0(3) artifacts do not contain these changes. No app was uploaded
 or submitted in this source pass. See [current results](../plans/PROGRESS.md).

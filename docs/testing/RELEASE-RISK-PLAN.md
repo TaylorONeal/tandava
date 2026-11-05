@@ -166,9 +166,10 @@ hosted visibility change was made. All physical journeys remain NOT RUN.
 - Rollout order: review/apply migration 50, deploy stripe-checkout + native-checkout,
   deploy the hosted /checkout/return page, classify the synthetic studio catalog,
   then build a candidate with VITE_NATIVE_PHYSICAL_PAYMENTS=true for sandbox/device
-  acceptance. Keep the default false until evidence passes. Native express checkout
-  and the unrestricted billing portal remain blocked; a safe billing-management
-  path/configuration is still a launch prerequisite.
+  acceptance. Keep the default false until evidence passes. Native express checkout remains blocked. The dedicated native billing portal
+  requires a selected owned physical membership and an active Stripe configuration
+  with cancellation enabled and subscription updates disabled. Provision and verify
+  that configuration before enabling; never fall back to the unrestricted portal.
 - Browser plugin API: [Capacitor Browser](https://capacitorjs.com/docs/apis/browser);
   custom-scheme registration: [Capacitor App](https://capacitorjs.com/docs/apis/app).
   Source tests and plugin synchronization are not signed/device acceptance.
@@ -181,3 +182,22 @@ keeping the original receipt/deadline. No ownership, studio or financial row is
 deleted by initiation. Operator inventory must still identify sole ownership and
 review/execution must refuse unsafe fulfillment. Verify the disabled UI's receipt
 and 30-day date without representing the pending request as completed deletion.
+
+
+### Native billing and live member paths
+
+- Select each of two memberships at one studio and verify billing opens the selected
+  owned subscription, not the newest. Reject another member's ID, unknown/digital
+  scope, missing/inactive configuration, upgrades enabled or cancellation disabled.
+  Repeat a real test-mode cancellation/card update and inspect the webhook outcome.
+  Source guard: [Stripe configuration fields](https://docs.stripe.com/api/customer_portal/configurations/object)
+  and [session configuration selection](https://docs.stripe.com/api/customer_portal/sessions/create).
+- Billing returns to Account and refetches status; neither a return URL nor a query
+  parameter confirms cancellation. Browser cancellation/open failures are recoverable.
+- Live member screens use Tandava branding, contain no fake notification badge and
+  link to real discovery/schedule/account paths. Demo-only home, events, teachers,
+  on-demand, community and preference pages redirect live users to discovery.
+  Native unsigned visitors sign in with their selected class preserved, rather
+  than submitting to the intentionally blocked guest checkout endpoint.
+- On member sign-out failure, show an error, retain the current route and permit
+  retry. Only navigate away after provider-confirmed sign-out.

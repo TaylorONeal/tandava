@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Browser } from '@capacitor/browser';
 import { App } from '@capacitor/app';
 import { isNativeApp, nativeApp } from '@/lib/native/platform';
-import { consumeCheckoutReturn, isCheckoutReturn } from '@/lib/native/checkout';
+import { consumePaymentReturn, paymentReturnPath } from '@/lib/native/checkout';
 
 let initialReturnRead = false;
 export function NativeCheckout() {
@@ -18,20 +18,23 @@ export function NativeCheckout() {
       const handle = await registration.catch(() => null);
       if (handle) { if (disposed) await handle.remove(); else handles.push(handle); }
     };
-    const returned = () => {
+    const returned = (path: '/checkout/status' | '/account') => {
       if (disposed) return;
       void queryClient.invalidateQueries();
-      navigate('/checkout/status', { replace: true });
+      navigate(path, { replace: true });
     };
     const onUrl = (url: string) => {
-      if (disposed || !isCheckoutReturn(url, nativeApp)) return;
-      consumeCheckoutReturn();
+      const path = paymentReturnPath(url, nativeApp);
+      if (disposed || !path) return;
+      consumePaymentReturn();
       void Browser.close().catch(() => undefined);
-      returned();
+      returned(path);
     };
     void keep(App.addListener('appUrlOpen', ({ url }) => onUrl(url)));
     void keep(Browser.addListener('browserFinished', () => {
-      if (!disposed && consumeCheckoutReturn()) returned();
+      if (disposed) return;
+      const path = consumePaymentReturn();
+      if (path) returned(path);
     }));
     if (!initialReturnRead) {
       void App.getLaunchUrl().then(result => {

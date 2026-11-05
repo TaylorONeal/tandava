@@ -1,3 +1,4 @@
+import { nativeApp } from "@/lib/native/platform";
 /**
  * Express Booking — /s/:slug/book/:occurrenceId (PRD-020)
  *
@@ -471,6 +472,17 @@ export default function ExpressBooking() {
         />
       </Shell>
     );
+  }
+
+  if (nativeApp) {
+    return <Shell>
+      <ClassSummary row={row} spotsLeft={eligibility?.spotsLeft ?? 0} />
+      <Card><CardContent className="pt-6 space-y-4">
+        <h2 className="text-lg font-semibold">Keep your booking in one place</h2>
+        <p className="text-sm text-muted-foreground">Sign in or create an account to book this class. We’ll keep your selection ready.</p>
+        <Button asChild className="w-full"><Link to={signInHref}>Sign in to book</Link></Button>
+      </CardContent></Card>
+    </Shell>;
   }
 
   // --- The form ---------------------------------------------------------

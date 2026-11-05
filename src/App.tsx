@@ -5,9 +5,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { DemoProvider } from "@/contexts/DemoContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LocaleProvider } from "@/contexts/LocaleContext";
@@ -64,6 +64,8 @@ class AppErrorBoundary extends Component<
  * seeing the noindex, and linked URLs can be indexed anyway.
  */
 function DemoDataPage({ children }: { children: ReactNode }) {
+  const { isDemoMode } = useAuth();
+  if (!isDemoMode) return <Navigate to="/discover" replace />;
   return (
     <>
       <SEOHead noindex />
@@ -275,10 +277,10 @@ const App = () => (
                   <Route path="/blog/:slug" element={<BlogPost />} />
 
                   {/* ---- Student-facing routes ---- */}
-                  <Route path="/home" element={<Index />} />
+                  <Route path="/home" element={<DemoDataPage><Index /></DemoDataPage>} />
                   <Route path="/schedule" element={<DemoDataPage><Schedule /></DemoDataPage>} />
                   <Route path="/events" element={<DemoDataPage><Studios /></DemoDataPage>} />
-                  <Route path="/events/:id" element={<StudioDetail />} />
+                  <Route path="/events/:id" element={<DemoDataPage><StudioDetail /></DemoDataPage>} />
                   <Route path="/instructors" element={<DemoDataPage><Instructors /></DemoDataPage>} />
                   <Route path="/instructors/:id" element={<DemoDataPage><InstructorDetail /></DemoDataPage>} />
                   <Route path="/on-demand" element={<DemoDataPage><OnDemand /></DemoDataPage>} />
@@ -293,9 +295,9 @@ const App = () => (
 
                   {/* ---- Authenticated member routes ---- */}
                   <Route path="/my-schedule" element={<ProtectedRoute permission="member.view_profile"><MySchedule /></ProtectedRoute>} />
-                  <Route path="/community" element={<ProtectedRoute permission="member.view_profile"><Community /></ProtectedRoute>} />
+                  <Route path="/community" element={<ProtectedRoute permission="member.view_profile"><DemoDataPage><Community /></DemoDataPage></ProtectedRoute>} />
                   <Route path="/account" element={<ProtectedRoute permission="member.view_profile"><Account /></ProtectedRoute>} />
-                  <Route path="/account/notifications" element={<ProtectedRoute permission="member.view_profile"><NotificationPreferences /></ProtectedRoute>} />
+                  <Route path="/account/notifications" element={<ProtectedRoute permission="member.view_profile"><DemoDataPage><NotificationPreferences /></DemoDataPage></ProtectedRoute>} />
 
                   {/* ---- Platform admin routes (/admin) ---- */}
                   <Route path="/admin" element={<ProtectedRoute permission="platform.admin"><AdminDashboard /></ProtectedRoute>} />

@@ -1,3 +1,4 @@
+import { apiErrorMessage } from "./apiError";
 import { nativeApp, blocksNativePayment, authRedirectOrigin } from '@/lib/native/platform';
 /**
  * Supabase Backend Provider
@@ -631,13 +632,14 @@ const supabaseApi: ApiProvider = {
     if (blocksNativePayment(nativeApp, functionName)) {
       return { data: null, error: { message: 'Purchases are not available in this app yet. Sign in to book with existing credits or choose a free class.' } };
     }
-    const endpoint = nativeApp && functionName === 'stripe-checkout' ? 'native-checkout' : functionName;
-    const requestBody = nativeApp && endpoint === 'native-checkout' ? { ...body, nativeApp } : body;
+    const endpoint = nativeApp && functionName === 'stripe-checkout' ? 'native-checkout'
+      : nativeApp && functionName === 'stripe-portal' ? 'native-portal' : functionName;
+    const requestBody = nativeApp && ['native-checkout', 'native-portal'].includes(endpoint) ? { ...body, nativeApp } : body;
     const { data, error } = await getClient().functions.invoke(endpoint, { body: requestBody });
 
     return {
       data: data as T | null,
-      error: error ? { message: error.message } : null,
+      error: error ? { message: await apiErrorMessage(error) } : null,
     };
   },
 };

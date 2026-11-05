@@ -424,3 +424,30 @@ and distinguishes a request from completed deletion. Six adapter/deadline tests
 and all focused initiation/review/execution SQL checks pass. Full transfer/closure,
 Auth, storage, processor, backup and retention fulfillment remain incomplete;
 the deletion enablement switch remains off.
+
+
+### November 5 billing and live member path repairs
+
+New native billing source requires the selected owned physical membership and an
+explicit Stripe configuration with cancellation enabled and subscription updates
+disabled. Missing, inactive or unsafe configuration refuses to open a session;
+there is no fallback to the unrestricted web portal. The member account now sends
+the selected membership ID, fixing the previous newest-at-studio selection. Billing
+opens in the native browser and returns to Account for server refresh, never a
+client-asserted cancellation. No Stripe configuration was created or changed.
+
+Live member screens now use Tandava branding and supported navigation, without the
+sample notification badge. Demo-only member routes redirect to discovery in live
+mode. Native unsigned booking preserves the selected class through sign-in instead
+of collecting details for a blocked guest endpoint. Member sign-out failures now
+show a retryable error. Endpoint errors retain concise server explanations.
+
+Regression evidence: native portal tests produced 9 failures before enforcement;
+all 10 now pass. Three live-navigation/sign-out browser cases failed on the original
+source and pass after repair. Latest full local results: 639 application tests,
+53 script tests with the optional integration case skipped, 43 browser checks;
+TypeScript/lint/16 edge checks and the web build pass. Full SQL passed after migration
+50; migration 51 additionally passed focused initiation/review/execution checks.
+Phone member-navigation and checkout-return captures use synthetic fixtures; they
+are design evidence, not store assets or physical acceptance. Native compile proof
+remains at `b3dff7e` for the unchanged plugin projects, not a new signed candidate.

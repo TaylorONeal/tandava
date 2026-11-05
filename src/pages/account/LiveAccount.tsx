@@ -73,9 +73,9 @@ export default function LiveAccount() {
     toast({ title: "Profile saved" });
   };
 
-  const manageBilling = async (studioId: string) => {
-    setPortalFor(studioId);
-    const { error } = await openCustomerPortal(studioId);
+  const manageBilling = async (studioId: string, membershipId: string) => {
+    setPortalFor(membershipId);
+    const { error } = await openCustomerPortal(studioId, membershipId);
     setPortalFor(null);
     if (error) toast({ title: "Billing page unavailable", description: error, variant: "destructive" });
   };
@@ -151,8 +151,8 @@ export default function LiveAccount() {
                     </p>
                   </div>
                   {v.canManageBilling && (
-                    <Button variant="outline" size="sm" onClick={() => manageBilling(v.studioId)} disabled={portalFor === v.studioId}>
-                      {portalFor === v.studioId && <Loader2 className="h-4 w-4 me-2 animate-spin" />}
+                    <Button variant="outline" size="sm" onClick={() => manageBilling(v.studioId, v.id)} disabled={portalFor === v.id}>
+                      {portalFor === v.id && <Loader2 className="h-4 w-4 me-2 animate-spin" />}
                       Manage billing
                     </Button>
                   )}
