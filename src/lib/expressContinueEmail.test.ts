@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
 vi.mock("https://deno.land/std@0.168.0/http/server.ts", () => ({
   serve: (handle: (request: Request) => Promise<Response>) => { mocks.handle = handle; },
 }));
+vi.mock("https://esm.sh/@supabase/supabase-js@2", () => ({ createClient: vi.fn() }));
 vi.mock("../../supabase/functions/email/provider.ts", () => ({ sendEmail: mocks.sendEmail }));
 
 describe("express booking continuation email", () => {
