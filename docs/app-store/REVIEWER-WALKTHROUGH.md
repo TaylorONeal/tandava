@@ -83,7 +83,12 @@ flow works in this candidate. Resolve product/release scope before submission.
    reopen, and confirm attendance persists.
 4. Exercise a failed request/retry in the controlled test environment. Verify a lost
    response is reconciled from the roster and is not counted as a second mutation.
-5. Sign out. Verify no privileged data persists and that a Member cannot enter the
+5. Scan to check in (Studio only, needs migration 00052 on the hosted database): on a
+   second device sign in as the Member, open My Schedule and tap Check-in pass. In
+   Studio tap Scan passes and scan it. Expect "checked in" with a success haptic, then
+   "already in" on a second scan. Scan a non-Tandava QR and expect "Not a Tandava pass".
+   Deny camera access once and confirm the Settings message.
+6. Sign out. Verify no privileged data persists and that a Member cannot enter the
    teacher portal by direct navigation.
 
 ## Tandava Studio — Owner

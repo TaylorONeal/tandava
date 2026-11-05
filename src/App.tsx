@@ -198,6 +198,7 @@ const NotificationPreferences = lazyWithReload(() => import("./pages/account/Not
 
 const TeachDashboard = lazyWithReload(() => import("./pages/teach/Dashboard"));
 const TeachSchedule = lazyWithReload(() => import("./pages/teach/Schedule"));
+const ScanCheckin = lazyWithReload(() => import("./pages/studio/ScanCheckin"));
 const TeachSubs = lazyWithReload(() => import("./pages/teach/Subs"));
 const TeachEarnings = lazyWithReload(() => import("./pages/teach/Earnings"));
 const TeachAvailability = lazyWithReload(() => import("./pages/teach/Availability"));
@@ -362,6 +363,7 @@ const App = () => (
                   <Route path="/teach/profile" element={<ProtectedRoute permission="studio.teach"><TeachProfile /></ProtectedRoute>} />
 
                   {/* ---- Staff (front desk) routes ---- */}
+                  <Route path="/scan" element={<ProtectedRoute><ScanCheckin /></ProtectedRoute>} />
                   <Route path="/staff/checkin" element={<ProtectedRoute permission="studio.checkin"><StaffCheckin /></ProtectedRoute>} />
                   <Route path="/staff/waitlist" element={<ProtectedRoute permission="studio.manage_waitlist"><StaffWaitlist /></ProtectedRoute>} />
 

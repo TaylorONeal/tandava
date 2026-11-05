@@ -535,3 +535,17 @@ PostgreSQL test process was stopped cleanly. No continuous-release automation
 was created; the separate existing Stripe smoke schedule is not a continuation
 of this work. The next dependent action is authenticated read-only hosted
 inspection, followed by the retained deletion/provider/native acceptance gates.
+
+
+## 2026-11-05: Studio phase 1 scope and scan-to-check-in (stacked on #109)
+
+Scope and gap list: [STUDIO-PHASE-1.md](../app-store/STUDIO-PHASE-1.md). Studio ships
+first because it sells nothing, so the payment gate does not hold its review.
+
+New: migration 00052 `check_in_with_pass`, member check-in pass QR in My Schedule,
+Studio-only `/scan` with the official barcode scanner and haptics, per-app
+`includePlugins`, camera usage string (Studio only), export-compliance key in both
+apps, Studio iPhone-only for 1.0. Local results: full SQL suite (SCAN-01..13 new),
+668 application tests, 53 script tests, typecheck, lint and web build pass. Capacitor
+sync ran on Linux; Xcode package resolution, a signed build, the mocked browser checks
+and any device scan are NOT RUN from this session. No hosted change.
