@@ -34,10 +34,14 @@ BEGIN
   EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(n = 0 AND msg LIKE 'permission denied%', 'DELETE-07', 'other users cannot see or directly insert requests');
   UPDATE studio_staff SET role = 'owner' WHERE profile_id = pg_temp.id('staff_a');
-  PERFORM pg_temp.as_user(pg_temp.id('staff_a')); msg := NULL;
-  BEGIN PERFORM request_account_deletion('DELETE'); EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
+  PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
+  SELECT * INTO result FROM request_account_deletion('DELETE');
+  SELECT * INTO again FROM request_account_deletion('DELETE');
   EXECUTE 'RESET ROLE';
-  PERFORM pg_temp.ok(msg LIKE 'Transfer studio ownership%', 'DELETE-08', 'sole active studio owner rejected');
+  PERFORM pg_temp.ok(result.profile_id = pg_temp.id('staff_a') AND result.status = 'pending' AND result.id = again.id,
+    'DELETE-08', 'sole owner can lodge one durable request before ownership resolution');
+  PERFORM pg_temp.ok((preview_account_deletion(result.id)->>'sole_owner')::boolean,
+    'DELETE-10', 'operator inventory still identifies unresolved ownership');
   PERFORM pg_temp.as_user(pg_temp.id('student_a1')); msg := NULL;
   BEGIN UPDATE account_deletion_requests SET status = 'completed', completed_at = now(); EXCEPTION WHEN OTHERS THEN msg := SQLERRM; END;
   EXECUTE 'RESET ROLE';

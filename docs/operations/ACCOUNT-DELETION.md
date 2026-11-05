@@ -136,7 +136,7 @@ explicit approved policy change; do not invent another timeline in code.
 | Auth identity, sessions and stale tokens | Select/rehearse supported Auth administration and PII erasure strategy while preserving financial FK relationships. Ban/session checks alone do not finish identity deletion. |
 | Storage, email/SMS, Stripe and analytics | Inventory linked identifiers and objects, disable repopulating writers, add idempotent adapters and independent evidence. No processor contact occurred in these tests. |
 | Backups and retained records | Identify actual provider retention/expiry and restore suppression procedure; record deferred obligations. Expiry alone is not proof of erasure. |
-| Operations | Assign primary/backup fulfillment operators and a queue/reconciliation cadence capable of meeting the published30-day promise. Labels in a manifest are not authenticated operator identity. |
+| Operations | Assign primary/backup fulfillment operators and a queue/reconciliation cadence capable of meeting the published 30-day promise. Labels in a manifest are not authenticated operator identity. |
 
 Next milestone: approved per-category manifest plus Auth/service-writer cutoff and
 remaining data/processor adapters, then a complete disposable rehearsal with crash/
@@ -240,8 +240,9 @@ supported in-app resolution, not an indefinite refusal or a support-only maze.
 
 ### Implementation gaps before this policy can take effect
 
-The current sole-owner request RPC rejects the request instead of preserving it
-for ownership transfer or closure. Guest identity verification, request-status
+Migration 51 now preserves a sole-owner request and its original receipt date;
+operator review/execution still rejects unsafe ownership removal. The actual
+in-app transfer/closure resolution and complete fulfillment remain unfinished. Guest identity verification, request-status
 access after Auth removal, safe receipt delivery after contact erasure, and the
 full Auth/storage/processor adapters are not complete. Resolve and rehearse each
 of these before publishing the proposed in-app workflow or enabling it.
