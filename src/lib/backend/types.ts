@@ -43,6 +43,20 @@ export interface TeachingAttendee {
   status: "confirmed" | "checked_in" | "waitlisted";
 }
 
+/** Outcome of a Studio app check-in pass scan (check_in_with_pass, migration 00052). */
+export type PassScanResult =
+  | "checked_in" | "already_checked_in" | "not_confirmed" | "class_cancelled"
+  | "outside_window" | "not_found" | "invalid_pass";
+
+export interface PassScan {
+  result: PassScanResult;
+  booking_id: string | null;
+  student_name: string | null;
+  offering_name: string | null;
+  starts_at: string | null;
+  studio_timezone: string | null;
+}
+
 export interface UpcomingClass {
   id: string;
   starts_at: string;
@@ -219,6 +233,7 @@ export interface DataProvider {
   getMyTeachingClasses(): Promise<DataResult<TeachingClass[]>>;
   getTeachingRoster(occurrenceId: string): Promise<DataResult<TeachingAttendee[]>>;
   checkInTeachingBooking(bookingId: string): Promise<DataResult<Booking>>;
+  checkInWithPass(pass: string): Promise<DataResult<PassScan>>;
   /** Fetch a user profile by ID */
   getProfile(userId: string): Promise<DataResult<Profile>>;
 
