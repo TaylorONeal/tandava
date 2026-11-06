@@ -187,7 +187,7 @@ export default function Demo() {
           </div>
 
           <div aria-hidden className="relative mx-auto hidden h-[17rem] w-full max-w-[20rem] md:block">
-            <PassStub className="absolute left-0 top-0 w-[17rem] -rotate-6" label="Owner" name="Studio dashboard" detail="Revenue, schedule, students" code="/manage" />
+            <PassStub className="absolute left-0 top-0 w-[17rem] -rotate-6" label="Owner" name="Studio dashboard" detail="Money, classes, people" code="/manage" />
             <PassStub className="absolute left-8 top-[5.25rem] w-[17rem] rotate-2" label="Front desk" name="Today's check-in" detail="Scan, search, kiosk" code="/staff" />
             <PassStub className="absolute left-3 top-[10.5rem] w-[17rem] -rotate-2" label="Member" name="Book a class" detail="Packs, streaks, schedule" code="/home" status="In" />
           </div>
@@ -204,13 +204,13 @@ export default function Demo() {
         <ul className="divide-y divide-ink/15 border-y border-ink/15">
           {ROLES.map((r, i) => (
             <li key={r.role} className="grid gap-4 py-6 sm:grid-cols-[3rem_minmax(0,1fr)_auto] sm:items-center">
-              <span className="hidden font-brand-mono text-sm font-semibold tabular-nums text-ink/45 sm:block">
+              <span className="hidden font-brand-mono text-sm font-semibold tabular-nums text-ink/60 sm:block">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div className="min-w-0">
                 <p className="font-brand text-2xl font-extrabold tracking-tight">{r.tag}</p>
                 <p className="mt-1 text-ink/70">{r.description}</p>
-                <p className="mt-2 font-brand-mono text-xs uppercase tracking-[0.12em] text-ink/55">{r.sees.join("  /  ")}</p>
+                <p className="mt-2 font-brand-mono text-xs uppercase tracking-[0.12em] text-ink/60">{r.sees.join("  /  ")}</p>
               </div>
               <button
                 type="button"
@@ -291,7 +291,7 @@ export default function Demo() {
             <details key={f.q} className="group py-1">
               <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 py-2 font-brand text-lg font-bold tracking-tight [&::-webkit-details-marker]:hidden">
                 {f.q}
-                <span aria-hidden className="font-brand-mono text-xl font-semibold text-ink/50 transition-transform group-open:rotate-45">+</span>
+                <span aria-hidden className="font-brand-mono text-xl font-semibold text-ink/60 transition-transform group-open:rotate-45">+</span>
               </summary>
               <p className="max-w-[62ch] pb-4 leading-relaxed text-ink/70">{f.a}</p>
             </details>

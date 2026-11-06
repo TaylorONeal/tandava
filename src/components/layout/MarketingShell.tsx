@@ -123,7 +123,7 @@ export function MarketingShell({
               <Link key={l.to} to={l.to} className="hover:text-paper">{l.label}</Link>
             ))}
           </div>
-          <p className="mt-6 font-brand-mono text-xs uppercase tracking-[0.2em] text-paper/40">
+          <p className="mt-6 font-brand-mono text-xs uppercase tracking-[0.2em] text-paper/60">
             Purafield Studio, Austin, Texas
           </p>
         </div>

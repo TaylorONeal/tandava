@@ -177,7 +177,7 @@ function ClassRow({ c }: { c: DiscoverClassRow }) {
       >
         <span className="pt-0.5 font-brand-mono text-sm font-semibold tabular-nums">
           {formatTime(c.starts_at, c.studio_timezone)}
-          <span className="block text-xs font-normal text-ink/55">{c.duration_minutes} min</span>
+          <span className="block text-xs font-normal text-ink/60">{c.duration_minutes} min</span>
         </span>
         <span className="min-w-0">
           <span className="block font-semibold leading-tight group-hover:underline group-hover:underline-offset-4">{c.offering_name}</span>

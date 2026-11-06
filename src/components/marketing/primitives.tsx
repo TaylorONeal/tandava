@@ -60,7 +60,7 @@ export function RuledList({
           key={i}
           className={`grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-4 sm:grid-cols-[3rem_minmax(0,1fr)_auto] ${dense ? "py-3.5" : "py-5"}`}
         >
-          <span className="pt-1 font-brand-mono text-sm font-semibold tabular-nums text-ink/45">
+          <span className="pt-1 font-brand-mono text-sm font-semibold tabular-nums text-ink/60">
             {String(start + i).padStart(2, "0")}
           </span>
           <div className="min-w-0">
@@ -149,7 +149,7 @@ export function PassStub({
       className={`relative grid grid-cols-[minmax(0,1fr)_auto] rounded-2xl border-2 border-ink bg-white text-ink shadow-[6px_6px_0_0_rgba(14,10,18,1)] ${className}`}
     >
       <div className="min-w-0 px-4 py-3.5">
-        <p className="font-brand-mono text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-ink/55">{label}</p>
+        <p className="font-brand-mono text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-ink/60">{label}</p>
         <p className="mt-1 truncate font-brand text-lg font-extrabold leading-tight tracking-tight">{name}</p>
         <p className="truncate text-xs text-ink/65">{detail}</p>
       </div>
