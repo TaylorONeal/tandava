@@ -1,4 +1,4 @@
-import { offersSocialAuth } from '@/lib/native/platform';
+import { offersSignUp, offersSocialAuth } from '@/lib/native/platform';
 import { useEffect, useState } from "react";
 import { LEGAL_PUBLISHED } from "@/content/legal";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -230,13 +230,19 @@ const Login = () => {
 
           </>}
 
-          {/* Sign up link */}
-          <p className="text-center text-sm text-muted-foreground">
-            {t('noAccount')}{" "}
-            <Link to={authHref("/auth/register", resumePath)} className="text-primary hover:underline font-medium">
-              {t('signUp')}
-            </Link>
-          </p>
+          {/* Sign up link (the Studio app is sign-in only) */}
+          {offersSignUp() ? (
+            <p className="text-center text-sm text-muted-foreground">
+              {t('noAccount')}{" "}
+              <Link to={authHref("/auth/register", resumePath)} className="text-primary hover:underline font-medium">
+                {t('signUp')}
+              </Link>
+            </p>
+          ) : (
+            <p className="text-center text-sm text-muted-foreground">
+              New studio? Set up at tandavastudio.com on the web. Staff, use the email your studio invited.
+            </p>
+          )}
         </div>
       </div>
 

@@ -6,7 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { offersSignUp } from "@/lib/native/platform";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { DemoProvider } from "@/contexts/DemoContext";
@@ -141,6 +142,11 @@ const Instructors = lazyWithReload(() => import("./pages/Instructors"));
 const InstructorDetail = lazyWithReload(() => import("./pages/InstructorDetail"));
 const OnDemand = lazyWithReload(() => import("./pages/OnDemand"));
 const Login = lazyWithReload(() => import("./pages/auth/Login"));
+/** Tandava Studio is sign-in only; any sign-up link lands on sign-in with its query kept. */
+function SignInOnly() {
+  const { search } = useLocation();
+  return <Navigate to={`/auth/login${search}`} replace />;
+}
 const Register = lazyWithReload(() => import("./pages/auth/Register"));
 const ResetConfirm = lazyWithReload(() => import("./pages/auth/ResetConfirm"));
 const NotFound = lazyWithReload(() => import("./pages/NotFound"));
@@ -289,7 +295,7 @@ const App = () => (
 
                   {/* ---- Auth routes ---- */}
                   <Route path="/auth/login" element={<Login />} />
-                  <Route path="/auth/register" element={<Register />} />
+                  <Route path="/auth/register" element={offersSignUp() ? <Register /> : <SignInOnly />} />
                   <Route path="/auth/reset" element={<ResetPassword />} />
                   <Route path="/auth/reset-confirm" element={<ResetConfirm />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
