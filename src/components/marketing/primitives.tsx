@@ -103,7 +103,7 @@ export function ScheduleBoard({
       </figcaption>
       <ul className="divide-y divide-ink/10">
         {rows.map((r) => (
-          <li key={`${r.time}-${r.name}`} className="grid grid-cols-[4.25rem_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3">
+          <li key={`${r.time}-${r.name}`} className="grid grid-cols-[4.9rem_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3">
             <span className="font-brand-mono text-sm font-semibold tabular-nums">{r.time}</span>
             <span className="min-w-0">
               <span className="block truncate font-semibold">{r.name}</span>

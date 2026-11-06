@@ -42,7 +42,7 @@ function Logo({ dark = false }: { dark?: boolean }) {
 
 export function MarketingShell({
   children,
-  maxWidth = "max-w-5xl",
+  maxWidth = "max-w-6xl",
   classic = false,
 }: {
   children: React.ReactNode;
@@ -86,7 +86,7 @@ export function MarketingShell({
                 end={n.end}
                 className={({ isActive }) =>
                   `hidden md:inline-flex h-9 items-center rounded-full px-3 text-sm font-semibold transition-colors hover:bg-foreground/5 ${
-                    isActive ? "text-foreground" : "text-muted-foreground"
+                    isActive ? "bg-ink/[0.06] text-foreground" : "text-muted-foreground"
                   }`
                 }
               >
