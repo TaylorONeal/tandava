@@ -80,7 +80,16 @@ workflows:
         script: |
           python3 - <<'PY'
           import json, os, re, textwrap
-          raw = os.environ["APP_STORE_CONNECT_PRIVATE_KEY"]
+          raw = os.environ["APP_STORE_CONNECT_PRIVATE_KEY"].strip()
+          # Codemagic's integration can hand the key as a reference, not the PEM itself.
+          ref = "literal"
+          if raw.startswith("@file:"):
+              ref = "file"; raw = open(os.path.expanduser(raw[len("@file:"):])).read()
+          elif raw.startswith("@env:"):
+              ref = "env"; raw = os.environ[raw[len("@env:"):]]
+          elif os.path.isfile(os.path.expanduser(raw)):
+              ref = "path"; raw = open(os.path.expanduser(raw)).read()
+          print("key source:", ref)
           # Normalise to a clean PKCS8 PEM: escaped newlines, spaces or a bare
           # base64 body all broke fastlane's EC key parse ("invalid curve name").
           raw = raw.replace("\\n", "\n").strip().strip('"')
