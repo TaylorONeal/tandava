@@ -1,0 +1,62 @@
+# Tandava Studio iOS build to TestFlight (prepared 2026-11-06).
+#
+# Codemagic setup (Taylor's Personal Account, done Nov 6):
+#   - Repository TaylorONeal/tandava is added as an app.
+#   - App Store Connect integration "app-store-connect" (Key ID B8X648KLKD).
+#   - Code signing is automatic: Codemagic fetches or creates the App Store
+#     distribution certificate and profile for com.tandava.studio through that key.
+# Still needed before the first run:
+#   - An environment variable group named "tandava_native" with the PUBLIC
+#     Supabase values VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (production,
+#     never a service key). Optional: VITE_SENTRY_DSN. Leave VITE_POSTHOG_KEY unset
+#     unless the App Privacy label adds Usage Data.
+# Nothing here submits for App Review. It uploads to TestFlight only.
+workflows:
+  studio-ios-testflight:
+    name: Tandava Studio iOS to TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    integrations:
+      app_store_connect: app-store-connect
+    environment:
+      groups:
+        - tandava_native
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.tandava.studio
+      vars:
+        APP_STORE_APPLE_ID: 6831459731
+        XCODE_PROJECT: native/studio/ios/App/App.xcodeproj
+        XCODE_SCHEME: App
+      node: 22
+      xcode: latest
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: 'studio-v*'
+    scripts:
+      - name: Install
+        script: npm ci
+      - name: Checks
+        script: npm run typecheck && npm test
+      - name: Native web bundle and sync
+        script: npm run native -- studio sync
+      - name: Signing profiles
+        script: xcode-project use-profiles --project "$XCODE_PROJECT"
+      - name: Build number above the latest TestFlight build
+        script: |
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" || echo 0)
+          NEXT=$(( LATEST + 1 ))
+          # Local 1.0 (3) archives exist but were never uploaded; stay above them.
+          [ "$NEXT" -lt 4 ] && NEXT=4
+          cd native/studio/ios/App && agvtool new-version -all "$NEXT"
+      - name: Build IPA
+        script: xcode-project build-ipa --project "$XCODE_PROJECT" --scheme "$XCODE_SCHEME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false
