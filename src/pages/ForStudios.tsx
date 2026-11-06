@@ -1,54 +1,40 @@
 /**
- * For studios: /for-studios (and "/" on the hosted product until Discover has
- * enough studios to be the front door; see lib/homeMode.ts).
+ * For studios: the hosted home page. Renders at "/" on the hosted product
+ * (lib/homeMode.ts) and at /for-studios, both canonical to "/".
  *
  * Audience: a studio owner or manager deciding whether to run their studio on
- * the hosted Tandava. Not developers (that is /open-source) and not students
- * (that is /discover). No pricing numbers here until decision D1 is made.
+ * the hosted Tandava. Three things must land in the first screen: you sign up
+ * on the web, staff use the Tandava Studio iPhone app at the door, and open
+ * source exists for those who want it (one block, below the fold).
+ *
+ * Copy lives in src/content/marketing/pages.ts so the prerendered HTML and
+ * llms.txt say the same thing. No pricing numbers until decision D1.
  */
 import { Link } from "react-router-dom";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Globe, Smartphone } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { MarketingShell } from "@/components/layout/MarketingShell";
 import { FaqSection } from "@/components/help/FaqSection";
+import { StudioAppBadge } from "@/components/marketing/StudioAppBadge";
 import { STUDIO_SIGNUP_HREF } from "@/lib/audience";
+import { STUDIO_APP_LIVE } from "@/config/studioApp";
+import { HOME_FAQ_IDS, homeContent, STUDIO_APP_FEATURES, WEB_FEATURES } from "@/content/marketing/pages";
+import { homeLd } from "@/content/marketing/schema";
 
-const STEPS = [
-  { title: "Create your studio", body: "Add your name, location, teachers and class types. The setup wizard saves as you go, so you can stop and pick it up later." },
-  { title: "Set up payouts", body: "Students pay by card when they book. You add your bank details once, in a short form run by our payments partner Stripe, and payouts go to your account." },
-  { title: "Publish your schedule", body: "You get a booking page you can share, and a schedule you can embed on your own website. Opt in to Discover and students searching for a class can find you." },
-];
-
-const WHAT_YOU_RUN = [
-  "Class schedule, rooms and teachers",
-  "Drop-ins, class packs and memberships",
-  "Online booking, waitlists and cancellations",
-  "Front desk check-in, including a kiosk screen",
-  "Student records, with import from your current system",
-  "Teacher schedules, subs and pay tracking",
-  "Revenue and attendance reports",
-  "Workshops and events",
-];
+const SITE_URL = import.meta.env.VITE_APP_URL || "https://tandavastudio.com";
 
 export default function ForStudios() {
+  const c = homeContent(STUDIO_APP_LIVE);
+
   return (
     <MarketingShell>
-      <SEOHead
-        title="Run your studio on Tandava"
-        description="Scheduling, memberships, payments and a public booking page for yoga, pilates and movement studios. Students find you on Tandava Discover."
-        canonical="/for-studios"
-      />
+      <SEOHead title={c.title} description={c.description} canonical="/" structuredData={homeLd(SITE_URL, STUDIO_APP_LIVE)} />
 
       <section className="max-w-5xl mx-auto px-6 pt-16 pb-12 sm:pt-24">
-        <p className="text-sm font-medium text-muted-foreground mb-4">For studio owners</p>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight max-w-3xl">
-          Run your studio. Get found by students.
-        </h1>
-        <p className="mt-6 text-lg text-muted-foreground max-w-2xl">
-          Schedule, memberships, payments and a booking page that works on a phone. Your classes can also show up
-          on Tandava Discover, where students search for a class before they have picked a studio.
-        </p>
+        <p className="text-sm font-medium text-muted-foreground mb-4">{c.eyebrow}</p>
+        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight max-w-3xl">{c.h1}</h1>
+        <p className="mt-6 text-lg text-muted-foreground max-w-2xl">{c.intro}</p>
         <div className="mt-8 flex flex-col sm:flex-row gap-3">
           <Button asChild size="lg">
             <Link to={STUDIO_SIGNUP_HREF}>Set up your studio <ArrowRight className="ms-2 h-4 w-4" /></Link>
@@ -57,12 +43,13 @@ export default function ForStudios() {
             <Link to="/demo">Look around a demo studio</Link>
           </Button>
         </div>
+        <p className="mt-4 text-sm text-muted-foreground">{c.finePrint}</p>
       </section>
 
-      <section className="max-w-5xl mx-auto px-6 py-12">
-        <h2 className="text-2xl font-semibold">From signup to a bookable schedule</h2>
+      <section className="max-w-5xl mx-auto px-6 py-12" aria-labelledby="how-title">
+        <h2 id="how-title" className="text-2xl font-semibold">How it works</h2>
         <ol className="mt-6 grid gap-4 md:grid-cols-3">
-          {STEPS.map((s, i) => (
+          {c.steps.map((s, i) => (
             <li key={s.title} className="rounded-xl border border-border p-6">
               <span className="text-sm text-muted-foreground">Step {i + 1}</span>
               <h3 className="mt-1 font-semibold">{s.title}</h3>
@@ -72,26 +59,51 @@ export default function ForStudios() {
         </ol>
       </section>
 
-      <section className="max-w-5xl mx-auto px-6 py-12">
-        <h2 className="text-2xl font-semibold">What you run from one place</h2>
-        <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-          {WHAT_YOU_RUN.map((item) => (
-            <li key={item} className="flex items-start gap-3 text-sm">
-              <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
-              {item}
-            </li>
-          ))}
-        </ul>
+      <section className="max-w-5xl mx-auto px-6 py-12 grid gap-4 md:grid-cols-2" aria-label="Web and app">
+        <div className="rounded-xl border border-border p-6">
+          <div className="flex items-center gap-2">
+            <Globe className="h-5 w-5 text-primary" aria-hidden />
+            <h2 className="text-xl font-semibold">{c.webCard.heading}</h2>
+          </div>
+          <p className="mt-2 text-sm text-muted-foreground">{c.webCard.body}</p>
+          <ul className="mt-4 space-y-2">
+            {WEB_FEATURES.map((item) => (
+              <li key={item} className="flex items-start gap-3 text-sm">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
+                {item}
+              </li>
+            ))}
+          </ul>
+          <Button asChild className="mt-6">
+            <Link to={STUDIO_SIGNUP_HREF}>Set up your studio</Link>
+          </Button>
+        </div>
+
+        <div className="rounded-xl border border-border bg-secondary/40 p-6">
+          <div className="flex items-center gap-2">
+            <Smartphone className="h-5 w-5 text-primary" aria-hidden />
+            <h2 className="text-xl font-semibold">{c.appCard.heading}</h2>
+          </div>
+          <p className="mt-2 text-sm text-muted-foreground">{c.appCard.body}</p>
+          <ul className="mt-4 space-y-2">
+            {STUDIO_APP_FEATURES.map((item) => (
+              <li key={item} className="flex items-start gap-3 text-sm">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
+                {item}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-6 flex flex-wrap items-center gap-4">
+            <StudioAppBadge />
+            <Link to="/studio-app" className="text-sm underline underline-offset-4">More about the app</Link>
+          </div>
+        </div>
       </section>
 
       <section className="max-w-5xl mx-auto px-6 py-12">
         <div className="rounded-xl border border-border bg-secondary/40 p-6 sm:p-8">
-          <h2 className="text-xl font-semibold">We are starting with a few studios</h2>
-          <p className="mt-2 text-muted-foreground max-w-2xl">
-            Tandava is new. We are onboarding our first studios in Austin and working with each owner directly, so
-            when something is rough you talk to the person who can fix it. Pricing is agreed with you before you
-            take a single payment.
-          </p>
+          <h2 className="text-xl font-semibold">{c.pilot.heading}</h2>
+          <p className="mt-2 text-muted-foreground max-w-2xl">{c.pilot.body}</p>
           <Button asChild className="mt-5">
             <Link to={STUDIO_SIGNUP_HREF}>Set up your studio</Link>
           </Button>
@@ -100,29 +112,24 @@ export default function ForStudios() {
 
       <FaqSection
         audience="owner"
-        ids={[
-          "express-booking",
-          "explore-on-studio-page",
-          "class-time-zone",
-          "studio-network-vs-classpass",
-          "studio-network-cannibalisation",
-          "privates-requests",
-          "offsite-and-events",
-          "attribution",
-          "marketing-automation",
-          "measure-ads",
-          "switching",
-          "tracking-privacy",
-        ]}
+        ids={HOME_FAQ_IDS}
         className="max-w-5xl mx-auto px-6 py-12"
       />
 
-      <section className="max-w-5xl mx-auto px-6 pt-4">
-        <p className="text-sm text-muted-foreground">
-          Technical and want to run it yourself? Tandava is open source.{" "}
-          <Link to="/open-source" className="underline underline-offset-4">Self-hosting and the code</Link>.
-        </p>
+      <section className="max-w-5xl mx-auto px-6 py-12" aria-labelledby="oss-title">
+        <h2 id="oss-title" className="text-xl font-semibold">{c.openSource.heading}</h2>
+        <p className="mt-2 text-muted-foreground max-w-2xl">{c.openSource.body}</p>
+        <Link to="/open-source" className="mt-3 inline-block text-sm underline underline-offset-4">{c.openSource.linkLabel}</Link>
       </section>
+
+      <nav className="max-w-5xl mx-auto px-6 pt-4" aria-label="Guides">
+        <h2 className="text-sm font-medium text-muted-foreground">Read more</h2>
+        <ul className="mt-2 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          {c.guides.map((g) => (
+            <li key={g.to}><Link to={g.to} className="underline underline-offset-4">{g.label}</Link></li>
+          ))}
+        </ul>
+      </nav>
     </MarketingShell>
   );
 }

@@ -14,6 +14,7 @@ import { LEGAL_LINKS } from "@/content/legal";
 const NAV = [
   { to: "/discover", label: "Find a class" },
   { to: "/for-studios", label: "For studios" },
+  { to: "/studio-app", label: "Studio app" },
   { to: "/open-source", label: "Open source" },
 ];
 

@@ -37,8 +37,8 @@ export default function OpenSource() {
   return (
     <MarketingShell>
       <SEOHead
-        title="Tandava is open source studio software"
-        description="Scheduling, memberships and payments for yoga, pilates and movement studios. AGPL-3.0. Read the code, self-host it, or contribute."
+        title="Open source yoga studio software you can self-host"
+        description="Open source scheduling, memberships, booking and payments for yoga, pilates and movement studios. AGPL-3.0. Read the code, self-host it, or contribute."
         canonical="/open-source"
       />
 
