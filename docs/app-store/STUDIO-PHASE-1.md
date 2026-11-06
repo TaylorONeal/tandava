@@ -12,6 +12,21 @@ web, so the Stripe money-proof gate (LP-1) and the in-app purchase questions tha
 up the Member app do not block Studio review. What Studio needs is real, native,
 everyday utility (guideline 4.2) and an honest reviewer path.
 
+## Decisions (who decided, when)
+
+| Date | Decision | By |
+|---|---|---|
+| Nov 5, 2026 | Ship Tandava Studio phase 1 to the App Store as soon as possible, before the member app | Taylor |
+| Nov 5, 2026 | Scan to check in is the core native feature for guideline 4.2 | Agent pick, in Taylor's brief |
+| Nov 5, 2026 | iPhone only for 1.0; iPad in an update | Agent pick |
+| Nov 6, 2026 | 1.0 is sign-in only; owners set up on the web, staff are invited | Taylor |
+| Open | Apply migrations 00050 to 00052 on tandava-prod (org Purafield Studio, id `mkaixgjwakfufmmwembn`) | Waits for Taylor's yes |
+| Open | Seed the synthetic review studio on production | Waits for Taylor's yes |
+| Open | Submit for review | Waits for Taylor's yes |
+
+GTM plan: Claude Doc "Tandava Studio 1.0 go-to-market plan". Store set and preview
+plan: app-launch-playbook draft PR #12.
+
 ## Phase 1 scope
 
 Who: studio owners, admins, front desk and teachers. iPhone only for 1.0 (iPad later;

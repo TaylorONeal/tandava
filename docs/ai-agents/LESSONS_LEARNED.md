@@ -667,6 +667,31 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 - Do not restore broad production privileges to keep a test cleanup script
   working. Separate disposable-test inspection from runtime service permissions.
 
+## Studio app 1.0 round (November 5 to 6, 2026)
+
+- Sequence by what blocks review, not by product size. The Studio app sells nothing
+  in the app, so the payment gate (LP-1) does not hold its review; it can ship before
+  the member app.
+- Give a staff app one native feature a website can't fake before submitting
+  (guideline 4.2). For Studio that is the camera pass scanner with haptic confirm.
+- A scan RPC returns a result code for every expected outcome (already checked in,
+  outside the window, not found) instead of raising, so the scanner keeps going. An
+  unauthorized scan answers `not_found`, never "wrong studio", so a pass reveals nothing.
+- Keep native plugins per app with `includePlugins` in `capacitor.config.ts`. The
+  member app must not carry the scanner or a camera usage string it never uses.
+- Check-in opens 60 minutes before class. A reviewer needs an all-day synthetic class
+  with a standing booking during review week, or the scan can't be tested.
+- The iOS simulator has no camera. Scan acceptance, scan screenshots and the scan part
+  of the preview video need a real iPhone.
+- A staff app that is sign-in only (owners set up on the web, staff are invited)
+  keeps account creation, and 5.1.1(v) deletion fulfillment, out of its review. Guard
+  it in three places: no sign-up link, the register route redirects, and the sign-up
+  call refuses.
+- Vitest here has no `@/` alias at runtime. A `src/lib` module under test imports
+  its siblings relatively; type-only `@/` imports are fine.
+- Cloud sessions can't install a browser and GitHub GraphQL is blocked there. Render
+  store frames on the Mac, and read PR checks with `gh api .../check-runs` (REST).
+
 ## Quick Reference: Prevention Patterns
 
 | Issue Type | Prevention Pattern |

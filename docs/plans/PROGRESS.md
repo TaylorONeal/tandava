@@ -549,3 +549,14 @@ apps, Studio iPhone-only for 1.0. Local results: full SQL suite (SCAN-01..13 new
 668 application tests, 53 script tests, typecheck, lint and web build pass. Capacitor
 sync ran on Linux; Xcode package resolution, a signed build, the mocked browser checks
 and any device scan are NOT RUN from this session. No hosted change.
+
+## 2026-11-06: Studio 1.0 is sign-in only (Taylor's decision)
+
+The Studio app no longer offers sign-up: no link on sign-in, `/auth/register`
+redirects to sign-in, and the email sign-up call refuses in the Studio build
+(`allowsSignUp`). Web and member app unchanged. Deletion fulfillment is no longer a
+Studio blocker. Decisions table added to [STUDIO-PHASE-1.md](../app-store/STUDIO-PHASE-1.md);
+lessons in [LESSONS_LEARNED.md](../ai-agents/LESSONS_LEARNED.md). Local typecheck,
+669 application tests and a Studio web build pass. Still waiting on Taylor's yes:
+migrations 00050 to 00052 on tandava-prod (org Purafield Studio, id
+`mkaixgjwakfufmmwembn`), review studio seeding, submission.
