@@ -7,6 +7,13 @@ import { sentryVitePlugin } from "@sentry/vite-plugin";
 export default defineConfig(({ mode }) => {
   // Opt in only on the public marketing deployment. Normal installs omit all game assets.
   const blogGames = process.env.VITE_BLOG_GAMES === "true";
+  // Analytics super properties and the Vercel Web Analytics switch. Vite reads
+  // VITE_* from process.env after this config runs, so setting them here bakes
+  // them into import.meta.env (src/config/analytics.ts reads the same names).
+  process.env.VITE_APP_VERSION ||= process.env.npm_package_version ?? "";
+  if (process.env.VERCEL === "1" && !process.env.VITE_VERCEL_ANALYTICS?.trim()) {
+    process.env.VITE_VERCEL_ANALYTICS = "true";
+  }
   return {
     // Keep the browser gate identical to the Node prerenderer, including when
     // a developer has an old VITE_BLOG_GAMES value in a local .env file.

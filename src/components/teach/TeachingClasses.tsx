@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { data } from "@/lib/backend";
 import { useAuth } from "@/contexts/AuthContext";
+import { trackCheckin } from "@/lib/funnel";
 import { TeachLayout } from "@/components/teach/TeachLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -49,6 +50,7 @@ export function TeachingClasses({ title }: { title: string }) {
       const result = await data.checkInTeachingBooking(bookingId);
       if (result.error) throw new Error(result.error.message);
       if (!result.data || result.data.id !== bookingId || result.data.status !== "checked_in") throw new Error("Attendance was not confirmed. Refresh the roster and try again.");
+      trackCheckin();
       // Show only attendance acknowledged by the server, even if the refresh then fails.
       queryClient.setQueryData<typeof roster.data>(["teaching-roster", user?.id, selected.occurrence_id],
         rows => rows?.map(row => row.booking_id === bookingId ? { ...row, status: "checked_in" } : row));
@@ -60,6 +62,7 @@ export function TeachingClasses({ title }: { title: string }) {
     } catch (error) {
       const refreshed = await roster.refetch();
       if (!refreshed.error && refreshed.data?.some(row => row.booking_id === bookingId && row.status === "checked_in")) {
+        trackCheckin();
         await queryClient.invalidateQueries({ queryKey: ["teaching-classes", user?.id] });
         toast({ title: "Attendance confirmed from roster" });
       } else {
