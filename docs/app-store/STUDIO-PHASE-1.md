@@ -20,7 +20,7 @@ everyday utility (guideline 4.2) and an honest reviewer path.
 | Nov 5, 2026 | Scan to check in is the core native feature for guideline 4.2 | Agent pick, in Taylor's brief |
 | Nov 5, 2026 | iPhone only for 1.0; iPad in an update | Agent pick |
 | Nov 6, 2026 | 1.0 is sign-in only; owners set up on the web, staff are invited | Taylor |
-| Open | Apply migrations 00050 to 00052 on tandava-prod (org Purafield Studio, id `mkaixgjwakfufmmwembn`) | Waits for Taylor's yes |
+| Done Nov 6 | Migration 00052 (scan check-in) applied to tandava-prod (org Purafield Studio, id `mkaixgjwakfufmmwembn`) with `scripts/db/prod/apply-00052.sql`, verified with `verify-00052.sql` | Taylor's yes to 00050-00052. Prod was at 00044, so 00050 and 00051 are held: 00051 needs 00047, and 00046 to 00051 need review first |
 | Open | Seed the synthetic review studio on production | Waits for Taylor's yes |
 | Open | Submit for review | Waits for Taylor's yes |
 
@@ -76,7 +76,7 @@ uploaded candidate does.
 |---|---|---|---|
 | 1 | App Store Connect app record for `com.tandava.studio` (name Tandava Studio, SKU `tandava-studio-ios`) | Taylor, in the store-accounts thread | Bundle ID registered Oct 8 (`Q29237U4L4`). Taylor confirmed Nov 6 the Apple Account is not locked |
 | 2 | New signed candidate from #109 plus this PR | Mac (Xcode) | 1.0 (3) is stale. Xcode must resolve the new SPM packages (barcode scanner, haptics) and update `Package.resolved` |
-| 3 | Migrations 00050 to 00052 on `tandava-prod` (org Purafield Studio, id `mkaixgjwakfufmmwembn`) | Taylor's yes, then apply | Production change. Studio needs 00052 for scanning |
+| 3 | Migration 00052 on `tandava-prod` (org Purafield Studio, id `mkaixgjwakfufmmwembn`) | Done Nov 6 | Applied alone. 00046 to 00051 are not on prod and wait for review; Studio 1.0 needs none of them |
 | 4 | Review studio and accounts | Taylor's yes, then seed | Synthetic studio with `page_live`, a verified owner, an assigned teacher and a member. Add an all-day synthetic class with a standing member booking during review week so a reviewer can scan any time (check-in only opens 60 minutes before class) |
 | 5 | Studio sign-up in the app | Decided Nov 6 (Taylor): sign-in only | `allowsSignUp('studio')` is false: no sign-up link on sign-in, `/auth/register` redirects to sign-in, and the email sign-up call refuses. Owners set up on the web, staff are invited. Deletion fulfillment is not a Studio blocker |
 | 6 | Privacy label | Prep | Contact info (name, email) linked to the user for app function; no tracking; camera frames are processed on device and not collected. Reconcile with Sentry and analytics in the candidate. Verified Nov 6: the scanner library (OSBarcodeLib, AVFoundation and Vision) has no network or photo-saving code, and the app sends only the decoded text |

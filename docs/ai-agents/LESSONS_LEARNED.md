@@ -596,6 +596,7 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 | Mistake | Fix |
 |---|---|
 | `schema_migrations` missing, assumed prod was empty | Query the real schema |
+| Status doc said "waits: 00050 to 00052" while prod was really at 00044 | Taylor's yes was given for the wrong set; caught only by the pre-check | Before asking for a prod yes, check which migrations prod actually has and list every pending one in the ask |
 | Test stub lacked a column main's migration reads (`auth.users.encrypted_password`) | Keep the stub in step with the columns migrations touch |
 | New RLS table with no policy fails SEC-07 | Add an explicit policy, even deny-all (`USING (false)`) |
 | Two auth return helpers after a merge (`authReturn`, `auth/next`) | Keep both, point the pages at one, do not delete the other side's callers |

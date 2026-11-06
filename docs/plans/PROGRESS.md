@@ -560,3 +560,15 @@ lessons in [LESSONS_LEARNED.md](../ai-agents/LESSONS_LEARNED.md). Local typechec
 669 application tests and a Studio web build pass. Still waiting on Taylor's yes:
 migrations 00050 to 00052 on tandava-prod (org Purafield Studio, id
 `mkaixgjwakfufmmwembn`), review studio seeding, submission.
+
+## 2026-11-06: migration 00052 on tandava-prod
+
+Taylor said yes to 00050 to 00052. A read-only check found prod at 00044: 00045
+(superseded) and 00046 to 00051 were never applied, and they exist only on PR #113.
+00051 needs 00047, and 00046 (runtime grants) is marked review-required, so only
+00052 (scan check-in, depends on nothing after 00044) was applied, through the SQL
+editor with `scripts/db/prod/apply-00052.sql` after a rehearsal on a local database
+built through 00044. Verified: function present, security definer, authenticated
+can execute, anon cannot. The review seed also runs cleanly on a 00044 schema.
+Still not on prod: 00046 to 00051. Nothing records applied migrations on prod, so
+check the schema, not a tracking table.
