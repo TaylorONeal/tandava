@@ -687,6 +687,8 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
   keeps account creation, and 5.1.1(v) deletion fulfillment, out of its review. Guard
   it in three places: no sign-up link, the register route redirects, and the sign-up
   call refuses.
+  Don't point to web sign-up either: Apple's account deletion FAQ treats linking out
+  for account creation like offering it. The sign-in line only addresses invited staff.
 - Vitest here has no `@/` alias at runtime. A `src/lib` module under test imports
   its siblings relatively; type-only `@/` imports are fine.
 - Cloud sessions can't install a browser and GitHub GraphQL is blocked there. Render

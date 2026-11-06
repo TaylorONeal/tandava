@@ -240,7 +240,7 @@ const Login = () => {
             </p>
           ) : (
             <p className="text-center text-sm text-muted-foreground">
-              New studio? Set up at tandavastudio.com on the web. Staff, use the email your studio invited.
+              Staff: sign in with the email your studio invited.
             </p>
           )}
         </div>
