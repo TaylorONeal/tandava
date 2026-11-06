@@ -1,6 +1,0 @@
-<!doctype html><meta charset="utf-8"><title>viewport check</title>
-<style>body{margin:0;background:#ccc;display:flex;gap:20px;padding:16px;align-items:flex-start}iframe{border:0;background:#fff;width:390px}</style>
-<script>
-const q=new URLSearchParams(location.search);const paths=(q.get('p')||'/').split(',');const h=q.get('h')||'2400';
-document.addEventListener('DOMContentLoaded',()=>{for(const p of paths){const f=document.createElement('iframe');f.src=p;f.style.height=h+'px';document.body.appendChild(f);}});
-</script>
