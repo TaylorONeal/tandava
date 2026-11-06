@@ -74,7 +74,7 @@ uploaded candidate does.
 
 | # | Gap | Owner | Notes |
 |---|---|---|---|
-| 1 | App Store Connect app record for `com.tandava.studio` (name Tandava Studio, SKU `tandava-studio-ios`) | Taylor, in the store-accounts thread | Bundle ID registered Oct 8 (`Q29237U4L4`). Apple sign-in has to work first |
+| 1 | App Store Connect app record for `com.tandava.studio` (name Tandava Studio, SKU `tandava-studio-ios`) | Taylor, in the store-accounts thread | Bundle ID registered Oct 8 (`Q29237U4L4`). Taylor confirmed Nov 6 the Apple Account is not locked |
 | 2 | New signed candidate from #109 plus this PR | Mac (Xcode) | 1.0 (3) is stale. Xcode must resolve the new SPM packages (barcode scanner, haptics) and update `Package.resolved` |
 | 3 | Migrations 00050 to 00052 on `tandava-prod` (org Purafield Studio, id `mkaixgjwakfufmmwembn`) | Taylor's yes, then apply | Production change. Studio needs 00052 for scanning |
 | 4 | Review studio and accounts | Taylor's yes, then seed | Synthetic studio with `page_live`, a verified owner, an assigned teacher and a member. Add an all-day synthetic class with a standing member booking during review week so a reviewer can scan any time (check-in only opens 60 minutes before class) |
