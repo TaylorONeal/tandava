@@ -73,21 +73,17 @@ export const WEB_FEATURES = [
   "Workshops and events",
 ];
 
-/** FAQ entries (src/content/help.ts ids) on the home page, in order. */
+/**
+ * Owner questions on the home page (src/content/help.ts ids, in order). Only things that work today: planned
+ * features stay on /help, where they are labelled, so a first visit isn't a
+ * roadmap.
+ */
 export const HOME_FAQ_IDS = [
   "where-to-sign-up",
   "need-to-host",
   "express-booking",
   "explore-on-studio-page",
   "class-time-zone",
-  "studio-network-vs-classpass",
-  "studio-network-cannibalisation",
-  "privates-requests",
-  "offsite-and-events",
-  "attribution",
-  "marketing-automation",
-  "measure-ads",
-  "switching",
   "tracking-privacy",
 ];
 

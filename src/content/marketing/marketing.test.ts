@@ -59,3 +59,15 @@ describe("marketing copy", () => {
     }
   });
 });
+
+describe("home FAQ", () => {
+  it("only lists questions about things that work today", async () => {
+    const { HELP } = await import("../help");
+    const { HOME_FAQ_IDS } = await import("./pages");
+    for (const id of HOME_FAQ_IDS) {
+      const entry = HELP.find((e) => e.id === id);
+      expect(entry, id).toBeDefined();
+      expect(entry?.status).toBeUndefined();
+    }
+  });
+});
