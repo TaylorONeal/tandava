@@ -79,11 +79,19 @@ workflows:
       - name: API key file for fastlane
         script: |
           python3 - <<'PY'
-          import json, os
+          import json, os, re, textwrap
+          raw = os.environ["APP_STORE_CONNECT_PRIVATE_KEY"]
+          # Normalise to a clean PKCS8 PEM: escaped newlines, spaces or a bare
+          # base64 body all broke fastlane's EC key parse ("invalid curve name").
+          raw = raw.replace("\\n", "\n").strip().strip('"')
+          body = re.sub(r"-----(BEGIN|END)[A-Z ]*-----", "", raw)
+          body = re.sub(r"[^A-Za-z0-9+/=]", "", body)
+          pem = "-----BEGIN PRIVATE KEY-----\n" + "\n".join(textwrap.wrap(body, 64)) + "\n-----END PRIVATE KEY-----\n"
+          print("key shape: had_header=%s raw_lines=%d body_len=%d" % ("BEGIN" in raw, raw.count("\n") + 1, len(body)))
           json.dump({
               "key_id": os.environ["APP_STORE_CONNECT_KEY_IDENTIFIER"],
               "issuer_id": os.environ["APP_STORE_CONNECT_ISSUER_ID"],
-              "key": os.environ["APP_STORE_CONNECT_PRIVATE_KEY"],
+              "key": pem,
               "in_house": False,
           }, open("/tmp/asc_api_key.json", "w"))
           PY
