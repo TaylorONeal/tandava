@@ -243,7 +243,7 @@ function Notice({
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <MarketingShell>
+    <MarketingShell classic>
       <div className="max-w-5xl mx-auto px-6 py-8">{children}</div>
     </MarketingShell>
   );

@@ -14,7 +14,7 @@ export default function SupportPage() {
       <MarketingShell maxWidth="max-w-3xl">
         <SEOHead title="Support" description={SUPPORT_SUMMARY} noindex />
         <article className="max-w-3xl mx-auto px-6 py-12 space-y-3">
-          <h1 className="text-3xl font-bold tracking-tight">Support</h1>
+          <h1 className="font-brand text-4xl font-extrabold tracking-tight">Support</h1>
           <p className="text-muted-foreground">Contact the studio that runs this site.</p>
         </article>
       </MarketingShell>
@@ -25,7 +25,7 @@ export default function SupportPage() {
       <SEOHead title="Support" description={SUPPORT_SUMMARY} />
       <article className="max-w-3xl mx-auto px-6 py-12 space-y-8">
         <header className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">Support</h1>
+          <h1 className="font-brand text-4xl font-extrabold tracking-tight">Support</h1>
           <p className="text-muted-foreground">{SUPPORT_SUMMARY}</p>
           <p className="text-[15px]">
             Email <a className="text-primary hover:underline" href={`mailto:${LEGAL_CONTACT}`}>{LEGAL_CONTACT}</a> and
@@ -34,7 +34,7 @@ export default function SupportPage() {
         </header>
         {SUPPORT_ITEMS.map((item) => (
           <section key={item.q} className="space-y-2 text-[15px] leading-relaxed">
-            <h2 className="text-lg font-semibold">{item.q}</h2>
+            <h2 className="font-brand text-lg font-bold tracking-tight">{item.q}</h2>
             <p>{item.a}</p>
           </section>
         ))}
