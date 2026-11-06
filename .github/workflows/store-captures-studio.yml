@@ -6,7 +6,7 @@ on:
     branches: ['store-captures/studio-20261106']
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   capture:
     runs-on: ubuntu-latest
@@ -83,3 +83,12 @@ jobs:
           name: studio-store-captures
           path: store-out/
           retention-days: 7
+      - name: Commit outputs to store-captures/studio-20261106-out
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B store-captures/studio-20261106-out
+          git add -f store-out
+          git commit -q -m "Studio store capture outputs from run ${{ github.run_id }} (do not merge)"
+          git push -f origin store-captures/studio-20261106-out
