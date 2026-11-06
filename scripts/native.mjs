@@ -1,8 +1,8 @@
 import { spawnSync } from 'node:child_process';
 import { loadEnv } from 'vite';
-const [target, action = 'sync'] = process.argv.slice(2);
-if (!['member', 'studio'].includes(target) || !['build', 'add', 'sync'].includes(action)) {
-  throw new Error('Usage: node scripts/native.mjs member|studio build|add|sync');
+const [target, action = 'sync', platform = 'ios'] = process.argv.slice(2);
+if (!['member', 'studio'].includes(target) || !['build', 'add', 'sync'].includes(action) || !['ios', 'android'].includes(platform)) {
+  throw new Error('Usage: node scripts/native.mjs member|studio build|add|sync [ios|android]');
 }
 const env = { ...process.env, ...loadEnv('native', process.cwd(), 'VITE_'), TANDAVA_APP: target, VITE_NATIVE_APP: target, VITE_BLOG_GAMES: 'false' };
 // A native candidate must never silently become the sample-data demo.
@@ -14,4 +14,4 @@ function run(command, args) {
   if (r.status !== 0) process.exit(r.status || 1);
 }
 run('npx', ['vite', 'build', '--mode', 'native', '--outDir', `dist-native/${target}`]);
-if (action !== 'build') run('npx', ['cap', action, 'ios']);
+if (action !== 'build') run('npx', ['cap', action, platform]);

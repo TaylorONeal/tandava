@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Calendar, Tag, Share2, Settings, Code2, Workflow } from 'lucide-react';
+import { ArrowRight, Calendar, Tag, Share2, Settings, Code2, Workflow, ScanLine } from 'lucide-react';
+import { canScanPasses } from '@/lib/native/scanner';
 import { useAuth } from '@/contexts/AuthContext';
 import { ManageLayout } from '@/components/manage/ManageLayout';
 import { Button } from '@/components/ui/button';
@@ -37,6 +38,12 @@ export default function LiveDashboard() {
             <Button asChild><Link to="/manage/onboarding">Set up your studio</Link></Button>
           </section>
         ) : <>
+          {canScanPasses() && (
+            <Link to="/scan" className="flex items-center gap-4 rounded-2xl bg-primary p-6 text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <ScanLine className="h-8 w-8 shrink-0" aria-hidden="true" />
+              <span><span className="block text-lg font-bold">Scan passes</span><span className="block text-sm opacity-90">Check members in at the door with the camera.</span></span>
+            </Link>
+          )}
           <section className="space-y-4 rounded-2xl border border-primary/25 bg-primary/5 p-6 sm:p-8">
             <Calendar className="h-7 w-7 text-primary" aria-hidden="true" />
             <div className="space-y-2">

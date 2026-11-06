@@ -535,3 +535,40 @@ PostgreSQL test process was stopped cleanly. No continuous-release automation
 was created; the separate existing Stripe smoke schedule is not a continuation
 of this work. The next dependent action is authenticated read-only hosted
 inspection, followed by the retained deletion/provider/native acceptance gates.
+
+
+## 2026-11-05: Studio phase 1 scope and scan-to-check-in (stacked on #109)
+
+Scope and gap list: [STUDIO-PHASE-1.md](../app-store/STUDIO-PHASE-1.md). Studio ships
+first because it sells nothing, so the payment gate does not hold its review.
+
+New: migration 00052 `check_in_with_pass`, member check-in pass QR in My Schedule,
+Studio-only `/scan` with the official barcode scanner and haptics, per-app
+`includePlugins`, camera usage string (Studio only), export-compliance key in both
+apps, Studio iPhone-only for 1.0. Local results: full SQL suite (SCAN-01..13 new),
+668 application tests, 53 script tests, typecheck, lint and web build pass. Capacitor
+sync ran on Linux; Xcode package resolution, a signed build, the mocked browser checks
+and any device scan are NOT RUN from this session. No hosted change.
+
+## 2026-11-06: Studio 1.0 is sign-in only (Taylor's decision)
+
+The Studio app no longer offers sign-up: no link on sign-in, `/auth/register`
+redirects to sign-in, and the email sign-up call refuses in the Studio build
+(`allowsSignUp`). Web and member app unchanged. Deletion fulfillment is no longer a
+Studio blocker. Decisions table added to [STUDIO-PHASE-1.md](../app-store/STUDIO-PHASE-1.md);
+lessons in [LESSONS_LEARNED.md](../ai-agents/LESSONS_LEARNED.md). Local typecheck,
+669 application tests and a Studio web build pass. Still waiting on Taylor's yes:
+migrations 00050 to 00052 on tandava-prod (org Purafield Studio, id
+`mkaixgjwakfufmmwembn`), review studio seeding, submission.
+
+## 2026-11-06: migration 00052 on tandava-prod
+
+Taylor said yes to 00050 to 00052. A read-only check found prod at 00044: 00045
+(superseded) and 00046 to 00051 were never applied, and they exist only on PR #113.
+00051 needs 00047, and 00046 (runtime grants) is marked review-required, so only
+00052 (scan check-in, depends on nothing after 00044) was applied, through the SQL
+editor with `scripts/db/prod/apply-00052.sql` after a rehearsal on a local database
+built through 00044. Verified: function present, security definer, authenticated
+can execute, anon cannot. The review seed also runs cleanly on a 00044 schema.
+Still not on prod: 00046 to 00051. Nothing records applied migrations on prod, so
+check the schema, not a tracking table.

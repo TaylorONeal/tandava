@@ -1,0 +1,189 @@
+# Tandava Studio iOS build to TestFlight (prepared 2026-11-06).
+#
+# Codemagic setup (Taylor's Personal Account, done Nov 6):
+#   - Repository TaylorONeal/tandava is added as an app.
+#   - App Store Connect integration "app-store-connect" (Key ID B8X648KLKD).
+#   - Code signing is automatic: Codemagic fetches or creates the App Store
+#     distribution certificate and profile for com.tandava.studio through that key.
+# Still needed before the first run:
+#   - An environment variable group named "tandava_native" with the PUBLIC
+#     Supabase values VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (production,
+#     never a service key). Optional: VITE_SENTRY_DSN. Leave VITE_POSTHOG_KEY unset
+#     unless the App Privacy label adds Usage Data.
+# Nothing here submits for App Review. It uploads to TestFlight only.
+workflows:
+  studio-ios-testflight:
+    name: Tandava Studio iOS to TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    integrations:
+      app_store_connect: app-store-connect
+    environment:
+      groups:
+        - tandava_native
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.tandava.studio
+      vars:
+        APP_STORE_APPLE_ID: 6831459731
+        XCODE_PROJECT: native/studio/ios/App/App.xcodeproj
+        XCODE_SCHEME: App
+      node: 22
+      xcode: latest
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: 'studio-v*'
+    scripts:
+      - name: Install
+        script: npm ci
+      - name: Checks
+        script: npm run typecheck && npm test
+      - name: Native web bundle and sync
+        script: npm run native -- studio sync
+      - name: Signing profiles
+        script: xcode-project use-profiles --project "$XCODE_PROJECT"
+      - name: Build number above the latest TestFlight build
+        script: |
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" || echo 0)
+          NEXT=$(( LATEST + 1 ))
+          # Local 1.0 (3) archives exist but were never uploaded; stay above them.
+          [ "$NEXT" -lt 4 ] && NEXT=4
+          cd native/studio/ios/App && agvtool new-version -all "$NEXT"
+      - name: Build IPA
+        script: xcode-project build-ipa --project "$XCODE_PROJECT" --scheme "$XCODE_SCHEME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false
+
+  # Android, phase 1. Debug APK for the Pixel 4 plus an unsigned AAB; needs no keystore.
+  studio-android-debug:
+    name: Tandava Studio Android debug APK and unsigned AAB
+    instance_type: linux_x2
+    max_build_duration: 45
+    environment:
+      groups:
+        - tandava_native
+      node: 22
+      java: 21
+    scripts:
+      - name: Install
+        script: npm ci
+      - name: Checks
+        script: npm run typecheck && npm test
+      - name: Native web bundle and sync
+        script: npm run native -- studio sync android
+      - name: Build APK and AAB
+        script: |
+          cd native/studio/android
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug bundleRelease
+    artifacts:
+      - native/studio/android/app/build/outputs/apk/debug/*.apk
+      - native/studio/android/app/build/outputs/bundle/release/*.aab
+
+  # Signed AAB for Play. Needs the upload keystore saved in Codemagic as
+  # "tandava_studio_upload" (Team settings > Code signing identities > Android keystores).
+  # Upload to Play by hand: nothing here publishes.
+  studio-android-aab:
+    name: Tandava Studio Android signed AAB
+    instance_type: linux_x2
+    max_build_duration: 45
+    environment:
+      groups:
+        - tandava_native
+      android_signing:
+        - tandava_studio_upload
+      node: 22
+      java: 21
+    scripts:
+      - name: Install
+        script: npm ci
+      - name: Checks
+        script: npm run typecheck && npm test
+      - name: Native web bundle and sync
+        script: npm run native -- studio sync android
+      - name: Build signed AAB
+        script: |
+          export ANDROID_VERSION_CODE=$(( PROJECT_BUILD_NUMBER + 100 ))
+          echo "versionCode $ANDROID_VERSION_CODE"
+          cd native/studio/android
+          chmod +x gradlew
+          ./gradlew --no-daemon bundleRelease
+    artifacts:
+      - native/studio/android/app/build/outputs/bundle/release/*.aab
+
+  # Uploads the 7 iPhone 6.9-inch screenshots to the editable 1.0 version in
+  # App Store Connect through the same API key. Start it by hand from Codemagic.
+  # No binary, no metadata, no review submission. Replaces any screenshots already there.
+  studio-ios-screenshots:
+    name: Tandava Studio iOS screenshots to App Store Connect
+    instance_type: mac_mini_m2
+    max_build_duration: 20
+    integrations:
+      app_store_connect: app-store-connect
+    environment:
+      vars:
+        APP_IDENTIFIER: com.tandava.studio
+        APP_VERSION: "1.0"
+        SCREENSHOTS_PATH: native/studio/store/screenshots
+    scripts:
+      - name: API key file for fastlane
+        script: |
+          python3 - <<'PY'
+          import json, os, re, textwrap
+          raw = os.environ["APP_STORE_CONNECT_PRIVATE_KEY"].strip()
+          # Codemagic's integration can hand the key as a reference, not the PEM itself.
+          ref = "literal"
+          if raw.startswith("@file:"):
+              ref = "file"; raw = open(os.path.expanduser(raw[len("@file:"):])).read()
+          elif raw.startswith("@env:"):
+              ref = "env"; raw = os.environ[raw[len("@env:"):]]
+          elif os.path.isfile(os.path.expanduser(raw)):
+              ref = "path"; raw = open(os.path.expanduser(raw)).read()
+          print("key source:", ref)
+          # Normalise to a clean PKCS8 PEM: escaped newlines, spaces or a bare
+          # base64 body all broke fastlane's EC key parse ("invalid curve name").
+          raw = raw.replace("\\n", "\n").strip().strip('"')
+          body = re.sub(r"-----(BEGIN|END)[A-Z ]*-----", "", raw)
+          body = re.sub(r"[^A-Za-z0-9+/=]", "", body)
+          pem = "-----BEGIN PRIVATE KEY-----\n" + "\n".join(textwrap.wrap(body, 64)) + "\n-----END PRIVATE KEY-----\n"
+          print("key shape: had_header=%s raw_lines=%d body_len=%d" % ("BEGIN" in raw, raw.count("\n") + 1, len(body)))
+          json.dump({
+              "key_id": os.environ["APP_STORE_CONNECT_KEY_IDENTIFIER"],
+              "issuer_id": os.environ["APP_STORE_CONNECT_ISSUER_ID"],
+              "key": pem,
+              "in_house": False,
+          }, open("/tmp/asc_api_key.json", "w"))
+          PY
+      - name: Upload screenshots
+        script: |
+          SHOTS="$CM_BUILD_DIR/$SCREENSHOTS_PATH"
+          ls -la "$SHOTS/en-US"
+          # deliver asks to "setup deliver" when no Deliverfile exists; run from an empty work dir with one
+          WORK="$(mktemp -d)"
+          mkdir -p "$WORK/metadata"
+          touch "$WORK/Deliverfile"
+          cd "$WORK"
+          export FASTLANE_SKIP_UPDATE_CHECK=1 FASTLANE_HIDE_CHANGELOG=1 FASTLANE_OPT_OUT_USAGE=1 CI=true
+          fastlane deliver \
+            --api_key_path /tmp/asc_api_key.json \
+            --app_identifier "$APP_IDENTIFIER" \
+            --app_version "$APP_VERSION" \
+            --platform ios \
+            --screenshots_path "$SHOTS" --metadata_path "$WORK/metadata" \
+            --overwrite_screenshots true \
+            --skip_binary_upload true \
+            --skip_metadata true \
+            --skip_app_version_update true \
+            --submit_for_review false \
+            --automatic_release false \
+            --run_precheck_before_submit false \
+            --force true
+      - name: Remove key file
+        script: rm -f /tmp/asc_api_key.json

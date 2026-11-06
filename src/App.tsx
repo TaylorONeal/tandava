@@ -6,7 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { offersSignUp } from "@/lib/native/platform";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { DemoProvider } from "@/contexts/DemoContext";
@@ -141,6 +142,11 @@ const Instructors = lazyWithReload(() => import("./pages/Instructors"));
 const InstructorDetail = lazyWithReload(() => import("./pages/InstructorDetail"));
 const OnDemand = lazyWithReload(() => import("./pages/OnDemand"));
 const Login = lazyWithReload(() => import("./pages/auth/Login"));
+/** Tandava Studio is sign-in only; any sign-up link lands on sign-in with its query kept. */
+function SignInOnly() {
+  const { search } = useLocation();
+  return <Navigate to={`/auth/login${search}`} replace />;
+}
 const Register = lazyWithReload(() => import("./pages/auth/Register"));
 const ResetConfirm = lazyWithReload(() => import("./pages/auth/ResetConfirm"));
 const NotFound = lazyWithReload(() => import("./pages/NotFound"));
@@ -149,6 +155,7 @@ const OpenSource = lazyWithReload(() => import("./pages/OpenSource"));
 const TermsPage = lazyWithReload(() => import("./pages/legal/LegalPage").then((m) => ({ default: m.TermsPage })));
 const PrivacyPage = lazyWithReload(() => import("./pages/legal/LegalPage").then((m) => ({ default: m.PrivacyPage })));
 const RefundsPage = lazyWithReload(() => import("./pages/legal/LegalPage").then((m) => ({ default: m.RefundsPage })));
+const SupportPage = lazyWithReload(() => import("./pages/legal/SupportPage"));
 const ResetPassword = lazyWithReload(() => import("./pages/auth/ResetPassword"));
 const ForStudios = lazyWithReload(() => import("./pages/ForStudios"));
 const StudioCalculator = lazyWithReload(() => import("./pages/tools/StudioCalculator"));
@@ -198,6 +205,7 @@ const NotificationPreferences = lazyWithReload(() => import("./pages/account/Not
 
 const TeachDashboard = lazyWithReload(() => import("./pages/teach/Dashboard"));
 const TeachSchedule = lazyWithReload(() => import("./pages/teach/Schedule"));
+const ScanCheckin = lazyWithReload(() => import("./pages/studio/ScanCheckin"));
 const TeachSubs = lazyWithReload(() => import("./pages/teach/Subs"));
 const TeachEarnings = lazyWithReload(() => import("./pages/teach/Earnings"));
 const TeachAvailability = lazyWithReload(() => import("./pages/teach/Availability"));
@@ -255,6 +263,7 @@ const App = () => (
                   <Route path="/checkout/status" element={<ProtectedRoute><CheckoutStatus /></ProtectedRoute>} />
                   <Route path="/privacy" element={<PrivacyPage />} />
                   <Route path="/refunds" element={<RefundsPage />} />
+                  <Route path="/support" element={<SupportPage />} />
                   <Route path="/for-studios" element={<ForStudios />} />
                   <Route path="/tools/studio-calculator" element={<StudioCalculator />} />
 
@@ -288,7 +297,7 @@ const App = () => (
 
                   {/* ---- Auth routes ---- */}
                   <Route path="/auth/login" element={<Login />} />
-                  <Route path="/auth/register" element={<Register />} />
+                  <Route path="/auth/register" element={offersSignUp() ? <Register /> : <SignInOnly />} />
                   <Route path="/auth/reset" element={<ResetPassword />} />
                   <Route path="/auth/reset-confirm" element={<ResetConfirm />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
@@ -362,6 +371,7 @@ const App = () => (
                   <Route path="/teach/profile" element={<ProtectedRoute permission="studio.teach"><TeachProfile /></ProtectedRoute>} />
 
                   {/* ---- Staff (front desk) routes ---- */}
+                  <Route path="/scan" element={<ProtectedRoute><ScanCheckin /></ProtectedRoute>} />
                   <Route path="/staff/checkin" element={<ProtectedRoute permission="studio.checkin"><StaffCheckin /></ProtectedRoute>} />
                   <Route path="/staff/waitlist" element={<ProtectedRoute permission="studio.manage_waitlist"><StaffWaitlist /></ProtectedRoute>} />
 

@@ -1,5 +1,5 @@
 import { apiErrorMessage } from "./apiError";
-import { nativeApp, blocksNativePayment, authRedirectOrigin } from '@/lib/native/platform';
+import { nativeApp, blocksNativePayment, authRedirectOrigin, allowsSignUp } from '@/lib/native/platform';
 /**
  * Supabase Backend Provider
  *
@@ -29,6 +29,7 @@ import type {
   DataProvider,
   TeachingClass,
   TeachingAttendee,
+  PassScan,
   DataResult,
   MutationResult,
   CreateMessageInput,
@@ -106,6 +107,9 @@ const supabaseAuth: AuthProvider = {
   },
 
   async signUpWithEmail(email, password, metadata: SignUpMetadata, next) {
+    if (!allowsSignUp(nativeApp)) {
+      return { error: { message: "Accounts are created on the web at tandavastudio.com." }, requiresEmailConfirmation: false };
+    }
     const path = safeNextPath(next);
     const { data, error } = await getClient().auth.signUp({
       email,
@@ -200,6 +204,13 @@ const supabaseData: DataProvider = {
   async checkInTeachingBooking(bookingId): Promise<DataResult<Booking>> {
     const { data, error } = await getClient().rpc("check_in_teaching_booking" as never, { p_booking_id: bookingId } as never);
     return { data: data as Booking | null, error: error ? { message: error.message } : null };
+  },
+  async checkInWithPass(pass): Promise<DataResult<PassScan>> {
+    const { data, error } = await getClient().rpc("check_in_with_pass" as never, { p_pass: pass } as never);
+    const rows = data as unknown as PassScan[] | null;
+    const row = Array.isArray(rows) ? rows[0] : undefined;
+    if (error) return { data: null, error: { message: error.message } };
+    return row ? { data: row, error: null } : { data: null, error: { message: "The scan was not confirmed. Try again." } };
   },
   async markProfileClaimed(userId): Promise<MutationResult> {
     // RLS "Users can update own profile" scopes this to the caller. The
