@@ -60,7 +60,7 @@ export default function OpenSource() {
           </Button>
         </div>
         <p className="mt-6 text-sm text-muted-foreground">
-          Not a developer? <Link to="/for-studios" className="underline underline-offset-4">Run your studio on the hosted version</Link> instead.
+          Not a developer? <Link to="/" className="underline underline-offset-4">Run your studio on the hosted version</Link> instead.
         </p>
       </section>
 

@@ -24,7 +24,7 @@ export function StudioAppBadge({ live = STUDIO_APP_LIVE, className = "" }: { liv
   }
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-sm text-muted-foreground ${className}`}
+      className={`inline-flex h-10 items-center gap-2 rounded-xl border-2 border-current px-3 text-sm font-bold ${className}`}
       data-testid="studio-app-badge-soon"
     >
       <Smartphone className="h-4 w-4" aria-hidden />

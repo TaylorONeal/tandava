@@ -97,6 +97,9 @@ function buildHead(m: HeadMeta): string {
 
 function render(template: string, meta: HeadMeta, bodyHtml: string): string {
   let html = stripDefaultHead(template);
+  // Paper background and brand font from first paint (index.css html.mkt-page).
+  html = html.replace(/<html([^>]*)>/i, (_m, attrs: string) => `<html${attrs} class="mkt-page">`);
+  html = html.replace(/<meta name="theme-color" content="[^"]*"/i, '<meta name="theme-color" content="#FFF8EE"');
   html = html.replace(/<\/head>/i, () => `    ${buildHead(meta)}\n  </head>`);
   if (!html.includes("<!-- /root")) {
     throw new Error("index.html lost its <!-- /root --> marker; prerendered pages would ship without content");
