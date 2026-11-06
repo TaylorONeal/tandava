@@ -15,21 +15,36 @@ jobs:
       SUPABASE_TELEMETRY_DISABLED: '1'
     steps:
       - uses: actions/checkout@v4
+      - name: Mode (RENDER_ONLY reuses the page captures on the -out branch)
+        run: |
+          if [ -f store-captures/studio/RENDER_ONLY ]; then
+            echo RENDER_ONLY=1 >> "$GITHUB_ENV"
+            git fetch -q --depth=1 origin store-captures/studio-20261106-out
+            git checkout FETCH_HEAD -- store-out/raw
+            git reset -q
+          else
+            echo RENDER_ONLY=0 >> "$GITHUB_ENV"
+          fi
       - uses: actions/setup-node@v4
+        if: env.RENDER_ONLY != '1'
         with:
           node-version: 22
           cache: npm
       - run: npm ci
+        if: env.RENDER_ONLY != '1'
       - uses: supabase/setup-cli@v1
+        if: env.RENDER_ONLY != '1'
         with:
           version: latest
       - name: Start local Supabase (applies supabase/migrations)
+        if: env.RENDER_ONLY != '1'
         run: |
           supabase init < /dev/null || true
           test -f supabase/config.toml
           supabase start -x realtime,studio,imgproxy,edge-runtime,logflare,vector,supavisor,postgres-meta
           supabase status -o env | grep -E '^(API_URL|ANON_KEY|SERVICE_ROLE_KEY|DB_URL)=' | sed -E 's/^([A-Z_]+)="?([^"]*)"?$/SB_\1=\2/' >> "$GITHUB_ENV"
       - name: Review users (local only) and seed
+        if: env.RENDER_ONLY != '1'
         run: |
           PW=$(openssl rand -hex 16); echo "::add-mask::$PW"; echo "REVIEW_PASSWORD=$PW" >> "$GITHUB_ENV"
           for who in owner teacher member-1 member-2 member-3 member-4 member-5 member-6 member-7 member-8; do
@@ -47,6 +62,7 @@ jobs:
           SH
           bash /tmp/seed.sh
       - name: Build Tandava Studio and Tandava (member) bundles against local Supabase
+        if: env.RENDER_ONLY != '1'
         run: |
           for app in studio member; do
             VITE_NATIVE_APP=$app VITE_SUPABASE_URL="$SB_API_URL" VITE_SUPABASE_ANON_KEY="$SB_ANON_KEY" \
@@ -57,14 +73,16 @@ jobs:
           for i in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:4301 && curl -fsS -o /dev/null http://localhost:4302 && break; sleep 2; done
           curl -fsS -o /dev/null http://localhost:4301/auth/login && echo previews up
       - name: Playwright image (browsers and their system libraries, no apt)
+        if: env.RENDER_ONLY != '1'
         timeout-minutes: 8
         run: docker pull -q mcr.microsoft.com/playwright:v1.64.0-noble
       - name: Capture iOS (WebKit 440x956 @3x)
+        if: env.RENDER_ONLY != '1'
         timeout-minutes: 8
         run: docker run --rm --network host --ipc host --user "$(id -u):$(id -g)" -e HOME=/tmp -e REVIEW_PASSWORD -v "$PWD:/w" -w /w mcr.microsoft.com/playwright:v1.64.0-noble node store-captures/studio/capture.mjs ios store-out/raw/ios
       - name: Reset seed, capture Play (Chromium 360x640 @3x)
+        if: env.RENDER_ONLY != '1'
         timeout-minutes: 8
-        if: always()
         run: |
           bash /tmp/seed.sh
           docker run --rm --network host --ipc host --user "$(id -u):$(id -g)" -e HOME=/tmp -e REVIEW_PASSWORD -v "$PWD:/w" -w /w mcr.microsoft.com/playwright:v1.64.0-noble node store-captures/studio/capture.mjs play store-out/raw/play

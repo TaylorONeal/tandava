@@ -62,9 +62,15 @@ async function settle(page, ms = 1200) {
   await page.waitForTimeout(ms);
 }
 
-async function shot(page, name) {
+async function shot(page, name, scrollToText) {
   const file = path.join(outDir, `${name}.png`);
   await page.evaluate(() => window.scrollTo(0, 0));
+  if (scrollToText) {
+    await page.evaluate(t => {
+      const el = [...document.querySelectorAll('h1,h2,h3')].find(e => e.textContent.trim().startsWith(t));
+      if (el) window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 76);
+    }, scrollToText);
+  }
   await page.waitForTimeout(300);
   await page.screenshot({ path: file, animations: 'disabled', caret: 'hide' });
   // Long screens get a full-page copy too, for crop choices.
@@ -131,7 +137,8 @@ await shot(owner, '05-schedule');
 await go(owner, STUDIO, '/manage/offerings');
 await shot(owner, '06-offerings');
 await go(owner, STUDIO, '/manage/share');
-await shot(owner, '07-share');
+await shot(owner, 'share-top');
+await shot(owner, '07-share', 'Links to one class');
 
 await browser.close();
 log('done, failures:', failures);

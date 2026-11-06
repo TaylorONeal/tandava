@@ -7,7 +7,8 @@
 \set ON_ERROR_STOP on
 BEGIN;
 
-UPDATE studios   SET name = 'Juniper Yoga' WHERE id = 'f5a1d000-0000-4000-8000-0000000000a1';
+UPDATE studios   SET name = 'Juniper Yoga', slug = 'juniper-yoga', page_live = TRUE WHERE id = 'f5a1d000-0000-4000-8000-0000000000a1';
+UPDATE offerings SET purchase_scope = 'in_person' WHERE studio_id = 'f5a1d000-0000-4000-8000-0000000000a1';
 UPDATE locations SET name = 'Main Room'    WHERE id = 'f5a1d000-0000-4000-8000-0000000000b1';
 UPDATE offerings SET name = 'Open Flow', slug = 'open-flow', drop_in_price_cents = 2200
  WHERE id = 'f5a1d000-0000-4000-8000-0000000000c1';
@@ -56,10 +57,10 @@ COMMIT;
 -- Pricing rows for the Classes and pricing screen. Kept out of the transaction so a schema
 -- difference only skips the row instead of failing the run.
 \set ON_ERROR_STOP off
-INSERT INTO class_pack_types (studio_id, name, description, class_count, price_cents, validity_days)
-VALUES ('f5a1d000-0000-4000-8000-0000000000a1', '10-Class Pack', 'Any class, any time.', 10, 18000, 180);
-INSERT INTO membership_types (studio_id, name, description, billing_cycle, price_cents)
-VALUES ('f5a1d000-0000-4000-8000-0000000000a1', 'Monthly Unlimited', 'Every class, every week.', 'monthly', 12900);
+INSERT INTO class_pack_types (studio_id, name, description, class_count, price_cents, validity_days, purchase_scope)
+VALUES ('f5a1d000-0000-4000-8000-0000000000a1', '10-Class Pack', 'Any class, any time.', 10, 18000, 180, 'in_person');
+INSERT INTO membership_types (studio_id, name, description, billing_cycle, price_cents, purchase_scope)
+VALUES ('f5a1d000-0000-4000-8000-0000000000a1', 'Monthly Unlimited', 'Every class, every week.', 'monthly', 12900, 'in_person');
 
 SELECT o.name, c.starts_at, count(b.*) AS booked
   FROM class_occurrences c JOIN offerings o ON o.id = c.offering_id
