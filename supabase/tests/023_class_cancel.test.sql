@@ -101,8 +101,8 @@ BEGIN
   -- CC-08: refund requests are visible to the studio's staff only, and never writable from the client.
   PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
   SELECT count(*) INTO n FROM refund_requests;
-  UPDATE refund_requests SET status = 'sent';
-  GET DIAGNOSTICS m = ROW_COUNT;
+  PERFORM pg_temp.expect_denied('UPDATE refund_requests SET status = ''sent''', 'CC-08');
+  m := 0;
   EXECUTE 'RESET ROLE';
   PERFORM pg_temp.as_user(pg_temp.id('staff_b'));
   SELECT n + 10 * count(*) INTO n FROM refund_requests;
@@ -165,8 +165,8 @@ BEGIN
   SELECT n + count(*) INTO n FROM class_cancel_notices;
   EXECUTE 'RESET ROLE';
   PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
-  UPDATE class_cancel_notices SET status = 'pending';
-  GET DIAGNOSTICS m = ROW_COUNT;
+  PERFORM pg_temp.expect_denied('UPDATE class_cancel_notices SET status = ''pending''', 'CC-14');
+  m := 0;
   SELECT n + 10 * count(*) INTO n FROM class_cancel_notices;
   EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(ok AND m = 0 AND n = 40, 'CC-14', 'follow-up and notices: own staff read only, no client writes');

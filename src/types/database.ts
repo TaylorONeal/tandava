@@ -144,6 +144,7 @@ export interface StudioMember {
 }
 
 export interface Offering {
+  purchase_scope?: "unknown" | "in_person" | "digital_or_mixed";
   id: string;
   studio_id: string;
   name: string;
@@ -270,6 +271,7 @@ export interface Booking {
 }
 
 export interface MembershipType {
+  purchase_scope?: "unknown" | "in_person" | "digital_or_mixed";
   id: string;
   studio_id: string;
   name: string;
@@ -289,6 +291,7 @@ export interface MembershipType {
 }
 
 export interface Membership {
+  purchase_scope?: "unknown" | "in_person" | "digital_or_mixed";
   id: string;
   studio_id: string;
   profile_id: string;
@@ -311,6 +314,7 @@ export interface Membership {
 }
 
 export interface ClassPackType {
+  purchase_scope?: "unknown" | "in_person" | "digital_or_mixed";
   id: string;
   studio_id: string;
   name: string;
@@ -327,6 +331,7 @@ export interface ClassPackType {
 }
 
 export interface ClassPack {
+  purchase_scope?: "unknown" | "in_person" | "digital_or_mixed";
   id: string;
   studio_id: string;
   profile_id: string;
@@ -2646,6 +2651,7 @@ export type EmailProvider = "resend" | "sendgrid" | "smtp" | "console";
 /** A row of the public embed schedule (from the get_public_schedule RPC). */
 /** Public storefront payload for a discoverable studio (from get_studio_storefront). */
 export interface StorefrontOffering {
+  purchase_scope?: "unknown" | "in_person" | "digital_or_mixed";
   id: string;
   name: string;
   style: string | null;
@@ -2658,6 +2664,7 @@ export interface StorefrontOffering {
 }
 
 export interface StorefrontMembership {
+  purchase_scope?: "unknown" | "in_person" | "digital_or_mixed";
   id: string;
   name: string;
   description: string | null;
@@ -2667,6 +2674,7 @@ export interface StorefrontMembership {
 }
 
 export interface StorefrontPack {
+  purchase_scope?: "unknown" | "in_person" | "digital_or_mixed";
   id: string;
   name: string;
   description: string | null;

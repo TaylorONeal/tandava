@@ -98,7 +98,8 @@ DO $$
 DECLARE n int; r text;
 BEGIN
   PERFORM pg_temp.as_user(pg_temp.id('student_b1'));
-  SELECT count(*) INTO n FROM seat_holds WHERE profile_id <> pg_temp.id('student_b1');
+  PERFORM pg_temp.expect_denied('SELECT * FROM seat_holds', 'HOLD-09');
+  n := 0;
   EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(n = 0, 'HOLD-09', 'a student cannot read other students holds, saw ' || n);
 

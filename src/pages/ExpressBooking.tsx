@@ -1,3 +1,4 @@
+import { nativeApp } from "@/lib/native/platform";
 /**
  * Express Booking — /s/:slug/book/:occurrenceId (PRD-020)
  *
@@ -410,14 +411,14 @@ export default function ExpressBooking() {
         <Notice
           tone="info"
           icon={<Mail className="h-5 w-5" aria-hidden="true" />}
-          title="This email already has an account"
+          title="Sign in to finish booking"
           body={
             result.message ??
-            "We sent you a link to finish booking this class. It expires in 30 minutes."
+            "Check your email for a sign-in link, or sign in directly to finish booking."
           }
           action={{ to: signInHref, label: "Sign in and book now" }}
           secondaryAction={slug ? { to: `/s/${slug}`, label: "See the schedule" } : undefined}
-          footnote="We don't book straight away from a public form when the address already has an account, because anyone can type anyone's email. Signing in is the fastest way through, and it also lets you use a membership or class pack."
+          footnote="Signing in protects your account and lets you use a membership or class pack. Your booking is not confirmed yet."
         />
       </Shell>
     );
@@ -462,6 +463,7 @@ export default function ExpressBooking() {
           />
         )}
         <MemberBookingPanel
+          key={`${user?.id}:${occurrenceId}`}
           row={row}
           occurrenceId={occurrenceId}
           returnPath={bookingPath}
@@ -470,6 +472,17 @@ export default function ExpressBooking() {
         />
       </Shell>
     );
+  }
+
+  if (nativeApp) {
+    return <Shell>
+      <ClassSummary row={row} spotsLeft={eligibility?.spotsLeft ?? 0} />
+      <Card><CardContent className="pt-6 space-y-4">
+        <h2 className="text-lg font-semibold">Keep your booking in one place</h2>
+        <p className="text-sm text-muted-foreground">Sign in or create an account to book this class. We’ll keep your selection ready.</p>
+        <Button asChild className="w-full"><Link to={signInHref}>Sign in to book</Link></Button>
+      </CardContent></Card>
+    </Shell>;
   }
 
   // --- The form ---------------------------------------------------------

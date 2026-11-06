@@ -49,3 +49,17 @@ CREATE OR REPLACE FUNCTION pg_temp.id(name text) RETURNS uuid LANGUAGE sql IMMUT
     WHEN 'pack_b1'   THEN 'bbbbbbbb-5000-0000-0000-0000000000b1'
   END::uuid
 $$;
+
+-- Negative ACL test: do not convert syntax errors or arbitrary failures to PASS.
+-- Dynamic statement executes with the active API role; this is NOT a definer.
+CREATE OR REPLACE FUNCTION pg_temp.expect_denied(statement text, id text)
+RETURNS void LANGUAGE plpgsql AS $$
+BEGIN
+  BEGIN
+    EXECUTE statement;
+  EXCEPTION WHEN insufficient_privilege THEN
+    PERFORM pg_temp.ok(true, id, 'API operation denied by privileges');
+    RETURN;
+  END;
+  RAISE EXCEPTION 'FAIL % expected insufficient_privilege: %', id, statement;
+END $$;
