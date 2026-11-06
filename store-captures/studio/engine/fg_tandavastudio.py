@@ -21,7 +21,7 @@ body = ('<div class="grid"></div><div class="t">Tandava Studio</div>'
         '<div class="s">Check members in at the door with your camera.</div>'
         + phone(R + 'member-pass.png', 220, 600, 70, 'rotate(-8deg)', 'opacity:.95')
         + phone(R + '01-scan-success.png', 250, 760, 40, 'rotate(5deg)')
-        + brackets(752, 28, 266, 484, LIME, inset=0, t=7))
+        + brackets(744, 22, 272, 456, LIME, inset=0, t=7))
 out = HERE / 'out' / 'tandavastudioplay'; out.mkdir(parents=True, exist_ok=True)
 f = HERE / '_tandavastudio-fg.html'
 f.write_text(f'<!doctype html><html><head><meta charset="utf-8">{FONTS}<style>{BASE}{css}</style></head><body>{body}</body></html>')

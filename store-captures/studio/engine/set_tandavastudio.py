@@ -112,6 +112,6 @@ def frames():
         f'<div class="grid" style="--g:rgba(255,107,139,.07)"></div>'
         + head('share the', 'link.', 'Members book from your page. You see them here.', PAPER, CORAL, INK, 250)
         + phone(R+'07-share.png', 860, 380, 1060, 4)
-        + scanpop(R+'07-share.png', (30, 300, 1290, 1300), 1060, 60, 1960, -4, TEAL, ring=PAPER)
+        + scanpop(R+'07-share.png', (30, 390, 1290, 1330), 1060, 60, 1980, -4, TEAL, ring=PAPER)
         + band('your page · tap to book', 90, 1180, LIME, INK, -5)))
     return F
