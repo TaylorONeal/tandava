@@ -60,13 +60,13 @@ def frames():
         f'<div class="grid" style="--g:rgba(14,10,18,.06)"></div>'
         + head('front desk', 'to go.', 'Your studio, today, on one screen.', INK, INK, LIME)
         + phone(R+'02-dashboard.png', 560, 200, 700, 'rotate(-3deg)')
-        + scanpop(R+'02-dashboard.png', (20, 400, 1060, 1080), 860, 110, 1320, 3, CORAL)
+        + scanpop(R+'02-dashboard.png', (20, 330, 1060, 1080), 820, 130, 1300, 3, CORAL)
         + spark(930, 110, 90, PAPER, 8)))
     F.append(('phone-03', f'body{{background:{LIME}}}',
         f'<div class="grid" style="--g:rgba(14,10,18,.06)"></div>'
         + head('tap.', 'checked in.', 'No pass? The roster works too.', INK, INK, LIME, 140)
         + phone(R+'03-roster.png', 560, 300, 680, 'rotate(5deg)')
-        + scanpop(R+'03-roster.png', (20, 660, 1060, 1100), 820, 70, 1420, -4, INK, ring=PAPER)))
+        + scanpop(R+'03-roster.png', (20, 660, 1060, 1035), 820, 70, 1440, -4, INK, ring=PAPER)))
     F.append(('phone-04', f'body{{background:{PLUM}}}',
         f'<div class="grid" style="--g:rgba(215,255,63,.06)"></div>'
         + head('teachers', 'get theirs.', 'Assigned classes and rosters, nothing else.', PAPER, CORAL, INK)
@@ -82,11 +82,11 @@ def frames():
         f'<div class="grid" style="--g:rgba(14,10,18,.07)"></div>'
         + head('set your', 'prices.', 'Drop-ins, class packs and memberships.', INK, INK, PAPER)
         + phone(R+'06-offerings.png', 560, 200, 700, 'rotate(-4deg)')
-        + scanpop(R+'06-offerings.png', (10, 800, 1070, 1460), 820, 130, 1380, 3, LIME)
+        + scanpop(R+'06-offerings.png', (10, 930, 1070, 1520), 820, 130, 1400, 3, LIME)
         + spark(930, 100, 90, LIME, 12)))
     F.append(('phone-07', f'body{{background:{INK}}}',
         f'<div class="grid" style="--g:rgba(255,107,139,.07)"></div>'
         + head('share the', 'link.', 'Members book from your page. You see them here.', PAPER, CORAL, INK, 160)
         + phone(R+'07-share.png', 560, 320, 700, 'rotate(4deg)')
-        + scanpop(R+'07-share.png', (20, 200, 1060, 760), 860, 50, 1400, -4, TEAL, ring=PAPER)))
+        + scanpop(R+'07-share.png', (20, 260, 1060, 960), 820, 60, 1340, -4, TEAL, ring=PAPER)))
     return F
