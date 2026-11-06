@@ -69,7 +69,7 @@ def frames():
         + head('scan them', 'in.', 'Check members in at the door with your camera.', PAPER, LIME, INK, 260)
         + phone(R+'member-pass.png', 640, 40, 1180, -9, 'opacity:.96')
         + phone(R+'01-scan-success.png', 820, 470, 1080, 4)
-        + scanpop(R+'01-scan-success.png', (60, 520, 1260, 1240), 980, 170, 2050, -3, LIME)
+        + scanpop(R+'01-scan-success.png', (30, 700, 1290, 1340), 1000, 160, 2120, -3, LIME)
         + band('&#10003; checked in', 740, 930, TEAL, INK, 6)
         + spark(1150, 150, 120, CORAL, 10)))
     # 2 teal: the dashboard
@@ -77,41 +77,41 @@ def frames():
         f'<div class="grid" style="--g:rgba(14,10,18,.06)"></div>'
         + head('front desk', 'to go.', 'Your studio, today, on one screen.', INK, INK, LIME, 236)
         + phone(R+'02-dashboard.png', 860, 230, 1060, -3)
-        + scanpop(R+'02-dashboard.png', (40, 420, 1280, 860), 1100, 110, 2120, 3, CORAL)
+        + scanpop(R+'02-dashboard.png', (30, 380, 1290, 1100), 1080, 120, 2060, 3, CORAL)
         + spark(1120, 160, 130, PAPER, 8)))
     # 3 lime: roster tap
     F.append(('ios-03', f'body{{background:{LIME}}}',
         f'<div class="grid" style="--g:rgba(14,10,18,.06)"></div>'
         + head('tap.', 'checked in.', 'No pass? The roster works too.', INK, INK, LIME, 220)
         + phone(R+'03-roster.png', 840, 380, 1040, 5)
-        + scanpop(R+'03-roster.png', (60, 1300, 1260, 1760), 1060, 60, 1900, -4, INK, ring=PAPER)
-        + band('2 of 8 here', 120, 2560, CORAL, INK, -5)))
+        + scanpop(R+'03-roster.png', (40, 690, 1280, 1500), 1060, 70, 1920, -4, INK, ring=PAPER)
+        + band('2 of 8 here', 760, 2690, CORAL, INK, -5)))
     # 4 plum: teachers get their own view
     F.append(('ios-04', f'body{{background:{PLUM}}}',
         f'<div class="grid" style="--g:rgba(215,255,63,.06)"></div>'
         + head('teachers', 'get theirs.', 'Assigned classes and rosters, nothing else.', PAPER, CORAL, INK, 236)
         + phone(R+'04-teach.png', 860, 230, 1080, -4)
-        + scanpop(R+'04-teach.png', (40, 640, 1280, 1180), 1060, 160, 2060, 3, TEAL)
+        + scanpop(R+'04-teach.png', (30, 680, 1290, 1600), 1020, 150, 1960, 3, TEAL)
         + spark(80, 1000, 100, LIME, -10)))
     # 5 paper: weekly schedule
     F.append(('ios-05', f'body{{background:{PAPER}}}',
         f'<div class="grid" style="--g:rgba(42,22,54,.06)"></div>'
         + head('your week,', 'your way.', 'Add classes, move times, cancel when needed.', INK, TEAL, INK, 236)
         + phone(R+'05-schedule.png', 860, 400, 1050, 4)
-        + scanpop(R+'05-schedule.png', (40, 700, 1280, 1220), 1060, 60, 2040, -3, CORAL)
-        + band('vinyasa · pilates · barre', 90, 1260, INK, LIME, -7)))
+        + scanpop(R+'05-schedule.png', (30, 600, 1290, 1480), 1060, 60, 2000, -3, CORAL)
+        + band('vinyasa · pilates · barre', 60, 1820, INK, LIME, -7)))
     # 6 coral: classes and pricing
     F.append(('ios-06', f'body{{background:{CORAL}}}',
         f'<div class="grid" style="--g:rgba(14,10,18,.07)"></div>'
         + head('set your', 'prices.', 'Drop-ins, class packs and memberships.', INK, INK, PAPER, 236)
         + phone(R+'06-offerings.png', 860, 230, 1060, -4)
-        + scanpop(R+'06-offerings.png', (40, 560, 1280, 1160), 1080, 130, 2040, 3, LIME)
+        + scanpop(R+'06-offerings.png', (30, 660, 1290, 1860), 1000, 160, 1830, 3, LIME)
         + spark(1130, 150, 130, LIME, 12)))
     # 7 ink: share the link
     F.append(('ios-07', f'body{{background:{INK}}}',
         f'<div class="grid" style="--g:rgba(255,107,139,.07)"></div>'
         + head('share the', 'link.', 'Members book from your page. You see them here.', PAPER, CORAL, INK, 250)
         + phone(R+'07-share.png', 860, 380, 1060, 4)
-        + scanpop(R+'07-share.png', (40, 1700, 1280, 2500), 1060, 60, 1960, -4, TEAL, ring=PAPER)
+        + scanpop(R+'07-share.png', (30, 300, 1290, 1300), 1060, 60, 1960, -4, TEAL, ring=PAPER)
         + band('your page · tap to book', 90, 1180, LIME, INK, -5)))
     return F
