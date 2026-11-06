@@ -9,7 +9,7 @@
  * the PR. Material changes to Terms or Privacy are emailed to account holders.
  */
 
-export const LEGAL_UPDATED = "October 10, 2026";
+export const LEGAL_UPDATED = "November 6, 2026";
 
 /**
  * These policies are the hosted service's: Purafield Studio runs
@@ -140,6 +140,12 @@ export const PRIVACY: LegalDoc = {
       heading: "What we collect",
       body: [
         "- Account details you give us: name, email, and optionally phone, pronouns, date of birth, emergency contact and Instagram handle.\n- Bookings, check-ins, memberships, class packs and purchase records.\n- If you book a class without an account: the name, email and phone you enter, your browser details, a hashed IP address, how you reached the page, and your waiver and email choices. This is kept even if the booking does not go through.\n- Information a studio adds about you as its member, for example when it moves its member list to Tandava: your contact details, membership history, and the studio's own notes and tags about you. The studio is responsible for that information; you can ask it, or us, to see or delete it.\n- Payment details are handled by Stripe. We receive the payment result, never your card number.\n- How you found a studio page: the page you landed on, the referring site, campaign tags in the link, and device type. A random visitor ID is kept in your browser to connect visits. We store a salted hash of your IP address for abuse limits, never the address itself.\n- If product analytics is on, the pages you view and what you do on them, such as browsing and filtering classes, opening a class, signing up and checking out, tied to that random ID.\n- If error monitoring is on: errors, page performance, and for a small share of visits and for visits where an error happens, a replay of what was on screen (typed form fields are hidden). These are not linked to your name or email.",
+      ],
+    },
+    {
+      heading: "Camera (Tandava Studio app)",
+      body: [
+        "The Tandava Studio app asks for camera access only to scan a member's check-in pass. The phone reads the QR code itself. The camera picture never leaves the phone, and we do not receive or store photos or video. The only thing sent to us is the code's text, a booking reference, which records the check-in. A member's pass holds that reference and nothing else. You can turn camera access off in Settings > Tandava Studio > Camera and check people in from the class roster instead.",
       ],
     },
     {
