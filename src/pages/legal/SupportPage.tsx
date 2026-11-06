@@ -23,24 +23,24 @@ export default function SupportPage() {
   return (
     <MarketingShell maxWidth="max-w-3xl">
       <SEOHead title="Support" description={SUPPORT_SUMMARY} />
-      <article className="max-w-3xl mx-auto px-6 py-12 space-y-8">
-        <header className="space-y-2">
-          <h1 className="font-brand text-4xl font-extrabold tracking-tight">Support</h1>
+      <article className="max-w-3xl mx-auto px-6 py-12 sm:py-16">
+        <header className="space-y-3 border-b-2 border-ink pb-8">
+          <h1 className="font-brand text-[2.6rem] font-extrabold leading-none tracking-[-0.04em] sm:text-5xl">Support</h1>
           <p className="text-muted-foreground">{SUPPORT_SUMMARY}</p>
           <p className="text-[15px]">
-            Email <a className="text-primary hover:underline" href={`mailto:${LEGAL_CONTACT}`}>{LEGAL_CONTACT}</a> and
+            Email <a className="underline underline-offset-4 hover:text-plum" href={`mailto:${LEGAL_CONTACT}`}>{LEGAL_CONTACT}</a> and
             a person at {LEGAL_OPERATOR} will reply.
           </p>
         </header>
         {SUPPORT_ITEMS.map((item) => (
-          <section key={item.q} className="space-y-2 text-[15px] leading-relaxed">
+          <section key={item.q} className="space-y-2 border-b border-ink/15 py-6 text-[15px] leading-relaxed">
             <h2 className="font-brand text-lg font-bold tracking-tight">{item.q}</h2>
             <p>{item.a}</p>
           </section>
         ))}
-        <nav aria-label="Policies" className="flex gap-4 border-t pt-6 text-sm">
-          <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
-          <Link to="/terms" className="text-primary hover:underline">Terms</Link>
+        <nav aria-label="Policies" className="flex gap-4 pt-6 text-sm font-semibold">
+          <Link to="/privacy" className="underline underline-offset-4 hover:text-plum">Privacy</Link>
+          <Link to="/terms" className="underline underline-offset-4 hover:text-plum">Terms</Link>
         </nav>
       </article>
     </MarketingShell>

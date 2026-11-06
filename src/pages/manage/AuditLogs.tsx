@@ -44,13 +44,13 @@ const mockAuditLogs: AuditLogEntry[] = [
     studioId: 'oxatl-yoga',
     category: 'member',
     action: 'membership_started',
-    description: 'New membership activated for Sarah Chen',
+    description: 'New membership activated for Lucia Alvarez',
     actorId: 'user-1',
     actorType: 'user',
     actorEmail: 'admin@oxatlyoga.com',
     targetType: 'member',
     targetId: 'member-123',
-    targetDescription: 'Sarah Chen',
+    targetDescription: 'Lucia Alvarez',
     severity: 'info',
     timestamp: new Date('2026-02-06T14:25:00'),
     timestampMs: Date.now() - 1000 * 60 * 10,
@@ -102,7 +102,7 @@ const mockAuditLogs: AuditLogEntry[] = [
     actorEmail: 'admin@oxatlyoga.com',
     targetType: 'staff',
     targetId: 'staff-789',
-    targetDescription: 'Marcus Johnson',
+    targetDescription: 'Erin Gallagher',
     changes: [
       { field: 'role', previousValue: 'instructor', newValue: 'manager', changeType: 'modified' },
     ],
@@ -186,7 +186,7 @@ const mockAuditLogs: AuditLogEntry[] = [
     impersonatorId: 'super-admin',
     targetType: 'member',
     targetId: 'member-456',
-    targetDescription: 'John Doe',
+    targetDescription: 'Graham Novak',
     severity: 'critical',
     ipAddress: '10.0.0.1',
     timestamp: new Date('2026-02-04T15:30:00'),
@@ -272,23 +272,23 @@ const CATEGORY_LABELS: Record<AuditCategory, string> = {
 
 const CATEGORY_COLORS: Record<AuditCategory, string> = {
   auth: 'bg-blue-100 text-blue-700',
-  data: 'bg-stone-100 text-stone-700',
+  data: 'bg-muted text-foreground',
   settings: 'bg-amber-100 text-amber-700',
   access: 'bg-red-100 text-red-700',
   financial: 'bg-emerald-100 text-emerald-700',
-  member: 'bg-violet-100 text-violet-700',
+  member: 'bg-accent-mint/25 text-foreground',
   staff: 'bg-cyan-100 text-cyan-700',
-  integration: 'bg-indigo-100 text-indigo-700',
+  integration: 'bg-accent-peach/20 text-foreground',
   export: 'bg-pink-100 text-pink-700',
   admin: 'bg-orange-100 text-orange-700',
   system: 'bg-slate-100 text-slate-700',
 };
 
 const SEVERITY_CONFIG: Record<AuditSeverity, { label: string; color: string; dotColor: string }> = {
-  info: { label: 'Info', color: 'text-stone-600', dotColor: 'bg-stone-400' },
-  notice: { label: 'Notice', color: 'text-blue-600', dotColor: 'bg-blue-500' },
-  warning: { label: 'Warning', color: 'text-amber-600', dotColor: 'bg-amber-500' },
-  critical: { label: 'Critical', color: 'text-red-600', dotColor: 'bg-red-500' },
+  info: { label: 'Info', color: 'text-muted-foreground', dotColor: 'bg-muted-foreground' },
+  notice: { label: 'Notice', color: 'text-info', dotColor: 'bg-info' },
+  warning: { label: 'Warning', color: 'text-warning', dotColor: 'bg-warning' },
+  critical: { label: 'Critical', color: 'text-destructive', dotColor: 'bg-destructive' },
 };
 
 // ============================================================================
@@ -366,7 +366,7 @@ function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
       <select
         value={filters.category}
         onChange={(e) => onFilterChange({ ...filters, category: e.target.value as AuditCategory | '' })}
-        className="px-3 py-2 bg-white border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-stone-500"
+        className="px-3 py-2 bg-card border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
       >
         <option value="">All Categories</option>
         {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
@@ -377,7 +377,7 @@ function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
       <select
         value={filters.severity}
         onChange={(e) => onFilterChange({ ...filters, severity: e.target.value as AuditSeverity | '' })}
-        className="px-3 py-2 bg-white border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-stone-500"
+        className="px-3 py-2 bg-card border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
       >
         <option value="">All Severities</option>
         {Object.entries(SEVERITY_CONFIG).map(([value, config]) => (
@@ -388,7 +388,7 @@ function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
       <select
         value={filters.dateRange}
         onChange={(e) => onFilterChange({ ...filters, dateRange: e.target.value })}
-        className="px-3 py-2 bg-white border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-stone-500"
+        className="px-3 py-2 bg-card border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
       >
         <option value="24h">Last 24 hours</option>
         <option value="7d">Last 7 days</option>
@@ -417,9 +417,9 @@ function LogEntryRow({ entry, onSelect, isSelected }: LogEntryRowProps) {
     <button
       onClick={() => onSelect(entry)}
       className={`
-        w-full text-start px-4 py-3 border-b border-stone-100 hover:bg-stone-50
+        w-full text-start px-4 py-3 border-b border-border hover:bg-muted/50
         transition-colors flex items-start gap-4
-        ${isSelected ? 'bg-stone-100' : ''}
+        ${isSelected ? 'bg-muted' : ''}
       `}
     >
       {/* Severity indicator */}
@@ -429,14 +429,14 @@ function LogEntryRow({ entry, onSelect, isSelected }: LogEntryRowProps) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <CategoryBadge category={entry.category} />
-          <span className="text-xs text-stone-500">{formatRelativeTime(entry.timestamp)}</span>
+          <span className="text-xs text-muted-foreground">{formatRelativeTime(entry.timestamp)}</span>
         </div>
 
-        <p className="text-sm font-medium text-stone-900 truncate">
+        <p className="text-sm font-medium text-foreground truncate">
           {entry.description}
         </p>
 
-        <div className="flex items-center gap-3 mt-1 text-xs text-stone-500">
+        <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
           {entry.actorEmail && (
             <span className="flex items-center gap-1">
               <UserIcon className="w-3 h-3" />
@@ -458,7 +458,7 @@ function LogEntryRow({ entry, onSelect, isSelected }: LogEntryRowProps) {
       </div>
 
       {/* Chevron */}
-      <ChevronRightIcon className="w-4 h-4 text-stone-400 flex-shrink-0 mt-4" />
+      <ChevronRightIcon className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-4" />
     </button>
   );
 }
@@ -471,8 +471,8 @@ function ChangeDiff({ changes }: { changes: AuditChange[] }) {
   return (
     <div className="space-y-2">
       {changes.map((change, index) => (
-        <div key={index} className="bg-stone-50 rounded-lg p-3">
-          <p className="text-xs font-medium text-stone-500 mb-1">
+        <div key={index} className="bg-muted/50 rounded-lg p-3">
+          <p className="text-xs font-medium text-muted-foreground mb-1">
             {change.fieldLabel || change.field}
           </p>
           <div className="flex items-center gap-2 text-sm">
@@ -482,7 +482,7 @@ function ChangeDiff({ changes }: { changes: AuditChange[] }) {
               </span>
             )}
             {change.changeType === 'modified' && (
-              <span className="text-stone-400">&rarr;</span>
+              <span className="text-muted-foreground">&rarr;</span>
             )}
             {change.changeType !== 'removed' && (
               <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded">
@@ -507,15 +507,15 @@ interface DetailPanelProps {
 
 function DetailPanel({ entry, onClose }: DetailPanelProps) {
   return (
-    <div className="bg-white border-s border-stone-200 w-96 h-full overflow-y-auto">
+    <div className="bg-card border-s border-border w-96 h-full overflow-y-auto">
       {/* Header */}
-      <div className="sticky top-0 bg-white border-b border-stone-200 px-4 py-3 flex items-center justify-between">
-        <h3 className="font-semibold text-stone-900">Event Details</h3>
+      <div className="sticky top-0 bg-card border-b border-border px-4 py-3 flex items-center justify-between">
+        <h3 className="font-semibold text-foreground">Event Details</h3>
         <button
           onClick={onClose}
-          className="p-1 hover:bg-stone-100 rounded transition-colors"
+          className="p-1 hover:bg-muted rounded transition-colors"
         >
-          <XIcon className="w-5 h-5 text-stone-500" />
+          <XIcon className="w-5 h-5 text-muted-foreground" />
         </button>
       </div>
 
@@ -527,31 +527,31 @@ function DetailPanel({ entry, onClose }: DetailPanelProps) {
             <SeverityBadge severity={entry.severity} />
             <CategoryBadge category={entry.category} />
           </div>
-          <p className="text-sm font-medium text-stone-900">{entry.description}</p>
-          <p className="text-xs text-stone-500 mt-1">
+          <p className="text-sm font-medium text-foreground">{entry.description}</p>
+          <p className="text-xs text-muted-foreground mt-1">
             {AUDIT_ACTION_DESCRIPTIONS[entry.action]}
           </p>
         </div>
 
         {/* Timestamp */}
         <div>
-          <p className="text-xs font-medium text-stone-500 mb-1 flex items-center gap-1">
+          <p className="text-xs font-medium text-muted-foreground mb-1 flex items-center gap-1">
             <ClockIcon className="w-3 h-3" />
             Timestamp
           </p>
-          <p className="text-sm text-stone-900">{formatFullTimestamp(entry.timestamp)}</p>
+          <p className="text-sm text-foreground">{formatFullTimestamp(entry.timestamp)}</p>
         </div>
 
         {/* Actor */}
         <div>
-          <p className="text-xs font-medium text-stone-500 mb-1 flex items-center gap-1">
+          <p className="text-xs font-medium text-muted-foreground mb-1 flex items-center gap-1">
             <UserIcon className="w-3 h-3" />
             Actor
           </p>
-          <div className="text-sm text-stone-900">
+          <div className="text-sm text-foreground">
             {entry.actorEmail || (entry.actorType === 'system' ? 'System' : 'Unknown')}
             {entry.actorRole && (
-              <span className="text-stone-500 ms-1">({entry.actorRole})</span>
+              <span className="text-muted-foreground ms-1">({entry.actorRole})</span>
             )}
           </div>
           {entry.impersonatorId && (
@@ -564,12 +564,12 @@ function DetailPanel({ entry, onClose }: DetailPanelProps) {
         {/* Target */}
         {(entry.targetType || entry.targetDescription) && (
           <div>
-            <p className="text-xs font-medium text-stone-500 mb-1">Target</p>
-            <p className="text-sm text-stone-900">
+            <p className="text-xs font-medium text-muted-foreground mb-1">Target</p>
+            <p className="text-sm text-foreground">
               {entry.targetDescription || entry.targetId}
             </p>
             {entry.targetType && (
-              <p className="text-xs text-stone-500 mt-0.5">
+              <p className="text-xs text-muted-foreground mt-0.5">
                 Type: {entry.targetType}
               </p>
             )}
@@ -579,7 +579,7 @@ function DetailPanel({ entry, onClose }: DetailPanelProps) {
         {/* Changes */}
         {entry.changes && entry.changes.length > 0 && (
           <div>
-            <p className="text-xs font-medium text-stone-500 mb-2">Changes</p>
+            <p className="text-xs font-medium text-muted-foreground mb-2">Changes</p>
             <ChangeDiff changes={entry.changes} />
           </div>
         )}
@@ -587,15 +587,15 @@ function DetailPanel({ entry, onClose }: DetailPanelProps) {
         {/* Location */}
         {(entry.ipAddress || entry.geoLocation) && (
           <div>
-            <p className="text-xs font-medium text-stone-500 mb-1 flex items-center gap-1">
+            <p className="text-xs font-medium text-muted-foreground mb-1 flex items-center gap-1">
               <GlobeIcon className="w-3 h-3" />
               Location
             </p>
             {entry.ipAddress && (
-              <p className="text-sm text-stone-900 font-mono">{entry.ipAddress}</p>
+              <p className="text-sm text-foreground font-mono">{entry.ipAddress}</p>
             )}
             {entry.geoLocation && (
-              <p className="text-xs text-stone-500 mt-0.5">
+              <p className="text-xs text-muted-foreground mt-0.5">
                 {[entry.geoLocation.city, entry.geoLocation.region, entry.geoLocation.country]
                   .filter(Boolean)
                   .join(', ')}
@@ -607,20 +607,20 @@ function DetailPanel({ entry, onClose }: DetailPanelProps) {
         {/* Metadata */}
         {entry.metadata && Object.keys(entry.metadata).length > 0 && (
           <div>
-            <p className="text-xs font-medium text-stone-500 mb-2">Additional Data</p>
-            <pre className="text-xs bg-stone-50 rounded-lg p-3 overflow-x-auto">
+            <p className="text-xs font-medium text-muted-foreground mb-2">Additional Data</p>
+            <pre className="text-xs bg-muted/50 rounded-lg p-3 overflow-x-auto">
               {JSON.stringify(entry.metadata, null, 2)}
             </pre>
           </div>
         )}
 
         {/* IDs */}
-        <div className="pt-4 border-t border-stone-200">
-          <p className="text-xs text-stone-400">
+        <div className="pt-4 border-t border-border">
+          <p className="text-xs text-muted-foreground">
             Event ID: <span className="font-mono">{entry.id}</span>
           </p>
           {entry.requestId && (
-            <p className="text-xs text-stone-400 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Request ID: <span className="font-mono">{entry.requestId}</span>
             </p>
           )}
@@ -646,9 +646,9 @@ function StatsCards({ logs }: StatsCardsProps) {
     const authEvents = logs.filter(l => l.category === 'auth').length;
 
     return [
-      { label: 'Events (24h)', value: last24h.length, color: 'text-stone-900' },
-      { label: 'Critical', value: critical, color: critical > 0 ? 'text-red-600' : 'text-stone-900' },
-      { label: 'Warnings', value: warnings, color: warnings > 0 ? 'text-amber-600' : 'text-stone-900' },
+      { label: 'Events (24h)', value: last24h.length, color: 'text-foreground' },
+      { label: 'Critical', value: critical, color: critical > 0 ? 'text-destructive' : 'text-foreground' },
+      { label: 'Warnings', value: warnings, color: warnings > 0 ? 'text-warning' : 'text-foreground' },
       { label: 'Auth Events', value: authEvents, color: 'text-blue-600' },
     ];
   }, [logs]);
@@ -656,8 +656,8 @@ function StatsCards({ logs }: StatsCardsProps) {
   return (
     <div className="grid grid-cols-4 gap-4">
       {stats.map(stat => (
-        <div key={stat.label} className="bg-white rounded-xl border border-stone-200 p-4">
-          <p className="text-sm text-stone-500">{stat.label}</p>
+        <div key={stat.label} className="bg-card rounded-xl border border-border p-4">
+          <p className="text-sm text-muted-foreground">{stat.label}</p>
           <p className={`mt-1 text-2xl font-semibold ${stat.color}`}>{stat.value}</p>
         </div>
       ))}
@@ -729,19 +729,19 @@ export default function AuditLogs() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-100 flex flex-col">
+    <div className="min-h-screen bg-muted flex flex-col">
       {/* Hero header */}
-      <div className="bg-gradient-to-br from-stone-800 via-stone-900 to-stone-800 text-white">
+      <div className="bg-card border-b border-border text-foreground">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-accent text-accent-foreground flex items-center justify-center">
                   <ShieldIcon className="w-5 h-5" />
                 </div>
                 <h1 className="text-3xl font-bold tracking-tight">Audit Logs</h1>
               </div>
-              <p className="text-stone-300 max-w-xl">
+              <p className="text-muted-foreground max-w-xl">
                 Track all activity across your studio. Monitor changes, access attempts,
                 and security events for compliance and troubleshooting.
               </p>
@@ -749,7 +749,7 @@ export default function AuditLogs() {
 
             <button
               onClick={handleExport}
-              className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+              className="px-4 py-2 border border-border bg-card hover:bg-secondary text-foreground font-medium rounded-lg transition-colors flex items-center gap-2"
             >
               <DownloadIcon className="w-4 h-4" />
               Export
@@ -765,20 +765,20 @@ export default function AuditLogs() {
 
       {/* Main content */}
       <div className="flex-1 max-w-7xl mx-auto px-6 py-8 w-full">
-        <div className="bg-white rounded-xl border border-stone-200 overflow-hidden flex h-[600px]">
+        <div className="bg-card rounded-xl border border-border overflow-hidden flex h-[600px]">
           {/* Left panel - Log list */}
           <div className="flex-1 flex flex-col min-w-0">
             {/* Search and filters */}
-            <div className="p-4 border-b border-stone-200 space-y-4">
+            <div className="p-4 border-b border-border space-y-4">
               {/* Search */}
               <div className="relative">
-                <SearchIcon className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                <SearchIcon className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input
                   type="text"
                   placeholder="Search logs..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full ps-10 pe-4 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-500"
+                  className="w-full ps-10 pe-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
 
@@ -789,8 +789,8 @@ export default function AuditLogs() {
             {/* Log entries */}
             <div className="flex-1 overflow-y-auto">
               {filteredLogs.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-stone-500">
-                  <FilterIcon className="w-12 h-12 mb-3 text-stone-300" />
+                <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                  <FilterIcon className="w-12 h-12 mb-3 text-muted-foreground/60" />
                   <p className="font-medium">No matching logs</p>
                   <p className="text-sm">Try adjusting your filters</p>
                 </div>
@@ -807,7 +807,7 @@ export default function AuditLogs() {
             </div>
 
             {/* Results count */}
-            <div className="px-4 py-2 border-t border-stone-200 text-xs text-stone-500">
+            <div className="px-4 py-2 border-t border-border text-xs text-muted-foreground">
               Showing {filteredLogs.length} of {mockAuditLogs.length} events
             </div>
           </div>

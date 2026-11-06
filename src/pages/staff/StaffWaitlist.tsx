@@ -53,59 +53,59 @@ const DEMO_WAITLISTED_CLASSES: WaitlistedClass[] = [
   {
     id: "wl-1",
     className: "Power Vinyasa",
-    classColor: "#e74c3c",
+    classColor: "#FF6B8B",
     time: "09:00 AM",
-    teacher: "Elena Vasquez",
+    teacher: "Tasha Greene",
     location: "South Congress Studio",
     capacity: 25,
     bookedCount: 25,
     waitlist: [
-      { id: "w1", memberName: "Sophia Chen", memberInitials: "SC", memberType: "unlimited", position: 1, addedAt: "Yesterday 8:15 PM", status: "waiting" },
-      { id: "w2", memberName: "Marcus Rivera", memberInitials: "MR", memberType: "pack", position: 2, addedAt: "Yesterday 9:30 PM", status: "waiting" },
-      { id: "w3", memberName: "Priya Patel", memberInitials: "PP", memberType: "unlimited", position: 3, addedAt: "Today 6:45 AM", status: "waiting" },
+      { id: "w1", memberName: "Sakura Okonkwo", memberInitials: "SO", memberType: "unlimited", position: 1, addedAt: "Yesterday 8:15 PM", status: "waiting" },
+      { id: "w2", memberName: "Arjun Brennan", memberInitials: "AB", memberType: "pack", position: 2, addedAt: "Yesterday 9:30 PM", status: "waiting" },
+      { id: "w3", memberName: "Paloma Alvarez", memberInitials: "PA", memberType: "unlimited", position: 3, addedAt: "Today 6:45 AM", status: "waiting" },
     ],
   },
   {
     id: "wl-2",
     className: "Hot 26",
-    classColor: "#f39c12",
+    classColor: "#D7FF3F",
     time: "12:00 PM",
-    teacher: "Jordan Kim",
+    teacher: "Marcus Bell",
     location: "East Side Studio",
     capacity: 30,
     bookedCount: 30,
     waitlist: [
-      { id: "w4", memberName: "Alex Thompson", memberInitials: "AT", memberType: "unlimited", position: 1, addedAt: "Today 7:20 AM", status: "promoted", promotedAt: "Today 8:00 AM", expiresAt: "8:15 AM" },
-      { id: "w5", memberName: "Riley Nakamura", memberInitials: "RN", memberType: "pack", position: 2, addedAt: "Today 7:45 AM", status: "waiting" },
+      { id: "w4", memberName: "Alana Hsu", memberInitials: "AH", memberType: "unlimited", position: 1, addedAt: "Today 7:20 AM", status: "promoted", promotedAt: "Today 8:00 AM", expiresAt: "8:15 AM" },
+      { id: "w5", memberName: "Leila Quintero", memberInitials: "LQ", memberType: "pack", position: 2, addedAt: "Today 7:45 AM", status: "waiting" },
     ],
   },
   {
     id: "wl-3",
     className: "Yin & Restore",
-    classColor: "#9b59b6",
+    classColor: "#0E0A12",
     time: "05:30 PM",
-    teacher: "Devika Nair",
+    teacher: "Noor Haddad",
     location: "South Congress Studio",
     capacity: 20,
     bookedCount: 20,
     waitlist: [
-      { id: "w6", memberName: "Emma Okafor", memberInitials: "EO", memberType: "unlimited", position: 1, addedAt: "Today 10:30 AM", status: "waiting" },
-      { id: "w7", memberName: "James Lee", memberInitials: "JL", memberType: "drop_in", position: 2, addedAt: "Today 11:00 AM", status: "waiting" },
-      { id: "w8", memberName: "Taylor Swift", memberInitials: "TS", memberType: "pack", position: 3, addedAt: "Today 12:15 PM", status: "waiting" },
-      { id: "w9", memberName: "Noah Garcia", memberInitials: "NG", memberType: "unlimited", position: 4, addedAt: "Today 1:30 PM", status: "waiting" },
+      { id: "w6", memberName: "Esther Ramaswamy", memberInitials: "ER", memberType: "unlimited", position: 1, addedAt: "Today 10:30 AM", status: "waiting" },
+      { id: "w7", memberName: "Karim Lindgren", memberInitials: "KL", memberType: "drop_in", position: 2, addedAt: "Today 11:00 AM", status: "waiting" },
+      { id: "w8", memberName: "Tess Whitmore", memberInitials: "TW", memberType: "pack", position: 3, addedAt: "Today 12:15 PM", status: "waiting" },
+      { id: "w9", memberName: "Desmond Khalil", memberInitials: "DK", memberType: "unlimited", position: 4, addedAt: "Today 1:30 PM", status: "waiting" },
     ],
   },
   {
     id: "wl-4",
     className: "Ashtanga Primary",
-    classColor: "#2ecc71",
+    classColor: "#3EE6D2",
     time: "06:30 PM",
-    teacher: "Ravi Sharma",
+    teacher: "Daniel Nguyen",
     location: "East Side Studio",
     capacity: 20,
     bookedCount: 20,
     waitlist: [
-      { id: "w10", memberName: "Liam Walsh", memberInitials: "LW", memberType: "unlimited", position: 1, addedAt: "Today 2:00 PM", status: "waiting" },
+      { id: "w10", memberName: "Elliot Washington", memberInitials: "EW", memberType: "unlimited", position: 1, addedAt: "Today 2:00 PM", status: "waiting" },
     ],
   },
 ];
@@ -153,9 +153,9 @@ function MemberTypeBadge({ type }: { type: WaitlistEntry["memberType"] }) {
 function StatusBadge({ status }: { status: WaitlistEntry["status"] }) {
   const config = {
     waiting: { label: "Waiting", className: "bg-muted text-muted-foreground" },
-    promoted: { label: "Promoted — Awaiting Response", className: "bg-amber-500/15 text-amber-600" },
-    confirmed: { label: "Confirmed", className: "bg-green-500/15 text-green-600" },
-    declined: { label: "Declined", className: "bg-red-500/15 text-red-500" },
+    promoted: { label: "Promoted, awaiting response", className: "bg-warning/15 text-warning" },
+    confirmed: { label: "Confirmed", className: "bg-accent-mint/25 text-foreground" },
+    declined: { label: "Declined", className: "bg-destructive/10 text-destructive" },
     expired: { label: "Expired", className: "bg-muted text-muted-foreground line-through" },
   };
   const c = config[status];
@@ -448,9 +448,9 @@ export default function StaffWaitlist() {
                           key={entry.id}
                           className={`flex items-center justify-between p-3 rounded-lg border ${
                             entry.status === "promoted"
-                              ? "bg-amber-500/5 border-amber-500/20"
+                              ? "bg-warning/5 border-warning/20"
                               : entry.status === "confirmed"
-                              ? "bg-green-500/5 border-green-500/20"
+                              ? "bg-accent-mint/10 border-accent-mint/40"
                               : "bg-card"
                           }`}
                         >
@@ -509,7 +509,6 @@ export default function StaffWaitlist() {
                                 <Button
                                   size="sm"
                                   variant="default"
-                                  className="bg-green-600 hover:bg-green-700"
                                   onClick={(e) => { e.stopPropagation(); handleConfirm(cls.id, entry.id); }}
                                 >
                                   <CheckCircle2 className="h-3.5 w-3.5 me-1" />
@@ -526,7 +525,7 @@ export default function StaffWaitlist() {
                             )}
 
                             {entry.status === "confirmed" && (
-                              <CheckCircle2 className="h-4 w-4 text-green-600" />
+                              <CheckCircle2 className="h-4 w-4 text-success" />
                             )}
                           </div>
                         </div>

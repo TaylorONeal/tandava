@@ -100,7 +100,7 @@ export default function EmbedSchedule() {
 
         {live && !isLoading && rows.length === 0 && (
           <p className="py-6 text-center text-sm text-muted-foreground">
-            No upcoming classes right now — check back soon.
+            No upcoming classes right now. Check back soon.
           </p>
         )}
 

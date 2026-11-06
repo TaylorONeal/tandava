@@ -952,7 +952,7 @@ function Notice({
 
   const toneClass =
     tone === "success"
-      ? "border-emerald-500/40 bg-emerald-500/5"
+      ? "border-accent-mint bg-accent-mint/10"
       : tone === "error"
         ? "border-destructive/40 bg-destructive/5"
         : "border-border bg-muted/40";

@@ -11,13 +11,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Calendar, Clock, Flame, Loader2, MapPin, Search } from "lucide-react";
+import { ArrowUpRight, Flame, MapPin, Search } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { MarketingShell } from "@/components/layout/MarketingShell";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Band, CtaLink, Eyebrow } from "@/components/marketing/brand";
 import { isBackendConfigured } from "@/lib/backend";
 import { formatPrice } from "@/lib/reference-data";
 import { useDiscoverClasses } from "@/hooks/useDiscover";
@@ -68,10 +66,13 @@ export default function Discover() {
         canonical="/discover"
       />
 
-      <section className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Find a class in {DEFAULT_CITY}</h1>
-        <p className="mt-2 text-muted-foreground max-w-2xl">
-          Independent yoga and movement studios. Pick a class, book on the studio's page. Works in your browser, no app needed.
+      <section className="mb-10">
+        <Eyebrow>Independent studios, {DEFAULT_CITY}</Eyebrow>
+        <h1 className="mt-4 font-brand text-[2.5rem] font-extrabold leading-[0.95] tracking-[-0.045em] sm:text-[3.6rem]">
+          Find a class <Band>in {DEFAULT_CITY}.</Band>
+        </h1>
+        <p className="mt-5 max-w-[56ch] text-lg leading-relaxed text-ink/75">
+          Pick a class and book it on the studio's own page. It all works in your browser, so there's no app to install.
         </p>
       </section>
 
@@ -82,8 +83,16 @@ export default function Discover() {
           cta={{ to: "/demo", label: "Explore the demo" }}
         />
       ) : isLoading ? (
-        <div className="flex items-center justify-center py-24 text-muted-foreground" role="status" aria-label="Loading classes">
-          <Loader2 className="h-6 w-6 animate-spin" />
+        <div role="status" aria-label="Loading classes" className="divide-y divide-ink/10 border-y border-ink/15">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="grid grid-cols-[4.9rem_minmax(0,1fr)] gap-4 py-4">
+              <span className="h-4 w-14 animate-pulse rounded bg-ink/10" />
+              <span className="space-y-2">
+                <span className="block h-4 w-2/5 animate-pulse rounded bg-ink/10" />
+                <span className="block h-3 w-3/5 animate-pulse rounded bg-ink/5" />
+              </span>
+            </div>
+          ))}
         </div>
       ) : isError ? (
         <Notice title="We couldn't load classes" body="Please refresh in a moment." />
@@ -139,15 +148,15 @@ export default function Discover() {
             />
           ) : (
             groups.map((g) => (
-              <section key={g.day} className="mb-8" aria-labelledby={`day-${g.day}`}>
-                <h2 id={`day-${g.day}`} className="text-lg font-semibold mb-3">
+              <section key={g.day} className="mb-10" aria-labelledby={`day-${g.day}`}>
+                <h2 id={`day-${g.day}`} className="border-b-2 border-ink pb-2 font-brand text-xl font-extrabold tracking-tight">
                   {formatDay(g.day)}
                 </h2>
-                <div className="grid gap-3 sm:grid-cols-2">
+                <ul className="divide-y divide-ink/10">
                   {g.classes.map((c) => (
-                    <ClassCard key={c.occurrence_id} c={c} />
+                    <ClassRow key={c.occurrence_id} c={c} />
                   ))}
-                </div>
+                </ul>
               </section>
             ))
           )}
@@ -157,30 +166,26 @@ export default function Discover() {
   );
 }
 
-function ClassCard({ c }: { c: DiscoverClassRow }) {
+function ClassRow({ c }: { c: DiscoverClassRow }) {
   const full = c.spots_left <= 0;
   return (
-    <Link
-      to={classHref(c)}
-      onClick={() => trackFunnel("class_opened", { studio: c.studio_slug, occurrence: c.occurrence_id })}
-      className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-    >
-      <Card className="h-full transition-colors hover:bg-secondary/40">
-        <CardContent className="p-4">
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <h3 className="font-medium leading-tight">{c.offering_name}</h3>
-              <p className="text-sm text-muted-foreground">{c.studio_name}</p>
-            </div>
-            <Badge variant={full ? "outline" : "secondary"} className="shrink-0 text-[10px]">
-              {spotsLabel(c.spots_left)}
-            </Badge>
-          </div>
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
-              <Clock className="h-3.5 w-3.5" aria-hidden />
-              {formatTime(c.starts_at, c.studio_timezone)} · {c.duration_minutes} min
-            </span>
+    <li>
+      <Link
+        to={classHref(c)}
+        onClick={() => trackFunnel("class_opened", { studio: c.studio_slug, occurrence: c.occurrence_id })}
+        className="group grid grid-cols-[4.9rem_minmax(0,1fr)_auto] items-start gap-4 py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
+      >
+        <span className="pt-0.5 font-brand-mono text-sm font-semibold tabular-nums">
+          {formatTime(c.starts_at, c.studio_timezone)}
+          <span className="block text-xs font-normal text-ink/60">{c.duration_minutes} min</span>
+        </span>
+        <span className="min-w-0">
+          <span className="block font-semibold leading-tight group-hover:underline group-hover:underline-offset-4">{c.offering_name}</span>
+          <span className="mt-0.5 block text-sm text-ink/70">
+            {c.studio_name}
+            {c.teacher_name ? `, with ${c.teacher_name}` : ""}
+          </span>
+          <span className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink/60">
             {(c.location_name || c.city) && (
               <span className="inline-flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" aria-hidden />
@@ -193,27 +198,36 @@ function ClassCard({ c }: { c: DiscoverClassRow }) {
                 Heated
               </span>
             )}
-            {c.drop_in_price_cents != null && <span>{formatPrice(c.drop_in_price_cents, c.currency)}</span>}
-          </div>
-          {c.teacher_name && <p className="mt-2 text-xs text-muted-foreground">with {c.teacher_name}</p>}
-        </CardContent>
-      </Card>
-    </Link>
+            {c.drop_in_price_cents != null && <span>Drop-in {formatPrice(c.drop_in_price_cents, c.currency)}</span>}
+          </span>
+        </span>
+        <span className="flex items-center gap-2">
+          <span
+            className={`rounded-full px-2.5 py-1 font-brand-mono text-[0.7rem] font-semibold ${
+              full ? "bg-coral text-ink" : c.spots_left <= 3 ? "bg-lime text-ink" : "bg-ink/5 text-ink/70"
+            }`}
+          >
+            {spotsLabel(c.spots_left)}
+          </span>
+          <ArrowUpRight className="hidden h-4 w-4 sm:block" aria-hidden />
+        </span>
+      </Link>
+    </li>
   );
 }
 
 function StyleChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
-    <Button
+    <button
       type="button"
-      size="sm"
-      variant={active ? "default" : "outline"}
       aria-pressed={active}
       onClick={onClick}
-      className="rounded-full"
+      className={`inline-flex h-9 items-center rounded-full border-2 px-4 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 ${
+        active ? "border-ink bg-ink text-paper" : "border-ink/25 hover:border-ink"
+      }`}
     >
       {label}
-    </Button>
+    </button>
   );
 }
 
@@ -228,23 +242,31 @@ function Notice({
   cta?: { to: string; label: string };
   tone?: "soft";
 }) {
+  if (tone === "soft") {
+    return (
+      <div className="mb-8 border-l-4 border-lime bg-white px-5 py-4">
+        <p className="font-semibold">{title}</p>
+        <p className="mt-1 text-sm text-ink/70">{body}</p>
+      </div>
+    );
+  }
   return (
-    <div className={`rounded-xl border border-border p-6 mb-6 ${tone === "soft" ? "bg-secondary/40" : "text-center py-16"}`}>
-      <h2 className="font-semibold">{title}</h2>
-      <p className="mt-1 text-sm text-muted-foreground max-w-md mx-auto">{body}</p>
-      {cta && (
-        <Button asChild variant="outline" className="mt-4">
-          <Link to={cta.to}>{cta.label}</Link>
-        </Button>
-      )}
+    <div className="mb-8 grid gap-6 border-y-2 border-ink py-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+      <div className="min-w-0">
+        <h2 className="font-brand text-2xl font-extrabold tracking-tight">{title}</h2>
+        <p className="mt-2 max-w-[52ch] text-ink/70">{body}</p>
+      </div>
+      {cta && <CtaLink to={cta.to} variant="secondary">{cta.label}</CtaLink>}
     </div>
   );
 }
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <MarketingShell classic>
-      <div className="max-w-5xl mx-auto px-6 py-8">{children}</div>
+    <MarketingShell>
+      <div className="mkt-grid">
+        <div className="max-w-6xl mx-auto px-6 pb-6 pt-12 sm:pt-16">{children}</div>
+      </div>
     </MarketingShell>
   );
 }

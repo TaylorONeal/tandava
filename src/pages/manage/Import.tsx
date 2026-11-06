@@ -410,7 +410,7 @@ export default function ImportManage() {
               <div className="flex items-center gap-2 px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl text-sm">
                 <Sparkles className="h-4 w-4 text-blue-500" />
                 <span className="text-blue-800">
-                  Auto-detected format: <strong>{getProviderDisplayName(selectedSource)}</strong> — columns have been pre-mapped
+                  Auto-detected format: <strong>{getProviderDisplayName(selectedSource)}</strong>. Columns are mapped for you.
                 </span>
               </div>
             )}
@@ -670,7 +670,7 @@ export default function ImportManage() {
                     <FileSpreadsheet className="h-4 w-4 text-muted-foreground" />
                     <div>
                       <p className="text-sm font-medium">{job.type} from {job.source}</p>
-                      <p className="text-xs text-muted-foreground">{job.date} — {job.total.toLocaleString()} records</p>
+                      <p className="text-xs text-muted-foreground">{job.date} · {job.total.toLocaleString()} records</p>
                     </div>
                   </div>
                   <Badge
