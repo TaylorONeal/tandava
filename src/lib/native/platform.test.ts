@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { nativeHome, nativeLink, parseNativeApp, blocksNativePayment, authRedirectOrigin, allowsSignUp } from './platform';
+import { nativeHome, nativeLink, parseNativeApp, blocksNativePayment, authRedirectOrigin, allowsSignUp, publicWebOrigin } from './platform';
 describe('native app separation', () => {
   it('keeps members in member flows even when also an owner', () => {
     expect(nativeHome('member', true, true, true)).toBe('/my-schedule');
@@ -52,4 +52,10 @@ it('keeps the Studio app sign-in only while web and member sign-up stay open', (
   expect(allowsSignUp('studio')).toBe(false);
   expect(allowsSignUp('member')).toBe(true);
   expect(allowsSignUp(null)).toBe(true);
+});
+
+it('shared and embedded links use the public site inside the native apps', () => {
+  expect(publicWebOrigin('studio', 'capacitor://localhost')).toBe('https://tandavastudio.com');
+  expect(publicWebOrigin('member', 'capacitor://localhost')).toBe('https://tandavastudio.com');
+  expect(publicWebOrigin(null, 'https://tandavastudio.com')).toBe('https://tandavastudio.com');
 });
