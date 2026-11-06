@@ -60,7 +60,7 @@ def frames():
         f'<div class="grid" style="--g:rgba(14,10,18,.06)"></div>'
         + head('front desk', 'to go.', 'Your studio, today, on one screen.', INK, INK, LIME)
         + phone(R+'02-dashboard.png', 560, 200, 700, 'rotate(-3deg)')
-        + scanpop(R+'02-dashboard.png', (20, 330, 1060, 1080), 820, 130, 1300, 3, CORAL)
+        + scanpop(R+'02-dashboard.png', (20, 360, 1060, 1080), 820, 130, 1310, 3, CORAL)
         + spark(930, 110, 90, PAPER, 8)))
     F.append(('phone-03', f'body{{background:{LIME}}}',
         f'<div class="grid" style="--g:rgba(14,10,18,.06)"></div>'
@@ -88,5 +88,5 @@ def frames():
         f'<div class="grid" style="--g:rgba(255,107,139,.07)"></div>'
         + head('share the', 'link.', 'Members book from your page. You see them here.', PAPER, CORAL, INK, 160)
         + phone(R+'07-share.png', 560, 320, 700, 'rotate(4deg)')
-        + scanpop(R+'07-share.png', (20, 260, 1060, 960), 820, 60, 1340, -4, TEAL, ring=PAPER)))
+        + scanpop(R+'07-share.png', (20, 290, 1060, 1050), 790, 70, 1310, -4, TEAL, ring=PAPER)))
     return F
