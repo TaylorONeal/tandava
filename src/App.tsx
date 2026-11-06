@@ -143,6 +143,7 @@ const OpenSource = lazyWithReload(() => import("./pages/OpenSource"));
 const TermsPage = lazyWithReload(() => import("./pages/legal/LegalPage").then((m) => ({ default: m.TermsPage })));
 const PrivacyPage = lazyWithReload(() => import("./pages/legal/LegalPage").then((m) => ({ default: m.PrivacyPage })));
 const RefundsPage = lazyWithReload(() => import("./pages/legal/LegalPage").then((m) => ({ default: m.RefundsPage })));
+const SupportPage = lazyWithReload(() => import("./pages/legal/SupportPage"));
 const ResetPassword = lazyWithReload(() => import("./pages/auth/ResetPassword"));
 const ForStudios = lazyWithReload(() => import("./pages/ForStudios"));
 const StudioCalculator = lazyWithReload(() => import("./pages/tools/StudioCalculator"));
@@ -245,6 +246,7 @@ const App = () => (
                   <Route path="/terms" element={<TermsPage />} />
                   <Route path="/privacy" element={<PrivacyPage />} />
                   <Route path="/refunds" element={<RefundsPage />} />
+                  <Route path="/support" element={<SupportPage />} />
                   <Route path="/for-studios" element={<ForStudios />} />
                   <Route path="/tools/studio-calculator" element={<StudioCalculator />} />
 
