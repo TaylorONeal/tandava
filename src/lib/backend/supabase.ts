@@ -1,5 +1,5 @@
 import { apiErrorMessage } from "./apiError";
-import { nativeApp, blocksNativePayment, authRedirectOrigin } from '@/lib/native/platform';
+import { nativeApp, blocksNativePayment, authRedirectOrigin, allowsSignUp } from '@/lib/native/platform';
 /**
  * Supabase Backend Provider
  *
@@ -107,6 +107,9 @@ const supabaseAuth: AuthProvider = {
   },
 
   async signUpWithEmail(email, password, metadata: SignUpMetadata, next) {
+    if (!allowsSignUp(nativeApp)) {
+      return { error: { message: "Accounts are created on the web at tandavastudio.com." }, requiresEmailConfirmation: false };
+    }
     const path = safeNextPath(next);
     const { data, error } = await getClient().auth.signUp({
       email,

@@ -19,7 +19,7 @@ adding iPad in an update is allowed, and it removes the 13-inch screenshot set n
 
 | # | Feature | State |
 |---|---|---|
-| 1 | Email sign-in, role routing (owner to dashboard, teacher to teaching schedule) | Built in #109 |
+| 1 | Email sign-in only, role routing (owner to dashboard, teacher to teaching schedule) | Built in #109; sign-up removed from the Studio app in this PR |
 | 2 | Teaching schedule (14 days) and class roster | Built in #109 |
 | 3 | One-tap roster check-in, server-confirmed, lost-response reconciliation | Built in #109 |
 | 4 | **Scan to check in**: camera scanner for the member's check-in pass, haptic confirm, works for front desk, owners and the assigned teacher | **This PR** |
@@ -28,7 +28,7 @@ adding iPad in an update is allowed, and it removes the 13-inch screenshot set n
 | 7 | Share booking links through the iOS share sheet | Built in #109 |
 | 8 | Offline banner, safe external links, account deletion request | Built in #109 (deletion switch off) |
 
-Out of phase 1: payments setup inside the app, reports, CRM, campaigns, retail, push,
+Out of phase 1: account sign-up in the app, payments setup inside the app, reports, CRM, campaigns, retail, push,
 Sign in with Apple (not required while sign-in is email only).
 
 ## Native value for guideline 4.2
@@ -63,7 +63,7 @@ uploaded candidate does.
 | 2 | New signed candidate from #109 plus this PR | Mac (Xcode) | 1.0 (3) is stale. Xcode must resolve the new SPM packages (barcode scanner, haptics) and update `Package.resolved` |
 | 3 | Migrations 00050 to 00052 on `tandava-prod` (org Purafield Studio, id `mkaixgjwakfufmmwembn`) | Taylor's yes, then apply | Production change. Studio needs 00052 for scanning |
 | 4 | Review studio and accounts | Taylor's yes, then seed | Synthetic studio with `page_live`, a verified owner, an assigned teacher and a member. Add an all-day synthetic class with a standing member booking during review week so a reviewer can scan any time (check-in only opens 60 minutes before class) |
-| 5 | Studio sign-up in the app | Decision | Recommend sign-in only in Studio 1.0 (owners set up on the web, staff are invited). Keeps account creation, and 5.1.1(v) deletion fulfillment, out of the Studio review. If sign-up stays, deletion fulfillment becomes a Studio blocker too |
+| 5 | Studio sign-up in the app | Decided Nov 6 (Taylor): sign-in only | `allowsSignUp('studio')` is false: no sign-up link on sign-in, `/auth/register` redirects to sign-in, and the email sign-up call refuses. Owners set up on the web, staff are invited. Deletion fulfillment is not a Studio blocker |
 | 6 | Privacy label | Prep | Contact info (name, email) linked to the user for app function; no tracking; camera frames are processed on device and not collected. Reconcile with Sentry and analytics in the candidate |
 | 7 | Listing: subtitle, keywords, description, support URL, privacy URL, category Business, age rating | Prep | Draft in the GTM doc |
 | 8 | Screenshots: iPhone 6.9-inch set (1320 x 2868) | Mac capture, then `store-sets` engine | Set file: `app-launch-playbook/store-sets/set_tandavastudio.py` |

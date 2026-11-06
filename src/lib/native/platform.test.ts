@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { nativeHome, nativeLink, parseNativeApp, blocksNativePayment, authRedirectOrigin } from './platform';
+import { nativeHome, nativeLink, parseNativeApp, blocksNativePayment, authRedirectOrigin, allowsSignUp } from './platform';
 describe('native app separation', () => {
   it('keeps members in member flows even when also an owner', () => {
     expect(nativeHome('member', true, true, true)).toBe('/my-schedule');
@@ -46,4 +46,10 @@ it('only permits the dedicated physical route when explicitly enabled', () => {
     expect(blocksNativePayment(target, 'stripe-portal', true)).toBe(false);
     expect(blocksNativePayment(target, 'native-portal', false)).toBe(true);
   }
+});
+
+it('keeps the Studio app sign-in only while web and member sign-up stay open', () => {
+  expect(allowsSignUp('studio')).toBe(false);
+  expect(allowsSignUp('member')).toBe(true);
+  expect(allowsSignUp(null)).toBe(true);
 });

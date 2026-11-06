@@ -8,6 +8,10 @@ export const nativeApp = parseNativeApp(import.meta.env.VITE_NATIVE_APP);
 export const isNativeApp = () => nativeApp !== null && Capacitor.isNativePlatform();
 // Native release uses first-party email authentication only. Web OAuth remains unchanged.
 export const offersSocialAuth = () => nativeApp === null;
+// Tandava Studio 1.0 is sign-in only: owners set up on the web and staff are invited.
+// Keeps account creation (and 5.1.1(v) deletion) out of the Studio app.
+export function allowsSignUp(app: NativeApp | null): boolean { return app !== 'studio'; }
+export const offersSignUp = () => allowsSignUp(nativeApp);
 // Email links must open a reachable website, never the bundled capacitor://localhost.
 // Native auth handoff requires separately configured and verified app links.
 export function authRedirectOrigin(app: NativeApp | null, browserOrigin: string): string {
