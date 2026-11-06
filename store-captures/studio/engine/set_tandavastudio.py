@@ -85,7 +85,7 @@ def frames():
         + head('tap.', 'checked in.', 'No pass? The roster works too.', INK, INK, LIME, 220)
         + phone(R+'03-roster.png', 840, 380, 1040, 5)
         + scanpop(R+'03-roster.png', (60, 1300, 1260, 1760), 1060, 60, 1900, -4, INK, ring=PAPER)
-        + band('3 / 18 here', 120, 2560, CORAL, INK, -5)))
+        + band('2 of 8 here', 120, 2560, CORAL, INK, -5)))
     # 4 plum: teachers get their own view
     F.append(('ios-04', f'body{{background:{PLUM}}}',
         f'<div class="grid" style="--g:rgba(215,255,63,.06)"></div>'
@@ -99,7 +99,7 @@ def frames():
         + head('your week,', 'your way.', 'Add classes, move times, cancel when needed.', INK, TEAL, INK, 236)
         + phone(R+'05-schedule.png', 860, 400, 1050, 4)
         + scanpop(R+'05-schedule.png', (40, 700, 1280, 1220), 1060, 60, 2040, -3, CORAL)
-        + band('Mon · Wed · Fri', 90, 1260, INK, LIME, -7)))
+        + band('vinyasa · pilates · barre', 90, 1260, INK, LIME, -7)))
     # 6 coral: classes and pricing
     F.append(('ios-06', f'body{{background:{CORAL}}}',
         f'<div class="grid" style="--g:rgba(14,10,18,.07)"></div>'
