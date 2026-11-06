@@ -84,7 +84,7 @@ def frames():
         f'<div class="grid" style="--g:rgba(14,10,18,.06)"></div>'
         + head('tap.', 'checked in.', 'No pass? The roster works too.', INK, INK, LIME, 220)
         + phone(R+'03-roster.png', 840, 380, 1040, 5)
-        + scanpop(R+'03-roster.png', (40, 690, 1280, 1500), 1060, 70, 1920, -4, INK, ring=PAPER)
+        + scanpop(R+'03-roster.png', (40, 690, 1280, 1475), 1060, 70, 1920, -4, INK, ring=PAPER)
         + band('2 of 8 here', 760, 2690, CORAL, INK, -5)))
     # 4 plum: teachers get their own view
     F.append(('ios-04', f'body{{background:{PLUM}}}',

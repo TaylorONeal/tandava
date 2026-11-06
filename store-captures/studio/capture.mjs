@@ -64,14 +64,14 @@ async function settle(page, ms = 1200) {
 
 async function shot(page, name, scrollToText) {
   const file = path.join(outDir, `${name}.png`);
-  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
   if (scrollToText) {
     await page.evaluate(t => {
       const el = [...document.querySelectorAll('h1,h2,h3')].find(e => e.textContent.trim().startsWith(t));
-      if (el) window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 76);
+      if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 76, behavior: 'instant' });
     }, scrollToText);
   }
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(900);
   await page.screenshot({ path: file, animations: 'disabled', caret: 'hide' });
   // Long screens get a full-page copy too, for crop choices.
   await page.screenshot({ path: path.join(outDir, 'full', `${name}.png`), fullPage: true, animations: 'disabled', caret: 'hide' }).catch(() => {});
