@@ -196,7 +196,9 @@ export function landingPages(live: boolean = STUDIO_APP_LIVE): MarketingPage[] {
         },
         {
           q: "Do members need the app?",
-          a: "No. Members book and get their check-in pass on the web, in their phone's browser. The app is for staff.",
+          a: live
+            ? "No. Members book and get their check-in pass on the web, in their phone's browser. The app is for staff."
+            : "No. Members book on the web, in their phone's browser, and that's where their check-in pass will be when the app launches. The app is for staff.",
         },
         {
           q: "What does it cost?",
