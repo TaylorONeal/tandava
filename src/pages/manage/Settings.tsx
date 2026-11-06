@@ -65,7 +65,7 @@ export default function SettingsManage() {
   const [pageLive, setPageLive] = useState(false);
 
   // SEO Settings
-  const [metaDescription, setMetaDescription] = useState("Hot yoga, vinyasa, and meditation classes in San Francisco's SOMA neighborhood. New students get their first week free.");
+  const [metaDescription, setMetaDescription] = useState("Yoga, pilates and meditation on East 6th, South Congress and North Lamar. New students get 30 days unlimited for $49.");
   const [googleVerification, setGoogleVerification] = useState("");
   const [googleAnalyticsId, setGoogleAnalyticsId] = useState("");
   const [facebookPixelId, setFacebookPixelId] = useState("");
@@ -395,7 +395,7 @@ export default function SettingsManage() {
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="text-sm font-semibold">SOMA Location</h3>
-                      <p className="text-xs text-muted-foreground mt-0.5">123 Folsom St, San Francisco, CA 94105</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">East 6th Street, Austin, TX</p>
                       <div className="flex gap-2 mt-2 text-xs text-muted-foreground">
                         <span>3 rooms</span>
                         <span>Main Studio, Hot Room, Meditation Room</span>

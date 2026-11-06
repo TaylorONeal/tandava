@@ -40,16 +40,16 @@ class AppErrorBoundary extends Component<
   render() {
     if (this.state.error) {
       return (
-        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0f0a14", color: "#f5f0e8", fontFamily: "'DM Sans', sans-serif", padding: "2rem" }}>
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#FFF8EE", color: "#0E0A12", fontFamily: "'Bricolage Grotesque', system-ui, sans-serif", padding: "2rem" }}>
           <div style={{ maxWidth: "32rem", textAlign: "center" }}>
-            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "2rem", marginBottom: "1rem" }}>Something went wrong</h1>
+            <h1 style={{ fontWeight: 800, letterSpacing: "-0.04em", fontSize: "2rem", marginBottom: "1rem" }}>Something went wrong</h1>
             <p style={{ opacity: 0.7, marginBottom: "1.5rem" }}>Tandava encountered an error during startup.</p>
-            <pre style={{ textAlign: "left", background: "rgba(255,255,255,0.05)", padding: "1rem", borderRadius: "0.5rem", fontSize: "0.75rem", overflow: "auto", maxHeight: "12rem", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+            <pre style={{ textAlign: "left", background: "#FFFFFF", border: "1px solid rgba(14, 10, 18, 0.1)", padding: "1rem", borderRadius: "0.5rem", fontSize: "0.75rem", overflow: "auto", maxHeight: "12rem", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
               {this.state.error.message}
               {"\n\n"}
               {this.state.error.stack}
             </pre>
-            <button onClick={() => window.location.reload()} style={{ marginTop: "1.5rem", padding: "0.5rem 1.5rem", background: "#4fd1c5", color: "#0f0a14", border: "none", borderRadius: "0.375rem", cursor: "pointer", fontWeight: 600 }}>
+            <button onClick={() => window.location.reload()} style={{ marginTop: "1.5rem", padding: "0.5rem 1.5rem", background: "#0E0A12", color: "#FFF8EE", border: "none", borderRadius: "9999px", cursor: "pointer", fontWeight: 600 }}>
               Reload
             </button>
           </div>
@@ -158,6 +158,7 @@ const RefundsPage = lazyWithReload(() => import("./pages/legal/LegalPage").then(
 const SupportPage = lazyWithReload(() => import("./pages/legal/SupportPage"));
 const ResetPassword = lazyWithReload(() => import("./pages/auth/ResetPassword"));
 const ForStudios = lazyWithReload(() => import("./pages/ForStudios"));
+const LandingPage = lazyWithReload(() => import("./pages/marketing/LandingPage"));
 const StudioCalculator = lazyWithReload(() => import("./pages/tools/StudioCalculator"));
 const Blog = lazyWithReload(() => import("./pages/Blog"));
 const BlogCategory = lazyWithReload(() => import("./pages/blog/BlogCategory"));
@@ -265,6 +266,9 @@ const App = () => (
                   <Route path="/refunds" element={<RefundsPage />} />
                   <Route path="/support" element={<SupportPage />} />
                   <Route path="/for-studios" element={<ForStudios />} />
+                  <Route path="/studio-app" element={<LandingPage route="/studio-app" />} />
+                  <Route path="/yoga-studio-software" element={<LandingPage route="/yoga-studio-software" />} />
+                  <Route path="/class-booking-software" element={<LandingPage route="/class-booking-software" />} />
                   <Route path="/tools/studio-calculator" element={<StudioCalculator />} />
 
                   {/* ---- Public studio storefront (slug-driven; what per-studio

@@ -64,11 +64,13 @@ The demo uses a fictional yoga studio based in Austin, Texas:
 |-----------|-------|
 | Name | Oxatl Yoga |
 | Slug | `oxatl-yoga` |
-| Locations | 3 (Domain, South Congress, East Austin) |
-| Owner | Mariana Trench |
-| Front Desk | Cassia Ray |
-| Teachers | 18 (15 female, 3 male) |
-| Members | 500 |
+| Locations | 3 (Oxatl East on E 6th St, Oxatl Central on S Congress Ave, Oxatl North on N Lamar Blvd) |
+| Owner | Mariana Ochoa |
+| Front Desk | Cassia Moreno |
+| Teacher persona | Maren Holloway (Vinyasa, Power Yoga) |
+| Student persona | Lucia Alvarez (`member-0000`, Unlimited Monthly) |
+| Teachers | 18 (Maren Holloway, Noor Haddad, Camila Reyes, Hannah Lindqvist, Jasmine Okafor, Leah Kaplan, Mei Tanaka, Tasha Greene, Valeria Ortiz, Anika Desai, Erin Gallagher, Rosa Delgado, Brooke Sandoval, Sofia Marchetti, Dana Whitaker, Marcus Bell, Daniel Nguyen, Andre Castillo) |
+| Members | 500, generated from a fixed seed so names and plans are the same on every load |
 | Time Period | Jan 22 - Dec 31, 2018 |
 
 ### Schedule Pattern
@@ -118,12 +120,13 @@ export const OXATL_STUDIO: Studio = {
 Teachers are defined with a helper function:
 
 ```typescript
-const TEACHER_DATA = [
-  { first: 'New', last: 'Teacher', specialties: ['Vinyasa', 'Power Flow'] },
-  // Add more...
-];
-
-export const OXATL_TEACHERS = TEACHER_DATA.map((t, i) => createTeacher(t, i));
+{
+  // The id is a stable key used by OXATL_SCHEDULE and workshops; the name is display only.
+  profile: makeTeacherProfile('teacher-new-id', 'Nia', 'Brooks', 'nia'),
+  location_ids: ['loc-east'],
+  specialties: ['Vinyasa', 'Hatha'],
+  bio: 'One or two plain sentences about how this teacher runs class.',
+},
 ```
 
 ### Changing Member Count

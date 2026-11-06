@@ -149,6 +149,12 @@ export const PRIVACY: LegalDoc = {
       ],
     },
     {
+      heading: "Camera (Tandava Studio app)",
+      body: [
+        "The Tandava Studio app asks for camera access only to scan a member's check-in pass. The phone reads the QR code itself. The camera picture never leaves the phone, and we do not receive or store photos or video. The only thing sent to us is the code's text, a booking reference, which records the check-in. A member's pass holds that reference and nothing else. You can turn camera access off in Settings > Tandava Studio > Camera and check people in from the class roster instead.",
+      ],
+    },
+    {
       heading: "Why we use it",
       body: [
         "To run your account and bookings, take payments, send receipts and class messages, keep the service secure, and understand which pages bring people to a studio so studios can see what works. We do not sell your personal information and we do not use it for third-party advertising.",

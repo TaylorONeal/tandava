@@ -15,27 +15,27 @@ import { Search, SlidersHorizontal } from "lucide-react";
 const mockInstructors = [
   {
     id: "t1",
-    name: "Maya Johnson",
+    name: "Brooke Sandoval",
     bio: "E-RYT 500 specializing in dynamic vinyasa and arm balances. 15+ years teaching experience. Known for creative sequencing and hands-on adjustments.",
     specialties: ["Vinyasa", "Inversions", "Arm Balances"],
     rating: 4.9,
     reviewCount: 456,
     classCount: 2340,
-    studios: ["Lotus Flow Studio", "Hot Yoga Collective"],
+    studios: ["Oxatl Yoga", "Hot Yoga Collective"],
   },
   {
     id: "t2",
-    name: "David Park",
+    name: "Mei Tanaka",
     bio: "Yin yoga and meditation teacher. Trained in Thailand with a focus on mindfulness and stillness. Brings a calming presence to every class.",
     specialties: ["Yin", "Meditation", "Restorative"],
     rating: 4.8,
     reviewCount: 312,
     classCount: 1890,
-    studios: ["Lotus Flow Studio", "Zen Garden Yoga"],
+    studios: ["Oxatl Yoga", "Zen Garden Yoga"],
   },
   {
     id: "t3",
-    name: "Sarah Lee",
+    name: "Dana Whitaker",
     bio: "Passionate about making yoga accessible to everyone. Specializes in beginner-friendly classes with clear instruction and modifications.",
     specialties: ["Beginner Yoga", "Hatha", "Gentle Flow"],
     rating: 4.7,
@@ -45,7 +45,7 @@ const mockInstructors = [
   },
   {
     id: "t4",
-    name: "Alex Rivera",
+    name: "Marcus Bell",
     bio: "Former professional athlete turned yoga teacher. Brings an athletic approach to power yoga with emphasis on strength and endurance.",
     specialties: ["Power Yoga", "Hot Yoga", "Athletic Flow"],
     rating: 4.9,
@@ -55,7 +55,7 @@ const mockInstructors = [
   },
   {
     id: "t5",
-    name: "Emma Thompson",
+    name: "Hannah Lindqvist",
     bio: "Therapeutic yoga specialist with a background in physical therapy. Expert in adapting poses for injuries and chronic conditions.",
     specialties: ["Yoga Therapy", "Restorative", "Chair Yoga"],
     rating: 4.8,
@@ -65,7 +65,7 @@ const mockInstructors = [
   },
   {
     id: "t6",
-    name: "Marcus Chen",
+    name: "Daniel Nguyen",
     bio: "Ashtanga practitioner for 20 years. Studied in Mysore, India. Traditional approach with authentic lineage teachings.",
     specialties: ["Ashtanga", "Mysore", "Traditional"],
     rating: 4.9,
@@ -131,7 +131,7 @@ const Instructors = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Studios</SelectItem>
-                <SelectItem value="lotus">Lotus Flow Studio</SelectItem>
+                <SelectItem value="lotus">Oxatl Yoga</SelectItem>
                 <SelectItem value="hot">Hot Yoga Collective</SelectItem>
                 <SelectItem value="zen">Zen Garden Yoga</SelectItem>
               </SelectContent>

@@ -146,7 +146,7 @@ export function MemberBookingPanel({
 
   if (state === "booked" || state === "waitlisted") {
     return (
-      <Card className="border-emerald-500/40 bg-emerald-500/5">
+      <Card className="border-accent-mint bg-accent-mint/10">
         <CardContent className="pt-6 flex items-start gap-3">
           <CheckCircle2 className="h-5 w-5 shrink-0" aria-hidden="true" />
           <div>

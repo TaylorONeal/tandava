@@ -392,9 +392,9 @@ export function PurchaseReceiptEmail({
 
 // Example usage data for preview/testing
 export const purchaseReceiptEmailExample: PurchaseReceiptEmailProps = {
-  studioName: "Lotus Flow Studio",
-  studioAddress: "123 Yoga Lane, San Francisco, CA 94102",
-  memberName: "Sarah",
+  studioName: "Oxatl Yoga",
+  studioAddress: "East 6th Street, Austin, TX",
+  memberName: "Lucia",
   memberEmail: "sarah@example.com",
   orderId: "TND-2024-1234",
   orderDate: "December 10, 2024",

@@ -47,7 +47,7 @@ const mockConversations = [
   {
     id: "1",
     memberId: "m1",
-    memberName: "Sarah Chen",
+    memberName: "Lucia Alvarez",
     memberPhone: "+1 (415) 555-0101",
     memberEmail: "sarah@example.com",
     avatar: "",
@@ -61,7 +61,7 @@ const mockConversations = [
   {
     id: "2",
     memberId: "m2",
-    memberName: "James Liu",
+    memberName: "Hector Mbeki",
     memberPhone: "+1 (415) 555-0102",
     memberEmail: "james@example.com",
     avatar: "",
@@ -75,7 +75,7 @@ const mockConversations = [
   {
     id: "3",
     memberId: "m3",
-    memberName: "Emma Wilson",
+    memberName: "Wren Sorensen",
     memberPhone: "+1 (415) 555-0103",
     memberEmail: "emma@example.com",
     avatar: "",
@@ -89,7 +89,7 @@ const mockConversations = [
   {
     id: "4",
     memberId: "m4",
-    memberName: "Michael Park",
+    memberName: "Caleb Delacroix",
     memberPhone: "+1 (415) 555-0104",
     memberEmail: "michael@example.com",
     avatar: "",
@@ -103,7 +103,7 @@ const mockConversations = [
   {
     id: "5",
     memberId: "m5",
-    memberName: "Ava Kim",
+    memberName: "Margot Kim",
     memberPhone: "+1 (415) 555-0105",
     memberEmail: "ava@example.com",
     avatar: "",
@@ -124,7 +124,7 @@ const mockMessages: Record<string, Array<{
   status?: "sent" | "delivered" | "read";
 }>> = {
   "1": [
-    { id: "m1", content: "Hi Sarah! This is a reminder that you have Morning Vinyasa tomorrow at 9:00 AM.", timestamp: "10:30 AM", isOutbound: true, status: "read" },
+    { id: "m1", content: "Hi Lucia! This is a reminder that you have Morning Vinyasa tomorrow at 9:00 AM.", timestamp: "10:30 AM", isOutbound: true, status: "read" },
     { id: "m2", content: "Thanks for the reminder!", timestamp: "10:45 AM", isOutbound: false },
     { id: "m3", content: "You're welcome! Let us know if you need anything.", timestamp: "10:46 AM", isOutbound: true, status: "delivered" },
     { id: "m4", content: "Actually, is there mat rental available?", timestamp: "11:00 AM", isOutbound: false },
@@ -132,12 +132,12 @@ const mockMessages: Record<string, Array<{
     { id: "m6", content: "Thanks! See you tomorrow for the 9am class!", timestamp: "11:05 AM", isOutbound: false },
   ],
   "2": [
-    { id: "m1", content: "Hi James! Your class pack is running low - you have 2 classes remaining.", timestamp: "Yesterday", isOutbound: true, status: "read" },
+    { id: "m1", content: "Hi Hector! Your class pack is running low - you have 2 classes remaining.", timestamp: "Yesterday", isOutbound: true, status: "read" },
     { id: "m2", content: "Thanks for letting me know. I'll renew soon.", timestamp: "Yesterday", isOutbound: false },
     { id: "m3", content: "Is there still space in the evening vinyasa?", timestamp: "2:30 PM", isOutbound: false },
   ],
   "3": [
-    { id: "m1", content: "Hi Emma! Quick note - we're at capacity for mat rentals tomorrow. Please bring your own if possible.", timestamp: "12:00 PM", isOutbound: true, status: "read" },
+    { id: "m1", content: "Hi Wren! Quick note - we're at capacity for mat rentals tomorrow. Please bring your own if possible.", timestamp: "12:00 PM", isOutbound: true, status: "read" },
     { id: "m2", content: "Oh okay, no problem!", timestamp: "12:15 PM", isOutbound: false },
     { id: "m3", content: "Got it, I'll bring my own mat then", timestamp: "12:16 PM", isOutbound: false },
   ],

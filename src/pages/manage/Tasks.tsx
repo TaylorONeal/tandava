@@ -76,18 +76,18 @@ import type {
 
 // Mock data for staff members
 const mockStaff: (Profile & { id: string })[] = [
-  { id: "s1", first_name: "Maya", last_name: "Patel", email: "maya@tandava.yoga", display_name: null, phone: null, avatar_url: null, date_of_birth: null, pronouns: null, emergency_contact_name: null, emergency_contact_phone: null, bio: null, specialties: [], certifications: [], instagram_handle: null, website: null, created_at: "", updated_at: "" },
-  { id: "s2", first_name: "James", last_name: "Liu", email: "james@tandava.yoga", display_name: null, phone: null, avatar_url: null, date_of_birth: null, pronouns: null, emergency_contact_name: null, emergency_contact_phone: null, bio: null, specialties: [], certifications: [], instagram_handle: null, website: null, created_at: "", updated_at: "" },
-  { id: "s3", first_name: "Sarah", last_name: "Chen", email: "sarah@tandava.yoga", display_name: null, phone: null, avatar_url: null, date_of_birth: null, pronouns: null, emergency_contact_name: null, emergency_contact_phone: null, bio: null, specialties: [], certifications: [], instagram_handle: null, website: null, created_at: "", updated_at: "" },
-  { id: "s4", first_name: "Alex", last_name: "Rivera", email: "alex@tandava.yoga", display_name: null, phone: null, avatar_url: null, date_of_birth: null, pronouns: null, emergency_contact_name: null, emergency_contact_phone: null, bio: null, specialties: [], certifications: [], instagram_handle: null, website: null, created_at: "", updated_at: "" },
+  { id: "s1", first_name: "Cassia", last_name: "Moreno", email: "cassia@oxatlyoga.com", display_name: null, phone: null, avatar_url: null, date_of_birth: null, pronouns: null, emergency_contact_name: null, emergency_contact_phone: null, bio: null, specialties: [], certifications: [], instagram_handle: null, website: null, created_at: "", updated_at: "" },
+  { id: "s2", first_name: "Daniel", last_name: "Nguyen", email: "daniel@oxatlyoga.com", display_name: null, phone: null, avatar_url: null, date_of_birth: null, pronouns: null, emergency_contact_name: null, emergency_contact_phone: null, bio: null, specialties: [], certifications: [], instagram_handle: null, website: null, created_at: "", updated_at: "" },
+  { id: "s3", first_name: "Mariana", last_name: "Ochoa", email: "mariana@oxatlyoga.com", display_name: null, phone: null, avatar_url: null, date_of_birth: null, pronouns: null, emergency_contact_name: null, emergency_contact_phone: null, bio: null, specialties: [], certifications: [], instagram_handle: null, website: null, created_at: "", updated_at: "" },
+  { id: "s4", first_name: "Erin", last_name: "Gallagher", email: "erin@oxatlyoga.com", display_name: null, phone: null, avatar_url: null, date_of_birth: null, pronouns: null, emergency_contact_name: null, emergency_contact_phone: null, bio: null, specialties: [], certifications: [], instagram_handle: null, website: null, created_at: "", updated_at: "" },
 ];
 
 // Mock task categories
 const mockCategories: TaskCategory[] = [
-  { id: "c1", studio_id: "1", name: "Cleaning", color: "#10B981", icon: null, sort_order: 1, created_at: "" },
+  { id: "c1", studio_id: "1", name: "Cleaning", color: "#3EE6D2", icon: null, sort_order: 1, created_at: "" },
   { id: "c2", studio_id: "1", name: "Maintenance", color: "#F59E0B", icon: null, sort_order: 2, created_at: "" },
-  { id: "c3", studio_id: "1", name: "Admin", color: "#6366F1", icon: null, sort_order: 3, created_at: "" },
-  { id: "c4", studio_id: "1", name: "Inventory", color: "#EC4899", icon: null, sort_order: 4, created_at: "" },
+  { id: "c3", studio_id: "1", name: "Admin", color: "#0E0A12", icon: null, sort_order: 3, created_at: "" },
+  { id: "c4", studio_id: "1", name: "Inventory", color: "#FF6B8B", icon: null, sort_order: 4, created_at: "" },
   { id: "c5", studio_id: "1", name: "Customer Service", color: "#14B8A6", icon: null, sort_order: 5, created_at: "" },
 ];
 
@@ -117,7 +117,7 @@ const mockTasks: (StaffTask & { assignee?: Profile; category?: TaskCategory })[]
     assignee: mockStaff[2], category: mockCategories[2]
   },
   {
-    id: "t5", studio_id: "1", title: "Respond to member inquiry about private sessions", description: "Emma Wilson asked about private yoga sessions. Follow up with pricing and availability.", category_id: "c5", priority: "high", status: "pending", assigned_to: "s3", assigned_by: null, due_date: "2025-02-05", due_time: "12:00", started_at: null, completed_at: null, completed_by: null, location_id: null, room_id: null, is_recurring: false, recurrence_rule_id: null, parent_task_id: null, checklist: [], attachments_count: 2, notes: null, created_by: "s3", created_at: "2025-02-04T11:00:00", updated_at: "2025-02-04T11:00:00",
+    id: "t5", studio_id: "1", title: "Respond to member inquiry about private sessions", description: "Wren Sorensen asked about private yoga sessions. Follow up with pricing and availability.", category_id: "c5", priority: "high", status: "pending", assigned_to: "s3", assigned_by: null, due_date: "2025-02-05", due_time: "12:00", started_at: null, completed_at: null, completed_by: null, location_id: null, room_id: null, is_recurring: false, recurrence_rule_id: null, parent_task_id: null, checklist: [], attachments_count: 2, notes: null, created_by: "s3", created_at: "2025-02-04T11:00:00", updated_at: "2025-02-04T11:00:00",
     assignee: mockStaff[2], category: mockCategories[4]
   },
   {
@@ -132,15 +132,15 @@ const mockTasks: (StaffTask & { assignee?: Profile; category?: TaskCategory })[]
 
 // Mock activity log
 const mockActivityLog = [
-  { id: "a1", task_id: "t1", actor: "Sarah Chen", action: "created", timestamp: "2025-02-04T10:00:00" },
-  { id: "a2", task_id: "t1", actor: "Sarah Chen", action: "assigned to Maya Patel", timestamp: "2025-02-04T10:01:00" },
-  { id: "a3", task_id: "t1", actor: "Maya Patel", action: "completed checklist item", timestamp: "2025-02-04T14:30:00" },
+  { id: "a1", task_id: "t1", actor: "Mariana Ochoa", action: "created", timestamp: "2025-02-04T10:00:00" },
+  { id: "a2", task_id: "t1", actor: "Mariana Ochoa", action: "assigned to Cassia Moreno", timestamp: "2025-02-04T10:01:00" },
+  { id: "a3", task_id: "t1", actor: "Cassia Moreno", action: "completed checklist item", timestamp: "2025-02-04T14:30:00" },
 ];
 
 // Mock comments
 const mockComments = [
   { id: "cm1", task_id: "t1", author: mockStaff[0], content: "I'll get to this after the morning classes.", timestamp: "2025-02-04T11:00:00" },
-  { id: "cm2", task_id: "t1", author: mockStaff[2], content: "Thanks Maya! Let me know if you need help finding the mats in storage.", timestamp: "2025-02-04T11:15:00" },
+  { id: "cm2", task_id: "t1", author: mockStaff[2], content: "Thanks Cassia! Let me know if you need help finding the mats in storage.", timestamp: "2025-02-04T11:15:00" },
 ];
 
 // Priority config
@@ -153,10 +153,10 @@ const priorityConfig: Record<TaskPriority, { label: string; color: string; bgCol
 
 // Status config
 const statusConfig: Record<TaskStatus, { label: string; color: string }> = {
-  pending: { label: "To Do", color: "bg-gray-500" },
-  in_progress: { label: "In Progress", color: "bg-blue-500" },
-  completed: { label: "Completed", color: "bg-green-500" },
-  cancelled: { label: "Cancelled", color: "bg-red-500" },
+  pending: { label: "To Do", color: "bg-muted-foreground" },
+  in_progress: { label: "In Progress", color: "bg-info" },
+  completed: { label: "Completed", color: "bg-success" },
+  cancelled: { label: "Cancelled", color: "bg-destructive" },
 };
 
 function getInitials(profile?: Profile | null): string {
@@ -597,9 +597,9 @@ export default function TasksManage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">Completed Today</p>
-                  <p className="text-xl font-bold text-green-500">{stats.completedToday}</p>
+                  <p className="text-xl font-bold text-success">{stats.completedToday}</p>
                 </div>
-                <CheckCircle2 className="h-5 w-5 text-green-500" />
+                <CheckCircle2 className="h-5 w-5 text-success" />
               </div>
             </CardContent>
           </Card>
@@ -1260,7 +1260,7 @@ export default function TasksManage() {
                       ))}
                     {selectedTask.completed_at && (
                       <div className="flex items-start gap-2 text-xs">
-                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 shrink-0" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-success mt-1.5 shrink-0" />
                         <div>
                           <span className="font-medium">Task completed</span>
                           <p className="text-muted-foreground">{formatDateTime(selectedTask.completed_at)}</p>
