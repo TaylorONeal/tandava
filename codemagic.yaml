@@ -61,6 +61,63 @@ workflows:
         submit_to_testflight: true
         submit_to_app_store: false
 
+  # Android, phase 1. Debug APK for the Pixel 4 plus an unsigned AAB; needs no keystore.
+  studio-android-debug:
+    name: Tandava Studio Android debug APK and unsigned AAB
+    instance_type: linux_x2
+    max_build_duration: 45
+    environment:
+      groups:
+        - tandava_native
+      node: 22
+      java: 21
+    scripts:
+      - name: Install
+        script: npm ci
+      - name: Checks
+        script: npm run typecheck && npm test
+      - name: Native web bundle and sync
+        script: npm run native -- studio sync android
+      - name: Build APK and AAB
+        script: |
+          cd native/studio/android
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug bundleRelease
+    artifacts:
+      - native/studio/android/app/build/outputs/apk/debug/*.apk
+      - native/studio/android/app/build/outputs/bundle/release/*.aab
+
+  # Signed AAB for Play. Needs the upload keystore saved in Codemagic as
+  # "tandava_studio_upload" (Team settings > Code signing identities > Android keystores).
+  # Upload to Play by hand: nothing here publishes.
+  studio-android-aab:
+    name: Tandava Studio Android signed AAB
+    instance_type: linux_x2
+    max_build_duration: 45
+    environment:
+      groups:
+        - tandava_native
+      android_signing:
+        - tandava_studio_upload
+      node: 22
+      java: 21
+    scripts:
+      - name: Install
+        script: npm ci
+      - name: Checks
+        script: npm run typecheck && npm test
+      - name: Native web bundle and sync
+        script: npm run native -- studio sync android
+      - name: Build signed AAB
+        script: |
+          export ANDROID_VERSION_CODE=$(( PROJECT_BUILD_NUMBER + 100 ))
+          echo "versionCode $ANDROID_VERSION_CODE"
+          cd native/studio/android
+          chmod +x gradlew
+          ./gradlew --no-daemon bundleRelease
+    artifacts:
+      - native/studio/android/app/build/outputs/bundle/release/*.aab
+
   # Uploads the 7 iPhone 6.9-inch screenshots to the editable 1.0 version in
   # App Store Connect through the same API key. Start it by hand from Codemagic.
   # No binary, no metadata, no review submission. Replaces any screenshots already there.
