@@ -89,13 +89,20 @@ workflows:
           PY
       - name: Upload screenshots
         script: |
-          ls -la "$SCREENSHOTS_PATH/en-US"
+          SHOTS="$CM_BUILD_DIR/$SCREENSHOTS_PATH"
+          ls -la "$SHOTS/en-US"
+          # deliver asks to "setup deliver" when no Deliverfile exists; run from an empty work dir with one
+          WORK="$(mktemp -d)"
+          mkdir -p "$WORK/metadata"
+          touch "$WORK/Deliverfile"
+          cd "$WORK"
+          export FASTLANE_SKIP_UPDATE_CHECK=1 FASTLANE_HIDE_CHANGELOG=1 FASTLANE_OPT_OUT_USAGE=1 CI=true
           fastlane deliver \
             --api_key_path /tmp/asc_api_key.json \
             --app_identifier "$APP_IDENTIFIER" \
             --app_version "$APP_VERSION" \
             --platform ios \
-            --screenshots_path "$SCREENSHOTS_PATH" \
+            --screenshots_path "$SHOTS" --metadata_path "$WORK/metadata" \
             --overwrite_screenshots true \
             --skip_binary_upload true \
             --skip_metadata true \
