@@ -6,8 +6,12 @@
  */
 
 // ============================================================================
-// CLASS STYLES (50 options)
+// CLASS STYLES (49 options)
 // ============================================================================
+// Spelling is shared with TeacherTree (teachertree/src/lib/classStyles.ts),
+// which stores these strings on saved classes. A style both apps list must
+// use TeacherTree's spelling; Tandava-only extras (Pilates, Sound Bath, ...)
+// are fine. See app-launch-playbook/YOGA-APPS-INDEX.md before changing one.
 
 export const CLASS_STYLES = [
   // Core flow & foundation
@@ -20,9 +24,9 @@ export const CLASS_STYLES = [
   // Heat & intensity
   'Hot Yoga', 'Heated Flow', 'Hot Power', 'Bikram',
   // Mobility & functional
-  'Yoga for Mobility', 'Alignment-Based Yoga', 'Iyengar-Inspired',
+  'Yoga for Mobility', 'Alignment-Based Yoga', 'Iyengar-Inspired Yoga',
   // Lineage & traditional
-  'Ashtanga', 'Kundalini', 'Rocket Yoga', 'Jivamukti',
+  'Ashtanga', 'Kundalini', 'Rocket Yoga', 'Jivamukti Yoga',
   // Hybrid / specialty
   'Vinyasa & Yin', 'Yoga Barre', 'Pilates', 'Mat Pilates', 'Reformer Pilates',
   'Chair Yoga', 'Chair & Gentle Flow', 'Prenatal Yoga', 'Postnatal Yoga',
