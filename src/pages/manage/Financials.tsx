@@ -57,13 +57,13 @@ const mockClassPacks = [
 ];
 
 const mockRecentTransactions = [
-  { id: "1", student: "Mia Tanaka", type: "Membership Renewal", amount: 14900, date: "Today, 8:12 AM", status: "completed" },
-  { id: "2", student: "Noah Garcia", type: "10-Class Pack", amount: 22000, date: "Today, 7:45 AM", status: "completed" },
-  { id: "3", student: "Emma Wilson", type: "Drop-in", amount: 2500, date: "Yesterday, 6:30 PM", status: "completed" },
-  { id: "4", student: "Jordan Blake", type: "Late Cancel Fee", amount: 1500, date: "Yesterday, 2:15 PM", status: "completed" },
-  { id: "5", student: "Alex Rivera", type: "Membership Renewal", amount: 11900, date: "Yesterday, 12:00 AM", status: "failed" },
-  { id: "6", student: "Sophia Lee", type: "5-Class Intro", amount: 7500, date: "Jan 28, 9:20 AM", status: "completed" },
-  { id: "7", student: "Liam Park", type: "Drop-in", amount: 2500, date: "Jan 27, 5:45 PM", status: "refunded" },
+  { id: "1", student: "Simone Pham", type: "Membership Renewal", amount: 14900, date: "Today, 8:12 AM", status: "completed" },
+  { id: "2", student: "Desmond Khalil", type: "10-Class Pack", amount: 22000, date: "Today, 7:45 AM", status: "completed" },
+  { id: "3", student: "Wren Sorensen", type: "Drop-in", amount: 2500, date: "Yesterday, 6:30 PM", status: "completed" },
+  { id: "4", student: "Kristen Ellison", type: "Late Cancel Fee", amount: 1500, date: "Yesterday, 2:15 PM", status: "completed" },
+  { id: "5", student: "Mateo Esposito", type: "Membership Renewal", amount: 11900, date: "Yesterday, 12:00 AM", status: "failed" },
+  { id: "6", student: "Freya Jensen", type: "5-Class Intro", amount: 7500, date: "Jan 28, 9:20 AM", status: "completed" },
+  { id: "7", student: "Nate Cardenas", type: "Drop-in", amount: 2500, date: "Jan 27, 5:45 PM", status: "refunded" },
 ];
 
 // ============================================================================
@@ -160,7 +160,7 @@ export default function FinancialsManage() {
         <EngagementNudge
           type="pack_running_low"
           title="2 failed membership renewals"
-          message="Alex Rivera and 1 other member have failed payment attempts. Follow up to prevent churn."
+          message="Mateo Esposito and 1 other member have failed payment attempts. Follow up to prevent churn."
           actionLabel="View Failed Payments"
           context="$268 at risk"
         />
@@ -294,7 +294,7 @@ export default function FinancialsManage() {
                   <div key={tx.id} className="flex items-center justify-between p-3 rounded-xl bg-secondary/30">
                     <div>
                       <p className="text-sm font-medium">{tx.student}</p>
-                      <p className="text-xs text-muted-foreground">{tx.type} — {tx.date}</p>
+                      <p className="text-xs text-muted-foreground">{tx.type} · {tx.date}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-semibold">${(tx.amount / 100).toFixed(2)}</span>
@@ -383,7 +383,7 @@ export default function FinancialsManage() {
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-lg font-bold">${(pack.price / 100).toFixed(0)}</span>
                           <span className="text-xs text-muted-foreground">
-                            {pack.classes} class{pack.classes > 1 ? "es" : ""} — {pack.validity} day{pack.validity > 1 ? "s" : ""}
+                            {pack.classes} class{pack.classes > 1 ? "es" : ""} · {pack.validity} day{pack.validity > 1 ? "s" : ""}
                           </span>
                         </div>
                       </div>

@@ -50,7 +50,7 @@ interface Teacher {
 
 const mockTeachers: Teacher[] = [
   {
-    id: "1", firstName: "Maya", lastName: "Patel", email: "maya@tandava.yoga", phone: "+1 415-555-0201",
+    id: "1", firstName: "Camila", lastName: "Reyes", email: "camila@oxatlyoga.com", phone: "+1 512-555-0122",
     specialties: ["Vinyasa", "Power Yoga"], certifications: ["E-RYT 500", "YACEP"],
     payType: "per_class", payRate: 7500, classesThisMonth: 22, earningsThisMonth: 165000,
     rating: 4.9, reviewCount: 312, isActive: true, canSub: true,
@@ -62,7 +62,7 @@ const mockTeachers: Teacher[] = [
     ],
   },
   {
-    id: "2", firstName: "James", lastName: "Liu", email: "james@tandava.yoga", phone: "+1 415-555-0202",
+    id: "2", firstName: "Daniel", lastName: "Nguyen", email: "daniel@oxatlyoga.com", phone: "+1 512-555-0185",
     specialties: ["Hatha", "Ashtanga", "Yin"], certifications: ["RYT 200"],
     payType: "per_class", payRate: 6000, classesThisMonth: 16, earningsThisMonth: 96000,
     rating: 4.7, reviewCount: 189, isActive: true, canSub: true,
@@ -74,7 +74,7 @@ const mockTeachers: Teacher[] = [
     ],
   },
   {
-    id: "3", firstName: "Sarah", lastName: "Chen", email: "sarah@tandava.yoga", phone: "+1 415-555-0203",
+    id: "3", firstName: "Tasha", lastName: "Greene", email: "tasha@oxatlyoga.com", phone: "+1 737-555-0137",
     specialties: ["Vinyasa", "Power", "Hot Yoga"], certifications: ["E-RYT 500"],
     payType: "revenue_share", payRate: 40, classesThisMonth: 18, earningsThisMonth: 184000,
     rating: 4.8, reviewCount: 267, isActive: true, canSub: false,
@@ -86,7 +86,7 @@ const mockTeachers: Teacher[] = [
     ],
   },
   {
-    id: "4", firstName: "Ava", lastName: "Kim", email: "ava@tandava.yoga", phone: "+1 415-555-0204",
+    id: "4", firstName: "Mei", lastName: "Tanaka", email: "mei@oxatlyoga.com", phone: "+1 512-555-0148",
     specialties: ["Yin", "Meditation", "Restorative"], certifications: ["RYT 500", "Yin Certified"],
     payType: "per_class", payRate: 6500, classesThisMonth: 12, earningsThisMonth: 78000,
     rating: 4.9, reviewCount: 198, isActive: true, canSub: true,
@@ -99,7 +99,7 @@ const mockTeachers: Teacher[] = [
     ],
   },
   {
-    id: "5", firstName: "David", lastName: "Park", email: "david@tandava.yoga", phone: "+1 415-555-0205",
+    id: "5", firstName: "Andre", lastName: "Castillo", email: "andre@oxatlyoga.com", phone: "+1 512-555-0114",
     specialties: ["Ashtanga", "Vinyasa"], certifications: ["RYT 200"],
     payType: "per_class", payRate: 5500, classesThisMonth: 0, earningsThisMonth: 0,
     rating: 4.6, reviewCount: 87, isActive: false, canSub: true,

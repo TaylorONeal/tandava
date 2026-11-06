@@ -50,10 +50,10 @@ const ROLE_ICONS: Record<UserRole, typeof User> = {
 const ROLE_COLORS: Record<UserRole, string> = {
   owner: "bg-accent-gold/20 text-accent-gold border-accent-gold/30",
   admin: "bg-primary/20 text-primary border-primary/30",
-  teacher: "bg-accent-sage/20 text-accent-sage border-accent-sage/30",
+  teacher: "bg-accent/40 text-foreground border-foreground/20",
   front_desk: "bg-accent-coral/20 text-accent-coral border-accent-coral/30",
-  student: "bg-accent-teal/20 text-[color:var(--accent-teal)] border-[color:var(--accent-teal)]/30",
-  platform_admin: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+  student: "bg-accent-mint/25 text-foreground border-accent-mint",
+  platform_admin: "bg-primary text-primary-foreground border-primary",
 };
 
 // Where each role should land when selected
@@ -75,7 +75,7 @@ const PAGE_CONTEXT: Record<string, { title: string; description: string; techNot
   },
   "/home": {
     title: "Studio Home",
-    description: "The main landing page — today's classes, offerings, teachers, pricing, and locations.",
+    description: "The main landing page: today's classes, offerings, teachers, pricing, and locations.",
     techNote: "Uses Oxatl Yoga demo data. Built from OXATL_SCHEDULE, OXATL_CLASS_TYPES, OXATL_TEACHERS, and OXATL_LOCATIONS.",
   },
   "/schedule": {
@@ -110,13 +110,13 @@ const PAGE_CONTEXT: Record<string, { title: string; description: string; techNot
   },
   "/instructors": {
     title: "Instructors",
-    description: "Meet the teaching team — bios, specialties, certifications, and schedules.",
+    description: "Meet the teaching team: bios, specialties, certifications, and schedules.",
     techNote: "Teacher profiles with specialties array. Schedule pulls from class_occurrences by teacher_id.",
   },
   // ---------- Studio Management ----------
   "/manage": {
     title: "Management Dashboard",
-    description: "The owner command center — today's schedule, KPIs, alerts, and recent activity at a glance.",
+    description: "The owner dashboard: today's schedule, KPIs, alerts, and recent activity at a glance.",
     techNote: "KPIs from analytics_daily. Alerts computed from bookings, memberships, and class_occurrences.",
   },
   "/manage/schedule": {
@@ -126,7 +126,7 @@ const PAGE_CONTEXT: Record<string, { title: string; description: string; techNot
   },
   "/manage/students": {
     title: "Student Management",
-    description: "Search all students — profiles, memberships, visit history, engagement status, waivers.",
+    description: "Search all students: profiles, memberships, visit history, engagement status, waivers.",
     techNote: "Student list filtered by studio_id via RLS. Engagement profiles provide churn risk levels.",
   },
   "/manage/teachers": {
@@ -136,13 +136,13 @@ const PAGE_CONTEXT: Record<string, { title: string; description: string; techNot
   },
   "/manage/offerings": {
     title: "Class Offerings",
-    description: "Define class types — names, descriptions, durations, levels, capacity, and colors.",
+    description: "Define class types: names, descriptions, durations, levels, capacity, and colors.",
     techNote: "Offerings table defines templates. class_occurrences reference offering_id for each scheduled class.",
   },
   "/manage/events": {
     title: "Events & Workshops",
     description: "Create workshops, trainings, retreats, and series with tiered pricing and registration.",
-    techNote: "Events are separate from regular classes — own sessions, pricing tiers, and registration flow.",
+    techNote: "Events are separate from regular classes, with their own sessions, pricing tiers, and registration flow.",
   },
   "/manage/financials": {
     title: "Financials",
@@ -161,17 +161,17 @@ const PAGE_CONTEXT: Record<string, { title: string; description: string; techNot
   },
   "/manage/import": {
     title: "Data Import",
-    description: "Migrate from another platform via CSV — intelligent column mapping and data quality checks.",
+    description: "Move from another platform with a CSV file. Columns are mapped for you and the data is checked for problems.",
     techNote: "Import connectors recognize MindBody, Momence, Walla layouts. Dry-run mode validates first.",
   },
   "/manage/onboarding": {
     title: "Studio Onboarding",
-    description: "Guided setup wizard — Fresh Start, Import & Setup, or Quick Launch paths.",
+    description: "Guided setup: Fresh Start, Import & Setup, or Quick Launch paths.",
     techNote: "Progress in studio_onboarding table. All steps skippable and revisitable.",
   },
   "/manage/products": {
     title: "Products",
-    description: "Retail products — mats, props, merchandise. Track inventory and sales.",
+    description: "Retail products: mats, props, merchandise. Track inventory and sales.",
     techNote: "Products table with variants, pricing, and inventory levels per location.",
   },
   "/manage/inventory": {
@@ -181,7 +181,7 @@ const PAGE_CONTEXT: Record<string, { title: string; description: string; techNot
   },
   "/manage/reports": {
     title: "Reports",
-    description: "Generate detailed reports — attendance, revenue, teacher performance, retention.",
+    description: "Reports on attendance, revenue, teacher performance and retention.",
     techNote: "Reports query analytics_daily and transaction tables with date range filtering.",
   },
   "/manage/promo-codes": {
@@ -196,7 +196,7 @@ const PAGE_CONTEXT: Record<string, { title: string; description: string; techNot
   },
   "/manage/tasks": {
     title: "Tasks",
-    description: "Studio task management — assign and track operational to-dos for your team.",
+    description: "Studio tasks: assign and track operational to-dos for your team.",
     techNote: "Simple task system with assignment, due dates, and completion tracking.",
   },
   "/manage/sms-inbox": {
@@ -216,18 +216,18 @@ const PAGE_CONTEXT: Record<string, { title: string; description: string; techNot
   },
   "/manage/notification-settings": {
     title: "Notification Settings",
-    description: "Configure which notifications to receive and how — email, SMS, or in-app.",
+    description: "Configure which notifications to receive and how: email, SMS, or in-app.",
     techNote: "Notification preferences per user. Provider-agnostic: Resend, SendGrid, SMTP, or console.",
   },
   // ---------- Teacher Portal ----------
   "/teach": {
     title: "Teacher Dashboard",
-    description: "Your teaching overview — today's classes with check-in, upcoming schedule, tips, and sub requests.",
+    description: "Your teaching overview: today's classes with check-in, upcoming schedule, tips, and sub requests.",
     techNote: "Filtered by teacher's profile_id. Shows only their classes and earnings.",
   },
   "/teach/schedule": {
     title: "Teaching Schedule",
-    description: "Your full class schedule — upcoming and past classes with enrollment numbers.",
+    description: "Your full class schedule: upcoming and past classes with enrollment numbers.",
     techNote: "class_occurrences filtered by teacher_id. Shows booked/capacity for each class.",
   },
   "/teach/subs": {
@@ -237,7 +237,7 @@ const PAGE_CONTEXT: Record<string, { title: string; description: string; techNot
   },
   "/teach/earnings": {
     title: "Earnings",
-    description: "Track your pay — base rate, tips, sub classes. Pay period summaries and history.",
+    description: "Track your pay: base rate, tips, sub classes. Pay period summaries and history.",
     techNote: "Earnings calculated from class_occurrences with teacher pay rates plus tip allocations.",
   },
   "/teach/availability": {
@@ -247,7 +247,7 @@ const PAGE_CONTEXT: Record<string, { title: string; description: string; techNot
   },
   "/teach/profile": {
     title: "Teacher Profile",
-    description: "Edit your public teacher profile — bio, specialties, certifications, and photo.",
+    description: "Edit your public teacher profile: bio, specialties, certifications, and photo.",
     techNote: "Teacher profile data visible on the public Instructors page.",
   },
   // ---------- Front Desk (Staff) ----------
@@ -264,7 +264,7 @@ const PAGE_CONTEXT: Record<string, { title: string; description: string; techNot
   // ---------- Platform Admin ----------
   "/admin": {
     title: "Platform Admin",
-    description: "Platform-wide administration — manage studios, users, billing, and system settings.",
+    description: "Platform-wide administration: manage studios, users, billing, and system settings.",
     techNote: "Platform admin bypasses studio RLS to access all data. Separated from studio management.",
   },
 };

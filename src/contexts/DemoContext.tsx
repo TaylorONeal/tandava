@@ -6,9 +6,10 @@
  * to experience the platform from different perspectives without real authentication.
  *
  * DEMO STUDIO: Oxatl Yoga (Austin, TX)
- * - Owner: Mariana Trench
- * - Front Desk: Cassia Ray
- * - Teachers: Beyonce Pangolin, Adele Capybara, Travis Jones, etc.
+ * - Owner: Mariana Ochoa
+ * - Front Desk: Cassia Moreno
+ * - Teachers: Maren Holloway, Noor Haddad, Marcus Bell, etc.
+ * - Student: Lucia Alvarez (member-0000)
  *
  * HOW TO DISABLE FOR YOUR STUDIO:
  * ──────────────────────────────
@@ -55,9 +56,9 @@ export interface DemoPersona {
 }
 
 // Pick a sample teacher for the teacher persona
-const sampleTeacher = OXATL_TEACHERS[0]; // Beyonce Pangolin
+const sampleTeacher = OXATL_TEACHERS[0]; // Maren Holloway
 // Pick a sample student from members
-const sampleStudent = OXATL_MEMBERS[0];
+const sampleStudent = OXATL_MEMBERS[0]; // Lucia Alvarez, Unlimited Monthly
 
 export const DEMO_PERSONAS: DemoPersona[] = [
   {
@@ -66,7 +67,7 @@ export const DEMO_PERSONAS: DemoPersona[] = [
     name: OXATL_OWNER.profile.display_name!,
     email: OXATL_OWNER.profile.email,
     profileId: OXATL_OWNER.profile.id,
-    description: 'Full access to everything — settings, financials, analytics, staff management, and all student-facing features.',
+    description: 'Full access: settings, financials, analytics, staff management and every student page.',
     canAccess: ['Dashboard', 'Schedule', 'Students', 'Teachers', 'Offerings', 'Events', 'Promo Codes', 'Financials', 'Landing Pages', 'Reports', 'Analytics', 'Campaigns', 'Tasks', 'Import', 'Settings', 'All student pages'],
   },
   {
@@ -75,7 +76,7 @@ export const DEMO_PERSONAS: DemoPersona[] = [
     name: OXATL_FRONT_DESK.profile.display_name!,
     email: OXATL_FRONT_DESK.profile.email,
     profileId: OXATL_FRONT_DESK.profile.id,
-    description: 'Check students in, process walk-in purchases, manage waitlists, handle day-of operations.',
+    description: 'Check students in, sell walk-in passes, manage waitlists and run the day at the desk.',
     canAccess: ['Dashboard', 'Schedule', 'Students', 'Check-in', 'Tasks', 'All student pages'],
   },
   {
@@ -84,7 +85,7 @@ export const DEMO_PERSONAS: DemoPersona[] = [
     name: sampleTeacher.profile.display_name!,
     email: sampleTeacher.profile.email,
     profileId: sampleTeacher.profile.id,
-    description: `View your schedule, manage sub requests, see class rosters, track earnings. Teaches ${sampleTeacher.specialties.join(', ')}.`,
+    description: `See your schedule, rosters, sub requests and earnings. Teaches ${sampleTeacher.specialties.join(' and ')}.`,
     canAccess: ['Teach Dashboard', 'My Schedule', 'Sub Requests', 'Earnings', 'All student pages'],
   },
   {
@@ -93,7 +94,7 @@ export const DEMO_PERSONAS: DemoPersona[] = [
     name: sampleStudent.profile.display_name!,
     email: sampleStudent.profile.email,
     profileId: sampleStudent.profile.id,
-    description: 'Browse classes, book sessions, manage membership, view practice history, connect with community.',
+    description: 'Book classes, manage a membership, see past classes and find teachers.',
     canAccess: ['Schedule', 'My Schedule', 'Studios', 'Instructors', 'Community', 'On-Demand', 'Account'],
   },
 ];

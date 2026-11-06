@@ -75,7 +75,7 @@ const mockEvents: EventRow[] = [
     startsAt: "2025-02-15T10:00:00", endsAt: "2025-02-15T13:00:00",
     isMultiSession: false, sessionCount: 1, capacity: 25, registeredCount: 19, waitlistCount: 2,
     priceCents: 7500, earlyBirdCents: 6000, earlyBirdEndsAt: "2025-02-08", memberPriceCents: 6500,
-    teachers: ["Maya Rodriguez"], tags: ["Inversions", "Intermediate"], location: "Main Studio",
+    teachers: ["Brooke Sandoval"], tags: ["Inversions", "Intermediate"], location: "Main Studio",
     isVirtual: false, featured: true, totalRevenue: 133500,
   },
   {
@@ -84,7 +84,7 @@ const mockEvents: EventRow[] = [
     startsAt: "2025-03-01T08:00:00", endsAt: "2025-05-31T17:00:00",
     isMultiSession: true, sessionCount: 12, capacity: 15, registeredCount: 11, waitlistCount: 0,
     priceCents: 350000, earlyBirdCents: 299900, earlyBirdEndsAt: "2025-02-15", memberPriceCents: 320000,
-    teachers: ["Sarah Chen", "James Park"], tags: ["YTT", "Certification"], location: "Main Studio",
+    teachers: ["Mariana Ochoa", "Hannah Lindqvist"], tags: ["YTT", "Certification"], location: "Main Studio",
     isVirtual: false, featured: true, totalRevenue: 3649000,
   },
   {
@@ -93,7 +93,7 @@ const mockEvents: EventRow[] = [
     startsAt: "2025-02-22T19:00:00", endsAt: "2025-02-22T21:00:00",
     isMultiSession: false, sessionCount: 1, capacity: 40, registeredCount: 34, waitlistCount: 5,
     priceCents: 4500, earlyBirdCents: null, earlyBirdEndsAt: null, memberPriceCents: 3500,
-    teachers: ["Luna Patel"], tags: ["Meditation", "Sound Healing"], location: "Meditation Room",
+    teachers: ["Anika Desai"], tags: ["Meditation", "Sound Healing"], location: "Meditation Room",
     isVirtual: false, featured: false, totalRevenue: 147000,
   },
   {
@@ -102,7 +102,7 @@ const mockEvents: EventRow[] = [
     startsAt: "2025-02-04T18:00:00", endsAt: "2025-02-25T19:30:00",
     isMultiSession: true, sessionCount: 4, capacity: 20, registeredCount: 16, waitlistCount: 0,
     priceCents: 12000, earlyBirdCents: 9500, earlyBirdEndsAt: "2025-01-28", memberPriceCents: 10000,
-    teachers: ["James Park"], tags: ["Yin", "Series"], location: "Hot Room",
+    teachers: ["Hannah Lindqvist"], tags: ["Yin", "Series"], location: "Hot Room",
     isVirtual: false, featured: false, totalRevenue: 176000,
   },
   {
@@ -111,7 +111,7 @@ const mockEvents: EventRow[] = [
     startsAt: "2025-04-11T09:00:00", endsAt: "2025-04-13T16:00:00",
     isMultiSession: true, sessionCount: 6, capacity: 50, registeredCount: 0, waitlistCount: 0,
     priceCents: 25000, earlyBirdCents: 19900, earlyBirdEndsAt: "2025-03-15", memberPriceCents: 22000,
-    teachers: ["Sarah Chen", "Luna Patel"], tags: ["Retreat", "Virtual", "Meditation"], location: "Online",
+    teachers: ["Mariana Ochoa", "Anika Desai"], tags: ["Retreat", "Virtual", "Meditation"], location: "Online",
     isVirtual: true, featured: false, totalRevenue: 0,
   },
 ];
@@ -328,7 +328,7 @@ export default function EventsManage() {
                             <span className="flex items-center gap-1">
                               <Clock className="h-3 w-3" />
                               {event.isMultiSession
-                                ? `${event.sessionCount} sessions, ${formatDate(event.startsAt)} — ${formatDate(event.endsAt)}`
+                                ? `${event.sessionCount} sessions, ${formatDate(event.startsAt)} to ${formatDate(event.endsAt)}`
                                 : `${formatDate(event.startsAt)}`
                               }
                             </span>
@@ -421,7 +421,7 @@ export default function EventsManage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="eventTitle">Title</Label>
-                <Input id="eventTitle" placeholder="e.g. Arm Balance Workshop with Maya" />
+                <Input id="eventTitle" placeholder="e.g. Arm Balance Workshop with Brooke" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">

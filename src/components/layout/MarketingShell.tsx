@@ -42,7 +42,7 @@ function Logo({ dark = false }: { dark?: boolean }) {
 
 export function MarketingShell({
   children,
-  maxWidth = "max-w-5xl",
+  maxWidth = "max-w-6xl",
   classic = false,
 }: {
   children: React.ReactNode;
@@ -75,8 +75,9 @@ export function MarketingShell({
       </a>
       <header className={classic ? "border-b border-border" : "border-b border-ink/10"}>
         <div className={`${maxWidth} mx-auto flex items-center justify-between gap-4 px-6 py-4`}>
-          <Link to="/" aria-label="Tandava home">
+          <Link to="/">
             <Logo />
+            <span className="sr-only"> home</span>
           </Link>
           <nav className="flex items-center gap-1" aria-label="Primary">
             {NAV.map((n) => (
@@ -86,7 +87,7 @@ export function MarketingShell({
                 end={n.end}
                 className={({ isActive }) =>
                   `hidden md:inline-flex h-9 items-center rounded-full px-3 text-sm font-semibold transition-colors hover:bg-foreground/5 ${
-                    isActive ? "text-foreground" : "text-muted-foreground"
+                    isActive ? "bg-ink/[0.06] text-foreground" : "text-muted-foreground"
                   }`
                 }
               >
@@ -123,7 +124,7 @@ export function MarketingShell({
               <Link key={l.to} to={l.to} className="hover:text-paper">{l.label}</Link>
             ))}
           </div>
-          <p className="mt-6 font-brand-mono text-xs uppercase tracking-[0.2em] text-paper/40">
+          <p className="mt-6 font-brand-mono text-xs uppercase tracking-[0.2em] text-paper/60">
             Purafield Studio, Austin, Texas
           </p>
         </div>

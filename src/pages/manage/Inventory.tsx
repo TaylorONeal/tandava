@@ -101,10 +101,10 @@ const mockInventory: InventoryItem[] = [
 const mockMovements: InventoryMovement[] = [
   { id: "m1", productName: "Manduka PRO Yoga Mat", sku: "MAT-MAND-PRO", type: "sale", quantity: -1, fromLocation: "Main Studio - Retail", toLocation: null, reason: "POS Sale #1234", performedBy: "System", createdAt: "2025-01-29T14:30:00" },
   { id: "m2", productName: "Essential Oil Blend - Calm", sku: "OIL-ESS-CALM", type: "sale", quantity: -2, fromLocation: "Main Studio - Retail", toLocation: null, reason: "POS Sale #1233", performedBy: "System", createdAt: "2025-01-29T11:15:00" },
-  { id: "m3", productName: "Yoga Strap - 8ft Cotton", sku: "STRP-COT-8FT", type: "transfer", quantity: 5, fromLocation: "Main Studio - Storage", toLocation: "Downtown Location", reason: "Restock downtown", performedBy: "Sarah Chen", createdAt: "2025-01-28T16:45:00" },
-  { id: "m4", productName: "Cork Yoga Block (Set of 2)", sku: "BLK-CORK-2PK", type: "receive", quantity: 10, fromLocation: null, toLocation: "Main Studio - Retail", reason: "PO #2024-015 received", performedBy: "James Park", createdAt: "2025-01-27T09:20:00" },
+  { id: "m3", productName: "Yoga Strap - 8ft Cotton", sku: "STRP-COT-8FT", type: "transfer", quantity: 5, fromLocation: "Main Studio - Storage", toLocation: "Downtown Location", reason: "Restock downtown", performedBy: "Cassia Moreno", createdAt: "2025-01-28T16:45:00" },
+  { id: "m4", productName: "Cork Yoga Block (Set of 2)", sku: "BLK-CORK-2PK", type: "receive", quantity: 10, fromLocation: null, toLocation: "Main Studio - Retail", reason: "PO #2024-015 received", performedBy: "Mariana Ochoa", createdAt: "2025-01-27T09:20:00" },
   { id: "m5", productName: "Meditation Cushion - Zafu", sku: "CUSH-ZAFU-RND", type: "sale", quantity: -3, fromLocation: "Main Studio - Retail", toLocation: null, reason: "POS Sale #1230", performedBy: "System", createdAt: "2025-01-18T15:00:00" },
-  { id: "m6", productName: "Organic Herbal Tea - Yoga Blend", sku: "TEA-ORG-YOGA", type: "count", quantity: 2, fromLocation: null, toLocation: "Main Studio - Retail", reason: "Inventory count adjustment", performedBy: "Maya Rodriguez", createdAt: "2025-01-15T10:30:00" },
+  { id: "m6", productName: "Organic Herbal Tea - Yoga Blend", sku: "TEA-ORG-YOGA", type: "count", quantity: 2, fromLocation: null, toLocation: "Main Studio - Retail", reason: "Inventory count adjustment", performedBy: "Cassia Moreno", createdAt: "2025-01-15T10:30:00" },
 ];
 
 const movementTypeColors: Record<string, string> = {
@@ -590,7 +590,7 @@ export default function InventoryManage() {
                   <div>
                     <p className="text-sm font-medium">{movement.productName}</p>
                     <p className="text-xs text-muted-foreground">
-                      {movement.reason} — {movement.performedBy}
+                      {movement.reason} · {movement.performedBy}
                     </p>
                   </div>
                 </div>

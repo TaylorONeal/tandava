@@ -117,14 +117,14 @@ const retentionCurve = [
 ];
 
 const atRiskMembers = [
-  { name: "Jordan Blake", lastVisit: "Jan 12", daysSince: 23, risk: "high", score: 18, action: "Send re-engagement email" },
-  { name: "Casey Nguyen", lastVisit: "Jan 18", daysSince: 17, risk: "high", score: 22, action: "Offer a free class" },
-  { name: "Taylor Reed", lastVisit: "Jan 20", daysSince: 15, risk: "medium", score: 35, action: "Personal check-in" },
-  { name: "Morgan Ellis", lastVisit: "Jan 22", daysSince: 13, risk: "medium", score: 38, action: "Recommend new class" },
-  { name: "Riley Kim", lastVisit: "Jan 23", daysSince: 12, risk: "medium", score: 40, action: "Send schedule update" },
-  { name: "Avery Chen", lastVisit: "Jan 24", daysSince: 11, risk: "low", score: 45, action: "Monitor" },
-  { name: "Quinn Davis", lastVisit: "Jan 25", daysSince: 10, risk: "low", score: 48, action: "Monitor" },
-  { name: "Sam Foster", lastVisit: "Jan 25", daysSince: 10, risk: "low", score: 49, action: "Monitor" },
+  { name: "Kristen Ellison", lastVisit: "Jan 12", daysSince: 23, risk: "high", score: 18, action: "Send re-engagement email" },
+  { name: "Linh Fitzgerald", lastVisit: "Jan 18", daysSince: 17, risk: "high", score: 22, action: "Offer a free class" },
+  { name: "Joanna Moss", lastVisit: "Jan 20", daysSince: 15, risk: "medium", score: 35, action: "Personal check-in" },
+  { name: "Renee Lozano", lastVisit: "Jan 22", daysSince: 13, risk: "medium", score: 38, action: "Recommend new class" },
+  { name: "Ingrid Ibarra", lastVisit: "Jan 23", daysSince: 12, risk: "medium", score: 40, action: "Send schedule update" },
+  { name: "Felix Sato", lastVisit: "Jan 24", daysSince: 11, risk: "low", score: 45, action: "Monitor" },
+  { name: "Minh Thibodeaux", lastVisit: "Jan 25", daysSince: 10, risk: "low", score: 48, action: "Monitor" },
+  { name: "Jiwoo Gallo", lastVisit: "Jan 25", daysSince: 10, risk: "low", score: 49, action: "Monitor" },
 ];
 
 // --- Engagement ---
@@ -138,16 +138,16 @@ const engagementDistribution = [
 ];
 
 const streakLeaderboard = [
-  { name: "Mia Tanaka", streak: 42, classes: 156 },
-  { name: "Alex Rivera", streak: 38, classes: 201 },
-  { name: "Sarah Kim", streak: 31, classes: 98 },
-  { name: "Noah Garcia", streak: 28, classes: 134 },
-  { name: "Emma Wilson", streak: 24, classes: 87 },
-  { name: "Liam Johnson", streak: 21, classes: 112 },
-  { name: "Olivia Brown", streak: 19, classes: 76 },
-  { name: "James Liu", streak: 17, classes: 145 },
-  { name: "Sophia Martinez", streak: 15, classes: 63 },
-  { name: "Ethan Park", streak: 14, classes: 89 },
+  { name: "Simone Pham", streak: 42, classes: 156 },
+  { name: "Mateo Esposito", streak: 38, classes: 201 },
+  { name: "Bea Mendoza", streak: 31, classes: 98 },
+  { name: "Desmond Khalil", streak: 28, classes: 134 },
+  { name: "Wren Sorensen", streak: 24, classes: 87 },
+  { name: "Kiara Gutierrez", streak: 21, classes: 112 },
+  { name: "Meredith Iyer", streak: 19, classes: 76 },
+  { name: "Hector Mbeki", streak: 17, classes: 145 },
+  { name: "Daniela Abbott", streak: 15, classes: 63 },
+  { name: "Wes Jaramillo", streak: 14, classes: 89 },
 ];
 
 const timeSlots = [

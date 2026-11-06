@@ -75,7 +75,7 @@ const TEMPLATES = [
     name: "Teacher Training",
     description: "200-hour, 300-hour, or specialty certifications",
     suggestedKeywords: ["yoga teacher training", "YTT", "yoga certification", "become yoga instructor"],
-    heroExample: "Transform Your Practice Into Your Profession",
+    heroExample: "200-Hour Teacher Training, 12 Weekends",
     ctaExample: "Apply Now",
   },
   {
@@ -83,7 +83,7 @@ const TEMPLATES = [
     name: "Retreat",
     description: "Yoga retreats, wellness getaways, destination programs",
     suggestedKeywords: ["yoga retreat", "wellness retreat", "meditation retreat"],
-    heroExample: "Escape. Restore. Transform.",
+    heroExample: "Four Days of Yoga in the Hill Country",
     ctaExample: "Reserve Your Spot",
   },
   {
@@ -91,7 +91,7 @@ const TEMPLATES = [
     name: "Workshop",
     description: "Single or multi-day workshops and intensives",
     suggestedKeywords: ["yoga workshop", "arm balance workshop", "meditation intensive"],
-    heroExample: "Master the Art of Arm Balances",
+    heroExample: "Arm Balances, Step by Step",
     ctaExample: "Register Now",
   },
   {
@@ -107,7 +107,7 @@ const TEMPLATES = [
     name: "Class Style",
     description: "Highlight a specific yoga style (hot, vinyasa, yin, etc.)",
     suggestedKeywords: ["hot yoga", "vinyasa yoga", "yin yoga"],
-    heroExample: "Transform Your Body with Hot Yoga",
+    heroExample: "Hot Yoga, Seven Days a Week",
     ctaExample: "View Schedule",
   },
   {
@@ -123,7 +123,7 @@ const TEMPLATES = [
     name: "Location Page",
     description: "SEO page for a specific studio location",
     suggestedKeywords: ["yoga [city]", "yoga studio near me", "yoga classes [neighborhood]"],
-    heroExample: "Yoga in the Heart of SOMA",
+    heroExample: "Yoga on East 6th",
     ctaExample: "See Classes",
   },
   {

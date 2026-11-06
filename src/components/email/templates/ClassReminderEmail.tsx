@@ -178,11 +178,11 @@ export function ClassReminderEmail({
 
 // Example usage data for preview/testing
 export const classReminderEmailExample: ClassReminderEmailProps = {
-  studioName: "Lotus Flow Studio",
-  studioAddress: "123 Yoga Lane, San Francisco, CA 94102",
-  memberName: "Sarah",
+  studioName: "Oxatl Yoga",
+  studioAddress: "East 6th Street, Austin, TX",
+  memberName: "Lucia",
   title: "Power Vinyasa Flow",
-  instructor: "Maya Johnson",
+  instructor: "Brooke Sandoval",
   dateTime: "Thursday, Dec 12 at 6:00 PM",
   duration: "60 minutes",
   location: "Main Studio, Room A",
