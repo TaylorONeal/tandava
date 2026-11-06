@@ -56,10 +56,20 @@ jobs:
           (npx vite preview --outDir dist-native/member --port 4302 --strictPort > /tmp/member.log 2>&1 &)
           for i in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:4301 && curl -fsS -o /dev/null http://localhost:4302 && break; sleep 2; done
           curl -fsS -o /dev/null http://localhost:4301/auth/login && echo previews up
-      - run: npx playwright install --with-deps webkit chromium
+      - name: Playwright browsers
+        timeout-minutes: 12
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+          sudo -E env "PATH=$PATH" npx playwright install-deps webkit chromium < /dev/null
+          npx playwright install webkit chromium < /dev/null
       - name: Capture iOS (WebKit 440x956 @3x)
+        timeout-minutes: 8
         run: node store-captures/studio/capture.mjs ios store-out/raw/ios
       - name: Reset seed, capture Play (Chromium 360x640 @3x)
+        timeout-minutes: 8
+        if: always()
         run: |
           bash /tmp/seed.sh
           node store-captures/studio/capture.mjs play store-out/raw/play
@@ -67,6 +77,8 @@ jobs:
         with:
           python-version: '3.12'
       - name: Render store frames
+        timeout-minutes: 10
+        if: always()
         run: |
           pip install --quiet pillow
           bash store-captures/studio/render.sh
