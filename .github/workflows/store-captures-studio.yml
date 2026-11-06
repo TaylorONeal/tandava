@@ -1,0 +1,112 @@
+# Store screenshots for Tandava Studio from a throwaway LOCAL Supabase. Never touches production,
+# uses no repository secrets. Lives only on store-captures/* branches (do not merge).
+name: store-captures-studio
+on:
+  push:
+    branches: ['store-captures/studio-20261106']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SUPABASE_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mode (RENDER_ONLY reuses the page captures on the -out branch)
+        run: |
+          if [ -f store-captures/studio/RENDER_ONLY ]; then
+            echo RENDER_ONLY=1 >> "$GITHUB_ENV"
+            git fetch -q --depth=1 origin store-captures/studio-20261106-out
+            git checkout FETCH_HEAD -- store-out/raw
+            git reset -q
+          else
+            echo RENDER_ONLY=0 >> "$GITHUB_ENV"
+          fi
+      - uses: actions/setup-node@v4
+        if: env.RENDER_ONLY != '1'
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+        if: env.RENDER_ONLY != '1'
+      - uses: supabase/setup-cli@v1
+        if: env.RENDER_ONLY != '1'
+        with:
+          version: latest
+      - name: Start local Supabase (applies supabase/migrations)
+        if: env.RENDER_ONLY != '1'
+        run: |
+          supabase init < /dev/null || true
+          test -f supabase/config.toml
+          supabase start -x realtime,studio,imgproxy,edge-runtime,logflare,vector,supavisor,postgres-meta
+          supabase status -o env | grep -E '^(API_URL|ANON_KEY|SERVICE_ROLE_KEY|DB_URL)=' | sed -E 's/^([A-Z_]+)="?([^"]*)"?$/SB_\1=\2/' >> "$GITHUB_ENV"
+      - name: Review users (local only) and seed
+        if: env.RENDER_ONLY != '1'
+        run: |
+          PW=$(openssl rand -hex 16); echo "::add-mask::$PW"; echo "REVIEW_PASSWORD=$PW" >> "$GITHUB_ENV"
+          for who in owner teacher member-1 member-2 member-3 member-4 member-5 member-6 member-7 member-8; do
+            curl -fsS -X POST "$SB_API_URL/auth/v1/admin/users" -H "apikey: $SB_SERVICE_ROLE_KEY" \
+              -H "Authorization: Bearer $SB_SERVICE_ROLE_KEY" -H 'Content-Type: application/json' \
+              -d "{\"email\":\"review-$who@juniper.example\",\"password\":\"$PW\",\"email_confirm\":true}" > /dev/null
+          done
+          cat > /tmp/seed.sh <<'SH'
+          set -e
+          psql "$SB_DB_URL" -v ON_ERROR_STOP=1 \
+            -v owner_email=review-owner@juniper.example -v teacher_email=review-teacher@juniper.example \
+            -v member1_email=review-member-1@juniper.example -v member2_email=review-member-2@juniper.example \
+            -v member3_email=review-member-3@juniper.example -f supabase/review/studio-review-seed.sql
+          psql "$SB_DB_URL" -f store-captures/studio/local-display.sql
+          SH
+          bash /tmp/seed.sh
+      - name: Build Tandava Studio and Tandava (member) bundles against local Supabase
+        if: env.RENDER_ONLY != '1'
+        run: |
+          for app in studio member; do
+            VITE_NATIVE_APP=$app VITE_SUPABASE_URL="$SB_API_URL" VITE_SUPABASE_ANON_KEY="$SB_ANON_KEY" \
+            VITE_DEMO_MODE=false VITE_BLOG_GAMES=false npx vite build --mode native --outDir dist-native/$app --logLevel warn
+          done
+          (npx vite preview --outDir dist-native/studio --port 4301 --strictPort > /tmp/studio.log 2>&1 &)
+          (npx vite preview --outDir dist-native/member --port 4302 --strictPort > /tmp/member.log 2>&1 &)
+          for i in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:4301 && curl -fsS -o /dev/null http://localhost:4302 && break; sleep 2; done
+          curl -fsS -o /dev/null http://localhost:4301/auth/login && echo previews up
+      - name: Playwright image (browsers and their system libraries, no apt)
+        if: env.RENDER_ONLY != '1'
+        timeout-minutes: 8
+        run: docker pull -q mcr.microsoft.com/playwright:v1.64.0-noble
+      - name: Capture iOS (WebKit 440x956 @3x)
+        if: env.RENDER_ONLY != '1'
+        timeout-minutes: 8
+        run: docker run --rm --network host --ipc host --user "$(id -u):$(id -g)" -e HOME=/tmp -e REVIEW_PASSWORD -v "$PWD:/w" -w /w mcr.microsoft.com/playwright:v1.64.0-noble node store-captures/studio/capture.mjs ios store-out/raw/ios
+      - name: Reset seed, capture Play (Chromium 360x640 @3x)
+        if: env.RENDER_ONLY != '1'
+        timeout-minutes: 8
+        run: |
+          bash /tmp/seed.sh
+          docker run --rm --network host --ipc host --user "$(id -u):$(id -g)" -e HOME=/tmp -e REVIEW_PASSWORD -v "$PWD:/w" -w /w mcr.microsoft.com/playwright:v1.64.0-noble node store-captures/studio/capture.mjs play store-out/raw/play
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Render store frames
+        timeout-minutes: 10
+        if: always()
+        run: |
+          pip install --quiet pillow
+          bash store-captures/studio/render.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: studio-store-captures
+          path: store-out/
+          retention-days: 7
+      - name: Commit outputs to store-captures/studio-20261106-out
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B store-captures/studio-20261106-out
+          git add -f store-out
+          git commit -q -m "Studio store capture outputs from run ${{ github.run_id }} (do not merge)"
+          git push -f origin store-captures/studio-20261106-out
