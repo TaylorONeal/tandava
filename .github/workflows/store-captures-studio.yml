@@ -56,23 +56,18 @@ jobs:
           (npx vite preview --outDir dist-native/member --port 4302 --strictPort > /tmp/member.log 2>&1 &)
           for i in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:4301 && curl -fsS -o /dev/null http://localhost:4302 && break; sleep 2; done
           curl -fsS -o /dev/null http://localhost:4301/auth/login && echo previews up
-      - name: Playwright browsers
-        timeout-minutes: 12
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-          sudo -E env "PATH=$PATH" npx playwright install-deps webkit chromium < /dev/null
-          npx playwright install webkit chromium < /dev/null
+      - name: Playwright image (browsers and their system libraries, no apt)
+        timeout-minutes: 8
+        run: docker pull -q mcr.microsoft.com/playwright:v1.64.0-noble
       - name: Capture iOS (WebKit 440x956 @3x)
         timeout-minutes: 8
-        run: node store-captures/studio/capture.mjs ios store-out/raw/ios
+        run: docker run --rm --network host --ipc host --user "$(id -u):$(id -g)" -e HOME=/tmp -e REVIEW_PASSWORD -v "$PWD:/w" -w /w mcr.microsoft.com/playwright:v1.64.0-noble node store-captures/studio/capture.mjs ios store-out/raw/ios
       - name: Reset seed, capture Play (Chromium 360x640 @3x)
         timeout-minutes: 8
         if: always()
         run: |
           bash /tmp/seed.sh
-          node store-captures/studio/capture.mjs play store-out/raw/play
+          docker run --rm --network host --ipc host --user "$(id -u):$(id -g)" -e HOME=/tmp -e REVIEW_PASSWORD -v "$PWD:/w" -w /w mcr.microsoft.com/playwright:v1.64.0-noble node store-captures/studio/capture.mjs play store-out/raw/play
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
