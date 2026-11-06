@@ -49,6 +49,30 @@ export function CtaLink({
   );
 }
 
+/** Same look as CtaLink, for links that leave the site. */
+export function CtaAnchor({
+  href,
+  children,
+  variant = "primary",
+  className = "",
+}: {
+  href: string;
+  children: ReactNode;
+  variant?: keyof typeof CTA;
+  className?: string;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-base font-bold tracking-tight transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 ${CTA[variant]} ${className}`}
+    >
+      {children}
+    </a>
+  );
+}
+
 /** Camera-viewfinder corners. The scan is the brand moment. */
 export function ScanFrame({ children, color = "border-lime", className = "" }: { children: ReactNode; color?: string; className?: string }) {
   const corner = `pointer-events-none absolute h-8 w-8 ${color}`;
