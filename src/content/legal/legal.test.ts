@@ -18,6 +18,11 @@ describe("legal pages", () => {
     expect(JSON.stringify(LEGAL_DOCS.refunds)).toContain("2 hours");
     expect(JSON.stringify(LEGAL_DOCS.privacy)).toContain("never your card number");
   });
+  it("says the Studio scanner reads codes on the phone and keeps no images", () => {
+    const privacy = JSON.stringify(LEGAL_DOCS.privacy);
+    expect(privacy).toContain("The camera picture never leaves the phone");
+    expect(privacy).toContain("do not receive or store photos or video");
+  });
 });
 
 describe("resolveLegalIdentity", () => {
