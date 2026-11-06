@@ -27,6 +27,23 @@ export interface HelpEntry {
 }
 
 export const HELP: HelpEntry[] = [
+  // --- Getting started (hosted) --------------------------------------------
+  {
+    id: "where-to-sign-up",
+    audience: ["owner"],
+    question: "Where do I sign up: the website or the app?",
+    answer:
+      "The website. You create your studio at tandavastudio.com, then invite your teachers and front desk by email during setup. The Tandava Studio iPhone app has no sign-up: staff sign in with the email their studio invited and use it to check people in at the door.",
+    learnMore: "/studio-app",
+  },
+  {
+    id: "need-to-host",
+    audience: ["owner"],
+    question: "Do I need to install or host anything?",
+    answer:
+      "No. The hosted version runs for you and you use it in a browser. Tandava's code is also public under the AGPL-3.0 license, so a studio with a developer can run its own copy instead. Most studios shouldn't: running your own means you handle backups, upgrades and support.",
+    learnMore: "/open-source",
+  },
   // --- Booking -------------------------------------------------------------
   {
     id: "express-booking",

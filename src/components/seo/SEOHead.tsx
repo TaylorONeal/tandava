@@ -21,9 +21,8 @@ const DEFAULTS = {
   siteName: import.meta.env.VITE_APP_NAME || "Tandava",
   siteUrl: import.meta.env.VITE_APP_URL || "https://tandavastudio.com",
   defaultDescription:
-    "Book yoga classes, workshops, and appointments. Track your practice, connect with teachers, and join our wellness community.",
+    "Studio software for yoga, pilates and movement studios: schedule, class packs, memberships, online booking and check-in.",
   defaultImage: "/og-image.png",
-  twitterHandle: "@TandavaYoga",
 };
 
 export function SEOHead({
@@ -37,7 +36,7 @@ export function SEOHead({
 }: SEOHeadProps) {
   const fullTitle = title
     ? `${title} | ${DEFAULTS.siteName}`
-    : `${DEFAULTS.siteName} | Book Classes & Track Your Practice`;
+    : `${DEFAULTS.siteName} | Studio software for yoga and pilates studios`;
 
   const fullCanonical = canonical
     ? `${DEFAULTS.siteUrl}${canonical}`
@@ -65,7 +64,6 @@ export function SEOHead({
 
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:site" content={DEFAULTS.twitterHandle} />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={fullImage} />

@@ -338,7 +338,7 @@ export default function StudioCalculator() {
               <code>src/lib/studioEcon.ts</code>
             </a>
             , with each number either sourced or labelled as an assumption, and every one of them
-            editable in the advanced drawer above. Tandava is MIT licensed. If a default is wrong for
+            editable in the advanced drawer above. Tandava is AGPL-3.0 licensed. If a default is wrong for
             your market, change it here and share the link, or send a correction upstream.
           </p>
           <nav className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs">

@@ -146,6 +146,7 @@ const RefundsPage = lazyWithReload(() => import("./pages/legal/LegalPage").then(
 const SupportPage = lazyWithReload(() => import("./pages/legal/SupportPage"));
 const ResetPassword = lazyWithReload(() => import("./pages/auth/ResetPassword"));
 const ForStudios = lazyWithReload(() => import("./pages/ForStudios"));
+const LandingPage = lazyWithReload(() => import("./pages/marketing/LandingPage"));
 const StudioCalculator = lazyWithReload(() => import("./pages/tools/StudioCalculator"));
 const Blog = lazyWithReload(() => import("./pages/Blog"));
 const BlogCategory = lazyWithReload(() => import("./pages/blog/BlogCategory"));
@@ -248,6 +249,9 @@ const App = () => (
                   <Route path="/refunds" element={<RefundsPage />} />
                   <Route path="/support" element={<SupportPage />} />
                   <Route path="/for-studios" element={<ForStudios />} />
+                  <Route path="/studio-app" element={<LandingPage route="/studio-app" />} />
+                  <Route path="/yoga-studio-software" element={<LandingPage route="/yoga-studio-software" />} />
+                  <Route path="/class-booking-software" element={<LandingPage route="/class-booking-software" />} />
                   <Route path="/tools/studio-calculator" element={<StudioCalculator />} />
 
                   {/* ---- Public studio storefront (slug-driven; what per-studio

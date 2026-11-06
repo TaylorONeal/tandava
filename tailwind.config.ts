@@ -19,8 +19,18 @@ export default {
         display: ["Cormorant Garamond", "serif"],
         sanskrit: ["Cinzel", "serif"],
         body: ["DM Sans", "system-ui", "sans-serif"],
+        // Marketing site (studio front door look, from the Tandava Studio store art)
+        brand: ["Bricolage Grotesque", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+        "brand-mono": ["IBM Plex Mono", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       colors: {
+        // Fixed brand colors for the marketing site. Same values as the store art.
+        ink: "#0E0A12",
+        paper: "#FFF8EE",
+        lime: "#D7FF3F",
+        "brand-teal": "#3EE6D2",
+        coral: "#FF6B8B",
+        plum: "#2A1636",
         border: "hsl(var(--border))",
         "border-strong": "hsl(var(--border-strong))",
         input: "hsl(var(--input))",

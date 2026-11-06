@@ -879,3 +879,66 @@
 [dir='rtl'] .lucide-log-in {
   transform: scaleX(-1);
 }
+
+/* ---------------------------------------------------------------------------
+ * Marketing site theme: the studio front door look from the Tandava Studio
+ * store art (ink, paper, acid lime, teal, coral; Bricolage Grotesque with
+ * IBM Plex Mono labels). Light only. Scoped so the app's own themes are
+ * untouched. `.mkt-page` goes on <html> (prerendered pages and
+ * MarketingShell) so the page and overscroll are paper from first paint.
+ * ------------------------------------------------------------------------- */
+html.mkt-page,
+.mkt {
+  color-scheme: light;
+  --background: 35 100% 97%;
+  --foreground: 270 29% 5%;
+  --card: 0 0% 100%;
+  --card-foreground: 270 29% 5%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 270 29% 5%;
+  --primary: 270 29% 5%;
+  --primary-foreground: 35 100% 97%;
+  --secondary: 35 60% 92%;
+  --secondary-foreground: 270 29% 5%;
+  --muted: 35 50% 93%;
+  --muted-foreground: 270 10% 34%;
+  --accent: 73 100% 62%;
+  --accent-foreground: 270 29% 5%;
+  --border: 270 15% 84%;
+  --border-strong: 270 29% 5%;
+  --input: 270 15% 84%;
+  --ring: 270 29% 5%;
+}
+html.mkt-page body {
+  background: hsl(35 100% 97%);
+  color: hsl(270 29% 5%);
+  font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.mkt {
+  font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-optical-sizing: auto;
+}
+/* Faint drafting grid behind hero areas, as in the store frames. */
+.mkt-grid {
+  background-image:
+    linear-gradient(rgba(14, 10, 18, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 10, 18, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+/* Highlighter band: wraps across lines on small screens. */
+.mkt-band {
+  padding: 0 0.18em 0.04em;
+  margin: 0 -0.06em;
+  border-radius: 0.14em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.mkt h1,
+.mkt h2,
+.mkt h3 {
+  letter-spacing: -0.025em;
+}
+/* shadcn Button's default hover is the app's yellow; on marketing pages keep it ink. */
+.mkt .bg-primary:hover {
+  background-color: #2a1636;
+}
