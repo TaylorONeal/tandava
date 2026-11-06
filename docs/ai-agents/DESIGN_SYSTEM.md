@@ -1,5 +1,7 @@
 # Design System
 
+> Superseded by `docs/design/DESIGN_SYSTEM.md` (Nov 2026). Kept for history; do not follow the colors or fonts below.
+
 Visual design guidelines for maintaining consistency across Tandava.
 
 ---

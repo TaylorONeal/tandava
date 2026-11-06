@@ -15,10 +15,11 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["DM Sans", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
-        display: ["Cormorant Garamond", "serif"],
+        sans: ["Bricolage Grotesque", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+        display: ["Bricolage Grotesque", "system-ui", "sans-serif"],
         sanskrit: ["Cinzel", "serif"],
-        body: ["DM Sans", "system-ui", "sans-serif"],
+        body: ["Bricolage Grotesque", "system-ui", "sans-serif"],
+        mono: ["IBM Plex Mono", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
         // Marketing site (studio front door look, from the Tandava Studio store art)
         brand: ["Bricolage Grotesque", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
         "brand-mono": ["IBM Plex Mono", "ui-monospace", "SFMono-Regular", "monospace"],
