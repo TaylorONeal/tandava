@@ -99,7 +99,7 @@ Critical path: implement the already-planned two Capacitor role-specific apps â†
 | Apple bundle id registered | Yes, Oct 8 2026 (`WJF8DWPMZW`) | Yes, Oct 8 2026 (`Q29237U4L4`) |
 | Play package | Claimed at first AAB upload | Claimed at first AAB upload |
 | Who | Students booking classes | Owners, front desk, teachers |
-| Core | Find your studio, schedule, book, pay drop-ins, passes, check-in QR, cancel | Schedule, roster, check-in, payments setup, reports |
+| Core | Find your studio, schedule, book, pay drop-ins, passes, check-in QR, cancel | 1.0 (Nov 6): sign-in only; scan and roster check-in, schedule, prices, share. Payments setup and reports later. See [STUDIO-PHASE-1.md](STUDIO-PHASE-1.md) |
 | Price | Free | Free download; studio pays hosting off-store |
 | In-app purchase | None. Classes, packs and memberships are real-world services (App Store 3.1.3(e)); Stripe stays | None. B2B SaaS billed on the web |
 
