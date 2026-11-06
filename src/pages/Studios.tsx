@@ -67,13 +67,13 @@ const mockEvents: StudioEvent[] = [
     id: "ev1",
     title: "Arm Balance & Inversion Workshop",
     type: "workshop",
-    description: "Build confidence in arm balances and inversions with progressive drills, partner assists, and wall work. All levels welcome — modifications for every body.",
+    description: "Build confidence in arm balances and inversions with progressive drills, partner assists, and wall work. All levels welcome, with options for every body.",
     imageUrl: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=80",
     startsAt: "2026-02-21T10:00:00",
     endsAt: "2026-02-21T13:00:00",
     isMultiSession: false,
     sessionCount: 1,
-    teacher: "Maya Rodriguez",
+    teacher: "Brooke Sandoval",
     location: "Main Studio",
     priceCents: 7500,
     memberPriceCents: 6500,
@@ -94,7 +94,7 @@ const mockEvents: StudioEvent[] = [
     endsAt: "2026-06-13T17:00:00",
     isMultiSession: true,
     sessionCount: 12,
-    teacher: "Sarah Chen & James Park",
+    teacher: "Mariana Ochoa & Hannah Lindqvist",
     location: "Main Studio",
     priceCents: 350000,
     memberPriceCents: 320000,
@@ -115,7 +115,7 @@ const mockEvents: StudioEvent[] = [
     endsAt: "2026-02-28T21:00:00",
     isMultiSession: false,
     sessionCount: 1,
-    teacher: "Luna Patel",
+    teacher: "Anika Desai",
     location: "Meditation Room",
     priceCents: 4500,
     memberPriceCents: 3500,
@@ -136,7 +136,7 @@ const mockEvents: StudioEvent[] = [
     endsAt: "2026-03-24T19:30:00",
     isMultiSession: true,
     sessionCount: 4,
-    teacher: "James Park",
+    teacher: "Hannah Lindqvist",
     location: "Hot Room",
     priceCents: 12000,
     memberPriceCents: 10000,
@@ -157,8 +157,8 @@ const mockEvents: StudioEvent[] = [
     endsAt: "2026-03-21T16:00:00",
     isMultiSession: true,
     sessionCount: 6,
-    teacher: "Sarah Chen & Luna Patel",
-    location: "Off-site — Sonoma County",
+    teacher: "Mariana Ochoa & Anika Desai",
+    location: "Off-site, Sonoma County",
     priceCents: 45000,
     memberPriceCents: 39900,
     earlyBirdCents: 35000,
@@ -178,7 +178,7 @@ const mockEvents: StudioEvent[] = [
     endsAt: "2026-03-14T13:00:00",
     isMultiSession: false,
     sessionCount: 1,
-    teacher: "Maya Rodriguez",
+    teacher: "Brooke Sandoval",
     location: "Zen Room",
     priceCents: 5000,
     memberPriceCents: 4000,
@@ -339,7 +339,7 @@ function EventCard({ event, featured }: { event: StudioEvent; featured?: boolean
           <div className="absolute bottom-3 start-3 text-white">
             <p className="text-xs opacity-80">
               {startDate.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
-              {event.isMultiSession && ` — ${event.sessionCount} sessions`}
+              {event.isMultiSession && ` · ${event.sessionCount} sessions`}
             </p>
             <p className="text-xs opacity-60 flex items-center gap-1 mt-0.5">
               <Clock className="h-3 w-3" />

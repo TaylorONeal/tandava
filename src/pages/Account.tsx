@@ -37,14 +37,14 @@ import LiveAccount from "@/pages/account/LiveAccount";
 
 // Sample data: demo mode only (DemoAccount). Live users get LiveAccount.
 const userData = {
-  firstName: "Sarah",
-  lastName: "Chen",
-  email: "sarah@example.com",
-  phone: "(555) 123-4567",
+  firstName: "Lucia",
+  lastName: "Alvarez",
+  email: "lucia.alvarez@example.com",
+  phone: "(512) 555-0149",
   pronouns: "she/her",
   dateOfBirth: "1990-05-15",
-  emergencyContactName: "John Chen",
-  emergencyContactPhone: "(555) 987-6543",
+  emergencyContactName: "Marisol Alvarez",
+  emergencyContactPhone: "(512) 555-0158",
   notes: "Lower back sensitivity - please remind me about modifications for forward folds.",
   avatar: "",
   instagramHandle: "",
@@ -299,7 +299,7 @@ const DemoAccount = () => {
                   <div>
                     <CardTitle>Practice & Trainings</CardTitle>
                     <CardDescription>
-                      Share your yoga journey and certifications
+                      Add your training and certifications
                     </CardDescription>
                   </div>
                 </div>

@@ -105,7 +105,7 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
   return (
     <Shell studioName={studio.name} accent={accent} registerHref={registerHref} loginHref={loginHref}>
       <SEOHead
-        title={`${studio.name} — Classes & Membership`}
+        title={`${studio.name} | Classes & Membership`}
         description={studio.description ?? `Book classes and memberships at ${studio.name}.`}
         canonical={`/s/${studio.slug}`}
       />

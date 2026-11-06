@@ -147,7 +147,7 @@ const mockSchedule: ScheduledClass[] = [
     capacity: 30,
     booked: 28,
     status: "subbing",
-    originalTeacher: "Sarah Chen",
+    originalTeacher: "Tasha Greene",
   },
   // Next week
   {

@@ -58,7 +58,7 @@ const MOCK_VIDEOS = [
   {
     id: '1',
     title: 'Morning Vinyasa Flow',
-    instructor: 'Maya Rivers',
+    instructor: 'Brooke Sandoval',
     duration: 3600,
     views: 1247,
     rating: 4.8,
@@ -73,7 +73,7 @@ const MOCK_VIDEOS = [
   {
     id: '2',
     title: 'Gentle Yin for Deep Release',
-    instructor: 'Luna Fox',
+    instructor: 'Anika Desai',
     duration: 2700,
     views: 892,
     rating: 4.9,
@@ -135,7 +135,7 @@ const MOCK_VIDEOS = [
 const MOCK_SERIES = [
   {
     id: 's1',
-    title: '30-Day Yoga Journey',
+    title: '30-Day Beginner Series',
     videoCount: 30,
     enrollments: 234,
     completions: 89,
@@ -279,8 +279,8 @@ export default function OnDemand() {
                             <SelectValue placeholder="Select instructor" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="maya">Maya Rivers</SelectItem>
-                            <SelectItem value="luna">Luna Fox</SelectItem>
+                            <SelectItem value="maya">Brooke Sandoval</SelectItem>
+                            <SelectItem value="luna">Anika Desai</SelectItem>
                             <SelectItem value="aria">Aria Swift</SelectItem>
                           </SelectContent>
                         </Select>

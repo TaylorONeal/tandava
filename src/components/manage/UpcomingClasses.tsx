@@ -351,7 +351,7 @@ function CancelClassDialog({
                       value={note}
                       maxLength={500}
                       rows={3}
-                      placeholder="Maya is unwell tonight. Sorry, and see you Thursday."
+                      placeholder="Camila is unwell tonight. Sorry, and see you Thursday."
                       onChange={(e) => setNote(e.target.value)}
                     />
                   </div>

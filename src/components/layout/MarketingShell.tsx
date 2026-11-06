@@ -75,8 +75,9 @@ export function MarketingShell({
       </a>
       <header className={classic ? "border-b border-border" : "border-b border-ink/10"}>
         <div className={`${maxWidth} mx-auto flex items-center justify-between gap-4 px-6 py-4`}>
-          <Link to="/" aria-label="Tandava home">
+          <Link to="/">
             <Logo />
+            <span className="sr-only"> home</span>
           </Link>
           <nav className="flex items-center gap-1" aria-label="Primary">
             {NAV.map((n) => (

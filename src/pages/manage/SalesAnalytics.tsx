@@ -171,11 +171,11 @@ const dropOffPoints = [
 // ---------------------------------------------------------------------------
 
 const topReferrers = [
-  { name: "Maya Thompson", sent: 8, converted: 6, revenue: 1020, reward: "$90 credit" },
-  { name: "Carlos Rivera", sent: 6, converted: 4, revenue: 680, reward: "$60 credit" },
-  { name: "Priya Sharma", sent: 5, converted: 4, revenue: 640, reward: "$60 credit" },
-  { name: "Liam O'Brien", sent: 4, converted: 3, revenue: 510, reward: "$45 credit" },
-  { name: "Aisha Johnson", sent: 4, converted: 2, revenue: 380, reward: "$30 credit" },
+  { name: "Talia Petrov", sent: 8, converted: 6, revenue: 1020, reward: "$90 credit" },
+  { name: "Rafael Nakamura", sent: 6, converted: 4, revenue: 680, reward: "$60 credit" },
+  { name: "Keisha Becker", sent: 5, converted: 4, revenue: 640, reward: "$60 credit" },
+  { name: "Tobias Salazar", sent: 4, converted: 3, revenue: 510, reward: "$45 credit" },
+  { name: "Imani Oyelaran", sent: 4, converted: 2, revenue: 380, reward: "$30 credit" },
   { name: "Others", sent: 7, converted: 3, revenue: 510, reward: "$45 credit" },
 ];
 
