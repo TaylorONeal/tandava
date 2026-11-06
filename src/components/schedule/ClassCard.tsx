@@ -41,15 +41,15 @@ const levelVariants = {
 const deliveryModeStyles: Record<DeliveryMode, { icon: typeof Video; className: string }> = {
   in_person: {
     icon: MapPin,
-    className: 'bg-stone-100 text-stone-700 border-stone-200',
+    className: 'bg-muted text-foreground border-border',
   },
   virtual: {
     icon: Video,
-    className: 'bg-blue-100 text-blue-700 border-blue-200',
+    className: 'bg-info/10 text-info border-info/30',
   },
   hybrid: {
     icon: Wifi,
-    className: 'bg-violet-100 text-violet-700 border-violet-200',
+    className: 'bg-accent/40 text-foreground border-foreground/15',
   },
 };
 
@@ -111,7 +111,7 @@ export function ClassCard({
               )}
               {/* Live indicator */}
               {isLive && (deliveryMode === 'virtual' || deliveryMode === 'hybrid') && (
-                <Badge className="gap-1 bg-red-500 text-white border-red-500 animate-pulse">
+                <Badge className="gap-1 bg-destructive text-destructive-foreground border-destructive animate-pulse">
                   <span className="w-2 h-2 rounded-full bg-white" />
                   {t('live')}
                 </Badge>

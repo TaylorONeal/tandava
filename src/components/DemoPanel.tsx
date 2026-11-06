@@ -50,10 +50,10 @@ const ROLE_ICONS: Record<UserRole, typeof User> = {
 const ROLE_COLORS: Record<UserRole, string> = {
   owner: "bg-accent-gold/20 text-accent-gold border-accent-gold/30",
   admin: "bg-primary/20 text-primary border-primary/30",
-  teacher: "bg-accent-sage/20 text-accent-sage border-accent-sage/30",
+  teacher: "bg-accent/40 text-foreground border-foreground/20",
   front_desk: "bg-accent-coral/20 text-accent-coral border-accent-coral/30",
-  student: "bg-accent-teal/20 text-[color:var(--accent-teal)] border-[color:var(--accent-teal)]/30",
-  platform_admin: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+  student: "bg-accent-mint/25 text-foreground border-accent-mint",
+  platform_admin: "bg-primary text-primary-foreground border-primary",
 };
 
 // Where each role should land when selected

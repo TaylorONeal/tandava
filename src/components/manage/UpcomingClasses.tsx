@@ -275,8 +275,8 @@ function CancelClassDialog({
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 {report.problems.length
-                  ? <AlertTriangle className="h-5 w-5 text-amber-600" />
-                  : <CheckCircle2 className="h-5 w-5 text-emerald-600" />}
+                  ? <AlertTriangle className="h-5 w-5 text-warning" />
+                  : <CheckCircle2 className="h-5 w-5 text-success" />}
                 Class cancelled
               </DialogTitle>
               <DialogDescription>{target?.class_name}, {when}</DialogDescription>

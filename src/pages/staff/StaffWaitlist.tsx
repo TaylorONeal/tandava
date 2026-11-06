@@ -53,7 +53,7 @@ const DEMO_WAITLISTED_CLASSES: WaitlistedClass[] = [
   {
     id: "wl-1",
     className: "Power Vinyasa",
-    classColor: "#e74c3c",
+    classColor: "#FF6B8B",
     time: "09:00 AM",
     teacher: "Elena Vasquez",
     location: "South Congress Studio",
@@ -68,7 +68,7 @@ const DEMO_WAITLISTED_CLASSES: WaitlistedClass[] = [
   {
     id: "wl-2",
     className: "Hot 26",
-    classColor: "#f39c12",
+    classColor: "#D7FF3F",
     time: "12:00 PM",
     teacher: "Jordan Kim",
     location: "East Side Studio",
@@ -82,7 +82,7 @@ const DEMO_WAITLISTED_CLASSES: WaitlistedClass[] = [
   {
     id: "wl-3",
     className: "Yin & Restore",
-    classColor: "#9b59b6",
+    classColor: "#0E0A12",
     time: "05:30 PM",
     teacher: "Devika Nair",
     location: "South Congress Studio",
@@ -98,7 +98,7 @@ const DEMO_WAITLISTED_CLASSES: WaitlistedClass[] = [
   {
     id: "wl-4",
     className: "Ashtanga Primary",
-    classColor: "#2ecc71",
+    classColor: "#3EE6D2",
     time: "06:30 PM",
     teacher: "Ravi Sharma",
     location: "East Side Studio",
@@ -153,9 +153,9 @@ function MemberTypeBadge({ type }: { type: WaitlistEntry["memberType"] }) {
 function StatusBadge({ status }: { status: WaitlistEntry["status"] }) {
   const config = {
     waiting: { label: "Waiting", className: "bg-muted text-muted-foreground" },
-    promoted: { label: "Promoted — Awaiting Response", className: "bg-amber-500/15 text-amber-600" },
-    confirmed: { label: "Confirmed", className: "bg-green-500/15 text-green-600" },
-    declined: { label: "Declined", className: "bg-red-500/15 text-red-500" },
+    promoted: { label: "Promoted — Awaiting Response", className: "bg-warning/15 text-warning" },
+    confirmed: { label: "Confirmed", className: "bg-accent-mint/25 text-foreground" },
+    declined: { label: "Declined", className: "bg-destructive/10 text-destructive" },
     expired: { label: "Expired", className: "bg-muted text-muted-foreground line-through" },
   };
   const c = config[status];
@@ -448,9 +448,9 @@ export default function StaffWaitlist() {
                           key={entry.id}
                           className={`flex items-center justify-between p-3 rounded-lg border ${
                             entry.status === "promoted"
-                              ? "bg-amber-500/5 border-amber-500/20"
+                              ? "bg-warning/5 border-warning/20"
                               : entry.status === "confirmed"
-                              ? "bg-green-500/5 border-green-500/20"
+                              ? "bg-accent-mint/10 border-accent-mint/40"
                               : "bg-card"
                           }`}
                         >
@@ -509,7 +509,6 @@ export default function StaffWaitlist() {
                                 <Button
                                   size="sm"
                                   variant="default"
-                                  className="bg-green-600 hover:bg-green-700"
                                   onClick={(e) => { e.stopPropagation(); handleConfirm(cls.id, entry.id); }}
                                 >
                                   <CheckCircle2 className="h-3.5 w-3.5 me-1" />
@@ -526,7 +525,7 @@ export default function StaffWaitlist() {
                             )}
 
                             {entry.status === "confirmed" && (
-                              <CheckCircle2 className="h-4 w-4 text-green-600" />
+                              <CheckCircle2 className="h-4 w-4 text-success" />
                             )}
                           </div>
                         </div>

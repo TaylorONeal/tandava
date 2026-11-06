@@ -219,7 +219,7 @@ function DemoTeachSchedule() {
       case "regular":
         return "bg-primary/10 border-primary/20";
       case "subbing":
-        return "bg-accent-sage/10 border-accent-sage/30";
+        return "bg-accent-mint/10 border-accent-mint/40";
       case "pending_sub":
         return "bg-accent-gold/10 border-accent-gold/30";
       default:
@@ -231,7 +231,7 @@ function DemoTeachSchedule() {
     switch (cls.status) {
       case "subbing":
         return (
-          <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage border-0">
+          <Badge className="text-[10px] bg-accent-mint/30 text-foreground border-0">
             Subbing for {cls.originalTeacher}
           </Badge>
         );
@@ -328,7 +328,7 @@ function DemoTeachSchedule() {
             <span className="text-muted-foreground">Regular Class</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-accent-sage/30 border border-accent-sage/40" />
+            <div className="w-3 h-3 rounded bg-accent-mint/30 border border-accent-mint/60" />
             <span className="text-muted-foreground">Subbing for Someone</span>
           </div>
           <div className="flex items-center gap-2">

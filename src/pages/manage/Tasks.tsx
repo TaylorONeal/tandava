@@ -84,10 +84,10 @@ const mockStaff: (Profile & { id: string })[] = [
 
 // Mock task categories
 const mockCategories: TaskCategory[] = [
-  { id: "c1", studio_id: "1", name: "Cleaning", color: "#10B981", icon: null, sort_order: 1, created_at: "" },
+  { id: "c1", studio_id: "1", name: "Cleaning", color: "#3EE6D2", icon: null, sort_order: 1, created_at: "" },
   { id: "c2", studio_id: "1", name: "Maintenance", color: "#F59E0B", icon: null, sort_order: 2, created_at: "" },
-  { id: "c3", studio_id: "1", name: "Admin", color: "#6366F1", icon: null, sort_order: 3, created_at: "" },
-  { id: "c4", studio_id: "1", name: "Inventory", color: "#EC4899", icon: null, sort_order: 4, created_at: "" },
+  { id: "c3", studio_id: "1", name: "Admin", color: "#0E0A12", icon: null, sort_order: 3, created_at: "" },
+  { id: "c4", studio_id: "1", name: "Inventory", color: "#FF6B8B", icon: null, sort_order: 4, created_at: "" },
   { id: "c5", studio_id: "1", name: "Customer Service", color: "#14B8A6", icon: null, sort_order: 5, created_at: "" },
 ];
 
@@ -153,10 +153,10 @@ const priorityConfig: Record<TaskPriority, { label: string; color: string; bgCol
 
 // Status config
 const statusConfig: Record<TaskStatus, { label: string; color: string }> = {
-  pending: { label: "To Do", color: "bg-gray-500" },
-  in_progress: { label: "In Progress", color: "bg-blue-500" },
-  completed: { label: "Completed", color: "bg-green-500" },
-  cancelled: { label: "Cancelled", color: "bg-red-500" },
+  pending: { label: "To Do", color: "bg-muted-foreground" },
+  in_progress: { label: "In Progress", color: "bg-info" },
+  completed: { label: "Completed", color: "bg-success" },
+  cancelled: { label: "Cancelled", color: "bg-destructive" },
 };
 
 function getInitials(profile?: Profile | null): string {
@@ -597,9 +597,9 @@ export default function TasksManage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">Completed Today</p>
-                  <p className="text-xl font-bold text-green-500">{stats.completedToday}</p>
+                  <p className="text-xl font-bold text-success">{stats.completedToday}</p>
                 </div>
-                <CheckCircle2 className="h-5 w-5 text-green-500" />
+                <CheckCircle2 className="h-5 w-5 text-success" />
               </div>
             </CardContent>
           </Card>
@@ -1260,7 +1260,7 @@ export default function TasksManage() {
                       ))}
                     {selectedTask.completed_at && (
                       <div className="flex items-start gap-2 text-xs">
-                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 shrink-0" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-success mt-1.5 shrink-0" />
                         <div>
                           <span className="font-medium">Task completed</span>
                           <p className="text-muted-foreground">{formatDateTime(selectedTask.completed_at)}</p>

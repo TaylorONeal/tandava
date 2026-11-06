@@ -256,10 +256,10 @@ function DemoTeachDashboard() {
 
         {/* Today's Classes - Prominent on mobile for check-in */}
         {upcomingClasses.filter(c => c.isToday).length > 0 && (
-          <Card className="border-accent-sage/30 bg-accent-sage/5">
+          <Card className="border-foreground/15 bg-accent/10">
             <CardHeader className="pb-2">
               <CardTitle className="text-lg flex items-center gap-2">
-                <ClipboardCheck className="h-5 w-5 text-accent-sage" />
+                <ClipboardCheck className="h-5 w-5 text-foreground" />
                 Today's Classes
               </CardTitle>
             </CardHeader>
@@ -272,7 +272,7 @@ function DemoTeachDashboard() {
                     key={cls.id}
                     className={`p-4 rounded-xl border transition-colors ${
                       cls.isStartingSoon
-                        ? 'bg-accent-sage/10 border-accent-sage/30 shadow-sm'
+                        ? 'bg-accent/20 border-foreground/15 shadow-sm'
                         : 'bg-card border-border'
                     }`}
                   >
@@ -280,7 +280,7 @@ function DemoTeachDashboard() {
                       <div className="flex items-center gap-2">
                         <span className="text-lg font-bold">{cls.time}</span>
                         {cls.isStartingSoon && (
-                          <Badge className="bg-accent-sage text-white text-[10px] animate-pulse">
+                          <Badge className="bg-accent text-accent-foreground text-[10px] animate-pulse">
                             Starting Soon
                           </Badge>
                         )}
@@ -294,12 +294,12 @@ function DemoTeachDashboard() {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                       <span>{cls.room}</span>
                       {cls.deliveryMode === 'hybrid' && (
-                        <span className="flex items-center gap-1 text-violet-400">
+                        <span className="flex items-center gap-1 text-foreground">
                           <Wifi className="h-3 w-3" /> + Online
                         </span>
                       )}
                       {cls.deliveryMode === 'virtual' && (
-                        <span className="flex items-center gap-1 text-blue-400">
+                        <span className="flex items-center gap-1 text-info">
                           <Video className="h-3 w-3" /> Virtual
                         </span>
                       )}
@@ -335,7 +335,7 @@ function DemoTeachDashboard() {
           <DialogContent className="max-w-lg max-h-[80vh] flex flex-col">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                <ClipboardCheck className="h-5 w-5 text-accent-sage" />
+                <ClipboardCheck className="h-5 w-5 text-foreground" />
                 Check-in: {checkInClass?.name}
               </DialogTitle>
               <p className="text-sm text-muted-foreground">
@@ -366,7 +366,7 @@ function DemoTeachDashboard() {
                   onClick={() => toggleStudentCheckIn(student.id)}
                   className={`w-full flex items-center gap-3 p-2.5 rounded-lg transition-colors text-start ${
                     student.checkedIn
-                      ? "bg-accent-sage/10 border border-accent-sage/20"
+                      ? "bg-accent-mint/10 border border-accent-mint/40"
                       : "bg-secondary/30 hover:bg-secondary/60 border border-transparent"
                   }`}
                 >
@@ -384,7 +384,7 @@ function DemoTeachDashboard() {
                     <p className="text-[10px] text-muted-foreground">{student.membershipType}</p>
                   </div>
                   {student.checkedIn && (
-                    <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage border-0 shrink-0">
+                    <Badge className="text-[10px] bg-accent-mint/30 text-foreground border-0 shrink-0">
                       Checked In
                     </Badge>
                   )}
@@ -439,9 +439,9 @@ function DemoTeachDashboard() {
           </Link>
           <Link
             to="/teach/earnings"
-            className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-accent-sage/10 hover:bg-accent-sage/20 transition-colors"
+            className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-accent-mint/15 hover:bg-accent-mint/30 transition-colors"
           >
-            <DollarSign className="h-5 w-5 text-accent-sage" />
+            <DollarSign className="h-5 w-5 text-foreground" />
             <span className="text-[10px] font-medium">Earnings</span>
           </Link>
         </div>
@@ -478,8 +478,8 @@ function DemoTeachDashboard() {
                     ${earningsSummary.total.toLocaleString()}
                   </p>
                 </div>
-                <div className="h-10 w-10 rounded-xl bg-accent-sage/20 flex items-center justify-center">
-                  <DollarSign className="h-5 w-5 text-accent-sage" />
+                <div className="h-10 w-10 rounded-xl bg-accent-mint/30 flex items-center justify-center">
+                  <DollarSign className="h-5 w-5 text-foreground" />
                 </div>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
@@ -551,7 +551,7 @@ function DemoTeachDashboard() {
                     key={cls.id}
                     className={`flex items-center justify-between p-3 rounded-xl transition-colors ${
                       cls.isToday
-                        ? "bg-accent-sage/10 border border-accent-sage/20"
+                        ? "bg-accent/20 border border-foreground/10"
                         : "bg-secondary/50 hover:bg-secondary"
                     }`}
                   >
@@ -573,7 +573,7 @@ function DemoTeachDashboard() {
                         </span>
                       </div>
                       {cls.isToday && (
-                        <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage border-0">
+                        <Badge className="text-[10px] bg-accent text-accent-foreground border-0">
                           Today
                         </Badge>
                       )}
@@ -608,7 +608,7 @@ function DemoTeachDashboard() {
                           {tip.className} - {tip.date}
                         </p>
                       </div>
-                      <span className="text-sm font-semibold text-accent-sage">
+                      <span className="text-sm font-semibold text-foreground">
                         +${tip.amount}
                       </span>
                     </div>
@@ -682,7 +682,7 @@ function DemoTeachDashboard() {
                   >
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-medium">{opp.className}</p>
-                      <span className="text-xs font-semibold text-accent-sage">
+                      <span className="text-xs font-semibold text-foreground">
                         ${opp.pay}
                       </span>
                     </div>

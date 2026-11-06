@@ -622,7 +622,7 @@ const OnDemand = () => {
                 <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 border">
                   {selectedClass.accessType === "free" && (
                     <>
-                      <CheckCircle className="h-5 w-5 text-emerald-600 flex-shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
                       <div>
                         <p className="text-sm font-medium">Free to watch</p>
                         <p className="text-xs text-muted-foreground">No membership or purchase required.</p>
@@ -631,7 +631,7 @@ const OnDemand = () => {
                   )}
                   {selectedClass.accessType === "members_only" && entitlements.hasMembership && (
                     <>
-                      <CheckCircle className="h-5 w-5 text-emerald-600 flex-shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
                       <div>
                         <p className="text-sm font-medium">Included with your membership</p>
                         <p className="text-xs text-muted-foreground">Watch as many times as you like.</p>
@@ -640,7 +640,7 @@ const OnDemand = () => {
                   )}
                   {selectedClass.accessType === "members_only" && !entitlements.hasMembership && (
                     <>
-                      <Lock className="h-5 w-5 text-indigo-600 flex-shrink-0" />
+                      <Lock className="h-5 w-5 text-foreground flex-shrink-0" />
                       <div>
                         <p className="text-sm font-medium">Members only</p>
                         <p className="text-xs text-muted-foreground">Subscribe to a studio pass or unlimited plan to access.</p>
@@ -649,7 +649,7 @@ const OnDemand = () => {
                   )}
                   {selectedClass.accessType === "class_pack" && entitlements.classPackRemaining > 0 && (
                     <>
-                      <Ticket className="h-5 w-5 text-violet-600 flex-shrink-0" />
+                      <Ticket className="h-5 w-5 text-foreground flex-shrink-0" />
                       <div>
                         <p className="text-sm font-medium">Use 1 class from your pack</p>
                         <p className="text-xs text-muted-foreground">
@@ -729,8 +729,8 @@ const OnDemand = () => {
               <DialogHeader>
                 <DialogTitle>Use a class pass?</DialogTitle>
               </DialogHeader>
-              <div className="flex items-start gap-4 p-4 rounded-xl bg-violet-50 border border-violet-200">
-                <Ticket className="h-6 w-6 text-violet-600 flex-shrink-0 mt-0.5" />
+              <div className="flex items-start gap-4 p-4 rounded-xl bg-accent/20 border border-foreground/10">
+                <Ticket className="h-6 w-6 text-foreground flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-sm">{selectedClass.title}</p>
                   <p className="text-sm text-muted-foreground mt-1">

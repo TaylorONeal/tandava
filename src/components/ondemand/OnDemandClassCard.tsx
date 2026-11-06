@@ -38,9 +38,9 @@ const levelLabels = {
 };
 
 const accessLabels: Record<VideoAccessType, { label: string; className: string }> = {
-  free: { label: "Free", className: "bg-emerald-500/10 text-emerald-700 border-emerald-300" },
-  members_only: { label: "Members", className: "bg-indigo-500/10 text-indigo-700 border-indigo-300" },
-  class_pack: { label: "Class Pack", className: "bg-violet-500/10 text-violet-700 border-violet-300" },
+  free: { label: "Free", className: "bg-success/10 text-success border-success/30" },
+  members_only: { label: "Members", className: "bg-accent-mint/20 text-foreground border-accent-mint" },
+  class_pack: { label: "Class Pack", className: "bg-accent/40 text-foreground border-foreground/20" },
   purchase: { label: "Purchase", className: "bg-amber-500/10 text-amber-700 border-amber-300" },
   rental: { label: "Rental", className: "bg-rose-500/10 text-rose-700 border-rose-300" },
   subscription: { label: "Subscription", className: "bg-sky-500/10 text-sky-700 border-sky-300" },
@@ -119,7 +119,7 @@ export function OnDemandClassCard({
 
         {/* Free badge */}
         {accessType === "free" && (
-          <div className="absolute top-2 start-2 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 border backdrop-blur-sm bg-emerald-500/10 text-emerald-700 border-emerald-300">
+          <div className="absolute top-2 start-2 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 border backdrop-blur-sm bg-card/90 text-success border-success/30">
             Free
           </div>
         )}

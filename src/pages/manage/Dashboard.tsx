@@ -241,12 +241,12 @@ export default function ManageDashboard() {
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           <span>{cls.teacher}</span>
                           {cls.deliveryMode === 'virtual' && (
-                            <span className="flex items-center gap-0.5 text-blue-600">
+                            <span className="flex items-center gap-0.5 text-info">
                               <Video className="h-3 w-3" /> Virtual
                             </span>
                           )}
                           {cls.deliveryMode === 'hybrid' && (
-                            <span className="flex items-center gap-0.5 text-violet-600">
+                            <span className="flex items-center gap-0.5 text-foreground">
                               <Wifi className="h-3 w-3" /> Hybrid
                             </span>
                           )}

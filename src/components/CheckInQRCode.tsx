@@ -172,7 +172,7 @@ export function CheckInQRCode({
           <div className="relative">
             <QRCodeDisplay data={qrData} size={200} />
             <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
-              <Badge className="bg-accent-sage text-white">
+              <Badge className="bg-accent-mint text-foreground">
                 <CheckCircle2 className="h-3 w-3 me-1" />
                 Active
               </Badge>

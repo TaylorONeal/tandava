@@ -802,10 +802,10 @@ export default function SalesAnalytics() {
                           </span>
                           <div className="flex-1">
                             <div
-                              className="h-7 bg-accent-sage/60 rounded-lg flex items-center px-3"
+                              className="h-7 bg-accent-mint rounded-lg flex items-center px-3"
                               style={{ width: `${Math.max(widthPct, 20)}%` }}
                             >
-                              <span className="text-xs font-semibold text-white">{step.value}</span>
+                              <span className="text-xs font-semibold text-foreground">{step.value}</span>
                             </div>
                           </div>
                         </div>

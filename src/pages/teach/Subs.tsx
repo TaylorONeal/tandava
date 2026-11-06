@@ -231,7 +231,7 @@ export default function TeachSubs() {
         );
       case "claimed":
         return (
-          <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage border-0">
+          <Badge className="text-[10px] bg-accent-mint/30 text-foreground border-0">
             Covered
           </Badge>
         );
@@ -304,7 +304,7 @@ export default function TeachSubs() {
                     key={opp.id}
                     className={`transition-all ${
                       opp.matchesQualification
-                        ? "hover:border-accent-sage/50 hover:shadow-md"
+                        ? "hover:border-foreground/30 hover:shadow-md"
                         : "opacity-60"
                     }`}
                   >
@@ -366,7 +366,7 @@ export default function TeachSubs() {
 
                         {/* Pay & Action */}
                         <div className="flex flex-col items-end gap-2 shrink-0">
-                          <div className="flex items-center gap-1 text-lg font-bold text-accent-sage">
+                          <div className="flex items-center gap-1 text-lg font-bold text-foreground">
                             <DollarSign className="h-4 w-4" />
                             {opp.pay}
                           </div>
@@ -503,7 +503,7 @@ export default function TeachSubs() {
                               </span>
                             </div>
                             {req.claimedBy && (
-                              <p className="text-xs text-accent-sage mt-2">
+                              <p className="text-xs text-foreground mt-2">
                                 Covered by {req.claimedBy}
                               </p>
                             )}
@@ -576,9 +576,9 @@ export default function TeachSubs() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-4 rounded-xl bg-accent-sage/10 border border-accent-sage/20">
+              <div className="flex items-center justify-between p-4 rounded-xl bg-accent-mint/10 border border-accent-mint/40">
                 <span className="text-sm font-medium">Compensation</span>
-                <span className="text-lg font-bold text-accent-sage">
+                <span className="text-lg font-bold text-foreground">
                   ${selectedOpportunity.pay}
                 </span>
               </div>
