@@ -26,6 +26,6 @@
   "rewrites": [
     { "source": "/page/studio-sprout", "destination": "/page/studio-sprout/index.html" },
     { "source": "/page/studio-sprout/", "destination": "/page/studio-sprout/index.html" },
-    { "source": "/((?!assets/).*)", "destination": "/index.html" }
+    { "source": "/((?!assets/).*)", "destination": "/app.html" }
   ]
 }

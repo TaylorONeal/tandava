@@ -92,8 +92,8 @@ export function TeachLayout({ children }: TeachLayoutProps) {
               )}
             </Button>
             <Link to="/teach" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-sage">
-                <span className="text-sm font-bold text-white">T</span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                <span className="text-sm font-bold text-primary-foreground">T</span>
               </div>
               <div className="hidden sm:block">
                 <p className="text-sm font-semibold leading-none">
@@ -117,9 +117,9 @@ export function TeachLayout({ children }: TeachLayoutProps) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button aria-label="Teacher account menu" variant="ghost" className="relative h-9 w-9 rounded-full">
-                  <Avatar className="h-9 w-9 border-2 border-accent-sage/20">
+                  <Avatar className="h-9 w-9 border-2 border-border">
                     <AvatarImage src={profile?.avatar_url ?? undefined} />
-                    <AvatarFallback className="bg-accent-sage/20 text-foreground text-xs font-semibold">
+                    <AvatarFallback className="bg-accent text-accent-foreground text-xs font-semibold">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
@@ -176,7 +176,7 @@ export function TeachLayout({ children }: TeachLayoutProps) {
               <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={profile?.avatar_url ?? undefined} />
-                  <AvatarFallback className="bg-accent-sage/20 text-foreground text-sm font-semibold">
+                  <AvatarFallback className="bg-accent text-accent-foreground text-sm font-semibold">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
@@ -195,7 +195,7 @@ export function TeachLayout({ children }: TeachLayoutProps) {
                 className={cn(
                   "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
                   isActive(item.href)
-                    ? "bg-accent-sage text-white shadow-sm"
+                    ? "bg-accent text-accent-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                 )}
               >

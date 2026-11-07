@@ -82,7 +82,7 @@ export function TeachingClasses({ title }: { title: string }) {
         : classes.error ? <div role="alert"><p>Couldn't load your teaching schedule.</p><Button onClick={() => classes.refetch()}>Retry schedule</Button></div>
         : !classes.data?.length ? <p>No assigned classes in the next 14 days.</p>
         : classes.data.map(cls => <Card key={cls.occurrence_id}>
-          <CardHeader><CardTitle>{cls.offering_name}{cls.is_cancelled ? " — Cancelled" : ""}</CardTitle></CardHeader>
+          <CardHeader><CardTitle>{cls.offering_name}{cls.is_cancelled ? " (cancelled)" : ""}</CardTitle></CardHeader>
           <CardContent className="space-y-2">
             <p>{cls.studio_name} · {[cls.location_name, cls.room].filter(Boolean).join(" · ")}</p>
             <p>{classTime(cls.starts_at, cls.studio_timezone)}</p>

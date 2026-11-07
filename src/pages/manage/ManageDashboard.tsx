@@ -67,23 +67,23 @@ export default function ManageDashboard() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-accent-teal" />
-                <strong className="text-foreground">Schedule</strong> — Create and manage classes, assign instructors
+                <strong className="text-foreground">Schedule:</strong> Create and manage classes, assign instructors
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-accent-teal" />
-                <strong className="text-foreground">Members</strong> — View member directory, memberships, attendance
+                <strong className="text-foreground">Members:</strong> View member directory, memberships, attendance
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-accent-teal" />
-                <strong className="text-foreground">Billing</strong> — Connect Stripe and manage pricing
+                <strong className="text-foreground">Billing:</strong> Connect Stripe and manage pricing
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-accent-teal" />
-                <strong className="text-foreground">Inbox</strong> — View and respond to member messages and inquiries
+                <strong className="text-foreground">Inbox:</strong> View and respond to member messages and inquiries
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-accent-teal" />
-                <strong className="text-foreground">Settings</strong> — Update studio info, policies, and hours
+                <strong className="text-foreground">Settings:</strong> Update studio info, policies, and hours
               </li>
             </ul>
           </CardContent>

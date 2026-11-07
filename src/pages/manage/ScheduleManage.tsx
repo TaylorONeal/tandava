@@ -74,44 +74,44 @@ const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const mockSchedule: Record<string, ClassOccurrence[]> = {
   Mon: [
-    { id: "1", name: "Morning Vinyasa", style: "Vinyasa", teacher: "Maya Patel", instructorRole: "lead", time: "7:00 AM", endTime: "8:15 AM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 22, waitlisted: 2, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "2", name: "Gentle Flow", style: "Hatha", teacher: "James Liu", instructorRole: "lead", time: "9:30 AM", endTime: "10:30 AM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 12, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "3", name: "Power Yoga", style: "Power", teacher: "Sarah Chen", instructorRole: "lead", time: "12:00 PM", endTime: "1:00 PM", room: "Hot Room", location: "SOMA", capacity: 30, booked: 30, waitlisted: 3, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "4", name: "Yin Restore", style: "Yin", teacher: "Ava Kim", instructorRole: "staff_instructor", time: "4:30 PM", endTime: "5:45 PM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 8, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "5", name: "Evening Vinyasa", style: "Vinyasa", teacher: "Maya Patel", instructorRole: "lead", time: "6:00 PM", endTime: "7:15 PM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 20, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "1", name: "Morning Vinyasa", style: "Vinyasa", teacher: "Camila Reyes", instructorRole: "lead", time: "7:00 AM", endTime: "8:15 AM", room: "Main Studio", location: "East", capacity: 25, booked: 22, waitlisted: 2, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "2", name: "Gentle Flow", style: "Hatha", teacher: "Daniel Nguyen", instructorRole: "lead", time: "9:30 AM", endTime: "10:30 AM", room: "Main Studio", location: "East", capacity: 20, booked: 12, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "3", name: "Power Yoga", style: "Power", teacher: "Tasha Greene", instructorRole: "lead", time: "12:00 PM", endTime: "1:00 PM", room: "Hot Room", location: "East", capacity: 30, booked: 30, waitlisted: 3, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "4", name: "Yin Restore", style: "Yin", teacher: "Mei Tanaka", instructorRole: "staff_instructor", time: "4:30 PM", endTime: "5:45 PM", room: "Main Studio", location: "East", capacity: 20, booked: 8, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "5", name: "Evening Vinyasa", style: "Vinyasa", teacher: "Camila Reyes", instructorRole: "lead", time: "6:00 PM", endTime: "7:15 PM", room: "Main Studio", location: "East", capacity: 25, booked: 20, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
   ],
   Tue: [
-    { id: "6", name: "Sunrise Meditation", style: "Meditation", teacher: "Ava Kim", instructorRole: "lead", time: "6:30 AM", endTime: "7:15 AM", room: "Meditation Room", location: "SOMA", capacity: 15, booked: 10, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "7", name: "Hot Vinyasa", style: "Vinyasa", teacher: "Sarah Chen", instructorRole: "lead", time: "9:00 AM", endTime: "10:15 AM", room: "Hot Room", location: "SOMA", capacity: 30, booked: 28, waitlisted: 1, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "8", name: "Ashtanga Primary", style: "Ashtanga", teacher: "James Liu", instructorRole: "lead", time: "12:00 PM", endTime: "1:30 PM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 15, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: true, originalTeacher: "David Park" },
+    { id: "6", name: "Sunrise Meditation", style: "Meditation", teacher: "Mei Tanaka", instructorRole: "lead", time: "6:30 AM", endTime: "7:15 AM", room: "Meditation Room", location: "East", capacity: 15, booked: 10, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "7", name: "Hot Vinyasa", style: "Vinyasa", teacher: "Tasha Greene", instructorRole: "lead", time: "9:00 AM", endTime: "10:15 AM", room: "Hot Room", location: "East", capacity: 30, booked: 28, waitlisted: 1, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "8", name: "Ashtanga Primary", style: "Ashtanga", teacher: "Daniel Nguyen", instructorRole: "lead", time: "12:00 PM", endTime: "1:30 PM", room: "Main Studio", location: "East", capacity: 20, booked: 15, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: true, originalTeacher: "Andre Castillo" },
   ],
   Wed: [
-    { id: "9", name: "Morning Vinyasa", style: "Vinyasa", teacher: "Maya Patel", instructorRole: "lead", time: "7:00 AM", endTime: "8:15 AM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 19, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "10", name: "Gentle Flow", style: "Hatha", teacher: "James Liu", instructorRole: "teacher_in_training", time: "9:30 AM", endTime: "10:30 AM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 14, waitlisted: 0, checkedIn: 0, isCancelled: true, isSubbed: false },
+    { id: "9", name: "Morning Vinyasa", style: "Vinyasa", teacher: "Camila Reyes", instructorRole: "lead", time: "7:00 AM", endTime: "8:15 AM", room: "Main Studio", location: "East", capacity: 25, booked: 19, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "10", name: "Gentle Flow", style: "Hatha", teacher: "Daniel Nguyen", instructorRole: "teacher_in_training", time: "9:30 AM", endTime: "10:30 AM", room: "Main Studio", location: "East", capacity: 20, booked: 14, waitlisted: 0, checkedIn: 0, isCancelled: true, isSubbed: false },
   ],
   Thu: [
-    { id: "11", name: "Hot Vinyasa", style: "Vinyasa", teacher: "Sarah Chen", instructorRole: "lead", time: "9:00 AM", endTime: "10:15 AM", room: "Hot Room", location: "SOMA", capacity: 30, booked: 25, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "12", name: "Restorative", style: "Restorative", teacher: "Ava Kim", instructorRole: "lead", time: "5:30 PM", endTime: "7:00 PM", room: "Main Studio", location: "SOMA", capacity: 18, booked: 16, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "11", name: "Hot Vinyasa", style: "Vinyasa", teacher: "Tasha Greene", instructorRole: "lead", time: "9:00 AM", endTime: "10:15 AM", room: "Hot Room", location: "East", capacity: 30, booked: 25, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "12", name: "Restorative", style: "Restorative", teacher: "Mei Tanaka", instructorRole: "lead", time: "5:30 PM", endTime: "7:00 PM", room: "Main Studio", location: "East", capacity: 18, booked: 16, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
   ],
   Fri: [
-    { id: "13", name: "Morning Vinyasa", style: "Vinyasa", teacher: "Maya Patel", instructorRole: "lead", time: "7:00 AM", endTime: "8:15 AM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 17, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "14", name: "Slow Flow", style: "Hatha", teacher: "James Liu", instructorRole: "lead", time: "10:00 AM", endTime: "11:15 AM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 11, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "13", name: "Morning Vinyasa", style: "Vinyasa", teacher: "Camila Reyes", instructorRole: "lead", time: "7:00 AM", endTime: "8:15 AM", room: "Main Studio", location: "East", capacity: 25, booked: 17, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "14", name: "Slow Flow", style: "Hatha", teacher: "Daniel Nguyen", instructorRole: "lead", time: "10:00 AM", endTime: "11:15 AM", room: "Main Studio", location: "East", capacity: 20, booked: 11, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
   ],
   Sat: [
-    { id: "15", name: "Weekend Power", style: "Power", teacher: "Sarah Chen", instructorRole: "lead", time: "9:00 AM", endTime: "10:15 AM", room: "Hot Room", location: "SOMA", capacity: 30, booked: 28, waitlisted: 2, checkedIn: 0, isCancelled: false, isSubbed: false },
-    { id: "16", name: "Community Flow", style: "Vinyasa", teacher: "Maya Patel", instructorRole: "lead", time: "11:00 AM", endTime: "12:15 PM", room: "Main Studio", location: "SOMA", capacity: 25, booked: 23, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "15", name: "Weekend Power", style: "Power", teacher: "Tasha Greene", instructorRole: "lead", time: "9:00 AM", endTime: "10:15 AM", room: "Hot Room", location: "East", capacity: 30, booked: 28, waitlisted: 2, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "16", name: "Community Flow", style: "Vinyasa", teacher: "Camila Reyes", instructorRole: "lead", time: "11:00 AM", endTime: "12:15 PM", room: "Main Studio", location: "East", capacity: 25, booked: 23, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
   ],
   Sun: [
-    { id: "17", name: "Sunday Slow", style: "Yin", teacher: "Ava Kim", instructorRole: "lead", time: "10:00 AM", endTime: "11:30 AM", room: "Main Studio", location: "SOMA", capacity: 20, booked: 18, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
+    { id: "17", name: "Sunday Slow", style: "Yin", teacher: "Mei Tanaka", instructorRole: "lead", time: "10:00 AM", endTime: "11:30 AM", room: "Main Studio", location: "East", capacity: 20, booked: 18, waitlisted: 0, checkedIn: 0, isCancelled: false, isSubbed: false },
   ],
 };
 
 const availableSubs = [
-  { id: "t1", name: "Maya Patel", specialties: ["Vinyasa", "Power"] },
-  { id: "t2", name: "James Liu", specialties: ["Hatha", "Ashtanga", "Yin"] },
-  { id: "t3", name: "Ava Kim", specialties: ["Yin", "Meditation", "Restorative"] },
-  { id: "t4", name: "Sarah Chen", specialties: ["Vinyasa", "Power", "Hot"] },
-  { id: "t5", name: "David Park", specialties: ["Ashtanga", "Vinyasa"] },
+  { id: "t1", name: "Camila Reyes", specialties: ["Vinyasa", "Power"] },
+  { id: "t2", name: "Daniel Nguyen", specialties: ["Hatha", "Ashtanga", "Yin"] },
+  { id: "t3", name: "Mei Tanaka", specialties: ["Yin", "Meditation", "Restorative"] },
+  { id: "t4", name: "Tasha Greene", specialties: ["Vinyasa", "Power", "Hot"] },
+  { id: "t5", name: "Andre Castillo", specialties: ["Ashtanga", "Vinyasa"] },
 ];
 
 function DemoScheduleManage() {
@@ -193,7 +193,7 @@ function DemoScheduleManage() {
       time: newClassTime,
       endTime,
       room: "Main Studio",
-      location: "SOMA",
+      location: "East",
       capacity: 25,
       booked: 0,
       waitlisted: 0,
@@ -210,7 +210,7 @@ function DemoScheduleManage() {
     const roleLabel = instructorRoleLabels[newClassInstructorRole];
     toast({
       title: "Class added",
-      description: `${newClassName} at ${newClassTime} with ${teacher?.name || "TBD"} (${roleLabel})${newClassRecurring ? " — recurring weekly on " + selectedDay : ""}`,
+      description: `${newClassName} at ${newClassTime} with ${teacher?.name || "TBD"} (${roleLabel})${newClassRecurring ? ", repeats weekly on " + selectedDay : ""}`,
     });
     setAddClassDialogOpen(false);
     setNewClassName("");
@@ -405,7 +405,7 @@ function DemoScheduleManage() {
               <div className="p-3 rounded-xl bg-secondary/50">
                 <p className="text-sm font-semibold">{selectedClass.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {selectedDay} {selectedClass.time} — Currently: {selectedClass.teacher}
+                  {selectedDay} {selectedClass.time} · Currently: {selectedClass.teacher}
                 </p>
               </div>
 
@@ -478,7 +478,7 @@ function DemoScheduleManage() {
               <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20">
                 <p className="text-sm font-semibold">{selectedClass.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {selectedDay} {selectedClass.time} — {selectedClass.teacher}
+                  {selectedDay} {selectedClass.time} · {selectedClass.teacher}
                 </p>
                 <p className="text-xs text-destructive mt-1">
                   {selectedClass.booked} students will be affected

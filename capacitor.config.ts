@@ -11,6 +11,7 @@ const config: CapacitorConfig = {
   appName: target === 'member' ? 'Tandava' : 'Tandava Studio',
   webDir: `dist-native/${target}`,
   ios: { path: `native/${target}/ios`, contentInset: 'automatic' },
+  android: { path: `native/${target}/android` },
   // Bundle assets locally: never replace this with a production server URL.
   server: { hostname: 'localhost' },
   includePlugins: plugins,

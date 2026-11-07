@@ -430,7 +430,7 @@ export default function PurchaseOrdersManage() {
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Purchase Orders</h1>
             <p className="text-sm text-muted-foreground mt-1">
-              {pendingCount} pending orders — {formatPrice(totalPendingValue)} total value
+              {pendingCount} pending orders, {formatPrice(totalPendingValue)} total value
             </p>
           </div>
           <div className="flex gap-2">
@@ -878,7 +878,7 @@ export default function PurchaseOrdersManage() {
                 )}
               </DialogTitle>
               <DialogDescription>
-                {selectedPO?.vendorName} — Created {selectedPO && formatDate(selectedPO.createdAt)}
+                {selectedPO?.vendorName} · Created {selectedPO && formatDate(selectedPO.createdAt)}
               </DialogDescription>
             </DialogHeader>
             {selectedPO && (
@@ -1030,7 +1030,7 @@ export default function PurchaseOrdersManage() {
                         <p className="text-sm font-medium">{item.productName}</p>
                         <p className="text-xs text-muted-foreground">
                           {item.quantityReceived}/{item.quantityOrdered} received
-                          {remaining > 0 && ` — ${remaining} remaining`}
+                          {remaining > 0 && `, ${remaining} remaining`}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">

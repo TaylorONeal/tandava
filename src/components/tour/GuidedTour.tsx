@@ -56,7 +56,7 @@ export const OWNER_TOUR: TourConfig = {
     {
       route: "/manage",
       title: "Owner Dashboard",
-      body: "This is your command center. Today's schedule, key metrics, recent activity, and alerts — everything you need at a glance. Revenue, attendance trends, and action items are all surfaced here.",
+      body: "This is your dashboard: today's schedule, key numbers, recent activity and alerts. Revenue, attendance trends and open action items are here too.",
       hint: "Try clicking different date ranges on the charts or review the alerts panel.",
     },
     {

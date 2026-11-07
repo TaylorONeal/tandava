@@ -940,19 +940,19 @@ export default function DataConnectors() {
                     <ul className="text-sm text-muted-foreground mt-2 space-y-1">
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="h-3.5 w-3.5 text-accent-sage" />
-                        <span><strong>Dry run mode</strong> — Preview what will be imported before committing</span>
+                        <span><strong>Dry run mode:</strong> preview what will be imported before committing</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="h-3.5 w-3.5 text-accent-sage" />
-                        <span><strong>Data quality report</strong> — See issues before they become problems</span>
+                        <span><strong>Data quality report:</strong> see issues before they become problems</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="h-3.5 w-3.5 text-accent-sage" />
-                        <span><strong>Duplicate detection</strong> — Smart matching by email prevents duplicates</span>
+                        <span><strong>Duplicate detection:</strong> members are matched by email so nobody is imported twice</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="h-3.5 w-3.5 text-accent-sage" />
-                        <span><strong>Version-aware parsing</strong> — We detect your export format automatically</span>
+                        <span><strong>Version-aware parsing:</strong> we detect your export format automatically</span>
                       </li>
                     </ul>
                     <Button className="mt-4" asChild>
@@ -1231,10 +1231,10 @@ export default function DataConnectors() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {[
-                    { action: "Member data exported", user: "Sarah Chen", time: "2 hours ago" },
+                    { action: "Member data exported", user: "Mariana Ochoa", time: "2 hours ago" },
                     { action: "GDPR erasure completed", user: "System", time: "Yesterday" },
-                    { action: "Bulk export generated", user: "David Park", time: "3 days ago" },
-                    { action: "Member data rectified", user: "Sarah Chen", time: "1 week ago" },
+                    { action: "Bulk export generated", user: "Cassia Moreno", time: "3 days ago" },
+                    { action: "Member data rectified", user: "Mariana Ochoa", time: "1 week ago" },
                   ].map((log, i) => (
                     <div key={i} className="flex items-center justify-between p-2 rounded-lg bg-secondary/30 text-sm">
                       <div>

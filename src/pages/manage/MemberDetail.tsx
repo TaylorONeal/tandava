@@ -22,9 +22,9 @@ import { Link, useParams } from "react-router-dom";
 
 // --- Mock Data ---
 const member = {
-  id: "3", firstName: "Mia", lastName: "Tanaka",
-  email: "mia.tanaka@example.com", phone: "+1 415-555-0103",
-  joinedAt: "2023-08-10", tags: ["VIP", "Referred by Emma"],
+  id: "3", firstName: "Simone", lastName: "Pham",
+  email: "simone.pham@example.com", phone: "+1 512-555-0103",
+  joinedAt: "2023-08-10", tags: ["VIP", "Referred by Anjali"],
   membership: {
     type: "Unlimited Monthly", status: "active" as const, billing: "Monthly",
     price: 149, renewalDate: "2026-02-15", classesUsed: 14, classesAllowed: "Unlimited",
@@ -46,14 +46,14 @@ const purchaseHistory = [
 ];
 
 const bookings = [
-  { id: "1", date: "2026-02-06", time: "7:00 AM", className: "Morning Vinyasa", teacher: "Maya Patel", status: "confirmed" as const },
-  { id: "2", date: "2026-02-04", time: "12:00 PM", className: "Power Yoga", teacher: "Sarah Chen", status: "confirmed" as const },
-  { id: "3", date: "2026-02-02", time: "7:00 AM", className: "Morning Vinyasa", teacher: "Maya Patel", status: "checked_in" as const },
-  { id: "4", date: "2026-01-31", time: "6:00 PM", className: "Evening Vinyasa", teacher: "Maya Patel", status: "checked_in" as const },
-  { id: "5", date: "2026-01-29", time: "4:30 PM", className: "Yin Restore", teacher: "Ava Kim", status: "cancelled" as const },
-  { id: "6", date: "2026-01-27", time: "7:00 AM", className: "Morning Vinyasa", teacher: "Maya Patel", status: "checked_in" as const },
-  { id: "7", date: "2026-01-25", time: "9:30 AM", className: "Gentle Flow", teacher: "James Liu", status: "no_show" as const },
-  { id: "8", date: "2026-01-22", time: "7:00 AM", className: "Morning Vinyasa", teacher: "Maya Patel", status: "late_cancel" as const },
+  { id: "1", date: "2026-02-06", time: "7:00 AM", className: "Morning Vinyasa", teacher: "Camila Reyes", status: "confirmed" as const },
+  { id: "2", date: "2026-02-04", time: "12:00 PM", className: "Power Yoga", teacher: "Tasha Greene", status: "confirmed" as const },
+  { id: "3", date: "2026-02-02", time: "7:00 AM", className: "Morning Vinyasa", teacher: "Camila Reyes", status: "checked_in" as const },
+  { id: "4", date: "2026-01-31", time: "6:00 PM", className: "Evening Vinyasa", teacher: "Camila Reyes", status: "checked_in" as const },
+  { id: "5", date: "2026-01-29", time: "4:30 PM", className: "Yin Restore", teacher: "Mei Tanaka", status: "cancelled" as const },
+  { id: "6", date: "2026-01-27", time: "7:00 AM", className: "Morning Vinyasa", teacher: "Camila Reyes", status: "checked_in" as const },
+  { id: "7", date: "2026-01-25", time: "9:30 AM", className: "Gentle Flow", teacher: "Daniel Nguyen", status: "no_show" as const },
+  { id: "8", date: "2026-01-22", time: "7:00 AM", className: "Morning Vinyasa", teacher: "Camila Reyes", status: "late_cancel" as const },
 ];
 
 const transactions = [
@@ -94,7 +94,7 @@ export default function MemberDetail() {
   const [cancelTiming, setCancelTiming] = useState("end_of_period");
   const [isPaused, setIsPaused] = useState(member.isPaused);
   const [bookingFilter, setBookingFilter] = useState("all");
-  const [notes, setNotes] = useState("Mia is a dedicated practitioner who prefers morning classes. Interested in teacher training program starting Q3. Has a mild shoulder injury — avoid deep chaturangas.");
+  const [notes, setNotes] = useState("Simone is a dedicated practitioner who prefers morning classes. Interested in teacher training program starting Q3. Has a mild shoulder injury, so avoid deep chaturangas.");
   const [memberTags, setMemberTags] = useState([...member.tags]);
   const [newTag, setNewTag] = useState("");
   const [waiverSigned, setWaiverSigned] = useState(true);

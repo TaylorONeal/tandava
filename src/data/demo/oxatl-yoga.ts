@@ -19,6 +19,31 @@ import type {
 } from '@/types/database';
 
 // ============================================================================
+// SEEDED RANDOM
+// ============================================================================
+
+// Seeded PRNG (mulberry32) so the demo roster, phones and member mix are the
+// same on every load. Dates stay relative to today, so they are stable per day.
+function mulberry32(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const rng = mulberry32(20220315);
+
+// Fictional numbers in the reserved 555-0100 to 555-0199 range, Austin area codes.
+function randomPhone(): string {
+  const area = rng() < 0.7 ? '512' : '737';
+  return `+1 (${area}) 555-01${String(Math.floor(rng() * 100)).padStart(2, '0')}`;
+}
+
+// ============================================================================
 // STUDIO
 // ============================================================================
 
@@ -26,7 +51,7 @@ export const OXATL_STUDIO: Studio = {
   id: 'demo-studio-oxatl-001',
   name: 'Oxatl Yoga',
   slug: 'oxatl-yoga',
-  description: 'A sanctuary for movement, breath, and community. Offering yoga, pilates, and meditation in a welcoming space for all levels.',
+  description: 'Yoga, pilates and meditation on East 6th, South Congress and North Lamar. Around 80 classes a week, 7 am to 7 pm. New students get 30 days unlimited for $49.',
   logo_url: null,
   cover_image_url: null,
   website: 'https://oxatlyoga.com',
@@ -153,130 +178,131 @@ export interface DemoStaff {
   bio: string;
 }
 
-// Female teachers - Famous singers + Cute animals
-const FEMALE_TEACHERS: Omit<DemoStaff, 'role' | 'pay_rate_cents' | 'pay_type'>[] = [
+// Teachers. Ids are stable keys used by the schedule and workshops; names are display only.
+type DemoTeacherSeed = Omit<DemoStaff, 'role' | 'pay_rate_cents' | 'pay_type'>;
+
+const FEMALE_TEACHERS: DemoTeacherSeed[] = [
   {
-    profile: makeTeacherProfile('Beyonce', 'Pangolin', 'beyonce.pangolin'),
+    profile: makeTeacherProfile('teacher-beyonce-pangolin', 'Maren', 'Holloway', 'maren'),
     location_ids: ['loc-central', 'loc-east'],
     specialties: ['Vinyasa', 'Power Yoga'],
-    bio: 'Fierce flows that build strength and confidence. 10+ years teaching experience.',
+    bio: 'Teaching since 2013. Strong, steady flows with one peak pose per class and plenty of options to scale it.',
   },
   {
-    profile: makeTeacherProfile('Adele', 'Capybara', 'adele.capybara'),
+    profile: makeTeacherProfile('teacher-adele-capybara', 'Noor', 'Haddad', 'noor'),
     location_ids: ['loc-central'],
     specialties: ['Yin', 'Restorative'],
-    bio: 'Deep, soulful practices focused on release and restoration.',
+    bio: 'Long holds, lots of props and a quiet room. Good for tight hips and busy weeks.',
   },
   {
-    profile: makeTeacherProfile('Rihanna', 'Quokka', 'rihanna.quokka'),
+    profile: makeTeacherProfile('teacher-rihanna-quokka', 'Camila', 'Reyes', 'camila'),
     location_ids: ['loc-east', 'loc-north'],
     specialties: ['Vinyasa', 'Hatha'],
-    bio: 'Creative sequences with an island vibe. All levels welcome.',
+    bio: 'Bilingual classes in English and Spanish. Moderate pace, clear cues, all levels.',
   },
   {
-    profile: makeTeacherProfile('Taylor', 'Otter', 'taylor.otter'),
+    profile: makeTeacherProfile('teacher-taylor-otter', 'Hannah', 'Lindqvist', 'hannah'),
     location_ids: ['loc-north'],
     specialties: ['Hatha', 'Meditation'],
-    bio: 'Thoughtful, alignment-focused classes with poetic cues.',
+    bio: 'Alignment-based hatha with a short sit at the end. Former physical therapy aide.',
   },
   {
-    profile: makeTeacherProfile('Ariana', 'Hedgehog', 'ariana.hedgehog'),
+    profile: makeTeacherProfile('teacher-ariana-hedgehog', 'Jasmine', 'Okafor', 'jasmine'),
     location_ids: ['loc-central', 'loc-east'],
     specialties: ['Pilates', 'Vinyasa'],
-    bio: 'High-energy classes that challenge and inspire.',
+    bio: 'Mat pilates and vinyasa. Expect core work, small equipment and an upbeat playlist.',
   },
   {
-    profile: makeTeacherProfile('Dua', 'Axolotl', 'dua.axolotl'),
+    profile: makeTeacherProfile('teacher-dua-axolotl', 'Leah', 'Kaplan', 'leah'),
     location_ids: ['loc-east'],
     specialties: ['Vinyasa', 'Hatha'],
-    bio: 'Dynamic flows with great music. Future nostalgia on the mat.',
+    bio: 'Creative sequencing that changes every week. Mornings at East.',
   },
   {
-    profile: makeTeacherProfile('Billie', 'Chinchilla', 'billie.chinchilla'),
+    profile: makeTeacherProfile('teacher-billie-chinchilla', 'Mei', 'Tanaka', 'mei'),
     location_ids: ['loc-north'],
     specialties: ['Yin', 'Meditation'],
-    bio: 'Quiet, introspective practices. Safe space for all bodies.',
+    bio: 'Yin, meditation and breathwork. Trained in mindfulness-based stress reduction.',
   },
   {
-    profile: makeTeacherProfile('Lizzo', 'Wombat', 'lizzo.wombat'),
+    profile: makeTeacherProfile('teacher-lizzo-wombat', 'Tasha', 'Greene', 'tasha'),
     location_ids: ['loc-central'],
     specialties: ['Vinyasa', 'Power Yoga'],
-    bio: '100% that teacher. Body-positive flows for every body.',
+    bio: 'Power classes that work for every body. Modifications are offered first, not as an afterthought.',
   },
   {
-    profile: makeTeacherProfile('Shakira', 'Fennec', 'shakira.fennec'),
+    profile: makeTeacherProfile('teacher-shakira-fennec', 'Valeria', 'Ortiz', 'valeria'),
     location_ids: ['loc-east', 'loc-central'],
     specialties: ['Pilates', 'Hatha'],
-    bio: 'Core-focused classes. Hips don\'t lie, neither does good alignment.',
+    bio: 'Pilates instructor and licensed massage therapist. Runs the myofascial release workshop.',
   },
   {
-    profile: makeTeacherProfile('Celine', 'Manatee', 'celine.manatee'),
+    profile: makeTeacherProfile('teacher-celine-manatee', 'Anika', 'Desai', 'anika'),
     location_ids: ['loc-north'],
     specialties: ['Restorative', 'Yin'],
-    bio: 'Heart-opening practices with powerful presence.',
+    bio: 'Restorative and yin, plus the monthly sound bath at North.',
   },
   {
-    profile: makeTeacherProfile('Whitney', 'Puffin', 'whitney.puffin'),
+    profile: makeTeacherProfile('teacher-whitney-puffin', 'Erin', 'Gallagher', 'erin'),
     location_ids: ['loc-central'],
     specialties: ['Vinyasa', 'Meditation'],
-    bio: 'Classes that lift you higher. Spiritual and grounding.',
+    bio: 'Evening flows that finish with ten minutes of guided meditation.',
   },
   {
-    profile: makeTeacherProfile('Cher', 'Sloth', 'cher.sloth'),
+    profile: makeTeacherProfile('teacher-cher-sloth', 'Rosa', 'Delgado', 'rosa'),
     location_ids: ['loc-east'],
     specialties: ['Hatha', 'Yin'],
-    bio: 'Timeless wisdom, slow and steady. Turn back time on stress.',
+    bio: 'Slow hatha and yin. Has taught at East since the studio opened.',
   },
   {
-    profile: makeTeacherProfile('Madonna', 'Tapir', 'madonna.tapir'),
+    profile: makeTeacherProfile('teacher-madonna-tapir', 'Brooke', 'Sandoval', 'brooke'),
     location_ids: ['loc-central', 'loc-north'],
     specialties: ['Vinyasa', 'Power Yoga'],
-    bio: 'Reinventing the flow every class. Material girl, spiritual practice.',
+    bio: 'Fast-paced vinyasa with arm balances and inversions. Beginners welcome to take it slower.',
   },
   {
-    profile: makeTeacherProfile('Gwen', 'Narwhal', 'gwen.narwhal'),
+    profile: makeTeacherProfile('teacher-gwen-narwhal', 'Sofia', 'Marchetti', 'sofia'),
     location_ids: ['loc-east'],
     specialties: ['Pilates', 'Vinyasa'],
-    bio: 'No doubt about it - strong, stylish sequences.',
+    bio: 'Former dancer. Precise pilates and flowing vinyasa, often in the same class.',
   },
   {
-    profile: makeTeacherProfile('Dolly', 'Alpaca', 'dolly.alpaca'),
+    profile: makeTeacherProfile('teacher-dolly-alpaca', 'Dana', 'Whitaker', 'dana'),
     location_ids: ['loc-north'],
     specialties: ['Hatha', 'Meditation'],
-    bio: 'Working 9 to 5? Wind down with gentle, joyful yoga.',
+    bio: 'Gentle hatha for new students and anyone coming back from a break.',
   },
 ];
 
-// Male teachers
-const MALE_TEACHERS: Omit<DemoStaff, 'role' | 'pay_rate_cents' | 'pay_type'>[] = [
+const MALE_TEACHERS: DemoTeacherSeed[] = [
   {
-    profile: makeTeacherProfile('Travis', 'Jones', 'travis.jones'),
+    profile: makeTeacherProfile('teacher-travis-jones', 'Marcus', 'Bell', 'marcus'),
     location_ids: ['loc-central', 'loc-east'],
     specialties: ['Vinyasa', 'Power Yoga'],
-    bio: 'Athletic flows with hip-hop energy. Former athlete turned yogi.',
+    bio: 'Played college football before yoga. Power classes with a focus on mobility and recovery.',
   },
   {
-    profile: makeTeacherProfile('Patrick', 'Jones', 'patrick.jones'),
+    profile: makeTeacherProfile('teacher-patrick-jones', 'Daniel', 'Nguyen', 'daniel'),
     location_ids: ['loc-north'],
     specialties: ['Hatha', 'Meditation'],
-    bio: 'Precise alignment and mindful movement. Yoga for all athletes.',
+    bio: 'Precise alignment and plenty of hands-on adjustments, with consent cards at every mat.',
   },
   {
-    profile: makeTeacherProfile('Chris', 'Mahomes', 'chris.mahomes'),
+    profile: makeTeacherProfile('teacher-chris-mahomes', 'Andre', 'Castillo', 'andre'),
     location_ids: ['loc-central'],
     specialties: ['Pilates', 'Vinyasa'],
-    bio: 'MVP of the mat. Strong, strategic sequences.',
+    bio: 'Strength-focused pilates and vinyasa. Weekend classes at Central.',
   },
 ];
 
-function makeTeacherProfile(firstName: string, lastName: string, emailPrefix: string): Profile {
+function makeTeacherProfile(id: string, firstName: string, lastName: string, emailPrefix: string): Profile {
   return {
-    id: `teacher-${emailPrefix.replace('.', '-')}`,
+    id,
     first_name: firstName,
     last_name: lastName,
     display_name: `${firstName} ${lastName}`,
     email: `${emailPrefix}@oxatlyoga.com`,
-    phone: `+1 (512) 555-${String(Math.floor(1000 + Math.random() * 9000))}`,
+    phone: randomPhone(),
     avatar_url: null,
     date_of_birth: randomDateOfBirth(1980, 1998),
     pronouns: null,
@@ -285,7 +311,7 @@ function makeTeacherProfile(firstName: string, lastName: string, emailPrefix: st
     bio: '',
     specialties: [],
     certifications: ['RYT-200'],
-    instagram_handle: `@${emailPrefix.replace('.', '_')}`,
+    instagram_handle: `@${firstName.toLowerCase()}${lastName.toLowerCase()}.yoga`,
     website: null,
     created_at: '2023-01-01T00:00:00Z',
     updated_at: '2025-01-01T00:00:00Z',
@@ -312,8 +338,8 @@ export const OXATL_OWNER: DemoStaff = {
   profile: {
     id: 'staff-owner-mariana',
     first_name: 'Mariana',
-    last_name: 'Trench',
-    display_name: 'Mariana Trench',
+    last_name: 'Ochoa',
+    display_name: 'Mariana Ochoa',
     email: 'mariana@oxatlyoga.com',
     phone: '+1 (512) 555-0100',
     avatar_url: null,
@@ -321,10 +347,10 @@ export const OXATL_OWNER: DemoStaff = {
     pronouns: 'she/her',
     emergency_contact_name: null,
     emergency_contact_phone: null,
-    bio: 'Founder of Oxatl Yoga. 15+ years practicing, 10 years teaching. E-RYT 500, YACEP.',
+    bio: 'Opened Oxatl Yoga on East 6th in 2022 after ten years teaching around Austin. E-RYT 500, YACEP. Leads the 200-hour teacher training.',
     specialties: ['Vinyasa', 'Yin', 'Meditation', 'Teacher Training'],
     certifications: ['E-RYT 500', 'YACEP'],
-    instagram_handle: '@mariana.trench.yoga',
+    instagram_handle: '@mariana.ochoa.yoga',
     website: 'https://oxatlyoga.com',
     created_at: '2022-03-15T00:00:00Z',
     updated_at: '2025-01-01T00:00:00Z',
@@ -334,15 +360,15 @@ export const OXATL_OWNER: DemoStaff = {
   specialties: ['Vinyasa', 'Yin', 'Meditation', 'Teacher Training'],
   pay_rate_cents: 0,
   pay_type: 'salary',
-  bio: 'Founder of Oxatl Yoga. 15+ years practicing, 10 years teaching.',
+  bio: 'Opened Oxatl Yoga in 2022 after ten years teaching around Austin. Leads the 200-hour teacher training.',
 };
 
 export const OXATL_FRONT_DESK: DemoStaff = {
   profile: {
     id: 'staff-frontdesk-cassia',
     first_name: 'Cassia',
-    last_name: 'Ray',
-    display_name: 'Cassia Ray',
+    last_name: 'Moreno',
+    display_name: 'Cassia Moreno',
     email: 'cassia@oxatlyoga.com',
     phone: '+1 (512) 555-0101',
     avatar_url: null,
@@ -350,10 +376,10 @@ export const OXATL_FRONT_DESK: DemoStaff = {
     pronouns: 'she/her',
     emergency_contact_name: null,
     emergency_contact_phone: null,
-    bio: 'Keeping Oxatl running smoothly. Yoga teacher in training!',
+    bio: 'Front desk lead at Oxatl Central. Currently in the spring 200-hour teacher training.',
     specialties: [],
     certifications: [],
-    instagram_handle: '@cassia.ray',
+    instagram_handle: '@cassiamoreno',
     website: null,
     created_at: '2023-06-01T00:00:00Z',
     updated_at: '2025-01-01T00:00:00Z',
@@ -363,7 +389,7 @@ export const OXATL_FRONT_DESK: DemoStaff = {
   specialties: [],
   pay_rate_cents: 1800, // $18/hour
   pay_type: 'hourly',
-  bio: 'Keeping Oxatl running smoothly. Yoga teacher in training!',
+  bio: 'Front desk lead at Oxatl Central. Currently in the spring 200-hour teacher training.',
 };
 
 // ============================================================================
@@ -386,7 +412,7 @@ export const OXATL_CLASS_TYPES: DemoClassType[] = [
     id: 'class-vinyasa',
     studio_id: OXATL_STUDIO.id,
     name: 'Vinyasa Flow',
-    description: 'A dynamic practice linking breath with movement. Build heat, strength, and flexibility through creative sequences.',
+    description: 'A dynamic practice linking breath with movement. Builds heat, strength and flexibility. Some yoga experience helps.',
     duration_minutes: 60,
     default_capacity: 30,
     color: '#E57373',
@@ -396,7 +422,7 @@ export const OXATL_CLASS_TYPES: DemoClassType[] = [
     id: 'class-yin',
     studio_id: OXATL_STUDIO.id,
     name: 'Yin Yoga',
-    description: 'Slow, meditative practice holding poses for 3-5 minutes. Targets deep connective tissues and promotes relaxation.',
+    description: 'Seated and reclined poses held for 3 to 5 minutes. Works the hips, spine and connective tissue. No experience needed.',
     duration_minutes: 75,
     default_capacity: 25,
     color: '#64B5F6',
@@ -406,7 +432,7 @@ export const OXATL_CLASS_TYPES: DemoClassType[] = [
     id: 'class-hatha',
     studio_id: OXATL_STUDIO.id,
     name: 'Hatha Yoga',
-    description: 'Classic yoga practice with longer holds and focus on alignment. Perfect for all levels.',
+    description: 'Standing and seated poses with longer holds and clear alignment cues. A good first class.',
     duration_minutes: 60,
     default_capacity: 28,
     color: '#81C784',
@@ -416,7 +442,7 @@ export const OXATL_CLASS_TYPES: DemoClassType[] = [
     id: 'class-pilates',
     studio_id: OXATL_STUDIO.id,
     name: 'Pilates',
-    description: 'Core-strengthening practice improving posture, flexibility, and body awareness.',
+    description: 'Mat pilates with small balls and bands. Core, glutes and posture work. Low impact.',
     duration_minutes: 55,
     default_capacity: 20,
     color: '#FFB74D',
@@ -426,7 +452,7 @@ export const OXATL_CLASS_TYPES: DemoClassType[] = [
     id: 'class-meditation',
     studio_id: OXATL_STUDIO.id,
     name: 'Meditation',
-    description: 'Guided meditation practice. Cultivate stillness, clarity, and inner peace.',
+    description: 'Guided seated meditation with short breathing exercises. Chairs and cushions provided.',
     duration_minutes: 45,
     default_capacity: 20,
     color: '#9575CD',
@@ -436,7 +462,7 @@ export const OXATL_CLASS_TYPES: DemoClassType[] = [
     id: 'class-power',
     studio_id: OXATL_STUDIO.id,
     name: 'Power Yoga',
-    description: 'Vigorous, fitness-based vinyasa. Expect to sweat, strengthen, and transform.',
+    description: 'Faster vinyasa with strength holds, arm balances and inversions. Bring water and a towel.',
     duration_minutes: 60,
     default_capacity: 25,
     color: '#F06292',
@@ -446,7 +472,7 @@ export const OXATL_CLASS_TYPES: DemoClassType[] = [
     id: 'class-restorative',
     studio_id: OXATL_STUDIO.id,
     name: 'Restorative',
-    description: 'Deeply relaxing practice using props. Perfect for stress relief and recovery.',
+    description: 'Five or six fully supported poses with bolsters and blankets. Good after a hard week or an injury.',
     duration_minutes: 75,
     default_capacity: 20,
     color: '#4DB6AC',
@@ -601,15 +627,15 @@ export interface DemoEvent {
 export const OXATL_WORKSHOP_TEMPLATES = [
   {
     name: 'Myofascial Release Workshop',
-    description: 'Learn self-massage techniques using balls and rollers to release tension and improve mobility. Take home practical tools for daily practice.',
+    description: 'Self-massage with balls and foam rollers for neck, shoulders, hips and feet. You keep the two massage balls.',
     duration_hours: 2,
     price_cents: 4500,
     category: 'workshop',
     teacher_id: 'teacher-shakira-fennec',
   },
   {
-    name: 'Breathwork Journey',
-    description: 'Explore transformative breathing techniques from various traditions. Includes pranayama, holotropic breathwork, and integration practices.',
+    name: 'Breathwork Workshop',
+    description: 'Pranayama basics: three-part breath, alternate nostril breathing and box breathing, with time to practice each one.',
     duration_hours: 2.5,
     price_cents: 5500,
     category: 'workshop',
@@ -617,7 +643,7 @@ export const OXATL_WORKSHOP_TEMPLATES = [
   },
   {
     name: 'Mantra & Movement',
-    description: 'Combine the power of sacred sound with gentle movement. No singing experience needed - just an open heart.',
+    description: 'Gentle movement paired with call-and-response chanting. Lyric sheets provided. No singing experience needed.',
     duration_hours: 2,
     price_cents: 4000,
     category: 'workshop',
@@ -625,7 +651,7 @@ export const OXATL_WORKSHOP_TEMPLATES = [
   },
   {
     name: 'Glow Yoga',
-    description: 'Vinyasa flow under black lights with glow-in-the-dark body paint. A unique, playful experience that brings out your inner light.',
+    description: 'Vinyasa under black lights with glow paint. Wear white or light colors.',
     duration_hours: 1.5,
     price_cents: 3500,
     category: 'special',
@@ -633,7 +659,7 @@ export const OXATL_WORKSHOP_TEMPLATES = [
   },
   {
     name: 'Yin & Live Music',
-    description: 'Deep yin practice accompanied by live acoustic music. Let sound carry you deeper into stillness.',
+    description: 'Yin class with a local guitarist and cellist playing live. Mats and bolsters set up before you arrive.',
     duration_hours: 2,
     price_cents: 4500,
     category: 'workshop',
@@ -641,7 +667,7 @@ export const OXATL_WORKSHOP_TEMPLATES = [
   },
   {
     name: 'Sound Bath',
-    description: 'Immerse yourself in healing vibrations of crystal bowls, gongs, and chimes. Simply lie back and receive.',
+    description: 'Crystal bowls, gong and chimes while you lie on a mat with blankets and an eye pillow.',
     duration_hours: 1.5,
     price_cents: 3500,
     category: 'wellness',
@@ -649,7 +675,7 @@ export const OXATL_WORKSHOP_TEMPLATES = [
   },
   {
     name: 'Full Moon Ceremony',
-    description: 'Monthly gathering to honor the full moon cycle. Includes gentle movement, meditation, journaling, and community connection.',
+    description: 'Held on the Friday closest to the full moon. Gentle movement, a short meditation and journaling, then tea.',
     duration_hours: 2,
     price_cents: 3000,
     category: 'ceremony',
@@ -687,7 +713,7 @@ export const OXATL_MEMBERSHIP_TYPES: DemoMembershipType[] = [
     id: 'mem-unlimited-annual',
     studio_id: OXATL_STUDIO.id,
     name: 'Unlimited Annual',
-    description: 'Best value - 2 months free with annual commitment',
+    description: 'Unlimited classes, paid once a year. About two months free compared with monthly.',
     price_cents: 179000,
     billing_cycle: 'annual',
     classes_per_period: null,
@@ -697,7 +723,7 @@ export const OXATL_MEMBERSHIP_TYPES: DemoMembershipType[] = [
     id: 'mem-8-monthly',
     studio_id: OXATL_STUDIO.id,
     name: '8 Classes/Month',
-    description: 'Perfect for 2x/week practice',
+    description: 'For practicing about twice a week',
     price_cents: 12900,
     billing_cycle: 'monthly',
     classes_per_period: 8,
@@ -707,7 +733,7 @@ export const OXATL_MEMBERSHIP_TYPES: DemoMembershipType[] = [
     id: 'mem-4-monthly',
     studio_id: OXATL_STUDIO.id,
     name: '4 Classes/Month',
-    description: 'Great for weekly practice',
+    description: 'For practicing once a week',
     price_cents: 7900,
     billing_cycle: 'monthly',
     classes_per_period: 4,
@@ -734,7 +760,7 @@ export const OXATL_CLASS_PACK_TYPES: DemoClassPackType[] = [
     id: 'pack-10',
     studio_id: OXATL_STUDIO.id,
     name: '10-Class Pack',
-    description: 'Flexible pack for drop-in practice',
+    description: 'Ten classes, good for 90 days',
     price_cents: 18000,
     class_count: 10,
     validity_days: 90,
@@ -743,7 +769,7 @@ export const OXATL_CLASS_PACK_TYPES: DemoClassPackType[] = [
     id: 'pack-20',
     studio_id: OXATL_STUDIO.id,
     name: '20-Class Pack',
-    description: 'Better value for regular practice',
+    description: 'Twenty classes, good for 180 days',
     price_cents: 32000,
     class_count: 20,
     validity_days: 180,
@@ -752,7 +778,7 @@ export const OXATL_CLASS_PACK_TYPES: DemoClassPackType[] = [
     id: 'pack-5',
     studio_id: OXATL_STUDIO.id,
     name: '5-Class Pack',
-    description: 'Try us out',
+    description: 'Five classes, good for 60 days',
     price_cents: 9500,
     class_count: 5,
     validity_days: 60,
@@ -772,19 +798,22 @@ export const OXATL_CLASS_PACK_TYPES: DemoClassPackType[] = [
 // MEMBERS (Generated)
 // ============================================================================
 
+// Name pools for a mixed Austin membership. ASCII only so generated emails stay valid.
 const FIRST_NAMES = [
-  'Emma', 'Olivia', 'Ava', 'Isabella', 'Sophia', 'Mia', 'Charlotte', 'Amelia', 'Harper', 'Evelyn',
-  'Abigail', 'Emily', 'Elizabeth', 'Sofia', 'Avery', 'Ella', 'Scarlett', 'Grace', 'Chloe', 'Victoria',
-  'Riley', 'Aria', 'Lily', 'Aurora', 'Zoey', 'Penelope', 'Luna', 'Camila', 'Layla', 'Mila',
-  'James', 'Liam', 'Noah', 'Oliver', 'Elijah', 'Lucas', 'Mason', 'Ethan', 'Alexander', 'Henry',
-  'Sebastian', 'Jack', 'Aiden', 'Owen', 'Samuel', 'Ryan', 'Nathan', 'Leo', 'Daniel', 'Matthew',
+  'Ines', 'Ximena', 'Marisol', 'Daniela', 'Paloma', 'Renee', 'Keisha', 'Imani', 'Ingrid', 'Freya',
+  'Anjali', 'Divya', 'Farah', 'Yasmin', 'Leila', 'Jiwoo', 'Linh', 'Kiara', 'Meredith', 'Colleen',
+  'Joanna', 'Nadia', 'Talia', 'Josie', 'Wren', 'Margot', 'Rhea', 'Simone', 'Tess', 'Bea',
+  'Hollis', 'Adaeze', 'Sakura', 'Gabriela', 'Shannon', 'Kristen', 'Alana', 'Monique', 'Esther', 'Dani',
+  'Mateo', 'Diego', 'Rafael', 'Tomas', 'Omar', 'Karim', 'Ravi', 'Arjun', 'Kenji', 'Minh',
+  'Tobias', 'Graham', 'Wes', 'Caleb', 'Desmond', 'Jamal', 'Elliot', 'Nate', 'Hector', 'Felix',
 ];
 
 const LAST_NAMES = [
-  'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
-  'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin',
-  'Lee', 'Perez', 'Thompson', 'White', 'Harris', 'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson',
-  'Walker', 'Young', 'Allen', 'King', 'Wright', 'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores',
+  'Alvarez', 'Brennan', 'Dominguez', 'Ellison', 'Fitzgerald', 'Gutierrez', 'Hartley', 'Ibarra', 'Jaramillo', 'Kowalski',
+  'Lindgren', 'Mendoza', 'Nakamura', 'Okonkwo', 'Pham', 'Quintero', 'Ramaswamy', 'Salazar', 'Tran', 'Villarreal',
+  'Washington', 'Yilmaz', 'Zamora', 'Abbott', 'Becker', 'Chavez', 'Esposito', 'Farouk', 'Hsu', 'Iyer',
+  'Jensen', 'Khalil', 'Lozano', 'Moss', 'Novak', 'Ortega', 'Petrov', 'Rocha', 'Sato', 'Thibodeaux',
+  'Whitmore', 'Adeyemi', 'Bui', 'Cardenas', 'Delacroix', 'Gallo', 'Mbeki', 'Oyelaran', 'Sorensen', 'Kim',
 ];
 
 export interface DemoMember {
@@ -801,30 +830,58 @@ export interface DemoMember {
 }
 
 function randomDateOfBirth(minYear: number, maxYear: number): string {
-  const year = minYear + Math.floor(Math.random() * (maxYear - minYear));
-  const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
-  const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
+  const year = minYear + Math.floor(rng() * (maxYear - minYear));
+  const month = String(Math.floor(rng() * 12) + 1).padStart(2, '0');
+  const day = String(Math.floor(rng() * 28) + 1).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
-function randomPastDate(daysBack: number): string {
+function daysAgo(days: number): string {
   const date = new Date();
-  date.setDate(date.getDate() - Math.floor(Math.random() * daysBack));
+  date.setDate(date.getDate() - days);
   return date.toISOString();
+}
+
+function shuffle<T>(items: T[]): T[] {
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+function memberEmail(firstName: string, lastName: string, used: Set<string>): string {
+  const f = firstName.toLowerCase();
+  const l = lastName.toLowerCase();
+  const style = rng();
+  let local = style < 0.5 ? `${f}.${l}` : style < 0.75 ? `${f}${l}` : style < 0.9 ? `${f[0]}${l}` : `${f}.${l[0]}`;
+  if (used.has(local)) local = `${local}${Math.floor(rng() * 90) + 10}`;
+  used.add(local);
+  return `${local}@example.com`;
 }
 
 function generateMembers(count: number): DemoMember[] {
   const members: DemoMember[] = [];
+  const usedEmails = new Set<string>();
+  const firstPool = shuffle(FIRST_NAMES);
+  const lastPool = shuffle(LAST_NAMES);
 
   for (let i = 0; i < count; i++) {
-    const firstName = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)];
-    const lastName = LAST_NAMES[Math.floor(Math.random() * LAST_NAMES.length)];
-    const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@example.com`;
+    // Member 0 is the student persona in the demo, so keep it fixed and active.
+    const pinned = i === 0;
+    // Walk shuffled pools so neighbours in a list rarely share a name and no
+    // first + last pair repeats across the 500 members.
+    const firstName = pinned ? 'Lucia' : firstPool[i % firstPool.length];
+    const lastName = pinned
+      ? 'Alvarez'
+      : lastPool[(i + Math.floor(i / firstPool.length) * 3) % lastPool.length];
+    const email = memberEmail(firstName, lastName, usedEmails);
 
-    // Membership distribution (Austin/Seattle boutique studio estimate)
+    // Membership distribution (Austin boutique studio estimate)
     // ~30% unlimited monthly, ~10% unlimited annual, ~15% 8/month, ~10% 4/month
-    // ~20% class packs, ~15% intro/trial
-    const rand = Math.random();
+    // ~29% class packs, ~6% intro/trial
+    const rand = pinned ? 0 : rng();
     let membershipTypeId: string | null = null;
     let membershipStatus: MembershipStatus = 'active';
     let classPackTypeId: string | null = null;
@@ -838,33 +895,56 @@ function generateMembers(count: number): DemoMember[] {
       membershipTypeId = 'mem-8-monthly';
     } else if (rand < 0.65) {
       membershipTypeId = 'mem-4-monthly';
-    } else if (rand < 0.85) {
-      classPackTypeId = Math.random() < 0.6 ? 'pack-10' : 'pack-20';
-      classesRemaining = Math.floor(Math.random() * (classPackTypeId === 'pack-10' ? 10 : 20));
+    } else if (rand < 0.94) {
+      classPackTypeId = rng() < 0.6 ? 'pack-10' : 'pack-20';
+      classesRemaining = Math.floor(rng() * (classPackTypeId === 'pack-10' ? 10 : 20));
     } else {
       classPackTypeId = 'pack-intro';
-      classesRemaining = Math.floor(Math.random() * 15);
+      classesRemaining = Math.floor(rng() * 15);
     }
 
     // Some members are expired, paused, or past due
-    if (membershipTypeId && Math.random() < 0.1) {
-      membershipStatus = Math.random() < 0.5 ? 'expired' : (Math.random() < 0.5 ? 'paused' : 'past_due');
+    if (!pinned && membershipTypeId && rng() < 0.1) {
+      membershipStatus = rng() < 0.5 ? 'expired' : (rng() < 0.5 ? 'paused' : 'past_due');
     }
 
     // Visit patterns
-    const joinedDaysAgo = Math.floor(Math.random() * 730) + 30; // 1 month to 2 years
-    const totalVisits = Math.floor(Math.random() * 200) + 5;
-    const lastVisitDaysAgo = membershipStatus === 'active'
-      ? Math.floor(Math.random() * 30)
-      : Math.floor(Math.random() * 90) + 30;
+    // Intro students joined in the last month; everyone else up to 2 years ago.
+    const isIntro = classPackTypeId === 'pack-intro';
+    const joinedDaysAgo = pinned
+      ? 412
+      : isIntro
+        ? Math.floor(rng() * 28) + 3
+        : Math.floor(rng() * 700) + 30;
+    // Visits scale with tenure: 0.5 to 3.5 classes a week.
+    const perWeek = 0.5 + rng() * 3;
+    const totalVisits = pinned ? 87 : Math.max(1, Math.round((joinedDaysAgo / 7) * perWeek));
+    const rawLastVisit = pinned
+      ? 2
+      : membershipStatus === 'active'
+        ? (rng() < 0.85 ? Math.floor(rng() * 11) : Math.floor(rng() * 30) + 11)
+        : Math.floor(rng() * 90) + 30;
+    const lastVisitDaysAgo = Math.min(rawLastVisit, joinedDaysAgo);
 
     // Tags
     const tags: string[] = [];
-    if (Math.random() < 0.2) tags.push('vip');
-    if (Math.random() < 0.15) tags.push('yoga-lover');
-    if (Math.random() < 0.1) tags.push('pilates-enthusiast');
-    if (lastVisitDaysAgo > 14 && membershipStatus === 'active') tags.push('at-risk');
-    if (joinedDaysAgo < 30) tags.push('new-member');
+    if (!pinned) {
+      if (rng() < 0.06) tags.push('vip');
+      if (rng() < 0.15) tags.push('yoga-lover');
+      if (rng() < 0.1) tags.push('pilates-enthusiast');
+      if (lastVisitDaysAgo > 14 && membershipStatus === 'active') tags.push('at-risk');
+      if (joinedDaysAgo < 30) tags.push('new-member');
+    }
+
+    const memType = OXATL_MEMBERSHIP_TYPES.find(m => m.id === membershipTypeId);
+    const monthsJoined = Math.floor(joinedDaysAgo / 30);
+    const membershipSpend = memType
+      ? memType.billing_cycle === 'annual'
+        ? memType.price_cents * Math.ceil(monthsJoined / 12 || 1)
+        : memType.price_cents * monthsJoined
+      : 0;
+    const visitSpend = memType ? 0 : isIntro ? 4900 : totalVisits * 1800;
+    const retailSpend = Math.floor(rng() * 40) * 100 + (rng() < 0.5 ? 0 : 50);
 
     members.push({
       profile: {
@@ -873,9 +953,9 @@ function generateMembers(count: number): DemoMember[] {
         last_name: lastName,
         display_name: `${firstName} ${lastName}`,
         email,
-        phone: `+1 (512) 555-${String(Math.floor(1000 + Math.random() * 9000))}`,
+        phone: randomPhone(),
         avatar_url: null,
-        date_of_birth: randomDateOfBirth(1965, 2005),
+        date_of_birth: pinned ? '1991-04-18' : randomDateOfBirth(1965, 2005),
         pronouns: null,
         emergency_contact_name: null,
         emergency_contact_phone: null,
@@ -884,17 +964,17 @@ function generateMembers(count: number): DemoMember[] {
         certifications: [],
         instagram_handle: null,
         website: null,
-        created_at: randomPastDate(joinedDaysAgo),
-        updated_at: randomPastDate(lastVisitDaysAgo),
+        created_at: daysAgo(joinedDaysAgo),
+        updated_at: daysAgo(lastVisitDaysAgo),
       },
       membership_type_id: membershipTypeId,
       membership_status: membershipStatus,
       class_pack_type_id: classPackTypeId,
       classes_remaining: classesRemaining,
-      joined_at: randomPastDate(joinedDaysAgo),
-      last_visit_at: randomPastDate(lastVisitDaysAgo),
+      joined_at: daysAgo(joinedDaysAgo),
+      last_visit_at: daysAgo(lastVisitDaysAgo),
       total_visits: totalVisits,
-      lifetime_value_cents: totalVisits * 1800 + (membershipTypeId ? 17900 * Math.floor(joinedDaysAgo / 30) : 0),
+      lifetime_value_cents: membershipSpend + visitSpend + retailSpend,
       tags,
     });
   }
@@ -902,7 +982,7 @@ function generateMembers(count: number): DemoMember[] {
   return members;
 }
 
-// Generate 500 members (Austin/Seattle boutique studio size)
+// Generate 500 members (Austin boutique studio size)
 export const OXATL_MEMBERS = generateMembers(500);
 
 // ============================================================================

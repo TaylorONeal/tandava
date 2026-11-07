@@ -392,7 +392,7 @@ export default function Onboarding() {
     : [["morning-vinyasa", "Morning Vinyasa"], ["gentle-flow", "Gentle Flow"], ["power-yoga", "Power Yoga"]];
   const teacherOptions: [string, string][] = production
     ? teachers.map((t) => [t.id, t.name])
-    : [["maya", "Maya Patel"], ["james", "James Liu"], ["sarah", "Sarah Chen"]];
+    : [["camila", "Camila Reyes"], ["daniel", "Daniel Nguyen"], ["tasha", "Tasha Greene"]];
   const roomOptions: [string, string][] = production
     ? rooms.map((r) => [r, r])
     : [["main", "Main Studio"], ["hot", "Hot Room"], ["meditation", "Meditation Room"]];
@@ -492,7 +492,7 @@ export default function Onboarding() {
         </StepCard>
       );
       case 6: return (
-        <StepCard title="Add Your Team" desc="Invite teachers and staff — each gets an email invitation to join your studio">
+        <StepCard title="Add Your Team" desc="Invite teachers and staff. Each person gets an email invitation to join your studio.">
           <div className="space-y-4">
             {staffList.map((member, i) => (
               <div key={i} className="rounded-xl border border-border p-4 space-y-4">
@@ -505,7 +505,7 @@ export default function Onboarding() {
                   )}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <Field label="Full Name" id={`staffName-${i}`} placeholder="Maya Patel" value={member.name} onChange={(e) => updateStaff(i, "name", e.target.value)} />
+                  <Field label="Full Name" id={`staffName-${i}`} placeholder="Camila Reyes" value={member.name} onChange={(e) => updateStaff(i, "name", e.target.value)} />
                   <Field label="Email" id={`staffEmail-${i}`} placeholder="maya@yourstudio.com" value={member.email} onChange={(e) => updateStaff(i, "email", e.target.value)} />
                 </div>
                 <div className="grid grid-cols-3 gap-4">

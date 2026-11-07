@@ -847,7 +847,7 @@ export default function CampaignsManage() {
                     <div
                       className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
                         index < currentStepIndex
-                          ? "bg-accent-sage text-white"
+                          ? "bg-accent-mint text-foreground"
                           : index === currentStepIndex
                           ? "bg-primary text-primary-foreground"
                           : "bg-secondary text-muted-foreground"

@@ -19,7 +19,7 @@ export const DEMO_LOCATION = 'Austin, Texas';
 // Demo user handles/identifiers
 export const DEMO_HANDLES = [
   'oxatl-yoga',
-  'mariana-trench',
+  'mariana-ochoa',
   'demo',
 ] as const;
 

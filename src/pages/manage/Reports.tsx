@@ -148,11 +148,11 @@ export default function ReportsManage() {
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">Top Classes by Attendance</p>
                 <div className="space-y-2">
                   {[
-                    { name: "Morning Vinyasa", teacher: "Maya Patel", avg: 22, capacity: 25 },
-                    { name: "Hot Vinyasa", teacher: "Sarah Chen", avg: 27, capacity: 30 },
-                    { name: "Weekend Power", teacher: "Sarah Chen", avg: 26, capacity: 30 },
-                    { name: "Community Flow", teacher: "Maya Patel", avg: 21, capacity: 25 },
-                    { name: "Sunday Slow", teacher: "Ava Kim", avg: 17, capacity: 20 },
+                    { name: "Morning Vinyasa", teacher: "Camila Reyes", avg: 22, capacity: 25 },
+                    { name: "Hot Vinyasa", teacher: "Tasha Greene", avg: 27, capacity: 30 },
+                    { name: "Weekend Power", teacher: "Tasha Greene", avg: 26, capacity: 30 },
+                    { name: "Community Flow", teacher: "Camila Reyes", avg: 21, capacity: 25 },
+                    { name: "Sunday Slow", teacher: "Mei Tanaka", avg: 17, capacity: 20 },
                   ].map((cls, i) => (
                     <div key={i} className="flex items-center justify-between p-2.5 rounded-xl bg-secondary/30">
                       <div>
@@ -178,10 +178,10 @@ export default function ReportsManage() {
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 {[
-                  { name: "Maya Patel", classes: 22, revenue: 8750, avgAttendees: 21, rating: 4.9 },
-                  { name: "Sarah Chen", classes: 18, revenue: 9200, avgAttendees: 26, rating: 4.8 },
-                  { name: "James Liu", classes: 16, revenue: 4800, avgAttendees: 14, rating: 4.7 },
-                  { name: "Ava Kim", classes: 12, revenue: 3900, avgAttendees: 15, rating: 4.9 },
+                  { name: "Camila Reyes", classes: 22, revenue: 8750, avgAttendees: 21, rating: 4.9 },
+                  { name: "Tasha Greene", classes: 18, revenue: 9200, avgAttendees: 26, rating: 4.8 },
+                  { name: "Daniel Nguyen", classes: 16, revenue: 4800, avgAttendees: 14, rating: 4.7 },
+                  { name: "Mei Tanaka", classes: 12, revenue: 3900, avgAttendees: 15, rating: 4.9 },
                 ].map((teacher, i) => (
                   <div key={i} className="p-3 rounded-xl bg-secondary/50">
                     <div className="flex items-center justify-between mb-2">
@@ -256,15 +256,15 @@ export default function ReportsManage() {
               </div>
 
               {[
-                { name: "Maya Patel", hours: 22, amount: 1650, type: "$75/class" },
-                { name: "Sarah Chen", hours: 18, amount: 1840, type: "40% share" },
-                { name: "James Liu", hours: 16, amount: 960, type: "$60/class" },
-                { name: "Ava Kim", hours: 12, amount: 780, type: "$65/class" },
+                { name: "Camila Reyes", hours: 22, amount: 1650, type: "$75/class" },
+                { name: "Tasha Greene", hours: 18, amount: 1840, type: "40% share" },
+                { name: "Daniel Nguyen", hours: 16, amount: 960, type: "$60/class" },
+                { name: "Mei Tanaka", hours: 12, amount: 780, type: "$65/class" },
               ].map((entry, i) => (
                 <div key={i} className="flex items-center justify-between p-2.5 rounded-xl bg-secondary/30">
                   <div>
                     <p className="text-sm font-medium">{entry.name}</p>
-                    <p className="text-xs text-muted-foreground">{entry.hours} classes — {entry.type}</p>
+                    <p className="text-xs text-muted-foreground">{entry.hours} classes · {entry.type}</p>
                   </div>
                   <p className="text-sm font-semibold">${entry.amount.toLocaleString()}</p>
                 </div>

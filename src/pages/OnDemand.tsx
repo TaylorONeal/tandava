@@ -175,7 +175,7 @@ const onDemandClasses: OnDemandClass[] = [
       "Wake up your body and mind with this energizing vinyasa sequence. Flowing sun salutations build heat while standing balances sharpen focus. Perfect for starting your day with intention and strength.",
     style: "Vinyasa",
     level: "ALL",
-    teacher: { name: "Maya Johnson" },
+    teacher: { name: "Brooke Sandoval" },
     duration: 30,
     thumbnailUrl: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400",
     progress: 65,
@@ -191,7 +191,7 @@ const onDemandClasses: OnDemandClass[] = [
       "A slow, deep yin practice focusing on the hips and lower back. Hold each pose for 3–5 minutes to release fascia and stored tension. Ideal for runners, desk workers, or anyone carrying stress in their hips.",
     style: "Yin",
     level: "BEGINNER",
-    teacher: { name: "David Park" },
+    teacher: { name: "Mei Tanaka" },
     duration: 45,
     thumbnailUrl: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400",
     progress: 100,
@@ -205,10 +205,10 @@ const onDemandClasses: OnDemandClass[] = [
     id: "od3",
     title: "Power Hour Challenge",
     description:
-      "An intense full-body power yoga class that will push your limits. Expect arm balances, deep backbends, and creative transitions. Bring a towel — you'll need it.",
+      "An intense full-body power yoga class that will push your limits. Expect arm balances, deep backbends, and creative transitions. Bring a towel.",
     style: "Power",
     level: "ADVANCED",
-    teacher: { name: "Alex Rivera" },
+    teacher: { name: "Marcus Bell" },
     duration: 60,
     thumbnailUrl: "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=400",
     progress: 0,
@@ -222,10 +222,10 @@ const onDemandClasses: OnDemandClass[] = [
     id: "od4",
     title: "Stress Relief Meditation",
     description:
-      "A guided meditation using body scan and breathwork to melt away tension. No experience needed — just find a comfortable seat and let go. Great for anxiety, insomnia, or simply resetting your day.",
+      "A guided meditation using body scan and breathwork to melt away tension. No experience needed. Find a comfortable seat and follow along. Great for anxiety, insomnia, or simply resetting your day.",
     style: "Meditation",
     level: "ALL",
-    teacher: { name: "Emma Thompson" },
+    teacher: { name: "Hannah Lindqvist" },
     duration: 15,
     thumbnailUrl: "https://images.unsplash.com/photo-1508672019048-805c876b67e2?w=400",
     progress: 30,
@@ -238,10 +238,10 @@ const onDemandClasses: OnDemandClass[] = [
     id: "od5",
     title: "Evening Wind Down",
     description:
-      "Gentle restorative poses supported by bolsters and blankets to calm the nervous system. This class is designed for the end of your day — dim the lights, slow down, and prepare for deep rest.",
+      "Gentle restorative poses supported by bolsters and blankets to calm the nervous system. Best at the end of the day. Dim the lights and set up near a wall.",
     style: "Restorative",
     level: "ALL",
-    teacher: { name: "Sarah Lee" },
+    teacher: { name: "Dana Whitaker" },
     duration: 40,
     thumbnailUrl: "https://images.unsplash.com/photo-1510894347713-fc3ed6fdf539?w=400",
     progress: 0,
@@ -257,7 +257,7 @@ const onDemandClasses: OnDemandClass[] = [
       "Target your core with this focused vinyasa practice. Plank variations, boat pose progressions, and controlled transitions build deep abdominal and back strength. A strong core supports every other pose.",
     style: "Vinyasa",
     level: "INTERMEDIATE",
-    teacher: { name: "Maya Johnson" },
+    teacher: { name: "Brooke Sandoval" },
     duration: 35,
     thumbnailUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400",
     progress: 0,
@@ -297,10 +297,10 @@ function getAccessCta(
     return { label: "Continue Watching", variant: "default", action: "play" };
   }
   if (video.accessType === "free") {
-    return { label: "Play — Free", variant: "default", action: "play" };
+    return { label: "Play free", variant: "default", action: "play" };
   }
   if (video.accessType === "members_only" && entitlements.hasMembership) {
-    return { label: "Play — Included with Membership", variant: "default", action: "play" };
+    return { label: "Play, included with membership", variant: "default", action: "play" };
   }
   if (video.accessType === "members_only" && !entitlements.hasMembership) {
     return { label: "Subscribe for Access", variant: "outline", action: "subscribe" };
@@ -528,7 +528,7 @@ const OnDemand = () => {
             <Badge variant="mint" className="mb-4">Pricing</Badge>
             <h2 className="text-3xl font-bold mb-3">Choose Your Access</h2>
             <p className="text-muted-foreground max-w-lg mx-auto">
-              From single classes to unlimited access — find the plan that fits your practice.
+              Buy a single class or get unlimited access.
             </p>
           </div>
 
@@ -622,7 +622,7 @@ const OnDemand = () => {
                 <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 border">
                   {selectedClass.accessType === "free" && (
                     <>
-                      <CheckCircle className="h-5 w-5 text-emerald-600 flex-shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
                       <div>
                         <p className="text-sm font-medium">Free to watch</p>
                         <p className="text-xs text-muted-foreground">No membership or purchase required.</p>
@@ -631,7 +631,7 @@ const OnDemand = () => {
                   )}
                   {selectedClass.accessType === "members_only" && entitlements.hasMembership && (
                     <>
-                      <CheckCircle className="h-5 w-5 text-emerald-600 flex-shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
                       <div>
                         <p className="text-sm font-medium">Included with your membership</p>
                         <p className="text-xs text-muted-foreground">Watch as many times as you like.</p>
@@ -640,7 +640,7 @@ const OnDemand = () => {
                   )}
                   {selectedClass.accessType === "members_only" && !entitlements.hasMembership && (
                     <>
-                      <Lock className="h-5 w-5 text-indigo-600 flex-shrink-0" />
+                      <Lock className="h-5 w-5 text-foreground flex-shrink-0" />
                       <div>
                         <p className="text-sm font-medium">Members only</p>
                         <p className="text-xs text-muted-foreground">Subscribe to a studio pass or unlimited plan to access.</p>
@@ -649,7 +649,7 @@ const OnDemand = () => {
                   )}
                   {selectedClass.accessType === "class_pack" && entitlements.classPackRemaining > 0 && (
                     <>
-                      <Ticket className="h-5 w-5 text-violet-600 flex-shrink-0" />
+                      <Ticket className="h-5 w-5 text-foreground flex-shrink-0" />
                       <div>
                         <p className="text-sm font-medium">Use 1 class from your pack</p>
                         <p className="text-xs text-muted-foreground">
@@ -671,7 +671,7 @@ const OnDemand = () => {
                     <>
                       <CreditCard className="h-5 w-5 text-amber-600 flex-shrink-0" />
                       <div>
-                        <p className="text-sm font-medium">One-time purchase — ${selectedClass.price ?? 12}</p>
+                        <p className="text-sm font-medium">One-time purchase: ${selectedClass.price ?? 12}</p>
                         <p className="text-xs text-muted-foreground">Buy once and access forever. Download for offline viewing.</p>
                       </div>
                     </>
@@ -729,8 +729,8 @@ const OnDemand = () => {
               <DialogHeader>
                 <DialogTitle>Use a class pass?</DialogTitle>
               </DialogHeader>
-              <div className="flex items-start gap-4 p-4 rounded-xl bg-violet-50 border border-violet-200">
-                <Ticket className="h-6 w-6 text-violet-600 flex-shrink-0 mt-0.5" />
+              <div className="flex items-start gap-4 p-4 rounded-xl bg-accent/20 border border-foreground/10">
+                <Ticket className="h-6 w-6 text-foreground flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-sm">{selectedClass.title}</p>
                   <p className="text-sm text-muted-foreground mt-1">

@@ -326,7 +326,7 @@ export default function ProductsManage() {
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Products</h1>
             <p className="text-sm text-muted-foreground mt-1">
-              {products.length} products — {formatPrice(totalRetailValue)} retail value
+              {products.length} products, {formatPrice(totalRetailValue)} retail value
             </p>
           </div>
           <div className="flex gap-2">

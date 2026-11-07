@@ -9,10 +9,10 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // Primary - Starface yellow pill
-        default: "bg-primary text-primary-foreground rounded-full shadow-md hover:shadow-lg hover:bg-[hsl(45_90%_58%)]",
+        // Primary - ink pill
+        default: "bg-primary text-primary-foreground rounded-full shadow-md hover:shadow-lg hover:bg-primary/90",
         // Secondary - white with border
-        secondary: "bg-card text-foreground border border-border-strong rounded-full hover:bg-[hsl(45_100%_96%)] hover:shadow-md",
+        secondary: "bg-card text-foreground border border-border-strong rounded-full hover:bg-secondary hover:shadow-md",
         // Destructive
         destructive: "bg-destructive text-destructive-foreground rounded-full shadow-md hover:bg-destructive/90",
         // Outline
@@ -21,8 +21,8 @@ const buttonVariants = cva(
         ghost: "text-muted-foreground hover:bg-muted hover:text-foreground rounded-full",
         // Link style
         link: "text-primary underline-offset-4 hover:underline",
-        // Hero CTA - gradient background
-        hero: "bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl hover:bg-[hsl(45_90%_58%)] transition-all duration-300",
+        // Hero CTA - larger ink pill
+        hero: "bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl hover:bg-primary/90 transition-all duration-300",
         // Soft pastel variants
         soft: "bg-accent text-accent-foreground rounded-full hover:bg-accent/80",
         "soft-mint": "bg-accent-mint text-foreground rounded-full hover:bg-accent-mint/80",

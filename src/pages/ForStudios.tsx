@@ -1,128 +1,144 @@
 /**
- * For studios: /for-studios (and "/" on the hosted product until Discover has
- * enough studios to be the front door; see lib/homeMode.ts).
+ * For studios: the hosted home page. Renders at "/" on the hosted product
+ * (lib/homeMode.ts) and at /for-studios, both canonical to "/".
  *
  * Audience: a studio owner or manager deciding whether to run their studio on
- * the hosted Tandava. Not developers (that is /open-source) and not students
- * (that is /discover). No pricing numbers here until decision D1 is made.
+ * the hosted Tandava. Three things must land in the first screen: you sign up
+ * on the web, staff use the Tandava Studio iPhone app at the door, and open
+ * source exists for those who want it (one block, below the fold).
+ *
+ * Copy lives in src/content/marketing/pages.ts so the prerendered HTML and
+ * llms.txt say the same thing. No pricing numbers until decision D1.
+ * Look: docs/design/DESIGN_SYSTEM.md (front desk: paper, ink, one highlighter;
+ * the pass and the class board are the motifs).
  */
 import { Link } from "react-router-dom";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { SEOHead } from "@/components/seo/SEOHead";
-import { Button } from "@/components/ui/button";
 import { MarketingShell } from "@/components/layout/MarketingShell";
 import { FaqSection } from "@/components/help/FaqSection";
+import { StudioAppBadge } from "@/components/marketing/StudioAppBadge";
+import { Band, CtaLink, Eyebrow, PhoneShot, ScanFrame } from "@/components/marketing/brand";
+import { PassStub, RuledList, ScheduleBoard, Section, TickList } from "@/components/marketing/primitives";
 import { STUDIO_SIGNUP_HREF } from "@/lib/audience";
+import { STUDIO_APP_LIVE } from "@/config/studioApp";
+import { HOME_FAQ_IDS, homeContent, STUDIO_APP_FEATURES, WEB_FEATURES } from "@/content/marketing/pages";
+import { EXAMPLE_DAY } from "@/content/marketing/exampleSchedule";
+import { homeLd } from "@/content/marketing/schema";
 
-const STEPS = [
-  { title: "Create your studio", body: "Add your name, location, teachers and class types. The setup wizard saves as you go, so you can stop and pick it up later." },
-  { title: "Set up payouts", body: "Students pay by card when they book. You add your bank details once, in a short form run by our payments partner Stripe, and payouts go to your account." },
-  { title: "Publish your schedule", body: "You get a booking page you can share, and a schedule you can embed on your own website. Opt in to Discover and students searching for a class can find you." },
-];
+const SITE_URL = import.meta.env.VITE_APP_URL || "https://tandavastudio.com";
 
-const WHAT_YOU_RUN = [
-  "Class schedule, rooms and teachers",
-  "Drop-ins, class packs and memberships",
-  "Online booking, waitlists and cancellations",
-  "Front desk check-in, including a kiosk screen",
-  "Student records, with import from your current system",
-  "Teacher schedules, subs and pay tracking",
-  "Revenue and attendance reports",
-  "Workshops and events",
-];
+/** "First sentence. Second sentence." -> the second goes on the highlighter band. */
+function splitHeadline(h1: string): [string, string] {
+  const i = h1.indexOf(". ");
+  return i === -1 ? [h1, ""] : [h1.slice(0, i + 1), h1.slice(i + 2)];
+}
 
 export default function ForStudios() {
-  return (
-    <MarketingShell>
-      <SEOHead
-        title="Run your studio on Tandava"
-        description="Scheduling, memberships, payments and a public booking page for yoga, pilates and movement studios. Students find you on Tandava Discover."
-        canonical="/for-studios"
-      />
+  const c = homeContent(STUDIO_APP_LIVE);
+  const [lead, banded] = splitHeadline(c.h1);
 
-      <section className="max-w-5xl mx-auto px-6 pt-16 pb-12 sm:pt-24">
-        <p className="text-sm font-medium text-muted-foreground mb-4">For studio owners</p>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight max-w-3xl">
-          Run your studio. Get found by students.
-        </h1>
-        <p className="mt-6 text-lg text-muted-foreground max-w-2xl">
-          Schedule, memberships, payments and a booking page that works on a phone. Your classes can also show up
-          on Tandava Discover, where students search for a class before they have picked a studio.
-        </p>
-        <div className="mt-8 flex flex-col sm:flex-row gap-3">
-          <Button asChild size="lg">
-            <Link to={STUDIO_SIGNUP_HREF}>Set up your studio <ArrowRight className="ms-2 h-4 w-4" /></Link>
-          </Button>
-          <Button asChild size="lg" variant="outline">
-            <Link to="/demo">Look around a demo studio</Link>
-          </Button>
+  return (
+    <MarketingShell maxWidth="max-w-6xl">
+      <SEOHead title={c.title} description={c.description} canonical="/" structuredData={homeLd(SITE_URL, STUDIO_APP_LIVE)} />
+
+      <section className="mkt-grid">
+        <div className="max-w-6xl mx-auto grid items-center gap-14 px-6 pb-20 pt-12 sm:pt-20 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+          <div className="min-w-0">
+            <Eyebrow>{c.eyebrow}</Eyebrow>
+            <h1 className="mt-5 font-brand text-[2.55rem] font-extrabold leading-[0.95] tracking-[-0.045em] sm:text-[4rem]">
+              {lead} {banded && <Band>{banded}</Band>}
+            </h1>
+            <p className="mt-7 max-w-[54ch] text-lg leading-relaxed text-ink/75">{c.intro}</p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <CtaLink to={STUDIO_SIGNUP_HREF}>
+                Set up your studio <ArrowRight className="h-4 w-4" aria-hidden />
+              </CtaLink>
+              <CtaLink to="/demo" variant="secondary">Look around a demo studio</CtaLink>
+            </div>
+            <p className="mt-4 text-sm text-ink/60">{c.finePrint}</p>
+          </div>
+
+          <div className="relative mx-auto w-full max-w-[17rem] pb-10 md:max-w-[18.5rem]">
+            <ScanFrame className="rotate-2">
+              <PhoneShot src="/marketing/studio-scan.webp" alt="Tandava Studio on iPhone showing a member checked in after a pass scan" />
+            </ScanFrame>
+            <PassStub
+              className="absolute -left-8 bottom-0 w-[15.5rem] -rotate-3 sm:-left-20"
+              label="Pass, 6:30 am"
+              name="Ines Calderón"
+              detail="Morning Vinyasa"
+              code="#4821"
+              status="In"
+            />
+          </div>
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-6 py-12">
-        <h2 className="text-2xl font-semibold">From signup to a bookable schedule</h2>
-        <ol className="mt-6 grid gap-4 md:grid-cols-3">
-          {STEPS.map((s, i) => (
-            <li key={s.title} className="rounded-xl border border-border p-6">
-              <span className="text-sm text-muted-foreground">Step {i + 1}</span>
-              <h3 className="mt-1 font-semibold">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
-            </li>
-          ))}
-        </ol>
+      <Section id="how" eyebrow="How it works" title="Three steps, all on the web." className="pt-4">
+        <RuledList items={c.steps.map((s) => ({ title: s.title, body: s.body }))} />
+      </Section>
+
+      <Section id="web" eyebrow="On the web" title={c.webCard.heading} lead={c.webCard.body} className="mt-20">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,21rem)]">
+          <div className="min-w-0">
+            <TickList items={WEB_FEATURES} />
+            <CtaLink to={STUDIO_SIGNUP_HREF} className="mt-7">Set up your studio</CtaLink>
+          </div>
+          <div className="min-w-0">
+            <ScheduleBoard day={EXAMPLE_DAY.day} place={EXAMPLE_DAY.place} rows={EXAMPLE_DAY.rows} />
+            <p className="mt-3 text-xs text-ink/60">What members see on your booking page. Example schedule.</p>
+          </div>
+        </div>
+      </Section>
+
+      <Section id="app" eyebrow="At the door" title={c.appCard.heading} lead={c.appCard.body} className="mt-20">
+        <div className="rounded-3xl bg-ink p-6 text-paper sm:p-8">
+          <TickList items={STUDIO_APP_FEATURES} tone="ink" />
+          <div className="mt-7 flex flex-wrap items-center gap-4">
+            <StudioAppBadge />
+            <Link to="/studio-app" className="text-sm font-semibold text-paper underline underline-offset-4 hover:text-lime">
+              More about the app
+            </Link>
+          </div>
+        </div>
+      </Section>
+
+      <section className="mt-20 bg-lime" aria-labelledby="pilot-title">
+        <div className="max-w-6xl mx-auto grid gap-6 px-6 py-12 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+          <div className="min-w-0">
+            <h2 id="pilot-title" className="font-brand text-3xl font-extrabold tracking-[-0.03em] sm:text-[2.6rem]">
+              {c.pilot.heading}
+            </h2>
+            <p className="mt-3 max-w-[60ch] text-ink/80">{c.pilot.body}</p>
+          </div>
+          <CtaLink to={STUDIO_SIGNUP_HREF}>Set up your studio</CtaLink>
+        </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-6 py-12">
-        <h2 className="text-2xl font-semibold">What you run from one place</h2>
-        <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-          {WHAT_YOU_RUN.map((item) => (
-            <li key={item} className="flex items-start gap-3 text-sm">
-              <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
-              {item}
+      <Section id="faq" eyebrow="Questions" title="What owners ask first." className="mt-20">
+        <FaqSection audience="owner" ids={HOME_FAQ_IDS} title="Questions studio owners ask" bare />
+      </Section>
+
+      <Section id="oss" eyebrow="Open source" title={c.openSource.heading} className="mt-20">
+        <p className="max-w-[62ch] leading-relaxed text-ink/75">{c.openSource.body}</p>
+        <Link to="/open-source" className="mt-4 inline-block font-semibold underline underline-offset-4">
+          {c.openSource.linkLabel}
+        </Link>
+      </Section>
+
+      <nav className="max-w-6xl mx-auto px-6 pt-16" aria-label="Guides">
+        <Eyebrow>Read more</Eyebrow>
+        <ul className="mt-3 grid gap-x-8 border-t border-ink/15 sm:grid-cols-2">
+          {c.guides.map((g) => (
+            <li key={g.to} className="border-b border-ink/15">
+              <Link to={g.to} className="flex items-center justify-between gap-3 py-3 font-semibold hover:text-plum">
+                {g.label} <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
+              </Link>
             </li>
           ))}
         </ul>
-      </section>
-
-      <section className="max-w-5xl mx-auto px-6 py-12">
-        <div className="rounded-xl border border-border bg-secondary/40 p-6 sm:p-8">
-          <h2 className="text-xl font-semibold">We are starting with a few studios</h2>
-          <p className="mt-2 text-muted-foreground max-w-2xl">
-            Tandava is new. We are onboarding our first studios in Austin and working with each owner directly, so
-            when something is rough you talk to the person who can fix it. Pricing is agreed with you before you
-            take a single payment.
-          </p>
-          <Button asChild className="mt-5">
-            <Link to={STUDIO_SIGNUP_HREF}>Set up your studio</Link>
-          </Button>
-        </div>
-      </section>
-
-      <FaqSection
-        audience="owner"
-        ids={[
-          "express-booking",
-          "explore-on-studio-page",
-          "class-time-zone",
-          "studio-network-vs-classpass",
-          "studio-network-cannibalisation",
-          "privates-requests",
-          "offsite-and-events",
-          "attribution",
-          "marketing-automation",
-          "measure-ads",
-          "switching",
-          "tracking-privacy",
-        ]}
-        className="max-w-5xl mx-auto px-6 py-12"
-      />
-
-      <section className="max-w-5xl mx-auto px-6 pt-4">
-        <p className="text-sm text-muted-foreground">
-          Technical and want to run it yourself? Tandava is open source.{" "}
-          <Link to="/open-source" className="underline underline-offset-4">Self-hosting and the code</Link>.
-        </p>
-      </section>
+      </nav>
     </MarketingShell>
   );
 }

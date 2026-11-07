@@ -70,7 +70,7 @@ function DemoOfferingsManage() {
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Offerings</h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Class types and their configurations — {mockOfferings.filter(o => o.isActive).length} active
+              Class types and their settings. {mockOfferings.filter(o => o.isActive).length} active
             </p>
           </div>
           <Button size="sm" onClick={() => toast({ title: "New offering", description: "Offering creation form opened." })}>

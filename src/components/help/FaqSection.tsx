@@ -10,20 +10,25 @@ export function FaqSection({
   ids,
   title = "Questions studio owners ask",
   className,
+  bare = false,
 }: {
   audience: HelpAudience;
   ids?: string[];
   title?: string;
   className?: string;
+  /** No heading and no centering, for use inside a page section that has its own title. */
+  bare?: boolean;
 }) {
   const entries = helpFor(audience, ids);
   if (!entries.length) return null;
   return (
-    <section className={className} aria-labelledby="faq-title">
-      <h2 id="faq-title" className="text-2xl font-bold text-center mb-8">
-        {title}
-      </h2>
-      <Accordion type="single" collapsible className="max-w-3xl mx-auto">
+    <section className={className} aria-labelledby={bare ? undefined : "faq-title"} aria-label={bare ? title : undefined}>
+      {!bare && (
+        <h2 id="faq-title" className="text-2xl font-bold text-center mb-8">
+          {title}
+        </h2>
+      )}
+      <Accordion type="single" collapsible className={bare ? "border-t border-ink/15" : "max-w-3xl mx-auto"}>
         {entries.map((e) => (
           <AccordionItem key={e.id} value={e.id}>
             <AccordionTrigger className="text-left">

@@ -44,7 +44,7 @@ const stats = {
     streak: 8,
     longestStreak: 21,
     topStyles: ["Vinyasa", "Yin", "Power"],
-    topTeachers: ["Maya Johnson", "David Park", "Sarah Lee"],
+    topTeachers: ["Brooke Sandoval", "Mei Tanaka", "Dana Whitaker"],
     peakTime: "Morning",
   },
   month: {
@@ -54,7 +54,7 @@ const stats = {
     streak: 8,
     longestStreak: 21,
     topStyles: ["Vinyasa", "Yin", "Hatha"],
-    topTeachers: ["Maya Johnson", "David Park", "Emma Thompson"],
+    topTeachers: ["Brooke Sandoval", "Mei Tanaka", "Hannah Lindqvist"],
     peakTime: "Morning",
   },
   year: {
@@ -64,7 +64,7 @@ const stats = {
     streak: 8,
     longestStreak: 21,
     topStyles: ["Vinyasa", "Yin", "Power"],
-    topTeachers: ["Maya Johnson", "David Park", "Alex Rivera"],
+    topTeachers: ["Brooke Sandoval", "Mei Tanaka", "Marcus Bell"],
     peakTime: "Evening",
   },
   allTime: {
@@ -74,27 +74,27 @@ const stats = {
     streak: 8,
     longestStreak: 21,
     topStyles: ["Vinyasa", "Yin", "Power"],
-    topTeachers: ["Maya Johnson", "David Park", "Sarah Lee"],
+    topTeachers: ["Brooke Sandoval", "Mei Tanaka", "Dana Whitaker"],
     peakTime: "Evening",
   },
 };
 
 const friends = [
-  { id: "1", name: "Emma T.", avatar: "", classesThisMonth: 18, status: "ACCEPTED" },
-  { id: "2", name: "Alex R.", avatar: "", classesThisMonth: 14, status: "ACCEPTED" },
-  { id: "3", name: "Jordan M.", avatar: "", classesThisMonth: 9, status: "ACCEPTED" },
-  { id: "4", name: "Taylor S.", avatar: "", classesThisMonth: 22, status: "ACCEPTED" },
+  { id: "1", name: "Anjali B.", avatar: "", classesThisMonth: 18, status: "ACCEPTED" },
+  { id: "2", name: "Caleb D.", avatar: "", classesThisMonth: 14, status: "ACCEPTED" },
+  { id: "3", name: "Imani O.", avatar: "", classesThisMonth: 9, status: "ACCEPTED" },
+  { id: "4", name: "Shannon A.", avatar: "", classesThisMonth: 22, status: "ACCEPTED" },
 ];
 
 const leaderboard = [
-  { rank: 1, name: "Taylor S.", avatar: "", classes: 22, minutes: 1650 },
-  { rank: 2, name: "Chris K.", avatar: "", classes: 20, minutes: 1500 },
-  { rank: 3, name: "Emma T.", avatar: "", classes: 18, minutes: 1350 },
+  { rank: 1, name: "Shannon A.", avatar: "", classes: 22, minutes: 1650 },
+  { rank: 2, name: "Desmond K.", avatar: "", classes: 20, minutes: 1500 },
+  { rank: 3, name: "Anjali B.", avatar: "", classes: 18, minutes: 1350 },
   { rank: 4, name: "You", avatar: "", classes: 12, minutes: 945, isCurrentUser: true },
-  { rank: 5, name: "Alex R.", avatar: "", classes: 14, minutes: 1050 },
-  { rank: 6, name: "Jordan M.", avatar: "", classes: 9, minutes: 675 },
-  { rank: 7, name: "Sam P.", avatar: "", classes: 8, minutes: 600 },
-  { rank: 8, name: "Riley B.", avatar: "", classes: 7, minutes: 525 },
+  { rank: 5, name: "Caleb D.", avatar: "", classes: 14, minutes: 1050 },
+  { rank: 6, name: "Imani O.", avatar: "", classes: 9, minutes: 675 },
+  { rank: 7, name: "Simone P.", avatar: "", classes: 8, minutes: 600 },
+  { rank: 8, name: "Nadia B.", avatar: "", classes: 7, minutes: 525 },
 ];
 
 const timeOfDayIcon = {
@@ -136,7 +136,7 @@ const Community = () => {
           milestoneName="300 Classes!"
           icon="🧘"
           message="You've attended over 300 classes. That's real dedication to your practice."
-          reward="Unlock your Year in Review"
+          reward="Get your Year in Review"
         />
 
         {/* Tabs */}

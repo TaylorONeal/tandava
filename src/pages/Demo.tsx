@@ -1,802 +1,323 @@
 /**
- * Demo Landing Page: a sample studio for owners evaluating hosted Tandava.
- * Self-hosting and the code live on /open-source; this page points there once.
+ * Demo landing page (/demo): a sample studio for owners evaluating hosted
+ * Tandava. Self-hosting and the code live on /open-source; this page points
+ * there once.
  *
- * The FIRST thing visitors see. Explains what the project is, who it's for,
- * shows features, then invites visitors to explore the platform by choosing a role.
+ * Flow: what this is -> pick a seat (owner, front desk, teacher, member) ->
+ * jump straight to one screen -> who it suits -> questions -> set up yours.
  *
- * Flow: Project intro → Who it's for → Feature showcase → Role picker → FAQ → About
+ * The "Enter as ..." button labels are used by the store screenshot scripts;
+ * keep them stable. Look: docs/design/DESIGN_SYSTEM.md.
  */
-
-import { LEGAL_LINKS } from "@/content/legal";
-import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { useDemo } from "@/contexts/DemoContext";
 import type { UserRole } from "@/types/database";
 import { STUDIO_SIGNUP_HREF } from "@/lib/audience";
 import { SEOHead } from "@/components/seo/SEOHead";
-import {
-  OXATL_STUDIO,
-  OXATL_LOCATIONS,
-  OXATL_TEACHERS,
-  OXATL_CLASS_TYPES,
-} from "@/data/demo";
-import {
-  Calendar,
-  Users,
-  LayoutDashboard,
-  GraduationCap,
-  ClipboardCheck,
-  Sparkles,
-  ArrowRight,
-  ChevronDown,
-  ChevronUp,
-  Code2,
-  Database,
-  Shield,
-  CreditCard,
-  BarChart3,
-  BookOpen,
-  Server,
-  Lock,
-  Zap,
-  ListChecks,
-  Bell,
-  Receipt,
-  QrCode,
-  UserCheck,
-  RotateCcw,
-  Video,
-  FileBarChart,
-  Megaphone,
-  Upload,
-  CheckCircle2,
-  GitFork,
-  Terminal,
-  Layers,
-} from "lucide-react";
+import { MarketingShell } from "@/components/layout/MarketingShell";
+import { Band, CtaLink, Eyebrow } from "@/components/marketing/brand";
+import { PassStub, Section, TickList } from "@/components/marketing/primitives";
+import { OXATL_STUDIO, OXATL_LOCATIONS, OXATL_TEACHERS, OXATL_CLASS_TYPES } from "@/data/demo";
 
-// ============================================================================
-// ROLE CARDS
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Seats: one per role
+// ----------------------------------------------------------------------------
 
 interface RoleConfig {
   role: UserRole;
   title: string;
+  tag: string;
   description: string;
-  icon: typeof LayoutDashboard;
   destination: string;
-  accent: string;
-  bg: string;
-  features: string[];
+  sees: string[];
 }
 
 const ROLES: RoleConfig[] = [
   {
     role: "owner",
     title: "Studio Owner",
-    description: "Run your entire studio from one dashboard",
-    icon: LayoutDashboard,
+    tag: "Owner",
+    description: "The whole studio from one dashboard.",
     destination: "/manage",
-    accent: "text-amber-400",
-    bg: "from-amber-500/20 to-amber-600/5 hover:from-amber-500/30 hover:to-amber-600/10 border-amber-500/20 hover:border-amber-400/40",
-    features: [
-      "Schedule management",
-      "Revenue & analytics",
-      "Member CRM",
-      "Teacher management",
-    ],
-  },
-  {
-    role: "teacher",
-    title: "Instructor",
-    description: "Focus on teaching, not admin",
-    icon: GraduationCap,
-    destination: "/teach",
-    accent: "text-blue-400",
-    bg: "from-blue-500/20 to-blue-600/5 hover:from-blue-500/30 hover:to-blue-600/10 border-blue-500/20 hover:border-blue-400/40",
-    features: [
-      "Check-in students",
-      "Earnings tracking",
-      "Sub requests",
-      "Availability",
-    ],
+    sees: ["Schedule", "Revenue", "Students", "Teachers"],
   },
   {
     role: "front_desk",
     title: "Front Desk",
-    description: "Streamlined daily operations",
-    icon: ClipboardCheck,
+    tag: "Desk",
+    description: "Today's classes and who's walking in.",
     destination: "/staff/checkin",
-    accent: "text-violet-400",
-    bg: "from-violet-500/20 to-violet-600/5 hover:from-violet-500/30 hover:to-violet-600/10 border-violet-500/20 hover:border-violet-400/40",
-    features: [
-      "Quick check-in",
-      "Waitlist management",
-      "Member lookup",
-      "Class rosters",
-    ],
+    sees: ["Check-in", "Waitlists", "Member lookup", "Rosters"],
+  },
+  {
+    role: "teacher",
+    title: "Instructor",
+    tag: "Teacher",
+    description: "What you teach, who's coming, what you've earned.",
+    destination: "/teach",
+    sees: ["Your classes", "Check-in", "Sub requests", "Earnings"],
   },
   {
     role: "student",
     title: "Member",
-    description: "Book classes, track your practice",
-    icon: Sparkles,
+    tag: "Member",
+    description: "What a student sees when they book.",
     destination: "/home",
-    accent: "text-teal-400",
-    bg: "from-teal-500/20 to-teal-600/5 hover:from-teal-500/30 hover:to-teal-600/10 border-teal-500/20 hover:border-teal-400/40",
-    features: [
-      "Browse & filter classes",
-      "Memberships & packs",
-      "Practice streaks",
-      "Community",
-    ],
+    sees: ["Book a class", "Packs and memberships", "Streaks", "Community"],
   },
 ];
 
-// ============================================================================
-// FAQ DATA
-// ============================================================================
+const TAG: Record<string, string> = { owner: "Owner", front_desk: "Desk", teacher: "Teacher", student: "Member" };
 
-interface FAQItem {
-  question: string;
-  answer: string;
+// ----------------------------------------------------------------------------
+// Screen index: jump to one screen as the right role
+// ----------------------------------------------------------------------------
+
+interface Screen {
+  name: string;
+  description: string;
+  route: string;
+  role: UserRole;
 }
 
-const FAQ_ITEMS: FAQItem[] = [
+const SCREEN_GROUPS: { title: string; screens: Screen[] }[] = [
   {
-    question: "Who is Tandava for?",
-    answer:
-      "Independent yoga, pilates and movement studios that want scheduling, memberships, payments and a phone-friendly booking page without per-member pricing. We host it; you do not need a developer.",
-  },
-  {
-    question: "What does it cost?",
-    answer:
-      "We are onboarding our first studios now and agree pricing with each owner before you take a single payment. Card fees are Stripe's, paid to your own Stripe account.",
-  },
-  {
-    question: "How is this different from MindBody or Momence?",
-    answer:
-      "No per-member pricing that grows against you, no features held back for an enterprise tier, and you can export everything at any time in standard formats. Your classes also appear on Tandava Discover, where students look for a class before they pick a studio.",
-  },
-  {
-    question: "Where does the money go?",
-    answer:
-      "Straight to your own Stripe account through Stripe Connect. Tandava never holds your revenue.",
-  },
-  {
-    question: "Is this demo real?",
-    answer:
-      "It runs the same screens as a live studio with sample data. Nothing you do here is saved or charged. Switch between owner, front desk, teacher and student to see each view.",
-  },
-  {
-    question: "Can I run it myself?",
-    answer:
-      "Yes. Tandava is open source under AGPL-3.0. If you have a developer and want to self-host, start at the open source page.",
-  },
-];
-
-// ============================================================================
-// PLATFORM FEATURES
-// ============================================================================
-
-const FEATURE_HIGHLIGHTS = [
-  {
-    icon: Calendar,
-    label: "Smart Scheduling",
-    description: "Recurring classes, one-off changes, subs, and multi-location",
-  },
-  {
-    icon: Users,
-    label: "Member Management",
-    description:
-      "Profiles, visit history, engagement scores, lifecycle tracking",
-  },
-  {
-    icon: CreditCard,
-    label: "Payments",
-    description:
-      "Stripe Connect — memberships, class packs, drop-ins, workshops",
-  },
-  {
-    icon: BarChart3,
-    label: "Analytics",
-    description:
-      "Revenue, attendance, retention, teacher performance, churn prediction",
-  },
-  {
-    icon: QrCode,
-    label: "Check-In",
-    description: "Kiosk mode, QR codes, front desk manual, teacher-led",
-  },
-  {
-    icon: Upload,
-    label: "Data Migration",
-    description: "Import from MindBody, Momence, Walla, Arketa, WellnessLiving",
-  },
-  {
-    icon: Shield,
-    label: "Multi-Tenant",
-    description:
-      "Row-Level Security — each studio's data is completely isolated",
-  },
-  {
-    icon: Database,
-    label: "Data Portability",
-    description: "Export everything, anytime. QuickBooks, Xero, CSV",
-  },
-];
-
-const FEATURE_CATEGORIES = [
-  {
-    title: "Scheduling & Classes",
-    features: [
-      {
-        icon: Calendar,
-        name: "Class Scheduling",
-        description: "Recurring rules, one-off changes, multi-location",
-        demoRoute: "/manage/schedule",
-        demoRole: "owner" as UserRole,
-      },
-      {
-        icon: RotateCcw,
-        name: "Sub Management",
-        description: "Teachers request subs, qualified instructors notified",
-        demoRoute: "/teach/subs",
-        demoRole: "teacher" as UserRole,
-      },
-      {
-        icon: ListChecks,
-        name: "Waitlist Automation",
-        description: "Auto-promote when spots open",
-        demoRoute: "/staff/waitlist",
-        demoRole: "front_desk" as UserRole,
-      },
-      {
-        icon: Video,
-        name: "On-Demand Library",
-        description: "Recorded classes with streaming and progress",
-        demoRoute: "/on-demand",
-        demoRole: "student" as UserRole,
-      },
+    title: "Classes",
+    screens: [
+      { name: "Class schedule", description: "Weekly classes, one-off changes, three locations.", route: "/manage/schedule", role: "owner" },
+      { name: "Sub requests", description: "A teacher asks for cover; qualified teachers hear about it.", route: "/teach/subs", role: "teacher" },
+      { name: "Waitlists", description: "When a spot opens, the next person moves in.", route: "/staff/waitlist", role: "front_desk" },
+      { name: "On-demand", description: "Recorded classes members can stream.", route: "/on-demand", role: "student" },
     ],
   },
   {
-    title: "Members & Check-In",
-    features: [
-      {
-        icon: UserCheck,
-        name: "Member Profiles",
-        description: "Visit history, waivers, engagement",
-        demoRoute: "/manage/students",
-        demoRole: "owner" as UserRole,
-      },
-      {
-        icon: QrCode,
-        name: "Self Check-In",
-        description: "Kiosk, QR code, front desk manual",
-        demoRoute: "/staff/checkin",
-        demoRole: "front_desk" as UserRole,
-      },
-      {
-        icon: Users,
-        name: "Community & Streaks",
-        description: "Practice tracking, leaderboards, milestones",
-        demoRoute: "/community",
-        demoRole: "student" as UserRole,
-      },
-      {
-        icon: Bell,
-        name: "Notifications",
-        description: "Email, SMS, push — reminders and marketing",
-        demoRoute: "/manage/notification-settings",
-        demoRole: "owner" as UserRole,
-      },
+    title: "People and check-in",
+    screens: [
+      { name: "Check-in", description: "Scan a pass, search a name or run the kiosk.", route: "/staff/checkin", role: "front_desk" },
+      { name: "Student records", description: "Visits, waivers and notes for each student.", route: "/manage/students", role: "owner" },
+      { name: "Streaks and community", description: "Practice streaks and milestones for members.", route: "/community", role: "student" },
+      { name: "Notifications", description: "Which reminders and confirmations go out, and when.", route: "/manage/notification-settings", role: "owner" },
     ],
   },
   {
-    title: "Payments & Revenue",
-    features: [
-      {
-        icon: CreditCard,
-        name: "Stripe Connect",
-        description: "Memberships, packs, drop-ins, workshops",
-        demoRoute: "/manage/financials",
-        demoRole: "owner" as UserRole,
-      },
-      {
-        icon: Receipt,
-        name: "Memberships & Packs",
-        description: "Monthly/annual, class packs, family, promos",
-        demoRoute: "/manage/financials",
-        demoRole: "owner" as UserRole,
-      },
-      {
-        icon: BarChart3,
-        name: "Revenue Analytics",
-        description: "MRR, churn, LTV, teacher performance",
-        demoRoute: "/manage/analytics",
-        demoRole: "owner" as UserRole,
-      },
-      {
-        icon: FileBarChart,
-        name: "Custom Reports",
-        description: "Date ranges, filters, CSV export",
-        demoRoute: "/manage/reports",
-        demoRole: "owner" as UserRole,
-      },
+    title: "Money",
+    screens: [
+      { name: "Payments", description: "Memberships, packs, drop-ins and workshops through Stripe.", route: "/manage/financials", role: "owner" },
+      { name: "Analytics", description: "Revenue, attendance and retention by class and teacher.", route: "/manage/analytics", role: "owner" },
+      { name: "Reports", description: "Pick a date range, filter, export to CSV.", route: "/manage/reports", role: "owner" },
     ],
   },
   {
-    title: "Data & Marketing",
-    features: [
-      {
-        icon: Upload,
-        name: "Platform Migration",
-        description: "Import from 6 platforms with auto-detection",
-        demoRoute: "/manage/import",
-        demoRole: "owner" as UserRole,
-      },
-      {
-        icon: FileBarChart,
-        name: "Accounting Exports",
-        description: "QuickBooks IIF, Xero CSV, standard CSV",
-        demoRoute: "/manage/financials",
-        demoRole: "owner" as UserRole,
-      },
-      {
-        icon: Megaphone,
-        name: "Campaign Hub",
-        description: "Email/SMS campaigns with segmentation",
-        demoRoute: "/manage/campaigns",
-        demoRole: "owner" as UserRole,
-      },
-      {
-        icon: Lock,
-        name: "Data Portability",
-        description: "Your data is always yours. Export everything.",
-        demoRoute: "/manage/connectors",
-        demoRole: "owner" as UserRole,
-      },
-      {
-        icon: Code2,
-        name: "Website Embed",
-        description: "Put booking on your own site — one-line script widget",
-        demoRoute: "/manage/embed",
-        demoRole: "owner" as UserRole,
-      },
+    title: "Your data and your site",
+    screens: [
+      { name: "Import", description: "Bring students and history over from your old system.", route: "/manage/import", role: "owner" },
+      { name: "Campaigns", description: "Email a group of your students.", route: "/manage/campaigns", role: "owner" },
+      { name: "Website embed", description: "Your schedule on your own site with one line of code.", route: "/manage/embed", role: "owner" },
+      { name: "Exports", description: "Take everything with you, any time.", route: "/manage/connectors", role: "owner" },
     ],
   },
 ];
 
-// ============================================================================
-// FAQ ACCORDION
-// ============================================================================
-
-function FAQAccordion({ item }: { item: FAQItem }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card">
-      <button
-        type="button"
-        aria-expanded={open}
-        onClick={() => setOpen(!open)}
-        className="flex min-h-12 w-full items-center justify-between p-4 text-start transition-colors hover:bg-card/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
-      >
-        <span className="font-medium text-sm pe-4">{item.question}</span>
-        {open ? (
-          <ChevronUp className="w-4 h-4 shrink-0 text-muted-foreground" />
-        ) : (
-          <ChevronDown className="w-4 h-4 shrink-0 text-muted-foreground" />
-        )}
-      </button>
-      {open && (
-        <div className="px-4 pb-4 text-sm text-muted-foreground leading-relaxed">
-          {item.answer}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ============================================================================
-// COMPONENT
-// ============================================================================
+const FAQ_ITEMS = [
+  {
+    q: "Is this demo real?",
+    a: "The screens are the ones a live studio uses. The studio and its people are made up, and nothing you do here is saved or charged.",
+  },
+  {
+    q: "Who is Tandava for?",
+    a: "Independent yoga, pilates and movement studios that want scheduling, memberships, payments and a booking page that works on a phone. We host it, so you don't need a developer.",
+  },
+  {
+    q: "What does it cost?",
+    a: "We're onboarding our first studios now and agree pricing with each owner before you take a single payment. Card fees are Stripe's, paid from your own Stripe account.",
+  },
+  {
+    q: "How is it different from MindBody or Momence?",
+    a: "No per-member pricing that grows against you, no features held back for a bigger plan, and you can export everything in standard formats whenever you like. Your classes also show up on Find a class, where students look before they pick a studio.",
+  },
+  {
+    q: "Where does the money go?",
+    a: "Straight to your own Stripe account through Stripe Connect. Tandava never holds your revenue.",
+  },
+  {
+    q: "Can I run it myself?",
+    a: "Yes. Tandava is open source under AGPL-3.0. If you have a developer and want to self-host, start at the open source page.",
+  },
+];
 
 export default function Demo() {
   const navigate = useNavigate();
   const { switchPersona } = useDemo();
 
-  const handleRoleSelect = (config: RoleConfig) => {
-    switchPersona(config.role);
-    navigate(config.destination);
+  const go = (role: UserRole, route: string) => {
+    switchPersona(role);
+    navigate(route);
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <MarketingShell maxWidth="max-w-6xl">
       <SEOHead
         title="Live demo"
         description="Try Tandava with a sample studio: schedule, bookings, memberships and check-in. No sign-up needed."
         canonical="/demo"
       />
-      {/* ================================================================ */}
-      {/* TOP BAR — Tandava Open Source Demo                               */}
-      {/* ================================================================ */}
-      <div className="sticky top-0 z-50 border-b border-white/10 bg-[#0a0712]/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2.5 sm:px-6">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400/60 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-400" />
-              </span>
-              <span className="text-sm font-semibold text-white/90">
-                Tandava demo studio
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link
-              to="/for-studios"
-              className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-            >
-              <span>For studios</span>
-            </Link>
-            <Link
-              to="/blog"
-              className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>Blog</span>
-            </Link>
-            <a
-              href="#explore"
-              className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-            >
-              <span>Try Demo</span>
-              <ArrowRight className="w-3 h-3" />
-            </a>
-          </div>
-        </div>
-      </div>
 
-      {/* ================================================================ */}
-      {/* HERO — What is Tandava                                           */}
-      {/* ================================================================ */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/5" />
-        <div className="absolute top-0 end-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-
-        <div className="relative max-w-6xl mx-auto px-6 pt-16 pb-20">
-          <div className="max-w-3xl">
-            <div className="flex items-center gap-2 mb-6">
-              <Code2 className="w-5 h-5 text-primary" />
-              <span className="text-sm font-medium text-primary">
-                Demo studio · sample data · nothing is saved
-              </span>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-semibold tracking-tight mb-6 leading-[1.1]">
-              See your studio{" "}
-              <span className="text-primary">running on Tandava</span>
+      <section className="mkt-grid">
+        <div className="max-w-6xl mx-auto grid items-center gap-12 px-6 pb-20 pt-12 sm:pt-20 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+          <div className="min-w-0">
+            <Eyebrow>Demo studio. Sample data. Nothing is saved.</Eyebrow>
+            <h1 className="mt-5 font-brand text-[2.55rem] font-extrabold leading-[0.95] tracking-[-0.045em] sm:text-[3.9rem]">
+              Click around a working studio <Band>before you set up yours.</Band>
             </h1>
-
-            <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mb-8">
-              Click through a working yoga studio as the owner, the front
-              desk, a teacher or a student. Schedule, memberships, payments,
-              check-in and reports, with sample data. When it looks right, set
-              up your own studio. We host it for you.
+            <p className="mt-7 max-w-[54ch] text-lg leading-relaxed text-ink/75">
+              {OXATL_STUDIO.name} is a made-up Austin studio with {OXATL_LOCATIONS.length} locations,{" "}
+              {OXATL_TEACHERS.length} teachers and {OXATL_CLASS_TYPES.length} kinds of class. Sit in any seat: owner,
+              front desk, teacher or member. Every screen is the one a live studio uses.
             </p>
-
-            <div className="mb-10 flex flex-wrap gap-3">
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <a
                 href="#explore"
-                className="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 text-base font-bold tracking-tight text-paper transition-colors hover:bg-plum focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2"
               >
-                Explore the Demo
-                <ArrowRight className="w-4 h-4" />
+                Pick a seat <ArrowRight className="h-4 w-4" aria-hidden />
               </a>
-              <Link
-                to={STUDIO_SIGNUP_HREF}
-                className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
-                Set up your studio
-              </Link>
+              <CtaLink to={STUDIO_SIGNUP_HREF} variant="secondary">Set up your studio</CtaLink>
             </div>
+          </div>
 
-            {/* What owners get */}
-            <ul className="grid max-w-3xl gap-3 rounded-2xl border border-border/70 bg-card/70 p-4 text-sm text-muted-foreground sm:grid-cols-2">
-              {[
-                "Booking page that works on a phone",
-                "Memberships, class packs and drop-ins",
-                "Payments straight to your Stripe account",
-                "Listed on Tandava Discover for students",
-              ].map((item) => (
-                <li key={item} className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-primary" />
-                  {item}
-                </li>
-              ))}
-            </ul>
+          <div aria-hidden className="relative mx-auto hidden h-[17rem] w-full max-w-[20rem] md:block">
+            <PassStub className="absolute left-0 top-0 w-[17rem] -rotate-6" label="Owner" name="Studio dashboard" detail="Money, classes, people" code="/manage" />
+            <PassStub className="absolute left-8 top-[5.25rem] w-[17rem] rotate-2" label="Front desk" name="Today's check-in" detail="Scan, search, kiosk" code="/staff" />
+            <PassStub className="absolute left-3 top-[10.5rem] w-[17rem] -rotate-2" label="Member" name="Book a class" detail="Packs, streaks, schedule" code="/home" status="In" />
           </div>
         </div>
       </section>
 
-      {/* ================================================================ */}
-      {/* WHO THIS IS FOR                                                  */}
-      {/* ================================================================ */}
-      <section className="border-t border-border bg-card/30">
-        <div className="max-w-6xl mx-auto px-6 py-14">
-          <div className="grid gap-8 md:grid-cols-2">
-            <div className="rounded-2xl border border-border/80 bg-background/70 p-6">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-accent-sage" />
-                A good fit
-              </h2>
-              <ul className="space-y-3">
-                {[
-                  "Independent yoga, pilates and movement studios",
-                  "Owners who want students to book from a phone in one step",
-                  "Studios paying per-member fees that grow faster than they do",
-                  "Owners who want their data exportable, any time",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                    <CheckCircle2 className="w-4 h-4 text-accent-sage shrink-0 mt-0.5" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="rounded-2xl border border-border/80 bg-background/70 p-6">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <Layers className="w-5 h-5 text-muted-foreground" />
-                Not yet
-              </h2>
-              <ul className="space-y-3">
-                {[
-                  "Large multi-site chains with franchise reporting",
-                  "Gyms built around equipment booking rather than classes",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                    <span className="w-4 h-4 shrink-0 mt-0.5 text-center text-xs text-muted-foreground/50">-</span>
-                    {item}
-                  </li>
-                ))}
-                <li className="text-xs text-muted-foreground/70 ps-6 pt-1">
-                  We are onboarding our first studios in Austin and working with each owner directly.
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* FEATURE HIGHLIGHTS — Quick overview                              */}
-      {/* ================================================================ */}
-      <section className="border-t border-border">
-        <div className="max-w-6xl mx-auto px-6 py-14">
-          <h2 className="text-2xl font-display font-semibold mb-2">
-            What you get
-          </h2>
-          <p className="text-muted-foreground mb-8">
-            Everything a studio needs — scheduling, payments, analytics, and
-            more
-          </p>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {FEATURE_HIGHLIGHTS.map((feat) => {
-              const Icon = feat.icon;
-              return (
-                <div
-                  key={feat.label}
-                  className="flex items-start gap-3 rounded-xl border bg-card p-4 shadow-sm transition-all hover:border-primary/30 hover:shadow-md"
-                >
-                  <Icon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm font-medium">{feat.label}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {feat.description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* EXPLORE THE PLATFORM — Role Picker                               */}
-      {/* ================================================================ */}
-      <section
+      <Section
         id="explore"
-        className="border-t border-border bg-gradient-to-b from-card/50 to-background"
+        eyebrow="Pick a seat"
+        title="Who do you want to be?"
+        lead="You can switch seats any time from the bar at the top of the demo."
+        className="scroll-mt-6 pt-4"
       >
-        <div className="max-w-6xl mx-auto px-6 py-16">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-display font-semibold mb-3">
-              Explore the platform
+        <ul className="divide-y divide-ink/15 border-y border-ink/15">
+          {ROLES.map((r, i) => (
+            <li key={r.role} className="grid gap-4 py-6 sm:grid-cols-[3rem_minmax(0,1fr)_auto] sm:items-center">
+              <span className="hidden font-brand-mono text-sm font-semibold tabular-nums text-ink/60 sm:block">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div className="min-w-0">
+                <p className="font-brand text-2xl font-extrabold tracking-tight">{r.tag}</p>
+                <p className="mt-1 text-ink/70">{r.description}</p>
+                <p className="mt-2 font-brand-mono text-xs uppercase tracking-[0.12em] text-ink/60">{r.sees.join("  /  ")}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => go(r.role, r.destination)}
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border-2 border-ink px-5 font-bold tracking-tight transition-colors hover:bg-ink hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 active:translate-y-px"
+              >
+                Enter as {r.title} <ArrowRight className="h-4 w-4" aria-hidden />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section
+        id="screens"
+        eyebrow="Screen index"
+        title="Or jump to one screen."
+        lead="Each link opens the screen as the person who'd use it."
+        className="mt-20"
+      >
+        <div className="grid gap-x-10 gap-y-10 lg:grid-cols-2">
+          {SCREEN_GROUPS.map((g) => (
+            <div key={g.title} className="min-w-0">
+              <h3 className="font-brand-mono text-xs font-semibold uppercase tracking-[0.18em] text-ink/60">{g.title}</h3>
+              <ul className="mt-3 divide-y divide-ink/10 border-y border-ink/15">
+                {g.screens.map((s) => (
+                  <li key={s.name}>
+                    <button
+                      type="button"
+                      onClick={() => go(s.role, s.route)}
+                      className="group grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 py-3 text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
+                    >
+                      <span className="min-w-0">
+                        <span className="block font-semibold group-hover:underline group-hover:underline-offset-4">{s.name}</span>
+                        <span className="block text-sm text-ink/65">{s.description}</span>
+                      </span>
+                      <span className="flex items-center gap-2">
+                        <span className="rounded-full bg-ink/5 px-2 py-0.5 font-brand-mono text-[0.65rem] font-semibold uppercase tracking-wide text-ink/70">
+                          {TAG[s.role]}
+                        </span>
+                        <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden />
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section id="fit" eyebrow="Fit" title="Who it suits today." className="mt-20">
+        <div className="grid gap-10 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+          <div className="min-w-0">
+            <TickList
+              items={[
+                "Independent yoga, pilates and movement studios",
+                "Owners who want students to book from a phone in one step",
+                "Studios paying per-member fees that grow faster than they do",
+                "Owners who want their data exportable, any time",
+              ]}
+            />
+          </div>
+          <div className="min-w-0 rounded-2xl border-2 border-dashed border-ink/30 p-5">
+            <p className="font-brand-mono text-xs font-semibold uppercase tracking-[0.18em] text-ink/60">Not yet</p>
+            <ul className="mt-3 space-y-2 text-[0.95rem] text-ink/75">
+              <li>Large chains that need franchise reporting</li>
+              <li>Gyms built around booking equipment rather than classes</li>
+            </ul>
+            <p className="mt-4 text-sm text-ink/60">We're onboarding our first studios in Austin and working with each owner directly.</p>
+          </div>
+        </div>
+      </Section>
+
+      <Section id="questions" eyebrow="Questions" title="Before you ask." className="mt-20">
+        <div className="divide-y divide-ink/15 border-y border-ink/15">
+          {FAQ_ITEMS.map((f) => (
+            <details key={f.q} className="group py-1">
+              <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 py-2 font-brand text-lg font-bold tracking-tight [&::-webkit-details-marker]:hidden">
+                {f.q}
+                <span aria-hidden className="font-brand-mono text-xl font-semibold text-ink/60 transition-transform group-open:rotate-45">+</span>
+              </summary>
+              <p className="max-w-[62ch] pb-4 leading-relaxed text-ink/70">{f.a}</p>
+            </details>
+          ))}
+        </div>
+        <p className="mt-6 text-sm text-ink/65">
+          Technical and want to run it yourself?{" "}
+          <Link to="/open-source" className="font-semibold underline underline-offset-4">Self-hosting and the code</Link>.
+        </p>
+      </Section>
+
+      <section className="mt-20 bg-lime" aria-labelledby="demo-cta">
+        <div className="max-w-6xl mx-auto grid gap-6 px-6 py-12 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+          <div className="min-w-0">
+            <h2 id="demo-cta" className="font-brand text-3xl font-extrabold tracking-[-0.03em] sm:text-[2.6rem]">
+              Ready for your own studio?
             </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
-              This demo loads{" "}
-              <strong className="text-foreground">{OXATL_STUDIO.name}</strong>,
-              a fictional Austin studio with {OXATL_LOCATIONS.length} locations,{" "}
-              {OXATL_TEACHERS.length} teachers, and {OXATL_CLASS_TYPES.length}{" "}
-              class types. Pick a role to see how Tandava works for everyone.
+            <p className="mt-3 max-w-[60ch] text-ink/80">
+              Add your classes, prices and Stripe. Your booking page goes live when you publish the schedule.
             </p>
           </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {ROLES.map((config) => {
-              const Icon = config.icon;
-              return (
-                <button
-                  key={config.role}
-                  onClick={() => handleRoleSelect(config)}
-                  className={`group relative min-h-[320px] text-start rounded-2xl border bg-gradient-to-br ${config.bg} p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 motion-reduce:transform-none`}
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div
-                      className={`w-11 h-11 rounded-xl bg-card/50 flex items-center justify-center ${config.accent}`}
-                    >
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <h3 className="text-lg font-semibold">{config.title}</h3>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                    {config.description}
-                  </p>
-                  <ul className="space-y-1.5 mb-5">
-                    {config.features.map((f) => (
-                      <li
-                        key={f}
-                        className="text-xs text-muted-foreground flex items-center gap-1.5"
-                      >
-                        <CheckCircle2 className="w-3 h-3 text-primary/60" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <div
-                    className={`flex items-center gap-2 text-sm font-medium ${config.accent} transition-all group-hover:gap-3`}
-                  >
-                    Enter as {config.title}
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+          <CtaLink to={STUDIO_SIGNUP_HREF}>
+            Set up your studio <ArrowRight className="h-4 w-4" aria-hidden />
+          </CtaLink>
         </div>
       </section>
-
-      {/* ================================================================ */}
-      {/* FULL FEATURE LIST                                                */}
-      {/* ================================================================ */}
-      <section id="features" className="border-t border-border bg-card/20">
-        <div className="max-w-6xl mx-auto px-6 py-14">
-          <h2 className="text-2xl font-display font-semibold mb-2">
-            All features
-          </h2>
-          <p className="text-muted-foreground mb-8">
-            Click any feature to see it in action
-          </p>
-
-          <div className="space-y-10">
-            {FEATURE_CATEGORIES.map((category) => (
-              <div
-                key={category.title}
-                className="rounded-2xl border border-border/80 bg-background/70 p-5 sm:p-6"
-              >
-                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                  {category.title}
-                </h3>
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {category.features.map((feat) => {
-                    const Icon = feat.icon;
-                    return (
-                      <button
-                        key={feat.name}
-                        onClick={() => {
-                          switchPersona(feat.demoRole);
-                          navigate(feat.demoRoute);
-                        }}
-                        className="group rounded-xl border bg-card p-4 text-start transition-all hover:border-primary/30 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                      >
-                        <div className="flex items-center gap-2.5 mb-2">
-                          <Icon className="w-4 h-4 text-primary" />
-                          <span className="text-sm font-medium group-hover:text-primary transition-colors">
-                            {feat.name}
-                          </span>
-                        </div>
-                        <p className="text-xs text-muted-foreground leading-relaxed">
-                          {feat.description}
-                        </p>
-                        <div className="mt-2 flex items-center gap-1 text-xs text-primary/90 transition-colors group-hover:text-primary">
-                          Try it <ArrowRight className="w-3 h-3" />
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* FAQ                                                               */}
-      {/* ================================================================ */}
-      <section className="border-t border-border">
-        <div className="max-w-3xl mx-auto px-6 py-14">
-          <h2 className="text-2xl font-display font-semibold mb-6">FAQ</h2>
-          <div className="space-y-2">
-            {FAQ_ITEMS.map((item, i) => (
-              <FAQAccordion key={i} item={item} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* OPEN SOURCE                                                      */}
-      {/* ================================================================ */}
-      <section className="border-t border-border bg-card/30">
-        <div className="max-w-3xl mx-auto px-6 py-14 text-center">
-          <p className="text-sm text-muted-foreground">
-            Technical and want to run it yourself? Tandava is open source.{" "}
-            <Link to="/open-source" className="text-primary hover:underline">
-              Self-hosting and the code
-            </Link>
-            .
-          </p>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* CTA — Try the Demo                                               */}
-      {/* ================================================================ */}
-      <section className="border-t border-border bg-gradient-to-br from-primary/10 to-background">
-        <div className="max-w-6xl mx-auto px-6 py-14 text-center">
-          <h2 className="text-2xl font-display font-semibold mb-3">
-            Ready for your own studio?
-          </h2>
-          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            Set up takes a few minutes: your classes, prices and Stripe. Your
-            booking page goes live when you publish the schedule.
-          </p>
-          <Link
-            to={STUDIO_SIGNUP_HREF}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-          >
-            Set up your studio
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </section>
-
-      {/* ================================================================ */}
-      {/* FOOTER                                                           */}
-      {/* ================================================================ */}
-      <footer className="border-t border-border py-8 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-3">
-            <span className="font-medium text-foreground">Tandava</span>
-            <span>·</span>
-            <span>Studio software and class discovery</span>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
-            <Link to="/for-studios" className="hover:text-foreground">For studios</Link>
-            <Link to="/discover" className="hover:text-foreground">Find a class</Link>
-            <Link to="/open-source" className="hover:text-foreground">Open source</Link>
-            {LEGAL_LINKS.map((l) => (
-              <Link key={l.to} to={l.to} className="hover:text-foreground">{l.label}</Link>
-            ))}
-          </div>
-        </div>
-      </footer>
-    </div>
+    </MarketingShell>
   );
 }

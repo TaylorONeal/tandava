@@ -17,6 +17,11 @@ export const offersSignUp = () => allowsSignUp(nativeApp);
 export function authRedirectOrigin(app: NativeApp | null, browserOrigin: string): string {
   return app === null ? browserOrigin : 'https://tandavastudio.com';
 }
+// Links people share or embed (booking pages, QR codes, embed snippets) must point at
+// the public site in the native apps, where window.location.origin is capacitor://localhost.
+export function publicWebOrigin(app: NativeApp | null, browserOrigin: string): string {
+  return authRedirectOrigin(app, browserOrigin);
+}
 export function nativeHome(app: NativeApp, signedIn: boolean, canManage: boolean, canTeach: boolean): string {
   if (app === 'member') return signedIn ? '/my-schedule' : '/discover';
   if (!signedIn) return '/auth/login?next=%2F';

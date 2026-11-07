@@ -125,7 +125,7 @@ function TierBadge({ tier }: { tier?: 'free' | 'pro' | 'enterprise' }) {
 
   const colors = {
     pro: 'bg-amber-100 text-amber-800 border-amber-200',
-    enterprise: 'bg-violet-100 text-violet-800 border-violet-200',
+    enterprise: 'bg-primary text-primary-foreground border-primary',
   };
 
   return (
@@ -153,9 +153,9 @@ function ToggleSwitch({ enabled, disabled, onChange }: ToggleSwitchProps) {
       onClick={() => onChange(!enabled)}
       className={`
         relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent
-        transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2
+        transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2
         ${disabled ? 'cursor-not-allowed opacity-50' : ''}
-        ${enabled ? 'bg-stone-800' : 'bg-stone-300'}
+        ${enabled ? 'bg-primary' : 'bg-input'}
       `}
     >
       <span
@@ -208,17 +208,17 @@ function FeatureCard({
       className={`
         relative p-4 rounded-lg border transition-all duration-200
         ${feature.isCore
-          ? 'bg-stone-50 border-stone-200'
+          ? 'bg-muted/50 border-border'
           : isEnabled
-            ? 'bg-white border-stone-200 shadow-sm'
-            : 'bg-stone-50/50 border-stone-100'
+            ? 'bg-card border-border shadow-sm'
+            : 'bg-muted/30 border-border'
         }
       `}
     >
       {/* Core badge */}
       {feature.isCore && (
         <div className="absolute top-3 end-3">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-stone-200 text-stone-600">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-secondary text-muted-foreground">
             <LockIcon className="w-3 h-3" />
             Core
           </span>
@@ -228,13 +228,13 @@ function FeatureCard({
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h4 className={`font-medium ${isEnabled ? 'text-stone-900' : 'text-stone-500'}`}>
+            <h4 className={`font-medium ${isEnabled ? 'text-foreground' : 'text-muted-foreground'}`}>
               {feature.name}
             </h4>
             <TierBadge tier={feature.tier} />
           </div>
 
-          <p className={`text-sm ${isEnabled ? 'text-stone-600' : 'text-stone-400'}`}>
+          <p className={`text-sm ${isEnabled ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
             {feature.description}
           </p>
 
@@ -250,7 +250,7 @@ function FeatureCard({
 
           {/* Show what depends on this */}
           {dependentFeatures.length > 0 && isEnabled && (
-            <div className="mt-2 flex items-start gap-1.5 text-xs text-stone-500">
+            <div className="mt-2 flex items-start gap-1.5 text-xs text-muted-foreground">
               <InfoIcon className="w-4 h-4 flex-shrink-0 mt-0.5" />
               <span>
                 Used by: {dependentFeatures.map(d => d.name).join(', ')}
@@ -298,18 +298,18 @@ function CategorySection({
   const enabledCount = features.filter(f => enabledFeatures.has(f.id)).length;
 
   return (
-    <div className="border border-stone-200 rounded-xl overflow-hidden bg-white">
+    <div className="border border-border rounded-xl overflow-hidden bg-card">
       {/* Category header */}
-      <div className="px-5 py-4 bg-stone-50 border-b border-stone-200">
+      <div className="px-5 py-4 bg-muted/50 border-b border-border">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-stone-200 flex items-center justify-center">
-            <IconComponent className="w-5 h-5 text-stone-600" />
+          <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
+            <IconComponent className="w-5 h-5 text-muted-foreground" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-stone-900">{info.name}</h3>
-            <p className="text-sm text-stone-500">{info.description}</p>
+            <h3 className="font-semibold text-foreground">{info.name}</h3>
+            <p className="text-sm text-muted-foreground">{info.description}</p>
           </div>
-          <div className="text-sm text-stone-500">
+          <div className="text-sm text-muted-foreground">
             {enabledCount} / {features.length} enabled
           </div>
         </div>
@@ -354,28 +354,28 @@ function DependencyWarningModal({
   if (!isOpen || !feature) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/40">
+      <div className="bg-card rounded-xl shadow-xl max-w-md w-full p-6">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
             <AlertIcon className="w-6 h-6 text-amber-600" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-stone-900">
+            <h3 className="text-lg font-semibold text-foreground">
               Disable {feature.name}?
             </h3>
-            <p className="mt-2 text-sm text-stone-600">
+            <p className="mt-2 text-sm text-muted-foreground">
               The following features depend on <strong>{feature.name}</strong> and will also be disabled:
             </p>
             <ul className="mt-3 space-y-1">
               {dependents.map(d => (
-                <li key={d.id} className="text-sm text-stone-700 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-stone-400" />
+                <li key={d.id} className="text-sm text-foreground flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground" />
                   {d.name}
                 </li>
               ))}
             </ul>
-            <p className="mt-3 text-sm text-stone-500">
+            <p className="mt-3 text-sm text-muted-foreground">
               Settings for these features will be preserved and can be re-enabled later.
             </p>
           </div>
@@ -384,13 +384,13 @@ function DependencyWarningModal({
         <div className="mt-6 flex justify-end gap-3">
           <button
             onClick={onCancel}
-            className="px-4 py-2 text-sm font-medium text-stone-700 hover:bg-stone-100 rounded-lg transition-colors"
+            className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
           >
             Keep Enabled
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors"
+            className="px-4 py-2 text-sm font-medium text-warning-foreground bg-warning hover:bg-warning/90 rounded-lg transition-colors"
           >
             Disable All
           </button>
@@ -420,7 +420,7 @@ function StatsOverview({ enabledFeatures }: StatsOverviewProps) {
       label: 'Features Enabled',
       value: enabledOptional,
       total: optionalFeatures.length,
-      color: 'text-stone-900',
+      color: 'text-foreground',
     },
     {
       label: 'Pro Features',
@@ -432,18 +432,18 @@ function StatsOverview({ enabledFeatures }: StatsOverviewProps) {
       label: 'Enterprise Features',
       value: enterpriseFeatures.filter(f => enabledFeatures.has(f.id)).length,
       total: enterpriseFeatures.length,
-      color: 'text-violet-600',
+      color: 'text-foreground',
     },
   ];
 
   return (
     <div className="grid grid-cols-3 gap-4">
       {stats.map(stat => (
-        <div key={stat.label} className="bg-white rounded-xl border border-stone-200 p-4">
-          <p className="text-sm text-stone-500">{stat.label}</p>
+        <div key={stat.label} className="bg-card rounded-xl border border-border p-4">
+          <p className="text-sm text-muted-foreground">{stat.label}</p>
           <p className={`mt-1 text-2xl font-semibold ${stat.color}`}>
             {stat.value}
-            <span className="text-base font-normal text-stone-400"> / {stat.total}</span>
+            <span className="text-base font-normal text-muted-foreground"> / {stat.total}</span>
           </p>
         </div>
       ))}
@@ -521,19 +521,19 @@ export default function FeatureSettings() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-100">
+    <div className="min-h-screen bg-muted">
       {/* Hero header */}
-      <div className="bg-gradient-to-br from-stone-800 via-stone-900 to-stone-800 text-white">
+      <div className="bg-card border-b border-border text-foreground">
         <div className="max-w-5xl mx-auto px-6 py-12">
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-accent text-accent-foreground flex items-center justify-center">
                   <SparkleIcon className="w-5 h-5" />
                 </div>
                 <h1 className="text-3xl font-bold tracking-tight">Feature Settings</h1>
               </div>
-              <p className="text-stone-300 max-w-xl">
+              <p className="text-muted-foreground max-w-xl">
                 Enable or disable optional features for your studio. Core features are always available.
                 Settings are preserved when features are disabled.
               </p>
@@ -543,7 +543,7 @@ export default function FeatureSettings() {
             {hasChanges && (
               <button
                 onClick={handleSave}
-                className="px-5 py-2.5 bg-white text-stone-900 font-medium rounded-lg hover:bg-stone-100 transition-colors flex items-center gap-2"
+                className="px-5 py-2.5 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
               >
                 <CheckIcon className="w-4 h-4" />
                 Save Changes
@@ -559,10 +559,10 @@ export default function FeatureSettings() {
         <StatsOverview enabledFeatures={enabledFeatures} />
 
         {/* Info banner */}
-        <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 flex items-start gap-3">
-          <InfoIcon className="w-5 h-5 text-stone-500 flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-stone-600">
-            <p className="font-medium text-stone-700">How feature toggles work</p>
+        <div className="bg-muted/50 border border-border rounded-xl p-4 flex items-start gap-3">
+          <InfoIcon className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+          <div className="text-sm text-muted-foreground">
+            <p className="font-medium text-foreground">How feature toggles work</p>
             <p className="mt-1">
               When you disable a feature, all its settings and data are preserved.
               The feature will appear grayed out in your navigation, and you can
