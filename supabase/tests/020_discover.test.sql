@@ -73,6 +73,6 @@ DO $$
 BEGIN
   -- DISC-07: anon cannot read the base tables behind the RPC directly
   PERFORM pg_temp.as_anon();
-  PERFORM pg_temp.ok((SELECT count(*) FROM class_occurrences) = 0, 'DISC-07', 'anon cannot read class_occurrences directly');
+  PERFORM pg_temp.expect_denied('SELECT * FROM class_occurrences', 'DISC-07');
   EXECUTE 'RESET ROLE';
 END $$;

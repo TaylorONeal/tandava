@@ -1,3 +1,5 @@
+import { apiErrorMessage } from "./apiError";
+import { nativeApp, blocksNativePayment, authRedirectOrigin, allowsSignUp } from '@/lib/native/platform';
 /**
  * Supabase Backend Provider
  *
@@ -27,6 +29,7 @@ import type {
   DataProvider,
   TeachingClass,
   TeachingAttendee,
+  PassScan,
   DataResult,
   MutationResult,
   CreateMessageInput,
@@ -104,6 +107,9 @@ const supabaseAuth: AuthProvider = {
   },
 
   async signUpWithEmail(email, password, metadata: SignUpMetadata, next) {
+    if (!allowsSignUp(nativeApp)) {
+      return { error: { message: "Accounts are created on the web at tandavastudio.com." }, requiresEmailConfirmation: false };
+    }
     const path = safeNextPath(next);
     const { data, error } = await getClient().auth.signUp({
       email,
@@ -113,7 +119,7 @@ const supabaseAuth: AuthProvider = {
         ...captchaOption(),
         // The confirmation link lands on the callback, which forwards to `next`
         // (e.g. the class someone was booking when they registered).
-        emailRedirectTo: `${window.location.origin}/auth/callback${path === "/" ? "" : `?next=${encodeURIComponent(path)}`}`,
+        emailRedirectTo: `${authRedirectOrigin(nativeApp, window.location.origin)}/auth/callback${path === "/" ? "" : `?next=${encodeURIComponent(path)}`}`,
       },
     });
     // A user without a session means Supabase is waiting for email confirmation.
@@ -145,7 +151,7 @@ const supabaseAuth: AuthProvider = {
     if (options?.claim) params.set("claim", "1");
     const query = params.toString();
     const { error } = await getClient().auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-confirm${query ? `?${query}` : ""}`,
+      redirectTo: `${authRedirectOrigin(nativeApp, window.location.origin)}/auth/reset-confirm${query ? `?${query}` : ""}`,
       ...captchaOption(),
     });
     return { error: mapError(error) };
@@ -162,7 +168,7 @@ const supabaseAuth: AuthProvider = {
       type: "signup",
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback${path === "/" ? "" : `?next=${encodeURIComponent(path)}`}`,
+        emailRedirectTo: `${authRedirectOrigin(nativeApp, window.location.origin)}/auth/callback${path === "/" ? "" : `?next=${encodeURIComponent(path)}`}`,
         ...captchaOption(),
       },
     });
@@ -198,6 +204,13 @@ const supabaseData: DataProvider = {
   async checkInTeachingBooking(bookingId): Promise<DataResult<Booking>> {
     const { data, error } = await getClient().rpc("check_in_teaching_booking" as never, { p_booking_id: bookingId } as never);
     return { data: data as Booking | null, error: error ? { message: error.message } : null };
+  },
+  async checkInWithPass(pass): Promise<DataResult<PassScan>> {
+    const { data, error } = await getClient().rpc("check_in_with_pass" as never, { p_pass: pass } as never);
+    const rows = data as unknown as PassScan[] | null;
+    const row = Array.isArray(rows) ? rows[0] : undefined;
+    if (error) return { data: null, error: { message: error.message } };
+    return row ? { data: row, error: null } : { data: null, error: { message: "The scan was not confirmed. Try again." } };
   },
   async markProfileClaimed(userId): Promise<MutationResult> {
     // RLS "Users can update own profile" scopes this to the caller. The
@@ -626,11 +639,18 @@ const supabaseData: DataProvider = {
 
 const supabaseApi: ApiProvider = {
   async invoke<T = unknown>(functionName: string, body: Record<string, unknown>): Promise<ApiResult<T>> {
-    const { data, error } = await getClient().functions.invoke(functionName, { body });
+    // Native purchase routing cannot be disabled by a request body.
+    if (blocksNativePayment(nativeApp, functionName)) {
+      return { data: null, error: { message: 'Purchases are not available in this app yet. Sign in to book with existing credits or choose a free class.' } };
+    }
+    const endpoint = nativeApp && functionName === 'stripe-checkout' ? 'native-checkout'
+      : nativeApp && functionName === 'stripe-portal' ? 'native-portal' : functionName;
+    const requestBody = nativeApp && ['native-checkout', 'native-portal'].includes(endpoint) ? { ...body, nativeApp } : body;
+    const { data, error } = await getClient().functions.invoke(endpoint, { body: requestBody });
 
     return {
       data: data as T | null,
-      error: error ? { message: error.message } : null,
+      error: error ? { message: await apiErrorMessage(error) } : null,
     };
   },
 };

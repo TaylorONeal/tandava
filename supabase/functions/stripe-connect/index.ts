@@ -70,12 +70,13 @@ serve(async (req) => {
 
   const db = createClient(supabaseUrl, serviceKey);
 
-  // Only the studio's owner can manage its Stripe connection.
+  // Deactivated staff retain their auth account, but lose studio access.
   const { data: ownerRow } = await db
     .from("studio_staff")
     .select("studio_id")
     .eq("profile_id", user.id)
     .eq("role", "owner")
+    .eq("is_active", true)
     .limit(1)
     .maybeSingle();
   if (!ownerRow) return json({ error: "No studio found for this account" }, 403);

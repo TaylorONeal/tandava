@@ -1,0 +1,111 @@
+\i helpers.sql
+BEGIN;
+-- Synthetic Auth catalog only. Never perform Auth mutations this way in hosted Supabase.
+ALTER TABLE auth.users ADD COLUMN IF NOT EXISTS banned_until timestamptz;
+CREATE TABLE IF NOT EXISTS auth.sessions(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),user_id uuid REFERENCES auth.users(id));
+DO $$
+DECLARE req uuid; review uuid; manifest jsonb; lease jsonb; token uuid; msg text; result jsonb;
+  before_financial jsonb; after_financial jsonb; new_token uuid; profile_before jsonb;
+BEGIN
+  PERFORM set_config('request.jwt.claim.sub','',true);
+  INSERT INTO account_deletion_requests(profile_id) VALUES(pg_temp.id('student_a1')) RETURNING id INTO req;
+  review := record_account_deletion_review(req,preview_account_deletion(req),'TEST-ONLY-POLICY','TEST-ONLY-OPERATOR');
+  manifest := jsonb_build_object('version',1,'policy_reference','TEST-ONLY-POLICY','operator_reference','TEST-ONLY-OPERATOR',
+    'profile_action','erase','financial_action','retain','financial_reason','SYNTHETIC TEST ONLY',
+    'financial_processor','SYNTHETIC TEST ONLY','financial_expires_at',to_char(clock_timestamp()+interval '1 day','YYYY-MM-DD"T"HH24:MI:SSOF'));
+  SELECT to_jsonb(p) INTO profile_before FROM profiles p WHERE id=pg_temp.id('student_a1');
+  PERFORM pg_temp.as_user(pg_temp.id('student_a1')); msg:=NULL;
+  BEGIN PERFORM begin_account_deletion_execution(req,review,manifest); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  EXECUTE 'RESET ROLE'; PERFORM set_config('request.jwt.claim.sub','',true);
+  PERFORM pg_temp.ok(msg LIKE 'permission denied%', 'EXEC-01','member cannot acquire execution');
+  PERFORM pg_temp.as_anon(); msg:=NULL;
+  BEGIN PERFORM scrub_account_deletion_profile(req,gen_random_uuid()); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  EXECUTE 'RESET ROLE'; PERFORM set_config('request.jwt.claim.sub','',true);
+  PERFORM pg_temp.ok(msg LIKE 'permission denied%', 'EXEC-02','anonymous cannot scrub');
+  msg:=NULL;
+  BEGIN PERFORM begin_account_deletion_execution(req,review,manifest-'financial_reason'); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  PERFORM pg_temp.ok(msg IS NOT NULL,'EXEC-03','missing financial retention reason refused');
+  EXECUTE 'SET LOCAL ROLE service_role';
+  lease:=begin_account_deletion_execution(req,review,manifest);
+  EXECUTE 'RESET ROLE'; token:=(lease->>'lease_token')::uuid;
+  PERFORM pg_temp.ok(lease->>'state'='access_blocked' AND (SELECT to_jsonb(p) FROM profiles p WHERE id=pg_temp.id('student_a1'))=profile_before,'EXEC-04','cutoff does not itself scrub profile');
+  msg:=NULL;
+  BEGIN PERFORM begin_account_deletion_execution(req,review,manifest); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  PERFORM pg_temp.ok(msg LIKE 'Execution lease is active%','EXEC-05','concurrent/repeated acquire denied while lease active');
+  PERFORM pg_temp.as_user(pg_temp.id('student_a1')); msg:=NULL;
+  BEGIN UPDATE profiles SET first_name='Repopulated' WHERE id=pg_temp.id('student_a1'); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  EXECUTE 'RESET ROLE'; PERFORM set_config('request.jwt.claim.sub','',true);
+  PERFORM pg_temp.ok(msg LIKE 'Account deletion is processing%','EXEC-06','old JWT cannot write its profile');
+  PERFORM pg_temp.as_user(pg_temp.id('student_a1')); msg:=NULL;
+  BEGIN result:=book_class_auto(pg_temp.id('occ_a_open')); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  EXECUTE 'RESET ROLE'; PERFORM set_config('request.jwt.claim.sub','',true);
+  PERFORM pg_temp.ok(msg LIKE 'Account deletion is processing%' AND NOT EXISTS(SELECT 1 FROM bookings WHERE profile_id=pg_temp.id('student_a1')) AND (SELECT classes_remaining FROM class_packs WHERE id=pg_temp.id('pack_a1'))=5,'EXEC-07','security-definer booking cannot bypass actor cutoff or spend credit');
+  PERFORM pg_temp.as_user(pg_temp.id('student_a2'));
+  UPDATE profiles SET first_name='Unaffected member' WHERE id=pg_temp.id('student_a2');
+  EXECUTE 'RESET ROLE'; PERFORM set_config('request.jwt.claim.sub','',true);
+  PERFORM pg_temp.ok((SELECT first_name FROM profiles WHERE id=pg_temp.id('student_a2'))='Unaffected member','EXEC-08','other member writes unaffected');
+  msg:=NULL;
+  BEGIN PERFORM scrub_account_deletion_profile(req,token); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  PERFORM pg_temp.ok(msg LIKE 'Auth administration ban%','EXEC-09','scrub waits for verified Auth ban');
+  UPDATE auth.users SET banned_until=clock_timestamp()+interval '1 day' WHERE id=pg_temp.id('student_a1');
+  INSERT INTO auth.sessions(user_id) VALUES(pg_temp.id('student_a1'));
+  msg:=NULL;
+  BEGIN PERFORM scrub_account_deletion_profile(req,token); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  PERFORM pg_temp.ok(msg LIKE 'Revoke Auth sessions%','EXEC-10','live refresh session blocks scrub');
+  DELETE FROM auth.sessions WHERE user_id=pg_temp.id('student_a1');
+  INSERT INTO studio_staff(studio_id,profile_id,role,is_active) VALUES(pg_temp.id('studio_c'),pg_temp.id('student_a1'),'owner',true);
+  msg:=NULL;
+  BEGIN PERFORM scrub_account_deletion_profile(req,token); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  PERFORM pg_temp.ok(msg LIKE 'Transfer ownership%','EXEC-11','ownership changes after cutoff block scrub');
+  DELETE FROM studio_staff WHERE studio_id=pg_temp.id('studio_c') AND profile_id=pg_temp.id('student_a1');
+  ALTER TABLE profiles ADD COLUMN unreviewed_personal_data text;
+  msg:=NULL;
+  BEGIN PERFORM scrub_account_deletion_profile(req,token); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  PERFORM pg_temp.ok(msg LIKE 'Profile schema changed%','EXEC-12','new profile column requires adapter review');
+  ALTER TABLE profiles DROP COLUMN unreviewed_personal_data;
+  -- A synthetic slow row trigger expires the lease after entry. The scrub and
+  -- checkpoint must roll back together; checking only at entry is insufficient.
+  CREATE FUNCTION pg_temp.slow_profile_write() RETURNS trigger LANGUAGE plpgsql AS $slow$
+  BEGIN PERFORM pg_sleep(1); RETURN NEW; END $slow$;
+  CREATE TRIGGER test_slow_profile_write BEFORE UPDATE ON profiles FOR EACH ROW EXECUTE FUNCTION pg_temp.slow_profile_write();
+  UPDATE account_deletion_executions SET lease_until=clock_timestamp()+interval '500 milliseconds' WHERE request_id=req;
+  msg:=NULL;
+  BEGIN PERFORM scrub_account_deletion_profile(req,token); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  DROP TRIGGER test_slow_profile_write ON profiles;
+  PERFORM pg_temp.ok(msg='Execution lease expired during profile mutation'
+    AND (SELECT to_jsonb(p) FROM profiles p WHERE id=pg_temp.id('student_a1'))=profile_before
+    AND (SELECT state FROM account_deletion_executions WHERE request_id=req)='access_blocked',
+    'EXEC-21','expiry during a slow profile write rolls back personal-data changes and checkpoint');
+  UPDATE account_deletion_executions SET lease_until=clock_timestamp()+interval '15 minutes' WHERE request_id=req;
+  SELECT jsonb_agg(to_jsonb(t) ORDER BY id) INTO before_financial FROM transactions t;
+  EXECUTE 'SET LOCAL ROLE service_role'; result:=scrub_account_deletion_profile(req,token); EXECUTE 'RESET ROLE';
+  SELECT jsonb_agg(to_jsonb(t) ORDER BY id) INTO after_financial FROM transactions t;
+  PERFORM pg_temp.ok(before_financial=after_financial AND result->>'profile_scrubbed'='true' AND result->>'account_completed'='false','EXEC-13','actual profile adapter preserves transactions and never claims account completion');
+  PERFORM pg_temp.ok((SELECT email FROM profiles WHERE id=pg_temp.id('student_a1')) LIKE 'deleted+%@invalid.example' AND
+    (SELECT status FROM account_deletion_requests WHERE id=req)='processing','EXEC-14','profile tombstone retains relationships; request remains processing');
+  PERFORM scrub_account_deletion_profile(req,token);
+  UPDATE account_deletion_executions SET lease_until=clock_timestamp()-interval '1 second' WHERE request_id=req;
+  lease:=begin_account_deletion_execution(req,review,manifest);new_token:=(lease->>'lease_token')::uuid;
+  msg:=NULL;
+  BEGIN PERFORM scrub_account_deletion_profile(req,token); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  PERFORM pg_temp.ok(new_token<>token AND msg LIKE 'Current execution lease%','EXEC-15','expired worker fenced after lease recovery');
+  PERFORM scrub_account_deletion_profile(req,new_token);
+  msg:=NULL;
+  BEGIN PERFORM begin_account_deletion_execution(req,review,manifest||'{"financial_reason":"changed"}'); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  PERFORM pg_temp.ok(msg LIKE 'Execution manifest is immutable%','EXEC-16','retry cannot alter approved policy');
+  EXECUTE 'SET LOCAL ROLE service_role';msg:=NULL;
+  BEGIN DELETE FROM account_deletion_executions WHERE request_id=req; EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(msg LIKE 'permission denied%','EXEC-17','worker cannot remove execution history or cutoff directly');
+  EXECUTE 'SET LOCAL ROLE service_role';msg:=NULL;
+  BEGIN UPDATE account_deletion_requests SET status='completed',completed_at=clock_timestamp() WHERE id=req; EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.ok(msg LIKE 'permission denied%','EXEC-18','worker cannot bypass verification with a completion status toggle');
+  CREATE TABLE unprotected_future_table(id uuid);
+  msg:=NULL;
+  BEGIN PERFORM begin_account_deletion_execution(req,review,manifest); EXCEPTION WHEN OTHERS THEN msg:=SQLERRM; END;
+  PERFORM pg_temp.ok(msg LIKE 'Unprotected table%','EXEC-19','new tables without the write barrier block execution');
+  DROP TABLE unprotected_future_table;
+
+END $$;
+ROLLBACK;

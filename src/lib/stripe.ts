@@ -1,3 +1,4 @@
+import { openCheckoutUrl, openBillingUrl } from "@/lib/native/checkout";
 /**
  * Stripe Client Configuration
  *
@@ -71,8 +72,7 @@ export async function checkoutDropIn(occurrenceId: string, studioSlug?: string):
   if (error) return { error: error.message };
 
   if (data?.url) {
-    window.location.href = data.url;
-    return {};
+    return openCheckoutUrl(data.url);
   }
 
   return { error: "No checkout URL returned" };
@@ -94,8 +94,7 @@ export async function checkoutMembership(
   if (error) return { error: error.message };
 
   if (data?.url) {
-    window.location.href = data.url;
-    return {};
+    return openCheckoutUrl(data.url);
   }
 
   return { error: "No checkout URL returned" };
@@ -117,8 +116,7 @@ export async function checkoutClassPack(
   if (error) return { error: error.message };
 
   if (data?.url) {
-    window.location.href = data.url;
-    return {};
+    return openCheckoutUrl(data.url);
   }
 
   return { error: "No checkout URL returned" };
@@ -140,24 +138,23 @@ export async function checkoutEvent(params: {
   if (error) return { error: error.message };
 
   if (data?.url) {
-    window.location.href = data.url;
-    return {};
+    return openCheckoutUrl(data.url);
   }
 
   return { error: "No checkout URL returned" };
 }
 
 /** Open the Stripe Customer Portal for self-service billing management */
-export async function openCustomerPortal(studioId: string): Promise<{ error?: string }> {
+export async function openCustomerPortal(studioId: string, membershipId?: string): Promise<{ error?: string }> {
   const { data, error } = await api.invoke<{ url: string }>("stripe-portal", {
     studioId,
+    ...(membershipId ? { membershipId } : {}),
   });
 
   if (error) return { error: error.message };
 
   if (data?.url) {
-    window.location.href = data.url;
-    return {};
+    return openBillingUrl(data.url);
   }
 
   return { error: "No portal URL returned" };

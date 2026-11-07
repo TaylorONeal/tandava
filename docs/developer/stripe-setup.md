@@ -138,6 +138,59 @@ Use Stripe's test card numbers:
 
 Any future date for expiry, any 3 digits for CVC.
 
+## Isolated Stripe smoke harness
+
+`npm run smoke:stripe` now requires a **disposable local Supabase project and
+local owner database connection**. Migration 46 deliberately denies direct
+financial-table access to `service_role`; the harness must not restore those
+permissions. Its fixed SQL inspection/cleanup operations live only in
+`scripts/smoke/local-store.mjs`, outside migrations and the public RPC API.
+
+Before an actual sandbox run, provision a disposable local Supabase fixture with
+the candidate's migrations and edge functions, a test studio/catalog, and Stripe
+sandbox credentials. Install `psql`. Set `SUPABASE_URL` to its loopback HTTP URL,
+`SMOKE_DATABASE_URL` to its loopback PostgreSQL owner URL, and the matching local
+`SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `SMOKE_CLASS_PACK_TYPE_ID`,
+`STRIPE_TEST_KEY` and `STRIPE_WEBHOOK_SECRET`. `SMOKE_EMAIL` remains optional.
+Do not point either connection at hosted or shared data.
+
+Mark only that disposable database explicitly (local Supabase normally calls
+its database `postgres`; use the actual disposable name):
+
+```sql
+COMMENT ON DATABASE postgres IS 'tandava-stripe-smoke-disposable';
+```
+
+The runner rejects hosted/ambiguous targets and libpq host/service overrides
+before authentication or Stripe requests. Its database preflight requires the
+marker and verifies that the scoped financial-table runtime grants remain in
+place. Checkout and webhook requests still use the application interfaces;
+inspection and fallback cleanup use fixed, parameterized local SQL. Failed
+final cleanup fails the run. Destroy the disposable fixture after use.
+
+The scheduled GitHub workflow retains its schedule and protected environment,
+but **does not provision this local fixture yet**. It fails at a read-only
+prerequisite check until the isolated runner is provided. Its inputs are
+environment variables `SMOKE_SUPABASE_URL`, `SMOKE_CLASS_PACK_TYPE_ID` and secrets
+`SMOKE_DATABASE_URL`, `SMOKE_SUPABASE_ANON_KEY`, `SMOKE_SUPABASE_SECRET_KEY`,
+`SMOKE_STRIPE_TEST_KEY`, `SMOKE_STRIPE_WEBHOOK_SECRET`. Adding these references
+does not configure credentials or restore hosted provider evidence.
+
+Focused offline validation:
+
+```bash
+node --test scripts/smoke/*.test.mjs
+# PostgreSQL initdb/pg_ctl/createdb/psql must be on PATH:
+bash scripts/smoke/local-store.integration.sh
+```
+
+The latter creates a fresh synthetic PostgreSQL cluster, tests real inspection
+and cleanup SQL with financial-table permissions withheld, stops it afterward,
+and prints its retained log directory. It never contacts Supabase or Stripe.
+The full smoke's signed synthetic events prove application fulfillment,
+redelivery and refund handling; they do not prove card entry, Stripe webhook
+delivery, or production readiness.
+
 ## Customer Portal
 
 Members can manage their billing via Stripe's hosted Customer Portal:

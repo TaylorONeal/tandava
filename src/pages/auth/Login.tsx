@@ -1,3 +1,4 @@
+import { offersSignUp, offersSocialAuth } from '@/lib/native/platform';
 import { useEffect, useState } from "react";
 import { LEGAL_PUBLISHED } from "@/content/legal";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -174,6 +175,7 @@ const Login = () => {
             </Button>
           </form>
 
+          {offersSocialAuth() && <>
           {/* Divider */}
           <div className="relative">
             <Separator />
@@ -226,13 +228,21 @@ const Login = () => {
             </p>
           )}
 
-          {/* Sign up link */}
-          <p className="text-center text-sm text-muted-foreground">
-            {t('noAccount')}{" "}
-            <Link to={authHref("/auth/register", resumePath)} className="text-primary hover:underline font-medium">
-              {t('signUp')}
-            </Link>
-          </p>
+          </>}
+
+          {/* Sign up link (the Studio app is sign-in only) */}
+          {offersSignUp() ? (
+            <p className="text-center text-sm text-muted-foreground">
+              {t('noAccount')}{" "}
+              <Link to={authHref("/auth/register", resumePath)} className="text-primary hover:underline font-medium">
+                {t('signUp')}
+              </Link>
+            </p>
+          ) : (
+            <p className="text-center text-sm text-muted-foreground">
+              Staff: sign in with the email your studio invited.
+            </p>
+          )}
         </div>
       </div>
 

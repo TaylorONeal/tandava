@@ -1,6 +1,6 @@
 # Launch v1 progress and continuation
 
-Branch: `codex/launch-v1`. Why: [PRD-launch-v1.md](PRD-launch-v1.md). Ordered tasks and IDs: [BACKLOG.md](BACKLOG.md). Diagrams: [07-launch-architecture](../developer/07-launch-architecture.md). Pick the first NEXT task whose Needs are DONE.
+Current integration: `codex/app-store-excellence`; see the [October 21 checkpoint](#2026-10-21-two-app-launch-integration-and-hardening-local). Earlier entries retain their original candidate and scope. Why: [PRD-launch-v1.md](PRD-launch-v1.md). Ordered tasks and IDs: [BACKLOG.md](BACKLOG.md). Diagrams: [07-launch-architecture](../developer/07-launch-architecture.md). Pick the first NEXT task whose Needs are DONE.
 
 Branch: `codex/launch-v1`. Plan docs (Taylor's machine / Claude project "Tandava Studio - Launch"):
 `docs/plans/2026-10-04-launch-v1.md`, `docs/plans/2026-10-04-test-plan.md`.
@@ -167,3 +167,408 @@ supabase start && supabase db reset && npm run test:db   # throwaway local DB, n
 - PostgreSQL16 installed after explicit approval. Fresh isolated Tandava cluster applied every migration through00044 and completed the full SQL suite:251 PASS lines, including TEACH-01..15, payment/refund/idempotency tests, attribution39 blocks, last-seat and last-credit races. Temporary socket-only server stopped and data removed.
 - Initial combined cross-app runner produced a false PAY-01 failure: TeacherTree's test creates cluster-global service_role without BYPASSRLS; Tandava's stub preserved it on duplicate-object. Separate fresh clusters per app restore the intended test environment without changing role permissions. No production/payment-code defect was found, and the temporary diagnostic change was reverted.
 - PR100 CI run39176946297 passed all four jobs: migrations+SQL, Edge Functions typecheck, browser E2E, and web typecheck/lint/test/build. Local and CI database gates are now complete; prior notes that SQL was unexecuted describe earlier state. No hosted migration or deployment has been performed.
+
+
+## 2026-10-19: cancellation and assigned-teacher release deployed
+
+- PR100 merged at `d694b2ba65040a313fbeea5811c8fa7a25c90dbf` (2026-10-19 01:56:18 UTC). All premerge CI checks green at `0245c75a1fc4d88013503a3180d68936c17cb22e`; no review comments returned. CI run39177214808 includes app/build, database, edge and browser checks. Local evidence:526 app,32 script,23 browser tests and251 SQL PASS assertions.
+- Verified owner browser identity: `purafieldstudio@gmail.com`, Purafield Studio FREE organization `nopyuyyzzvffhxlamsch`, project `tandava-prod` / `mkaixgjwakfufmmwembn`. Personal Mac Supabase CLI is the wrong account; use the authorized owner session.
+- Applied exact reviewed 00043 and00044 bundles together in one transaction. Dashboard reported success. Receipt: https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/0fde39c9-f9f5-4308-81cf-a1025333d623 . Postcheck: both new tables RLS=true with one policy each; all8 expected RPCs present with pinned search_path, anon execute=false. Reconciliation remains service-only (authenticated=false); intended caller RPCs authenticated=true.
+- Deployed bundled `cancel-class` with JWT verification ON and `stripe-webhook` with existing JWT OFF/signature verification preserved. Retrieved editor contents after navigation/reload exactly matched deployed bundles. Anonymous empty request: cancel-class401 missing authorization; unsigned webhook400 missing stripe-signature. No cancellation, refund, payment or email invocation used for verification.
+- GitHub Production deployment7163945179 reports success for the merge SHA: https://tandava-kc9hm1dx2-tayloroneal-1467s-projects.vercel.app . https://tandavastudio.com landing rendered; unauthenticated /teach redirected to /auth/login. Real signed-in role journeys were not exercised in this release.
+- Stripe event additions are **pending owner Stripe login**, not an access denial. Supabase login does not authenticate Stripe. Verify Purafield Studio sandbox `acct_1UNlJxL4WU0kwuiF` visibly, then add refund.updated/refund.failed/charge.refund.updated to the existing Your-account destination only; preserve other subscriptions and Connect endpoint. No live-mode changes authorized or made.
+- Rollback: preserve new queue tables/records and revert affected frontend/functions as needed. 00043 replaces fulfillment/waitlist functions, so it is not entirely additive. Reverting code does not undo later real cancellations/refunds.
+- Canonical launch plan remains PRD-launch-v1 + BACKLOG + this log. STORE-APPS already defines member `com.tandava.app` and Studio `com.tandava.studio`; hosted-v1 native exclusion means a later release, not cancellation of that plan. Store-ready native builds/screenshots/walkthroughs are not yet demonstrated.
+
+
+### October20 Bali submission target: native candidate inventory
+
+Taylor authorized pursuing both passing store submissions by October20 Bali, including fixes/testing/capture preparation. Targeted existing-credential Apple API GETs on October19: `/v1/apps?filter[bundleId]=com.tandava.app` and `com.tandava.studio` both returned empty data; corresponding `/v1/bundleIds` queries returned registered resources WJF8DWPMZW/Q29237U4L4. No app/version/build IDs exist in this account for those two bundles. Local primary and two alternate Tandava checkouts lack ios/android/Capacitor configs. No credentials printed/changed; no native builds, store writes, submissions or paid calls performed. Updated existing STORE-APPS critical path and backlog deadline; do not infer candidate availability from unrelated cross-app historical build counts.
+
+### 2026-10-19 — Two native app source foundations and privacy remediation (local)
+
+Generated distinct Capacitor iOS projects for the already-decided member and Studio
+apps; native email-only auth, role entry, sharing and offline status added. Query
+caches now clear across auth identity transitions, stale profile results are
+rejected, and Sentry replay/email identification are removed. Native ambiguous
+checkout is blocked pending catalog/payment review. Deletion initiation added
+behind a default-off flag with a local-only migration and operational runbook.
+Focused tests: 11 native-routing/cache/deletion unit cases passed; deletion agent's
+full disposable PostgreSQL suite passed including nine authorization/retention
+cases. No signed archive, device acceptance, ASC candidate, or deployed deletion
+is claimed. See `docs/app-store/STORE-APPS.md` for the updated release gates.
+
+Configured unsigned member and Studio iOS simulator compilations subsequently
+passed at source `12c9e538`; exact artifact hashes and detailed test scope are in
+`docs/app-store/STORE-APPS.md`. User-approved Xcode component installation briefly
+restored simulator discovery/boot, but installation/launch failed with a missing
+CoreSimulatorUtilities library; install outcome is uncertain and launch not
+verified. No role/device acceptance, submission or production deletion is claimed.
+
+
+## 2026-10-21: two-app launch integration and hardening (local)
+
+Taylor confirmed the open-source plus first-party hosted model and the endpoint
+of both Member and Studio apps submitted for review after acceptance. Current
+release direction and remaining priorities are in PRD-launch-v1 and BACKLOG.
+The original `tandava` checkout and its unrelated files were preserved.
+
+### Candidate and changes
+
+- Isolated worktree: `tandava-app-store`, branch `codex/app-store-excellence`.
+  Integrated main `c982696`, native PR #102 (`4aea122`) and scoped-grant PR #106
+  (`6c5375b`) locally. Remote PRs remain unmerged. Existing migration 00045 stays
+  historical, scoped grants use 00046, and native deletion migrations use
+  00047–00049; the combined SQL runner retains every suite.
+- Endpoint hardening rejects offsite return URLs after URL parsing, inactive
+  staff actions, and generic email/SMS/push calls without the service credential.
+  Member imports no longer overwrite a shared existing profile from another
+  studio. These are synthetic reproductions and local fixes, not evidence of
+  a production exploit or completed rollout. Existing external consumers of
+  generic notification endpoints need inventory before deployment.
+- Existing-member express booking now uses a registered email template and a
+  working sign-in link that preserves the selected class. Removed an unused
+  continuation token and unsupported expiry claim. Failed email delivery remains
+  a neutral response rather than exposing account existence.
+- Member booking distinguishes confirmed, waitlisted and unverified responses.
+  Waitlists do not create a confirmed calendar entry. Failures stay retryable,
+  My Schedule provides a verification path, and duplicate/stale actions are
+  guarded before requests and after responses. Account/class changes remount
+  the panel so an old success cannot appear on a new class.
+- Studio sign-out now waits for the backend, reports failure and supports retry.
+  Phone setup steps have visible names; mobile navigation is a scrollable modal
+  with named controls and focus handling. Live Student View opens Discover.
+  Removed the inert notification bell and unsupported logo-upload control.
+  Timezones are searchable globally, including Bali/Asia-Makassar, with the
+  stored value taking precedence over the device default.
+- Native confirmation/reset emails use a hosted HTTPS origin instead of the
+  app-local origin. In-app launch routing uses the router and consumes the cold
+  launch once per runtime, including auth-boundary remounts. Email copy explains
+  the current browser-to-app return. No universal-link setup is implied.
+- Privacy monitoring copy now describes the account identifier and disabled
+  screen replay. CI checks all 14 maintained edge handlers, including push.
+- At Taylor's request, drafted the hosted deletion policy and operating workflow
+  in ACCOUNT-DELETION. It preserves the existing 30-day promise, distinguishes
+  lawful retention from completed erasure, and lists owner/backup, retention
+  schedule and processor/backup decisions. It is **unapproved and disabled**.
+
+### Verification and limits
+
+- Integrated baseline: 555 application tests, 46 script tests, TypeScript and
+  production build passed. The fresh socket-only PostgreSQL rehearsal applied
+  all 49 migrations and produced 822 PASS assertions across the combined SQL
+  suites; no failures. Temporary database server stopped. Evidence:
+  `/tmp/tandava-security-db.gQCTU9/tests.log`. No hosted database was changed.
+- Changed handlers: authorization, inactive-role, redirect, import and continuation
+  regressions passed. Defects were reproduced against the original source before
+  trusting the fixes. All 14 edge handlers pass the full Deno check.
+- Final focused browser checks: **7/7 member booking and 4/4 studio navigation/setup**
+  passed in actual Chromium with mocked Supabase responses. They cover response
+  failures, retries, reopening, waitlists, mobile overflow/navigation, timezone
+  persistence and sign-out denial/recovery. They do not prove hosted permissions
+  or actual payment delivery.
+- Booking lifetime unit checks: **4/4 pass**, and all four fail against the original
+  panel for the intended reasons (post-unmount writes, stale success, duplicate
+  requests). Native link/lifecycle checks: **12/12 pass**. Timezone helpers: **3/3 pass**.
+- Full application TypeScript and final production build/postbuild passed. The
+  new booking lifetime test file was added after that typecheck started; privacy
+  wording and timezone search aliases changed after the build read those modules.
+  Exact final revision coverage therefore still requires CI. Changed-source lint
+  and diff checks pass.
+- Before/after phone and desktop setup captures were inspected; named steps,
+  stacked fields and reachable mobile Settings are verified at this layer.
+  Evidence: `/tmp/tandava-design-evidence/`. These use synthetic test accounts,
+  are design-review evidence, and are not App Store screenshots or device QA.
+
+### Isolated payment test repair
+
+- `9ed3f36` removes direct financial-table REST inspection/cleanup from the smoke
+  runner. Runtime permissions stay restricted. Fixed parameterized SQL exists
+  only in the disposable local test adapter; no public RPC or migration was added.
+- The runner requires loopback HTTP and database targets, an explicit disposable
+  database marker and scoped service-role grants. Unsafe targets fail before any
+  authentication/provider request; redirects are refused and cleanup failures
+  fail the run. Existing fulfillment, replay and refund assertions are retained.
+- Focused tests: 37 passed, with one optional real-SQL case skipped in the ordinary
+  run. Separate PostgreSQL 16 integration: 4/4 passed, including that SQL case,
+  unrelated-row preservation and quoted-input safety. The synthetic cluster was
+  stopped. The old harness fails the new permission/isolation cases. Lint, YAML,
+  shell syntax and diff checks passed. The actual imported push module also
+  exposes both expected runtime functions; no push was sent.
+- The scheduled workflow retains its schedule and protected environment but does
+  not yet provision the required local Supabase fixture. It now has an explicit
+  preflight and matching local-fixture input references. No credentials were set.
+  Provisioning the disposable candidate backend is an engineering prerequisite;
+  privately providing sandbox credentials is a separate owner/access prerequisite.
+  This work is not hosted checkout, card acceptance or Stripe webhook-delivery proof.
+
+### External state and next acceptance
+
+- Latest checked Stripe smoke run `39438453726` (October 20, main `c982696`) failed
+  before network/payment work: `Missing SUPABASE_SERVICE_ROLE_KEY`. Empty test
+  configuration is not proof of a customer payment outage. No dispatch, secret
+  change or provider payment was performed. The old harness also assumed financial
+  table access intentionally removed by scoped grants; see the isolated harness
+  follow-up before enabling it.
+- October 21 Apple API GETs succeeded and returned zero app records for both
+  `com.tandava.app` and `com.tandava.studio`. App Store Connect browser control
+  timed out; actual website login state is unknown. No records were created.
+- Existing signed Member and Studio 1.0(3) archives remain source `270a0a1`, not
+  this integration. Earlier simulator evidence belongs to 1.0(2). No current
+  candidate was built natively, uploaded, physically accepted or submitted.
+- Complete deletion, native purchase classification/return, real reviewer
+  identities and reachable studio page, hosted payment proof, authentic candidate
+  assets and accurate declarations remain release blockers. Universal links are
+  unconfigured. Onboarding currencies remain limited and some advanced studio
+  routes need a real-data completeness audit; full-featured/global readiness is
+  not established by this pass.
+- No production deployment, real customer-data mutation, customer message,
+  payment, remote merge or App Review submission occurred in this work.
+
+### PR and CI receipt
+
+[Draft PR #109](https://github.com/TaylorONeal/tandava/pull/109) is open; it is not
+merged or ready for store submission. CI run
+[39535005842](https://github.com/TaylorONeal/tandava/actions/runs/39535005842) passed
+all four jobs at source `714bc70b9efffc2a6ce6d9ffa2be26941c7fe40a`:
+
+- 591 application tests passed; 53 script tests passed, with the optional real-SQL
+  adapter case skipped in that script run (separate local SQL integration passed).
+- 36/36 browser cases passed, including the new booking and Studio cases.
+- All migration/SQL tests passed with 822 PASS assertions.
+- TypeScript, lint, production build/postbuild and all 14 edge checks passed.
+
+Vercel reports the PR preview deployed successfully; this does not establish
+authenticated hosted acceptance or production deployment. PR review-thread lookup
+returned no threads, which is not an independent review approval. No merge was
+requested. This follow-up changes documentation only; it does not change the
+product source covered by the CI receipt.
+
+Additional purchase audit: TypeScript declares delivery-mode fields, but the
+actual occurrence/catalog migrations do not persist that classification. Packs
+and memberships can cover all current/future offerings without a physical-only
+redemption contract. Location presence is insufficient. A first-release sales
+scope decision is pending Taylor's answer; persist and enforce the chosen scope
+server-side before enabling native checkout, and verify browser return against
+the server's actual booking state. The existing block remains in place.
+
+### Final readback and store access
+
+The documentation-only follow-up `9d200d5` also passed every check in CI run
+[39535418387](https://github.com/TaylorONeal/tandava/actions/runs/39535418387); the
+product source is unchanged from the earlier passing receipt. The PR remains
+draft and unmerged.
+
+After local checks finished, one bounded App Store Connect retry restored browser
+control. Apple’s login page stayed on a spinner with an empty sign-in iframe,
+including after one reload and a wait for the form. No authenticated account,
+app list, record creation or submission was reached. Account access is therefore
+unverified; the current blocker is the unusable Apple sign-in screen, replacing
+the earlier control timeout. The complete isolated Supabase smoke fixture also
+remains unprovisioned; no Docker runtime was found on PATH or at the standard Mac
+application location. No runtime installation or provider configuration occurred.
+
+
+## 2026-11-05: approved physical-service scope and source implementation
+
+Taylor accepted in-person drop-ins, class packs and memberships for both apps,
+with paid digital/mixed products deferred, and accepted the 30-day deletion policy
+and operator-assisted workflow. Legal retention durations, processor/backup facts,
+a staffed backup and complete deletion fulfillment remain prerequisites.
+
+The isolated continuation of `codex/app-store-excellence` reconciled main
+`0e45ab9` in merge `8b525ba`. Email retains upstream internal-secret and active-staff
+callers, rejects inactive staff and keeps raw messages internal. The primary clone
+and the earlier integration worktree were preserved.
+
+New source adds migration 50: explicit immutable catalog format, checkout-time
+entitlement snapshots, physical-only pack/membership redemption and public format
+labels. Legacy products remain unknown. Native checkout uses a separate endpoint,
+forces hosted return pages and keeps native/member/studio idempotency separate
+while preserving web keys. Both projects register checkout-only return schemes and
+the official Browser plugin. Return signals refresh server data and never claim
+payment. Owner phone forms explain permanent format and member/Stripe copy states
+physical-only terms. Native payment enablement remains false by default.
+
+Validation on this working source: 624 application tests, 53 script tests (one
+optional integration test skipped), all 39 mocked browser checks, full local SQL
+suite including 15 new scope assertions, TypeScript, lint and all 15 edge entry
+points passed. The new checkout tests first failed against the unguarded handler
+(10 failures), then passed with enforcement. The first browser attempt could not
+launch the missing bundled Chromium; rerunning in isolated installed Chrome
+profiles passed. Local-only PostgreSQL was used; no hosted SQL or customer data.
+Both native web bundles compile and Capacitor synchronizes Browser 8.0.5. These
+compile fixtures have no configured hosted backend and are not release candidates.
+Unsigned iOS compile results follow separately; no new signing, install or upload.
+
+Next: complete source review, fix the sole-owner deletion initiation barrier, then
+finish the remaining deletion/operations and billing-management gates. Hosted
+migration/deployment, classified synthetic inventory, actual Stripe delivery and
+both signed iPhone journeys are still NOT RUN for this source. October Apple
+access/artifact observations are carried forward only; no November store lookup
+or submission is implied. PR #109 remains the owning draft; no remote merge.
+
+
+### November 5 native compilation and sole-owner request repair
+
+At source `b3dff7e`, Member and Studio Debug iOS Simulator builds both succeeded
+with signing disabled after native bundle compilation and plugin synchronization.
+These are compile fixtures without hosted configuration, not installed, signed or
+reviewer-ready release candidates. No old 1.0(3) device result is promoted.
+
+A focused regression reproduced the sole-owner request rejection before the fix.
+Migration 51 accepts one idempotent pending request while retaining the ownership
+inventory and fulfillment guards. The disabled deletion UI no longer instructs
+users to cancel/transfer before requesting; it shows a receipt-based 30-day date
+and distinguishes a request from completed deletion. Six adapter/deadline tests
+and all focused initiation/review/execution SQL checks pass. Full transfer/closure,
+Auth, storage, processor, backup and retention fulfillment remain incomplete;
+the deletion enablement switch remains off.
+
+
+### November 5 billing and live member path repairs
+
+New native billing source requires the selected owned physical membership and an
+explicit Stripe configuration with cancellation enabled and subscription updates
+disabled. Missing, inactive or unsafe configuration refuses to open a session;
+there is no fallback to the unrestricted web portal. The member account now sends
+the selected membership ID, fixing the previous newest-at-studio selection. Billing
+opens in the native browser and returns to Account for server refresh, never a
+client-asserted cancellation. No Stripe configuration was created or changed.
+
+Live member screens now use Tandava branding and supported navigation, without the
+sample notification badge. Demo-only member routes redirect to discovery in live
+mode. Native unsigned booking preserves the selected class through sign-in instead
+of collecting details for a blocked guest endpoint. Member sign-out failures now
+show a retryable error. Endpoint errors retain concise server explanations.
+
+Regression evidence: native portal tests produced 9 failures before enforcement;
+all 10 now pass. Three live-navigation/sign-out browser cases failed on the original
+source and pass after repair. Latest full local results: 639 application tests,
+53 script tests with the optional integration case skipped, 43 browser checks;
+TypeScript/lint/16 edge checks and the web build pass. Full SQL passed after migration
+50; migration 51 additionally passed focused initiation/review/execution checks.
+Phone member-navigation and checkout-return captures use synthetic fixtures; they
+are design evidence, not store assets or physical acceptance. Native compile proof
+remains at `b3dff7e` for the unchanged plugin projects, not a new signed candidate.
+
+
+### November 5 staff email isolation
+
+The handler now binds staff messages to an active role in the requested studio
+and an exact linked member address; staff cannot send auth-link/raw templates or
+override the reply-to/app destination. Shared templates escape HTML content and
+validate action URLs. Internal callers remain supported. No provider messages
+were sent; there is no evidence of live exploitation. External staff consumers
+need contract verification before deployment.
+
+The new boundary tests first failed against the prior handler; all five template
+safety tests also failed before repair. Latest local checks pass: 657 application
+tests, 53 script tests (one optional integration skipped), TypeScript, lint, web
+build and all 16 edge entry points. The edge compiler caught an overly generic
+client type during this change; corrected before commit. Browser/SQL evidence is
+carried forward because this slice changes neither layer. At `1595aed`, all six
+GitHub checks pass, including the full migration/SQL and 43-case browser jobs.
+
+
+### November 5 live Studio surface and CSV import
+
+The route audit found that live management still rendered fixture customers,
+revenue, attendance, retail inventory and campaigns. A phone baseline confirmed
+the fabricated dashboard totals/alerts. Live management now has an explicit
+supported-route boundary, permission-filtered navigation and a dashboard that
+uses the actual studio with schedule/pricing/share/settings actions. Unsupported
+deep links show an unavailable state and dashboard return. Explicit demo screens
+remain. This narrows the honest first-release surface; deferred CRM, reports,
+events and retail tools are not implemented or claimed complete.
+
+The import journey exposed a real upload crash: the column selector's empty
+option was invalid. A non-empty Skip sentinel repairs it. A separate regression
+then reproduced the false success after a failed import. Live import now sends
+the displayed studio ID, requires a valid server result, returns to preview on
+failure and reports confirmed counts. Only member import is offered. Sample
+history is demo-only; demo validation never dispatches a member import.
+
+Five Studio boundary tests failed before correction. The import test first
+reproduced the upload crash, then separately failed on missing retry after the
+failed request with only the selector fix applied. Final local source passes
+657 application tests, 53 script tests (one optional integration skipped),
+TypeScript/lint/build and all 50 browser tests. New coverage includes missing
+studio, failed load/retry, phone/desktop navigation, unsupported direct links,
+CSV mapping, service failure, missing result and successful retry. Phone and
+desktop dashboard captures were visually inspected using synthetic data.
+Unchanged edge/SQL evidence is carried forward from the preceding security
+revision/CI; this slice does not change those layers. No hosted deployment or
+new native-device acceptance occurred.
+
+Remaining release prerequisites are recorded in BACKLOG: complete deletion
+fulfillment/validated retention/provider inventory; reviewed source integration
+and hosted rollout; classified pilot catalog/safe Stripe configuration; real
+payment delivery and authenticated Member/Studio device journeys; current Apple
+records and final accurate assets. The narrower supported Studio surface must
+be reflected in listings and reviewer material.
+
+A final phone check measured import overflow at 548px on a 390px viewport.
+Wrapping the step indicator and stacking column mappings fixed it; focused
+dashboard/import checks, TypeScript/lint and the rebuilt browser bundle pass.
+The final phone mapping and settled desktop dashboard were visually inspected.
+The full 50-case result above precedes this layout-only adjustment; only affected
+journeys were rerun locally. CI will test the final commit in full.
+
+
+### November 5 external access boundary
+
+After source `a64de06` was pushed to draft PR #109, the browser opened the exact
+Supabase project URL and was redirected to sign-in. No Supabase/Stripe connector
+is exposed in this session. Hosted schema, backup/processor settings and deletion
+inventory therefore remain unverified. A precise sign-in handoff was presented
+for the Purafield Studio project; no credentials were requested in chat or entered.
+App Store Connect also redirected to login; its Apple-account form now renders,
+but no authenticated app list was obtained. The old zero-record API result is
+historical, not a fresh assertion that records are absent. No settings changed.
+
+At this checkpoint, code revision `a64de06` has passing cloud unit/build, edge,
+migration/SQL and repository checks; the cloud browser job was still installing
+Chromium. Local 50-case browser proof and the focused final phone checks are
+recorded above. No independent PR review has been posted. The isolated local
+PostgreSQL test process was stopped cleanly. No continuous-release automation
+was created; the separate existing Stripe smoke schedule is not a continuation
+of this work. The next dependent action is authenticated read-only hosted
+inspection, followed by the retained deletion/provider/native acceptance gates.
+
+
+## 2026-11-05: Studio phase 1 scope and scan-to-check-in (stacked on #109)
+
+Scope and gap list: [STUDIO-PHASE-1.md](../app-store/STUDIO-PHASE-1.md). Studio ships
+first because it sells nothing, so the payment gate does not hold its review.
+
+New: migration 00052 `check_in_with_pass`, member check-in pass QR in My Schedule,
+Studio-only `/scan` with the official barcode scanner and haptics, per-app
+`includePlugins`, camera usage string (Studio only), export-compliance key in both
+apps, Studio iPhone-only for 1.0. Local results: full SQL suite (SCAN-01..13 new),
+668 application tests, 53 script tests, typecheck, lint and web build pass. Capacitor
+sync ran on Linux; Xcode package resolution, a signed build, the mocked browser checks
+and any device scan are NOT RUN from this session. No hosted change.
+
+## 2026-11-06: Studio 1.0 is sign-in only (Taylor's decision)
+
+The Studio app no longer offers sign-up: no link on sign-in, `/auth/register`
+redirects to sign-in, and the email sign-up call refuses in the Studio build
+(`allowsSignUp`). Web and member app unchanged. Deletion fulfillment is no longer a
+Studio blocker. Decisions table added to [STUDIO-PHASE-1.md](../app-store/STUDIO-PHASE-1.md);
+lessons in [LESSONS_LEARNED.md](../ai-agents/LESSONS_LEARNED.md). Local typecheck,
+669 application tests and a Studio web build pass. Still waiting on Taylor's yes:
+migrations 00050 to 00052 on tandava-prod (org Purafield Studio, id
+`mkaixgjwakfufmmwembn`), review studio seeding, submission.
+
+## 2026-11-06: migration 00052 on tandava-prod
+
+Taylor said yes to 00050 to 00052. A read-only check found prod at 00044: 00045
+(superseded) and 00046 to 00051 were never applied, and they exist only on PR #113.
+00051 needs 00047, and 00046 (runtime grants) is marked review-required, so only
+00052 (scan check-in, depends on nothing after 00044) was applied, through the SQL
+editor with `scripts/db/prod/apply-00052.sql` after a rehearsal on a local database
+built through 00044. Verified: function present, security definer, authenticated
+can execute, anon cannot. The review seed also runs cleanly on a 00044 schema.
+Still not on prod: 00046 to 00051. Nothing records applied migrations on prod, so
+check the schema, not a tracking table.

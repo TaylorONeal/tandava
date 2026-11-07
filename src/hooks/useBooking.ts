@@ -100,11 +100,17 @@ export function useBookClass() {
     mutationFn: async (input: BookClassInput) => {
       const { data, error } = await backendData.bookClass(input);
       if (error) throw new Error(error.message);
+      if (!data?.id || !["confirmed", "waitlisted"].includes(data.status)) {
+        throw new Error("We could not verify your booking. Check My Schedule before trying again.");
+      }
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["entitlements"] });
       queryClient.invalidateQueries({ queryKey: ["upcoming-classes"] });
+      queryClient.invalidateQueries({ queryKey: ["my-bookings"] });
+      queryClient.invalidateQueries({ queryKey: ["public-schedule"] });
+      queryClient.invalidateQueries({ queryKey: ["public-occurrence"] });
     },
   });
 }
