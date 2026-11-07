@@ -117,48 +117,48 @@ const upcomingClasses: UpcomingClass[] = [
 // Mock students for check-in
 const mockStudents: Record<string, BookedStudent[]> = {
   "1": [
-    { id: "s1", name: "Emma Watson", membershipType: "Unlimited", checkedIn: true },
-    { id: "s2", name: "Alex Rivera", membershipType: "Unlimited", checkedIn: true },
-    { id: "s3", name: "Priya Sharma", membershipType: "10-Pack", checkedIn: true },
-    { id: "s4", name: "Michael Chen", membershipType: "Unlimited", checkedIn: true },
-    { id: "s5", name: "Sofia Rossi", membershipType: "Drop-in", checkedIn: true },
-    { id: "s6", name: "James Liu", membershipType: "Unlimited", checkedIn: true },
-    { id: "s7", name: "Ava Kim", membershipType: "Unlimited", checkedIn: true },
-    { id: "s8", name: "Devika Nair", membershipType: "10-Pack", checkedIn: true },
-    { id: "s9", name: "Marcus Johnson", membershipType: "Unlimited", checkedIn: true },
-    { id: "s10", name: "Luna Morales", membershipType: "Drop-in", checkedIn: true },
-    { id: "s11", name: "Oliver Grant", membershipType: "Unlimited", checkedIn: true },
-    { id: "s12", name: "Zara Ahmed", membershipType: "10-Pack", checkedIn: true },
-    { id: "s13", name: "Kai Tanaka", membershipType: "Unlimited", checkedIn: true },
-    { id: "s14", name: "Rachel Green", membershipType: "Unlimited", checkedIn: true },
-    { id: "s15", name: "David Park", membershipType: "Unlimited", checkedIn: true },
-    { id: "s16", name: "Nina Patel", membershipType: "Drop-in", checkedIn: true },
-    { id: "s17", name: "Leo Martinez", membershipType: "Unlimited", checkedIn: true },
-    { id: "s18", name: "Iris Chen", membershipType: "10-Pack", checkedIn: true },
-    { id: "s19", name: "Tyler Brooks", membershipType: "Unlimited", checkedIn: false },
-    { id: "s20", name: "Maya Singh", membershipType: "Unlimited", checkedIn: false },
-    { id: "s21", name: "Noah Williams", membershipType: "10-Pack", checkedIn: false },
-    { id: "s22", name: "Camille Dubois", membershipType: "Drop-in", checkedIn: false },
+    { id: "s1", name: "Caleb Mendoza", membershipType: "Unlimited", checkedIn: true },
+    { id: "s2", name: "Margot Jensen", membershipType: "Unlimited", checkedIn: true },
+    { id: "s3", name: "Colleen Bui", membershipType: "10-Pack", checkedIn: true },
+    { id: "s4", name: "Mateo Salazar", membershipType: "Unlimited", checkedIn: true },
+    { id: "s5", name: "Hector Gutierrez", membershipType: "Drop-in", checkedIn: true },
+    { id: "s6", name: "Diego Okonkwo", membershipType: "Unlimited", checkedIn: true },
+    { id: "s7", name: "Jamal Iyer", membershipType: "Unlimited", checkedIn: true },
+    { id: "s8", name: "Ravi Petrov", membershipType: "10-Pack", checkedIn: true },
+    { id: "s9", name: "Imani Moss", membershipType: "Unlimited", checkedIn: true },
+    { id: "s10", name: "Renee Washington", membershipType: "Drop-in", checkedIn: true },
+    { id: "s11", name: "Kristen Kowalski", membershipType: "Unlimited", checkedIn: true },
+    { id: "s12", name: "Shannon Jaramillo", membershipType: "10-Pack", checkedIn: true },
+    { id: "s13", name: "Desmond Abbott", membershipType: "Unlimited", checkedIn: true },
+    { id: "s14", name: "Linh Nakamura", membershipType: "Unlimited", checkedIn: true },
+    { id: "s15", name: "Nadia Villarreal", membershipType: "Unlimited", checkedIn: true },
+    { id: "s16", name: "Simone Oyelaran", membershipType: "Drop-in", checkedIn: true },
+    { id: "s17", name: "Kiara Hsu", membershipType: "Unlimited", checkedIn: true },
+    { id: "s18", name: "Bea Lozano", membershipType: "10-Pack", checkedIn: true },
+    { id: "s19", name: "Talia Thibodeaux", membershipType: "Unlimited", checkedIn: false },
+    { id: "s20", name: "Wes Gallo", membershipType: "Unlimited", checkedIn: false },
+    { id: "s21", name: "Freya Ibarra", membershipType: "10-Pack", checkedIn: false },
+    { id: "s22", name: "Leila Ellison", membershipType: "Drop-in", checkedIn: false },
   ],
   "2": [
-    { id: "s30", name: "Elena Voss", membershipType: "Unlimited", checkedIn: false },
-    { id: "s31", name: "Ryan Cooper", membershipType: "10-Pack", checkedIn: false },
-    { id: "s32", name: "Aisha Mohammed", membershipType: "Unlimited", checkedIn: false },
-    { id: "s33", name: "Ben Taylor", membershipType: "Unlimited", checkedIn: false },
-    { id: "s34", name: "Clara Fontaine", membershipType: "Drop-in", checkedIn: false },
-    { id: "s35", name: "Daniel Kim", membershipType: "Unlimited", checkedIn: false },
-    { id: "s36", name: "Fiona O'Brien", membershipType: "10-Pack", checkedIn: false },
-    { id: "s37", name: "Grace Lee", membershipType: "Unlimited", checkedIn: false },
-    { id: "s38", name: "Henry Yang", membershipType: "Unlimited", checkedIn: false },
-    { id: "s39", name: "Isabella Cruz", membershipType: "Drop-in", checkedIn: false },
-    { id: "s40", name: "Jack Morrison", membershipType: "Unlimited", checkedIn: false },
-    { id: "s41", name: "Karen Nguyen", membershipType: "10-Pack", checkedIn: false },
-    { id: "s42", name: "Liam Foster", membershipType: "Unlimited", checkedIn: false },
-    { id: "s43", name: "Mia Rodriguez", membershipType: "Unlimited", checkedIn: false },
-    { id: "s44", name: "Oscar Bennett", membershipType: "10-Pack", checkedIn: false },
-    { id: "s45", name: "Penny Lane", membershipType: "Drop-in", checkedIn: false },
-    { id: "s46", name: "Quinn Hayes", membershipType: "Unlimited", checkedIn: false },
-    { id: "s47", name: "Rosa Gutierrez", membershipType: "Unlimited", checkedIn: false },
+    { id: "s30", name: "Sakura Pham", membershipType: "Unlimited", checkedIn: false },
+    { id: "s31", name: "Tobias Sato", membershipType: "10-Pack", checkedIn: false },
+    { id: "s32", name: "Meredith Quintero", membershipType: "Unlimited", checkedIn: false },
+    { id: "s33", name: "Joanna Cardenas", membershipType: "Unlimited", checkedIn: false },
+    { id: "s34", name: "Divya Cardenas", membershipType: "Drop-in", checkedIn: false },
+    { id: "s35", name: "Dani Rocha", membershipType: "Unlimited", checkedIn: false },
+    { id: "s36", name: "Daniela Farouk", membershipType: "10-Pack", checkedIn: false },
+    { id: "s37", name: "Rafael Dominguez", membershipType: "Unlimited", checkedIn: false },
+    { id: "s38", name: "Ingrid Hartley", membershipType: "Unlimited", checkedIn: false },
+    { id: "s39", name: "Rhea Lindgren", membershipType: "Drop-in", checkedIn: false },
+    { id: "s40", name: "Alana Becker", membershipType: "Unlimited", checkedIn: false },
+    { id: "s41", name: "Hollis Ramaswamy", membershipType: "10-Pack", checkedIn: false },
+    { id: "s42", name: "Felix Novak", membershipType: "Unlimited", checkedIn: false },
+    { id: "s43", name: "Minh Sorensen", membershipType: "Unlimited", checkedIn: false },
+    { id: "s44", name: "Elliot Kim", membershipType: "10-Pack", checkedIn: false },
+    { id: "s45", name: "Jiwoo Alvarez", membershipType: "Drop-in", checkedIn: false },
+    { id: "s46", name: "Nate Tran", membershipType: "Unlimited", checkedIn: false },
+    { id: "s47", name: "Kenji Delacroix", membershipType: "Unlimited", checkedIn: false },
   ],
 };
 
@@ -177,7 +177,7 @@ const openSubOpportunities = [
   {
     id: "1",
     className: "Gentle Flow",
-    teacher: "James Liu",
+    teacher: "Daniel Nguyen",
     date: "Feb 10",
     time: "9:30 AM",
     pay: 75,
@@ -185,7 +185,7 @@ const openSubOpportunities = [
   {
     id: "2",
     className: "Yin Restore",
-    teacher: "Ava Kim",
+    teacher: "Mei Tanaka",
     date: "Feb 14",
     time: "4:30 PM",
     pay: 65,
@@ -256,10 +256,10 @@ function DemoTeachDashboard() {
 
         {/* Today's Classes - Prominent on mobile for check-in */}
         {upcomingClasses.filter(c => c.isToday).length > 0 && (
-          <Card className="border-accent-sage/30 bg-accent-sage/5">
+          <Card className="border-foreground/15 bg-accent/10">
             <CardHeader className="pb-2">
               <CardTitle className="text-lg flex items-center gap-2">
-                <ClipboardCheck className="h-5 w-5 text-accent-sage" />
+                <ClipboardCheck className="h-5 w-5 text-foreground" />
                 Today's Classes
               </CardTitle>
             </CardHeader>
@@ -272,7 +272,7 @@ function DemoTeachDashboard() {
                     key={cls.id}
                     className={`p-4 rounded-xl border transition-colors ${
                       cls.isStartingSoon
-                        ? 'bg-accent-sage/10 border-accent-sage/30 shadow-sm'
+                        ? 'bg-accent/20 border-foreground/15 shadow-sm'
                         : 'bg-card border-border'
                     }`}
                   >
@@ -280,7 +280,7 @@ function DemoTeachDashboard() {
                       <div className="flex items-center gap-2">
                         <span className="text-lg font-bold">{cls.time}</span>
                         {cls.isStartingSoon && (
-                          <Badge className="bg-accent-sage text-white text-[10px] animate-pulse">
+                          <Badge className="bg-accent text-accent-foreground text-[10px] animate-pulse">
                             Starting Soon
                           </Badge>
                         )}
@@ -294,12 +294,12 @@ function DemoTeachDashboard() {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                       <span>{cls.room}</span>
                       {cls.deliveryMode === 'hybrid' && (
-                        <span className="flex items-center gap-1 text-violet-400">
+                        <span className="flex items-center gap-1 text-foreground">
                           <Wifi className="h-3 w-3" /> + Online
                         </span>
                       )}
                       {cls.deliveryMode === 'virtual' && (
-                        <span className="flex items-center gap-1 text-blue-400">
+                        <span className="flex items-center gap-1 text-info">
                           <Video className="h-3 w-3" /> Virtual
                         </span>
                       )}
@@ -335,7 +335,7 @@ function DemoTeachDashboard() {
           <DialogContent className="max-w-lg max-h-[80vh] flex flex-col">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                <ClipboardCheck className="h-5 w-5 text-accent-sage" />
+                <ClipboardCheck className="h-5 w-5 text-foreground" />
                 Check-in: {checkInClass?.name}
               </DialogTitle>
               <p className="text-sm text-muted-foreground">
@@ -366,7 +366,7 @@ function DemoTeachDashboard() {
                   onClick={() => toggleStudentCheckIn(student.id)}
                   className={`w-full flex items-center gap-3 p-2.5 rounded-lg transition-colors text-start ${
                     student.checkedIn
-                      ? "bg-accent-sage/10 border border-accent-sage/20"
+                      ? "bg-accent-mint/10 border border-accent-mint/40"
                       : "bg-secondary/30 hover:bg-secondary/60 border border-transparent"
                   }`}
                 >
@@ -384,7 +384,7 @@ function DemoTeachDashboard() {
                     <p className="text-[10px] text-muted-foreground">{student.membershipType}</p>
                   </div>
                   {student.checkedIn && (
-                    <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage border-0 shrink-0">
+                    <Badge className="text-[10px] bg-accent-mint/30 text-foreground border-0 shrink-0">
                       Checked In
                     </Badge>
                   )}
@@ -439,9 +439,9 @@ function DemoTeachDashboard() {
           </Link>
           <Link
             to="/teach/earnings"
-            className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-accent-sage/10 hover:bg-accent-sage/20 transition-colors"
+            className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-accent-mint/15 hover:bg-accent-mint/30 transition-colors"
           >
-            <DollarSign className="h-5 w-5 text-accent-sage" />
+            <DollarSign className="h-5 w-5 text-foreground" />
             <span className="text-[10px] font-medium">Earnings</span>
           </Link>
         </div>
@@ -478,8 +478,8 @@ function DemoTeachDashboard() {
                     ${earningsSummary.total.toLocaleString()}
                   </p>
                 </div>
-                <div className="h-10 w-10 rounded-xl bg-accent-sage/20 flex items-center justify-center">
-                  <DollarSign className="h-5 w-5 text-accent-sage" />
+                <div className="h-10 w-10 rounded-xl bg-accent-mint/30 flex items-center justify-center">
+                  <DollarSign className="h-5 w-5 text-foreground" />
                 </div>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
@@ -551,7 +551,7 @@ function DemoTeachDashboard() {
                     key={cls.id}
                     className={`flex items-center justify-between p-3 rounded-xl transition-colors ${
                       cls.isToday
-                        ? "bg-accent-sage/10 border border-accent-sage/20"
+                        ? "bg-accent/20 border border-foreground/10"
                         : "bg-secondary/50 hover:bg-secondary"
                     }`}
                   >
@@ -573,7 +573,7 @@ function DemoTeachDashboard() {
                         </span>
                       </div>
                       {cls.isToday && (
-                        <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage border-0">
+                        <Badge className="text-[10px] bg-accent text-accent-foreground border-0">
                           Today
                         </Badge>
                       )}
@@ -595,8 +595,8 @@ function DemoTeachDashboard() {
                 <CardContent className="space-y-2">
                   {[
                     { id: "1", from: "Anonymous", amount: 20, className: "Morning Vinyasa", date: "Today" },
-                    { id: "2", from: "Emma W.", amount: 15, className: "Evening Vinyasa", date: "Yesterday" },
-                    { id: "3", from: "Alex R.", amount: 10, className: "Community Flow", date: "Jan 28" },
+                    { id: "2", from: "Wren S.", amount: 15, className: "Evening Vinyasa", date: "Yesterday" },
+                    { id: "3", from: "Caleb D.", amount: 10, className: "Community Flow", date: "Jan 28" },
                   ].map((tip) => (
                     <div
                       key={tip.id}
@@ -608,7 +608,7 @@ function DemoTeachDashboard() {
                           {tip.className} - {tip.date}
                         </p>
                       </div>
-                      <span className="text-sm font-semibold text-accent-sage">
+                      <span className="text-sm font-semibold text-foreground">
                         +${tip.amount}
                       </span>
                     </div>
@@ -682,7 +682,7 @@ function DemoTeachDashboard() {
                   >
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-medium">{opp.className}</p>
-                      <span className="text-xs font-semibold text-accent-sage">
+                      <span className="text-xs font-semibold text-foreground">
                         ${opp.pay}
                       </span>
                     </div>

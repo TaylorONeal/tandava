@@ -111,8 +111,8 @@ export function AppLayout({ children }: AppLayoutProps) {
             to={isDemoMode ? "/home" : "/discover"}
             className="me-4 flex items-center gap-2.5 rounded-xl px-1 py-1 transition-colors hover:bg-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-accent-teal to-accent-sage shadow-md">
-              <span className="text-lg font-bold text-white">{isDemoMode ? "O" : "T"}</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary shadow-md">
+              <span className="text-lg font-bold text-primary-foreground">{isDemoMode ? "O" : "T"}</span>
             </div>
             <span className="text-xl font-display font-bold tracking-tight">
               {isDemoMode ? "Oxatl Yoga" : "Tandava"}

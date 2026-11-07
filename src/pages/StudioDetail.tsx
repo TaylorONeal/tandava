@@ -80,19 +80,19 @@ const eventsData: Record<string, EventDetail> = {
     title: "Arm Balance & Inversion Workshop",
     type: "workshop",
     description: "Build confidence in arm balances and inversions with progressive drills, partner assists, and wall work.",
-    longDescription: "This three-hour workshop is designed for practitioners who want to deepen their inversion and arm balance practice. Whether you're working on your first crow pose or refining your handstand, Maya will guide you through progressive drills that build strength, proprioception, and confidence.\n\nThe workshop includes partner-assisted practice (you'll be paired thoughtfully), wall work for alignment, and detailed breakdowns of crow, side crow, forearm stand, and headstand variations. You'll leave with a personalized take-home practice plan.",
+    longDescription: "This three-hour workshop is designed for practitioners who want to deepen their inversion and arm balance practice. Whether you're working on your first crow pose or refining your handstand, Brooke will guide you through progressive drills that build strength, proprioception, and confidence.\n\nThe workshop includes partner-assisted practice (you'll be paired thoughtfully), wall work for alignment, and detailed breakdowns of crow, side crow, forearm stand, and headstand variations. You'll leave with a personalized take-home practice plan.",
     imageUrl: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1200&q=80",
     startsAt: "2026-02-21T10:00:00",
     endsAt: "2026-02-21T13:00:00",
     isMultiSession: false,
     sessionCount: 1,
     teacher: {
-      name: "Maya Rodriguez",
+      name: "Brooke Sandoval",
       bio: "E-RYT 500 with 15+ years teaching experience. Known for making arm balances and inversions accessible to all bodies.",
       avatar: "",
     },
     location: "Main Studio",
-    locationDetail: "142 Valencia St, 2nd Floor, San Francisco, CA 94103",
+    locationDetail: "142 Valencia St, 2nd Floor, Austin, CA 94103",
     priceCents: 7500,
     memberPriceCents: 6500,
     earlyBirdCents: 6000,
@@ -108,7 +108,7 @@ const eventsData: Record<string, EventDetail> = {
     title: "200-Hour Yoga Teacher Training",
     type: "training",
     description: "Comprehensive Yoga Alliance certified teacher training.",
-    longDescription: "Our 200-hour teacher training is a deep immersion into the art and science of teaching yoga. Over 12 weekends, you'll develop a strong foundation in asana, anatomy, philosophy, sequencing, and teaching methodology.\n\nLed by Sarah Chen (E-RYT 500, YACEP) and James Park (E-RYT 200, C-IAYT), this program is registered with Yoga Alliance and qualifies graduates to register as RYT-200. Small cohort size ensures personalized mentoring.",
+    longDescription: "Our 200-hour teacher training is a deep immersion into the art and science of teaching yoga. Over 12 weekends, you'll develop a strong foundation in asana, anatomy, philosophy, sequencing, and teaching methodology.\n\nLed by Mariana Ochoa (E-RYT 500, YACEP) and Hannah Lindqvist (E-RYT 200, C-IAYT), this program is registered with Yoga Alliance and qualifies graduates to register as RYT-200. Small cohort size ensures personalized mentoring.",
     imageUrl: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&q=80",
     startsAt: "2026-03-07T08:00:00",
     endsAt: "2026-06-13T17:00:00",
@@ -123,12 +123,12 @@ const eventsData: Record<string, EventDetail> = {
       { date: "May 16-17", time: "8am-5pm", topic: "Teaching Practicum" },
     ],
     teacher: {
-      name: "Sarah Chen & James Park",
-      bio: "Sarah is an E-RYT 500 and YACEP with 20+ years of practice. James is an E-RYT 200, C-IAYT specializing in yoga therapy and anatomy.",
+      name: "Mariana Ochoa & Hannah Lindqvist",
+      bio: "Mariana is an E-RYT 500 and YACEP who has taught in Austin for over ten years. Hannah is an E-RYT 200, C-IAYT specializing in yoga therapy and anatomy.",
       avatar: "",
     },
     location: "Main Studio",
-    locationDetail: "142 Valencia St, 2nd Floor, San Francisco, CA 94103",
+    locationDetail: "142 Valencia St, 2nd Floor, Austin, CA 94103",
     priceCents: 350000,
     memberPriceCents: 320000,
     earlyBirdCents: 299900,
@@ -164,19 +164,19 @@ const eventsData: Record<string, EventDetail> = {
     title: "Sound Bath & Meditation Evening",
     type: "event",
     description: "Immerse yourself in crystal singing bowls, gongs, and chimes.",
-    longDescription: "Settle into a supported restorative position and let the sound wash over you. Luna Patel leads this deeply relaxing evening with crystal singing bowls tuned to the chakras, Tibetan gongs, chimes, and rain sticks.\n\nThe evening begins with 15 minutes of guided meditation to help you arrive and settle, followed by 45 minutes of pure sound immersion. Bolsters, blankets, and eye pillows provided. Many participants report deep relaxation and improved sleep.",
+    longDescription: "Settle into a supported restorative position and let the sound wash over you. Anika Desai leads this deeply relaxing evening with crystal singing bowls tuned to the chakras, Tibetan gongs, chimes, and rain sticks.\n\nThe evening begins with 15 minutes of guided meditation to help you arrive and settle, followed by 45 minutes of pure sound immersion. Bolsters, blankets, and eye pillows provided. Many participants report deep relaxation and improved sleep.",
     imageUrl: "https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=1200&q=80",
     startsAt: "2026-02-28T19:00:00",
     endsAt: "2026-02-28T21:00:00",
     isMultiSession: false,
     sessionCount: 1,
     teacher: {
-      name: "Luna Patel",
-      bio: "Certified sound healer and meditation teacher. Luna has studied with master teachers in India, Nepal, and Bali.",
+      name: "Anika Desai",
+      bio: "Certified sound healer and meditation teacher. Anika has studied with master teachers in India, Nepal, and Bali.",
       avatar: "",
     },
     location: "Meditation Room",
-    locationDetail: "142 Valencia St, Ground Floor, San Francisco, CA 94103",
+    locationDetail: "142 Valencia St, Ground Floor, Austin, CA 94103",
     priceCents: 4500,
     memberPriceCents: 3500,
     earlyBirdCents: null,
@@ -421,7 +421,7 @@ const EventDetailPage = () => {
                   <Clock className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
                   <p>
                     {startDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
-                    {" — "}
+                    {" to "}
                     {endDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
                   </p>
                 </div>

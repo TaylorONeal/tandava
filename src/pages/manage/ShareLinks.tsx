@@ -28,6 +28,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { nativeApp, publicWebOrigin } from "@/lib/native/platform";
 import { useMyStudio, usePublicSchedule } from "@/hooks/useBooking";
 import { isBackendConfigured } from "@/lib/backend";
 import { DEMO_STUDIO } from "@/contexts/DemoContext";
@@ -178,7 +179,7 @@ export default function ShareLinks() {
         staff_role: "owner" as const,
       };
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const origin = typeof window !== "undefined" ? publicWebOrigin(nativeApp, window.location.origin) : "";
   const slug = studio?.slug ?? "";
 
   const { data: schedule } = usePublicSchedule(slug || undefined);

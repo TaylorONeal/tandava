@@ -22,7 +22,11 @@ const staticRoutes = [
   // The three audience doors. /schedule, /events, /instructors and /on-demand
   // still render demo data, so they stay out of the map (and robots.txt).
   { path: "/discover", priority: "0.9", changefreq: "daily" },
-  { path: "/for-studios", priority: "0.9", changefreq: "weekly" },
+  // "/" is the owner home on the hosted product; /for-studios renders the same
+  // page with canonical "/", so it stays out of the map.
+  { path: "/studio-app", priority: "0.9", changefreq: "weekly" },
+  { path: "/yoga-studio-software", priority: "0.8", changefreq: "monthly" },
+  { path: "/class-booking-software", priority: "0.8", changefreq: "monthly" },
   { path: "/open-source", priority: "0.6", changefreq: "monthly" },
   { path: "/demo", priority: "0.6", changefreq: "monthly" },
   // Public tools. Prerendered by scripts/prerender-tools.ts.

@@ -245,7 +245,7 @@ export default function TeachEarnings() {
         );
       case "paid":
         return (
-          <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage border-0">
+          <Badge className="text-[10px] bg-accent-mint/30 text-foreground border-0">
             Paid
           </Badge>
         );
@@ -315,14 +315,14 @@ export default function TeachEarnings() {
           <CardContent>
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
               {/* Total Earnings */}
-              <div className="col-span-2 lg:col-span-1 p-4 rounded-xl bg-accent-sage/10 border border-accent-sage/20">
+              <div className="col-span-2 lg:col-span-1 p-4 rounded-xl bg-accent/25 border border-foreground/10">
                 <div className="flex items-center gap-2">
-                  <DollarSign className="h-5 w-5 text-accent-sage" />
+                  <DollarSign className="h-5 w-5 text-foreground" />
                   <span className="text-sm font-medium text-muted-foreground">
                     Total
                   </span>
                 </div>
-                <p className="text-3xl font-bold mt-2 text-accent-sage">
+                <p className="text-3xl font-bold mt-2 text-foreground">
                   ${currentPeriod.totalEarnings.toLocaleString()}
                 </p>
               </div>
@@ -493,7 +493,7 @@ export default function TeachEarnings() {
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-accent-sage" />
+              <TrendingUp className="h-4 w-4 text-foreground" />
               <CardTitle className="text-lg">Earnings Trend</CardTitle>
             </div>
           </CardHeader>
@@ -504,7 +504,7 @@ export default function TeachEarnings() {
                   key={period.id}
                   className={`flex items-center justify-between p-3 rounded-xl transition-colors ${
                     period.id === selectedPeriod
-                      ? "bg-accent-sage/10 border border-accent-sage/20"
+                      ? "bg-accent/20 border border-foreground/10"
                       : "bg-secondary/30 hover:bg-secondary/50"
                   }`}
                 >

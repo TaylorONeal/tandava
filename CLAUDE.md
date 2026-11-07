@@ -4,6 +4,10 @@ Context for AI assistants working on this codebase.
 
 ---
 
+## Cross-repo index: assets, libraries and yoga context
+
+Looking for assets, libraries or yoga context that may live in another of the yoga app repos (poses, Sanskrit and English names, flows, class styles, cues, music, logos, fonts, store badges, screenshots, Supabase projects, skills)? Search the shared index first: [`app-launch-playbook/YOGA-APPS-INDEX.md`](https://github.com/TaylorONeal/app-launch-playbook/blob/main/YOGA-APPS-INDEX.md). It names the canonical copy of each thing and lists known drift. Change yoga data only at the source it names. Do not copy the index into this repo; when you add, move or retire an asset, library or data source here, update its row in the index in the same change.
+
 ## Project Overview
 
 Tandava is an **open-source studio management platform** for yoga, pilates, and movement studios. It handles scheduling, memberships, payments, and operations.

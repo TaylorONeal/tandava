@@ -4,7 +4,9 @@ import { pathToFileURL } from "node:url";
 import { build } from "esbuild";
 
 const OUT_DIR = join(process.cwd(), "node_modules", ".cache", "tandava-postbuild");
-const tasks = ["generate-sitemap.ts", "prerender-blog.ts", "prerender-tools.ts"];
+// prerender-pages.ts runs last: it copies the pristine shell to app.html and
+// then may overwrite dist/index.html with the home page.
+const tasks = ["generate-sitemap.ts", "prerender-blog.ts", "prerender-tools.ts", "prerender-pages.ts"];
 
 mkdirSync(OUT_DIR, { recursive: true });
 

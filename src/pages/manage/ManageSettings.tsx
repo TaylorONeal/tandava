@@ -56,7 +56,7 @@ export default function ManageSettings() {
                   </p>
                   {tipsEnabled && (
                     <Badge className="mt-1.5 text-[10px] bg-accent-sage/20 text-accent-sage border-0">
-                      Active — teachers can see tips
+                      Active. Teachers can see tips.
                     </Badge>
                   )}
                 </div>

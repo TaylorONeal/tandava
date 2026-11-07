@@ -6,7 +6,7 @@
  * dashboard always uses the default Tandava theme for consistency.
  *
  * Studios can:
- * 1. Choose a starter theme (Mystic Night, Morning Light, Clean Studio)
+ * 1. Choose a starter theme (Tandava Paper, Night, Morning Light, Clean Studio)
  * 2. Override individual colors (primary, secondary, accent)
  * 3. Upload a custom logo
  * 4. Choose a display font
@@ -31,9 +31,17 @@ export interface StudioTheme {
 
 export const STARTER_THEMES: StudioTheme[] = [
   {
+    // The default: no overrides, so the tokens in src/index.css apply as written.
+    id: 'tandava-paper',
+    name: 'Tandava Paper',
+    description: 'Light paper, ink text and a lime highlight. The default Tandava look.',
+    previewColors: ['#fff8ee', '#0e0a12', '#d7ff3f', '#3ee6d2'],
+    cssVariables: {},
+  },
+  {
     id: 'mystic-night',
-    name: 'Mystic Night',
-    description: 'Dark, contemplative. Teal and coral accents with deep backgrounds. The default Tandava look.',
+    name: 'Night',
+    description: 'Dark, contemplative. Teal and coral accents with deep backgrounds.',
     previewColors: ['#0f172a', '#4fd1c5', '#f687b3', '#d4a574'],
     cssVariables: {
       '--bg-primary': '#0a0e1a',
@@ -138,7 +146,7 @@ export interface StudioBranding {
 }
 
 const DEFAULT_BRANDING: StudioBranding = {
-  themeId: 'mystic-night',
+  themeId: 'tandava-paper',
   logoUrl: null,
   primaryColorOverride: null,
   secondaryColorOverride: null,
@@ -199,8 +207,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setBrandingState(DEFAULT_BRANDING);
     // Remove inline styles to revert to CSS defaults
     const root = document.documentElement;
-    Object.keys(STARTER_THEMES[0].cssVariables).forEach(key => {
-      root.style.removeProperty(key);
+    STARTER_THEMES.forEach(theme => {
+      Object.keys(theme.cssVariables).forEach(key => root.style.removeProperty(key));
     });
   }, []);
 

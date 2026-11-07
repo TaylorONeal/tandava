@@ -248,9 +248,9 @@ export function WelcomeEmail({
 
 // Example usage data for preview/testing
 export const welcomeEmailExample: WelcomeEmailProps = {
-  studioName: "Lotus Flow Studio",
-  studioAddress: "123 Yoga Lane, San Francisco, CA 94102",
-  memberName: "Sarah",
+  studioName: "Oxatl Yoga",
+  studioAddress: "East 6th Street, Austin, TX",
+  memberName: "Lucia",
   browseClassesLink: "#",
   completeProfileLink: "#",
   introOfferLink: "#",

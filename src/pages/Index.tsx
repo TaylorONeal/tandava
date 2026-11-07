@@ -415,7 +415,7 @@ const Index = () => {
             {OXATL_LOCATIONS.map((loc, idx) => {
               // Gradient placeholders to simulate image carousel
               const gradients = [
-                "from-accent-sage/30 to-primary/20",
+                "from-accent-mint/30 to-primary/20",
                 "from-accent-coral/20 to-accent-gold/30",
                 "from-primary/25 to-accent-lilac/20",
               ];

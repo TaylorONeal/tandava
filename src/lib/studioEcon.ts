@@ -59,7 +59,7 @@
  * Found a constant that is wrong for your market, or a formula that misstates
  * how studios actually run? Corrections are welcome — the whole point of
  * putting the math in one readable file is that it can be argued with. Tandava
- * is MIT licensed; open an issue or a pull request against this file.
+ * is AGPL-3.0 licensed; open an issue or a pull request against this file.
  *
  *   https://github.com/TaylorONeal/tandava
  */

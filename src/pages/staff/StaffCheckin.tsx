@@ -10,18 +10,18 @@ import { useToast } from "@/hooks/use-toast";
 import { Search, CheckCircle2, Clock, Users } from "lucide-react";
 
 const todaysClasses = [
-  { id: "1", name: "Morning Vinyasa", time: "7:00 AM", teacher: "Maya J.", capacity: 20, checkedIn: 14, status: "in_progress" as const },
-  { id: "2", name: "Power Flow", time: "9:00 AM", teacher: "Alex R.", capacity: 18, checkedIn: 0, status: "upcoming" as const },
-  { id: "3", name: "Yin Yoga", time: "12:00 PM", teacher: "David P.", capacity: 15, checkedIn: 0, status: "upcoming" as const },
-  { id: "4", name: "Hot Power", time: "5:30 PM", teacher: "Alex R.", capacity: 18, checkedIn: 0, status: "upcoming" as const },
-  { id: "5", name: "Gentle Stretch", time: "7:00 PM", teacher: "Emma T.", capacity: 15, checkedIn: 0, status: "upcoming" as const },
+  { id: "1", name: "Morning Vinyasa", time: "7:00 AM", teacher: "Camila R.", capacity: 20, checkedIn: 14, status: "in_progress" as const },
+  { id: "2", name: "Power Flow", time: "9:00 AM", teacher: "Tasha G.", capacity: 18, checkedIn: 0, status: "upcoming" as const },
+  { id: "3", name: "Yin Yoga", time: "12:00 PM", teacher: "Mei T.", capacity: 15, checkedIn: 0, status: "upcoming" as const },
+  { id: "4", name: "Hot Power", time: "5:30 PM", teacher: "Tasha G.", capacity: 18, checkedIn: 0, status: "upcoming" as const },
+  { id: "5", name: "Gentle Stretch", time: "7:00 PM", teacher: "Dana W.", capacity: 15, checkedIn: 0, status: "upcoming" as const },
 ];
 
 const waitingMembers = [
-  { id: "m1", name: "Sarah Chen", membership: "Unlimited", classId: "1" },
-  { id: "m2", name: "James Wilson", membership: "10-Pack (6 left)", classId: "1" },
-  { id: "m3", name: "Priya Sharma", membership: "Unlimited", classId: "1" },
-  { id: "m4", name: "Michael Torres", membership: "Drop-in", classId: "1" },
+  { id: "m1", name: "Lucia Alvarez", membership: "Unlimited", classId: "1" },
+  { id: "m2", name: "Omar Hartley", membership: "10-Pack (6 left)", classId: "1" },
+  { id: "m3", name: "Keisha Becker", membership: "Unlimited", classId: "1" },
+  { id: "m4", name: "Diego Ortega", membership: "Drop-in", classId: "1" },
 ];
 
 export default function StaffCheckin() {
@@ -107,7 +107,7 @@ export default function StaffCheckin() {
         <Card>
           <CardHeader>
             <CardTitle className="text-base">
-              {selectedClass.name} — {selectedClass.time}
+              {selectedClass.name} · {selectedClass.time}
             </CardTitle>
           </CardHeader>
           <CardContent>

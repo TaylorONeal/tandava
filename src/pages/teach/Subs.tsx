@@ -74,7 +74,7 @@ const mockOpportunities: SubOpportunity[] = [
     id: "1",
     className: "Gentle Flow",
     style: "Hatha",
-    originalTeacher: "James Liu",
+    originalTeacher: "Daniel Nguyen",
     date: "Feb 10",
     dayOfWeek: "Mon",
     time: "9:30 AM",
@@ -91,7 +91,7 @@ const mockOpportunities: SubOpportunity[] = [
     id: "2",
     className: "Yin Restore",
     style: "Yin",
-    originalTeacher: "Ava Kim",
+    originalTeacher: "Mei Tanaka",
     date: "Feb 14",
     dayOfWeek: "Fri",
     time: "4:30 PM",
@@ -108,7 +108,7 @@ const mockOpportunities: SubOpportunity[] = [
     id: "3",
     className: "Morning Vinyasa",
     style: "Vinyasa",
-    originalTeacher: "Maya Patel",
+    originalTeacher: "Camila Reyes",
     date: "Feb 12",
     dayOfWeek: "Wed",
     time: "7:00 AM",
@@ -125,7 +125,7 @@ const mockOpportunities: SubOpportunity[] = [
     id: "4",
     className: "Hot Vinyasa",
     style: "Hot",
-    originalTeacher: "Sarah Chen",
+    originalTeacher: "Tasha Greene",
     date: "Feb 18",
     dayOfWeek: "Tue",
     time: "9:00 AM",
@@ -167,7 +167,7 @@ const mockRequests: SubRequest[] = [
     booked: 15,
     status: "claimed",
     requestedAt: "Jan 28",
-    claimedBy: "James Liu",
+    claimedBy: "Daniel Nguyen",
   },
   {
     id: "3",
@@ -231,7 +231,7 @@ export default function TeachSubs() {
         );
       case "claimed":
         return (
-          <Badge className="text-[10px] bg-accent-sage/20 text-accent-sage border-0">
+          <Badge className="text-[10px] bg-accent-mint/30 text-foreground border-0">
             Covered
           </Badge>
         );
@@ -304,7 +304,7 @@ export default function TeachSubs() {
                     key={opp.id}
                     className={`transition-all ${
                       opp.matchesQualification
-                        ? "hover:border-accent-sage/50 hover:shadow-md"
+                        ? "hover:border-foreground/30 hover:shadow-md"
                         : "opacity-60"
                     }`}
                   >
@@ -366,7 +366,7 @@ export default function TeachSubs() {
 
                         {/* Pay & Action */}
                         <div className="flex flex-col items-end gap-2 shrink-0">
-                          <div className="flex items-center gap-1 text-lg font-bold text-accent-sage">
+                          <div className="flex items-center gap-1 text-lg font-bold text-foreground">
                             <DollarSign className="h-4 w-4" />
                             {opp.pay}
                           </div>
@@ -503,7 +503,7 @@ export default function TeachSubs() {
                               </span>
                             </div>
                             {req.claimedBy && (
-                              <p className="text-xs text-accent-sage mt-2">
+                              <p className="text-xs text-foreground mt-2">
                                 Covered by {req.claimedBy}
                               </p>
                             )}
@@ -576,9 +576,9 @@ export default function TeachSubs() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-4 rounded-xl bg-accent-sage/10 border border-accent-sage/20">
+              <div className="flex items-center justify-between p-4 rounded-xl bg-accent-mint/10 border border-accent-mint/40">
                 <span className="text-sm font-medium">Compensation</span>
-                <span className="text-lg font-bold text-accent-sage">
+                <span className="text-lg font-bold text-foreground">
                   ${selectedOpportunity.pay}
                 </span>
               </div>
