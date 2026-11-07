@@ -1,3 +1,5 @@
+import { nativeApp, nativePhysicalPayments } from "@/lib/native/platform";
+import type { PurchaseScope } from "@/lib/hosted/catalog";
 /**
  * Buy a membership or class pack from a public studio page.
  * Signed out: sign up first and come back to the studio page. Signed in: Stripe Checkout.
@@ -14,6 +16,7 @@ import { authHref } from "@/lib/authReturn";
 import { trackFunnel } from "@/lib/funnel";
 
 interface Props {
+  purchaseScope?: PurchaseScope;
   kind: "membership" | "class_pack";
   studioId: string;
   studioSlug: string;
@@ -23,10 +26,16 @@ interface Props {
   style?: React.CSSProperties;
 }
 
-export function PurchaseButton({ kind, studioId, studioSlug, itemId, label, variant = "default", style }: Props) {
+export function PurchaseButton({ purchaseScope, kind, studioId, studioSlug, itemId, label, variant = "default", style }: Props) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [busy, setBusy] = useState(false);
+
+  if (nativeApp && (!nativePhysicalPayments || purchaseScope !== "in_person")) {
+    return <p className="mt-3 text-xs text-muted-foreground">{purchaseScope === "in_person"
+      ? "App purchases are not available yet."
+      : "This plan is not available to purchase in the app."}</p>;
+  }
 
   if (!user) {
     return (
@@ -43,8 +52,8 @@ export function PurchaseButton({ kind, studioId, studioSlug, itemId, label, vari
       kind === "membership"
         ? await checkoutMembership(studioId, itemId, studioSlug)
         : await checkoutClassPack(studioId, itemId, studioSlug);
+    setBusy(false);
     if (error) {
-      setBusy(false);
       toast({ title: "Couldn't start checkout", description: error, variant: "destructive" });
     }
   };

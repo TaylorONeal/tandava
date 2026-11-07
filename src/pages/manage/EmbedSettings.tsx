@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useMyStudio } from "@/hooks/useBooking";
 import { isBackendConfigured } from "@/lib/backend";
 import { DEMO_STUDIO } from "@/contexts/DemoContext";
+import { nativeApp, publicWebOrigin } from "@/lib/native/platform";
 
 /** Demo mode has no backend; show the page against the demo studio. */
 const DEMO_STUDIO_SUMMARY = {
@@ -100,7 +101,7 @@ export default function EmbedSettings() {
   const setSlug = (v: string) => setSlugOverride(v);
   const setPrimary = (v: string) => setPrimaryOverride(v);
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "https://yourstudio.com";
+  const origin = typeof window !== "undefined" ? publicWebOrigin(nativeApp, window.location.origin) : "https://yourstudio.com";
   const p = primary.replace(/^#/, "");
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "https://YOUR-PROJECT.supabase.co";
   const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "YOUR_PUBLISHABLE_ANON_KEY";

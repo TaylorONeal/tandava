@@ -44,6 +44,13 @@ export const HELP: HelpEntry[] = [
       "No. The hosted version runs for you and you use it in a browser. Tandava's code is also public under the AGPL-3.0 license, so a studio with a developer can run its own copy instead. Most studios shouldn't: running your own means you handle backups, upgrades and support.",
     learnMore: "/open-source",
   },
+  {
+    id: "discovery-availability",
+    audience: ["member", "owner", "teacher"],
+    question: "Why can't I find my studio or a class?",
+    answer:
+      "Discover shows upcoming public classes listed on Tandava for Austin. An empty list does not mean your studio has closed or your existing booking was cancelled. Signing up does not unlock additional listings.\nAsk your studio for its usual booking link. If classes fail to load, check your connection and use Try again. When a search has no matches, use Clear filters.",
+  },
   // --- Booking -------------------------------------------------------------
   {
     id: "express-booking",

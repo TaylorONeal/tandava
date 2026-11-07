@@ -28,6 +28,10 @@ export const SUPPORT_ITEMS: SupportItem[] = [
     a: "Open the class roster and tap Check in next to their name.",
   },
   {
+    q: "Where does a member find their pass?",
+    a: "In My Schedule, on the booked class, tap Check-in pass.",
+  },
+  {
     q: "Deleting your account or data",
     a: "Email us from the address on your account and we will delete or anonymize your data within 30 days, as the Privacy Policy describes.",
   },

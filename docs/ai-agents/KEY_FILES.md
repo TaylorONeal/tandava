@@ -177,6 +177,7 @@ Located in `supabase/migrations/`:
 | `docs/architecture/RELIABILITY.md` | SLA, monitoring |
 | `docs/architecture/MAINTAINABILITY.md` | Code quality |
 | `docs/app-store/STORE-APPS.md` | iOS/Android submission |
+| `docs/OPERATOR_SETUP.md#existing-hosted-service-account-and-entry-points` | Verified Supabase owner account, exact Tandava project and direct links; check before requesting another login |
 
 ---
 

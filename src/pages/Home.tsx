@@ -1,3 +1,4 @@
+import { nativeApp, nativeHome } from '@/lib/native/platform';
 import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -42,6 +43,10 @@ export default function Home() {
     canManage: hasPermission(permissions, "studio.manage_schedule"),
     homeMode: parseHomeMode(import.meta.env.VITE_HOME_MODE as string | undefined),
   });
+
+  if (nativeApp && !isLoading) {
+    return <Navigate to={nativeHome(nativeApp, Boolean(profile), hasPermission(permissions, "studio.manage_schedule"), hasPermission(permissions, "studio.teach"))} replace />;
+  }
 
   switch (target) {
     case "storefront":

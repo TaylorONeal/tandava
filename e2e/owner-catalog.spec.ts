@@ -95,3 +95,20 @@ test("owner adds a weekly class with the end time from the class length", async 
     day_of_week: "monday", start_time: "18:00", end_time: "19:15", recurrence: "weekly", teacher_id: null,
   });
 });
+
+
+test("owner explicitly classifies a physical class on a phone", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const writes: Write[] = [];
+  await signInAsOwner(page);
+  await mockOwnerBackend(page, writes);
+  await page.goto("/manage/offerings");
+  await page.getByRole("button", { name: "Edit Vinyasa Flow" }).click();
+  await expect(page.getByLabel("Delivery format")).toContainText("Not set");
+  await page.getByLabel("Delivery format").click();
+  await page.getByRole("option", { name: "In-person only", exact: true }).click();
+  await expect(page.getByText(/Saving a format makes it permanent/)).toBeVisible();
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(page.getByText("Saved", { exact: true }).first()).toBeVisible();
+  expect(writes.find(w => w.table === "offerings")?.body.purchase_scope).toBe("in_person");
+});

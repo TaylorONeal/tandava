@@ -24,6 +24,5 @@ $$ SELECT COALESCE(NULLIF(current_setting('request.jwt.claim.role', true), ''), 
 CREATE OR REPLACE FUNCTION auth.jwt() RETURNS jsonb LANGUAGE sql STABLE AS
 $$ SELECT '{}'::jsonb $$;
 GRANT USAGE ON SCHEMA public, auth TO anon, authenticated, service_role;
-GRANT ALL ON ALL TABLES IN SCHEMA public TO anon, authenticated, service_role;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO anon, authenticated, service_role;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT EXECUTE ON FUNCTIONS TO anon, authenticated, service_role;
+-- Deliberately no default table or routine grants. App migrations must supply
+-- API privileges; PostgreSQL's normal PUBLIC function EXECUTE default remains.

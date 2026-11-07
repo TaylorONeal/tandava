@@ -198,3 +198,20 @@ This system makes all of that easy.
 - [04-consumer-pages.md](04-consumer-pages.md) — Page compositions
 - [05-components.md](05-components.md) — Component inventory
 - [06-cross-platform.md](06-cross-platform.md) — iOS/Android token exports
+
+
+## Hosted Studio launch surface — November 5, 2026
+
+Retain the existing dark surfaces, teal action color, typography and rounded
+controls. The live dashboard prioritizes the studio's schedule, then classes and
+pricing, booking links, website embedding, member follow-up and settings. Do not
+show sample revenue, attendance, customer names or invented operational alerts.
+Only routes with a real data/action contract appear in live navigation, filtered
+by the user's permission; unavailable deep links show a clear return path. The
+explicit demo retains its illustrative screens. This is a narrower working launch
+surface, not evidence that the deferred CRM/reporting/inventory features are built.
+
+On phones, the primary schedule action appears before secondary tools; desktop
+uses two columns. Reuse native links, visible focus styles and 44px navigation
+targets. Loading, missing-studio and retryable-error states must replace actions
+that cannot yet work. Device acceptance and actual hosted data remain separate.
