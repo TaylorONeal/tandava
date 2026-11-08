@@ -5,6 +5,9 @@ const native = vi.hoisted(() => ({
   setOffline: vi.fn(),
   effect: null as null | (() => (() => void) | void),
   openUrl: null as null | ((event: { url: string }) => void),
+  back: null as null | ((event: { canGoBack: boolean }) => void),
+  minimize: vi.fn().mockResolvedValue(undefined),
+  pathname: '/discover',
   launch: vi.fn(),
   remove: vi.fn().mockResolvedValue(undefined),
 }));
@@ -16,13 +19,15 @@ vi.mock('react', async () => ({
   useRef: (value: unknown) => ({ current: value }),
 }));
 vi.mock('react-router-dom', () => ({
-  useLocation: () => ({ pathname: '/discover', search: '' }),
+  useLocation: () => ({ pathname: native.pathname, search: '' }),
   useNavigate: () => native.navigate,
 }));
 vi.mock('@capacitor/app', () => ({ App: {
   getLaunchUrl: native.launch,
-  addListener: vi.fn(async (_name: string, listener: (event: { url: string }) => void) => {
-    native.openUrl = listener;
+  minimizeApp: native.minimize,
+  addListener: vi.fn(async (name: string, listener: (event: never) => void) => {
+    if (name === 'backButton') native.back = listener as (event: { canGoBack: boolean }) => void;
+    else native.openUrl = listener as (event: { url: string }) => void;
     return { remove: native.remove };
   }),
 } }));
@@ -49,6 +54,8 @@ describe('native link lifecycle', () => {
     vi.clearAllMocks();
     native.effect = null;
     native.openUrl = null;
+    native.back = null;
+    native.pathname = '/discover';
     native.launch.mockResolvedValue(undefined);
     ({ NativeStatus } = await import('./NativeStatus'));
   });
@@ -85,7 +92,7 @@ describe('native link lifecycle', () => {
     native.openUrl?.({ url: 'https://tandavastudio.com/s/test-studio' });
     await flush();
     expect(native.navigate).not.toHaveBeenCalled();
-    expect(native.remove).toHaveBeenCalledTimes(2);
+    expect(native.remove).toHaveBeenCalledTimes(3);
   });
 
   it('does not replace a newer opened link with a late launch URL', async () => {
@@ -149,5 +156,27 @@ describe('native link lifecycle', () => {
     expect(native.launch).toHaveBeenCalledTimes(1);
     expect(native.navigate).toHaveBeenCalledExactlyOnceWith('/s/new-studio');
     if (typeof secondCleanup === 'function') secondCleanup();
+  });
+
+  it('leaves the app on Back from the sign-in screen even when WebView history exists', async () => {
+    native.pathname = '/auth/login';
+    NativeStatus();
+    const cleanup = native.effect?.();
+    await flush();
+    native.back?.({ canGoBack: true });
+    expect(native.minimize).toHaveBeenCalledTimes(1);
+    expect(native.navigate).not.toHaveBeenCalled();
+    if (typeof cleanup === 'function') cleanup();
+  });
+
+  it('navigates back inside a sub-route', async () => {
+    native.pathname = '/manage/schedule';
+    NativeStatus();
+    const cleanup = native.effect?.();
+    await flush();
+    native.back?.({ canGoBack: true });
+    expect(native.navigate).toHaveBeenCalledExactlyOnceWith(-1);
+    expect(native.minimize).not.toHaveBeenCalled();
+    if (typeof cleanup === 'function') cleanup();
   });
 });

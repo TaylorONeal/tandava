@@ -27,6 +27,14 @@ export function nativeHome(app: NativeApp, signedIn: boolean, canManage: boolean
   if (!signedIn) return '/auth/login?next=%2F';
   return canManage ? '/manage' : canTeach ? '/teach/schedule' : '/account';
 }
+// Android Back: root screens leave the app (moved to the background, as Android 12+ does
+// for launcher activities). Checked before WebView history, which can hold entries from the
+// sign-in redirect and the Turnstile frame that would otherwise trap Back on sign-in.
+const NATIVE_ROOTS = new Set(['/', '/auth/login', '/discover', '/my-schedule', '/manage', '/teach/schedule', '/account']);
+export function nativeBackAction(pathname: string, canGoBack: boolean): 'back' | 'minimize' {
+  const path = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+  return !NATIVE_ROOTS.has(path) && canGoBack ? 'back' : 'minimize';
+}
 export function nativeLink(raw: string): string | null {
   try {
     const url = new URL(raw);

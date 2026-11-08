@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { nativeHome, nativeLink, parseNativeApp, blocksNativePayment, authRedirectOrigin, allowsSignUp, publicWebOrigin } from './platform';
+import { nativeBackAction, nativeHome, nativeLink, parseNativeApp, blocksNativePayment, authRedirectOrigin, allowsSignUp, publicWebOrigin } from './platform';
 describe('native app separation', () => {
   it('keeps members in member flows even when also an owner', () => {
     expect(nativeHome('member', true, true, true)).toBe('/my-schedule');
@@ -58,4 +58,16 @@ it('shared and embedded links use the public site inside the native apps', () =>
   expect(publicWebOrigin('studio', 'capacitor://localhost')).toBe('https://tandavastudio.com');
   expect(publicWebOrigin('member', 'capacitor://localhost')).toBe('https://tandavastudio.com');
   expect(publicWebOrigin(null, 'https://tandavastudio.com')).toBe('https://tandavastudio.com');
+});
+
+describe('Android back button', () => {
+  it('leaves the app from root screens, including sign-in with stale WebView history', () => {
+    for (const p of ['/', '/auth/login', '/manage', '/manage/', '/teach/schedule', '/account', '/discover', '/my-schedule']) {
+      expect(nativeBackAction(p, true)).toBe('minimize');
+    }
+  });
+  it('goes back inside sub-routes and minimizes when there is no history', () => {
+    expect(nativeBackAction('/manage/schedule', true)).toBe('back');
+    expect(nativeBackAction('/manage/schedule', false)).toBe('minimize');
+  });
 });
