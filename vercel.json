@@ -2,7 +2,7 @@
   "buildCommand": "node scripts/build-vercel.mjs",
   "headers": [
     {
-      "source": "/((?!embed/).*)",
+      "source": "/((?!embed/|captcha-bridge\\.).*)",
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "DENY" },
@@ -20,6 +20,15 @@
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
         { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains; preload" },
         { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; font-src 'self' data: https:; frame-src https://challenges.cloudflare.com https://js.stripe.com https://*.js.stripe.com https://hooks.stripe.com; object-src 'none'; frame-ancestors *; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" }
+      ]
+    },
+    {
+      "source": "/captcha-bridge\\.(html|js)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains; preload" },
+        { "key": "Content-Security-Policy", "value": "default-src 'none'; script-src 'self' https://challenges.cloudflare.com; style-src 'unsafe-inline'; frame-src https://challenges.cloudflare.com; connect-src https://challenges.cloudflare.com; img-src https://challenges.cloudflare.com; base-uri 'none'; form-action 'none'; frame-ancestors capacitor://localhost https://localhost" }
       ]
     }
   ],

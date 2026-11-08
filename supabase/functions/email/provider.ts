@@ -12,7 +12,7 @@
  *   - "console"  — Logs to stdout (development/testing)
  *
  * Usage from a Supabase Edge Function:
- *   import { sendEmail } from "./email/provider.ts";
+ *   sendEmail is imported from "../email/provider.ts" by other functions, then:
  *   await sendEmail({ to: "user@example.com", subject: "Hello", html: "<p>Hi</p>" });
  */
 

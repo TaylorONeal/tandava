@@ -51,6 +51,7 @@ export async function mockSupabase(page: Page) {
     if (url.includes("/rpc/discover_classes")) return json([CLASS_ROW]);
     if (url.includes("/rpc/get_studio_storefront")) return json(STUDIO);
     if (url.includes("/rpc/get_public_schedule")) return json([]);
+    if (url.includes("/auth/v1/settings")) return json({ external: { email: true, google: true, apple: false } });
     if (url.includes("/auth/v1/")) return json({});
     return json([]);
   });

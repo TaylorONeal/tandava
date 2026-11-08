@@ -39,6 +39,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { PayoutsCard } from "@/components/manage/PayoutsCard";
+import { nativeApp } from "@/lib/native/platform";
 import { useToast } from "@/hooks/use-toast";
 import { OXATL_STUDIO } from "@/data/demo/oxatl-yoga";
 
@@ -241,10 +242,13 @@ export default function SettingsManage() {
               <Palette className="h-3.5 w-3.5 me-1.5" />
               Branding
             </TabsTrigger>
+            {/* Payout setup is web only: the Studio app sells and sets up nothing about payments. */}
+            {!nativeApp && (
             <TabsTrigger value="billing" className="text-xs">
               <CreditCard className="h-3.5 w-3.5 me-1.5" />
               Billing
             </TabsTrigger>
+            )}
             {showSettingsTab("notifications", live) && (
             <TabsTrigger value="notifications" className="text-xs">
               <Bell className="h-3.5 w-3.5 me-1.5" />
@@ -542,6 +546,7 @@ export default function SettingsManage() {
           </TabsContent>
 
           {/* Billing / Stripe */}
+          {!nativeApp && (
           <TabsContent value="billing" className="space-y-6">
             {live ? (
               <PayoutsCard />
@@ -569,6 +574,7 @@ export default function SettingsManage() {
               </>
             )}
           </TabsContent>
+          )}
 
           {/* Notifications */}
           {/* No backing store yet: shown in the demo only. */}

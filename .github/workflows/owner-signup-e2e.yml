@@ -1,0 +1,90 @@
+# Studio owner sign-up, end to end, on a throwaway LOCAL Supabase. Never touches production
+# and uses no repository secrets. Registers an owner, walks onboarding, launches, signs back in,
+# then checks the rows the onboarding function wrote.
+name: owner-signup-e2e
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'src/pages/auth/**'
+      - 'src/pages/manage/Onboarding.tsx'
+      - 'src/components/auth/**'
+      - 'src/lib/auth/**'
+      - 'src/contexts/AuthContext.tsx'
+      - 'supabase/functions/onboarding/**'
+      - 'supabase/migrations/**'
+      - 'e2e-owner/**'
+      - '.github/workflows/owner-signup-e2e.yml'
+permissions:
+  contents: read
+jobs:
+  owner-signup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      SUPABASE_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start local Supabase (applies supabase/migrations)
+        run: |
+          supabase init < /dev/null || true
+          test -f supabase/config.toml
+          supabase start -x realtime,studio,imgproxy,logflare,vector,supavisor,postgres-meta
+          supabase status -o env | grep -E '^(API_URL|ANON_KEY|SERVICE_ROLE_KEY|DB_URL)=' | sed -E 's/^([A-Z_]+)="?([^"]*)"?$/SB_\1=\2/' >> "$GITHUB_ENV"
+      - name: Serve edge functions locally
+        run: |
+          (supabase functions serve > /tmp/functions.log 2>&1 &)
+          for i in $(seq 1 60); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' -X OPTIONS "$SB_API_URL/functions/v1/onboarding" || true)
+            [ "$code" != "000" ] && [ "$code" != "502" ] && [ "$code" != "503" ] && break; sleep 2
+          done
+          echo "onboarding preflight: $code"
+      - name: Build the web app against local Supabase
+        run: |
+          VITE_SUPABASE_URL="$SB_API_URL" VITE_SUPABASE_ANON_KEY="$SB_ANON_KEY" VITE_DEMO_MODE=false \
+          VITE_LEGAL_HOSTED=true VITE_BLOG_GAMES=false npx vite build --outDir dist-owner --logLevel warn
+          (npx vite preview --outDir dist-owner --port 4303 --strictPort > /tmp/web.log 2>&1 &)
+          for i in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:4303/auth/register && break; sleep 2; done
+      - name: Playwright image
+        timeout-minutes: 8
+        run: docker pull -q mcr.microsoft.com/playwright:v1.64.0-noble
+      - name: Owner sign-up and onboarding
+        run: |
+          PW=$(openssl rand -hex 16); echo "::add-mask::$PW"
+          docker run --rm --network host --ipc host --user "$(id -u):$(id -g)" -e HOME=/tmp \
+            -e OWNER_EMAIL="owner-${{ github.run_id }}@juniper.example" -e OWNER_PASSWORD="$PW" \
+            -v "$PWD:/w" -w /w mcr.microsoft.com/playwright:v1.64.0-noble node e2e-owner/owner-signup.mjs owner-out
+      - name: Check the rows onboarding wrote
+        if: always()
+        run: |
+          psql "$SB_DB_URL" -v ON_ERROR_STOP=1 -c "
+            select s.name, s.page_live, s.currency,
+              (select count(*) from studio_staff st join auth.users u on u.id = st.profile_id
+                 where st.studio_id = s.id and st.role = 'owner' and u.email like 'owner-%@juniper.example') as owners,
+              (select count(*) from locations l where l.studio_id = s.id) as locations,
+              (select count(*) from offerings o where o.studio_id = s.id) as offerings,
+              (select count(*) from schedule_rules r where r.studio_id = s.id) as schedule_rules,
+              (select count(*) from membership_types m where m.studio_id = s.id) as memberships,
+              (select count(*) from class_pack_types p where p.studio_id = s.id) as packs,
+              (select count(*) from waiver_templates w where w.studio_id = s.id) as waivers
+            from studios s where s.name = 'Juniper Test Studio';" | tee owner-out/db-check.txt
+          psql "$SB_DB_URL" -tA -c "select count(*) from studios s where s.name='Juniper Test Studio' and s.page_live
+            and exists (select 1 from offerings o where o.studio_id=s.id)
+            and exists (select 1 from schedule_rules r where r.studio_id=s.id)" | grep -qx 1
+      - name: Logs on failure
+        if: failure()
+        run: tail -n 120 /tmp/functions.log /tmp/web.log || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: owner-signup-e2e
+          path: owner-out/
+          retention-days: 7
