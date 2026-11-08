@@ -140,7 +140,7 @@ Apple's rule: "collect" means sent off the device and kept longer than needed to
 | Camera / photos / video | **Not collected** | | | | The system scanner reads the QR on the device; only the decoded pass text (a booking id, `tandava:checkin:v1:<uuid>`) is sent. `src/lib/native/scanner.ts`, `src/lib/checkin/pass.ts`. That id belongs to the member, not the app user |
 | Location, contacts, health, financial info, purchases, browsing history, search history | Not collected | | | | No such code in the Studio flows |
 
-Open check: if Cloudflare Turnstile runs on sign-in in the native build (`src/components/auth/Turnstile.tsx`, loaded by `Login.tsx` when `VITE_TURNSTILE_SITE_KEY` is set), add what Cloudflare collects for bot checks (likely Diagnostics: Other Diagnostic Data, App Functionality, not linked). Apple counts third-party partners' collection too.
+Cloudflare Turnstile runs on sign-in in the native build (tandava-prod requires it since Nov 2026; the app frames `https://tandavastudio.com/captcha-bridge.html`, PR 121). Add one row: **Diagnostics: Other Diagnostic Data**, collected, not linked to the user, not tracking, purpose App Functionality (Cloudflare's bot check reads device and browser signals). Apple counts third-party partners' collection too.
 
 Data the member gives the studio (their name shown after a scan) is the studio's member data, covered by the privacy policy, not this app user's label.
 
@@ -317,17 +317,15 @@ What this says: staff apps from the big platforms rate low (1.8 to 2.9) except M
 
 ---
 
-## 4. Missing before submission
+## 4. Missing before submission (updated Nov 8, 2026)
 
-- [ ] App Store Connect record for `com.tandava.studio` (Apple sign-in still blocked).
-- [ ] Support URL with contact info (no `/support` page exists).
-- [ ] Privacy policy line about the camera on tandavastudio.com/privacy.
-- [ ] Decide Sentry and PostHog keys for the Studio build; set the privacy label to match. Check Turnstile.
-- [ ] App-level `PrivacyInfo.xcprivacy` (none in `native/studio/ios`); confirm Capacitor plugin manifests.
-- [ ] Account deletion: turn on the in-app request, or use review option (b) and soften the "New studio?" sign-in line.
-- [ ] Hide payouts setup and any "not available yet" screens in the Studio build.
-- [ ] Migrations 00050 to 00052 on tandava-prod (Purafield Studio org, project id `mkaixgjwakfufmmwembn`), on Taylor's yes.
-- [ ] Seed review studio, owner, teacher, member, all-day class with 3 bookings; build the QR PDF.
-- [ ] New signed build, physical iPhone scan test.
-- [ ] Real screenshots and preview cut; confirm frame 5 "cancel" claim.
-- [ ] Pick name/subtitle variant A or B.
+Done: App Store Connect record (app id 6831459731); support page (`/support`, PR 114); camera line in the privacy policy (PR 114); migrations 00047 to 00052 on tandava-prod; scan check-in (PR 113); redesign screenshots rendered.
+
+- [ ] Merge PR 121: native sign-in works with captcha on; Billing tab hidden in the apps; social buttons follow the server.
+- [ ] Add `VITE_TURNSTILE_SITE_KEY` (the website's public key) and `VITE_ACCOUNT_DELETION_REQUESTS_ENABLED=true` to Codemagic group `tandava_native`, then a new TestFlight build.
+- [ ] Sign in on the iPhone mini (TestFlight) and the Pixel 4 as review-owner; scan one pass.
+- [ ] Reviewer password in App Review Information (Taylor only).
+- [ ] Review seed on tandava-prod and the QR PDF, then the review notes with real names.
+- [ ] Privacy label: add the Turnstile row above. Leave `VITE_POSTHOG_KEY` unset in `tandava_native`.
+- [ ] Name/subtitle: variant A unless Taylor says B.
+- [ ] Export compliance: uses only standard HTTPS, so "None of the algorithms mentioned above" (`ITSAppUsesNonExemptEncryption` is already false in Info.plist).
