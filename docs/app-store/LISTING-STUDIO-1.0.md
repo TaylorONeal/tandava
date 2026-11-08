@@ -4,6 +4,8 @@ Paste-ready base text stays in `docs/store/listing-1.0.md` and `native/studio/st
 
 ## Nov 7, 2026: lane proposal (front desk, not teacher)
 
+**Applied Nov 8, 2026** (Taylor approved 09:50 CST): subtitle, keywords and promo text below were PATCHed to App Store Connect app 6831459731, en-US, through the API and read back exact. `native/studio/store/metadata/en-US/{subtitle,keywords,promotional_text}.txt` updated to match so a later `studio-ios-screenshots` run does not revert them. Screenshots unchanged until Taylor picks A (live) or B (night).
+
 Goal: keep Tandava Studio in the front-desk lane (check-in, roster, attendance, QR, passes, owner, staff) and stop competing with TeacherTree, whose keywords are `yoga,teacher,instructor,class,schedule,timetable,studio,pilates,fitness,graphic,story,booking` (`teachertree-phase1-release/docs/store/SUBMISSION.md`). Counts by script; all ASCII, no em dashes, not AI-led.
 
 | Field | Live in ASC now | Proposed |
