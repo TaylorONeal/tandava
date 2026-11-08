@@ -17,6 +17,8 @@ coverage
 .env
 .env.local
 .env.production
+.env.native
+.env.*.local
 
 # Editor directories and files
 .vscode/*
