@@ -10,9 +10,14 @@ fi
 cd "$(dirname "$0")/.."
 SB="npx --yes supabase@latest"
 # Browser and user-called functions keep JWT verification on (default).
-for f in stripe-checkout stripe-connect stripe-portal onboarding email cancel-class; do
+# import-members is new on tandava-prod (the onboarding Import step calls it).
+for f in stripe-checkout stripe-connect stripe-portal native-checkout native-portal onboarding email cancel-class import-members; do
   $SB functions deploy "$f" --project-ref "$REF" --use-api
 done
-# Stripe calls the webhook without a Supabase JWT; it verifies the Stripe signature itself.
-$SB functions deploy stripe-webhook --project-ref "$REF" --use-api --no-verify-jwt
+# These are called without a Supabase JWT and check the caller themselves:
+# Stripe signs the webhook; express-book serves guest bookings (JWT check is off on prod).
+for f in stripe-webhook express-book; do
+  $SB functions deploy "$f" --project-ref "$REF" --use-api --no-verify-jwt
+done
+# push and sms are left out until their providers (APNs/FCM, Twilio) are set up on prod.
 echo "Deployed. Functions:"; $SB functions list --project-ref "$REF"
