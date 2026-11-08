@@ -3,6 +3,8 @@
 App: Tandava Studio, package `com.tandava.studio`, developer account **Purafield Studio LLC** (never a personal account). Free, no ads, no in-app purchases. Phone only.
 Images in this folder: `icon-512.png`, `feature-graphic.png` (1024x500), `phone-01.png` to `phone-07.png` (1080x1920). Text below is paste-ready. No em dashes.
 
+**Screenshot status (Nov 8):** `phone-01.png` to `phone-07.png` are web captures (Playwright, local Supabase), not frames from the Android build that will be uploaded. Status: web-capture, replace. Use them as layout references only. Replacement frames come from the release candidate on the Pixel 4 XL: the sign-in and offline frames are captured (`~/repos/_share/play-assets/tandava-studio/2026-11-08/raw/`); the signed-in frames (dashboard, scan, roster, schedule) need a review staff account on prod first.
+
 ## Main store listing (Grow users > Store presence > Main store listing)
 
 - **App name (30):** Tandava Studio: Class Check-In
