@@ -43,6 +43,18 @@ function readFlag(): string | undefined {
 
 export const STUDIO_APP_LIVE = isStudioAppLive(readFlag());
 
+/**
+ * Safari's Smart App Banner for Tandava Studio, on the staff pages only
+ * (/manage and below). Same switch as the badge: nothing until the app is live,
+ * and never inside the native apps (nativeApp is set there).
+ * Returns the `content` of <meta name="apple-itunes-app">, or null.
+ */
+export function studioAppBannerContent(pathname: string, live: boolean, nativeApp: string | null): string | null {
+  if (!live || nativeApp) return null;
+  if (pathname !== "/manage" && !pathname.startsWith("/manage/")) return null;
+  return `app-id=${STUDIO_APP_APPLE_ID}`;
+}
+
 /** The one line every page uses for the app's availability. */
 export function studioAppAvailability(live: boolean = STUDIO_APP_LIVE): string {
   return live ? "On the App Store for iPhone" : "Coming soon to the App Store";
