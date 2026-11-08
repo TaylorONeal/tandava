@@ -98,7 +98,7 @@ Critical path: implement the already-planned two Capacitor role-specific apps â†
 | Bundle id / package | `com.tandava.app` | `com.tandava.studio` |
 | Apple bundle id registered | Yes, Oct 8 2026 (`WJF8DWPMZW`) | Yes, Oct 8 2026 (`Q29237U4L4`) |
 | Play package | Claimed at first AAB upload | Claimed at first AAB upload |
-| Android candidate | Not built (iOS only) | Built Nov 8 2026 from 61e0244: versionCode 1, versionName 1.0, targetSdk 36, minSdk 26, signed with upload key SHA-256 B4:00:10:73..., AAB sha256 bf1a278c...; not uploaded (no Play record yet) |
+| Android candidate | Not built (iOS only) | Built Nov 8 2026 from eabfa44: versionCode 1, versionName 1.0, targetSdk 36, minSdk 26, signed with upload key SHA-256 B4:00:10:73..., AAB sha256 48cf250e...; Back on root screens leaves the app; not uploaded (no Play record yet) |
 | Who | Students booking classes | Owners, front desk, teachers |
 | Core | Find your studio, schedule, book, pay drop-ins, passes, check-in QR, cancel | 1.0 (Nov 6): sign-in only; scan and roster check-in, schedule, prices, share. Payments setup and reports later. See [STUDIO-PHASE-1.md](STUDIO-PHASE-1.md) |
 | Price | Free | Free download; studio pays hosting off-store |
