@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { offersSignUp } from "@/lib/native/platform";
 import { HelmetProvider } from "react-helmet-async";
+import { StudioAppSmartBanner } from "@/components/marketing/StudioAppSmartBanner";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { DemoProvider } from "@/contexts/DemoContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
@@ -249,6 +250,7 @@ const App = () => (
               <Sonner />
               <BrowserRouter>
                 <NativeStatus />
+                <StudioAppSmartBanner />
                 <NativeCheckout />
                 <DemoRoleBar />
                 <Suspense fallback={<RouteLoadingFallback />}>
