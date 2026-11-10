@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-11-10",
-  "total_public": 431,
-  "active": 429,
+  "total_public": 447,
+  "active": 445,
   "archived": 2,
-  "with_software": 93,
+  "with_software": 94,
   "markets": [
     {
       "market": "austin",
@@ -31,15 +31,15 @@
     },
     {
       "market": "koh-phangan",
-      "fetched_at": "2026-11-10T20:30:05.489Z",
-      "osm_base": "2026-06-01T08:52:28Z",
+      "fetched_at": "2026-11-10T20:03:01.618Z",
+      "osm_base": "2026-11-10T20:01:42Z",
       "elements": 21
     },
     {
       "market": "new-york",
-      "fetched_at": "2026-11-10T20:13:30.783Z",
-      "osm_base": "2026-06-01T08:52:28Z",
-      "elements": 191
+      "fetched_at": "2026-11-10T19:58:47.411Z",
+      "osm_base": "2026-11-10T19:57:39Z",
+      "elements": 216
     },
     {
       "market": "nosara",

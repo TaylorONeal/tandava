@@ -3676,103 +3676,6 @@
    "internal_notes": null
   },
   {
-   "id": "seed-alchemy-yoga-and-meditation-center-ubud",
-   "slug": "alchemy-yoga-and-meditation-center-ubud",
-   "name": "Alchemy Yoga and Meditation Center",
-   "alt_names": [],
-   "brand": null,
-   "business_type": "yoga_studio",
-   "status": "unknown",
-   "is_active": false,
-   "status_note": null,
-   "opened_year": null,
-   "closed_year": null,
-   "market": "ubud",
-   "address": {
-    "street": "Jl. Penestanan No. 75",
-    "area": "Penestanan",
-    "locality": "Ubud",
-    "region_code": "BA",
-    "region_name": "Bali",
-    "postal_code": null,
-    "country_code": "ID",
-    "country_name": "Indonesia"
-   },
-   "geo": null,
-   "time_zone": "Asia/Makassar",
-   "links": {
-    "website": "https://alchemyyogacenter.com",
-    "website_domain": "alchemyyogacenter.com",
-    "instagram": null,
-    "facebook": null,
-    "youtube": null,
-    "tiktok": null,
-    "booking": null
-   },
-   "phone": null,
-   "email": null,
-   "description": "Alchemy Yoga and Meditation Center is a yoga studio in Penestanan, Ubud, Indonesia.",
-   "styles": [
-    "ecstatic-dance",
-    "meditation",
-    "power",
-    "yin"
-   ],
-   "levels": [],
-   "software": {
-    "current": [],
-    "previous": []
-   },
-   "offers": {
-    "teacher_training": null,
-    "on_demand": null,
-    "retreats": null,
-    "drop_in": null
-   },
-   "cross_refs": {
-    "osm": null,
-    "wikidata": null,
-    "tandava_studio_id": null,
-    "teachertree_studio_id": null
-   },
-   "review_state": "draft",
-   "sources": [
-    {
-     "type": "manual",
-     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
-     "license": null,
-     "fetched_at": "2026-11-10T00:00:00Z"
-    }
-   ],
-   "field_sources": {
-    "name": [
-     0
-    ],
-    "status": [
-     0
-    ],
-    "address": [
-     0
-    ],
-    "geo": [
-     0
-    ],
-    "links.website": [
-     0
-    ],
-    "links.website_domain": [
-     0
-    ],
-    "styles": [
-     0
-    ]
-   },
-   "first_seen_at": "2026-11-10T00:00:00Z",
-   "last_refreshed_at": "2026-11-10T00:00:00Z",
-   "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
-  },
-  {
    "id": "osm-way-1354585832",
    "slug": "alchemy-yoga-and-meditation-center-ubud-ubud",
    "name": "Alchemy Yoga and Meditation Center Ubud",
@@ -4358,102 +4261,6 @@
    "internal_notes": "Styles inferred from the name and map tags. Merged seed-intuitive-flow-ubud."
   },
   {
-   "id": "seed-intuitive-flow-ubud",
-   "slug": "intuitive-flow-ubud-2",
-   "name": "Intuitive Flow",
-   "alt_names": [],
-   "brand": null,
-   "business_type": "yoga_studio",
-   "status": "unknown",
-   "is_active": false,
-   "status_note": null,
-   "opened_year": null,
-   "closed_year": null,
-   "market": "ubud",
-   "address": {
-    "street": "Jl. Raya Penestanan Kelod",
-    "area": "Penestanan",
-    "locality": "Ubud",
-    "region_code": "BA",
-    "region_name": "Bali",
-    "postal_code": null,
-    "country_code": "ID",
-    "country_name": "Indonesia"
-   },
-   "geo": null,
-   "time_zone": "Asia/Makassar",
-   "links": {
-    "website": "https://intuitiveflow.com",
-    "website_domain": "intuitiveflow.com",
-    "instagram": null,
-    "facebook": null,
-    "youtube": null,
-    "tiktok": null,
-    "booking": null
-   },
-   "phone": null,
-   "email": null,
-   "description": "Intuitive Flow is a yoga studio in Penestanan, Ubud, Indonesia.",
-   "styles": [
-    "flow-yoga",
-    "yin",
-    "yoga-nidra"
-   ],
-   "levels": [],
-   "software": {
-    "current": [],
-    "previous": []
-   },
-   "offers": {
-    "teacher_training": null,
-    "on_demand": null,
-    "retreats": null,
-    "drop_in": null
-   },
-   "cross_refs": {
-    "osm": null,
-    "wikidata": null,
-    "tandava_studio_id": null,
-    "teachertree_studio_id": null
-   },
-   "review_state": "draft",
-   "sources": [
-    {
-     "type": "manual",
-     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
-     "license": null,
-     "fetched_at": "2026-11-10T00:00:00Z"
-    }
-   ],
-   "field_sources": {
-    "name": [
-     0
-    ],
-    "status": [
-     0
-    ],
-    "address": [
-     0
-    ],
-    "geo": [
-     0
-    ],
-    "links.website": [
-     0
-    ],
-    "links.website_domain": [
-     0
-    ],
-    "styles": [
-     0
-    ]
-   },
-   "first_seen_at": "2026-11-10T00:00:00Z",
-   "last_refreshed_at": "2026-11-10T00:00:00Z",
-   "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
-  },
-  {
    "id": "seed-lumeria-yoga-ubud",
    "slug": "lumeria-yoga-ubud",
    "name": "Lumeria Yoga",
@@ -4732,134 +4539,6 @@
    "last_refreshed_at": "2026-11-10T00:00:00Z",
    "last_verified_at": null,
    "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide."
-  },
-  {
-   "id": "seed-radiantly-alive-ubud",
-   "slug": "radiantly-alive-ubud",
-   "name": "Radiantly Alive",
-   "alt_names": [],
-   "brand": null,
-   "business_type": "yoga_studio",
-   "status": "unknown",
-   "is_active": false,
-   "status_note": null,
-   "opened_year": null,
-   "closed_year": null,
-   "market": "ubud",
-   "address": {
-    "street": "Jl. Jembawan 8",
-    "area": "Central Ubud",
-    "locality": "Ubud",
-    "region_code": "BA",
-    "region_name": "Bali",
-    "postal_code": null,
-    "country_code": "ID",
-    "country_name": "Indonesia"
-   },
-   "geo": null,
-   "time_zone": "Asia/Makassar",
-   "links": {
-    "website": "https://www.radiantlyalive.com",
-    "website_domain": "radiantlyalive.com",
-    "instagram": null,
-    "facebook": null,
-    "youtube": null,
-    "tiktok": null,
-    "booking": null
-   },
-   "phone": null,
-   "email": null,
-   "description": "Radiantly Alive is a yoga studio in Central Ubud, Ubud, Indonesia.",
-   "styles": [
-    "acro",
-    "aerial",
-    "ecstatic-dance",
-    "kundalini",
-    "vinyasa",
-    "yin"
-   ],
-   "levels": [],
-   "software": {
-    "current": [
-     {
-      "platform_id": "squarespace",
-      "role": "website",
-      "detected_via": "booking_link_domain",
-      "evidence": "http://static1.squarespace.com/static/5e68798b81f578406bd7ac7b/t/6adeb7ec792b3d117429b92c/1792980972148/New+RA+Logo.png",
-      "observed_from": "2026-11-10",
-      "observed_to": null,
-      "confidence": 0.5,
-      "verified": false,
-      "source": 1
-     },
-     {
-      "platform_id": "momence",
-      "role": "system_of_record",
-      "detected_via": "script_fingerprint",
-      "evidence": "https://momence.com/_api/primary/api/v1/Events",
-      "observed_from": "2026-11-10",
-      "observed_to": null,
-      "confidence": 0.95,
-      "verified": false,
-      "source": 1
-     }
-    ],
-    "previous": []
-   },
-   "offers": {
-    "teacher_training": null,
-    "on_demand": null,
-    "retreats": null,
-    "drop_in": null
-   },
-   "cross_refs": {
-    "osm": null,
-    "wikidata": null,
-    "tandava_studio_id": null,
-    "teachertree_studio_id": null
-   },
-   "review_state": "draft",
-   "sources": [
-    {
-     "type": "manual",
-     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
-     "license": null,
-     "fetched_at": "2026-11-10T00:00:00Z"
-    },
-    {
-     "type": "website",
-     "ref": "https://www.radiantlyalive.com/",
-     "license": null,
-     "fetched_at": "2026-11-10T00:00:00Z"
-    }
-   ],
-   "field_sources": {
-    "name": [
-     0
-    ],
-    "status": [
-     0
-    ],
-    "address": [
-     0
-    ],
-    "geo": [
-     0
-    ],
-    "links.website": [
-     0
-    ],
-    "links.website_domain": [
-     0
-    ],
-    "styles": [
-     0
-    ]
-   },
-   "first_seen_at": "2026-11-10T00:00:00Z",
-   "last_refreshed_at": "2026-11-10T00:00:00Z",
-   "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-way-404713866",
@@ -5198,101 +4877,6 @@
    "last_refreshed_at": "2026-11-10T20:27:30.215Z",
    "last_verified_at": null,
    "internal_notes": "Merged seed-ubud-yoga-centre-ubud."
-  },
-  {
-   "id": "seed-ubud-yoga-centre-ubud",
-   "slug": "ubud-yoga-centre-ubud-2",
-   "name": "Ubud Yoga Centre",
-   "alt_names": [],
-   "brand": null,
-   "business_type": "yoga_studio",
-   "status": "unknown",
-   "is_active": false,
-   "status_note": null,
-   "opened_year": null,
-   "closed_year": null,
-   "market": "ubud",
-   "address": {
-    "street": "Jl. Hanoman 19",
-    "area": "Central Ubud",
-    "locality": "Ubud",
-    "region_code": "BA",
-    "region_name": "Bali",
-    "postal_code": null,
-    "country_code": "ID",
-    "country_name": "Indonesia"
-   },
-   "geo": null,
-   "time_zone": "Asia/Makassar",
-   "links": {
-    "website": "https://ubud-yoga-centre.com",
-    "website_domain": "ubud-yoga-centre.com",
-    "instagram": null,
-    "facebook": null,
-    "youtube": null,
-    "tiktok": null,
-    "booking": null
-   },
-   "phone": null,
-   "email": null,
-   "description": "Ubud Yoga Centre is a yoga studio in Central Ubud, Ubud, Indonesia.",
-   "styles": [
-    "alignment-based",
-    "hatha"
-   ],
-   "levels": [],
-   "software": {
-    "current": [],
-    "previous": []
-   },
-   "offers": {
-    "teacher_training": null,
-    "on_demand": null,
-    "retreats": null,
-    "drop_in": null
-   },
-   "cross_refs": {
-    "osm": null,
-    "wikidata": null,
-    "tandava_studio_id": null,
-    "teachertree_studio_id": null
-   },
-   "review_state": "draft",
-   "sources": [
-    {
-     "type": "manual",
-     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
-     "license": null,
-     "fetched_at": "2026-11-10T00:00:00Z"
-    }
-   ],
-   "field_sources": {
-    "name": [
-     0
-    ],
-    "status": [
-     0
-    ],
-    "address": [
-     0
-    ],
-    "geo": [
-     0
-    ],
-    "links.website": [
-     0
-    ],
-    "links.website_domain": [
-     0
-    ],
-    "styles": [
-     0
-    ]
-   },
-   "first_seen_at": "2026-11-10T00:00:00Z",
-   "last_refreshed_at": "2026-11-10T00:00:00Z",
-   "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-node-4845678425",
@@ -5787,123 +5371,6 @@
    "last_refreshed_at": "2026-11-10T20:27:30.215Z",
    "last_verified_at": null,
    "internal_notes": "Merged seed-yoga-barn-ubud."
-  },
-  {
-   "id": "seed-yoga-barn-ubud",
-   "slug": "yoga-barn-ubud-2",
-   "name": "Yoga Barn",
-   "alt_names": [],
-   "brand": null,
-   "business_type": "yoga_studio",
-   "status": "unknown",
-   "is_active": false,
-   "status_note": null,
-   "opened_year": null,
-   "closed_year": null,
-   "market": "ubud",
-   "address": {
-    "street": "Jl. Raya Pengosekan",
-    "area": "Pengosekan",
-    "locality": "Ubud",
-    "region_code": "BA",
-    "region_name": "Bali",
-    "postal_code": null,
-    "country_code": "ID",
-    "country_name": "Indonesia"
-   },
-   "geo": null,
-   "time_zone": "Asia/Makassar",
-   "links": {
-    "website": "https://theyogabarn.com",
-    "website_domain": "theyogabarn.com",
-    "instagram": null,
-    "facebook": null,
-    "youtube": null,
-    "tiktok": null,
-    "booking": null
-   },
-   "phone": null,
-   "email": null,
-   "description": "Yoga Barn is a yoga studio in Pengosekan, Ubud, Indonesia.",
-   "styles": [
-    "acro",
-    "aerial",
-    "hatha",
-    "kundalini",
-    "vinyasa",
-    "yoga-nidra"
-   ],
-   "levels": [],
-   "software": {
-    "current": [
-     {
-      "platform_id": "mindbody",
-      "role": "system_of_record",
-      "detected_via": "booking_link_domain",
-      "evidence": "https://widgets.healcode.com/",
-      "observed_from": "2026-11-10",
-      "observed_to": null,
-      "confidence": 0.95,
-      "verified": false,
-      "source": 1
-     }
-    ],
-    "previous": []
-   },
-   "offers": {
-    "teacher_training": null,
-    "on_demand": null,
-    "retreats": null,
-    "drop_in": null
-   },
-   "cross_refs": {
-    "osm": null,
-    "wikidata": null,
-    "tandava_studio_id": null,
-    "teachertree_studio_id": null
-   },
-   "review_state": "draft",
-   "sources": [
-    {
-     "type": "manual",
-     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
-     "license": null,
-     "fetched_at": "2026-11-10T00:00:00Z"
-    },
-    {
-     "type": "website",
-     "ref": "https://www.theyogabarn.com/",
-     "license": null,
-     "fetched_at": "2026-11-10T00:00:00Z"
-    }
-   ],
-   "field_sources": {
-    "name": [
-     0
-    ],
-    "status": [
-     0
-    ],
-    "address": [
-     0
-    ],
-    "geo": [
-     0
-    ],
-    "links.website": [
-     0
-    ],
-    "links.website_domain": [
-     0
-    ],
-    "styles": [
-     0
-    ]
-   },
-   "first_seen_at": "2026-11-10T00:00:00Z",
-   "last_refreshed_at": "2026-11-10T00:00:00Z",
-   "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-node-4941876221",
@@ -7828,7 +7295,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/4713691103",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -7846,7 +7313,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -7915,7 +7382,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/way/381949598",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -7939,7 +7406,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -8008,7 +7475,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5534082133",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -8026,7 +7493,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -8095,7 +7562,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/4753814998",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -8113,7 +7580,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -8182,7 +7649,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/4366967190",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -8206,7 +7673,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -8275,7 +7742,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/7516238185",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -8299,7 +7766,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -8368,7 +7835,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/8223922117",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -8392,7 +7859,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -8461,7 +7928,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9311900819",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -8485,7 +7952,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -8556,7 +8023,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/way/529898584",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -8577,7 +8044,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -8648,7 +8115,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/13195313140",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -8669,7 +8136,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -8738,7 +8205,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/8943047000",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -8762,7 +8229,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -8833,7 +8300,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6681286886",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -8863,7 +8330,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -8932,7 +8399,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/way/1472922251",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -8950,7 +8417,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -9019,7 +8486,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/4744257563",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -9037,7 +8504,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -9106,7 +8573,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/way/480883557",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -9124,7 +8591,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -9193,7 +8660,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/13722309978",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -9211,7 +8678,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -9280,7 +8747,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12596221626",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -9298,7 +8765,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -9367,7 +8834,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/3837567083",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -9385,7 +8852,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -9454,7 +8921,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/4755186455",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -9472,7 +8939,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -9541,7 +9008,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5353576021",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -9559,7 +9026,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -9628,7 +9095,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/way/1445960380",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:30:05.489Z"
+     "fetched_at": "2026-11-10T20:03:01.618Z"
     }
    ],
    "field_sources": {
@@ -9649,7 +9116,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
-   "last_refreshed_at": "2026-11-10T20:30:05.489Z",
+   "last_refreshed_at": "2026-11-10T20:03:01.618Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -17541,7 +17008,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/7215123782",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -17559,7 +17026,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -17628,7 +17095,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/way/397034540",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -17658,7 +17125,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -17671,8 +17138,8 @@
    ],
    "brand": "Club Pilates",
    "business_type": "pilates_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -17726,7 +17193,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -17744,13 +17211,13 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12817382290",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T19:57:25.398Z"
+     "fetched_at": "2026-11-10T20:12:00.375Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/13712910681",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T19:57:25.398Z"
+     "fetched_at": "2026-11-10T20:12:00.375Z"
     },
     {
      "type": "openstreetmap",
@@ -17846,31 +17313,31 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/10917024236",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T19:56:41.457Z"
+     "fetched_at": "2026-11-10T20:11:07.904Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/10926763175",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T19:55:30.195Z"
+     "fetched_at": "2026-11-10T20:10:00.309Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2328651007",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T19:55:30.195Z"
+     "fetched_at": "2026-11-10T20:10:00.309Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2869633001",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T19:55:30.195Z"
+     "fetched_at": "2026-11-10T20:10:00.309Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5859916575",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T19:55:30.195Z"
+     "fetched_at": "2026-11-10T20:10:00.309Z"
     }
    ],
    "field_sources": {
@@ -17902,7 +17369,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Merged map element node/10311585051. Merged map element node/14137609341. Merged map element node/14193898739. Merged map element node/2384892239. Merged map element node/2704081062. Merged map element node/2711628495. Merged map element node/2724094229. Merged map element node/6659232504. Merged map element node/6839026147. Merged map element way/904436299. Merged map element node/10917024236. Merged map element node/10926763175. Merged map element node/2328651007. Merged map element node/2869633001. Merged map element node/5859916575. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Styles inferred from the name and map tags. Merged map element node/10311585051. Merged map element node/14137609341. Merged map element node/14193898739. Merged map element node/2384892239. Merged map element node/2704081062. Merged map element node/2711628495. Merged map element node/2724094229. Merged map element node/6659232504. Merged map element node/6839026147. Merged map element way/904436299. Merged map element node/10917024236. Merged map element node/10926763175. Merged map element node/2328651007. Merged map element node/2869633001. Merged map element node/5859916575."
   },
   {
    "id": "osm-node-14089033910",
@@ -17911,8 +17378,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -17965,7 +17432,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -18000,7 +17467,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Styles inferred from the name and map tags."
   },
   {
    "id": "osm-node-4837023019",
@@ -18040,7 +17507,7 @@
     "tiktok": null,
     "booking": null
    },
-   "phone": null,
+   "phone": "+19737447873",
    "email": null,
    "description": "JaiPure Yoga is a yoga studio in Montclair, NJ.",
    "styles": [],
@@ -18079,7 +17546,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/4837023019",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -18109,7 +17576,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -18120,8 +17587,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -18184,7 +17651,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -18222,7 +17689,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": null
   },
   {
    "id": "osm-node-14090275945",
@@ -18231,8 +17698,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -18297,7 +17764,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -18338,7 +17805,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Styles inferred from the name and map tags."
   },
   {
    "id": "osm-node-14090275935",
@@ -18347,8 +17814,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -18401,7 +17868,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -18436,7 +17903,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Styles inferred from the name and map tags."
   },
   {
    "id": "osm-node-12384465275",
@@ -18515,7 +17982,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12384465275",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -18545,7 +18012,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -18619,7 +18086,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/10858012970",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
@@ -18631,7 +18098,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/13644337012",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -18661,7 +18128,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags. Merged map element node/3857693597. Merged map element node/13644337012."
   },
@@ -18742,7 +18209,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9481481232",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -18772,7 +18239,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -18841,7 +18308,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/3452885684",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -18859,7 +18326,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -18930,7 +18397,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/7040472636",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -18957,7 +18424,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -19028,7 +18495,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11123552259",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -19049,7 +18516,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -19130,7 +18597,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/way/250424743",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -19160,7 +18627,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -19252,7 +18719,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5169959615",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -19282,7 +18749,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -19293,8 +18760,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -19345,7 +18812,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -19377,7 +18844,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": null
   },
   {
    "id": "osm-node-11014267019",
@@ -19444,7 +18911,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11014267019",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -19462,7 +18929,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -19543,7 +19010,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5735013277",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -19573,7 +19040,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -19642,7 +19109,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5907394858",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -19660,7 +19127,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -19729,13 +19196,13 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/way/533867047",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5178740949",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -19759,7 +19226,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Merged map element node/5178740949."
   },
@@ -19830,7 +19297,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12367116592",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -19851,7 +19318,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -19920,7 +19387,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11293916605",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -19941,7 +19408,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -20012,7 +19479,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/13128789801",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -20033,7 +19500,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -20104,7 +19571,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2494251767",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -20125,7 +19592,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -20206,7 +19673,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/10172687822",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -20236,7 +19703,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -20307,7 +19774,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6799743689",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -20328,7 +19795,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -20422,7 +19889,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9143001379",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -20455,7 +19922,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -20549,7 +20016,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/way/250435014",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -20582,7 +20049,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -20663,7 +20130,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9518146173",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -20693,7 +20160,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -20762,7 +20229,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/13796338303",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -20786,7 +20253,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -20797,8 +20264,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -20851,7 +20318,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -20886,7 +20353,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Styles inferred from the name and map tags."
   },
   {
    "id": "osm-node-11040468163",
@@ -20953,7 +20420,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11040468163",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -20971,7 +20438,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -21042,7 +20509,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5791482006",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -21072,7 +20539,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -21143,7 +20610,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6779685148",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -21164,7 +20631,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -21233,7 +20700,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6121777875",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -21251,7 +20718,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -21322,7 +20789,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5528710488",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -21349,7 +20816,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -21420,7 +20887,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5555271899",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -21441,7 +20908,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -21452,8 +20919,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -21506,7 +20973,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -21541,7 +21008,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Styles inferred from the name and map tags."
   },
   {
    "id": "osm-node-6439225683",
@@ -21610,7 +21077,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6439225683",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -21637,7 +21104,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -21733,7 +21200,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/way/248164299",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -21766,7 +21233,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -21835,7 +21302,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6436939086",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -21853,7 +21320,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -21922,7 +21389,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/13025037809",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -21946,229 +21413,9 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
-  },
-  {
-   "id": "osm-node-10311585051",
-   "slug": "club-pilates-new-york",
-   "name": "Club Pilates",
-   "alt_names": [
-    "Patty's Eggnest"
-   ],
-   "brand": "Club Pilates",
-   "business_type": "pilates_studio",
-   "status": "open",
-   "is_active": true,
-   "status_note": null,
-   "opened_year": null,
-   "closed_year": null,
-   "market": "new-york",
-   "address": {
-    "street": "601 West 57th Street",
-    "area": null,
-    "locality": "New York",
-    "region_code": "NY",
-    "region_name": "New York",
-    "postal_code": "60805",
-    "country_code": "US",
-    "country_name": "United States"
-   },
-   "geo": {
-    "lat": 40.7707912,
-    "lng": -73.9920494,
-    "precision": "rooftop"
-   },
-   "time_zone": "America/New_York",
-   "links": {
-    "website": "https://www.clubpilates.com/west57th",
-    "website_domain": "clubpilates.com",
-    "instagram": null,
-    "facebook": null,
-    "youtube": null,
-    "tiktok": null,
-    "booking": null
-   },
-   "phone": "+16467660290",
-   "email": null,
-   "description": "Club Pilates is a pilates studio in New York, NY.",
-   "styles": [
-    "pilates"
-   ],
-   "levels": [],
-   "software": {
-    "current": [],
-    "previous": []
-   },
-   "offers": {
-    "teacher_training": null,
-    "on_demand": null,
-    "retreats": null,
-    "drop_in": null
-   },
-   "cross_refs": {
-    "osm": "node/10311585051",
-    "wikidata": null,
-    "tandava_studio_id": null,
-    "teachertree_studio_id": null
-   },
-   "review_state": "published",
-   "sources": [
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/10311585051",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/12817382290",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:12:00.375Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/13712910681",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:12:00.375Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/10739815896",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/11215635598",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/11352167965",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/12186559042",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/12233732595",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/12384465277",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/2384892239",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/2704081062",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/2711628495",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/2724094229",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/6659232504",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/6839026147",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/way/904436299",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/10917024236",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:11:07.904Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/10926763175",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:10:00.309Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/2328651007",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:10:00.309Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/2869633001",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:10:00.309Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/5859916575",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:10:00.309Z"
-    }
-   ],
-   "field_sources": {
-    "name": [
-     0
-    ],
-    "status": [
-     0
-    ],
-    "address": [
-     0
-    ],
-    "geo": [
-     0
-    ],
-    "links.website": [
-     0
-    ],
-    "links.website_domain": [
-     0
-    ],
-    "styles": [
-     0
-    ]
-   },
-   "first_seen_at": "2026-11-10T20:13:30.783Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
-   "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Merged map element node/12817382290. Merged map element node/10739815896. Merged map element node/11215635598. Merged map element node/11352167965. Merged map element node/12186559042. Merged map element node/12233732595. Merged map element node/12384465277. Merged map element node/2384892239. Merged map element node/2704081062. Merged map element node/2711628495. Merged map element node/2724094229. Merged map element node/6659232504. Merged map element node/6839026147. Merged map element way/904436299. Merged map element node/10917024236. Merged map element node/10926763175. Merged map element node/2328651007. Merged map element node/2869633001. Merged map element node/5859916575."
   },
   {
    "id": "osm-node-11746463846",
@@ -22237,7 +21484,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11746463846",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -22264,7 +21511,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -22275,8 +21522,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -22329,7 +21576,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -22364,7 +21611,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Styles inferred from the name and map tags."
   },
   {
    "id": "osm-node-10920438748",
@@ -22431,13 +21678,13 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/10920438748",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11329847969",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -22455,7 +21702,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Merged map element node/11329847969."
   },
@@ -22526,7 +21773,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/8674499405",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
@@ -22586,13 +21833,13 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12987817501",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12987824901",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
@@ -22658,7 +21905,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Merged map element node/10563052797. Merged map element node/2337759318. Merged map element node/4548624459. Merged map element node/6604031903. Merged map element node/663533939. Merged map element node/9465192363. Merged map element node/2400948634. Merged map element node/3547665863."
   },
@@ -22666,7 +21913,9 @@
    "id": "osm-node-10702274686",
    "slug": "craft-pilates-new-york",
    "name": "Craft Pilates",
-   "alt_names": [],
+   "alt_names": [
+    "New York Kids Club"
+   ],
    "brand": null,
    "business_type": "pilates_studio",
    "status": "open",
@@ -22718,7 +21967,7 @@
       "observed_to": null,
       "confidence": 0.95,
       "verified": false,
-      "source": 1
+      "source": 2
      }
     ],
     "previous": []
@@ -22741,7 +21990,13 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/10702274686",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
+    },
+    {
+     "type": "openstreetmap",
+     "ref": "https://www.openstreetmap.org/node/7159234143",
+     "license": "ODbL-1.0",
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -22774,9 +22029,9 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "Styles inferred from the name and map tags. Merged map element node/7159234143."
   },
   {
    "id": "osm-node-2702184722",
@@ -22843,7 +22098,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2702184722",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -22861,7 +22116,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -22942,7 +22197,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2568740668",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -22972,7 +22227,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -22990,7 +22245,7 @@
    "closed_year": null,
    "market": "new-york",
    "address": {
-    "street": null,
+    "street": "281 Greene Avenue",
     "area": null,
     "locality": "New York",
     "region_code": "NY",
@@ -23064,7 +22319,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/7161457144",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -23094,7 +22349,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -23165,13 +22420,13 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11975933899",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6978303339",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -23195,7 +22450,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags. Merged map element node/6978303339."
   },
@@ -23266,7 +22521,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/7262600766",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -23287,7 +22542,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -23370,7 +22625,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5812402061",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -23403,7 +22658,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -23472,13 +22727,13 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2717840368",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/1383939144",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -23502,7 +22757,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Merged map element node/1383939144."
   },
@@ -23573,7 +22828,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/10215087620",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -23594,7 +22849,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -23675,7 +22930,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2555126645",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -23705,7 +22960,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -23776,7 +23031,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6422095824",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -23803,7 +23058,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -23874,7 +23129,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2553306835",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -23895,7 +23150,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -23980,7 +23235,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2568110466",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -24013,7 +23268,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -24084,7 +23339,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6329603988",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -24105,7 +23360,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -24116,8 +23371,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -24170,7 +23425,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -24199,7 +23454,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Styles inferred from the name and map tags."
   },
   {
    "id": "osm-node-14181609552",
@@ -24208,8 +23463,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -24263,7 +23518,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -24292,7 +23547,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Styles inferred from the name and map tags."
   },
   {
    "id": "osm-node-13311273314",
@@ -24359,7 +23614,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/13311273314",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -24383,7 +23638,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -24466,7 +23721,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9215689736",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -24502,7 +23757,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -24513,8 +23768,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "multi_discipline_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -24567,7 +23822,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -24596,7 +23851,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Styles inferred from the name and map tags."
   },
   {
    "id": "osm-node-2494372768",
@@ -24622,8 +23877,8 @@
     "country_name": "United States"
    },
    "geo": {
-    "lat": 40.6771273,
-    "lng": -73.9860965,
+    "lat": 40.677116,
+    "lng": -73.9861034,
     "precision": "rooftop"
    },
    "time_zone": "America/New_York",
@@ -24688,13 +23943,13 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2494372768",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2550022553",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -24727,7 +23982,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags. Merged map element node/2550022553."
   },
@@ -24796,7 +24051,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/7195989670",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -24814,7 +24069,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -24908,7 +24163,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12401145040",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -24941,7 +24196,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -25012,7 +24267,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2550150582",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -25036,7 +24291,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -25107,7 +24362,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12247307324",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -25128,7 +24383,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -25197,19 +24452,19 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5536589901",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11463577703",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9525802260",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -25233,7 +24488,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Merged map element node/11463577703. Merged map element node/9525802260."
   },
@@ -25244,8 +24499,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -25298,7 +24553,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -25333,7 +24588,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Styles inferred from the name and map tags."
   },
   {
    "id": "osm-node-2550066416",
@@ -25400,7 +24655,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2550066416",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -25418,7 +24673,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -25489,7 +24744,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/7194158063",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -25516,7 +24771,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -25597,7 +24852,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5344122098",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -25627,7 +24882,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -25696,7 +24951,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6789145004",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -25714,7 +24969,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -25725,8 +24980,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -25779,7 +25034,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -25808,7 +25063,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Styles inferred from the name and map tags."
   },
   {
    "id": "osm-node-6789145008",
@@ -25877,7 +25132,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6789145008",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -25898,7 +25153,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -25969,7 +25224,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6793153517",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -25990,7 +25245,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -26084,7 +25339,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/4882300656",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -26117,7 +25372,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -26200,7 +25455,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5515733962",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -26233,7 +25488,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -26325,7 +25580,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/4998805613",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -26355,7 +25610,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -26438,7 +25693,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11508849895",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -26471,7 +25726,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -26563,7 +25818,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9121304275",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -26593,7 +25848,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -26662,7 +25917,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5535254392",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -26686,7 +25941,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -26757,7 +26012,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2704040555",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -26778,7 +26033,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -26847,7 +26102,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9543578417",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -26874,7 +26129,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -26945,13 +26200,13 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5736995840",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2187917032",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -26975,7 +26230,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Merged map element node/2187917032."
   },
@@ -27044,7 +26299,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11589050963",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -27062,7 +26317,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -27133,7 +26388,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5227518946",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -27154,7 +26409,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -27165,8 +26420,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "multi_discipline_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -27219,7 +26474,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -27254,7 +26509,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Styles inferred from the name and map tags."
   },
   {
    "id": "osm-node-6429323824",
@@ -27323,7 +26578,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6429323824",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -27347,7 +26602,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -27355,7 +26610,9 @@
    "id": "osm-node-2550002274",
    "slug": "metamorphosis-new-york",
    "name": "Metamorphosis",
-   "alt_names": [],
+   "alt_names": [
+    "Studio Morph"
+   ],
    "brand": null,
    "business_type": "pilates_studio",
    "status": "open",
@@ -27418,7 +26675,13 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2550002274",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
+    },
+    {
+     "type": "openstreetmap",
+     "ref": "https://www.openstreetmap.org/node/13978782901",
+     "license": "ODbL-1.0",
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -27445,9 +26708,9 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "Styles inferred from the name and map tags. Merged map element node/13978782901."
   },
   {
    "id": "osm-node-13667474168",
@@ -27516,7 +26779,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/13667474168",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -27537,7 +26800,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -27620,7 +26883,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6298097846",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -27653,7 +26916,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -27722,7 +26985,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2839686830",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -27746,7 +27009,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -27817,7 +27080,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2568219104",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -27844,7 +27107,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -27913,7 +27176,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/8920738993",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -27931,7 +27194,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -28023,7 +27286,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6677761685",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -28053,7 +27316,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -28124,13 +27387,13 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9332381121",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9736021735",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -28151,7 +27414,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags. Merged map element node/9736021735."
   },
@@ -28162,8 +27425,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -28214,7 +27477,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -28246,7 +27509,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": null
   },
   {
    "id": "osm-node-12144911921",
@@ -28313,7 +27576,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12144911921",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -28331,7 +27594,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -28423,7 +27686,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11411465402",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -28453,7 +27716,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -28538,7 +27801,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11462448527",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -28571,7 +27834,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -28640,7 +27903,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2557487249",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -28664,7 +27927,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -28733,7 +27996,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6799740818",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -28751,7 +28014,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -28822,7 +28085,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12386676804",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -28843,7 +28106,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -28914,7 +28177,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9348996477",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -28935,7 +28198,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -29006,7 +28269,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/10262811047",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -29033,7 +28296,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -29116,7 +28379,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/7312396779",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -29149,7 +28412,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -29160,8 +28423,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -29214,7 +28477,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -29252,7 +28515,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Styles inferred from the name and map tags."
   },
   {
    "id": "osm-node-10757178647",
@@ -29333,7 +28596,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/10757178647",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -29366,7 +28629,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -29449,7 +28712,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9123149745",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -29482,7 +28745,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -29553,7 +28816,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11117824265",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -29574,7 +28837,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -29657,7 +28920,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2567557168",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -29690,7 +28953,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -29761,7 +29024,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2761694171",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -29788,7 +29051,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -29859,7 +29122,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11040468174",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -29880,7 +29143,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -29891,8 +29154,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "open",
-   "is_active": true,
+   "status": "unknown",
+   "is_active": false,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -29955,7 +29218,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "published",
+   "review_state": "draft",
    "sources": [
     {
      "type": "openstreetmap",
@@ -29993,7 +29256,7 @@
    "first_seen_at": "2026-11-10T20:13:30.783Z",
    "last_refreshed_at": "2026-11-10T20:13:30.783Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-node-12385656276",
@@ -30063,7 +29326,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12385656276",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -30084,7 +29347,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -30167,19 +29430,19 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2549896917",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6432938290",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/8613813410",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -30209,7 +29472,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Merged map element node/6432938290. Merged map element node/8613813410."
   },
@@ -30278,7 +29541,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/3248774670",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -30302,7 +29565,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -30362,7 +29625,7 @@
       "observed_to": null,
       "confidence": 0.5,
       "verified": false,
-      "source": 1
+      "source": 2
      },
      {
       "platform_id": "momence",
@@ -30373,7 +29636,7 @@
       "observed_to": null,
       "confidence": 0.95,
       "verified": false,
-      "source": 1
+      "source": 2
      }
     ],
     "previous": []
@@ -30396,7 +29659,13 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9233654454",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
+    },
+    {
+     "type": "openstreetmap",
+     "ref": "https://www.openstreetmap.org/node/14264972399",
+     "license": "ODbL-1.0",
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -30429,9 +29698,9 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "Styles inferred from the name and map tags. Merged map element node/14264972399."
   },
   {
    "id": "osm-node-8853871170",
@@ -30500,7 +29769,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/8853871170",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -30527,7 +29796,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -30596,7 +29865,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2494325733",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -30614,7 +29883,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -30685,7 +29954,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9509315841",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -30712,7 +29981,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -30781,7 +30050,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5512653816",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -30805,7 +30074,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -30897,7 +30166,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12072361222",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -30927,7 +30196,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -30996,7 +30265,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/7137510271",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -31020,7 +30289,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -31089,7 +30358,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2567933417",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -31107,7 +30376,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -31199,7 +30468,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2568918204",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -31229,7 +30498,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -31298,7 +30567,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/way/248237368",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -31322,7 +30591,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -31403,7 +30672,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5191768760",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -31433,7 +30702,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -31502,7 +30771,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/8098089418",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -31520,7 +30789,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -31589,7 +30858,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5706864742",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -31607,7 +30876,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -31678,7 +30947,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2562380328",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -31705,7 +30974,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -31776,7 +31045,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/10195939242",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -31797,7 +31066,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -31815,7 +31084,7 @@
    "closed_year": null,
    "market": "new-york",
    "address": {
-    "street": null,
+    "street": "12 Saint Marks Place",
     "area": null,
     "locality": "New York",
     "region_code": "NY",
@@ -31878,7 +31147,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/7041092619",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -31911,7 +31180,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -31994,7 +31263,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6534166834",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -32027,7 +31296,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -32096,7 +31365,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/4429416441",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -32120,7 +31389,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -32191,13 +31460,25 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12210004873",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
+    },
+    {
+     "type": "openstreetmap",
+     "ref": "https://www.openstreetmap.org/node/11517472732",
+     "license": "ODbL-1.0",
+     "fetched_at": "2026-11-10T19:58:47.411Z"
+    },
+    {
+     "type": "openstreetmap",
+     "ref": "https://www.openstreetmap.org/node/13923184528",
+     "license": "ODbL-1.0",
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/8303764415",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -32224,9 +31505,9 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Merged map element node/8303764415."
+   "internal_notes": "Styles inferred from the name and map tags. Merged map element node/11517472732. Merged map element node/13923184528. Merged map element node/8303764415."
   },
   {
    "id": "osm-node-6779685151",
@@ -32293,7 +31574,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6779685151",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -32311,7 +31592,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -32380,7 +31661,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6261902770",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -32398,7 +31679,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -32470,7 +31751,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/4919818061",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -32497,7 +31778,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -32580,7 +31861,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12706384810",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -32613,7 +31894,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -32707,7 +31988,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6317277260",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -32743,7 +32024,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -32814,7 +32095,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2552883693",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -32835,7 +32116,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -32906,7 +32187,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9583501318",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -32930,7 +32211,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -33001,7 +32282,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/13825892237",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -33022,7 +32303,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -33116,7 +32397,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2494292644",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -33149,7 +32430,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -33241,7 +32522,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6389330772",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -33271,7 +32552,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -33352,7 +32633,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9978637390",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -33382,7 +32663,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -33451,7 +32732,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12124883968",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -33469,7 +32750,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -33563,7 +32844,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/13011177567",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -33596,7 +32877,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -33699,7 +32980,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/8707342805",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -33729,7 +33010,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -33798,7 +33079,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/8569965508",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -33822,7 +33103,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -33891,7 +33172,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5766716008",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -33915,7 +33196,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -33998,7 +33279,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/3887161497",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -34031,7 +33312,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -34125,7 +33406,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/11583474862",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -34158,7 +33439,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -34169,8 +33450,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -34221,7 +33502,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -34253,7 +33534,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": null
   },
   {
    "id": "osm-node-9330502771",
@@ -34345,7 +33626,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/9330502771",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -34378,7 +33659,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -34447,7 +33728,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/12729385721",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -34465,7 +33746,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -34534,7 +33815,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5331946637",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -34558,7 +33839,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -34627,7 +33908,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/6139358670",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -34651,7 +33932,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -34747,13 +34028,13 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/7243548686",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/8600681265",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -34783,7 +34064,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Merged map element node/8600681265."
   },
@@ -34852,7 +34133,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5714335357",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -34876,7 +34157,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -34968,7 +34249,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2562056333",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -34998,7 +34279,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -35067,7 +34348,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5365440841",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -35091,7 +34372,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -35160,7 +34441,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2552623845",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -35178,7 +34459,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -35247,7 +34528,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/10599778268",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -35265,7 +34546,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -35346,7 +34627,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/4564270453",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -35376,7 +34657,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -35457,7 +34738,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/2550571939",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     },
     {
      "type": "website",
@@ -35487,7 +34768,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -35498,8 +34779,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "open",
-   "is_active": true,
+   "status": "unknown",
+   "is_active": false,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -35550,7 +34831,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "published",
+   "review_state": "draft",
    "sources": [
     {
      "type": "openstreetmap",
@@ -35576,7 +34857,7 @@
    "first_seen_at": "2026-11-10T20:13:30.783Z",
    "last_refreshed_at": "2026-11-10T20:13:30.783Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-way-884907358",
@@ -35645,7 +34926,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/way/884907358",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -35666,7 +34947,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -35735,7 +35016,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/way/539327005",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -35753,7 +35034,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": null
   },
@@ -35825,7 +35106,7 @@
      "type": "openstreetmap",
      "ref": "https://www.openstreetmap.org/node/5411194373",
      "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:13:30.783Z"
+     "fetched_at": "2026-11-10T19:58:47.411Z"
     }
    ],
    "field_sources": {
@@ -35852,7 +35133,7 @@
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:13:30.783Z",
+   "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
   },
@@ -35863,8 +35144,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "unknown",
-   "is_active": false,
+   "status": "open",
+   "is_active": true,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -35915,7 +35196,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "published",
    "sources": [
     {
      "type": "openstreetmap",
@@ -35941,7 +35222,7 @@
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T19:58:47.411Z",
    "last_verified_at": null,
-   "internal_notes": "Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": null
   },
   {
    "id": "osm-node-14293217563",
@@ -39204,7 +38485,7 @@
    "first_seen_at": "2026-11-10T00:00:00Z",
    "last_refreshed_at": "2026-11-10T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "seed-trufusion-south-austin-austin",
@@ -40881,7 +40162,7 @@
    "first_seen_at": "2026-11-10T19:29:42.348Z",
    "last_refreshed_at": "2026-11-10T19:29:42.348Z",
    "last_verified_at": null,
-   "internal_notes": "Merged map element node/2463139566. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Merged map element node/2463139566. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-node-11390730408",
