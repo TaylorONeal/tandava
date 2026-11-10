@@ -1,0 +1,2402 @@
+{
+  "note": "Site checker results by website domain. Written by scripts/directory/site-check.mjs.",
+  "user_agent": "TandavaStudioDirectory/1.0 (+https://tandavastudio.com/studios/about)",
+  "sites": {
+    "105f.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://105f.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "classpass",
+          "role": "marketplace",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://classpass.com/",
+          "confidence": 0.95
+        },
+        {
+          "platform_id": "wellnessliving",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://www.wellnessliving.com/rs/catalog-view.html",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "8limbsyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://8limbsyoga.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "abhayayoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://abhayayoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://clients.mindbodyonline.com/app/business/classic/ws",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "absolutepowergym.net": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.absolutepowergym.net/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "activ8studio.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://activ8studio.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "aditistudio.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://aditistudio.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "agamayoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.agamayoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "alchemyyogacenter.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.alchemyyogacenter.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "allyoganyc.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "http://allyoganyc.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "anahatayogaatx.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://anahatayogaatx.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "andyogastudios.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://andyogastudios.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "annexpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.annexpilates.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "arise.yoga": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.arise.yoga/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "ashtangayogaaustin.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://ashtangayogaaustin.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "atlaspilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://atlaspilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "austinbodycollective.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://austinbodycollective.com/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "babycobrayoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://babycobrayoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "balanceyoga.de": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.balanceyoga.de/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "bayridgepilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://bayridgepilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "beachglasshyp.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.beachglasshyp.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "beyondpilates.net": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.beyondpilates.net/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "bhaktisf.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.bhaktisf.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "bhaktistudio.org": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://bhaktistudio.org/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "bigshouldersyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.bigshouldersyoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "bijayoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://bijayoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://clients.mindbodyonline.com/classic/ws",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "blackswanyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.blackswanyoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://clients.mindbodyonline.com/ASP/main_shop.asp",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "blogspot.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://balilifestudioubud.blogspot.com/",
+      "status": "http_error",
+      "http_status": 429,
+      "platforms": []
+    },
+    "blosmstudio.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.blosmstudio.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "eventbrite",
+          "role": "payments",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://www.eventbrite.com/e/cuddles-connection-tickets-2002607212080",
+          "confidence": 0.95
+        },
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://momence.com/CONTINUUM%2C-A-School-of-Shadow-Yoga/Seattle-Shadow-Yoga%3A-Mitahara/135517939",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "bluelotuschicago.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.bluelotuschicago.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "bluespiritcostarica.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.bluespiritcostarica.com/",
+      "status": "http_error",
+      "http_status": 403,
+      "platforms": []
+    },
+    "bodhitreeyogaresort.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://bodhitreeyogaresort.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "bodybarpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://bodybarpilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "bodycenterstudios.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://bodycenterstudios.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "wellnessliving",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://www.wellnessliving.com/login/bodycenter_studios1",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "bodycraftstudio.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://bodycraftstudio.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "bodynbrain.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.bodynbrain.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "bodyrok.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://bodyrok.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "bodytonicpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.bodytonicpilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "bodytonicsf.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://bodytonicsf.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "boutiquepilatesnyc.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.boutiquepilatesnyc.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "breathandbalancebodyworks.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.breathandbalancebodyworks.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "breathandbodyyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://breathandbodyyoga.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "breathehotyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.breathehotyoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "brooklynbornpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.brooklynbornpilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "brooklynflow.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://brooklynflow.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "brooklynphysicaltherapy.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://brooklynphysicaltherapy.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "jane-app",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://inspirapt.janeapp.com/",
+          "confidence": 0.95
+        },
+        {
+          "platform_id": "eventbrite",
+          "role": "payments",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://www.eventbrite.com/e/speaker-spotlight-series-at-inspira-physical-therapy-november-tickets-1992442956518",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "clubpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.clubpilates.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "cobraclubbk.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.cobraclubbk.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "communeyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.communeyoga.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "copalhotmat.studio": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.copalhotmat.studio/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "coreculturepilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.coreculturepilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "corehavn.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.corehavn.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://momence.com/m/247464",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "corepoweryoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.corepoweryoga.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "corezonepilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://corezonepilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "costaricayogaspa.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.costaricayogaspa.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "craftpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://craftpilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "arketa",
+          "role": "system_of_record",
+          "detected_via": "iframe",
+          "evidence": "https://app.arketa.co/iframe/craftpilates/form/WoGuhccIxkfHH4NAj0lg",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "dahnyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "http://www.dahnyoga.com/",
+      "status": "timeout",
+      "http_status": null,
+      "platforms": []
+    },
+    "datzastudios.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://datzastudios.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://momence.com/video/plugin/34781",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "dayayogastudio.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.dayayogastudio.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "deryoga.eu": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.deryoga.eu/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "divineyogastudiosf.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.divineyogastudiosf.com/",
+      "status": "http_error",
+      "http_status": 404,
+      "platforms": []
+    },
+    "dou-yoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.dou-yoga.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "driftyogajuicebar.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.driftyogajuicebar.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "emeraldcitypilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://emeraldcitypilates.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "ensopilatesnyc.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.ensopilatesnyc.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://clients.mindbodyonline.com/consumermyinfo",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "equinox.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.equinox.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "evolvestronger.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://evolvestronger.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://widgets.mindbodyonline.com/javascripts/healcode.js",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "faclimbing.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://faclimbing.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://widgets.healcode.com/javascripts/healcode.js",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "fiercegrace.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.fiercegrace.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "fifty50pilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.fifty50pilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "finetunepilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.finetunepilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "fireshaper.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.fireshaper.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://clients.mindbodyonline.com/classic/ws",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "fivelementsbali.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://fivelementsbali.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "flightroomseattle.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.flightroomseattle.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "flowpilatesny.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://flowpilatesny.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://clients.mindbodyonline.com/classic/ws",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "flowyogatx.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.flowyogatx.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "flychicago.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.flychicago.com/",
+      "status": "http_error",
+      "http_status": 403,
+      "platforms": []
+    },
+    "folksf.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://folksf.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://momence.com/video/plugin/35337",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "frangallo.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://frangallo.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "fullcirclechicago.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.fullcirclechicago.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://clients.mindbodyonline.com/classic/ws",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "fyrayoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.fyrayoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "gaiayogashalla.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.gaiayogashalla.com/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "genesiscentre.info": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://genesiscentre.info/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "gipsyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "http://gipsyoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "glowyogasf.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.glowyogasf.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://clients.mindbodyonline.com/classic/home",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "gluecks-yoga-badhomburg.de": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://gluecks-yoga-badhomburg.de/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "gooddaypilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.gooddaypilates.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "goodtimepilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.goodtimepilates.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "haleayoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://haleayoga.com/",
+      "status": "http_error",
+      "http_status": 403,
+      "platforms": []
+    },
+    "harlempilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.harlempilates.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "harmonynosara.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.harmonynosara.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "haumsf.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://haumsf.com/",
+      "status": "http_error",
+      "http_status": 404,
+      "platforms": []
+    },
+    "hauteyogaqueenanne.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://hauteyogaqueenanne.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "healhaus.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.healhaus.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "healingyogacenter.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://healingyogacenter.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "heartspacebali.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://heartspacebali.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "heatwise-studio.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.heatwise-studio.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "heightsmeditationyoga.org": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.heightsmeditationyoga.org/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "hotyogaplus-sf.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://hotyogaplus-sf.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://widgets.healcode.com/javascripts/healcode.js",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "hotyogaregopark.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.hotyogaregopark.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "hotyogarockawaybeach.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.hotyogarockawaybeach.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "iluminarnosara.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://iluminarnosara.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "indriyaretreat.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.indriyaretreat.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "inpoweredtherapy.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.inpoweredtherapy.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "insideyoga.de": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://insideyoga.de/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "eversports",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://www.eversports.de/org/widget/b19652ed-a8f5-489d-a0ad-0526f3439779",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "intuitiveflow.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.intuitiveflow.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "ishtayoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://ishtayoga.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "iyengar-yoga-institut.de": {
+      "checked_on": "2026-11-10",
+      "homepage": "http://www.iyengar-yoga-institut.de/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "iyengarnyc.org": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://iyengarnyc.org/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://clients.mindbodyonline.com/classic/ws",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "iyiny.org": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://iyiny.org/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://momence.com/plugin/webchat/webchat.js",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "jahnvolk.de": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.jahnvolk.de/",
+      "status": "http_error",
+      "http_status": 403,
+      "platforms": []
+    },
+    "jaipureyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://jaipureyoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://momence.com/sign-in",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "jayayogacenter.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.jayayogacenter.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "jenniferbrilliant.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.jenniferbrilliant.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "jetsetpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://jetsetpilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "jungles-edge.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://jungles-edge.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "juniperyogafitness.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.juniperyogafitness.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "arketa",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://app.arketa.co/juniperyogafitness/pricing",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "kinesiapilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.kinesiapilates.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "lagartalodge.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.lagartalodge.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "lagreefit415.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.lagreefit415.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://clients.mindbodyonline.com/ASP/su1.asp",
+          "confidence": 0.95
+        },
+        {
+          "platform_id": "classpass",
+          "role": "marketplace",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://classpass.com/studios/lagree-fit-415-san-francisco",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "lanegranosara.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.lanegranosara.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "liftedbeautyandwellness.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.liftedbeautyandwellness.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "liveloveflowstudios.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.liveloveflowstudios.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "livinghotelnosara.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://livinghotelnosara.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "llstudioyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.llstudioyoga.com/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "loomyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://loomyoga.com/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "lotuslandyogasf.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://lotuslandyogasf.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://widgets.mindbodyonline.com/javascripts/healcode.js",
+          "confidence": 0.95
+        },
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://momence.com/Lotusland-Yoga-SF/membership/%2449-One-Month-Unlimited-Intro-Offer-to-%24149-Monthly-Unlimited-Membership/874169",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "lotusyoga.biz": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.lotusyoga.biz/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "lovestoryyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://lovestoryyoga.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "lumeriayoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://lumeriayoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "maa-phangan.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://maa-phangan.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "main-pilates-studio.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.main-pilates-studio.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "eversports",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://www.eversports.de/s/main-pilates-studio-prime",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "maisonluxepilatesandwellness.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.maisonluxepilatesandwellness.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "majorowenscenter.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://majorowenscenter.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "mercerislandpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://mercerislandpilates.com/",
+      "status": "http_error",
+      "http_status": 403,
+      "platforms": []
+    },
+    "metropolitanpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://metropolitanpilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://clients.mindbodyonline.com/classic/home",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "minimalistmovementnyc.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://minimalistmovementnyc.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "modoyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://modoyoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "montclairpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.montclairpilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://momence.com/u/to-be-pilates-iwKh15",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "motheryogaseattle.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.motheryogaseattle.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "movewithgrace.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.movewithgrace.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "mycorefire.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://mycorefire.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "myonyxfit.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.myonyxfit.com/",
+      "status": "http_error",
+      "http_status": 404,
+      "platforms": []
+    },
+    "myplantedpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.myplantedpilates.com/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "nalunosara.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.nalunosara.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "newvibeyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.newvibeyoga.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "newyorkyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.newyorkyoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "nicepilates.studio": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://nicepilates.studio/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://momence.com/sign-in",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "nuyurevolution.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://nuyurevolution.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "ohmcenter.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://ohmcenter.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "ommvibe.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.ommvibe.com/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "oneyogabangkok.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://oneyogabangkok.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "oneyogathailand.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://oneyogathailand.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "originpilates.co.th": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://originpilates.co.th/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "pankajyoga.de": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://pankajyoga.de/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "performerspilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://performerspilates.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "pilatesaddiction.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://pilatesaddiction.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "pilatesbysimona.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.pilatesbysimona.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "pilatescoven.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.pilatescoven.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "pilatescrushnyc.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.pilatescrushnyc.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "pilatesgarage.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.pilatesgarage.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "pilateshabitat.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.pilateshabitat.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://clients.mindbodyonline.com/classic/ws",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "pilatesheightsbk.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.pilatesheightsbk.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "pilateshubseattle.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.pilateshubseattle.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "pilateson10th.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.pilateson10th.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "pilatesonludlow.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://pilatesonludlow.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://momence.com/m/61082",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "pilatesstation.co.th": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.pilatesstation.co.th/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://momence.com/m/558165",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "pilatesville.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.pilatesville.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "pop-sf.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://pop-sf.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://widgets.healcode.com/javascripts/healcode.js",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "practiceyogaaustin.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://practiceyogaaustin.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://momence.com/l/g7hqg6wA",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "premayogabrooklyn.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.premayogabrooklyn.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "premierpilates1.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "http://www.premierpilates1.com/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "psygnyc.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.psygnyc.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "pures-pilates.de": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.pures-pilates.de/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "pureyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://pureyoga.com/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "purushayoga.org": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.purushayoga.org/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://momence.com/plugin/webchat/webchat.js",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "pyramidsofchi.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://ubud.pyramidsofchi.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "quartieryoga.de": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://quartieryoga.de/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "radiantlyalive.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.radiantlyalive.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "realpilatesnyc.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.realpilatesnyc.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "redhookpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "http://www.redhookpilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "redsquareyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.redsquareyoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "retreatyogaaustin.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://retreatyogaaustin.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "riversidepilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "http://riversidepilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "roundrockkravmaga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.roundrockkravmaga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "sacha-yoga.de": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://sacha-yoga.de/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "sacredsoundsyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.sacredsoundsyoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "sacredspaceastoria.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.sacredspaceastoria.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "sagoyayoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.sagoyayoga.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "samafit.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://samafit.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "sanchezstreetstudios.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://sanchezstreetstudios.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "sarainyc.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.sarainyc.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "sealevelhotyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://sealevelhotyoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "seattlepilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.seattlepilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "http://clients.mindbodyonline.com/ws.asp",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "seattleyogaarts.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.seattleyogaarts.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "squarespace",
+          "role": "website",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://static1.squarespace.com/static/53346b08e4b089a9d0efeb15/t/5336f976e4b08c9cb76c29a8/1396111735355/LogocolorwSYAv4.jpg",
+          "confidence": 0.5
+        },
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://clients.mindbodyonline.com/ASP/home.asp",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "shambhalayogadance.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.shambhalayogadance.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "shantidevanyc.org": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://shantidevanyc.org/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "shapeshifterlab.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.shapeshifterlab.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "eventbrite",
+          "role": "payments",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://www.eventbrite.com/e/%E2%80%A6",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "sivanandachicago.org": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://sivanandachicago.org/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "solidcore.co": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.solidcore.co/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "solidgoldyogi.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.solidgoldyogi.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "solunayogaandwellness.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.solunayogaandwellness.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "sparsabrooklyn.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://sparsabrooklyn.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "stmarksyoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.stmarksyoga.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "stralaseattle.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "http://stralaseattle.com/",
+      "status": "http_error",
+      "http_status": 404,
+      "platforms": []
+    },
+    "streamlinepilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://streamlinepilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://clients.mindbodyonline.com/classic/ws",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "studio3fit.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.studio3fit.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "studio8chicago.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://studio8chicago.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "studioanya.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.studioanya.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "studiometamorphosis.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.studiometamorphosis.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "studiopilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.studiopilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "studiosatya.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.studiosatya.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "studioyogi.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.studioyogi.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "studymartialarts.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.studymartialarts.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "sukhayogaaustin.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://sukhayogaaustin.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "sw3at.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://sw3at.com/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "syncedpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.syncedpilates.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://clients.mindbodyonline.com/ASP/su1.asp",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "tangerine.yoga": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://tangerine.yoga/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "techniquepilatesandfitness.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.techniquepilatesandfitness.com/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "terracepilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.terracepilates.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "theflooronatlantic.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.theflooronatlantic.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "thegrinningyogi.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.thegrinningyogi.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "theholistichomecompany.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://theholistichomecompany.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "theinmovement.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://theinmovement.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "thekoraco.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.thekoraco.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "thelagomstudios.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://thelagomstudios.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "thepilatesadvantage.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://thepilatesadvantage.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "thepilatesmovementstudio.net": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.thepilatesmovementstudio.net/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "thepuppysphere.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://thepuppysphere.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "theshala.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://theshala.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://momence.com/sign-up/visitor",
+          "confidence": 0.95
+        },
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "http://clients.mindbodyonline.com/ws.asp",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "thestudiojsb.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://thestudiojsb.com/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "theyesstudio.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://theyesstudio.com/",
+      "status": "timeout",
+      "http_status": null,
+      "platforms": []
+    },
+    "theyogabarn.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.theyogabarn.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://widgets.healcode.com/",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "theyogashalaseattle.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.theyogashalaseattle.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "threejewels.org": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.threejewels.org/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "timowahl.de": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://timowahl.de/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "tinyhavenyogasf.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.tinyhavenyogasf.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "trufusion.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://trufusion.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "ubudyogacentre.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://ubudyogacentre.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "ubudyogahouse.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://ubudyogahouse.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "unionpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.unionpilates.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "updognyc.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.updognyc.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "urbanasanas.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.urbanasanas.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "urbanyogaspa.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.urbanyogaspa.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://widgets.healcode.com/javascripts/healcode.js",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "verayoga.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.verayoga.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "veroyoganyc.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.veroyoganyc.com/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "violethourpilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.violethourpilates.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "vitalitypilates.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.vitalitypilates.com/",
+      "status": "http_error",
+      "http_status": 403,
+      "platforms": []
+    },
+    "vivonosara.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://vivonosara.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "westsidepilatesnyc.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.westsidepilatesnyc.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "wildheartyogaaustin.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.wildheartyogaaustin.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "worldyogacenter.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.worldyogacenter.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "wundabar.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.wundabar.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "y7-studio.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.y7-studio.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "ying.yoga": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.ying.yoga/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "ymcanyc.org": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://ymcanyc.org/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "yo-bk.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.yo-bk.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "yoga-vidya.de": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.yoga-vidya.de/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "yogabox.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.yogabox.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "yogaboxfrankfurt.de": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://yogaboxfrankfurt.de/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "eversports",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://www.eversports.de/s/yogaboxfrankfurt-studio-eschersheim",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "yogaforallbeings.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "http://www.yogaforallbeings.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "yogahomaustin.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.yogahomaustin.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "squarespace",
+          "role": "website",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://static1.squarespace.com/static/65b7e7b223b81e6e98c3002b/t/690f70fae9f1696b0eb51210/1762619642551/PP_Logo1-Cacao.png",
+          "confidence": 0.5
+        },
+        {
+          "platform_id": "arketa",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://app.arketa.co/present-practice-yoga/gifting",
+          "confidence": 0.95
+        },
+        {
+          "platform_id": "luma",
+          "role": "payments",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://luma.com/yoga-house-sxsw-present-practice",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "yogaladen-offenbach.de": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.yogaladen-offenbach.de/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "yogamayanewyork.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://yogamayanewyork.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://momence.com/plugin/lead-form/lead-form.js",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "yogasaraswatiubud.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "http://yogasaraswatiubud.com/",
+      "status": "fetch_error",
+      "http_status": null,
+      "platforms": []
+    },
+    "yogasix.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.yogasix.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "yogasmithseattle.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.yogasmithseattle.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "yogasole.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.yogasole.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "yogaspa.nyc": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.yogaspa.nyc/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": []
+    },
+    "yogatree.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.yogatree.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "wellnessliving",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://www.wellnessliving.com/rs/catalog-view.html",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "yogatribebrooklyn.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://www.yogatribebrooklyn.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "yogavidaaustin.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://yogavidaaustin.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "arketa",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://app.arketa.co/yogavidaaustin/privates/by-service",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "yogisandyoginis.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://yogisandyoginis.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "mindbody",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://clients.mindbodyonline.com/classic/ws",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "ytxaustin.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://ytxaustin.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "zatasoul.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://zatasoul.com/",
+      "status": "robots_disallowed",
+      "http_status": null,
+      "platforms": []
+    },
+    "zenyogagarage.com": {
+      "checked_on": "2026-11-10",
+      "homepage": "https://zenyogagarage.com/",
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "union",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://www.union.fit/orgs/zen-yoga-garage/landing_pages/sign-up-for-a-free-class/conversions/new",
+          "confidence": 0.95
+        }
+      ]
+    }
+  }
+}
