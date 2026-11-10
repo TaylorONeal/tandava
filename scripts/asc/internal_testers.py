@@ -136,7 +136,17 @@ def main():
     _, ts = call("GET", f"/v1/betaGroups/{gid}/betaTesters?limit=50")
     for t in ts.get("data", []):
         ta = t["attributes"]
-        print(f"group tester: {ta.get('firstName')} {ta.get('lastName')} state={ta.get('state')} inviteType={ta.get('inviteType')}")
+        em = ta.get("email") or ""
+        masked = (em[:2] + "***@" + em.split("@")[-1]) if "@" in em else "?"
+        print(f"group tester: {ta.get('firstName')} {ta.get('lastName')} email={masked} state={ta.get('state')} inviteType={ta.get('inviteType')}")
+        # 5. A tester still INVITED never accepted: resend the TestFlight invite for this app
+        if ta.get("state") == "INVITED" and os.environ.get("RESEND_INVITE", "1") == "1":
+            st, _ = call("POST", "/v1/betaTesterInvitations", {"data": {
+                "type": "betaTesterInvitations",
+                "relationships": {
+                    "app": {"data": {"type": "apps", "id": APP_ID}},
+                    "betaTester": {"data": {"type": "betaTesters", "id": t["id"]}}}}})
+            print(f"  invite resent to {masked} -> {st}")
     sys.exit(1 if failures else 0)
 
 
