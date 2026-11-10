@@ -29,16 +29,16 @@ const ENDPOINTS = [
 export function buildQuery([s, w, n, e]) {
   const bb = `(${s},${w},${n},${e})`;
   const studioWords = "yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar";
-  return `[out:json][timeout:180];
+  return `[out:json][timeout:300];
 (
   nwr["sport"~"yoga|pilates",i]${bb};
   nwr["disused:sport"~"yoga|pilates",i]${bb};
-  nwr["leisure"]["name"~"${studioWords}",i]${bb};
+  nwr["leisure"~"fitness_centre|sports_centre|sports_hall|studio|dance"]["name"~"${studioWords}",i]${bb};
   nwr["club"]["name"~"${studioWords}",i]${bb};
   nwr["healthcare"]["name"~"yoga",i]${bb};
   nwr["amenity"~"community_centre|social_centre|events_venue"]["name"~"yoga",i]${bb};
   nwr["shop"~"yoga"]${bb};
-  nwr["disused:leisure"]["name"~"${studioWords}",i]${bb};
+  nwr["disused:leisure"~"fitness_centre|sports_centre|studio"]["name"~"${studioWords}",i]${bb};
   nwr["was:name"~"yoga",i]${bb};
 );
 out center tags meta;`;
@@ -47,7 +47,7 @@ out center tags meta;`;
 async function overpass(query) {
   let lastErr;
   for (const url of ENDPOINTS) {
-    for (let attempt = 0; attempt < 2; attempt++) {
+    for (let attempt = 0; attempt < 3; attempt++) {
       try {
         const res = await fetch(url, {
           method: "POST",
@@ -56,7 +56,7 @@ async function overpass(query) {
         });
         if (res.status === 429 || res.status === 504) {
           lastErr = new Error(`${url} answered ${res.status}`);
-          await new Promise((r) => setTimeout(r, 30_000));
+          await new Promise((r) => setTimeout(r, 45_000 * (attempt + 1)));
           continue;
         }
         if (!res.ok) throw new Error(`${url} answered ${res.status}`);
@@ -77,11 +77,21 @@ async function main() {
   await mkdir(outDir, { recursive: true });
   const list = markets.filter((m) => !only || m.id === only);
   if (!list.length) throw new Error(`No market ${only}`);
+  const failed = [];
   for (const [i, m] of list.entries()) {
     if (i > 0) await new Promise((r) => setTimeout(r, 10_000));
     const query = buildQuery(m.bbox);
     const fetchedAt = new Date().toISOString();
-    const { endpoint, json } = await overpass(query);
+    let result;
+    try {
+      result = await overpass(query);
+    } catch (err) {
+      // One busy market must not cost the others; its last good pull stays on disk.
+      failed.push(m.id);
+      console.error(`${m.id}: skipped, ${err.message}`);
+      continue;
+    }
+    const { endpoint, json } = result;
     const elements = (json.elements ?? []).sort((a, b) => `${a.type}${a.id}`.localeCompare(`${b.type}${b.id}`));
     const out = {
       market: m.id,
@@ -96,6 +106,8 @@ async function main() {
     await writeFile(join(outDir, `osm-${m.id}.json`), JSON.stringify(out, null, 1) + "\n");
     console.log(`${m.id}: ${elements.length} elements from ${endpoint}`);
   }
+  if (failed.length) console.error(`Markets skipped this run: ${failed.join(", ")}`);
+  if (failed.length === list.length) throw new Error("Every market failed");
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
