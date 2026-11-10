@@ -409,9 +409,24 @@
     "boutiquepilatesnyc.com": {
       "checked_on": "2026-11-10",
       "homepage": "https://www.boutiquepilatesnyc.com/",
-      "status": "robots_disallowed",
-      "http_status": null,
-      "platforms": []
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "squarespace",
+          "role": "website",
+          "detected_via": "booking_link_domain",
+          "evidence": "http://static1.squarespace.com/static/68856a2c3c69fc78e58cadb9/t/68d9996f33c11f69a385f30d/1759091055727/Boutique_Pilates_emblem_1024x465_bg5C5757_round.png",
+          "confidence": 0.5
+        },
+        {
+          "platform_id": "wellnessliving",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://www.wellnessliving.com/catalog/boutique_pilates",
+          "confidence": 0.95
+        }
+      ]
     },
     "breathandbalancebodyworks.com": {
       "checked_on": "2026-11-10",
@@ -1058,9 +1073,24 @@
     "heightsmeditationyoga.org": {
       "checked_on": "2026-11-10",
       "homepage": "https://www.heightsmeditationyoga.org/",
-      "status": "robots_disallowed",
-      "http_status": null,
-      "platforms": []
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "squarespace",
+          "role": "website",
+          "detected_via": "booking_link_domain",
+          "evidence": "http://static1.squarespace.com/static/64413cdea61c9621b9022a34/t/6a46a4a8bfef82100de30e74/1783014568483/Circular+Logo+Without+Square+Background.png",
+          "confidence": 0.5
+        },
+        {
+          "platform_id": "momence",
+          "role": "system_of_record",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://momence.com/gcc/19930",
+          "confidence": 0.95
+        }
+      ]
     },
     "hotyogaplus-sf.com": {
       "checked_on": "2026-11-10",
@@ -1735,8 +1765,8 @@
     "pilatesaddiction.com": {
       "checked_on": "2026-11-10",
       "homepage": "https://pilatesaddiction.com/",
-      "status": "robots_disallowed",
-      "http_status": null,
+      "status": "ok",
+      "http_status": 200,
       "platforms": []
     },
     "pilatesbysimona.com": {
@@ -1764,9 +1794,17 @@
     "pilatescrushnyc.com": {
       "checked_on": "2026-11-10",
       "homepage": "https://www.pilatescrushnyc.com/",
-      "status": "robots_disallowed",
-      "http_status": null,
-      "platforms": []
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "squarespace",
+          "role": "website",
+          "detected_via": "booking_link_domain",
+          "evidence": "http://static1.squarespace.com/static/69133c91af952f0183b2a2e5/t/6ac160b158e078181c0053f9/1769634501415/Logos_Horz_Sm5.png",
+          "confidence": 0.5
+        }
+      ]
     },
     "pilatesgarage.com": {
       "checked_on": "2026-11-10",
@@ -2326,9 +2364,31 @@
     "sparsabrooklyn.com": {
       "checked_on": "2026-11-10",
       "homepage": "https://sparsabrooklyn.com/",
-      "status": "robots_disallowed",
-      "http_status": null,
-      "platforms": []
+      "status": "ok",
+      "http_status": 200,
+      "platforms": [
+        {
+          "platform_id": "squarespace",
+          "role": "website",
+          "detected_via": "booking_link_domain",
+          "evidence": "http://static1.squarespace.com/static/6071a68cf95b952de10b3f6c/t/61d7499bef13da2074e7968f/1667687066831/SPARSA_LOGO__FINAL_blue_SEO_image_holder.jpg",
+          "confidence": 0.5
+        },
+        {
+          "platform_id": "eventbrite",
+          "role": "payments",
+          "detected_via": "booking_link_domain",
+          "evidence": "https://www.eventbrite.com/o/sparsa-brooklyn-39171080523",
+          "confidence": 0.7
+        },
+        {
+          "platform_id": "union",
+          "role": "system_of_record",
+          "detected_via": "script_fingerprint",
+          "evidence": "https://www.union.fit/widget.js",
+          "confidence": 0.95
+        }
+      ]
     },
     "stmarksyoga.com": {
       "checked_on": "2026-11-10",
