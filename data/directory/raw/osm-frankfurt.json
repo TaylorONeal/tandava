@@ -1,8 +1,8 @@
 {
  "market": "frankfurt",
- "fetched_at": "2026-11-10T19:35:58.011Z",
- "endpoint": "https://overpass.kumi.systems/api/interpreter",
- "osm_base": "2026-07-28T02:16:18Z",
+ "fetched_at": "2026-11-10T20:01:57.947Z",
+ "endpoint": "https://overpass-api.de/api/interpreter",
+ "osm_base": "2026-11-10T20:00:42Z",
  "license": "ODbL-1.0",
  "attribution": "(c) OpenStreetMap contributors",
  "query": "[out:json][timeout:300];\n(\n  nwr[\"sport\"~\"yoga|pilates\",i](50.01,8.47,50.23,8.8);\n  nwr[\"disused:sport\"~\"yoga|pilates\",i](50.01,8.47,50.23,8.8);\n  nwr[\"leisure\"~\"fitness_centre|sports_centre|sports_hall|studio|dance\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](50.01,8.47,50.23,8.8);\n  nwr[\"club\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](50.01,8.47,50.23,8.8);\n  nwr[\"healthcare\"][\"name\"~\"yoga\",i](50.01,8.47,50.23,8.8);\n  nwr[\"amenity\"~\"community_centre|social_centre|events_venue\"][\"name\"~\"yoga\",i](50.01,8.47,50.23,8.8);\n  nwr[\"shop\"~\"yoga\"](50.01,8.47,50.23,8.8);\n  nwr[\"disused:leisure\"~\"fitness_centre|sports_centre|studio\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](50.01,8.47,50.23,8.8);\n  nwr[\"was:name\"~\"yoga\",i](50.01,8.47,50.23,8.8);\n);\nout center tags meta;",
@@ -58,6 +58,23 @@
     "opening_hours": "Mo-Fr 06:00-08:00, Mo,We,Fr 18:00-20:00, Su 08:00-10:00,16:00-18:00; Sa off",
     "opening_hours:signed": "no",
     "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 12026210872,
+   "lat": 50.1266497,
+   "lon": 8.7043782,
+   "timestamp": "2026-08-01T14:36:51Z",
+   "version": 5,
+   "changeset": 186766359,
+   "user": "ironspock",
+   "uid": 10728241,
+   "tags": {
+    "check_date:opening_hours": "2026-08-01",
+    "leisure": "fitness_centre",
+    "name": "Classy Pilates Bornheim",
+    "opening_hours:signed": "no"
    }
   },
   {
@@ -204,6 +221,22 @@
   },
   {
    "type": "node",
+   "id": 14175003747,
+   "lat": 50.1754626,
+   "lon": 8.7332337,
+   "timestamp": "2026-09-12T10:36:08Z",
+   "version": 1,
+   "changeset": 188909239,
+   "user": "acidyellow",
+   "uid": 1908163,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Pilates & Klang",
+    "sport": "pilates"
+   }
+  },
+  {
+   "type": "node",
    "id": 2674787408,
    "lat": 50.1213901,
    "lon": 8.7080593,
@@ -273,9 +306,9 @@
    "id": 4612718503,
    "lat": 50.1124263,
    "lon": 8.7064542,
-   "timestamp": "2026-04-25T16:33:07Z",
-   "version": 7,
-   "changeset": 181814246,
+   "timestamp": "2026-09-26T14:57:40Z",
+   "version": 8,
+   "changeset": 189592524,
    "user": "ironspock",
    "uid": 10728241,
    "tags": {
@@ -283,8 +316,10 @@
     "addr:housenumber": "2-4",
     "addr:postcode": "60314",
     "addr:street": "Danziger Platz",
+    "check_date:opening_hours": "2026-09-26",
     "leisure": "fitness_centre",
     "name": "Pilates Twentyfour",
+    "opening_hours:signed": "no",
     "sport": "pilates"
    }
   },
