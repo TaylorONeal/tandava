@@ -95,7 +95,7 @@ def main():
             print("BLOCKER: no account holder visible to this key (key needs Admin)"); sys.exit(1)
         ua = holders[0]["attributes"]
         email, first, last = ua["username"], ua.get("firstName") or first, ua.get("lastName") or last
-        print(f"account holder: {first} {last}")
+        print(f"account holder: {first} {last} apple_id={email}")
     _, existing = call("GET", "/v1/betaTesters?filter[email]=" + urllib.parse.quote(email) + "&limit=5")
     if existing.get("data"):
         tid = existing["data"][0]["id"]
@@ -110,6 +110,22 @@ def main():
         print(f"tester created in group -> {st}")
         if st not in (200, 201):
             failures += 1
+
+    # 2b. Optional extra address for the same person (e.g. the inbox they actually read)
+    extra = os.environ.get("EXTRA_TESTER_EMAIL", "").strip()
+    if extra and extra.lower() != email.lower():
+        _, ex = call("GET", "/v1/betaTesters?filter[email]=" + urllib.parse.quote(extra) + "&limit=5")
+        if ex.get("data"):
+            xid = ex["data"][0]["id"]
+            st, _ = call("POST", f"/v1/betaGroups/{gid}/relationships/betaTesters",
+                         {"data": [{"type": "betaTesters", "id": xid}]})
+            print(f"extra tester {extra} existed; added to group -> {st}")
+        else:
+            st, res = call("POST", "/v1/betaTesters", {"data": {
+                "type": "betaTesters",
+                "attributes": {"email": extra, "firstName": first, "lastName": last},
+                "relationships": {"betaGroups": {"data": [{"type": "betaGroups", "id": gid}]}}}})
+            print(f"extra tester {extra} created in group -> {st}")
 
     # 3. Builds: export compliance, group access, internal state
     _, builds = call("GET", f"/v1/builds?filter[app]={APP_ID}&sort=-uploadedDate&limit=5&include=preReleaseVersion")
@@ -137,7 +153,7 @@ def main():
     for t in ts.get("data", []):
         ta = t["attributes"]
         em = ta.get("email") or ""
-        masked = (em[:2] + "***@" + em.split("@")[-1]) if "@" in em else "?"
+        masked = em or "?"
         print(f"group tester: {ta.get('firstName')} {ta.get('lastName')} email={masked} state={ta.get('state')} inviteType={ta.get('inviteType')}")
         # 5. A tester still INVITED never accepted: resend the TestFlight invite for this app
         if ta.get("state") == "INVITED" and os.environ.get("RESEND_INVITE", "1") == "1":
