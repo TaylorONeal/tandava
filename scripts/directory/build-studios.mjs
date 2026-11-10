@@ -183,6 +183,34 @@ export function dedupe(records, sigs) {
   return out;
 }
 
+/**
+ * Merge a site check (data/directory/site-checks.json) into a record: vendors
+ * found on the studio's own homepage join software.current with the page as source.
+ */
+export function applySiteCheck(rec, check) {
+  if (!check || check.status !== "ok" || !check.platforms?.length) return rec;
+  let idx = rec.sources.findIndex((s) => s.type === "website" && s.ref === check.homepage);
+  if (idx === -1) {
+    rec.sources.push({ type: "website", ref: check.homepage, license: null, fetched_at: `${check.checked_on}T00:00:00Z` });
+    idx = rec.sources.length - 1;
+  }
+  for (const f of check.platforms) {
+    if (rec.software.current.some((s) => s.platform_id === f.platform_id)) continue;
+    rec.software.current.push({
+      platform_id: f.platform_id,
+      role: f.role,
+      detected_via: f.detected_via,
+      evidence: f.evidence,
+      observed_from: check.checked_on,
+      observed_to: null,
+      confidence: f.confidence,
+      verified: false,
+      source: idx,
+    });
+  }
+  return rec;
+}
+
 /** Carry software history and first-seen dates from the previous build. */
 export function carryHistory(rec, prev, today) {
   if (!prev) return rec;
@@ -331,6 +359,15 @@ async function main() {
     const r = recordFromSeed(seed, { market, fetchedAt: `${today}T00:00:00Z`, styles, styleById, sigs, observedOn: today });
     if (r) records.push(r);
   }
+  // Link corrections apply before dedupe, so a wrong website on a map element
+  // cannot merge two different studios.
+  for (const r of records) {
+    const o = overrides.studios[r.id];
+    if (o?.links) {
+      Object.assign(r.links, o.links);
+      r.links.website_domain = baseDomain(hostOf(r.links.website));
+    }
+  }
   records = dedupe(records, sigs);
 
   // Studios that dropped out of the map since the last build: keep the record,
@@ -353,6 +390,9 @@ async function main() {
       internal_notes: [old.internal_notes, `Missing from map data on ${today}; check before relisting.`].filter(Boolean).join(" "),
     });
   }
+
+  const siteChecks = await readJson(p("data", "directory", "site-checks.json"), { sites: {} });
+  for (const r of records) if (r.links.website_domain) applySiteCheck(r, siteChecks.sites[r.links.website_domain]);
 
   const suppressed = new Set(suppressions.entries.flatMap((e) => [e.id, e.slug, e.website_domain].filter(Boolean)));
   for (const r of records) {

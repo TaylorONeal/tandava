@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { compileSignatures, detectSoftware, matchUrl } from "./detect.mjs";
 import { inferStyles, isStudioCandidate, statusOf, normalizePhone, instagramHandle, describe, businessType } from "./normalize.mjs";
-import { recordFromElement, dedupe, carryHistory, toPublic } from "./build-studios.mjs";
+import { recordFromElement, dedupe, carryHistory, toPublic, applySiteCheck } from "./build-studios.mjs";
+import { robotsAllows, vendorCandidates, checkSite } from "./site-check.mjs";
 
 const read = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url), "utf8"));
 const software = read("../../src/data/taxonomy/studio-software.json");
@@ -135,4 +136,51 @@ test("Nosara seeds are listed even though map data has none", () => {
   const nosara = seeds.filter((s) => s.market === "nosara");
   assert.ok(nosara.length >= 10);
   assert.ok(nosara.every((s) => s.source && (s.website || s.instagram)));
+});
+
+test("robots.txt: our agent group wins, longest rule wins, empty Disallow allows", () => {
+  assert.equal(robotsAllows("", "/"), true);
+  assert.equal(robotsAllows("User-agent: *\nDisallow: /", "/"), false);
+  assert.equal(robotsAllows("User-agent: *\nDisallow:", "/"), true);
+  assert.equal(robotsAllows("User-agent: *\nDisallow: /admin", "/"), true);
+  assert.equal(robotsAllows("User-agent: *\nDisallow: /\n\nUser-agent: TandavaStudioDirectory\nAllow: /", "/"), true);
+  assert.equal(robotsAllows("User-agent: TandavaStudioDirectory\nDisallow: /\n\nUser-agent: *\nAllow: /", "/"), false);
+});
+
+test("site check finds vendors in links, iframes and scripts, and respects robots", async () => {
+  const html = `<a href="https://clients.mindbodyonline.com/classic/ws?studioid=123">Book</a>
+    <iframe src="https://momence.com/u/some-studio"></iframe>
+    <script src="https://widgets.healcode.com/javascripts/healcode.js"></script>
+    <a href="/about">About</a>`;
+  const found = vendorCandidates(html, "https://studio.example/");
+  assert.ok(found.some((f) => f.via === "iframe"));
+  assert.ok(found.some((f) => f.via === "script_fingerprint"));
+  assert.ok(found.every((f) => !f.url.includes("?")), "query strings are never kept");
+
+  const pages = { "https://studio.example/robots.txt": { status: 404, text: "" }, "https://studio.example/": { status: 200, text: html } };
+  const fetcher = async (url) => ({ ...pages[url], finalUrl: url });
+  const res = await checkSite("https://studio.example/schedule", sigs, { today: "2026-11-10", fetcher });
+  assert.equal(res.status, "ok");
+  assert.ok(res.platforms.some((p) => p.platform_id === "mindbody"));
+
+  const blocked = await checkSite("https://studio.example/", sigs, {
+    today: "2026-11-10",
+    fetcher: async (url) => ({ status: 200, text: url.endsWith("robots.txt") ? "User-agent: *\nDisallow: /" : html, finalUrl: url }),
+  });
+  assert.equal(blocked.status, "robots_disallowed");
+  assert.equal(blocked.platforms.length, 0);
+});
+
+test("a site check adds software with the homepage as its source", () => {
+  const rec = { sources: [{ type: "openstreetmap", ref: "node/1" }], software: { current: [], previous: [] } };
+  applySiteCheck(rec, {
+    status: "ok",
+    checked_on: "2026-11-10",
+    homepage: "https://studio.example/",
+    platforms: [{ platform_id: "momence", role: "system_of_record", detected_via: "iframe", evidence: "https://momence.com/u/x", confidence: 0.95 }],
+  });
+  assert.equal(rec.software.current[0].platform_id, "momence");
+  assert.equal(rec.sources[rec.software.current[0].source].ref, "https://studio.example/");
+  applySiteCheck(rec, { status: "timeout", platforms: [] });
+  assert.equal(rec.software.current.length, 1);
 });

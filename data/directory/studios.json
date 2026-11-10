@@ -3496,7 +3496,7 @@
    "first_seen_at": "2026-11-10T00:00:00Z",
    "last_refreshed_at": "2026-11-10T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-way-1354585832",
@@ -4177,7 +4177,7 @@
    "first_seen_at": "2026-11-10T00:00:00Z",
    "last_refreshed_at": "2026-11-10T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "seed-lumeria-yoga-ubud",
@@ -4556,7 +4556,7 @@
    "first_seen_at": "2026-11-10T00:00:00Z",
    "last_refreshed_at": "2026-11-10T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-way-404713866",
@@ -4960,7 +4960,7 @@
    "first_seen_at": "2026-11-10T00:00:00Z",
    "last_refreshed_at": "2026-11-10T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-node-4845678425",
@@ -5535,7 +5535,7 @@
    "first_seen_at": "2026-11-10T00:00:00Z",
    "last_refreshed_at": "2026-11-10T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-node-4941876221",
@@ -33331,9 +33331,7 @@
    "id": "osm-node-14293217563",
    "slug": "3rd-eye-meditation-lounge-austin",
    "name": "3rd Eye Meditation Lounge",
-   "alt_names": [
-    "Flow Yoga"
-   ],
+   "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
    "status": "open",
@@ -33359,8 +33357,8 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": "https://flowyogatx.com",
-    "website_domain": "flowyogatx.com",
+    "website": null,
+    "website_domain": null,
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -33371,7 +33369,6 @@
    "email": null,
    "description": "3rd Eye Meditation Lounge is a yoga studio in Austin, TX.",
    "styles": [
-    "flow-yoga",
     "meditation"
    ],
    "levels": [],
@@ -33399,24 +33396,7 @@
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T19:28:40.677Z"
     },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/12184519651",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T19:28:40.677Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/14293200530",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T19:28:40.677Z"
-    },
-    {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/5771447958",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T19:28:40.677Z"
-    }
+    "2026-11-10: map listing pointed at Flow Yoga's site (flowyogatx.com), a different studio in Westgate. Lantern lists Third Eye separately in Zilker."
    ],
    "field_sources": {
     "name": [
@@ -33439,12 +33419,15 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:28:40.677Z",
    "last_refreshed_at": "2026-11-10T19:28:40.677Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags. Merged map element node/12184519651. Merged map element node/5771447958."
+   "internal_notes": "Website removed: map tag belonged to another studio."
   },
   {
    "id": "osm-node-14075908601",
@@ -33538,6 +33521,89 @@
    "last_refreshed_at": "2026-11-10T19:28:40.677Z",
    "last_verified_at": null,
    "internal_notes": null
+  },
+  {
+   "id": "seed-amala-sanctuary-studio-austin",
+   "slug": "amala-sanctuary-studio-austin",
+   "name": "Amala Sanctuary Studio",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": null,
+    "area": "Downtown",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": null,
+    "website_domain": null,
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Amala Sanctuary Studio is a yoga studio in Downtown, Austin, TX.",
+   "styles": [],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
   },
   {
    "id": "osm-node-13910916101",
@@ -33731,6 +33797,96 @@
    "internal_notes": "Styles inferred from the name and map tags."
   },
   {
+   "id": "seed-austin-yoga-lounge-austin",
+   "slug": "austin-yoga-lounge-austin",
+   "name": "Austin Yoga Lounge",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": null,
+    "area": "Downtown",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": null,
+    "website_domain": null,
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Austin Yoga Lounge is a yoga studio in Downtown, Austin, TX.",
+   "styles": [
+    "postnatal",
+    "prenatal",
+    "slow-flow"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
+  },
+  {
    "id": "osm-node-10566132284",
    "slug": "b-pilates-austin",
    "name": "B Pilates",
@@ -33837,7 +33993,7 @@
    "market": "austin",
    "address": {
     "street": "1213 West 5th Street",
-    "area": null,
+    "area": "Orchard",
     "locality": "Austin",
     "region_code": "TX",
     "region_name": "Texas",
@@ -33863,7 +34019,13 @@
    "phone": "+15129602046",
    "email": null,
    "description": "Black Swan Yoga is a yoga studio in Austin, TX.",
-   "styles": [],
+   "styles": [
+    "ashtanga",
+    "hot",
+    "power",
+    "vinyasa",
+    "yin"
+   ],
    "levels": [],
    "software": {
     "current": [],
@@ -33906,6 +34068,12 @@
      "ref": "https://www.openstreetmap.org/node/9947713718",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T19:28:40.677Z"
+    },
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
     }
    ],
    "field_sources": {
@@ -33931,7 +34099,7 @@
    "first_seen_at": "2026-11-10T19:28:40.677Z",
    "last_refreshed_at": "2026-11-10T19:28:40.677Z",
    "last_verified_at": null,
-   "internal_notes": "Merged map element node/3825243606. Merged map element node/5771447970. Merged map element node/9947713718."
+   "internal_notes": "Merged map element node/3825243606. Merged map element node/5771447970. Merged map element node/9947713718. Merged seed-black-swan-yoga-austin."
   },
   {
    "id": "osm-node-10718029541",
@@ -33948,7 +34116,7 @@
    "market": "austin",
    "address": {
     "street": "5501 North Lamar Boulevard",
-    "area": null,
+    "area": "North Austin",
     "locality": "Austin",
     "region_code": "TX",
     "region_name": "Texas",
@@ -33976,7 +34144,12 @@
    "description": "Body Collective is a yoga and pilates studio in Austin, TX.",
    "styles": [
     "barre",
-    "pilates"
+    "hatha",
+    "hot",
+    "kundalini",
+    "pilates",
+    "vinyasa",
+    "yin"
    ],
    "levels": [],
    "software": {
@@ -34002,6 +34175,12 @@
      "ref": "https://www.openstreetmap.org/node/10718029541",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T19:28:40.677Z"
+    },
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
     }
    ],
    "field_sources": {
@@ -34030,7 +34209,105 @@
    "first_seen_at": "2026-11-10T19:28:40.677Z",
    "last_refreshed_at": "2026-11-10T19:28:40.677Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "Styles inferred from the name and map tags. Merged seed-body-collective-austin."
+  },
+  {
+   "id": "seed-breath-and-body-yoga-austin",
+   "slug": "breath-and-body-yoga-austin",
+   "name": "Breath and Body Yoga",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": "2415 Exposition Blvd",
+    "area": "Exposition Blvd",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": "https://breathandbodyyoga.com",
+    "website_domain": "breathandbodyyoga.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Breath and Body Yoga is a yoga studio in Exposition Blvd, Austin, TX.",
+   "styles": [
+    "meditation",
+    "power-vinyasa",
+    "slow-flow",
+    "vinyasa",
+    "yin"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
   },
   {
    "id": "osm-node-13334610085",
@@ -34218,6 +34495,94 @@
    "internal_notes": "Merged map element node/6455846385."
   },
   {
+   "id": "seed-corepower-yoga-triangle-austin",
+   "slug": "corepower-yoga-triangle-austin",
+   "name": "CorePower Yoga Triangle",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "hot_yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": null,
+    "area": "Triangle",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": null,
+    "website_domain": null,
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "CorePower Yoga Triangle is a hot yoga studio in Triangle, Austin, TX.",
+   "styles": [
+    "hot"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
+  },
+  {
    "id": "osm-way-382713727",
    "slug": "dharma-yoga-austin",
    "name": "Dharma Yoga",
@@ -34305,6 +34670,129 @@
    "internal_notes": null
   },
   {
+   "id": "osm-node-12184519651",
+   "slug": "flow-yoga-austin",
+   "name": "Flow Yoga",
+   "alt_names": [
+    "Flow Yoga Westgate"
+   ],
+   "brand": "Flow Yoga",
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": "8534 South Congress Avenue",
+    "area": "Westgate",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": "78745",
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": {
+    "lat": 30.1718178,
+    "lng": -97.7863231,
+    "precision": "rooftop"
+   },
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": "https://www.flowyogatx.com",
+    "website_domain": "flowyogatx.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Flow Yoga is a yoga studio in Austin, TX.",
+   "styles": [
+    "flow-yoga",
+    "hatha",
+    "hot",
+    "kundalini",
+    "sound-bath",
+    "yin"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": "node/12184519651",
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "openstreetmap",
+     "ref": "https://www.openstreetmap.org/node/12184519651",
+     "license": "ODbL-1.0",
+     "fetched_at": "2026-11-10T19:28:40.677Z"
+    },
+    {
+     "type": "openstreetmap",
+     "ref": "https://www.openstreetmap.org/node/14293200530",
+     "license": "ODbL-1.0",
+     "fetched_at": "2026-11-10T19:28:40.677Z"
+    },
+    {
+     "type": "openstreetmap",
+     "ref": "https://www.openstreetmap.org/node/5771447958",
+     "license": "ODbL-1.0",
+     "fetched_at": "2026-11-10T19:28:40.677Z"
+    },
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T19:28:40.677Z",
+   "last_refreshed_at": "2026-11-10T19:28:40.677Z",
+   "last_verified_at": null,
+   "internal_notes": "Styles inferred from the name and map tags. Merged map element node/14293200530. Merged map element node/5771447958. Merged seed-flow-yoga-westgate-austin."
+  },
+  {
    "id": "osm-node-14220760901",
    "slug": "haus-of-b-austin",
    "name": "Haus of B",
@@ -34390,6 +34878,94 @@
    "last_refreshed_at": "2026-11-10T19:28:40.677Z",
    "last_verified_at": null,
    "internal_notes": null
+  },
+  {
+   "id": "seed-lizard-yoga-and-holistic-spa-austin",
+   "slug": "lizard-yoga-and-holistic-spa-austin",
+   "name": "Lizard Yoga and Holistic Spa",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "wellness_center",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": null,
+    "area": "South Austin",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": null,
+    "website_domain": null,
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Lizard Yoga and Holistic Spa is a wellness center in South Austin, Austin, TX.",
+   "styles": [
+    "breathwork"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
   },
   {
    "id": "osm-node-6480898297",
@@ -34571,6 +35147,94 @@
    "internal_notes": "Styles inferred from the name and map tags."
   },
   {
+   "id": "seed-open-form-yoga-and-well-being-studio-austin",
+   "slug": "open-form-yoga-and-well-being-studio-austin",
+   "name": "Open Form Yoga & Well-Being Studio",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": null,
+    "area": "East 12th Street",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": null,
+    "website_domain": null,
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Open Form Yoga & Well-Being Studio is a yoga studio in East 12th Street, Austin, TX.",
+   "styles": [
+    "meditation-breathwork"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
+  },
+  {
    "id": "osm-node-11447347958",
    "slug": "pilates-movement-studio-austin",
    "name": "Pilates Movement Studio",
@@ -34669,6 +35333,189 @@
    "internal_notes": "Styles inferred from the name and map tags."
   },
   {
+   "id": "seed-practice-yoga-austin-austin",
+   "slug": "practice-yoga-austin-austin",
+   "name": "Practice Yoga Austin",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": "1103 E 6th St",
+    "area": "East Austin",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": "https://practiceyogaaustin.com",
+    "website_domain": "practiceyogaaustin.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Practice Yoga Austin is a yoga studio in East Austin, Austin, TX.",
+   "styles": [
+    "alignment-based",
+    "meditation"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
+  },
+  {
+   "id": "seed-present-practice-yoga-downtown-austin",
+   "slug": "present-practice-yoga-downtown-austin",
+   "name": "Present Practice Yoga Downtown",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": null,
+    "area": "Downtown",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": null,
+    "website_domain": null,
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Present Practice Yoga Downtown is a yoga studio in Downtown, Austin, TX.",
+   "styles": [
+    "pilates"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
+  },
+  {
    "id": "osm-node-12707881037",
    "slug": "pure-pilates-austin-austin",
    "name": "Pure Pilates Austin",
@@ -34759,6 +35606,185 @@
    "last_refreshed_at": "2026-11-10T19:28:40.677Z",
    "last_verified_at": null,
    "internal_notes": "Styles inferred from the name and map tags."
+  },
+  {
+   "id": "seed-pure-yoga-texas-north-austin-austin",
+   "slug": "pure-yoga-texas-north-austin-austin",
+   "name": "PURE Yoga Texas North Austin",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": null,
+    "area": "Burnet Road",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": null,
+    "website_domain": null,
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "PURE Yoga Texas North Austin is a yoga studio in Burnet Road, Austin, TX.",
+   "styles": [],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
+  },
+  {
+   "id": "seed-retreat-yoga-soulful-fitness-austin",
+   "slug": "retreat-yoga-soulful-fitness-austin",
+   "name": "Retreat Yoga + Soulful Fitness",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "hot_yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": null,
+    "area": "Northwest Austin",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": "https://retreatyogaaustin.com",
+    "website_domain": "retreatyogaaustin.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Retreat Yoga + Soulful Fitness is a hot yoga studio in Northwest Austin, Austin, TX.",
+   "styles": [
+    "infrared-hot",
+    "prenatal",
+    "sound-bath"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
   },
   {
    "id": "osm-node-3849776348",
@@ -34867,7 +35893,7 @@
    "market": "austin",
    "address": {
     "street": "1308 West Anderson Lane",
-    "area": null,
+    "area": "North Central Austin",
     "locality": "Austin",
     "region_code": "TX",
     "region_name": "Texas",
@@ -34893,7 +35919,12 @@
    "phone": "+15124000168",
    "email": null,
    "description": "Studio Satya is a yoga studio in Austin, TX.",
-   "styles": [],
+   "styles": [
+    "flow-yoga",
+    "prenatal",
+    "slow-flow",
+    "yoga-nidra"
+   ],
    "levels": [],
    "software": {
     "current": [],
@@ -34918,6 +35949,12 @@
      "ref": "https://www.openstreetmap.org/node/2527535393",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T19:28:40.677Z"
+    },
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
     }
    ],
    "field_sources": {
@@ -34943,7 +35980,289 @@
    "first_seen_at": "2026-11-10T19:28:40.677Z",
    "last_refreshed_at": "2026-11-10T19:28:40.677Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "Merged seed-studio-satya-austin."
+  },
+  {
+   "id": "seed-sukha-yoga-oltorf-austin",
+   "slug": "sukha-yoga-oltorf-austin",
+   "name": "Sukha Yoga Oltorf",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "hot_yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": null,
+    "area": null,
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": null,
+    "website_domain": null,
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Sukha Yoga Oltorf is a hot yoga studio in Austin, TX.",
+   "styles": [
+    "hot",
+    "restorative",
+    "slow-flow",
+    "vinyasa",
+    "yin"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
+  },
+  {
+   "id": "seed-sukha-yoga-south-lamar-austin",
+   "slug": "sukha-yoga-south-lamar-austin",
+   "name": "Sukha Yoga South Lamar",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "hot_yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": "2324 S Lamar Blvd",
+    "area": "South Lamar",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": "https://sukhayogaaustin.com",
+    "website_domain": "sukhayogaaustin.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Sukha Yoga South Lamar is a hot yoga studio in South Lamar, Austin, TX.",
+   "styles": [
+    "hot",
+    "kundalini",
+    "slow-flow",
+    "vinyasa",
+    "yin"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://bookretreats.com/t/yoga-studios/austin",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://bookretreats.com/t/yoga-studios/austin."
+  },
+  {
+   "id": "seed-sukha-yoga-tarrytown-austin",
+   "slug": "sukha-yoga-tarrytown-austin",
+   "name": "Sukha Yoga Tarrytown",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "hot_yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": null,
+    "area": "Tarrytown",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": null,
+    "website_domain": null,
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Sukha Yoga Tarrytown is a hot yoga studio in Tarrytown, Austin, TX.",
+   "styles": [
+    "hot",
+    "restorative",
+    "slow-flow",
+    "vinyasa",
+    "yin"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
   },
   {
    "id": "osm-node-599493144",
@@ -35031,6 +36350,193 @@
    "last_refreshed_at": "2026-11-10T19:28:40.677Z",
    "last_verified_at": null,
    "internal_notes": null
+  },
+  {
+   "id": "seed-third-eye-yoga-and-meditation-lounge-austin",
+   "slug": "third-eye-yoga-and-meditation-lounge-austin",
+   "name": "Third Eye Yoga & Meditation Lounge",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "unknown",
+   "is_active": false,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": null,
+    "area": "Zilker",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": null,
+    "website_domain": null,
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Third Eye Yoga & Meditation Lounge is a yoga studio in Zilker, Austin, TX.",
+   "styles": [
+    "kundalini",
+    "meditation",
+    "sound-bath",
+    "yin"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "draft",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga. Missing from map data on 2026-11-10; check before relisting."
+  },
+  {
+   "id": "seed-trufusion-south-austin-austin",
+   "slug": "trufusion-south-austin-austin",
+   "name": "TruFusion South Austin",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "multi_discipline_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": "4211 S Lamar Blvd",
+    "area": "South Lamar",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": "https://trufusion.com",
+    "website_domain": "trufusion.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "TruFusion South Austin is a yoga and pilates studio in South Lamar, Austin, TX.",
+   "styles": [
+    "barre",
+    "hot",
+    "pilates"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://bookretreats.com/t/yoga-studios/austin",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://bookretreats.com/t/yoga-studios/austin."
   },
   {
    "id": "osm-node-3764021161",
@@ -35134,7 +36640,7 @@
    "market": "austin",
    "address": {
     "street": "5604 Bee Caves Road",
-    "area": null,
+    "area": "Bee Cave Road",
     "locality": "Austin",
     "region_code": "TX",
     "region_name": "Texas",
@@ -35160,7 +36666,10 @@
    "phone": "+15124681946",
    "email": "info@wildheartyogaaustin.com",
    "description": "Wild Heart Yoga is a yoga studio in Austin, TX.",
-   "styles": [],
+   "styles": [
+    "power",
+    "sculpt"
+   ],
    "levels": [],
    "software": {
     "current": [],
@@ -35185,6 +36694,12 @@
      "ref": "https://www.openstreetmap.org/node/10815473953",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T19:28:40.677Z"
+    },
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
     }
    ],
    "field_sources": {
@@ -35210,7 +36725,90 @@
    "first_seen_at": "2026-11-10T19:28:40.677Z",
    "last_refreshed_at": "2026-11-10T19:28:40.677Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "Merged seed-wild-heart-yoga-austin."
+  },
+  {
+   "id": "seed-yoga-east-austin-austin",
+   "slug": "yoga-east-austin-austin",
+   "name": "Yoga East Austin",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": null,
+    "area": "East Austin",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": null,
+    "website_domain": null,
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Yoga East Austin is a yoga studio in East Austin, Austin, TX.",
+   "styles": [],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
   },
   {
    "id": "osm-node-13269384443",
@@ -35304,6 +36902,286 @@
    "last_refreshed_at": "2026-11-10T19:28:40.677Z",
    "last_verified_at": null,
    "internal_notes": null
+  },
+  {
+   "id": "seed-yoga-pod-austin-austin",
+   "slug": "yoga-pod-austin-austin",
+   "name": "Yoga Pod Austin",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "hot_yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": null,
+    "area": "North Austin",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": null,
+    "website_domain": null,
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Yoga Pod Austin is a hot yoga studio in North Austin, Austin, TX.",
+   "styles": [
+    "barre",
+    "hot",
+    "pilates",
+    "vinyasa"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
+  },
+  {
+   "id": "seed-yoga-vida-austin",
+   "slug": "yoga-vida-austin",
+   "name": "Yoga Vida",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": "3620 Bee Cave Rd",
+    "area": "Bee Cave Road",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": "https://yogavidaaustin.com",
+    "website_domain": "yogavidaaustin.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Yoga Vida is a yoga studio in Bee Cave Road, Austin, TX.",
+   "styles": [
+    "vinyasa"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://bookretreats.com/t/yoga-studios/austin",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://bookretreats.com/t/yoga-studios/austin."
+  },
+  {
+   "id": "seed-ytx-yoga-strength-pilates-austin",
+   "slug": "ytx-yoga-strength-pilates-austin",
+   "name": "YTX Yoga, Strength, Pilates",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "multi_discipline_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "austin",
+   "address": {
+    "street": "200 W 6th St",
+    "area": "Downtown",
+    "locality": "Austin",
+    "region_code": "TX",
+    "region_name": "Texas",
+    "postal_code": null,
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": null,
+   "time_zone": "America/Chicago",
+   "links": {
+    "website": "https://ytxaustin.com",
+    "website_domain": "ytxaustin.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "YTX Yoga, Strength, Pilates is a yoga and pilates studio in Downtown, Austin, TX.",
+   "styles": [
+    "hiit",
+    "pilates"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://lantern.llc/tx/austin/fitness/yoga",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
   },
   {
    "id": "osm-node-2705156688",
@@ -36076,7 +37954,7 @@
    "first_seen_at": "2026-11-10T19:29:42.348Z",
    "last_refreshed_at": "2026-11-10T19:29:42.348Z",
    "last_verified_at": null,
-   "internal_notes": "Merged map element node/2463139566. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Merged map element node/2463139566. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-node-11390730408",

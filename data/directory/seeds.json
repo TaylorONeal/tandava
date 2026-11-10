@@ -212,6 +212,215 @@
       "styles_text": "Yoga, Meditation",
       "business_type": "retreat_center",
       "source": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide"
+    },
+    {
+      "market": "austin",
+      "name": "Practice Yoga Austin",
+      "area": "East Austin",
+      "street": "1103 E 6th St",
+      "website": "https://practiceyogaaustin.com",
+      "styles_text": "Donation based, alignment, meditation",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Austin Yoga Lounge",
+      "area": "Downtown",
+      "street": null,
+      "website": null,
+      "styles_text": "Prenatal, postpartum, slow flow",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Flow Yoga Westgate",
+      "area": "Westgate",
+      "street": null,
+      "website": "https://flowyogatx.com",
+      "styles_text": "Vinyasa, hatha, hot, kundalini, yin, sound healing",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Retreat Yoga + Soulful Fitness",
+      "area": "Northwest Austin",
+      "street": null,
+      "website": "https://retreatyogaaustin.com",
+      "styles_text": "Infrared yoga, prenatal, sound healing",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Lizard Yoga and Holistic Spa",
+      "area": "South Austin",
+      "street": null,
+      "website": null,
+      "styles_text": "Yoga, breathwork, sauna",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga",
+      "business_type": "wellness_center"
+    },
+    {
+      "market": "austin",
+      "name": "Present Practice Yoga Downtown",
+      "area": "Downtown",
+      "street": null,
+      "website": null,
+      "styles_text": "Yoga, pilates",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Amala Sanctuary Studio",
+      "area": "Downtown",
+      "street": null,
+      "website": null,
+      "styles_text": "Yoga, dance",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "YTX Yoga, Strength, Pilates",
+      "area": "Downtown",
+      "street": "200 W 6th St",
+      "website": "https://ytxaustin.com",
+      "styles_text": "Yoga, pilates, HIIT, recovery",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Yoga Pod Austin",
+      "area": "North Austin",
+      "street": null,
+      "website": null,
+      "styles_text": "Hot yoga, vinyasa, barre, pilates",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "PURE Yoga Texas North Austin",
+      "area": "Burnet Road",
+      "street": null,
+      "website": null,
+      "styles_text": "Yoga",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Sukha Yoga Oltorf",
+      "area": null,
+      "street": null,
+      "website": null,
+      "styles_text": "Heated vinyasa, slow flow, yin, restorative",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Sukha Yoga Tarrytown",
+      "area": "Tarrytown",
+      "street": null,
+      "website": null,
+      "styles_text": "Heated vinyasa, slow flow, yin, restorative",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Sukha Yoga South Lamar",
+      "area": "South Lamar",
+      "street": "2324 S Lamar Blvd",
+      "website": "https://sukhayogaaustin.com",
+      "styles_text": "Vinyasa, slow flow, hot, kundalini, yin, Katonah",
+      "source": "https://bookretreats.com/t/yoga-studios/austin"
+    },
+    {
+      "market": "austin",
+      "name": "Open Form Yoga & Well-Being Studio",
+      "area": "East 12th Street",
+      "street": null,
+      "website": null,
+      "styles_text": "Yoga, mindfulness",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Yoga East Austin",
+      "area": "East Austin",
+      "street": null,
+      "website": null,
+      "styles_text": "Yoga",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "CorePower Yoga Triangle",
+      "area": "Triangle",
+      "street": null,
+      "website": null,
+      "styles_text": "Heated and non-heated yoga, hot yoga",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Breath and Body Yoga",
+      "area": "Exposition Blvd",
+      "street": "2415 Exposition Blvd",
+      "website": "https://breathandbodyyoga.com",
+      "styles_text": "Power vinyasa, slow flow, yin, meditation",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "TruFusion South Austin",
+      "area": "South Lamar",
+      "street": "4211 S Lamar Blvd",
+      "website": "https://trufusion.com",
+      "styles_text": "Hot barre, hot pilates, hot yoga",
+      "source": "https://bookretreats.com/t/yoga-studios/austin",
+      "business_type": "multi_discipline_studio"
+    },
+    {
+      "market": "austin",
+      "name": "Yoga Vida",
+      "area": "Bee Cave Road",
+      "street": "3620 Bee Cave Rd",
+      "website": "https://yogavidaaustin.com",
+      "styles_text": "Vinyasa flow",
+      "source": "https://bookretreats.com/t/yoga-studios/austin"
+    },
+    {
+      "market": "austin",
+      "name": "Studio Satya",
+      "area": "North Central Austin",
+      "street": null,
+      "website": "https://studiosatya.com",
+      "styles_text": "Vinyasa, slow flow, yoga nidra, prenatal",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Wild Heart Yoga",
+      "area": "Bee Cave Road",
+      "street": "5604 Bee Cave Rd",
+      "website": "https://wildheartyogaaustin.com",
+      "styles_text": "Power, sculpt, sound baths",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Black Swan Yoga",
+      "area": "Orchard",
+      "street": "1213 W 5th St",
+      "website": "https://www.blackswanyoga.com",
+      "styles_text": "Vinyasa, power, yin, hot, ashtanga",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Body Collective",
+      "area": "North Austin",
+      "street": null,
+      "website": null,
+      "styles_text": "Flow, hatha, vinyasa, kundalini, yin, heated",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
     }
   ]
 }

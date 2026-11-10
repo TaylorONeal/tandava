@@ -1,4 +1,12 @@
 {
   "note": "Hand corrections, keyed by record id or slug. They win over map data. Record where each came from in source.",
-  "studios": {}
+  "studios": {
+    "osm-node-14293217563": {
+      "links": {
+        "website": null
+      },
+      "source": "2026-11-10: map listing pointed at Flow Yoga's site (flowyogatx.com), a different studio in Westgate. Lantern lists Third Eye separately in Zilker.",
+      "internal_notes": "Website removed: map tag belonged to another studio."
+    }
+  }
 }
