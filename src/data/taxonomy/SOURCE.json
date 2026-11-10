@@ -1,0 +1,13 @@
+{
+  "note": "Pinned copies of the shared taxonomy. Do not edit here: change app-launch-playbook/taxonomy/ and re-copy. Ids are permanent.",
+  "repo": "TaylorONeal/app-launch-playbook",
+  "path": "taxonomy/",
+  "branch": "claude/shared-yoga-taxonomy",
+  "commit": "51801d1",
+  "copied_on": "2026-11-10",
+  "files": {
+    "styles.json": "e480a51134ad328ad06ffa0ce84165b5133ccdf01aea41d305241320b7bf4a1f",
+    "studio-software.json": "af50bbb391f1ed4426e8dd164101e85c127a4c7bf25306c5b7276b2002539b7d",
+    "studio-record.schema.json": "3a3a53965a21238c56eab6df1fdd3ad5732d858145d75e9f0ce57a4a9e769cf1"
+  }
+}

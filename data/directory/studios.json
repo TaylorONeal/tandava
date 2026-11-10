@@ -1,0 +1,971 @@
+{
+ "generated_on": "2026-11-10",
+ "studios": [
+  {
+   "id": "seed-alchemy-yoga-and-meditation-center-ubud",
+   "slug": "alchemy-yoga-and-meditation-center-ubud",
+   "name": "Alchemy Yoga and Meditation Center",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "ubud",
+   "address": {
+    "street": "Jl. Penestanan No. 75",
+    "area": "Penestanan",
+    "locality": "Ubud",
+    "region_code": "BA",
+    "region_name": "Bali",
+    "postal_code": null,
+    "country_code": "ID",
+    "country_name": "Indonesia"
+   },
+   "geo": null,
+   "time_zone": "Asia/Makassar",
+   "links": {
+    "website": "https://alchemyyogacenter.com",
+    "website_domain": "alchemyyogacenter.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Alchemy Yoga and Meditation Center is a yoga studio in Penestanan, Ubud, Indonesia.",
+   "styles": [
+    "ecstatic-dance",
+    "meditation",
+    "power",
+    "yin"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide."
+  },
+  {
+   "id": "seed-fivelements-retreat-ubud",
+   "slug": "fivelements-retreat-ubud",
+   "name": "Fivelements Retreat",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "retreat_center",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "ubud",
+   "address": {
+    "street": null,
+    "area": "Mambal",
+    "locality": "Ubud",
+    "region_code": "BA",
+    "region_name": "Bali",
+    "postal_code": null,
+    "country_code": "ID",
+    "country_name": "Indonesia"
+   },
+   "geo": null,
+   "time_zone": "Asia/Makassar",
+   "links": {
+    "website": "https://fivelementsbali.com",
+    "website_domain": "fivelementsbali.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Fivelements Retreat is a retreat center in Mambal, Ubud, Indonesia.",
+   "styles": [
+    "meditation"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide."
+  },
+  {
+   "id": "seed-heart-space-bali-ubud",
+   "slug": "heart-space-bali-ubud",
+   "name": "Heart Space Bali",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "ubud",
+   "address": {
+    "street": "Jl. Pengosekan at Jl. Nyuh Kuning",
+    "area": "Pengosekan",
+    "locality": "Ubud",
+    "region_code": "BA",
+    "region_name": "Bali",
+    "postal_code": null,
+    "country_code": "ID",
+    "country_name": "Indonesia"
+   },
+   "geo": null,
+   "time_zone": "Asia/Makassar",
+   "links": {
+    "website": "https://heartspacebali.com",
+    "website_domain": "heartspacebali.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Heart Space Bali is a yoga studio in Pengosekan, Ubud, Indonesia.",
+   "styles": [
+    "restorative",
+    "sound-bath",
+    "yin"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide."
+  },
+  {
+   "id": "seed-intuitive-flow-ubud",
+   "slug": "intuitive-flow-ubud",
+   "name": "Intuitive Flow",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "ubud",
+   "address": {
+    "street": "Jl. Raya Penestanan Kelod",
+    "area": "Penestanan",
+    "locality": "Ubud",
+    "region_code": "BA",
+    "region_name": "Bali",
+    "postal_code": null,
+    "country_code": "ID",
+    "country_name": "Indonesia"
+   },
+   "geo": null,
+   "time_zone": "Asia/Makassar",
+   "links": {
+    "website": "https://intuitiveflow.com",
+    "website_domain": "intuitiveflow.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Intuitive Flow is a yoga studio in Penestanan, Ubud, Indonesia.",
+   "styles": [
+    "flow-yoga",
+    "yin",
+    "yoga-nidra"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide."
+  },
+  {
+   "id": "seed-lumeria-yoga-ubud",
+   "slug": "lumeria-yoga-ubud",
+   "name": "Lumeria Yoga",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "ubud",
+   "address": {
+    "street": "Jl. Raya Pengosekan",
+    "area": "Pengosekan",
+    "locality": "Ubud",
+    "region_code": "BA",
+    "region_name": "Bali",
+    "postal_code": null,
+    "country_code": "ID",
+    "country_name": "Indonesia"
+   },
+   "geo": null,
+   "time_zone": "Asia/Makassar",
+   "links": {
+    "website": "https://lumeriayoga.com",
+    "website_domain": "lumeriayoga.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Lumeria Yoga is a yoga studio in Pengosekan, Ubud, Indonesia.",
+   "styles": [
+    "breathwork",
+    "sound-bath",
+    "vinyasa",
+    "yoga-nidra"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide."
+  },
+  {
+   "id": "seed-pyramids-of-chi-ubud",
+   "slug": "pyramids-of-chi-ubud",
+   "name": "Pyramids of Chi",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "ubud",
+   "address": {
+    "street": null,
+    "area": "North Ubud",
+    "locality": "Ubud",
+    "region_code": "BA",
+    "region_name": "Bali",
+    "postal_code": null,
+    "country_code": "ID",
+    "country_name": "Indonesia"
+   },
+   "geo": null,
+   "time_zone": "Asia/Makassar",
+   "links": {
+    "website": "https://ubud.pyramidsofchi.com",
+    "website_domain": "pyramidsofchi.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Pyramids of Chi is a yoga studio in North Ubud, Ubud, Indonesia.",
+   "styles": [
+    "breathwork",
+    "kundalini",
+    "sound-bath"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide."
+  },
+  {
+   "id": "seed-radiantly-alive-ubud",
+   "slug": "radiantly-alive-ubud",
+   "name": "Radiantly Alive",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "ubud",
+   "address": {
+    "street": "Jl. Jembawan 8",
+    "area": "Central Ubud",
+    "locality": "Ubud",
+    "region_code": "BA",
+    "region_name": "Bali",
+    "postal_code": null,
+    "country_code": "ID",
+    "country_name": "Indonesia"
+   },
+   "geo": null,
+   "time_zone": "Asia/Makassar",
+   "links": {
+    "website": "https://www.radiantlyalive.com",
+    "website_domain": "radiantlyalive.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Radiantly Alive is a yoga studio in Central Ubud, Ubud, Indonesia.",
+   "styles": [
+    "acro",
+    "aerial",
+    "ecstatic-dance",
+    "kundalini",
+    "vinyasa",
+    "yin"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide."
+  },
+  {
+   "id": "seed-the-in-movement-ubud",
+   "slug": "the-in-movement-ubud",
+   "name": "The IN Movement",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "ubud",
+   "address": {
+    "street": null,
+    "area": "Nyuh Kuning",
+    "locality": "Ubud",
+    "region_code": "BA",
+    "region_name": "Bali",
+    "postal_code": null,
+    "country_code": "ID",
+    "country_name": "Indonesia"
+   },
+   "geo": null,
+   "time_zone": "Asia/Makassar",
+   "links": {
+    "website": "https://theinmovement.com",
+    "website_domain": "theinmovement.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "The IN Movement is a yoga studio in Nyuh Kuning, Ubud, Indonesia.",
+   "styles": [
+    "meditation",
+    "power",
+    "yin",
+    "yoga-nidra"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide."
+  },
+  {
+   "id": "seed-ubud-yoga-centre-ubud",
+   "slug": "ubud-yoga-centre-ubud",
+   "name": "Ubud Yoga Centre",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "ubud",
+   "address": {
+    "street": "Jl. Hanoman 19",
+    "area": "Central Ubud",
+    "locality": "Ubud",
+    "region_code": "BA",
+    "region_name": "Bali",
+    "postal_code": null,
+    "country_code": "ID",
+    "country_name": "Indonesia"
+   },
+   "geo": null,
+   "time_zone": "Asia/Makassar",
+   "links": {
+    "website": "https://ubud-yoga-centre.com",
+    "website_domain": "ubud-yoga-centre.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Ubud Yoga Centre is a yoga studio in Central Ubud, Ubud, Indonesia.",
+   "styles": [
+    "alignment-based",
+    "hatha"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide."
+  },
+  {
+   "id": "seed-yoga-barn-ubud",
+   "slug": "yoga-barn-ubud",
+   "name": "Yoga Barn",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "ubud",
+   "address": {
+    "street": "Jl. Raya Pengosekan",
+    "area": "Pengosekan",
+    "locality": "Ubud",
+    "region_code": "BA",
+    "region_name": "Bali",
+    "postal_code": null,
+    "country_code": "ID",
+    "country_name": "Indonesia"
+   },
+   "geo": null,
+   "time_zone": "Asia/Makassar",
+   "links": {
+    "website": "https://theyogabarn.com",
+    "website_domain": "theyogabarn.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Yoga Barn is a yoga studio in Pengosekan, Ubud, Indonesia.",
+   "styles": [
+    "acro",
+    "aerial",
+    "hatha",
+    "kundalini",
+    "vinyasa",
+    "yoga-nidra"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide."
+  }
+ ]
+}

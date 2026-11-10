@@ -1,0 +1,1848 @@
+{
+  "$comment": "Canonical studio software list shared by Tandava, TeacherTree, ClassStamp and CueCraft. Ids are permanent. detect.domains are hosts seen on real studio booking pages or the vendor's own embed docs; detect.unverified are guesses and are never used for public claims. Listing a vendor is not an endorsement.",
+  "version": "2026-11-10.1",
+  "researched_on": "2026-11-10",
+  "categories": [
+    {
+      "id": "studio_management",
+      "label": "Studio management",
+      "note": "Class booking, memberships and payments built for studios"
+    },
+    {
+      "id": "gym_management",
+      "label": "Gym and club management",
+      "note": "Gym, box, martial arts and club systems"
+    },
+    {
+      "id": "salon_spa",
+      "label": "Salon and spa",
+      "note": "Appointment software from beauty and spa that some studios run on"
+    },
+    {
+      "id": "scheduling_generic",
+      "label": "General scheduling",
+      "note": "Generic appointment or class schedulers"
+    },
+    {
+      "id": "website_builder_booking",
+      "label": "Website builder booking",
+      "note": "Booking add-ons inside a site builder; usually a weak signal"
+    },
+    {
+      "id": "course_ondemand",
+      "label": "On-demand and courses",
+      "note": "Video library, course and livestream platforms"
+    },
+    {
+      "id": "marketplace",
+      "label": "Marketplace",
+      "note": "Third-party booking networks, never the system of record"
+    },
+    {
+      "id": "payments_events",
+      "label": "Payments and event tickets",
+      "note": "Payment links and event ticketing"
+    },
+    {
+      "id": "health_practice",
+      "label": "Health and coaching practice",
+      "note": "Clinic and coaching practice software"
+    },
+    {
+      "id": "own_or_none",
+      "label": "Own site or no online booking",
+      "note": "Our sentinel values"
+    }
+  ],
+  "platforms": [
+    {
+      "id": "mindbody",
+      "name": "Mindbody",
+      "url": "https://www.mindbodyonline.com",
+      "category": "studio_management",
+      "region": "global",
+      "status": "active",
+      "parent_company": "Playlist",
+      "detect": {
+        "domains": [
+          "clients.mindbodyonline.com",
+          "brandedweb.mindbodyonline.com",
+          "widgets.mindbodyonline.com",
+          "cart.mindbodyonline.com",
+          "widgets.healcode.com"
+        ],
+        "unverified": [
+          "widgets.healcode.com",
+          "healcode.com"
+        ]
+      },
+      "notes": "Parent Playlist since 2025; Healcode widgets became Mindbody Branded Web Tools",
+      "evidence": "https://info.apiant.com/docs/shopconnect-shopify-to-mindbody/add-mindbody-booking-widget-to-shopify"
+    },
+    {
+      "id": "booker",
+      "name": "Booker",
+      "url": "https://www.booker.com",
+      "category": "salon_spa",
+      "region": "us",
+      "status": "active",
+      "parent_company": "Playlist",
+      "detect": {
+        "domains": [
+          "go.booker.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Acquired by Mindbody 2018; now under Playlist",
+      "evidence": "https://en.wikipedia.org/wiki/Booker_Software"
+    },
+    {
+      "id": "classpass",
+      "name": "ClassPass",
+      "url": "https://classpass.com",
+      "category": "marketplace",
+      "region": "global",
+      "status": "active",
+      "parent_company": "Playlist",
+      "detect": {
+        "domains": [
+          "classpass.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Marketplace, not system of record; parent Playlist",
+      "evidence": "https://athletechnews.com/mindbody-classpass-unveil-playlist-as-new-parent-company/"
+    },
+    {
+      "id": "arketa",
+      "name": "Arketa",
+      "url": "https://www.arketa.com",
+      "category": "studio_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "app.arketa.co"
+        ],
+        "unverified": []
+      },
+      "notes": "Embed script app.arketa.co/scripts/embed.js; iframe at app.arketa.co/iframe/",
+      "evidence": "https://help.arketa.com/getting-started/embed-on-website"
+    },
+    {
+      "id": "momence",
+      "name": "Momence",
+      "url": "https://momence.com",
+      "category": "studio_management",
+      "region": "global",
+      "status": "active",
+      "parent_company": "Xplor",
+      "detect": {
+        "domains": [
+          "momence.com",
+          "app.momence.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Formerly Ribbon; Clubessential 2025, now Xplor Fitness & Leisure. 'Moments' means Momence",
+      "evidence": "https://athletechnews.com/clubessential-holdings-acquires-saas-platform-momence/"
+    },
+    {
+      "id": "ribbon",
+      "name": "Ribbon",
+      "url": "https://momence.com",
+      "category": "studio_management",
+      "region": "global",
+      "status": "merged",
+      "merged_into": "momence",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Former name of Momence; keep as previous-software value",
+      "evidence": "https://capterra.com/p/229516/Ribbon/"
+    },
+    {
+      "id": "walla",
+      "name": "Walla",
+      "url": "https://www.hellowalla.com",
+      "category": "studio_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": [
+          "walla.app"
+        ]
+      },
+      "notes": "Widgets via embed code; direct links; no public booking host confirmed",
+      "evidence": "https://support.hellowalla.com/en/articles/9075587-prepare-your-website-and-widgets-for-client-interaction"
+    },
+    {
+      "id": "mariana-tek",
+      "name": "Mariana Tek",
+      "url": "https://www.marianatek.com",
+      "category": "studio_management",
+      "region": "global",
+      "status": "active",
+      "parent_company": "Xplor",
+      "detect": {
+        "domains": [
+          "integrations.marianatek.com"
+        ],
+        "unverified": [
+          "*.marianatek.com",
+          "marianaiframes.com"
+        ]
+      },
+      "notes": "Owned by Xplor (Xplor Fitness & Leisure)",
+      "evidence": "https://mariana-integrations-docs.herokuapp.com/docs/installing-web-integrations.html"
+    },
+    {
+      "id": "zingfit",
+      "name": "zingfit",
+      "url": "https://www.zingfit.com",
+      "category": "studio_management",
+      "region": "us",
+      "status": "active",
+      "parent_platform": "mariana-tek",
+      "parent_company": "Xplor",
+      "detect": {
+        "domains": [
+          "*.zingfit.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Now part of Mariana Tek (Xplor); legacy, new customers sent to Mariana",
+      "evidence": "https://www.marianatek.com/?p=2157"
+    },
+    {
+      "id": "vagaro",
+      "name": "Vagaro",
+      "url": "https://www.vagaro.com",
+      "category": "salon_spa",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "vagaro.com",
+          "mysite.vagaro.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Salon/spa/fitness system plus consumer marketplace",
+      "evidence": "https://mysite.vagaro.com/sonewyogallc/classes"
+    },
+    {
+      "id": "fresha",
+      "name": "Fresha",
+      "url": "https://www.fresha.com",
+      "category": "salon_spa",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "fresha.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Salon/spa software plus marketplace; yoga studios listed",
+      "evidence": "https://www.fresha.com/lvp/sundance-yoga-studio-fite-road-pearland-5zWAjR"
+    },
+    {
+      "id": "acuity",
+      "name": "Acuity Scheduling",
+      "url": "https://acuityscheduling.com",
+      "category": "scheduling_generic",
+      "region": "global",
+      "status": "active",
+      "parent_company": "Squarespace",
+      "detect": {
+        "domains": [
+          "*.as.me",
+          "app.acuityscheduling.com",
+          "app.squarespacescheduling.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Squarespace-owned; sold as Squarespace Scheduling",
+      "evidence": "https://app.squarespacescheduling.com/schedule/075a5aab/?template=class"
+    },
+    {
+      "id": "momoyoga",
+      "name": "Momoyoga",
+      "url": "https://www.momoyoga.com",
+      "category": "studio_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "momoyoga.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Dutch; studio pages at momoyoga.com/<studio>/schedule",
+      "evidence": "https://www.momoyoga.com/theyogihousetawas/schedule"
+    },
+    {
+      "id": "teamup",
+      "name": "TeamUp",
+      "url": "https://goteamup.com",
+      "category": "studio_management",
+      "region": "uk",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "goteamup.com"
+        ],
+        "unverified": []
+      },
+      "notes": "UK-based; customer pages at goteamup.com/p/<id>",
+      "evidence": "https://goteamup.com/p/9957997-heartspace-yoga/memberships"
+    },
+    {
+      "id": "glofox",
+      "name": "ABC Glofox",
+      "url": "https://www.glofox.com",
+      "category": "studio_management",
+      "region": "global",
+      "status": "active",
+      "parent_company": "ABC Fitness",
+      "detect": {
+        "domains": [
+          "app.glofox.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Owned by ABC Fitness; web portal at app.glofox.com/portal",
+      "evidence": "https://abcfitness.com/glofox/"
+    },
+    {
+      "id": "abc-ignite",
+      "name": "ABC Ignite",
+      "url": "https://abcfitness.com/ignite/",
+      "category": "gym_management",
+      "region": "us",
+      "status": "active",
+      "parent_company": "ABC Fitness",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "ABC Fitness gym platform",
+      "evidence": "https://ignite.abcfitness.com/"
+    },
+    {
+      "id": "abc-evo",
+      "name": "ABC Evo",
+      "url": "https://abcfitness.com/evo/",
+      "category": "gym_management",
+      "region": "global",
+      "status": "active",
+      "parent_company": "ABC Fitness",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "ABC Fitness gym platform",
+      "evidence": "https://abcfitness.com/evo/"
+    },
+    {
+      "id": "zen-planner",
+      "name": "Zen Planner",
+      "url": "https://zenplanner.com",
+      "category": "studio_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.sites.zenplanner.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Yoga, CrossFit, martial arts",
+      "evidence": "https://awarehotyoga.sites.zenplanner.com/calendar.cfm"
+    },
+    {
+      "id": "pike13",
+      "name": "Pike13",
+      "url": "https://www.pike13.com",
+      "category": "studio_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.pike13.com"
+        ],
+        "unverified": []
+      },
+      "evidence": "https://yogapilatesbarre.pike13.com/locations/yoga-pilates-barre-mcdonough"
+    },
+    {
+      "id": "fitogram",
+      "name": "FitogramPro",
+      "url": "https://www.fitogram.pro",
+      "category": "studio_management",
+      "region": "eu",
+      "status": "discontinued",
+      "detect": {
+        "domains": [
+          "share.fitogram.pro"
+        ],
+        "unverified": []
+      },
+      "notes": "German; Pitchbook lists out of business (2025). Previous-software value",
+      "evidence": "https://pitchbook.com/profiles/company/91812-79"
+    },
+    {
+      "id": "eversports",
+      "name": "Eversports",
+      "url": "https://www.eversportsmanager.com",
+      "category": "studio_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "eversports.de",
+          "eversports.at",
+          "widget.eversports.com"
+        ],
+        "unverified": [
+          "eversports.nl"
+        ]
+      },
+      "notes": "Austrian; merged with Fitmanager (NL) and MATCHi; Verdane-backed",
+      "evidence": "https://www.eversports.de/s/the-yoga-studio"
+    },
+    {
+      "id": "fitgrid",
+      "name": "FitGrid",
+      "url": "https://www.fitgrid.com",
+      "category": "studio_management",
+      "region": "us",
+      "status": "unclear",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Class app/retention layer; integrates Mariana Tek; current status unclear",
+      "evidence": "https://www.fitgrid.com/integration/mariana-tek"
+    },
+    {
+      "id": "union",
+      "name": "Union",
+      "url": "https://www.union.fit",
+      "category": "studio_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "union.fit"
+        ],
+        "unverified": []
+      },
+      "notes": "Studio pages at union.fit/orgs/<studio>",
+      "evidence": "https://www.union.fit/orgs/sky-yoga-studios"
+    },
+    {
+      "id": "wellnessliving",
+      "name": "WellnessLiving",
+      "url": "https://www.wellnessliving.com",
+      "category": "studio_management",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "wellnessliving.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Schedules/widgets under wellnessliving.com/rs/",
+      "evidence": "https://www.wellnessliving.com/rs/schedule/thatyogaplace?k_business=316274&k_class_tab=35443&id_class_tab=1"
+    },
+    {
+      "id": "bsport",
+      "name": "bsport",
+      "url": "https://pro.bsport.io",
+      "category": "studio_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": [
+          "*.bsport.io"
+        ]
+      },
+      "notes": "French boutique-studio platform",
+      "evidence": "https://pro.bsport.io/studios/yoga-studio-software"
+    },
+    {
+      "id": "punchpass",
+      "name": "Punchpass",
+      "url": "https://punchpass.com",
+      "category": "studio_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.punchpass.com"
+        ],
+        "unverified": []
+      },
+      "evidence": "https://together.punchpass.com/classes"
+    },
+    {
+      "id": "kenko",
+      "name": "Kenko",
+      "url": "https://www.gokenko.com",
+      "category": "studio_management",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Formerly Bookee; keep Bookee as previous-software alias",
+      "evidence": "https://www.g2.com/products/kenko-formerly-bookee/reviews"
+    },
+    {
+      "id": "hapana",
+      "name": "Hapana",
+      "url": "https://www.hapana.com",
+      "category": "studio_management",
+      "region": "apac",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "link.hapana.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Australian boutique-fitness platform",
+      "evidence": "https://ausactive.org.au/supplier_membership/hapana/"
+    },
+    {
+      "id": "offeringtree",
+      "name": "OfferingTree",
+      "url": "https://www.offeringtree.com",
+      "category": "studio_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.offeringtree.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Website plus booking for yoga teachers/studios",
+      "evidence": "https://wildyogastudio.offeringtree.com/"
+    },
+    {
+      "id": "namastream",
+      "name": "Namastream",
+      "url": "https://www.namastream.com",
+      "category": "course_ondemand",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.namastream.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Virtual yoga studio/on-demand; some sites also on heymarvelous.com",
+      "evidence": "https://igniteyogaonline.namastream.com/"
+    },
+    {
+      "id": "marvelous",
+      "name": "Marvelous",
+      "url": "https://www.heymarvelous.com",
+      "category": "course_ondemand",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.heymarvelous.com"
+        ],
+        "unverified": []
+      },
+      "notes": "On-demand plus live class calendar",
+      "evidence": "https://main-street-yoga.heymarvelous.com/calendar"
+    },
+    {
+      "id": "sutra",
+      "name": "Sutra",
+      "url": "https://sutra.fit",
+      "category": "studio_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.sutra.fit"
+        ],
+        "unverified": []
+      },
+      "notes": "Teacher/small-studio platform",
+      "evidence": "https://gracestudio.sutra.fit/"
+    },
+    {
+      "id": "boulevard",
+      "name": "Boulevard",
+      "url": "https://www.joinblvd.com",
+      "category": "salon_spa",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": [
+          "blvd.co"
+        ]
+      },
+      "notes": "Salon, spa and medspa",
+      "evidence": "https://www.joinblvd.com/"
+    },
+    {
+      "id": "square-appointments",
+      "name": "Square Appointments",
+      "url": "https://squareup.com/appointments",
+      "category": "scheduling_generic",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "book.squareup.com"
+        ],
+        "unverified": [
+          "square.site"
+        ]
+      },
+      "notes": "Also book.squareup.com/classes for classes",
+      "evidence": "https://book.squareup.com/classes/pyh0dc266y5405/location/LAP6ET3P4TQJX/classes"
+    },
+    {
+      "id": "calendly",
+      "name": "Calendly",
+      "url": "https://calendly.com",
+      "category": "scheduling_generic",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": [
+          "calendly.com"
+        ]
+      },
+      "evidence": "https://calendly.com/scheduling"
+    },
+    {
+      "id": "simplybook-me",
+      "name": "SimplyBook.me",
+      "url": "https://simplybook.me",
+      "category": "scheduling_generic",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.simplybook.me"
+        ],
+        "unverified": []
+      },
+      "evidence": "https://workitpilates.simplybook.me/v2/"
+    },
+    {
+      "id": "setmore",
+      "name": "Setmore",
+      "url": "https://www.setmore.com",
+      "category": "scheduling_generic",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.setmore.com"
+        ],
+        "unverified": []
+      },
+      "evidence": "https://lozyogaandpilates.setmore.com/"
+    },
+    {
+      "id": "supersaas",
+      "name": "SuperSaaS",
+      "url": "https://www.supersaas.com",
+      "category": "scheduling_generic",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": [
+          "supersaas.com"
+        ]
+      },
+      "evidence": "https://www.supersaas.com/info/yoga-and-pilates-classes-booking-system"
+    },
+    {
+      "id": "picktime",
+      "name": "Picktime",
+      "url": "https://www.picktime.com",
+      "category": "scheduling_generic",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "picktime.com"
+        ],
+        "unverified": []
+      },
+      "evidence": "https://www.picktime.com/lillydyoga?lang=en"
+    },
+    {
+      "id": "bookeo",
+      "name": "Bookeo",
+      "url": "https://www.bookeo.com",
+      "category": "scheduling_generic",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Class/course booking incl. yoga",
+      "evidence": "https://www.bookeo.com/classes/yoga-scheduling-software/"
+    },
+    {
+      "id": "koalendar",
+      "name": "Koalendar",
+      "url": "https://koalendar.com",
+      "category": "scheduling_generic",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "evidence": "https://koalendar.com/scheduling-software-for/yoga"
+    },
+    {
+      "id": "zoho-bookings",
+      "name": "Zoho Bookings",
+      "url": "https://www.zoho.com/bookings/",
+      "category": "scheduling_generic",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "evidence": "https://www.zoho.com/bookings/industries/yoga-scheduling-software.html"
+    },
+    {
+      "id": "goldie",
+      "name": "Goldie",
+      "url": "https://heygoldie.com",
+      "category": "scheduling_generic",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Scheduling app for trainers/instructors (Mobiversal)",
+      "evidence": "https://heygoldie.com/?p=1183"
+    },
+    {
+      "id": "wix-bookings",
+      "name": "Wix Bookings",
+      "url": "https://www.wix.com",
+      "category": "website_builder_booking",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.wixsite.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Custom domains common",
+      "evidence": "https://twineyogahome.wixsite.com/twine-yoga/schedule"
+    },
+    {
+      "id": "squarespace",
+      "name": "Squarespace",
+      "url": "https://www.squarespace.com",
+      "category": "website_builder_booking",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.squarespace.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Often embeds Mindbody, Momence, Acuity",
+      "evidence": "https://innerblissyogastudio.squarespace.com/the-details"
+    },
+    {
+      "id": "shopify",
+      "name": "Shopify",
+      "url": "https://www.shopify.com",
+      "category": "website_builder_booking",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": [
+          "*.myshopify.com"
+        ]
+      },
+      "notes": "Usually hosts embedded booking widgets",
+      "evidence": "https://info.apiant.com/docs/shopconnect-shopify-to-mindbody/add-mindbody-booking-widget-to-shopify"
+    },
+    {
+      "id": "gymdesk",
+      "name": "Gymdesk",
+      "url": "https://gymdesk.com",
+      "category": "gym_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.gymdesk.com"
+        ],
+        "unverified": []
+      },
+      "evidence": "https://fastidious.gymdesk.com/schedule"
+    },
+    {
+      "id": "pushpress",
+      "name": "PushPress",
+      "url": "https://www.pushpress.com",
+      "category": "gym_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.members.pushpress.com"
+        ],
+        "unverified": []
+      },
+      "evidence": "https://crossfitshakerag.members.pushpress.com/schedule"
+    },
+    {
+      "id": "wodify",
+      "name": "Wodify",
+      "url": "https://www.wodify.com",
+      "category": "gym_management",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.wodify.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Also markets yoga/pilates solution",
+      "evidence": "https://www.wodify.com/solutions/yoga-pilates"
+    },
+    {
+      "id": "club-os",
+      "name": "ClubOS",
+      "url": "https://www.club-os.com",
+      "category": "gym_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "evidence": "https://www.club-os.com/"
+    },
+    {
+      "id": "exerp",
+      "name": "Exerp",
+      "url": "https://www.exerp.com",
+      "category": "gym_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Enterprise club chains",
+      "evidence": "https://www.capterra.ca/alternatives/73511/exerp"
+    },
+    {
+      "id": "perfect-gym",
+      "name": "Perfect Gym",
+      "url": "https://www.perfectgym.com",
+      "category": "gym_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Enterprise club chains",
+      "evidence": "https://www.perfectgym.com/en"
+    },
+    {
+      "id": "virtuagym",
+      "name": "Virtuagym",
+      "url": "https://business.virtuagym.com",
+      "category": "gym_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.virtuagym.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Dutch; gyms and studios",
+      "evidence": "https://yoia.virtuagym.com/webshop/"
+    },
+    {
+      "id": "clubright",
+      "name": "ClubRight",
+      "url": "https://clubright.co.uk",
+      "category": "gym_management",
+      "region": "uk",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.clubright.co.uk"
+        ],
+        "unverified": []
+      },
+      "evidence": "https://reposestudio.clubright.co.uk/MemberArea/Bookings?eventId=66b6c89ccc2f0479ac924cb3"
+    },
+    {
+      "id": "gymcatch",
+      "name": "Gymcatch",
+      "url": "https://gymcatch.com",
+      "category": "studio_management",
+      "region": "uk",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "gymcatch.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Provider pages at gymcatch.com/app/provider/<id>",
+      "evidence": "https://gymcatch.com/app/provider/696"
+    },
+    {
+      "id": "bookwhen",
+      "name": "Bookwhen",
+      "url": "https://bookwhen.com",
+      "category": "scheduling_generic",
+      "region": "uk",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "bookwhen.com",
+          "cdn.bookwhen.com"
+        ],
+        "unverified": []
+      },
+      "evidence": "https://intercom.help/bookwhen/en/articles/797072-embedding-bookwhen-within-your-website"
+    },
+    {
+      "id": "yogo",
+      "name": "YOGO",
+      "url": "https://www.yogobooking.com",
+      "category": "studio_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Danish (yogo.dk); WordPress plugin yogo-booking",
+      "evidence": "https://www.yogobooking.com/blog/best-booking-systems-yoga-fitness-studios-2025"
+    },
+    {
+      "id": "yoga-and-me",
+      "name": "Yoga&Me",
+      "url": "https://www.yogaandme.fr",
+      "category": "studio_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "French; vendor domain unconfirmed (temporary homepage seen)",
+      "evidence": "https://www.capterra.com/p/195645/Yoga-Me"
+    },
+    {
+      "id": "zenamu",
+      "name": "Zenamu",
+      "url": "https://zenamu.com",
+      "category": "studio_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Czech; free tier",
+      "evidence": "https://zenamu.com/yoga-booking-system/"
+    },
+    {
+      "id": "bookamat",
+      "name": "Bookamat",
+      "url": "https://bookamat.co",
+      "category": "studio_management",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Strong Australia presence",
+      "evidence": "https://bookamat.co/yoga-studio-software"
+    },
+    {
+      "id": "studiobookings",
+      "name": "StudioBookings",
+      "url": "https://www.studiobookings.com",
+      "category": "studio_management",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Also seen as studiobookingsonline.com; US-based",
+      "evidence": "https://www.sourceforge.net/software/product/StudioBookings"
+    },
+    {
+      "id": "studiogrowth",
+      "name": "StudioGrowth",
+      "url": "https://studiogrowth.com",
+      "category": "studio_management",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "'Studio Growth' in brief",
+      "evidence": "https://studiogrowth.com/features/class-booking-software/"
+    },
+    {
+      "id": "easybook-studio",
+      "name": "easybook.studio",
+      "url": "https://easybook.studio",
+      "category": "studio_management",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "evidence": "https://www.capterra.com/p/10035905/easybook-studio/"
+    },
+    {
+      "id": "ubindi",
+      "name": "Ubindi",
+      "url": "https://www.ubindi.com",
+      "category": "studio_management",
+      "region": "apac",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Australian; yoga teachers and small studios",
+      "evidence": "https://www.yogobooking.com/blog/best-booking-systems-yoga-fitness-studios-2025"
+    },
+    {
+      "id": "vibefam",
+      "name": "Vibefam",
+      "url": "https://vibefam.com",
+      "category": "studio_management",
+      "region": "apac",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Singapore storefront; yoga/pilates newcomer",
+      "evidence": "https://vibefam.com/yoga-studio-software-reddit-2026/"
+    },
+    {
+      "id": "zipper",
+      "name": "Zipper",
+      "url": "https://www.joinzipper.com",
+      "category": "studio_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "evidence": "https://www.joinzipper.com/business-management-software/yoga-studio"
+    },
+    {
+      "id": "wellyx",
+      "name": "Wellyx",
+      "url": "https://wellyx.com",
+      "category": "studio_management",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "evidence": "https://wellyx.com/yoga-studio-software/"
+    },
+    {
+      "id": "anolla",
+      "name": "Anolla",
+      "url": "https://anolla.com",
+      "category": "studio_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "evidence": "https://anolla.com/en/yoga-software"
+    },
+    {
+      "id": "kicksite",
+      "name": "Kicksite",
+      "url": "https://kicksite.com",
+      "category": "gym_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Martial arts focus",
+      "evidence": "https://www.capterra.com/p/131168/Kicksite/"
+    },
+    {
+      "id": "spark-membership",
+      "name": "Spark Membership",
+      "url": "https://sparkmembership.com",
+      "category": "gym_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.sparkmembership.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Martial arts focus; Sagemount portfolio",
+      "evidence": "https://www.sagemount.com/portfolio/spark-membership/"
+    },
+    {
+      "id": "daxko",
+      "name": "Daxko",
+      "url": "https://www.daxko.com",
+      "category": "gym_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "YMCAs, JCCs, gyms",
+      "evidence": "https://www.daxko.com/fitness"
+    },
+    {
+      "id": "jonas-fitness",
+      "name": "Jonas Fitness",
+      "url": "https://jonasfitness.com",
+      "category": "gym_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "evidence": "https://jonasfitness.com/gyms-fitness-clubs/"
+    },
+    {
+      "id": "ezfacility",
+      "name": "EZFacility",
+      "url": "https://www.ezfacility.com",
+      "category": "gym_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "evidence": "https://www.ezfacility.com/"
+    },
+    {
+      "id": "upper-hand",
+      "name": "Upper Hand",
+      "url": "https://upperhand.com",
+      "category": "gym_management",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Sports facilities",
+      "evidence": "https://upperhand.com/sports-club-management-software/"
+    },
+    {
+      "id": "gymmaster",
+      "name": "GymMaster",
+      "url": "https://www.gymmaster.com",
+      "category": "gym_management",
+      "region": "apac",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "New Zealand",
+      "evidence": "https://www.ausleisure.com.au/news/gymmaster-marks-30-years-of-fitness-industry-software-development"
+    },
+    {
+      "id": "clubware",
+      "name": "Clubware",
+      "url": "https://clubware.com.au",
+      "category": "gym_management",
+      "region": "apac",
+      "status": "active",
+      "parent_company": "Xplor",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Xplor; evolving into Xplor Gym",
+      "evidence": "https://whatsnewinfitness.com.au/clubware-enhance-your-club-software-experience/"
+    },
+    {
+      "id": "magicline",
+      "name": "Magicline",
+      "url": "https://www.magicline.com",
+      "category": "gym_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "German; by Sport Alliance",
+      "evidence": "https://www.magicline.com/en/about-magicline"
+    },
+    {
+      "id": "sportivity",
+      "name": "Sportivity",
+      "url": "https://sportivity.nl",
+      "category": "gym_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Dutch",
+      "evidence": "https://sportivity.nl/over-ons/"
+    },
+    {
+      "id": "deciplus",
+      "name": "Xplor Deciplus",
+      "url": "https://www.deciplus.fr",
+      "category": "gym_management",
+      "region": "eu",
+      "status": "active",
+      "parent_company": "Xplor",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "French; now Xplor-branded",
+      "evidence": "https://www.deciplus.fr/"
+    },
+    {
+      "id": "resawod",
+      "name": "Resawod",
+      "url": "https://www.resawod.com",
+      "category": "gym_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "social.resawod.com"
+        ],
+        "unverified": []
+      },
+      "notes": "France/Spain; box/cross-training",
+      "evidence": "https://social.resawod.com/es/box/crossfit-jerez/info"
+    },
+    {
+      "id": "aimharder",
+      "name": "AimHarder",
+      "url": "https://aimharder.com",
+      "category": "gym_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.aimharder.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Spain; boxes and studios",
+      "evidence": "https://singularbox.aimharder.com/boxmemberships"
+    },
+    {
+      "id": "trainingym",
+      "name": "Trainingym",
+      "url": "https://trainingym.com",
+      "category": "gym_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Spain; yoga/pilates solution",
+      "evidence": "https://trainingym.com/en/solutions-yoga-pilates-studios"
+    },
+    {
+      "id": "harbiz",
+      "name": "Harbiz",
+      "url": "https://www.harbiz.io",
+      "category": "studio_management",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Spain (Madrid); trainers, yoga/pilates centers",
+      "evidence": "https://www.harbiz.io/en/yoga-and-pilates"
+    },
+    {
+      "id": "bokamera",
+      "name": "BokaMera",
+      "url": "https://bokamera.se",
+      "category": "scheduling_generic",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Swedish; has yoga studio offering",
+      "evidence": "https://bokamera.se/categories/digitalt-bokningssystem-for-din-yogastudio"
+    },
+    {
+      "id": "sumup-bookings",
+      "name": "SumUp Bookings",
+      "url": "https://www.sumup.com/en-gb/bookings/",
+      "category": "scheduling_generic",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "sumupbookings.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Launched 2024",
+      "evidence": "https://irishtechnews.ie/bookings-launched-by-sumup-offering-strong-support-for-service-industries/amp/"
+    },
+    {
+      "id": "shore",
+      "name": "Shore",
+      "url": "https://www.shore.com",
+      "category": "scheduling_generic",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "German; on DE yoga-software lists",
+      "evidence": "https://www.getapp.co.uk/software/103391/shore-com"
+    },
+    {
+      "id": "hacomono",
+      "name": "hacomono",
+      "url": "https://www.hacomono.jp",
+      "category": "studio_management",
+      "region": "apac",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Japan; yoga/pilates/gym membership, booking, payments",
+      "evidence": "https://lp2.hacomono.jp/yoga-pilates/"
+    },
+    {
+      "id": "tecnofit",
+      "name": "Tecnofit",
+      "url": "https://www.tecnofit.com.br",
+      "category": "gym_management",
+      "region": "latam",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Brazil; also 'Studiio by Tecnofit' for studios",
+      "evidence": "https://notagateway.com.br/blog/sistemas-para-academia/"
+    },
+    {
+      "id": "next-fit",
+      "name": "Next Fit",
+      "url": "https://www.nextfit.com.br",
+      "category": "gym_management",
+      "region": "latam",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Brazil",
+      "evidence": "https://notagateway.com.br/blog/sistemas-para-academia/"
+    },
+    {
+      "id": "w12-evo",
+      "name": "W12 Evo",
+      "url": "https://evo.w12.com.br",
+      "category": "gym_management",
+      "region": "latam",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Brazil",
+      "evidence": "https://notagateway.com.br/blog/sistemas-para-academia/"
+    },
+    {
+      "id": "pacto",
+      "name": "Pacto Soluções",
+      "url": "https://sistemapacto.com.br",
+      "category": "gym_management",
+      "region": "latam",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Brazil",
+      "evidence": "https://notagateway.com.br/blog/sistemas-para-academia/"
+    },
+    {
+      "id": "cloud-gym",
+      "name": "Cloud Gym",
+      "url": "https://cloudgym.io",
+      "category": "gym_management",
+      "region": "latam",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Brazil",
+      "evidence": "https://notagateway.com.br/blog/sistemas-para-academia/"
+    },
+    {
+      "id": "kajabi",
+      "name": "Kajabi",
+      "url": "https://kajabi.com",
+      "category": "course_ondemand",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.mykajabi.com"
+        ],
+        "unverified": []
+      },
+      "evidence": "https://kiyomiyoga.mykajabi.com/live-class-schedule"
+    },
+    {
+      "id": "teachable",
+      "name": "Teachable",
+      "url": "https://teachable.com",
+      "category": "course_ondemand",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.teachable.com"
+        ],
+        "unverified": []
+      },
+      "evidence": "https://pathofyoga.teachable.com/"
+    },
+    {
+      "id": "paperbell",
+      "name": "Paperbell",
+      "url": "https://paperbell.com",
+      "category": "health_practice",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Coaching business platform",
+      "evidence": "https://paperbell.com/faq/"
+    },
+    {
+      "id": "practice-better",
+      "name": "Practice Better",
+      "url": "https://practicebetter.io",
+      "category": "health_practice",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": [
+          "*.practicebetter.io"
+        ]
+      },
+      "evidence": "https://practicebetter.io/compare/practice-better-vs-jane"
+    },
+    {
+      "id": "jane-app",
+      "name": "Jane",
+      "url": "https://jane.app",
+      "category": "health_practice",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.janeapp.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Canadian; clinics, some yoga/movement studios",
+      "evidence": "https://yogayeva.janeapp.com/"
+    },
+    {
+      "id": "zenoti",
+      "name": "Zenoti",
+      "url": "https://www.zenoti.com",
+      "category": "salon_spa",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.zenoti.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Also has fitness classes webstore",
+      "evidence": "https://banya5.zenoti.com/webstoreNew/fitness/classes/59175a72-7837-4902-afc2-c16704fbc371"
+    },
+    {
+      "id": "mangomint",
+      "name": "Mangomint",
+      "url": "https://www.mangomint.com",
+      "category": "salon_spa",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "booking.mangomint.com"
+        ],
+        "unverified": []
+      },
+      "evidence": "https://booking.mangomint.com/myspajoy"
+    },
+    {
+      "id": "meevo",
+      "name": "Meevo",
+      "url": "https://www.meevo.com",
+      "category": "salon_spa",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "evidence": "https://www.meevo.com/"
+    },
+    {
+      "id": "rosy",
+      "name": "Rosy Salon Software",
+      "url": "https://rosysalonsoftware.com",
+      "category": "salon_spa",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "evidence": "https://rosysalonsoftware.com/"
+    },
+    {
+      "id": "book4time",
+      "name": "Book4Time",
+      "url": "https://www.book4time.com",
+      "category": "salon_spa",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Hotel/resort spa; domain not seen in this research"
+    },
+    {
+      "id": "glossgenius",
+      "name": "GlossGenius",
+      "url": "https://glossgenius.com",
+      "category": "salon_spa",
+      "region": "us",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "*.glossgenius.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Markets pilates studio software too",
+      "evidence": "https://glossgenius.com/customers/pilates-studio-software"
+    },
+    {
+      "id": "booksy",
+      "name": "Booksy",
+      "url": "https://booksy.com",
+      "category": "salon_spa",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "booksy.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Salon software plus marketplace",
+      "evidence": "https://booksy.com/en-us/1461295_anju-yoga_health-fitness_15892_north-miami-beach"
+    },
+    {
+      "id": "treatwell",
+      "name": "Treatwell",
+      "url": "https://www.treatwell.co.uk",
+      "category": "salon_spa",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "treatwell.co.uk"
+        ],
+        "unverified": []
+      },
+      "notes": "Salon software plus marketplace; lists yoga/pilates",
+      "evidence": "https://www.treatwell.co.uk/places/treatment-group-yoga-and-pilates/offer-type-local/in-central-london-london-uk/"
+    },
+    {
+      "id": "timely",
+      "name": "Timely",
+      "url": "https://www.gettimely.com",
+      "category": "salon_spa",
+      "region": "apac",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "book.gettimely.com",
+          "*.gettimely.com"
+        ],
+        "unverified": []
+      },
+      "notes": "NZ/AU origin; used by pilates studios",
+      "evidence": "https://book.gettimely.com/booking/location/bodyspacepilates1?mobile=true"
+    },
+    {
+      "id": "phorest",
+      "name": "Phorest",
+      "url": "https://www.phorest.com",
+      "category": "salon_spa",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": [
+          "phorest.com"
+        ]
+      },
+      "notes": "Irish; salons and aesthetic clinics",
+      "evidence": "https://www.phorest.com/"
+    },
+    {
+      "id": "wellhub",
+      "name": "Wellhub",
+      "url": "https://wellhub.com",
+      "category": "marketplace",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "wellhub.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Formerly Gympass (rebranded 2024); corporate wellness marketplace",
+      "evidence": "https://www.axios.com/2024/04/04/gympass-wellhub-rebrand-expansion"
+    },
+    {
+      "id": "gympass",
+      "name": "Gympass",
+      "url": "https://wellhub.com",
+      "category": "marketplace",
+      "region": "global",
+      "status": "merged",
+      "merged_into": "wellhub",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Former name of Wellhub; previous-software alias",
+      "evidence": "https://www.axios.com/2024/04/04/gympass-wellhub-rebrand-expansion"
+    },
+    {
+      "id": "urban-sports-club",
+      "name": "Urban Sports Club",
+      "url": "https://urbansportsclub.com",
+      "category": "marketplace",
+      "region": "eu",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "urbansportsclub.com"
+        ],
+        "unverified": []
+      },
+      "notes": "Venues at urbansportsclub.com/en/venues/<studio>",
+      "evidence": "https://urbansportsclub.com/en/venues/yoga-studio-barcelona"
+    },
+    {
+      "id": "stripe-payment-links",
+      "name": "Stripe Payment Links",
+      "url": "https://stripe.com/payments/payment-links",
+      "category": "payments_events",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": [
+          "buy.stripe.com"
+        ]
+      },
+      "evidence": "https://docs.stripe.com/no-code/payment-links"
+    },
+    {
+      "id": "eventbrite",
+      "name": "Eventbrite",
+      "url": "https://www.eventbrite.com",
+      "category": "payments_events",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "eventbrite.com"
+        ],
+        "unverified": []
+      },
+      "evidence": "https://www.eventbrite.com/d/dc--washington/yoga/"
+    },
+    {
+      "id": "luma",
+      "name": "Luma",
+      "url": "https://luma.com",
+      "category": "payments_events",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [
+          "luma.com"
+        ],
+        "unverified": [
+          "lu.ma"
+        ]
+      },
+      "notes": "Event pages; older links on lu.ma",
+      "evidence": "https://luma.com/bgcyogasoundbath"
+    },
+    {
+      "id": "bookee",
+      "name": "Bookee",
+      "url": "https://www.gokenko.com",
+      "category": "studio_management",
+      "region": "global",
+      "status": "merged",
+      "merged_into": "kenko",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Former name of Kenko; previous-software value"
+    },
+    {
+      "id": "tandava",
+      "name": "Tandava",
+      "url": "https://tandavastudio.com",
+      "category": "studio_management",
+      "region": "us",
+      "status": "active",
+      "parent_company": "Purafield Studio",
+      "detect": {
+        "domains": [
+          "tandavastudio.com/s/"
+        ],
+        "unverified": []
+      },
+      "notes": "Us. Detected the same way as everyone else, no special casing"
+    },
+    {
+      "id": "custom",
+      "name": "Own website",
+      "url": null,
+      "category": "own_or_none",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Booking built into their own site with no vendor fingerprint"
+    },
+    {
+      "id": "none",
+      "name": "No online booking",
+      "url": null,
+      "category": "own_or_none",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "In person, DM or phone only, as observed"
+    },
+    {
+      "id": "unknown",
+      "name": "Unknown",
+      "url": null,
+      "category": "own_or_none",
+      "region": "global",
+      "status": "active",
+      "detect": {
+        "domains": [],
+        "unverified": []
+      },
+      "notes": "Default state. Never displayed publicly"
+    }
+  ]
+}

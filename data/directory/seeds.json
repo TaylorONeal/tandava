@@ -1,0 +1,15 @@
+{
+  "note": "Studios we list even when map data misses them. Each entry names where it came from. Names, areas and websites only; descriptions are generated in our own words. Map data merges into a seed when the website matches.",
+  "studios": [
+    { "market": "ubud", "name": "Yoga Barn", "area": "Pengosekan", "street": "Jl. Raya Pengosekan", "website": "https://theyogabarn.com", "styles_text": "Vinyasa, Hatha, Aerial, AcroYoga, Kirtan, Yoga Nidra, Kundalini", "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide" },
+    { "market": "ubud", "name": "The IN Movement", "area": "Nyuh Kuning", "street": null, "website": "https://theinmovement.com", "styles_text": "Power, Yin, Meditation, Yoga Nidra", "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide" },
+    { "market": "ubud", "name": "Lumeria Yoga", "area": "Pengosekan", "street": "Jl. Raya Pengosekan", "website": "https://lumeriayoga.com", "styles_text": "Inside Flow, Sound Healing, Vinyasa, Breathwork, Yoga Nidra", "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide" },
+    { "market": "ubud", "name": "Heart Space Bali", "area": "Pengosekan", "street": "Jl. Pengosekan at Jl. Nyuh Kuning", "website": "https://heartspacebali.com", "styles_text": "Yin, Restorative, Sound Healing", "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide" },
+    { "market": "ubud", "name": "Intuitive Flow", "area": "Penestanan", "street": "Jl. Raya Penestanan Kelod", "website": "https://intuitiveflow.com", "styles_text": "Yin, Yoga Nidra", "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide" },
+    { "market": "ubud", "name": "Alchemy Yoga and Meditation Center", "area": "Penestanan", "street": "Jl. Penestanan No. 75", "website": "https://alchemyyogacenter.com", "styles_text": "Power, Yin, Ecstatic Dance, Meditation", "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide" },
+    { "market": "ubud", "name": "Radiantly Alive", "area": "Central Ubud", "street": "Jl. Jembawan 8", "website": "https://www.radiantlyalive.com", "styles_text": "Vinyasa, Kundalini, Yin, AcroYoga, Aerial, Ecstatic Dance", "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide" },
+    { "market": "ubud", "name": "Ubud Yoga Centre", "area": "Central Ubud", "street": "Jl. Hanoman 19", "website": "https://ubud-yoga-centre.com", "styles_text": "Hatha, Alignment", "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide" },
+    { "market": "ubud", "name": "Pyramids of Chi", "area": "North Ubud", "street": null, "website": "https://ubud.pyramidsofchi.com", "styles_text": "Sound Healing, Breathwork, Kundalini", "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide" },
+    { "market": "ubud", "name": "Fivelements Retreat", "area": "Mambal", "street": null, "website": "https://fivelementsbali.com", "styles_text": "Yoga, Meditation", "business_type": "retreat_center", "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide" }
+  ]
+}
