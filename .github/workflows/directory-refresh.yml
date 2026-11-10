@@ -1,7 +1,8 @@
 name: directory-refresh
 
-# Refreshes the studio directory from OpenStreetMap (public map data) and
-# rebuilds the records. Reads the map only: no studio website is fetched.
+# Refreshes the studio directory from OpenStreetMap (public map data), then
+# runs the site checker: one homepage fetch per studio website, honoring
+# robots.txt, to see which booking software the studio links to.
 # On main it opens a draft PR with the diff so a person reviews every change
 # (new studios, closures, software moves) before it ships.
 
@@ -18,6 +19,7 @@ on:
     paths:
       - scripts/directory/markets.json
       - scripts/directory/osm-pull.mjs
+      - scripts/directory/site-check.mjs
       - .github/workflows/directory-refresh.yml
 
 permissions:
@@ -31,7 +33,7 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -45,6 +47,10 @@ jobs:
             node scripts/directory/osm-pull.mjs
           fi
       - name: Build records
+        run: node scripts/directory/build-studios.mjs
+      - name: Check studio sites for booking software
+        run: node scripts/directory/site-check.mjs
+      - name: Rebuild with site check results
         run: node scripts/directory/build-studios.mjs
       - name: Test pipeline
         run: node --test scripts/directory/*.test.mjs
@@ -60,12 +66,12 @@ jobs:
           if [ "${GITHUB_REF_NAME}" = "main" ]; then
             branch="directory/refresh-${day}"
             git checkout -b "$branch"
-            git commit -m "Directory refresh ${day} from OpenStreetMap"
+            git commit -m "Directory refresh ${day} from OpenStreetMap and studio sites"
             git push -u origin "$branch"
             gh pr create --draft --base main --head "$branch" \
               --title "Directory refresh ${day}" \
               --body "Monthly map data refresh. Review new, missing and changed studios in data/directory/studios.json before merging."
           else
-            git commit -m "Directory refresh ${day} from OpenStreetMap"
+            git commit -m "Directory refresh ${day} from OpenStreetMap and studio sites"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
