@@ -1,0 +1,533 @@
+{
+ "market": "frankfurt",
+ "fetched_at": "2026-11-10T19:35:58.011Z",
+ "endpoint": "https://overpass.kumi.systems/api/interpreter",
+ "osm_base": "2026-07-28T02:16:18Z",
+ "license": "ODbL-1.0",
+ "attribution": "(c) OpenStreetMap contributors",
+ "query": "[out:json][timeout:300];\n(\n  nwr[\"sport\"~\"yoga|pilates\",i](50.01,8.47,50.23,8.8);\n  nwr[\"disused:sport\"~\"yoga|pilates\",i](50.01,8.47,50.23,8.8);\n  nwr[\"leisure\"~\"fitness_centre|sports_centre|sports_hall|studio|dance\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](50.01,8.47,50.23,8.8);\n  nwr[\"club\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](50.01,8.47,50.23,8.8);\n  nwr[\"healthcare\"][\"name\"~\"yoga\",i](50.01,8.47,50.23,8.8);\n  nwr[\"amenity\"~\"community_centre|social_centre|events_venue\"][\"name\"~\"yoga\",i](50.01,8.47,50.23,8.8);\n  nwr[\"shop\"~\"yoga\"](50.01,8.47,50.23,8.8);\n  nwr[\"disused:leisure\"~\"fitness_centre|sports_centre|studio\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](50.01,8.47,50.23,8.8);\n  nwr[\"was:name\"~\"yoga\",i](50.01,8.47,50.23,8.8);\n);\nout center tags meta;",
+ "elements": [
+  {
+   "type": "node",
+   "id": 10725821065,
+   "lat": 50.0848569,
+   "lon": 8.6474354,
+   "timestamp": "2023-03-10T12:52:33Z",
+   "version": 1,
+   "changeset": 133517540,
+   "user": "Schroduck",
+   "uid": 2637696,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Your Body Your Soul",
+    "sport": "fitness;yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11184323319,
+   "lat": 50.1225225,
+   "lon": 8.6473637,
+   "timestamp": "2023-09-11T20:04:56Z",
+   "version": 1,
+   "changeset": 141131825,
+   "user": "skotek",
+   "uid": 20075511,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Timo Wahl Yoga",
+    "phone": "+49697526001",
+    "sport": "yoga",
+    "website": "https://timowahl.de/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11297618463,
+   "lat": 50.1198881,
+   "lon": 8.7031378,
+   "timestamp": "2026-01-24T16:30:09Z",
+   "version": 3,
+   "changeset": 177653295,
+   "user": "ironspock",
+   "uid": 10728241,
+   "tags": {
+    "check_date:opening_hours": "2026-01-24",
+    "leisure": "fitness_centre",
+    "name": "Ashtanga Yoga",
+    "opening_hours": "Mo-Fr 06:00-08:00, Mo,We,Fr 18:00-20:00, Su 08:00-10:00,16:00-18:00; Sa off",
+    "opening_hours:signed": "no",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 12793389213,
+   "lat": 50.1213103,
+   "lon": 8.6898798,
+   "timestamp": "2025-04-29T18:46:25Z",
+   "version": 3,
+   "changeset": 165605307,
+   "user": "Zafer Ersan Gonçalves",
+   "uid": 22839323,
+   "tags": {
+    "addr:city": "Frankfurt am Main",
+    "addr:housenumber": "13",
+    "addr:postcode": "60316",
+    "addr:street": "Rotteckstraße",
+    "brand": "JULY BABY Pilates",
+    "leisure": "fitness_centre",
+    "name": "JULY BABY Pilates",
+    "sport": "pilates_studio;reformer_pilates"
+   }
+  },
+  {
+   "type": "node",
+   "id": 13089069684,
+   "lat": 50.148617,
+   "lon": 8.6573639,
+   "timestamp": "2025-08-22T12:43:21Z",
+   "version": 1,
+   "changeset": 170829829,
+   "user": "The Real Art Vandelay",
+   "uid": 21868646,
+   "tags": {
+    "addr:city": "Frankfurt am Main",
+    "addr:housenumber": "75",
+    "addr:postcode": "60431",
+    "addr:street": "Am Schwalbenschwanz",
+    "email": "hello@yogaboxfrankfurt.de",
+    "leisure": "fitness_centre",
+    "level": "0",
+    "name": "YOGABOXFRANKFURT",
+    "phone": "+49 172 7255333",
+    "sport": "yoga",
+    "website": "https://yogaboxfrankfurt.de"
+   }
+  },
+  {
+   "type": "node",
+   "id": 13516498600,
+   "lat": 50.1264649,
+   "lon": 8.6955089,
+   "timestamp": "2026-02-01T11:29:20Z",
+   "version": 1,
+   "changeset": 177959013,
+   "user": "ewerybody",
+   "uid": 64214,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Shiva-Yoga",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 13811589967,
+   "lat": 50.1078864,
+   "lon": 8.6369901,
+   "timestamp": "2026-05-09T18:30:01Z",
+   "version": 2,
+   "changeset": 182437517,
+   "user": "adgo1",
+   "uid": 21091655,
+   "tags": {
+    "addr:city": "Frankfurt am Main",
+    "addr:housenumber": "101",
+    "addr:postcode": "60486",
+    "addr:street": "Europa-Allee",
+    "check_date": "2026-05-09",
+    "leisure": "fitness_centre",
+    "name": "Main Pilates Studio",
+    "phone": "+49 172 6206987",
+    "sport": "pilates",
+    "website": "https://www.main-pilates-studio.com/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 13836594630,
+   "lat": 50.0822529,
+   "lon": 8.6330512,
+   "timestamp": "2026-05-16T19:51:15Z",
+   "version": 1,
+   "changeset": 182757558,
+   "user": "adgo1",
+   "uid": 21091655,
+   "tags": {
+    "addr:city": "Frankfurt am Main",
+    "addr:housenumber": "40",
+    "addr:postcode": "60528",
+    "addr:street": "Hahnstraße",
+    "leisure": "fitness_centre",
+    "name": "Quartier Yoga",
+    "phone": "+49 69 133 84 337",
+    "sport": "yoga",
+    "website": "https://quartieryoga.de/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 13839357238,
+   "lat": 50.1087219,
+   "lon": 8.6712987,
+   "timestamp": "2026-05-17T15:30:27Z",
+   "version": 2,
+   "changeset": 182790496,
+   "user": "adgo1",
+   "uid": 21091655,
+   "tags": {
+    "addr:housenumber": "35",
+    "addr:street": "Kaiserstraße",
+    "check_date": "2026-05-17",
+    "leisure": "fitness_centre",
+    "name": "Patanjali Yoga Studio",
+    "sport": "yoga",
+    "website": "https://pankajyoga.de/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 14032157859,
+   "lat": 50.0989417,
+   "lon": 8.7553281,
+   "timestamp": "2026-07-21T21:35:19Z",
+   "version": 1,
+   "changeset": 186141870,
+   "user": "Hongshuia banmo",
+   "uid": 2280213,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Salon Yoga",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 2674787408,
+   "lat": 50.1213901,
+   "lon": 8.7080593,
+   "timestamp": "2026-04-19T14:42:48Z",
+   "version": 7,
+   "changeset": 181541896,
+   "user": "ironspock",
+   "uid": 10728241,
+   "tags": {
+    "addr:city": "Frankfurt am Main",
+    "addr:housenumber": "87",
+    "addr:postcode": "60385",
+    "addr:street": "Wittelsbacherallee",
+    "check_date:opening_hours": "2026-04-19",
+    "description": "Studio für Pilates & Bewegung",
+    "leisure": "fitness_centre",
+    "name": "bewegung pur",
+    "opening_hours:signed": "no",
+    "sport": "pilates"
+   }
+  },
+  {
+   "type": "node",
+   "id": 3616072187,
+   "lat": 50.1245654,
+   "lon": 8.6125912,
+   "timestamp": "2016-04-24T10:52:39Z",
+   "version": 4,
+   "changeset": 38830734,
+   "user": "richlv",
+   "uid": 47892,
+   "tags": {
+    "addr:city": "Frankfurt am Main",
+    "addr:housenumber": "7",
+    "addr:postcode": "60489",
+    "addr:street": "Alt-Rödelheim",
+    "leisure": "sports_centre",
+    "name": "IYENGAR Yoga Institut Frankfurt",
+    "sport": "yoga",
+    "website": "http://www.iyengar-yoga-institut.de/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4458218890,
+   "lat": 50.108516,
+   "lon": 8.6605956,
+   "timestamp": "2023-02-08T20:50:19Z",
+   "version": 2,
+   "changeset": 132275951,
+   "user": "tecmap15",
+   "uid": 4798255,
+   "tags": {
+    "addr:city": "Frankfurt am Main",
+    "addr:country": "DE",
+    "addr:postcode": "60329",
+    "addr:street": "Niddastraße",
+    "leisure": "fitness_centre",
+    "name": "Yoga Vidya Frankfurt",
+    "name:de": "Yoga Vidya Frankfurt",
+    "name:en": "Yoga Vidya Frankfurt",
+    "website": "https://www.yoga-vidya.de/center/frankfurt/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4612718503,
+   "lat": 50.1124263,
+   "lon": 8.7064542,
+   "timestamp": "2026-04-25T16:33:07Z",
+   "version": 7,
+   "changeset": 181814246,
+   "user": "ironspock",
+   "uid": 10728241,
+   "tags": {
+    "addr:city": "Frankfurt am Main",
+    "addr:housenumber": "2-4",
+    "addr:postcode": "60314",
+    "addr:street": "Danziger Platz",
+    "leisure": "fitness_centre",
+    "name": "Pilates Twentyfour",
+    "sport": "pilates"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4931197151,
+   "lat": 50.1012944,
+   "lon": 8.6591371,
+   "timestamp": "2025-03-22T18:37:16Z",
+   "version": 3,
+   "changeset": 163960129,
+   "user": "jodd",
+   "uid": 160894,
+   "tags": {
+    "addr:city": "Frankfurt am Main",
+    "addr:housenumber": "169",
+    "addr:postcode": "60327",
+    "addr:street": "Gutleutstraße",
+    "disused:leisure": "fitness_centre",
+    "disused:sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 5283381518,
+   "lat": 50.0988491,
+   "lon": 8.6814751,
+   "timestamp": "2026-07-08T19:30:33Z",
+   "version": 4,
+   "changeset": 185364075,
+   "user": "SneakyCat",
+   "uid": 24288320,
+   "tags": {
+    "check_date:opening_hours": "2026-07-08",
+    "leisure": "fitness_centre",
+    "name": "Balance Yoga",
+    "opening_hours:signed": "no",
+    "sport": "yoga",
+    "website": "https://www.balanceyoga.de/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 5751783549,
+   "lat": 50.1070938,
+   "lon": 8.7491662,
+   "timestamp": "2025-08-09T09:33:31Z",
+   "version": 3,
+   "changeset": 170191517,
+   "user": "grimpeur78",
+   "uid": 81648,
+   "tags": {
+    "addr:city": "Offenbach am Main",
+    "addr:housenumber": "82",
+    "addr:postcode": "63067",
+    "addr:street": "Bernardstraße",
+    "check_date": "2025-08-09",
+    "leisure": "fitness_centre",
+    "name": "Yogaladen Offenbach",
+    "sport": "yoga",
+    "website": "https://www.yogaladen-offenbach.de"
+   }
+  },
+  {
+   "type": "node",
+   "id": 6063806975,
+   "lat": 50.1132013,
+   "lon": 8.696799,
+   "timestamp": "2026-05-21T14:51:51Z",
+   "version": 9,
+   "changeset": 182980355,
+   "user": "wheelmap_visitor",
+   "uid": 290680,
+   "tags": {
+    "addr:city": "Frankfurt am Main",
+    "addr:housenumber": "14",
+    "addr:postcode": "60314",
+    "addr:street": "Hanauer Landstraße",
+    "check_date:opening_hours": "2026-01-24",
+    "leisure": "fitness_centre",
+    "name": "lona Pilates club",
+    "opening_hours:signed": "no",
+    "wheelchair": "no"
+   }
+  },
+  {
+   "type": "node",
+   "id": 6089307733,
+   "lat": 50.2041522,
+   "lon": 8.5795145,
+   "timestamp": "2024-01-23T10:15:37Z",
+   "version": 2,
+   "changeset": 146584261,
+   "user": "350xx",
+   "uid": 12293996,
+   "tags": {
+    "check_date": "2024-01-23",
+    "email": "kontakt@sacha-yoga.de",
+    "leisure": "fitness_centre",
+    "name": "Sacha Yoga",
+    "phone": "+49 6171 8900107",
+    "sport": "yoga",
+    "website": "https://sacha-yoga.de/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 6270161054,
+   "lat": 50.1117506,
+   "lon": 8.6593629,
+   "timestamp": "2025-01-07T17:30:42Z",
+   "version": 7,
+   "changeset": 161102385,
+   "user": "ScharadaCompletesTheMap",
+   "uid": 14057166,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Pures Pilates",
+    "opening_hours": "\"Termin nach Vereinbarung\"",
+    "phone": "+49 173 6759142",
+    "sauna": "no",
+    "website": "https://www.pures-pilates.de",
+    "wheelchair": "limited"
+   }
+  },
+  {
+   "type": "node",
+   "id": 6592982509,
+   "lat": 50.142987,
+   "lon": 8.5756981,
+   "timestamp": "2019-07-06T10:09:11Z",
+   "version": 1,
+   "changeset": 71955669,
+   "user": "mbethke",
+   "uid": 248338,
+   "tags": {
+    "leisure": "sports_centre",
+    "level": "2",
+    "name": "Yoga-Schule Eschborn"
+   }
+  },
+  {
+   "type": "node",
+   "id": 7730616210,
+   "lat": 50.1362168,
+   "lon": 8.732423,
+   "timestamp": "2021-02-21T07:28:40Z",
+   "version": 3,
+   "changeset": 99669516,
+   "user": "Nmxosm",
+   "uid": 6060703,
+   "tags": {
+    "contact:email": "info@deryoga.eu",
+    "contact:phone": "+49 176 31765478",
+    "contact:website": "https://www.deryoga.eu/",
+    "name": "Yoga Love Garden",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 8866710499,
+   "lat": 50.1162971,
+   "lon": 8.684014,
+   "timestamp": "2021-06-25T20:35:30Z",
+   "version": 1,
+   "changeset": 106983160,
+   "user": "der_suelzilianer",
+   "uid": 11175349,
+   "tags": {
+    "addr:housenumber": "3",
+    "addr:street": "Stephanstraße",
+    "leisure": "fitness_centre",
+    "level": "3",
+    "name": "Inside Yoga Frankfurt",
+    "sport": "yoga",
+    "website": "https://insideyoga.de"
+   }
+  },
+  {
+   "type": "node",
+   "id": 9170501409,
+   "lat": 50.2257419,
+   "lon": 8.623151,
+   "timestamp": "2021-10-13T21:42:01Z",
+   "version": 1,
+   "changeset": 112480072,
+   "user": "Glücks GmbH",
+   "uid": 14287277,
+   "tags": {
+    "addr:city": "Bad Homburg v. d. Höhe",
+    "addr:housenumber": "81",
+    "addr:postcode": "61348",
+    "addr:street": "Kaiser-Friedrich-Promenade",
+    "building": "yes",
+    "email": "info@gluecks-yoga-badhomburg.de",
+    "fee": "yes",
+    "leisure": "sports_centre",
+    "name": "Glücks Yoga Bad Homburg",
+    "payment:paypal": "yes",
+    "sport": "yoga",
+    "website": "https://gluecks-yoga-badhomburg.de"
+   }
+  },
+  {
+   "type": "node",
+   "id": 9314751617,
+   "lat": 50.1035208,
+   "lon": 8.6897123,
+   "timestamp": "2026-01-31T14:57:24Z",
+   "version": 10,
+   "changeset": 177923931,
+   "user": "mkle",
+   "uid": 690417,
+   "tags": {
+    "addr:postcode": "60594",
+    "leisure": "fitness_centre",
+    "name": "Yoga Lift",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 947015351,
+   "lat": 50.1458257,
+   "lon": 8.6762401,
+   "timestamp": "2023-11-08T16:35:41Z",
+   "version": 4,
+   "changeset": 143788974,
+   "user": "b-jazz-bot",
+   "uid": 9451067,
+   "tags": {
+    "addr:city": "Frankfurt am Main",
+    "addr:housenumber": "40",
+    "addr:postcode": "60435",
+    "addr:street": "Kirschwaldstraße",
+    "building": "yes",
+    "leisure": "sports_centre",
+    "name": "Turnerschaft Jahnvolk 1881 e.V.",
+    "sport": "gymnastics;badminton;table_tennis;volleyball;yoga;prellball",
+    "website": "https://www.jahnvolk.de/",
+    "wheelchair": "no"
+   }
+  }
+ ]
+}

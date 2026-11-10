@@ -1,0 +1,514 @@
+{
+ "market": "bangkok",
+ "fetched_at": "2026-11-10T19:42:52.992Z",
+ "endpoint": "https://overpass-api.de/api/interpreter",
+ "osm_base": "2026-11-10T19:41:29Z",
+ "license": "ODbL-1.0",
+ "attribution": "(c) OpenStreetMap contributors",
+ "query": "[out:json][timeout:300];\n(\n  nwr[\"sport\"~\"yoga|pilates\",i](13.49,100.33,13.96,100.94);\n  nwr[\"disused:sport\"~\"yoga|pilates\",i](13.49,100.33,13.96,100.94);\n  nwr[\"leisure\"~\"fitness_centre|sports_centre|sports_hall|studio|dance\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](13.49,100.33,13.96,100.94);\n  nwr[\"club\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](13.49,100.33,13.96,100.94);\n  nwr[\"healthcare\"][\"name\"~\"yoga\",i](13.49,100.33,13.96,100.94);\n  nwr[\"amenity\"~\"community_centre|social_centre|events_venue\"][\"name\"~\"yoga\",i](13.49,100.33,13.96,100.94);\n  nwr[\"shop\"~\"yoga\"](13.49,100.33,13.96,100.94);\n  nwr[\"disused:leisure\"~\"fitness_centre|sports_centre|studio\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](13.49,100.33,13.96,100.94);\n  nwr[\"was:name\"~\"yoga\",i](13.49,100.33,13.96,100.94);\n);\nout center tags meta;",
+ "elements": [
+  {
+   "type": "node",
+   "id": 10684441834,
+   "lat": 13.7244175,
+   "lon": 100.5773354,
+   "timestamp": "2023-02-21T23:42:23Z",
+   "version": 1,
+   "changeset": 132857269,
+   "user": "tharit",
+   "uid": 9441200,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Atha Lifestyle",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 10783470733,
+   "lat": 13.7866749,
+   "lon": 100.5704944,
+   "timestamp": "2023-04-04T03:27:06Z",
+   "version": 1,
+   "changeset": 134476848,
+   "user": "phoque",
+   "uid": 132385,
+   "tags": {
+    "addr:housenumber": "105",
+    "addr:street": "รัชดาภิเษก 17",
+    "leisure": "fitness_centre",
+    "name": "Yoga o'clock",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11009651985,
+   "lat": 13.8384558,
+   "lon": 100.5508806,
+   "timestamp": "2023-06-27T06:36:44Z",
+   "version": 1,
+   "changeset": 137819997,
+   "user": "Nattakorn Leardthanapaichit",
+   "uid": 19696362,
+   "tags": {
+    "addr:city": "จตุจักร",
+    "addr:housenumber": "105",
+    "addr:postcode": "10900",
+    "addr:street": "ถนนเทศบาลสงเคราะห์",
+    "leisure": "fitness_centre",
+    "name": "WellFit Bon Marché",
+    "opening_hours": "Mo-Su 07:00-22:00",
+    "phone": "+66946622573",
+    "sport": "fitness;climbing;yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11071636506,
+   "lat": 13.736731,
+   "lon": 100.5228822,
+   "timestamp": "2023-07-27T17:01:52Z",
+   "version": 1,
+   "changeset": 139097773,
+   "user": "Kri_ttt",
+   "uid": 13669494,
+   "tags": {
+    "contact:facebook": "https://www.facebook.com/peachlates",
+    "leisure": "fitness_centre",
+    "name": "Peachlates",
+    "name:en": "Peachlates",
+    "opening_hours": "Mo-Su 07:00-21:00",
+    "phone": "+66 62 345 9750",
+    "sport": "pilates"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11147906783,
+   "lat": 13.7314298,
+   "lon": 100.5281915,
+   "timestamp": "2023-08-27T09:51:36Z",
+   "version": 1,
+   "changeset": 140443597,
+   "user": "Kri_ttt",
+   "uid": 13669494,
+   "tags": {
+    "addr:housenumber": "153",
+    "addr:street": "ซอยหลังวัดหัวลำโพง",
+    "leisure": "fitness_centre",
+    "name": "YRC Yoga",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11152911608,
+   "lat": 13.7102687,
+   "lon": 100.5425816,
+   "timestamp": "2023-11-11T19:26:08Z",
+   "version": 2,
+   "changeset": 143912369,
+   "user": "Kri_ttt",
+   "uid": 13669494,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Absolute Studio",
+    "sport": "fitness;yoga;pilates"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11155187887,
+   "lat": 13.7680131,
+   "lon": 100.4421782,
+   "timestamp": "2023-08-30T02:49:55Z",
+   "version": 1,
+   "changeset": 140566163,
+   "user": "Absoluteaby",
+   "uid": 20114330,
+   "tags": {
+    "addr:city": "บางระมาด",
+    "addr:housenumber": "2nd Fl The Circle Ratchapruk   เขตตลิ่งชัน กรุงเทพมหานคร",
+    "addr:postcode": "10170",
+    "addr:street": "ถนนราชพฤกษ์",
+    "fee": "no",
+    "leisure": "sports_centre",
+    "name": "Absolute Studio | The Circle Ratchapruk",
+    "sport": "yoga;pilates;cycling"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11155194495,
+   "lat": 13.7330541,
+   "lon": 100.566482,
+   "timestamp": "2023-08-30T02:56:59Z",
+   "version": 1,
+   "changeset": 140566259,
+   "user": "Absoluteaby",
+   "uid": 20114330,
+   "tags": {
+    "addr:city": "แขวงคลองตันเหนือ",
+    "addr:housenumber": "RSU Tower 5th Floor,  เขตวัฒนา กรุงเทพมหานคร",
+    "addr:postcode": "10110",
+    "addr:street": "ถนนสุขุมวิท",
+    "leisure": "sports_centre",
+    "name": "Absolute Studio | RSU Tower Sukhumvit",
+    "sport": "cycling;yoga;pilates"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11655462269,
+   "lat": 13.7646288,
+   "lon": 100.5656728,
+   "timestamp": "2025-05-23T12:26:46Z",
+   "version": 2,
+   "changeset": 166653755,
+   "user": "Kri_ttt",
+   "uid": 13669494,
+   "tags": {
+    "addr:street": "ซอยอยู่เจริญ",
+    "contact:line": "sandee.yoga",
+    "leisure": "fitness_centre",
+    "name": "Sandee Yoga",
+    "name:en": "Sandee Yoga",
+    "phone": "+66959639294",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 12618563653,
+   "lat": 13.7755354,
+   "lon": 100.5593052,
+   "timestamp": "2025-02-25T16:20:15Z",
+   "version": 1,
+   "changeset": 162939725,
+   "user": "Kri_ttt",
+   "uid": 13669494,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "โรงเรียนสุนีย์โยคะ",
+    "name:en": "Sunee Yoga",
+    "name:th": "โรงเรียนสุนีย์โยคะ",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 13236796508,
+   "lat": 13.7291941,
+   "lon": 100.5711902,
+   "timestamp": "2026-05-13T09:55:45Z",
+   "version": 2,
+   "changeset": 182592206,
+   "user": "Kri_ttt",
+   "uid": 13669494,
+   "tags": {
+    "addr:district": "คลองเตย",
+    "addr:floor": "5",
+    "addr:housenumber": "712/1",
+    "addr:postcode": "10110",
+    "addr:province": "กรุงเทพมหานคร",
+    "addr:street": "ถนนสุขุมวิท",
+    "addr:subdistrict": "คลองตัน",
+    "addr:unit": "503",
+    "contact:facebook": "https://facebook.com/@oneyogabangkok",
+    "description": "Yoga & meditation school in Bangkok, Koh Phangan, and online.\nDaily yoga, meditation, and sound healing classes.\nSincere practice, focused on self-growth.",
+    "email": "info@oneyogabangkok.com",
+    "image": "https://oneyogabangkok.com/wp-content/uploads/2025/09/One-Yoga-Bangkok-offers-daily-yoga-classes-in-our-Phrom-Phong-studio-4.jpg",
+    "leisure": "fitness_centre",
+    "name": "One Yoga Bangkok",
+    "opening_hours": "24/7",
+    "phone": "+66902697692",
+    "sport": "yoga",
+    "website": "https://oneyogabangkok.com/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 14330512828,
+   "lat": 13.727664,
+   "lon": 100.5325275,
+   "timestamp": "2026-10-29T07:40:45Z",
+   "version": 1,
+   "changeset": 191179752,
+   "user": "Drip Pilates and Wellness club",
+   "uid": 24709911,
+   "tags": {
+    "addr:district": "บางรัก",
+    "addr:housenumber": "313",
+    "addr:place": "C.P. Tower 1 Silom",
+    "addr:postcode": "10500",
+    "addr:province": "กรุงเทพมหานคร",
+    "addr:street": "ถนนสีลม",
+    "addr:subdistrict": "สีลม",
+    "leisure": "fitness_centre",
+    "name": "DRIP Pilates and Wellness club - SILOM",
+    "opening_hours": "08.00-20.00",
+    "sport": "pilates"
+   }
+  },
+  {
+   "type": "node",
+   "id": 2448242732,
+   "lat": 13.913286,
+   "lon": 100.540227,
+   "timestamp": "2013-11-07T20:59:36Z",
+   "version": 2,
+   "changeset": 18771869,
+   "user": "Paul_012",
+   "uid": 100662,
+   "tags": {
+    "addr:housenumber": "55/617;55/618",
+    "leisure": "sports_centre",
+    "name": "HB Yoga",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 3251639096,
+   "lat": 13.7205547,
+   "lon": 100.5843954,
+   "timestamp": "2026-07-10T16:00:21Z",
+   "version": 6,
+   "changeset": 185485409,
+   "user": "mapperue",
+   "uid": 4887311,
+   "tags": {
+    "addr:province": "กรุงเทพมหานคร",
+    "addr:street": "ถนนสุขุมวิท",
+    "leisure": "sports_centre",
+    "name": "วี ฟิตเนส เอกมัย",
+    "name:en": "WeFitness Ekkamai",
+    "opening_hours": "Mo-Fr 06:00-23:00; Sa,Su 08:00-22:00",
+    "sport": "weightlifting;yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 3836982938,
+   "lat": 13.743384,
+   "lon": 100.5414909,
+   "timestamp": "2023-08-29T10:53:27Z",
+   "version": 2,
+   "changeset": 140535131,
+   "user": "Absoluteaby",
+   "uid": 20114330,
+   "tags": {
+    "addr:city": "แขวงลุมพินี",
+    "addr:housenumber": "11th Floor Amarin Plaza ถนน เพลินจิต เขตปทุมวัน กรุงเทพมหานคร",
+    "addr:postcode": "10330",
+    "leisure": "sports_centre",
+    "name": "Absolute Studio | Gaysorn Amarin",
+    "sport": "fitness;yoga;pilates"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4178906812,
+   "lat": 13.7356043,
+   "lon": 100.5628294,
+   "timestamp": "2023-10-28T20:31:09Z",
+   "version": 3,
+   "changeset": 143282395,
+   "user": "b-jazz-bot",
+   "uid": 9451067,
+   "tags": {
+    "addr:street": "ถนนสุขุมวิท ซอย23",
+    "email": "reservation@pilatesstation.co.th",
+    "internet_access": "wlan",
+    "leisure": "fitness_centre",
+    "name": "Pilates Station Bangkok",
+    "phone": "+6626617468",
+    "website": "https://www.pilatesstation.co.th/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 8926516096,
+   "lat": 13.8800812,
+   "lon": 100.4962247,
+   "timestamp": "2023-09-09T10:47:58Z",
+   "version": 3,
+   "changeset": 141018921,
+   "user": "Mateusz Konieczny - bot account",
+   "uid": 3199858,
+   "tags": {
+    "addr:city": "ตำบลท่าทราย",
+    "addr:housenumber": "142/4",
+    "addr:postcode": "11000",
+    "addr:street": "ถนนเลี่ยงเมืองนนทบุรี",
+    "brand": "I FIT GYM",
+    "email": "ifitgym2563@gmail.com",
+    "image": "https://i.imgur.com/niOOh6Y.jpeg",
+    "internet_access": "wlan",
+    "internet_access:fee": "no",
+    "internet_access:ssid": "I FIT GYM",
+    "leisure": "fitness_centre",
+    "level": "0",
+    "name": "I FIT GYM",
+    "name:th": "I FIT GYM ฟิตเนสครบวงจร",
+    "opening_hours": "Mo-Su 07:00-24:00",
+    "payment:cash": "yes",
+    "payment:credit_cards": "yes",
+    "payment:debit_cards": "yes",
+    "payment:mastercard": "yes",
+    "payment:visa": "yes",
+    "phone": "+66626622962",
+    "source": "aerial imagery;streetlevel imagery;local knowledge;gps",
+    "sport": "fitness;table_tennis;swimming;basketball;yoga;exercise",
+    "website": "https://www.facebook.com/ifitgymthailand"
+   }
+  },
+  {
+   "type": "way",
+   "id": 1220064121,
+   "timestamp": "2025-01-07T11:29:05Z",
+   "version": 2,
+   "changeset": 161091610,
+   "user": "Kri_ttt",
+   "uid": 13669494,
+   "center": {
+    "lat": 13.7345362,
+    "lon": 100.5392993
+   },
+   "nodes": [
+    11304952571,
+    11304952570,
+    11304966732,
+    11304966733,
+    11304952571
+   ],
+   "tags": {
+    "addr:district": "ปทุมวัน",
+    "addr:housenumber": "231/16",
+    "addr:postcode": "10330",
+    "addr:province": "กรุงเทพมหานคร",
+    "addr:street": "ถนนสารสิน",
+    "addr:subdistrict": "ลุมพินี",
+    "building": "commercial",
+    "building:levels": "3",
+    "contact:facebook": "https://www.facebook.com/OriginPilatesTH/",
+    "leisure": "fitness_centre",
+    "name": "Origin Pilates",
+    "name:en": "Origin Pilates",
+    "name:th": "Origin Pilates",
+    "phone": "+66 61 553 6365",
+    "sport": "yoga",
+    "website": "https://originpilates.co.th"
+   }
+  },
+  {
+   "type": "way",
+   "id": 1229576248,
+   "timestamp": "2023-12-08T03:39:40Z",
+   "version": 3,
+   "changeset": 144886902,
+   "user": "Panu Lee",
+   "uid": 20660002,
+   "center": {
+    "lat": 13.6458436,
+    "lon": 100.6611567
+   },
+   "nodes": [
+    11402211927,
+    11402211928,
+    11402211929,
+    11402211930,
+    11402211927
+   ],
+   "tags": {
+    "addr:city": "Samut Prakan",
+    "addr:housenumber": "89/81-83",
+    "addr:postcode": "10540",
+    "addr:street": "Buanakarin Road",
+    "building": "commercial",
+    "leisure": "fitness_centre",
+    "name": "Get Fitness (เก็ท ฟิตเนส)",
+    "name:th": "เก็ท ฟิตเนส",
+    "phone": "+66 92 6256464",
+    "sport": "fitness;gymnastics;running;yoga",
+    "website": "https://www.facebook.com/GetFitnessThailand/"
+   }
+  },
+  {
+   "type": "way",
+   "id": 1341004620,
+   "timestamp": "2026-06-12T15:07:11Z",
+   "version": 3,
+   "changeset": 184021432,
+   "user": "พเนจร",
+   "uid": 24149827,
+   "center": {
+    "lat": 13.6445313,
+    "lon": 100.3967569
+   },
+   "nodes": [
+    12404708379,
+    12404708380,
+    12404708381,
+    12404708382,
+    12404708383,
+    12404708384,
+    12404708385,
+    12699199030,
+    12404708386,
+    12404708379
+   ],
+   "tags": {
+    "addr:district": "บางบอน",
+    "addr:postcode": "10150",
+    "addr:province": "กทม",
+    "addr:street": "ซอยรางโพธิ์",
+    "addr:subdistrict": "บางบอนใต้",
+    "leisure": "sports_centre",
+    "name": "ศูนย์กีฬาเฉลิมพระเกียรติ 84 พรรษา (บางบอน)",
+    "name:en": "Chaloem Phrakiat 84th Anniversary Sports Center",
+    "name:th": "ศูนย์กีฬาเฉลิมพระเกียรติ 84 พรรษา (บางบอน)",
+    "operator": "Bangkok Metropolitan Administration",
+    "short_name": "ศูนย์กีฬาบางบอน",
+    "sport": "soccer;basketball;swimming;running;athletics;fitness;multi;volleyball;futsal;yoga;table_tennis"
+   }
+  },
+  {
+   "type": "way",
+   "id": 210267894,
+   "timestamp": "2025-01-07T13:04:35Z",
+   "version": 5,
+   "changeset": 161094694,
+   "user": "Kri_ttt",
+   "uid": 13669494,
+   "center": {
+    "lat": 13.755245,
+    "lon": 100.4899664
+   },
+   "nodes": [
+    2203564044,
+    2203564042,
+    2203564041,
+    3684272383,
+    3684272382,
+    3684272384,
+    3684272385,
+    2203564043,
+    2203564044
+   ],
+   "tags": {
+    "addr:district": "พระนคร",
+    "addr:postcode": "10200",
+    "addr:province": "กรุงเทพมหานคร",
+    "addr:subdistrict": "พระบรมมหาราชวัง",
+    "amenity": "meditation_centre",
+    "building": "temple",
+    "name": "ศูนย์ปฏิบัติวิปัสสนากรรมฐาน นานาชาติ",
+    "name:en": "International Buddhist Meditation Centre",
+    "name:th": "ศูนย์ปฏิบัติวิปัสสนากรรมฐาน นานาชาติ",
+    "sport": "yoga"
+   }
+  }
+ ]
+}
