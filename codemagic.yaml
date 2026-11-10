@@ -196,7 +196,7 @@ workflows:
   # export compliance. Never touches external testing, never submits for review.
   studio-ios-internal-testers:
     name: Tandava Studio TestFlight internal testers (no review)
-    instance_type: mac_mini_m2
+    instance_type: linux_x2
     max_build_duration: 10
     integrations:
       app_store_connect: app-store-connect
