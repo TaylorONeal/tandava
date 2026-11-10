@@ -203,6 +203,7 @@ workflows:
     environment:
       vars:
         ASC_APP_ID: "6831459731"
+        EXTRA_TESTER_EMAIL: "taylor.oneal@gmail.com"
     scripts:
       - name: Internal group, tester and export compliance
         script: |
