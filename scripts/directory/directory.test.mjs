@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { compileSignatures, detectSoftware, matchUrl } from "./detect.mjs";
-import { inferStyles, isStudioCandidate, statusOf, normalizePhone, instagramHandle, describe } from "./normalize.mjs";
+import { inferStyles, isStudioCandidate, statusOf, normalizePhone, instagramHandle, describe, businessType } from "./normalize.mjs";
 import { recordFromElement, dedupe, carryHistory, toPublic } from "./build-studios.mjs";
 
 const read = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url), "utf8"));
@@ -120,4 +120,19 @@ test("Ubud seeds build, and map data merges into them", async () => {
   assert.equal(merged.id, "osm-node-9");
   assert.equal(merged.address.locality, "Ubud");
   assert.ok(merged.sources.some((x) => x.type === "manual"));
+});
+
+test("gyms that list yoga stay off the studio list, studios with gym-like words stay on", () => {
+  assert.equal(businessType({ name: "Flushing YMCA", sport: "yoga" }, []), "gym_with_yoga");
+  assert.equal(businessType({ name: "Round Rock Krav Maga & Kick Boxing", sport: "yoga" }, []), "gym_with_yoga");
+  assert.equal(businessType({ name: "Yogis & Yoginis", leisure: "sports_centre", sport: "yoga" }, []), "yoga_studio");
+  assert.equal(businessType({ name: "Absolute Studio", leisure: "sports_centre", sport: "yoga;pilates" }, []), "multi_discipline_studio");
+  assert.equal(isStudioCandidate({ name: "& Fitness", sport: "yoga" }), false);
+});
+
+test("Nosara seeds are listed even though map data has none", () => {
+  const seeds = JSON.parse(readFileSync(new URL("../../data/directory/seeds.json", import.meta.url))).studios;
+  const nosara = seeds.filter((s) => s.market === "nosara");
+  assert.ok(nosara.length >= 10);
+  assert.ok(nosara.every((s) => s.source && (s.website || s.instagram)));
 });

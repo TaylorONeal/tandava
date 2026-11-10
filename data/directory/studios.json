@@ -2,6 +2,1101 @@
  "generated_on": "2026-11-10",
  "studios": [
   {
+   "id": "seed-blue-spirit-nosara",
+   "slug": "blue-spirit-nosara",
+   "name": "Blue Spirit",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "retreat_center",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "nosara",
+   "address": {
+    "street": null,
+    "area": null,
+    "locality": "Nosara",
+    "region_code": "G",
+    "region_name": "Guanacaste",
+    "postal_code": null,
+    "country_code": "CR",
+    "country_name": "Costa Rica"
+   },
+   "geo": null,
+   "time_zone": "America/Costa_Rica",
+   "links": {
+    "website": "https://www.bluespiritcostarica.com",
+    "website_domain": "bluespiritcostarica.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Blue Spirit is a retreat center in Nosara, Costa Rica.",
+   "styles": [
+    "meditation"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide."
+  },
+  {
+   "id": "seed-bodhi-tree-yoga-resort-nosara",
+   "slug": "bodhi-tree-yoga-resort-nosara",
+   "name": "Bodhi Tree Yoga Resort",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "retreat_center",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "nosara",
+   "address": {
+    "street": null,
+    "area": null,
+    "locality": "Nosara",
+    "region_code": "G",
+    "region_name": "Guanacaste",
+    "postal_code": null,
+    "country_code": "CR",
+    "country_name": "Costa Rica"
+   },
+   "geo": null,
+   "time_zone": "America/Costa_Rica",
+   "links": {
+    "website": "https://bodhitreeyogaresort.com",
+    "website_domain": "bodhitreeyogaresort.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Bodhi Tree Yoga Resort is a retreat center in Nosara, Costa Rica.",
+   "styles": [],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide."
+  },
+  {
+   "id": "seed-costa-rica-yoga-spa-nosara",
+   "slug": "costa-rica-yoga-spa-nosara",
+   "name": "Costa Rica Yoga Spa",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "retreat_center",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "nosara",
+   "address": {
+    "street": null,
+    "area": null,
+    "locality": "Nosara",
+    "region_code": "G",
+    "region_name": "Guanacaste",
+    "postal_code": null,
+    "country_code": "CR",
+    "country_name": "Costa Rica"
+   },
+   "geo": null,
+   "time_zone": "America/Costa_Rica",
+   "links": {
+    "website": "https://www.costaricayogaspa.com",
+    "website_domain": "costaricayogaspa.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Costa Rica Yoga Spa is a retreat center in Nosara, Costa Rica.",
+   "styles": [],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide."
+  },
+  {
+   "id": "seed-iluminar-yoga-hotel-nosara",
+   "slug": "iluminar-yoga-hotel-nosara",
+   "name": "Iluminar Yoga Hotel",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "retreat_center",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "nosara",
+   "address": {
+    "street": null,
+    "area": "Guiones",
+    "locality": "Nosara",
+    "region_code": "G",
+    "region_name": "Guanacaste",
+    "postal_code": null,
+    "country_code": "CR",
+    "country_name": "Costa Rica"
+   },
+   "geo": null,
+   "time_zone": "America/Costa_Rica",
+   "links": {
+    "website": "https://iluminarnosara.com",
+    "website_domain": "iluminarnosara.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Iluminar Yoga Hotel is a retreat center in Guiones, Nosara, Costa Rica.",
+   "styles": [
+    "meditation"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide."
+  },
+  {
+   "id": "seed-jungle-s-edge-nosara",
+   "slug": "jungle-s-edge-nosara",
+   "name": "Jungle's Edge",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "multi_discipline_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "nosara",
+   "address": {
+    "street": null,
+    "area": null,
+    "locality": "Nosara",
+    "region_code": "G",
+    "region_name": "Guanacaste",
+    "postal_code": null,
+    "country_code": "CR",
+    "country_name": "Costa Rica"
+   },
+   "geo": null,
+   "time_zone": "America/Costa_Rica",
+   "links": {
+    "website": "https://jungles-edge.com",
+    "website_domain": "jungles-edge.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Jungle's Edge is a yoga and pilates studio in Nosara, Costa Rica.",
+   "styles": [],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide."
+  },
+  {
+   "id": "seed-la-negra-surf-hotel-nosara",
+   "slug": "la-negra-surf-hotel-nosara",
+   "name": "La Negra Surf Hotel",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "retreat_center",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "nosara",
+   "address": {
+    "street": null,
+    "area": null,
+    "locality": "Nosara",
+    "region_code": "G",
+    "region_name": "Guanacaste",
+    "postal_code": null,
+    "country_code": "CR",
+    "country_name": "Costa Rica"
+   },
+   "geo": null,
+   "time_zone": "America/Costa_Rica",
+   "links": {
+    "website": "https://www.lanegranosara.com",
+    "website_domain": "lanegranosara.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "La Negra Surf Hotel is a retreat center in Nosara, Costa Rica.",
+   "styles": [],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide."
+  },
+  {
+   "id": "seed-lagarta-lodge-nosara",
+   "slug": "lagarta-lodge-nosara",
+   "name": "Lagarta Lodge",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "retreat_center",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "nosara",
+   "address": {
+    "street": null,
+    "area": null,
+    "locality": "Nosara",
+    "region_code": "G",
+    "region_name": "Guanacaste",
+    "postal_code": null,
+    "country_code": "CR",
+    "country_name": "Costa Rica"
+   },
+   "geo": null,
+   "time_zone": "America/Costa_Rica",
+   "links": {
+    "website": "https://www.lagartalodge.com",
+    "website_domain": "lagartalodge.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Lagarta Lodge is a retreat center in Nosara, Costa Rica.",
+   "styles": [
+    "aerial",
+    "restorative",
+    "vinyasa"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide."
+  },
+  {
+   "id": "seed-living-hotel-nosara",
+   "slug": "living-hotel-nosara",
+   "name": "Living Hotel",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "retreat_center",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "nosara",
+   "address": {
+    "street": null,
+    "area": null,
+    "locality": "Nosara",
+    "region_code": "G",
+    "region_name": "Guanacaste",
+    "postal_code": null,
+    "country_code": "CR",
+    "country_name": "Costa Rica"
+   },
+   "geo": null,
+   "time_zone": "America/Costa_Rica",
+   "links": {
+    "website": "https://livinghotelnosara.com",
+    "website_domain": "livinghotelnosara.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Living Hotel is a retreat center in Nosara, Costa Rica.",
+   "styles": [],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide."
+  },
+  {
+   "id": "seed-nalu-nosara-nosara",
+   "slug": "nalu-nosara-nosara",
+   "name": "NALU Nosara",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "nosara",
+   "address": {
+    "street": null,
+    "area": null,
+    "locality": "Nosara",
+    "region_code": "G",
+    "region_name": "Guanacaste",
+    "postal_code": null,
+    "country_code": "CR",
+    "country_name": "Costa Rica"
+   },
+   "geo": null,
+   "time_zone": "America/Costa_Rica",
+   "links": {
+    "website": "https://www.nalunosara.com",
+    "website_domain": "nalunosara.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "NALU Nosara is a yoga studio in Nosara, Costa Rica.",
+   "styles": [
+    "ashtanga",
+    "restorative",
+    "yin"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide."
+  },
+  {
+   "id": "seed-patitos-nosara-nosara",
+   "slug": "patitos-nosara-nosara",
+   "name": "Patitos Nosara",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "nosara",
+   "address": {
+    "street": null,
+    "area": null,
+    "locality": "Nosara",
+    "region_code": "G",
+    "region_name": "Guanacaste",
+    "postal_code": null,
+    "country_code": "CR",
+    "country_name": "Costa Rica"
+   },
+   "geo": null,
+   "time_zone": "America/Costa_Rica",
+   "links": {
+    "website": null,
+    "website_domain": null,
+    "instagram": "patitos_nosara",
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Patitos Nosara is a yoga studio in Nosara, Costa Rica.",
+   "styles": [],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.instagram": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide."
+  },
+  {
+   "id": "seed-the-harmony-healing-centre-nosara",
+   "slug": "the-harmony-healing-centre-nosara",
+   "name": "The Harmony Healing Centre",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "yoga_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "nosara",
+   "address": {
+    "street": null,
+    "area": "Guiones",
+    "locality": "Nosara",
+    "region_code": "G",
+    "region_name": "Guanacaste",
+    "postal_code": null,
+    "country_code": "CR",
+    "country_name": "Costa Rica"
+   },
+   "geo": null,
+   "time_zone": "America/Costa_Rica",
+   "links": {
+    "website": "https://www.harmonynosara.com",
+    "website_domain": "harmonynosara.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "The Harmony Healing Centre is a yoga studio in Guiones, Nosara, Costa Rica.",
+   "styles": [
+    "breathwork",
+    "meditation"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ],
+    "styles": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide."
+  },
+  {
+   "id": "seed-vivo-nosara-nosara",
+   "slug": "vivo-nosara-nosara",
+   "name": "Vivo Nosara",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "retreat_center",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "nosara",
+   "address": {
+    "street": null,
+    "area": null,
+    "locality": "Nosara",
+    "region_code": "G",
+    "region_name": "Guanacaste",
+    "postal_code": null,
+    "country_code": "CR",
+    "country_name": "Costa Rica"
+   },
+   "geo": null,
+   "time_zone": "America/Costa_Rica",
+   "links": {
+    "website": "https://vivonosara.com",
+    "website_domain": "vivonosara.com",
+    "instagram": null,
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Vivo Nosara is a retreat center in Nosara, Costa Rica.",
+   "styles": [],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": null,
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "manual",
+     "ref": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "links.website": [
+     0
+    ],
+    "links.website_domain": [
+     0
+    ]
+   },
+   "first_seen_at": "2026-11-10T00:00:00Z",
+   "last_refreshed_at": "2026-11-10T00:00:00Z",
+   "last_verified_at": null,
+   "internal_notes": "Seeded from https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide."
+  },
+  {
    "id": "osm-node-11297618463",
    "slug": "ashtanga-yoga-frankfurt",
    "name": "Ashtanga Yoga",
@@ -1586,7 +2681,7 @@
    "name": "Turnerschaft Jahnvolk 1881 e.V.",
    "alt_names": [],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -1620,7 +2715,7 @@
    },
    "phone": null,
    "email": null,
-   "description": "Turnerschaft Jahnvolk 1881 e.V. is a yoga studio in Frankfurt, Germany.",
+   "description": "Turnerschaft Jahnvolk 1881 e.V. is a fitness studio with yoga in Frankfurt, Germany.",
    "styles": [],
    "levels": [],
    "software": {
@@ -2401,7 +3496,7 @@
    "first_seen_at": "2026-11-10T00:00:00Z",
    "last_refreshed_at": "2026-11-10T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-way-1354585832",
@@ -3082,7 +4177,7 @@
    "first_seen_at": "2026-11-10T00:00:00Z",
    "last_refreshed_at": "2026-11-10T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "seed-lumeria-yoga-ubud",
@@ -3461,7 +4556,7 @@
    "first_seen_at": "2026-11-10T00:00:00Z",
    "last_refreshed_at": "2026-11-10T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-way-404713866",
@@ -3865,7 +4960,7 @@
    "first_seen_at": "2026-11-10T00:00:00Z",
    "last_refreshed_at": "2026-11-10T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-node-4845678425",
@@ -4440,7 +5535,7 @@
    "first_seen_at": "2026-11-10T00:00:00Z",
    "last_refreshed_at": "2026-11-10T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Seeded from https://www.cuecraftyoga.com/blog/ubud-yoga-guide. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-node-4941876221",
@@ -5088,7 +6183,7 @@
    "name": "Get Fitness (เก็ท ฟิตเนส)",
    "alt_names": [],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -5122,7 +6217,7 @@
    },
    "phone": "+66926256464",
    "email": null,
-   "description": "Get Fitness (เก็ท ฟิตเนส) is a yoga studio in Bangkok, Thailand.",
+   "description": "Get Fitness (เก็ท ฟิตเนส) is a fitness studio with yoga in Bangkok, Thailand.",
    "styles": [],
    "levels": [],
    "software": {
@@ -5265,7 +6360,7 @@
    "name": "I FIT GYM",
    "alt_names": [],
    "brand": "I FIT GYM",
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -5299,7 +6394,7 @@
    },
    "phone": "+66626622962",
    "email": "ifitgym2563@gmail.com",
-   "description": "I FIT GYM is a yoga studio in Bangkok, Thailand.",
+   "description": "I FIT GYM is a fitness studio with yoga in Bangkok, Thailand.",
    "styles": [],
    "levels": [],
    "software": {
@@ -6102,7 +7197,7 @@
     "ศูนย์ปฏิบัติวิปัสสนากรรมฐาน นานาชาติ"
    ],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -6136,7 +7231,7 @@
    },
    "phone": null,
    "email": null,
-   "description": "วี ฟิตเนส เอกมัย is a yoga studio in Bangkok, Thailand.",
+   "description": "วี ฟิตเนส เอกมัย is a fitness studio with yoga in Bangkok, Thailand.",
    "styles": [],
    "levels": [],
    "software": {
@@ -7198,7 +8293,7 @@
    "name": "MAA - Martial Arts Academy",
    "alt_names": [],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -7232,7 +8327,7 @@
    },
    "phone": "+66931121023",
    "email": "info@maa-phangan.com",
-   "description": "MAA - Martial Arts Academy is a yoga studio in Koh Phangan, Thailand.",
+   "description": "MAA - Martial Arts Academy is a fitness studio with yoga in Koh Phangan, Thailand.",
    "styles": [],
    "levels": [],
    "software": {
@@ -7392,7 +8487,7 @@
    "name": "Paradise Fitness",
    "alt_names": [],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -7426,7 +8521,7 @@
    },
    "phone": null,
    "email": null,
-   "description": "Paradise Fitness is a yoga studio in Koh Phangan, Thailand.",
+   "description": "Paradise Fitness is a fitness studio with yoga in Koh Phangan, Thailand.",
    "styles": [],
    "levels": [],
    "software": {
@@ -12943,7 +14038,7 @@
     "First Ascent Uptown"
    ],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -12977,7 +14072,7 @@
    },
    "phone": "+13122852337",
    "email": "info@firstascentclimbing.com",
-   "description": "First Ascent Block 37 is a yoga studio in Chicago, IL.",
+   "description": "First Ascent Block 37 is a fitness studio with yoga in Chicago, IL.",
    "styles": [],
    "levels": [],
    "software": {
@@ -13328,7 +14423,7 @@
    "name": "Jacoby Dickens Athletic Center",
    "alt_names": [],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -13362,7 +14457,7 @@
    },
    "phone": null,
    "email": null,
-   "description": "Jacoby Dickens Athletic Center is a yoga studio in Chicago, IL.",
+   "description": "Jacoby Dickens Athletic Center is a fitness studio with yoga in Chicago, IL.",
    "styles": [],
    "levels": [],
    "software": {
@@ -13415,7 +14510,7 @@
    "name": "LRO Fitness",
    "alt_names": [],
    "brand": null,
-   "business_type": "pilates_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -13449,7 +14544,7 @@
    },
    "phone": null,
    "email": null,
-   "description": "LRO Fitness is a pilates studio in Chicago, IL.",
+   "description": "LRO Fitness is a fitness studio with yoga in Chicago, IL.",
    "styles": [
     "pilates"
    ],
@@ -14363,7 +15458,7 @@
    "name": "The Garage Chicago Gym",
    "alt_names": [],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -14397,7 +15492,7 @@
    },
    "phone": null,
    "email": null,
-   "description": "The Garage Chicago Gym is a yoga studio in Chicago, IL.",
+   "description": "The Garage Chicago Gym is a fitness studio with yoga in Chicago, IL.",
    "styles": [],
    "levels": [],
    "software": {
@@ -16753,7 +17848,7 @@
    "name": "Absolute Power Fitness",
    "alt_names": [],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -16787,7 +17882,7 @@
    },
    "phone": null,
    "email": null,
-   "description": "Absolute Power Fitness is a yoga studio in Brooklyn, NY.",
+   "description": "Absolute Power Fitness is a fitness studio with yoga in Brooklyn, NY.",
    "styles": [
     "power"
    ],
@@ -17489,7 +18584,7 @@
    "name": "Flushing YMCA",
    "alt_names": [],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -17523,7 +18618,7 @@
    },
    "phone": "+17185519350",
    "email": null,
-   "description": "Flushing YMCA is a yoga studio in Flushing, NY.",
+   "description": "Flushing YMCA is a fitness studio with yoga in Flushing, NY.",
    "styles": [],
    "levels": [],
    "software": {
@@ -19559,7 +20654,7 @@
    "name": "Carey Gabay Recreation Center",
    "alt_names": [],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -19593,7 +20688,7 @@
    },
    "phone": null,
    "email": null,
-   "description": "Carey Gabay Recreation Center is a yoga studio in New York, NY.",
+   "description": "Carey Gabay Recreation Center is a fitness studio with yoga in New York, NY.",
    "styles": [],
    "levels": [],
    "software": {
@@ -20814,7 +21909,7 @@
    "name": "Equinox",
    "alt_names": [],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -20848,7 +21943,7 @@
    },
    "phone": "+12123555100",
    "email": null,
-   "description": "Equinox is a yoga studio in New York, NY.",
+   "description": "Equinox is a fitness studio with yoga in New York, NY.",
    "styles": [],
    "levels": [],
    "software": {
@@ -24412,7 +25507,7 @@
     "MAUSA"
    ],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -24446,7 +25541,7 @@
    },
    "phone": "+17182103190",
    "email": null,
-   "description": "Martial Arts USA is a yoga studio in New York, NY.",
+   "description": "Martial Arts USA is a fitness studio with yoga in New York, NY.",
    "styles": [],
    "levels": [],
    "software": {
@@ -30007,7 +31102,7 @@
    "name": "Underground Gym",
    "alt_names": [],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -30041,7 +31136,7 @@
    },
    "phone": "+17187585959",
    "email": null,
-   "description": "Underground Gym is a yoga studio in New York, NY.",
+   "description": "Underground Gym is a fitness studio with yoga in New York, NY.",
    "styles": [],
    "levels": [],
    "software": {
@@ -31965,7 +33060,7 @@
    "name": "Training Station Athletic Club",
    "alt_names": [],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -31999,7 +33094,7 @@
    },
    "phone": null,
    "email": null,
-   "description": "Training Station Athletic Club is a yoga studio in Port Washington, NY.",
+   "description": "Training Station Athletic Club is a fitness studio with yoga in Port Washington, NY.",
    "styles": [],
    "levels": [],
    "software": {
@@ -34500,7 +35595,7 @@
    "name": "Round Rock Krav Maga & Kick Boxing",
    "alt_names": [],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -34534,7 +35629,7 @@
    },
    "phone": "+15123885728",
    "email": null,
-   "description": "Round Rock Krav Maga & Kick Boxing is a yoga studio in Round Rock, TX.",
+   "description": "Round Rock Krav Maga & Kick Boxing is a fitness studio with yoga in Round Rock, TX.",
    "styles": [],
    "levels": [],
    "software": {
@@ -34888,8 +35983,8 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "open",
-   "is_active": true,
+   "status": "unknown",
+   "is_active": false,
    "status_note": null,
    "opened_year": null,
    "closed_year": null,
@@ -34940,7 +36035,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "published",
+   "review_state": "draft",
    "sources": [
     {
      "type": "openstreetmap",
@@ -34981,7 +36076,7 @@
    "first_seen_at": "2026-11-10T19:29:42.348Z",
    "last_refreshed_at": "2026-11-10T19:29:42.348Z",
    "last_verified_at": null,
-   "internal_notes": "Merged map element node/2463139566."
+   "internal_notes": "Merged map element node/2463139566. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
   },
   {
    "id": "osm-node-11390730408",
@@ -39133,7 +40228,7 @@
    "name": "Sama Fitness",
    "alt_names": [],
    "brand": null,
-   "business_type": "yoga_studio",
+   "business_type": "gym_with_yoga",
    "status": "open",
    "is_active": true,
    "status_note": null,
@@ -39167,7 +40262,7 @@
    },
    "phone": null,
    "email": null,
-   "description": "Sama Fitness is a yoga studio in Seattle, WA.",
+   "description": "Sama Fitness is a fitness studio with yoga in Seattle, WA.",
    "styles": [],
    "levels": [],
    "software": {
