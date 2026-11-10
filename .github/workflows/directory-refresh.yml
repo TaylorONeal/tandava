@@ -1,0 +1,71 @@
+name: directory-refresh
+
+# Refreshes the studio directory from OpenStreetMap (public map data) and
+# rebuilds the records. Reads the map only: no studio website is fetched.
+# On main it opens a draft PR with the diff so a person reviews every change
+# (new studios, closures, software moves) before it ships.
+
+on:
+  workflow_dispatch:
+    inputs:
+      market:
+        description: "Market id from scripts/directory/markets.json (blank = all)"
+        required: false
+  schedule:
+    - cron: "17 9 3 * *" # monthly, 09:17 UTC on the 3rd
+  push:
+    branches: [claude/studio-directory]
+    paths:
+      - scripts/directory/markets.json
+      - scripts/directory/osm-pull.mjs
+      - .github/workflows/directory-refresh.yml
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: directory-refresh-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Pull map data
+        run: |
+          if [ -n "${{ github.event.inputs.market }}" ]; then
+            node scripts/directory/osm-pull.mjs --market "${{ github.event.inputs.market }}"
+          else
+            node scripts/directory/osm-pull.mjs
+          fi
+      - name: Build records
+        run: node scripts/directory/build-studios.mjs
+      - name: Test pipeline
+        run: node --test scripts/directory/*.test.mjs
+      - name: Commit the refresh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "tandava-directory-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/directory src/data/directory
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          day=$(date -u +%Y-%m-%d)
+          if [ "${GITHUB_REF_NAME}" = "main" ]; then
+            branch="directory/refresh-${day}"
+            git checkout -b "$branch"
+            git commit -m "Directory refresh ${day} from OpenStreetMap"
+            git push -u origin "$branch"
+            gh pr create --draft --base main --head "$branch" \
+              --title "Directory refresh ${day}" \
+              --body "Monthly map data refresh. Review new, missing and changed studios in data/directory/studios.json before merging."
+          else
+            git commit -m "Directory refresh ${day} from OpenStreetMap"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

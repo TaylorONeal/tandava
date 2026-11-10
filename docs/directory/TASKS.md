@@ -138,3 +138,10 @@ Related: [PRD-028](../prd/PRD-028-studio-directory.md),
 |---|---|---|
 | 2026-10-23 | Directory concept approved as spec only. Nothing collected, nothing published. Route working name `/studios`, index also reachable as `/directory` | Taylor (concept), Muse (docs) |
 | 2026-10-23 | Shared core with TeacherTree teacher directory: one spec, two implementations, no shared database at v1 | Taylor (direction), Muse (design) |
+| 2026-11-10 | Build v1 now as a static directory on `/studios`: listings generated from OpenStreetMap (ODbL) plus named seeds, bundled into the site, no database change. Archived studios stay listed, hidden from search unless asked for | Taylor (direction), Claude (build) |
+| 2026-11-10 | Attributes: status (active vs archived), Instagram, website, phone, description, styles (multi-select from the shared taxonomy, hidden sub-styles like Power Vinyasa roll up), current and previous studio software from a full list (118 entries incl. gym, salon, scheduling). Filters: country, state, city, style, software | Taylor |
+| 2026-11-10 | Phone and street address are shown (studio business details, never anyone's home). Supersedes PRD-028 "What the page never shows" for those two fields | Taylor |
+| 2026-11-10 | Update and removal requests go to hello@purafieldstudio.com. Each listing shows last refreshed date and an accuracy disclaimer (LEGAL-COPY.md) | Taylor |
+| 2026-11-10 | First markets: Austin, Seattle, San Francisco, Chicago, New York, Ubud (incl. every studio in the CueCraft Ubud guide), Nosara, Frankfurt, Koh Phangan, Bangkok. Supersedes the US-first gate in SHARED-CORE section 9 for studio listings; teacher data still waits for its privacy review | Taylor |
+| 2026-11-10 | Software is shown when a public booking link matches a vendor domain (confidence 0.9) even before a person verifies it; site builders are never shown as booking software. Studio-site checks stay off until `/studios/about` is live | Claude (default) |
+| 2026-11-10 | Shared taxonomy lives in `app-launch-playbook/taxonomy/` (styles, studio software, record schema); Tandava vendors pinned copies in `src/data/taxonomy/` | Claude (default) |

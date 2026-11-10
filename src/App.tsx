@@ -219,6 +219,9 @@ const StaffWaitlist = lazyWithReload(() => import("./pages/staff/StaffWaitlist")
 const Kiosk = lazyWithReload(() => import("./pages/Kiosk"));
 
 const Discover = lazyWithReload(() => import("./pages/Discover"));
+const StudioDirectory = lazyWithReload(() => import("./pages/directory/StudioDirectory"));
+const StudioDirectoryDetail = lazyWithReload(() => import("./pages/directory/StudioDirectoryDetail"));
+const StudioDirectoryAbout = lazyWithReload(() => import("./pages/directory/DirectoryAbout"));
 const EmbedSchedule = lazyWithReload(() => import("./pages/embed/EmbedSchedule"));
 const EmbedEvent = lazyWithReload(() => import("./pages/embed/EmbedEvent"));
 
@@ -277,6 +280,13 @@ const App = () => (
                        subdomains will render). Gated on studios.discoverable. ---- */}
                   <Route path="/discover" element={<Discover />} />
                   <Route path="/s/:slug" element={<StudioStorefront />} />
+
+                  {/* ---- Public yoga studio directory (PRD-028). Static data built
+                       from public map data by scripts/directory/. ---- */}
+                  <Route path="/studios" element={<StudioDirectory />} />
+                  <Route path="/studios/about" element={<StudioDirectoryAbout />} />
+                  <Route path="/studios/:slug" element={<StudioDirectoryDetail />} />
+                  <Route path="/directory" element={<Navigate to="/studios" replace />} />
 
                   {/* ---- Express Booking: login-free booking of one class
                        (PRD-020). Public by design — no ProtectedRoute. The
