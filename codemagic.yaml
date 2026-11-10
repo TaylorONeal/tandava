@@ -203,7 +203,7 @@ workflows:
     environment:
       vars:
         ASC_APP_ID: "6831459731"
-        READD_TESTER: "1"
+        READD_TESTER: "0"
         RESEND_INVITE: "0"
     scripts:
       - name: Internal group, tester and export compliance
