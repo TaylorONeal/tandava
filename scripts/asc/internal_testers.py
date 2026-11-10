@@ -99,9 +99,30 @@ def main():
     _, existing = call("GET", "/v1/betaTesters?filter[email]=" + urllib.parse.quote(email) + "&limit=5")
     if existing.get("data"):
         tid = existing["data"][0]["id"]
-        st, _ = call("POST", f"/v1/betaGroups/{gid}/relationships/betaTesters",
-                     {"data": [{"type": "betaTesters", "id": tid}]})
-        print(f"tester already existed; added to group -> {st}")
+        if os.environ.get("READD_TESTER") == "1":
+            # Remove then add back, so App Store Connect issues a fresh invite
+            st, _ = call("DELETE", f"/v1/betaGroups/{gid}/relationships/betaTesters",
+                         {"data": [{"type": "betaTesters", "id": tid}]})
+            print(f"tester removed from group -> {st}")
+            import time; time.sleep(5)
+            _, again = call("GET", "/v1/betaTesters?filter[email]=" + urllib.parse.quote(email) + "&limit=5")
+            if again.get("data"):
+                tid = again["data"][0]["id"]
+                st, _ = call("POST", f"/v1/betaGroups/{gid}/relationships/betaTesters",
+                             {"data": [{"type": "betaTesters", "id": tid}]})
+                print(f"tester added back to group -> {st}")
+            else:
+                st, _ = call("POST", "/v1/betaTesters", {"data": {
+                    "type": "betaTesters",
+                    "attributes": {"email": email, "firstName": first, "lastName": last},
+                    "relationships": {"betaGroups": {"data": [{"type": "betaGroups", "id": gid}]}}}})
+                print(f"tester re-created in group -> {st}")
+            if st not in (200, 201, 204):
+                failures += 1
+        else:
+            st, _ = call("POST", f"/v1/betaGroups/{gid}/relationships/betaTesters",
+                         {"data": [{"type": "betaTesters", "id": tid}]})
+            print(f"tester already existed; added to group -> {st}")
     else:
         st, res = call("POST", "/v1/betaTesters", {"data": {
             "type": "betaTesters",
