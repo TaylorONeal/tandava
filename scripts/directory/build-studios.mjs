@@ -16,7 +16,7 @@ import { readFile, writeFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { compileSignatures, detectSoftware } from "./detect.mjs";
+import { compileSignatures, detectSoftware, confidenceFor } from "./detect.mjs";
 import {
   baseDomain, businessType, countryName, describe, hostOf, inferStyles, instagramHandle,
   isStudioCandidate, normalizePhone, normalizeUrl, regionCode, regionName, slugify, socialKind, statusOf,
@@ -203,7 +203,7 @@ export function applySiteCheck(rec, check) {
       evidence: f.evidence,
       observed_from: check.checked_on,
       observed_to: null,
-      confidence: f.confidence,
+      confidence: confidenceFor(f.role),
       verified: false,
       source: idx,
     });

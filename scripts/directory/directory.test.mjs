@@ -184,3 +184,18 @@ test("a site check adds software with the homepage as its source", () => {
   applySiteCheck(rec, { status: "timeout", platforms: [] });
   assert.equal(rec.software.current.length, 1);
 });
+
+test("robots.txt wildcards only block what they match", () => {
+  const sq = "User-agent: *\nDisallow: /config\nDisallow: /*?author=*\nDisallow: /*&tag=*\nDisallow: /search\n";
+  assert.equal(robotsAllows(sq, "/"), true);
+  assert.equal(robotsAllows("User-agent: *\nDisallow: /*", "/"), false);
+  assert.equal(robotsAllows("User-agent: *\nDisallow: /$", "/"), false);
+  assert.equal(robotsAllows("User-agent: *\nDisallow: /$", "/about"), true);
+  assert.equal(robotsAllows("User-agent: *\nDisallow: /*.pdf$", "/"), true);
+});
+
+test("marketplace and ticketing links stay internal until confirmed", () => {
+  const [c] = detectSoftware([{ url: "https://classpass.com/studios/x", via: "booking_link_domain" }], sigs, {});
+  assert.equal(c.platform_id, "classpass");
+  assert.ok(c.confidence < 0.9);
+});
