@@ -204,9 +204,10 @@ workflows:
       vars:
         ASC_APP_ID: "6831459731"
         READD_TESTER: "0"
+        REPORT_ONLY: "1"
         RESEND_INVITE: "0"
     scripts:
       - name: Internal group, tester and export compliance
         script: |
           python3 -m pip install --quiet --no-cache-dir pyjwt cryptography
-          python3 scripts/asc/internal_testers.py
+          if [ "$REPORT_ONLY" = "1" ]; then python3 scripts/asc/tester_report.py; else python3 scripts/asc/internal_testers.py; fi
