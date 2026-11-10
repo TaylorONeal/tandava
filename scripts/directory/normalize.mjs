@@ -145,7 +145,7 @@ export function inferStyles(text, styles) {
 /** Is this element plausibly a studio (not a clothing shop or a park lawn)? */
 export function isStudioCandidate(tags) {
   const name = tags.name ?? tags["was:name"] ?? tags["disused:name"] ?? tags["old_name"];
-  if (!name) return false;
+  if (!name || !/^[\p{L}\p{N}]/u.test(name)) return false;
   if (tags.shop && !/yoga/i.test(tags.shop)) return false;
   if (["park", "garden", "pitch", "playground", "nature_reserve"].includes(tags.leisure) && !/yoga|pilates/i.test(tags.sport ?? "")) return false;
   if (tags.highway || tags.building === "house") return false;
@@ -168,6 +168,9 @@ export function businessType(tags, styles) {
   const sport = (tags.sport ?? "").toLowerCase();
   const yoga = /yoga|ashtanga|vinyasa|bikram|kundalini|iyengar/.test(name) || sport.includes("yoga");
   const pilates = /pilates/.test(name) || sport.includes("pilates");
+  // A gym, club or rec center that lists yoga among its sports is not a studio.
+  const gymName = /\bgym\b|fitness|athletic|ymca|martial|krav|kick ?boxing|boxing|climb|ascent|recreation|rec center|sports? (club|centre|center)|equinox|crossfit|ฟิตเนส|turnerschaft|e\.v\./i.test(name);
+  if (gymName && !/yog|pilates|barre/.test(name)) return "gym_with_yoga";
   if (!yoga && pilates) return "pilates_studio";
   if (styles.some((s) => ["hot", "heated-flow", "hot-power", "bikram", "hot-26-2", "infrared-hot", "hot-hatha"].includes(s)) && yoga) return "hot_yoga_studio";
   if (yoga && pilates) return "multi_discipline_studio";

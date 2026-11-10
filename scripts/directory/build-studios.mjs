@@ -367,7 +367,7 @@ async function main() {
   records.sort((a, b) => a.address.country_code.localeCompare(b.address.country_code) || (a.address.region_code ?? "").localeCompare(b.address.region_code ?? "") || a.address.locality.localeCompare(b.address.locality) || a.name.localeCompare(b.name));
 
   const publicRecords = records
-    .filter((r) => r.review_state !== "suppressed" && r.status !== "unknown" && (PUBLIC_STATES.has(r.review_state) || r.review_state === "verified"))
+    .filter((r) => r.review_state !== "suppressed" && r.status !== "unknown" && r.business_type !== "gym_with_yoga" && (PUBLIC_STATES.has(r.review_state) || r.review_state === "verified"))
     .map((r) => toPublic(r, display));
 
   await writeFile(p("data", "directory", "studios.json"), JSON.stringify({ generated_on: today, studios: records }, null, 1) + "\n");
