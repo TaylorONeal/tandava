@@ -145,7 +145,7 @@ export function recordFromSeed(seed, ctx) {
 }
 
 /** Merge records that are the same studio (same site, or same name in the same city). */
-export function dedupe(records, sigs) {
+export function dedupe(records, sigs, merged = new Set()) {
   const out = [];
   const byKey = new Map();
   const richness = (r) => Object.values(r.links).filter(Boolean).length + (r.phone ? 1 : 0) + (r.address.street ? 1 : 0);
@@ -165,6 +165,7 @@ export function dedupe(records, sigs) {
     // A map element keeps its id (stable slugs); a seed only adds to it.
     const osm = (x) => x.sources[0]?.type === "openstreetmap";
     const [keep, drop] = osm(r) !== osm(hit) ? (osm(r) ? [r, hit] : [hit, r]) : richness(r) > richness(hit) ? [r, hit] : [hit, r];
+    merged.add(drop.id);
     for (const k of Object.keys(keep.links)) keep.links[k] ??= drop.links[k];
     keep.phone ??= drop.phone;
     keep.styles = [...new Set([...keep.styles, ...drop.styles])].sort();
@@ -368,12 +369,15 @@ async function main() {
       r.links.website_domain = baseDomain(hostOf(r.links.website));
     }
   }
-  records = dedupe(records, sigs);
+  const mergedIds = new Set();
+  records = dedupe(records, sigs, mergedIds);
 
   // Studios that dropped out of the map since the last build: keep the record,
   // hide it until a person confirms what happened (one missing signal is not a closure).
   const nowIds = new Set(records.map((r) => r.id));
   for (const old of previous.studios) {
+    // A record folded into another one this build is not missing, it is merged.
+    if (mergedIds.has(old.id)) continue;
     if (nowIds.has(old.id) || !pulled.has(old.market)) {
       if (!nowIds.has(old.id) && !pulled.has(old.market)) records.push(old);
       continue;
@@ -387,7 +391,9 @@ async function main() {
       status: "unknown",
       is_active: false,
       review_state: "draft",
-      internal_notes: [old.internal_notes, `Missing from map data on ${today}; check before relisting.`].filter(Boolean).join(" "),
+      internal_notes: old.internal_notes?.includes("Missing from map data")
+        ? old.internal_notes
+        : [old.internal_notes, `Missing from map data on ${today}; check before relisting.`].filter(Boolean).join(" "),
     });
   }
 

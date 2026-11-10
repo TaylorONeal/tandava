@@ -44,7 +44,18 @@ export function buildQuery([s, w, n, e]) {
 out center tags meta;`;
 }
 
-async function overpass(query) {
+/** Some mirrors lag months behind; a copy older than this is not used. */
+export const MAX_LAG_DAYS = 14;
+
+/** Is this mirror's copy of the map recent enough to replace what we have? */
+export function freshEnough(osmBase, { now = Date.now(), previousBase = null } = {}) {
+  if (!osmBase) return false;
+  const t = Date.parse(osmBase);
+  if (Number.isNaN(t) || now - t > MAX_LAG_DAYS * 86_400_000) return false;
+  return !previousBase || t >= Date.parse(previousBase) - 86_400_000;
+}
+
+async function overpass(query, { previousBase = null } = {}) {
   let lastErr;
   for (const url of ENDPOINTS) {
     for (let attempt = 0; attempt < 3; attempt++) {
@@ -60,7 +71,14 @@ async function overpass(query) {
           continue;
         }
         if (!res.ok) throw new Error(`${url} answered ${res.status}`);
-        return { endpoint: url, json: await res.json() };
+        const json = await res.json();
+        const base = json.osm3s?.timestamp_osm_base ?? null;
+        if (!freshEnough(base, { previousBase })) {
+          // A stale mirror would make live studios look like they vanished.
+          lastErr = new Error(`${url} has map data from ${base}, too old`);
+          break;
+        }
+        return { endpoint: url, json };
       } catch (err) {
         lastErr = err;
       }
@@ -83,8 +101,14 @@ async function main() {
     const query = buildQuery(m.bbox);
     const fetchedAt = new Date().toISOString();
     let result;
+    let previousBase = null;
     try {
-      result = await overpass(query);
+      previousBase = JSON.parse(await readFile(join(outDir, `osm-${m.id}.json`), "utf8")).osm_base ?? null;
+    } catch {
+      /* first pull for this market */
+    }
+    try {
+      result = await overpass(query, { previousBase });
     } catch (err) {
       // One busy market must not cost the others; its last good pull stays on disk.
       failed.push(m.id);

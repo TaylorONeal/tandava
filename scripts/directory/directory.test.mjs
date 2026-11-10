@@ -5,6 +5,7 @@ import { compileSignatures, detectSoftware, matchUrl } from "./detect.mjs";
 import { inferStyles, isStudioCandidate, statusOf, normalizePhone, instagramHandle, describe, businessType } from "./normalize.mjs";
 import { recordFromElement, dedupe, carryHistory, toPublic, applySiteCheck } from "./build-studios.mjs";
 import { robotsAllows, vendorCandidates, checkSite } from "./site-check.mjs";
+import { freshEnough } from "./osm-pull.mjs";
 
 const read = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url), "utf8"));
 const software = read("../../src/data/taxonomy/studio-software.json");
@@ -198,4 +199,12 @@ test("marketplace and ticketing links stay internal until confirmed", () => {
   const [c] = detectSoftware([{ url: "https://classpass.com/studios/x", via: "booking_link_domain" }], sigs, {});
   assert.equal(c.platform_id, "classpass");
   assert.ok(c.confidence < 0.9);
+});
+
+test("a lagging map mirror is not used", () => {
+  const now = Date.parse("2026-11-10T20:00:00Z");
+  assert.equal(freshEnough("2026-11-10T19:57:39Z", { now }), true);
+  assert.equal(freshEnough("2026-06-01T08:52:28Z", { now }), false);
+  assert.equal(freshEnough("2026-11-05T00:00:00Z", { now, previousBase: "2026-11-10T19:57:39Z" }), false);
+  assert.equal(freshEnough(null, { now }), false);
 });
