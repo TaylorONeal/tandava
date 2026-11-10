@@ -69,10 +69,14 @@ export function robotsAllows(robotsTxt, path = "/") {
   let best = null;
   for (const g of chosen) {
     for (const r of g.rules) {
-      if (r.path === "" ) continue; // "Disallow:" with no path allows everything
-      const prefix = r.path.replace(/\*.*$/, "").replace(/\$$/, "");
-      if (!path.startsWith(prefix)) continue;
-      if (!best || prefix.length > best.len || (prefix.length === best.len && r.allow)) best = { len: prefix.length, allow: r.allow };
+      if (r.path === "") continue; // "Disallow:" with no path allows everything
+      // Google-style patterns: * is any run of characters, a trailing $ anchors the end.
+      const anchored = r.path.endsWith("$");
+      const body = anchored ? r.path.slice(0, -1) : r.path;
+      const re = new RegExp("^" + body.split("*").map((x) => x.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join(".*") + (anchored ? "$" : ""));
+      if (!re.test(path)) continue;
+      const len = r.path.length;
+      if (!best || len > best.len || (len === best.len && r.allow)) best = { len, allow: r.allow };
     }
   }
   return best ? best.allow : true;
@@ -203,7 +207,8 @@ async function main() {
     if (seen.has(d)) continue;
     seen.add(d);
     const c = cache.sites[d];
-    if (!force && fresh(c?.last_attempt_on ?? c?.checked_on)) continue;
+    // A good result stays fresh for 25 days; anything else is tried again next run.
+    if (!force && c?.status === "ok" && fresh(c.last_attempt_on ?? c.checked_on)) continue;
     queue.push({ domain: d, website: r.links.website });
   }
   const work = queue.slice(0, limit);

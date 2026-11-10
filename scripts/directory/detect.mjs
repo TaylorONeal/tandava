@@ -22,6 +22,17 @@ const ROLE_BY_CATEGORY = {
   payments_events: "payments",
 };
 
+/**
+ * A vendor domain in a booking link is close to proof; a site builder only says
+ * where the site is hosted. Marketplaces and event ticketing say a studio sells
+ * through them, not what runs the studio, so they stay internal until confirmed.
+ */
+export function confidenceFor(role) {
+  if (role === "website") return 0.5;
+  if (role === "marketplace" || role === "payments") return 0.7;
+  return 0.95;
+}
+
 /** Parse "host" or "host/path" signature strings once. */
 export function compileSignatures(software) {
   const sigs = [];
@@ -82,9 +93,7 @@ export function detectSoftware(items, sigs, { observedOn, sourceIndex = null } =
       evidence: m.evidence,
       observed_from: observedOn ?? null,
       observed_to: null,
-      // A vendor domain in a booking link is close to proof; a website built
-      // on a site builder only says where the site is hosted.
-      confidence: role === "website" ? 0.5 : 0.95,
+      confidence: confidenceFor(role),
       verified: false,
       source: sourceIndex,
     });
