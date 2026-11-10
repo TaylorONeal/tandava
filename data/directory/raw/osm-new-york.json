@@ -1,8 +1,8 @@
 {
  "market": "new-york",
- "fetched_at": "2026-11-10T19:58:47.411Z",
- "endpoint": "https://overpass-api.de/api/interpreter",
- "osm_base": "2026-11-10T19:57:39Z",
+ "fetched_at": "2026-11-10T20:13:30.783Z",
+ "endpoint": "https://overpass.kumi.systems/api/interpreter",
+ "osm_base": "2026-06-01T08:52:28Z",
  "license": "ODbL-1.0",
  "attribution": "(c) OpenStreetMap contributors",
  "query": "[out:json][timeout:300];\n(\n  nwr[\"sport\"~\"yoga|pilates\",i](40.49,-74.26,40.92,-73.7);\n  nwr[\"disused:sport\"~\"yoga|pilates\",i](40.49,-74.26,40.92,-73.7);\n  nwr[\"leisure\"~\"fitness_centre|sports_centre|sports_hall|studio|dance\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](40.49,-74.26,40.92,-73.7);\n  nwr[\"club\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](40.49,-74.26,40.92,-73.7);\n  nwr[\"healthcare\"][\"name\"~\"yoga\",i](40.49,-74.26,40.92,-73.7);\n  nwr[\"amenity\"~\"community_centre|social_centre|events_venue\"][\"name\"~\"yoga\",i](40.49,-74.26,40.92,-73.7);\n  nwr[\"shop\"~\"yoga\"](40.49,-74.26,40.92,-73.7);\n  nwr[\"disused:leisure\"~\"fitness_centre|sports_centre|studio\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](40.49,-74.26,40.92,-73.7);\n  nwr[\"was:name\"~\"yoga\",i](40.49,-74.26,40.92,-73.7);\n);\nout center tags meta;",
@@ -82,11 +82,11 @@
    "id": 10311585051,
    "lat": 40.7707912,
    "lon": -73.9920494,
-   "timestamp": "2026-07-27T18:00:51Z",
-   "version": 3,
-   "changeset": 186474087,
-   "user": "wireguy",
-   "uid": 9564652,
+   "timestamp": "2023-01-07T03:58:28Z",
+   "version": 2,
+   "changeset": 130968379,
+   "user": "Jaesus",
+   "uid": 18188955,
    "tags": {
     "addr:housenumber": "601",
     "addr:street": "West 57th Street",
@@ -95,8 +95,8 @@
     "check_date": "2023-01-06",
     "leisure": "fitness_centre",
     "name": "Club Pilates",
-    "opening_hours": "Mo 07:00-20:30; We 06:00-21:00; Tu,Th 07:30-21:00; Fr 07:00-19:00; Sa 08:00-16:00; Su 08:30-17:00",
-    "phone": "+1-646-766-0290",
+    "opening_hours": "Mo,We 06:00-21:00; Tu 6:30-21:00; Th 07:30-21:00; Fr 06:00-19:00; Sa 08:00-16:00; Su 08:30-17:00",
+    "phone": "+1 646-766-0290",
     "sport": "pilates",
     "website": "https://www.clubpilates.com/west57th/"
    }
@@ -225,6 +225,26 @@
     "level": "0",
     "name": "CorePower Yoga",
     "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 10969153510,
+   "lat": 40.6757295,
+   "lon": -74.014983,
+   "timestamp": "2023-10-03T17:48:56Z",
+   "version": 2,
+   "changeset": 142111657,
+   "user": "jmapb",
+   "uid": 4400159,
+   "tags": {
+    "addr:housenumber": "424",
+    "addr:postcode": "11231",
+    "addr:street": "Van Brunt Street",
+    "leisure": "fitness_centre",
+    "name": "Practice",
+    "sport": "yoga",
+    "website": "https://www.practiceyogabrooklyn.com/"
    }
   },
   {
@@ -502,57 +522,6 @@
     "sport": "yoga",
     "website": "https://iyengarnyc.org",
     "wheelchair": "yes"
-   }
-  },
-  {
-   "type": "node",
-   "id": 11517472732,
-   "lat": 40.8011615,
-   "lon": -73.9579998,
-   "timestamp": "2026-08-27T20:39:48Z",
-   "version": 3,
-   "changeset": 188117514,
-   "user": "Robin Zyx",
-   "uid": 12240088,
-   "tags": {
-    "addr:city": "New York",
-    "addr:housenumber": "301",
-    "addr:postcode": "10026",
-    "addr:state": "NY",
-    "addr:street": "Cathedral Parkway",
-    "check_date": "2026-08-26",
-    "leisure": "fitness_centre",
-    "name": "Studio Pilates",
-    "website": "https://www.studiopilates.com/studios/harlem/"
-   }
-  },
-  {
-   "type": "node",
-   "id": 11564860016,
-   "lat": 40.8119878,
-   "lon": -74.2139589,
-   "timestamp": "2026-08-18T15:41:13Z",
-   "version": 7,
-   "changeset": 187646514,
-   "user": "billatq",
-   "uid": 1492018,
-   "tags": {
-    "addr:city": "Montclair",
-    "addr:housenumber": "18",
-    "addr:postcode": "07042",
-    "addr:state": "NJ",
-    "addr:street": "Lackawanna Plaza",
-    "description": "At NJ Basement Waterproofing and French Drains, we provide unparalleled service and solutions to safeguard your property against water damage. Our commitment to quality craftsmanship and client satisfaction remains unwavering.",
-    "email": "info@santokhyoga.com",
-    "language:en": "yes",
-    "leisure": "fitness_centre",
-    "name": "Santokh Yoga & Wellness",
-    "opening_hours": "Mo-Fr 09:00-17:00",
-    "phone": "+1 973-524-6100",
-    "shop": "repair",
-    "sport": "yoga",
-    "start_date": "2017-01",
-    "website": "https://santokhyoga.com/"
    }
   },
   {
@@ -835,11 +804,11 @@
    "id": 12384465277,
    "lat": 40.8272188,
    "lon": -74.1011231,
-   "timestamp": "2026-10-15T18:02:02Z",
-   "version": 3,
-   "changeset": 190571247,
-   "user": "lxndrl",
-   "uid": 21771395,
+   "timestamp": "2024-12-06T20:25:04Z",
+   "version": 2,
+   "changeset": 160008148,
+   "user": "b-jazz-bot",
+   "uid": 9451067,
    "tags": {
     "addr:city": "Rutherford",
     "addr:housenumber": "1",
@@ -852,7 +821,7 @@
     "name": "Club Pilates",
     "phone": "+19082875555",
     "sport": "pilates",
-    "website": "https://www.clubpilates.com/rutherford/"
+    "website": "https://www.clubpilates.com/rutherford/?utm_source=google.com&utm_medium=referral&utm_campaign=yext"
    }
   },
   {
@@ -927,24 +896,6 @@
     "opening_hours:signed": "no",
     "sport": "pilates",
     "website": "https://www.terracepilates.com"
-   }
-  },
-  {
-   "type": "node",
-   "id": 12724672319,
-   "lat": 40.6210894,
-   "lon": -74.0322034,
-   "timestamp": "2026-08-20T13:26:24Z",
-   "version": 2,
-   "changeset": 187744032,
-   "user": "jmapb",
-   "uid": 4400159,
-   "tags": {
-    "leisure": "fitness_centre",
-    "name": "Bay Ridge Pilates",
-    "phone": "+1-347-362-1710",
-    "sport": "pilates",
-    "website": "https://bayridgepilates.com"
    }
   },
   {
@@ -1187,409 +1138,6 @@
   },
   {
    "type": "node",
-   "id": 13915544407,
-   "lat": 40.8518295,
-   "lon": -73.9416721,
-   "timestamp": "2026-06-08T17:12:35Z",
-   "version": 2,
-   "changeset": 183839652,
-   "user": "confusedbuffalo",
-   "uid": 242345,
-   "tags": {
-    "addr:city": "New York",
-    "addr:housenumber": "875",
-    "addr:postcode": "10033",
-    "addr:state": "NY",
-    "addr:street": "West 181st Street",
-    "leisure": "fitness_centre",
-    "name": "Heights Meditation & Yoga",
-    "phone": "+1-607-622-8321",
-    "sport": "yoga",
-    "website": "https://www.heightsmeditationyoga.org/"
-   }
-  },
-  {
-   "type": "node",
-   "id": 13923184528,
-   "lat": 40.681191,
-   "lon": -73.9708348,
-   "timestamp": "2026-07-07T00:57:19Z",
-   "version": 2,
-   "changeset": 185236035,
-   "user": "wheelmap_visitor",
-   "uid": 290680,
-   "tags": {
-    "branch": "Prospect Heights",
-    "leisure": "fitness_centre",
-    "name": "Studio Pilates",
-    "phone": "+1-917-960-2028",
-    "sport": "pilates",
-    "website": "https://www.studiopilates.com/studios/prospect-heights/",
-    "wheelchair": "yes"
-   }
-  },
-  {
-   "type": "node",
-   "id": 13978782901,
-   "lat": 40.6719903,
-   "lon": -73.9775224,
-   "timestamp": "2026-06-30T19:59:15Z",
-   "version": 1,
-   "changeset": 184875113,
-   "user": "hellflower",
-   "uid": 8871965,
-   "tags": {
-    "alt_name": "Studio Morph",
-    "leisure": "fitness_centre",
-    "name": "Metamorphosis",
-    "phone": "+1-626-219-7000",
-    "sport": "pilates",
-    "website": "https://studiometamorphosis.com/"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14024941422,
-   "lat": 40.7131647,
-   "lon": -73.9665536,
-   "timestamp": "2026-07-18T21:08:22Z",
-   "version": 1,
-   "changeset": 185979003,
-   "user": "jmapb",
-   "uid": 4400159,
-   "tags": {
-    "addr:housenumber": "43",
-    "addr:postcode": "11249",
-    "addr:street": "South 4th Street",
-    "leisure": "fitness_centre",
-    "name": "Good Move",
-    "sport": "pilates;yoga",
-    "waste": "https://www.goodmovenyc.com"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14050057108,
-   "lat": 40.6917504,
-   "lon": -73.9340727,
-   "timestamp": "2026-07-25T23:39:05Z",
-   "version": 1,
-   "changeset": 186373075,
-   "user": "hellflower",
-   "uid": 8871965,
-   "tags": {
-    "leisure": "fitness_centre",
-    "name": "Maison Luxe Pilates and Wellness",
-    "phone": "+1-646-408-8974",
-    "sauna": "yes",
-    "sport": "pilates;yoga",
-    "website": "https://www.maisonluxepilatesandwellness.com/"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14055361046,
-   "lat": 40.7774362,
-   "lon": -73.9783978,
-   "timestamp": "2026-07-28T02:46:25Z",
-   "version": 1,
-   "changeset": 186493865,
-   "user": "Robin Zyx",
-   "uid": 12240088,
-   "tags": {
-    "addr:floor": "2",
-    "addr:housenumber": "53",
-    "addr:postcode": "10023",
-    "addr:street": "West 72nd Street",
-    "check_date": "2026-07-26",
-    "email": "info@corezonepilates.com",
-    "leisure": "fitness_centre",
-    "name": "Core Zone Pilates",
-    "phone": "+1-212-721-8307",
-    "website": "https://corezonepilates.com/"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14086063072,
-   "lat": 40.8155452,
-   "lon": -74.2199004,
-   "timestamp": "2026-08-10T18:37:01Z",
-   "version": 1,
-   "changeset": 187248405,
-   "user": "billatq",
-   "uid": 1492018,
-   "tags": {
-    "addr:city": "Montclair",
-    "addr:housenumber": "568",
-    "addr:postcode": "07042",
-    "addr:state": "NJ",
-    "addr:street": "Bloomfield Avenue",
-    "branch": "Montclair",
-    "brand": "Club Pilates",
-    "brand:wikidata": "Q109328844",
-    "contact:instagram": "clubpilatesmontclair",
-    "description": "Reformer Pilates studio offering Pilates classes and movement training",
-    "fee": "yes",
-    "leisure": "fitness_centre",
-    "name": "Club Pilates",
-    "opening_hours": "Mo 09:00-20:30; Tu 07:30-20:00; We 09:00-20:30; Th 07:30-20:00; Fr-Sa 08:30-13:30; Su 09:00-13:00",
-    "phone": "+1 973-866-0222",
-    "sport": "pilates",
-    "website": "https://www.clubpilates.com/location/montclair"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14089033907,
-   "lat": 40.8410381,
-   "lon": -74.20704,
-   "timestamp": "2026-08-12T05:06:55Z",
-   "version": 1,
-   "changeset": 187317859,
-   "user": "billatq",
-   "uid": 1492018,
-   "tags": {
-    "addr:city": "Montclair",
-    "addr:housenumber": "213",
-    "addr:postcode": "07043",
-    "addr:state": "NJ",
-    "addr:street": "Bellevue Avenue",
-    "check_date": "2026-08-10",
-    "leisure": "fitness_centre",
-    "name": "Juniper Yoga + Fitness",
-    "phone": "+1 973-707-7463",
-    "website": "https://www.juniperyogafitness.com"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14089033910,
-   "lat": 40.8410096,
-   "lon": -74.2069112,
-   "timestamp": "2026-08-12T05:06:55Z",
-   "version": 1,
-   "changeset": 187317859,
-   "user": "billatq",
-   "uid": 1492018,
-   "tags": {
-    "addr:city": "Montclair",
-    "addr:housenumber": "211",
-    "addr:postcode": "07043",
-    "addr:state": "NJ",
-    "addr:street": "Bellevue Avenue",
-    "addr:unit": "201",
-    "check_date": "2026-08-10",
-    "leisure": "fitness_centre",
-    "name": "COREFIRE Pilates",
-    "website": "https://mycorefire.com"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14090275935,
-   "lat": 40.8165991,
-   "lon": -74.2214235,
-   "timestamp": "2026-08-12T17:55:07Z",
-   "version": 1,
-   "changeset": 187353827,
-   "user": "billatq",
-   "uid": 1492018,
-   "tags": {
-    "addr:city": "Montclair",
-    "addr:housenumber": "638",
-    "addr:postcode": "07042",
-    "addr:state": "NJ",
-    "addr:street": "Bloomfield Avenue",
-    "addr:unit": "1A",
-    "check_date": "2026-08-10",
-    "leisure": "fitness_centre",
-    "name": "Pilates Addiction",
-    "sport": "pilates",
-    "website": "https://pilatesaddiction.com/location/montclair"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14090275945,
-   "lat": 40.8140991,
-   "lon": -74.2199159,
-   "timestamp": "2026-08-12T17:55:07Z",
-   "version": 1,
-   "changeset": 187353827,
-   "user": "billatq",
-   "uid": 1492018,
-   "tags": {
-    "addr:city": "Montclair",
-    "addr:housenumber": "47",
-    "addr:postcode": "07042",
-    "addr:state": "NJ",
-    "addr:street": "South Park Street",
-    "check_date": "2026-08-10",
-    "leisure": "fitness_centre",
-    "name": "Montclair Pilates",
-    "sport": "pilates",
-    "website": "https://www.montclairpilates.com/"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14095815459,
-   "lat": 40.7427045,
-   "lon": -73.91767,
-   "timestamp": "2026-08-15T00:43:18Z",
-   "version": 1,
-   "changeset": 187467722,
-   "user": "promiseofbirth",
-   "uid": 6457180,
-   "tags": {
-    "addr:housenumber": "47-01",
-    "addr:street": "Greenpoint Avenue",
-    "contact:instagram": "pilatescrush",
-    "leisure": "fitness_centre",
-    "level": "1",
-    "name": "Pilates Crush",
-    "website": "https://www.pilatescrushnyc.com/"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14099601501,
-   "lat": 40.6283763,
-   "lon": -74.0292156,
-   "timestamp": "2026-08-21T21:27:32Z",
-   "version": 2,
-   "changeset": 187817855,
-   "user": "jmapb",
-   "uid": 4400159,
-   "tags": {
-    "leisure": "fitness_centre",
-    "name": "Boutique Pilates",
-    "opening_hours": "Mo-Fr 07:00-20:30, Sa-Su 08:00-14:00",
-    "phone": "+1-929-552-1824",
-    "sport": "pilates",
-    "website": "https://www.boutiquepilatesnyc.com"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14124148859,
-   "lat": 40.7798489,
-   "lon": -73.9838785,
-   "timestamp": "2026-08-26T05:02:39Z",
-   "version": 1,
-   "changeset": 188022337,
-   "user": "Robin Zyx",
-   "uid": 12240088,
-   "tags": {
-    "addr:floor": "2",
-    "addr:housenumber": "265",
-    "addr:level": "1",
-    "addr:postcode": "10023",
-    "addr:street": "West 72nd Street",
-    "check_date": "2026-08-25",
-    "leisure": "fitness_centre",
-    "name": "World Yoga Center",
-    "phone": "+1-212-787-4908",
-    "sport": "yoga",
-    "website": "https://www.worldyogacenter.com"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14137609341,
-   "lat": 40.6935519,
-   "lon": -73.9633461,
-   "timestamp": "2026-09-03T15:19:25Z",
-   "version": 2,
-   "changeset": 188478019,
-   "user": "GA_Kevin",
-   "uid": 22284738,
-   "tags": {
-    "branch": "Clinton Hill",
-    "brand": "Club Pilates",
-    "brand:wikidata": "Q109328844",
-    "leisure": "fitness_centre",
-    "name": "Club Pilates",
-    "opening_hours": "Mo 06:30-13:30,15:30-20:00; Tu 06:00-13:00,16:00-20:00; We 06:30-13:00,15:30-20:30; Th 06:00-13:00,16:00-19:30; Fr 06:30-19:00; Sa 07:00-16:00; Su 07:00-17:00",
-    "phone": "+1-718-744-0270",
-    "sport": "pilates",
-    "website": "https://www.clubpilates.com/location/clintonhill"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14181609552,
-   "lat": 40.7411799,
-   "lon": -73.994785,
-   "timestamp": "2026-09-14T20:59:48Z",
-   "version": 1,
-   "changeset": 189031808,
-   "user": "User236t32",
-   "uid": 22909627,
-   "tags": {
-    "addr:housenumber": "107",
-    "addr:street": "West 20th Street",
-    "check_date": "2026-09-14",
-    "leisure": "fitness_centre",
-    "name": "Fuze House Pilates & Sculpt House"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14181628731,
-   "lat": 40.7460912,
-   "lon": -73.9149619,
-   "timestamp": "2026-09-14T20:52:39Z",
-   "version": 1,
-   "changeset": 189031529,
-   "user": "pattyp_",
-   "uid": 24540155,
-   "tags": {
-    "addr:city": "Woodside",
-    "addr:housenumber": "49-06",
-    "addr:state": "NY",
-    "addr:street": "Skillman Avenue",
-    "leisure": "fitness_centre",
-    "name": "Suryaside Yoga",
-    "sport": "yoga"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14193898739,
-   "lat": 40.6652546,
-   "lon": -73.9897896,
-   "timestamp": "2026-09-18T20:15:42Z",
-   "version": 1,
-   "changeset": 189226350,
-   "user": "jmapb",
-   "uid": 4400159,
-   "tags": {
-    "brand": "Club Pilates",
-    "brand:wikidata": "Q109328844",
-    "leisure": "fitness_centre",
-    "name": "Club Pilates",
-    "sport": "pilates"
-   }
-  },
-  {
-   "type": "node",
-   "id": 14264972399,
-   "lat": 40.7164108,
-   "lon": -74.0076489,
-   "timestamp": "2026-10-08T14:55:46Z",
-   "version": 1,
-   "changeset": 190205803,
-   "user": "ilovebagels_43",
-   "uid": 24634901,
-   "tags": {
-    "leisure": "fitness_centre",
-    "name": "Real Pilates"
-   }
-  },
-  {
-   "type": "node",
    "id": 2187917032,
    "lat": 40.7114592,
    "lon": -73.9612027,
@@ -1720,11 +1268,11 @@
   {
    "type": "node",
    "id": 2494372768,
-   "lat": 40.677116,
-   "lon": -73.9861034,
-   "timestamp": "2026-06-15T15:12:03Z",
-   "version": 4,
-   "changeset": 184142739,
+   "lat": 40.6771273,
+   "lon": -73.9860965,
+   "timestamp": "2025-09-08T02:11:45Z",
+   "version": 3,
+   "changeset": 171610744,
    "user": "jmapb",
    "uid": 4400159,
    "tags": {
@@ -2240,11 +1788,11 @@
    "id": 2724094229,
    "lat": 40.7787555,
    "lon": -73.9482198,
-   "timestamp": "2026-06-16T22:19:28Z",
-   "version": 3,
-   "changeset": 184202067,
-   "user": "gopinath16",
-   "uid": 10460374,
+   "timestamp": "2025-12-20T04:19:05Z",
+   "version": 2,
+   "changeset": 176164302,
+   "user": "jmapb",
+   "uid": 4400159,
    "tags": {
     "addr:housenumber": "1715",
     "addr:postcode": "10128",
@@ -2252,35 +1800,9 @@
     "branch": "East 89th",
     "leisure": "fitness_centre",
     "name": "Club Pilates",
-    "opening_hours": "Mo-We 06:00-21:00; Th 06:30-21:30; Fr 06:00-19:00; Sa,Su 07:00-18:00",
     "phone": "+1-917-685-0240",
     "sport": "pilates",
     "website": "https://www.clubpilates.com/location/east89th"
-   }
-  },
-  {
-   "type": "node",
-   "id": 2724232195,
-   "lat": 40.7788193,
-   "lon": -73.9563775,
-   "timestamp": "2026-09-26T12:58:50Z",
-   "version": 4,
-   "changeset": 189587111,
-   "user": "mbeyerle",
-   "uid": 4082127,
-   "tags": {
-    "addr:city": "New York",
-    "addr:housenumber": "132",
-    "addr:postcode": "10028",
-    "addr:state": "NY",
-    "addr:street": "East 85th Street",
-    "email": "class@newyorkyoga.com",
-    "leisure": "fitness_centre",
-    "name": "New York Yoga",
-    "phone": "+1-212-439-9642",
-    "sport": "yoga",
-    "website": "https://www.newyorkyoga.com/",
-    "yoga": "hot"
    }
   },
   {
@@ -2309,25 +1831,6 @@
   },
   {
    "type": "node",
-   "id": 2823256895,
-   "lat": 40.7167048,
-   "lon": -74.008906,
-   "timestamp": "2026-10-07T14:38:18Z",
-   "version": 2,
-   "changeset": 190151300,
-   "user": "DK_OSM12",
-   "uid": 24634899,
-   "tags": {
-    "addr:housenumber": "160",
-    "addr:postcode": "10013",
-    "addr:street": "Duane Street",
-    "leisure": "fitness_centre",
-    "name": "Fuze House",
-    "sport": "pilates"
-   }
-  },
-  {
-   "type": "node",
    "id": 2839686830,
    "lat": 40.7166855,
    "lon": -73.962899,
@@ -2345,25 +1848,6 @@
     "phone": "+1-347-889-7248",
     "sport": "yoga",
     "website": "https://modoyoga.com/nyc/"
-   }
-  },
-  {
-   "type": "node",
-   "id": 2844978377,
-   "lat": 40.7460338,
-   "lon": -73.9145077,
-   "timestamp": "2026-09-14T20:52:39Z",
-   "version": 3,
-   "changeset": 189031529,
-   "user": "pattyp_",
-   "uid": 24540155,
-   "tags": {
-    "addr:housenumber": "49-20",
-    "addr:postcode": "11377",
-    "addr:street": "Skillman Avenue",
-    "leisure": "fitness_centre",
-    "name": "Humanity Pilates",
-    "sport": "pilates"
    }
   },
   {
@@ -2426,31 +1910,6 @@
   },
   {
    "type": "node",
-   "id": 4109867467,
-   "lat": 40.7334484,
-   "lon": -73.9546342,
-   "timestamp": "2026-07-13T19:46:03Z",
-   "version": 5,
-   "changeset": 185674872,
-   "user": "jakubata",
-   "uid": 24281783,
-   "tags": {
-    "addr:city": "Brooklyn",
-    "addr:housenumber": "1008",
-    "addr:postcode": "11222",
-    "addr:state": "NY",
-    "addr:street": "Manhattan Avenue",
-    "check_date:opening_hours": "2026-07-13",
-    "email": "hello@sparsabrooklyn.com",
-    "leisure": "fitness_centre",
-    "name": "SPARŚA",
-    "opening_hours:signed": "no",
-    "sport": "yoga",
-    "website": "https://sparsabrooklyn.com/"
-   }
-  },
-  {
-   "type": "node",
    "id": 4429416441,
    "lat": 40.7433807,
    "lon": -73.9915176,
@@ -2504,11 +1963,11 @@
    "id": 4837023019,
    "lat": 40.815939,
    "lon": -74.2198847,
-   "timestamp": "2026-08-12T16:34:45Z",
-   "version": 3,
-   "changeset": 187350192,
-   "user": "billatq",
-   "uid": 1492018,
+   "timestamp": "2023-01-01T11:10:43Z",
+   "version": 2,
+   "changeset": 130743632,
+   "user": "torapa",
+   "uid": 5446055,
    "tags": {
     "addr:city": "Montclair",
     "addr:country": "US",
@@ -2516,13 +1975,26 @@
     "addr:postcode": "07042",
     "addr:state": "NJ",
     "addr:street": "Bloomfield Avenue",
-    "check_date": "2026-08-10",
     "leisure": "fitness_centre",
     "name": "JaiPure Yoga",
-    "opening_hours": "Mo-Fr 06:00-21:00; Sa-Su 08:00-18:00",
-    "phone": "+1 973-744-7873",
     "sport": "yoga",
     "website": "https://jaipureyoga.com/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4837099842,
+   "lat": 40.8119356,
+   "lon": -74.2140489,
+   "timestamp": "2017-05-05T16:28:09Z",
+   "version": 1,
+   "changeset": 48431698,
+   "user": "3yoda",
+   "uid": 632378,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Zura Montclair",
+    "sport": "yoga"
    }
   },
   {
@@ -2571,13 +2043,12 @@
    "id": 4998805613,
    "lat": 40.7327606,
    "lon": -73.9909466,
-   "timestamp": "2026-06-10T16:17:02Z",
-   "version": 3,
-   "changeset": 183932183,
-   "user": "svona ferðamaður",
-   "uid": 33181,
+   "timestamp": "2023-04-20T18:11:40Z",
+   "version": 2,
+   "changeset": 135162281,
+   "user": "jmapb",
+   "uid": 4400159,
    "tags": {
-    "check_date": "2026-06-10",
     "leisure": "fitness_centre",
     "name": "Ishta Yoga",
     "phone": "+1-646-559-1578",
@@ -3511,22 +2982,18 @@
    "id": 7041092619,
    "lat": 40.7290207,
    "lon": -73.9893198,
-   "timestamp": "2026-08-18T01:30:35Z",
-   "version": 7,
-   "changeset": 187615057,
+   "timestamp": "2025-07-13T14:07:07Z",
+   "version": 6,
+   "changeset": 168875313,
    "user": "Lanmou",
    "uid": 21988617,
    "tags": {
-    "addr:housenumber": "12",
-    "addr:street": "Saint Marks Place",
-    "check_date": "2026-08-17",
     "contact:instagram": "stmarksyoganyc",
     "leisure": "fitness_centre",
     "level": "2",
     "name": "St. Marks Yoga",
     "sport": "yoga",
-    "website": "https://www.stmarksyoga.com",
-    "wheelchair": "no"
+    "website": "https://www.stmarksyoga.com"
    }
   },
   {
@@ -3549,35 +3016,15 @@
   },
   {
    "type": "node",
-   "id": 7159234143,
-   "lat": 40.7911704,
-   "lon": -73.9727019,
-   "timestamp": "2026-06-01T23:18:31Z",
-   "version": 3,
-   "changeset": 183522072,
-   "user": "Robin Zyx",
-   "uid": 12240088,
-   "tags": {
-    "alt_name": "New York Kids Club",
-    "check_date": "2026-06-01",
-    "leisure": "fitness_centre",
-    "name": "Craft Pilates"
-   }
-  },
-  {
-   "type": "node",
    "id": 7161457144,
    "lat": 40.6874272,
    "lon": -73.9605265,
-   "timestamp": "2026-06-01T17:08:54Z",
-   "version": 3,
-   "changeset": 183510142,
-   "user": "alexrfox",
-   "uid": 21537651,
+   "timestamp": "2024-04-30T22:25:23Z",
+   "version": 2,
+   "changeset": 150729007,
+   "user": "jmapb",
+   "uid": 4400159,
    "tags": {
-    "addr:housenumber": "281",
-    "addr:street": "Greene Avenue",
-    "check_date": "2026-06-01",
     "leisure": "fitness_centre",
     "name": "Dou Yoga",
     "phone": "+1-718-638-1569",
