@@ -210,4 +210,9 @@ workflows:
       - name: Internal group, tester and export compliance
         script: |
           python3 -m pip install --quiet --no-cache-dir pyjwt cryptography
-          if [ "$REPORT_ONLY" = "1" ]; then python3 scripts/asc/tester_report.py; else python3 scripts/asc/internal_testers.py; fi
+          if [ "$REPORT_ONLY" = "1" ]; then
+            python3 scripts/asc/tester_report.py
+            python3 scripts/asc/readiness_report.py
+          else
+            python3 scripts/asc/internal_testers.py
+          fi
