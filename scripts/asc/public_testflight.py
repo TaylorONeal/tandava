@@ -72,7 +72,7 @@ for aid in APPS:
             store_contact = a
             break
     print(f"  privacyPolicyUrl={'set' if privacy else 'none'} storeReviewContact={'yes' if store_contact else 'no'} "
-          f"storeDemoRequired={store_contact.get('demoAccountRequired')}")
+          f"storeDemoRequired={store_contact.get('demoAccountRequired')} storeDemoNameOnFile={bool(store_contact.get('demoAccountName'))}")
 
     # 2. Beta App Information
     _, locs = call("GET", f"/v1/apps/{aid}/betaAppLocalizations?limit=10")
@@ -106,11 +106,14 @@ for aid in APPS:
     patch = {k: v for k, v in contact.items() if v and not cur.get(k)}
     if not cur.get("notes") and store_contact.get("notes"):
         patch["notes"] = store_contact["notes"]
+    if cur.get("demoAccountRequired") is None and store_contact.get("demoAccountRequired") is not None:
+        # mirror the App Store answer; only the yes/no flag, never a demo name or password
+        patch["demoAccountRequired"] = bool(store_contact["demoAccountRequired"])
     if patch and d.get("id"):
         st, _ = call("PATCH", f"/v1/betaAppReviewDetails/{d['id']}",
                      {"data": {"type": "betaAppReviewDetails", "id": d["id"], "attributes": patch}})
         print(f"  betaAppReviewDetail filled {list(patch)} -> {st}")
-    demo_req = cur.get("demoAccountRequired")
+    demo_req = patch.get("demoAccountRequired", cur.get("demoAccountRequired"))
     demo_on_file = bool(cur.get("demoAccountName"))
     print(f"  betaReview demoAccountRequired={demo_req} demoAccountOnFile={demo_on_file} notes={'set' if (cur.get('notes') or patch.get('notes')) else 'none'}")
 
@@ -153,8 +156,13 @@ for aid in APPS:
         state = "NOT SUBMITTED: beta review needs a demo account and none is on file"
         print(f"  {state}")
     else:
-        st, s = call("POST", "/v1/betaAppReviewSubmissions", {"data": {"type": "betaAppReviewSubmissions",
-                     "relationships": {"build": {"data": {"type": "builds", "id": bid}}}}})
+        import time
+        for attempt in range(3):
+            time.sleep(20)
+            st, s = call("POST", "/v1/betaAppReviewSubmissions", {"data": {"type": "betaAppReviewSubmissions",
+                         "relationships": {"build": {"data": {"type": "builds", "id": bid}}}}})
+            if st in (200, 201):
+                break
         state = ((s.get("data") or {}).get("attributes") or {}).get("betaReviewState") or f"http {st}"
         print(f"  submitted for beta review -> {st} {state}")
     line["review"] = state
