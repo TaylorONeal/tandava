@@ -1,0 +1,6 @@
+appId: com.tandava.studio
+---
+- tapOn: "you@example.com"
+- inputText: "smoke@example.invalid"
+- takeScreenshot: ${P}-05-type-email
+- assertVisible: ".*smoke@example.invalid.*"

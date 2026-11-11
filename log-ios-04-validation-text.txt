@@ -1,0 +1,17 @@
+Running on iPhone 17 Pro - iOS 26.5 - FCC5F673-7BEC-4A7D-8F2A-4DC35E2668EC
+ > Flow 04-validation-text
+Tap on "Sign In"... COMPLETED
+Assert that ".*ill out this field.*" is visible... FAILED
+
+Assertion is false: ".*ill out this field.*" is visible
+
+Assertion '".*ill out this field.*" is visible' failed. Check the UI hierarchy in debug artifacts to verify the element state and properties.
+
+Possible causes:
+- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
+- Element may be temporarily unavailable due to loading state
+- This could be a real regression that needs to be addressed
+
+==== Debug output (logs & screenshots) ====
+
+/Users/runner/.maestro/tests/2026-11-11_185405

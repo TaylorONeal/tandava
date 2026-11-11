@@ -1,0 +1,5 @@
+Running on iPhone 17 Pro - iOS 26.5 - FCC5F673-7BEC-4A7D-8F2A-4DC35E2668EC
+ > Flow 03-empty-submit
+Tap on "Sign In"... COMPLETED
+Take screenshot ${P}-03-empty-submit... COMPLETED
+Assert that "Welcome back" is visible... COMPLETED

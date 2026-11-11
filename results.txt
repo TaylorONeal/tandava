@@ -1,0 +1,7 @@
+platform ios  commit 81ae3e3154fa19ddc61a19cccdeefca324e596e6  run 43079584120
+PASS 01-launch
+PASS 02-signin-screen
+PASS 03-empty-submit
+FAIL 04-validation-text: - Element may be temporarily unavailable due to loading state
+FAIL 05-type-email: - Element may be temporarily unavailable due to loading state
+PASS 06-email-only-submit
