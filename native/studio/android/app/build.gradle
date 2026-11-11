@@ -1,5 +1,13 @@
 apply plugin: 'com.android.application'
 
+// Android dev app ID. Anything installed outside Google Play (USB, adb, Codemagic or CI
+// APKs) must not use the Play app ID: Play re-signs releases with its own key, so a
+// sideloaded copy blocks every Play update until it is uninstalled. Debug builds always
+// get ".dev" and a " Dev" name so they sit beside the Play copy. Set ANDROID_DEV_ID=1 (or
+// -PandroidDevId=1) to give a release-variant QA APK the same ID. Play AABs keep the real ID.
+def androidDevId = ["1", "true"].contains((System.getenv("ANDROID_DEV_ID") ?: findProperty("androidDevId") ?: "").toString())
+def devAppLabel = "Tandava Studio Dev"
+
 android {
     namespace = "com.tandava.studio"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -10,6 +18,7 @@ android {
         // CI passes a code above the last Play upload; local builds stay at 1.
         versionCode((System.getenv("ANDROID_VERSION_CODE") ?: "1").toInteger())
         versionName "1.0"
+        manifestPlaceholders = [appLabel: "@string/app_name"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -29,7 +38,17 @@ android {
         }
     }
     buildTypes {
+        debug {
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+            manifestPlaceholders = [appLabel: devAppLabel]
+        }
         release {
+            if (androidDevId) {
+                applicationIdSuffix ".dev"
+                versionNameSuffix "-dev"
+                manifestPlaceholders = [appLabel: devAppLabel]
+            }
             if (System.getenv("CM_KEYSTORE_PATH")) {
                 signingConfig signingConfigs.release
             }
