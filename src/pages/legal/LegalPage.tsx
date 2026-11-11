@@ -1,11 +1,39 @@
 /**
  * /terms, /privacy and /refunds (LP-9). Content lives in src/content/legal.
  */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MarketingShell } from "@/components/layout/MarketingShell";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { ALL_LEGAL_LINKS, LEGAL_DOCS, LEGAL_PUBLISHED, LEGAL_OPERATOR, LEGAL_UPDATED, type LegalDoc } from "@/content/legal";
+import { anyAnalytics } from "@/content/legal/analytics";
+import { WEB_ANALYTICS } from "@/config/analytics";
+import { analyticsOptedOut, setAnalyticsOptOut } from "@/lib/analytics/web";
+import { Button } from "@/components/ui/button";
+
+/** The privacy page's analytics switch for this browser (applies from the next page load). */
+function AnalyticsSwitch() {
+  const [off, setOff] = useState(() => analyticsOptedOut());
+  return (
+    <div className="space-y-2 text-[15px]">
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        data-testid="analytics-optout"
+        onClick={() => {
+          setAnalyticsOptOut(!off);
+          setOff(!off);
+        }}
+      >
+        {off ? "Turn analytics back on in this browser" : "Turn analytics off in this browser"}
+      </Button>
+      <p className="text-sm text-muted-foreground" role="status">
+        {off ? "Analytics is off in this browser." : "Analytics is on in this browser."}
+      </p>
+    </div>
+  );
+}
 
 function Paragraph({ text }: { text: string }) {
   if (text.startsWith("- ")) {
@@ -52,6 +80,7 @@ export function LegalDocView({ doc }: { doc: LegalDoc }) {
           <section key={s.heading} className="space-y-3 text-[15px] leading-relaxed">
             <h2 className="text-lg font-semibold">{s.heading}</h2>
             {s.body.map((p) => <Paragraph key={p} text={p} />)}
+            {doc.slug === "privacy" && s.heading === "Website and product analytics" && anyAnalytics(WEB_ANALYTICS) && <AnalyticsSwitch />}
           </section>
         ))}
         <nav aria-label="Policies" className="flex gap-4 border-t pt-6 text-sm">

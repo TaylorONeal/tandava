@@ -56,6 +56,10 @@ export interface LegalDoc {
   sections: LegalSection[];
 }
 
+// Analytics wording follows the deployment's own switches (src/config/analytics.ts).
+import { WEB_ANALYTICS } from "../../config/analytics";
+import { analyticsProviders, andList, websiteAnalyticsParagraphs } from "./analytics";
+
 const contact = `Questions: email ${LEGAL_CONTACT}.`;
 
 export const TERMS: LegalDoc = {
@@ -175,8 +179,12 @@ export const PRIVACY: LegalDoc = {
     {
       heading: "Service providers",
       body: [
-        "We use providers to run Tandava, and they process data only for that purpose: Supabase (database and sign-in), Google or Apple (only if you choose to sign in with them; they share your name and email with us), Stripe (payments), Vercel (website hosting), Resend (email), Cloudflare Turnstile (bot checks on sign-in, sign-up, password reset and guest booking forms), PostHog (product analytics, only when enabled) and Sentry (error monitoring, only when enabled). Your data may be processed in the United States.",
+        `We use providers to run Tandava, and they process data only for that purpose: Supabase (database and sign-in), Google or Apple (only if you choose to sign in with them; they share your name and email with us), Stripe (payments), Vercel (website hosting), Resend (email), Cloudflare Turnstile (bot checks on sign-in, sign-up, password reset and guest booking forms), ${andList([...analyticsProviders(WEB_ANALYTICS), "Sentry (error monitoring, only when enabled)"])}. Your data may be processed in the United States.`,
       ],
+    },
+    {
+      heading: "Website and product analytics",
+      body: websiteAnalyticsParagraphs(WEB_ANALYTICS),
     },
     {
       heading: "Keeping and deleting data",
