@@ -64,7 +64,7 @@ for app in apps.get("data", []):
             ta = t["attributes"]
             same = (ta.get("email") or "").lower() == holder
             print(f"    tester: {mask(ta.get('email'))} isAccountHolder={same} state={ta.get('state')} inviteType={ta.get('inviteType')}")
-            if os.environ.get("RESEND_INVITES") == "1" and ta.get("state") == "INVITED":
+            if os.environ.get("RESEND_INVITES") == "1" and ta.get("state") == "INVITED" and aid in os.environ.get("RESEND_APP_IDS", "").split(","):
                 st, _ = call("POST", "/v1/betaTesterInvitations", {"data": {"type": "betaTesterInvitations",
                     "relationships": {"app": {"data": {"type": "apps", "id": aid}},
                                       "betaTester": {"data": {"type": "betaTesters", "id": t["id"]}}}}})
