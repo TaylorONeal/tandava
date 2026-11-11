@@ -145,6 +145,29 @@ export function recordFromSeed(seed, ctx) {
 }
 
 /** Merge records that are the same studio (same site, or same name in the same city). */
+/** Kilometres between two { lat, lng } points. */
+export function distanceKm(a, b) {
+  const rad = (d) => (d * Math.PI) / 180;
+  const dLat = rad(b.lat - a.lat);
+  const dLng = rad(b.lng - a.lng);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 12742 * Math.asin(Math.sqrt(h));
+}
+
+/**
+ * Two records that share a website, Instagram or name are one studio only when
+ * they sit within 750 m of each other. Chains (Club Pilates, CorePower) share a
+ * domain across many locations, so a shared key alone is not enough. Without a
+ * position on both sides, one name must contain the other ("The Yoga Barn" and "Yoga Barn").
+ */
+export function sameStudio(a, b) {
+  if (a.geo?.lat != null && b.geo?.lat != null) return distanceKm(a.geo, b.geo) < 0.75;
+  const bare = (n) => `-${slugify(n).replace(/^the-/, "")}-`;
+  const x = bare(a.name);
+  const y = bare(b.name);
+  return x.includes(y) || y.includes(x);
+}
+
 export function dedupe(records, sigs, merged = new Set()) {
   const out = [];
   const byKey = new Map();
@@ -156,10 +179,10 @@ export function dedupe(records, sigs, merged = new Set()) {
       r.links.instagram ? `i:${r.links.instagram}` : null,
       `n:${slugify(r.name)}|${slugify(r.address.locality)}`,
     ].filter(Boolean);
-    const hit = keys.map((k) => byKey.get(k)).find(Boolean);
+    const hit = keys.flatMap((k) => byKey.get(k) ?? []).find((h) => sameStudio(r, h));
     if (!hit) {
       out.push(r);
-      keys.forEach((k) => byKey.set(k, r));
+      keys.forEach((k) => byKey.set(k, [...(byKey.get(k) ?? []), r]));
       continue;
     }
     // A map element keeps its id (stable slugs); a seed only adds to it.
@@ -179,7 +202,7 @@ export function dedupe(records, sigs, merged = new Set()) {
     if (keep !== hit) {
       out[out.indexOf(hit)] = keep;
     }
-    keys.forEach((k) => byKey.set(k, keep));
+    keys.forEach((k) => byKey.set(k, [...(byKey.get(k) ?? []).filter((x) => x !== hit), keep]));
   }
   return out;
 }
@@ -315,8 +338,12 @@ export function uniqueSlugs(records) {
   const seen = new Map();
   for (const r of records.sort((a, b) => a.id.localeCompare(b.id))) {
     let s = r.slug || slugify(r.id);
+    // A second location of a chain gets its street or neighborhood before a number.
+    const place = slugify(r.address?.street || r.address?.area || "");
+    if (seen.has(s) && place && !s.endsWith(place)) s = `${r.slug}-${place}`;
     let n = 2;
-    while (seen.has(s)) s = `${r.slug}-${n++}`;
+    const base = s;
+    while (seen.has(s)) s = `${base}-${n++}`;
     seen.set(s, r);
     r.slug = s;
   }
