@@ -177,3 +177,15 @@ Set up once, so nobody rediscovers it:
 - Row-Level Security (RLS) enforces multi-tenancy
 - All tables have `studio_id` for isolation
 - Schema changes require new migration files
+
+## Android dev app ID (sideloaded builds)
+
+Never sideload a build that uses the Play app ID `com.tandava.studio`. Google Play re-signs every release with its own key, so a copy installed over USB, adb or from a CI/Codemagic APK under the Play ID has a different signature, and Play can't update it until it is uninstalled (Nov 10 2026: most of Taylor's Pixel apps failed to update for this reason).
+
+- Debug builds always install as `com.tandava.studio.dev`, named "Tandava Studio Dev", beside the Play copy. Set in `native/studio/android/app/build.gradle` (`buildTypes.debug.applicationIdSuffix`); the launcher label comes from the `appLabel` manifest placeholder.
+- A release-variant QA APK that will be sideloaded must be built with `ANDROID_DEV_ID=1` (or `-PandroidDevId=1`), which gives it the same `.dev` ID.
+- Play AABs are built without `ANDROID_DEV_ID` and keep `com.tandava.studio`. Test Play behaviour (updates, billing, install referrer) only from a Play install (internal testing track), never from a sideload.
+- The activity class keeps the real namespace: launch with `adb shell am start -n com.tandava.studio.dev/com.tandava.studio.MainActivity`. Check what is on a device with `adb shell pm list packages -i | grep com.tandava.studio` (`installer=com.android.vending` is Play, `null` is a sideload).
+- If an old sideload under `com.tandava.studio` is on a device, uninstall it once and reinstall from Play.
+- Applies to the Studio app (`native/studio/android`). The member app (`com.tandava.app`) has no Android project yet; give it the same rule when it gets one.
+
