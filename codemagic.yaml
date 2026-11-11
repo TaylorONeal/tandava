@@ -228,6 +228,7 @@ workflows:
     environment:
       vars:
         RESEND_INVITES: "1"
+        RESEND_APP_IDS: "6831702551,6831459731"
     scripts:
       - name: TestFlight report (GET only, plus invite resend when RESEND_INVITES=1)
         script: |
