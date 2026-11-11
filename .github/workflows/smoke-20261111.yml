@@ -13,7 +13,7 @@ env:
   TANDAVA_APP: studio
   VITE_NATIVE_APP: studio
   VITE_SUPABASE_URL: https://smoke-offline.invalid
-  VITE_SUPABASE_ANON_KEY: smoke-offline-placeholder
+  VITE_SUPABASE_ANON_KEY: smoke-offline-anon-key
   VITE_DEMO_MODE: 'false'
   VITE_BLOG_GAMES: 'false'
   MAESTRO_CLI_NO_ANALYTICS: '1'
