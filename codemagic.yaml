@@ -225,8 +225,11 @@ workflows:
     max_build_duration: 10
     integrations:
       app_store_connect: app-store-connect
+    environment:
+      vars:
+        RESEND_INVITES: "1"
     scripts:
-      - name: TestFlight report (GET only)
+      - name: TestFlight report (GET only, plus invite resend when RESEND_INVITES=1)
         script: |
           python3 -m pip install --quiet --no-cache-dir pyjwt cryptography
           python3 scripts/asc/testflight_report.py

@@ -34,7 +34,7 @@ for app in apps.get("data", []):
 
     _, bl = call("GET", f"/v1/builds?filter[app]={aid}&sort=-uploadedDate&limit=6"
                         "&include=buildBetaDetail,preReleaseVersion"
-                        "&fields[builds]=version,uploadedDate,processingState,expired,expirationDate,usesNonExemptEncryption,buildBetaDetail,preReleaseVersion"
+                        "&fields[builds]=version,uploadedDate,processingState,expired,expirationDate,usesNonExemptEncryption,minOsVersion,buildBetaDetail,preReleaseVersion"
                         "&fields[buildBetaDetails]=internalBuildState,externalBuildState,autoNotifyEnabled"
                         "&fields[preReleaseVersions]=version")
     inc = {(i["type"], i["id"]): i["attributes"] for i in bl.get("included", [])}
@@ -44,8 +44,15 @@ for app in apps.get("data", []):
         bd = inc.get(("buildBetaDetails", (rel.get("buildBetaDetail", {}).get("data") or {}).get("id")), {})
         pv = inc.get(("preReleaseVersions", (rel.get("preReleaseVersion", {}).get("data") or {}).get("id")), {})
         print(f"  build {pv.get('version')} ({ba.get('version')}) uploaded={ba.get('uploadedDate')} proc={ba.get('processingState')} "
-              f"expired={ba.get('expired')} expires={ba.get('expirationDate')} nonExemptEnc={ba.get('usesNonExemptEncryption')} "
+              f"expired={ba.get('expired')} minOS={ba.get('minOsVersion')} nonExemptEnc={ba.get('usesNonExemptEncryption')} "
               f"internal={bd.get('internalBuildState')} external={bd.get('externalBuildState')} autoNotify={bd.get('autoNotifyEnabled')}")
+        _, us = call("GET", f"/v1/builds/{b['id']}/metrics/betaBuildUsages")
+        for d in us.get("data", []):
+            tot = {}
+            for pt in d.get("dataPoints", []):
+                for k, v in (pt.get("values") or {}).items():
+                    tot[k] = tot.get(k, 0) + (v or 0)
+            print(f"      usage: {tot}")
 
     _, groups = call("GET", f"/v1/apps/{aid}/betaGroups?limit=50")
     for g in groups.get("data", []):
@@ -57,6 +64,11 @@ for app in apps.get("data", []):
             ta = t["attributes"]
             same = (ta.get("email") or "").lower() == holder
             print(f"    tester: {mask(ta.get('email'))} isAccountHolder={same} state={ta.get('state')} inviteType={ta.get('inviteType')}")
+            if os.environ.get("RESEND_INVITES") == "1" and ta.get("state") == "INVITED":
+                st, _ = call("POST", "/v1/betaTesterInvitations", {"data": {"type": "betaTesterInvitations",
+                    "relationships": {"app": {"data": {"type": "apps", "id": aid}},
+                                      "betaTester": {"data": {"type": "betaTesters", "id": t["id"]}}}}})
+                print(f"      resend invite -> {st}")
         _, gb = call("GET", f"/v1/betaGroups/{g['id']}/builds?limit=5&fields[builds]=version,uploadedDate")
         print("    group builds (API list): " + ", ".join(
             f"{x['attributes'].get('version')}@{(x['attributes'].get('uploadedDate') or '')[:10]}" for x in gb.get("data", [])))
