@@ -1927,7 +1927,7 @@
    "links": {
     "website": null,
     "website_domain": null,
-    "instagram": null,
+    "instagram": "lonapilatesclub",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -1963,6 +1963,12 @@
      "ref": "https://www.openstreetmap.org/node/6063806975",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:45:55.456Z"
+    },
+    {
+     "type": "manual",
+     "ref": "https://wellhub.com/de-de/search/partners/lona-pilates-club-bornheim-ostend/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:40:00Z"
     }
    ],
    "field_sources": {
@@ -1980,12 +1986,15 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:35:58.011Z",
    "last_refreshed_at": "2026-11-10T20:45:55.456Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "2026-11-11: Wellhub listing at Hanauer Landstr. 14."
   },
   {
    "id": "osm-node-13811589967",
@@ -2318,9 +2327,9 @@
    },
    "time_zone": "Europe/Berlin",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.pilatestwentyfour.de/",
+    "website_domain": "pilatestwentyfour.de",
+    "instagram": "pilatestwentyfour",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -2356,6 +2365,12 @@
      "ref": "https://www.openstreetmap.org/node/4612718503",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:45:55.456Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.pilatestwentyfour.de/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:40:00Z"
     }
    ],
    "field_sources": {
@@ -2373,6 +2388,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:35:58.011Z",
@@ -2781,9 +2799,9 @@
    },
    "time_zone": "Europe/Berlin",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.shiva-yoga.de",
+    "website_domain": "shiva-yoga.de",
+    "instagram": "shivayogayogastudio",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -2817,6 +2835,12 @@
      "ref": "https://www.openstreetmap.org/node/13516498600",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:45:55.456Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.shiva-yoga.de",
+     "license": null,
+     "fetched_at": "2026-11-11T05:40:00Z"
     }
    ],
    "field_sources": {
@@ -2831,6 +2855,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:35:58.011Z",
@@ -5125,7 +5152,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "published",
+   "review_state": "suppressed",
    "sources": [
     {
      "type": "openstreetmap",
@@ -5154,7 +5181,7 @@
    "first_seen_at": "2026-11-10T19:34:30.614Z",
    "last_refreshed_at": "2026-11-10T20:44:23.419Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "Not a studio: rental villa with a yoga room, marketed for retreats (retreatsandvenues.com listing)."
   },
   {
    "id": "osm-node-3761412787",
@@ -5587,8 +5614,8 @@
    },
    "time_zone": "Asia/Bangkok",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://www.absoluteboutiquefitness.com/absolute-thailand",
+    "website_domain": "absoluteboutiquefitness.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -5625,6 +5652,12 @@
      "ref": "https://www.openstreetmap.org/node/3836982938",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:47:36.862Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.absoluteboutiquefitness.com/absolute-thailand",
+     "license": null,
+     "fetched_at": "2026-11-11T05:40:00Z"
     }
    ],
    "field_sources": {
@@ -5642,12 +5675,15 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:42:52.992Z",
    "last_refreshed_at": "2026-11-10T20:47:36.862Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "2026-11-11: Brand site lists Amarin Plaza 11F."
   },
   {
    "id": "osm-node-11155194495",
@@ -5679,8 +5715,8 @@
    },
    "time_zone": "Asia/Bangkok",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://www.absoluteboutiquefitness.com/absolute-thailand",
+    "website_domain": "absoluteboutiquefitness.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -5717,6 +5753,12 @@
      "ref": "https://www.openstreetmap.org/node/11155194495",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:47:36.862Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.absoluteboutiquefitness.com/absolute-thailand",
+     "license": null,
+     "fetched_at": "2026-11-11T05:40:00Z"
     }
    ],
    "field_sources": {
@@ -5734,12 +5776,15 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:42:52.992Z",
    "last_refreshed_at": "2026-11-10T20:47:36.862Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "2026-11-11: Brand site lists RSU Tower 5F."
   },
   {
    "id": "osm-node-11155187887",
@@ -5771,8 +5816,8 @@
    },
    "time_zone": "Asia/Bangkok",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://www.absoluteboutiquefitness.com/absolute-thailand",
+    "website_domain": "absoluteboutiquefitness.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -5809,6 +5854,12 @@
      "ref": "https://www.openstreetmap.org/node/11155187887",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:47:36.862Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.absoluteboutiquefitness.com/absolute-thailand",
+     "license": null,
+     "fetched_at": "2026-11-11T05:40:00Z"
     }
    ],
    "field_sources": {
@@ -5826,12 +5877,15 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:42:52.992Z",
    "last_refreshed_at": "2026-11-10T20:47:36.862Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "2026-11-11: Brand site lists The Circle Ratchapruk 2F."
   },
   {
    "id": "osm-node-10684441834",
@@ -5865,7 +5919,7 @@
    "links": {
     "website": null,
     "website_domain": null,
-    "instagram": null,
+    "instagram": "atha.lifestyle",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -5899,6 +5953,12 @@
      "ref": "https://www.openstreetmap.org/node/10684441834",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:47:36.862Z"
+    },
+    {
+     "type": "manual",
+     "ref": "https://thestandard.co/atha-lifestyle/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:40:00Z"
     }
    ],
    "field_sources": {
@@ -5913,12 +5973,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:42:52.992Z",
    "last_refreshed_at": "2026-11-10T20:47:36.862Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "2026-11-11: Only source is a 2022 article."
   },
   {
    "id": "osm-node-14330512828",
@@ -7274,7 +7337,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "published",
+   "review_state": "suppressed",
    "sources": [
     {
      "type": "openstreetmap",
@@ -7300,7 +7363,7 @@
    "first_seen_at": "2026-11-10T19:42:52.992Z",
    "last_refreshed_at": "2026-11-10T20:47:36.862Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "Not a studio: 84th Anniversary Stadium (Bang Bon), a football stadium."
   },
   {
    "id": "osm-way-210267894",
@@ -7361,7 +7424,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "published",
+   "review_state": "suppressed",
    "sources": [
     {
      "type": "openstreetmap",
@@ -7387,7 +7450,7 @@
    "first_seen_at": "2026-11-10T20:47:36.862Z",
    "last_refreshed_at": "2026-11-10T20:47:36.862Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "Not a studio: Buddhist vipassana meditation center."
   },
   {
    "id": "osm-node-4713691103",
@@ -7396,9 +7459,9 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "open",
+   "status": "temporarily_closed",
    "is_active": true,
-   "status_note": null,
+   "status_note": "Agama Yoga's site says classes are online while it relocates.",
    "opened_year": null,
    "closed_year": null,
    "market": "koh-phangan",
@@ -7419,9 +7482,9 @@
    },
    "time_zone": "Asia/Bangkok",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://agamayoga.com",
+    "website_domain": "agamayoga.com",
+    "instagram": "agamayoga",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -7455,6 +7518,12 @@
      "ref": "https://www.openstreetmap.org/node/4713691103",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:46:49.674Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://agamayoga.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:40:00Z"
     }
    ],
    "field_sources": {
@@ -7469,6 +7538,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
@@ -8697,9 +8769,9 @@
    },
    "time_zone": "Asia/Bangkok",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.sammakaruna.org/yoga-koh-phangan/",
+    "website_domain": "sammakaruna.org",
+    "instagram": "sammakaruna",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -8733,6 +8805,12 @@
      "ref": "https://www.openstreetmap.org/way/480883557",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:46:49.674Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.sammakaruna.org/yoga-koh-phangan/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:40:00Z"
     }
    ],
    "field_sources": {
@@ -8747,6 +8825,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
@@ -8958,9 +9039,9 @@
    },
    "time_zone": "Asia/Bangkok",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://www.yogaretreat-kohphangan.com/",
+    "website_domain": "yogaretreat-kohphangan.com",
+    "instagram": "theyogaretreatphangan",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -8994,6 +9075,12 @@
      "ref": "https://www.openstreetmap.org/node/3837567083",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:46:49.674Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.yogaretreat-kohphangan.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:40:00Z"
     }
    ],
    "field_sources": {
@@ -9008,12 +9095,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:42:03.019Z",
    "last_refreshed_at": "2026-11-10T20:46:49.674Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "2026-11-11: Site says the property is being sold; teacher training listed for Feb to Mar 2027."
   },
   {
    "id": "osm-node-4755186455",
@@ -9493,9 +9583,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://www.astayoga.com/",
+    "website_domain": "astayoga.com",
+    "instagram": "astayogasf",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -9529,6 +9619,12 @@
      "ref": "https://www.openstreetmap.org/node/10047742013",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:40:57.043Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.astayoga.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -9543,6 +9639,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:30:41.625Z",
@@ -9990,7 +10089,7 @@
   {
    "id": "osm-node-13507740638",
    "slug": "blik-yoga-shala-san-francisco",
-   "name": "Blik Yoga Shala",
+   "name": "Bilik Yoga",
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
@@ -10017,8 +10116,8 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://bilikyoga.com",
+    "website_domain": "bilikyoga.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -10059,6 +10158,12 @@
      "ref": "https://www.openstreetmap.org/node/13510207303",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:40:57.043Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://bilikyoga.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -10073,12 +10178,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     2
     ]
    },
    "first_seen_at": "2026-11-10T19:30:41.625Z",
    "last_refreshed_at": "2026-11-10T20:40:57.043Z",
    "last_verified_at": null,
-   "internal_notes": "Merged map element node/13510207303."
+   "internal_notes": "2026-11-11: Map name Blik Yoga Shala; studio's own name is Bilik Yoga."
   },
   {
    "id": "osm-node-11103972677",
@@ -10602,8 +10710,8 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://coremvmt.ipstudio.co/",
+    "website_domain": "ipstudio.co",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -10638,6 +10746,12 @@
      "ref": "https://www.openstreetmap.org/node/11701513373",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:40:57.043Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://coremvmt.ipstudio.co/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -10652,6 +10766,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:30:41.625Z",
@@ -11316,8 +11433,8 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "http://www.ehspilates.com/",
+    "website_domain": "ehspilates.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -11354,6 +11471,12 @@
      "ref": "https://www.openstreetmap.org/node/12559170747",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:40:57.043Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.ehspilates.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -11371,6 +11494,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:30:41.625Z",
@@ -11817,7 +11943,7 @@
   {
    "id": "osm-node-12044095332",
    "slug": "hot-yoga-san-francisco",
-   "name": "Hot Yoga",
+   "name": "Hot8 Yoga Financial District",
    "alt_names": [],
    "brand": null,
    "business_type": "hot_yoga_studio",
@@ -11844,9 +11970,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.hot8yoga.com/",
+    "website_domain": "hot8yoga.com",
+    "instagram": "hot8yoga",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -11882,6 +12008,12 @@
      "ref": "https://www.openstreetmap.org/node/12044095332",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:40:57.043Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.hot8yoga.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -11899,12 +12031,15 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:30:41.625Z",
    "last_refreshed_at": "2026-11-10T20:40:57.043Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "2026-11-11: Map name was Hot Yoga at 248 Sutter."
   },
   {
    "id": "osm-node-10897941853",
@@ -12296,8 +12431,8 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "http://mightypilates.com",
+    "website_domain": "mightypilates.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -12334,6 +12469,12 @@
      "ref": "https://www.openstreetmap.org/node/5810883731",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:40:57.043Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://mightypilates.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -12351,6 +12492,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:30:41.625Z",
@@ -12388,8 +12532,8 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://www.moonandstars.studio/",
+    "website_domain": "moonandstars.studio",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -12424,6 +12568,12 @@
      "ref": "https://www.openstreetmap.org/node/3674255661",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:40:57.043Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.moonandstars.studio/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -12438,6 +12588,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:30:41.625Z",
@@ -12562,8 +12715,8 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://mukundastudio.com",
+    "website_domain": "mukundastudio.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -12598,6 +12751,12 @@
      "ref": "https://www.openstreetmap.org/node/11777394274",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:40:57.043Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://mukundastudio.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -12612,12 +12771,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:30:41.625Z",
    "last_refreshed_at": "2026-11-10T20:40:57.043Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "2026-11-11: Site gives 1228 Folsom."
   },
   {
    "id": "osm-node-11384826394",
@@ -12742,9 +12904,9 @@
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
-   "status": "open",
-   "is_active": true,
-   "status_note": null,
+   "status": "unknown",
+   "is_active": false,
+   "status_note": "Website gone and no recent sign of the studio; held back until checked.",
    "opened_year": null,
    "closed_year": null,
    "market": "san-francisco",
@@ -12803,6 +12965,12 @@
      "ref": "https://www.openstreetmap.org/node/4069447292",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:40:57.043Z"
+    },
+    {
+     "type": "manual",
+     "ref": "https://reviews.birdeye.com/parkside-pilates-145424612795675",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -12820,6 +12988,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:30:41.625Z",
@@ -12973,9 +13144,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.pilatesstorystudio.com",
+    "website_domain": "pilatesstorystudio.com",
+    "instagram": "pilatesstorystudio",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -13011,6 +13182,12 @@
      "ref": "https://www.openstreetmap.org/node/3540256794",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:40:57.043Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.pilatesstorystudio.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -13028,12 +13205,15 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:30:41.625Z",
    "last_refreshed_at": "2026-11-10T20:40:57.043Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "2026-11-11: Moved Apr 2026 to 161 West Portal Ave."
   },
   {
    "id": "osm-node-4349256209",
@@ -13512,9 +13692,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://tantarasf.com",
+    "website_domain": "tantarasf.com",
+    "instagram": "tantarasf",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -13548,6 +13728,12 @@
      "ref": "https://www.openstreetmap.org/node/3969590469",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:40:57.043Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://tantarasf.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -13562,6 +13748,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:30:41.625Z",
@@ -13599,9 +13788,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.thelotusmethod.com/",
+    "website_domain": "thelotusmethod.com",
+    "instagram": "thelotusmethod",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -13635,6 +13824,12 @@
      "ref": "https://www.openstreetmap.org/node/6471124706",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:40:57.043Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.thelotusmethod.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -13649,6 +13844,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:30:41.625Z",
@@ -13895,9 +14093,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://yogaflowsf.com",
+    "website_domain": "yogaflowsf.com",
+    "instagram": "yogaflowsf",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -13933,6 +14131,12 @@
      "ref": "https://www.openstreetmap.org/node/6471124709",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:40:57.043Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://yogaflowsf.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -13950,6 +14154,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:30:41.625Z",
@@ -13987,9 +14194,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://yogamayu.com",
+    "website_domain": "yogamayu.com",
+    "instagram": "yogamayu",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -14023,6 +14230,12 @@
      "ref": "https://www.openstreetmap.org/node/4395534973",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:40:57.043Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://yogamayu.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -14037,12 +14250,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:30:41.625Z",
    "last_refreshed_at": "2026-11-10T20:40:57.043Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "2026-11-11: Site lists only 1501b 20th St; map shows 2051 Harrison (likely moved)."
   },
   {
    "id": "osm-node-12470308851",
@@ -14622,7 +14838,7 @@
   {
    "id": "osm-node-12170602298",
    "slug": "bare-feet-yoga-studio-chicago",
-   "name": "Bare Feet Yoga Studio",
+   "name": "Bare Feet Wellness",
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
@@ -14649,8 +14865,8 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://www.barefeetwellness.com/",
+    "website_domain": "barefeetwellness.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -14685,6 +14901,12 @@
      "ref": "https://www.openstreetmap.org/node/12170602298",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:41:47.574Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.barefeetwellness.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T06:00:00Z"
     }
    ],
    "field_sources": {
@@ -14699,12 +14921,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:31:36.108Z",
    "last_refreshed_at": "2026-11-10T20:41:47.574Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "2026-11-11: Rebranded from Bare Feet Yoga; site gives 37 N Carpenter St, map says 1006 W Monroe."
   },
   {
    "id": "osm-node-14148871095",
@@ -14993,7 +15218,7 @@
   {
    "id": "osm-node-12479624262",
    "slug": "bodybar-pilates-chicago-1035-west-lake-street",
-   "name": "Bodybar Pilates",
+   "name": "Bodybar Pilates Fulton Market",
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
@@ -15020,9 +15245,9 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://bodybarpilates.com/studios/fulton-market/",
+    "website_domain": "bodybarpilates.com",
+    "instagram": "bodybarfultonmarket",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -15058,6 +15283,12 @@
      "ref": "https://www.openstreetmap.org/node/12479624262",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:41:47.574Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://bodybarpilates.com/studios/fulton-market/",
+     "license": null,
+     "fetched_at": "2026-11-11T06:00:00Z"
     }
    ],
    "field_sources": {
@@ -15075,6 +15306,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T20:41:47.574Z",
@@ -16722,9 +16956,9 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://www.highbridgepilates.com/",
+    "website_domain": "highbridgepilates.com",
+    "instagram": "highbridgepilates",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -16760,6 +16994,12 @@
      "ref": "https://www.openstreetmap.org/node/12297034102",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:41:47.574Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.highbridgepilates.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T06:00:00Z"
     }
    ],
    "field_sources": {
@@ -16777,6 +17017,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:31:36.108Z",
@@ -17712,7 +17955,7 @@
   {
    "id": "osm-node-9731074564",
    "slug": "studio-8-chicago",
-   "name": "Studio 8",
+   "name": "Studio 8 Pilates",
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
@@ -17739,8 +17982,8 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "http://www.studio8chicago.com/",
+    "website_domain": "studio8chicago.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -17753,7 +17996,30 @@
    "styles": [],
    "levels": [],
    "software": {
-    "current": [],
+    "current": [
+     {
+      "platform_id": "squarespace",
+      "role": "website",
+      "detected_via": "booking_link_domain",
+      "evidence": "http://static1.squarespace.com/static/5543e93ce4b04bf77e3d0cd2/t/5e6bdee9972d5f3eb4f52a94/1584127723853/busystudio8.jpg",
+      "observed_from": "2026-11-10",
+      "observed_to": null,
+      "confidence": 0.5,
+      "verified": false,
+      "source": 1
+     },
+     {
+      "platform_id": "mindbody",
+      "role": "system_of_record",
+      "detected_via": "script_fingerprint",
+      "evidence": "https://widgets.healcode.com/javascripts/healcode.js",
+      "observed_from": "2026-11-10",
+      "observed_to": null,
+      "confidence": 0.95,
+      "verified": false,
+      "source": 1
+     }
+    ],
     "previous": []
    },
    "offers": {
@@ -17775,6 +18041,18 @@
      "ref": "https://www.openstreetmap.org/node/9731074564",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:41:47.574Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://studio8chicago.com/",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.studio8chicago.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T06:00:00Z"
     }
    ],
    "field_sources": {
@@ -17789,6 +18067,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     2
     ]
    },
    "first_seen_at": "2026-11-10T19:31:36.108Z",
@@ -18255,8 +18536,8 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://tulayoga.net",
+    "website_domain": "tulayoga.net",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -18291,6 +18572,12 @@
      "ref": "https://www.openstreetmap.org/node/4124179103",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:41:47.574Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://tulayoga.net",
+     "license": null,
+     "fetched_at": "2026-11-11T06:00:00Z"
     }
    ],
    "field_sources": {
@@ -18305,6 +18592,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:31:36.108Z",
@@ -18342,8 +18632,8 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "http://www.yogabydegrees.net/",
+    "website_domain": "yogabydegrees.net",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -18378,6 +18668,12 @@
      "ref": "https://www.openstreetmap.org/node/9525629410",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:41:47.574Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.yogabydegrees.net/",
+     "license": null,
+     "fetched_at": "2026-11-11T06:00:00Z"
     }
    ],
    "field_sources": {
@@ -18392,12 +18688,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:31:36.108Z",
    "last_refreshed_at": "2026-11-10T20:41:47.574Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "2026-11-11: Known studios are in Wheaton and Downers Grove; map node has no address."
   },
   {
    "id": "osm-way-209841797",
@@ -18795,8 +19094,8 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "http://yogaview.com/",
+    "website_domain": "yogaview.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -18831,6 +19130,12 @@
      "ref": "https://www.openstreetmap.org/node/12216952892",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:41:47.574Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://yogaview.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T06:00:00Z"
     }
    ],
    "field_sources": {
@@ -18845,12 +19150,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:31:36.108Z",
    "last_refreshed_at": "2026-11-10T20:41:47.574Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "2026-11-11: Bucktown space listed for rent on a venue site; check whether this location still runs."
   },
   {
    "id": "osm-node-14154342648",
@@ -19548,9 +19856,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.urbansoulsyoga.com/",
+    "website_domain": "urbansoulsyoga.com",
+    "instagram": "urbansoulshoboken",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -19584,6 +19892,12 @@
      "ref": "https://www.openstreetmap.org/node/7215123782",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.urbansoulsyoga.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -19598,12 +19912,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T20:43:01.037Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "2026-11-11: Site gives 100 Hudson St; map says 104."
   },
   {
    "id": "osm-way-397034540",
@@ -20790,9 +21107,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://www.yogaagora.com/",
+    "website_domain": "yogaagora.com",
+    "instagram": "yoga_agora",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -20826,6 +21143,12 @@
      "ref": "https://www.openstreetmap.org/node/3452885684",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.yogaagora.com/schedule",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -20840,6 +21163,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -21735,8 +22061,8 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://www.uplusyogaonline.com/",
+    "website_domain": "uplusyogaonline.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -21771,6 +22097,12 @@
      "ref": "https://www.openstreetmap.org/node/11014267019",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.uplusyogaonline.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -21785,6 +22117,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -22301,9 +22636,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://www.5boropoweryoga.com/",
+    "website_domain": "5boropoweryoga.com",
+    "instagram": "5boropoweryoga",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -22339,6 +22674,12 @@
      "ref": "https://www.openstreetmap.org/node/13128789801",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.5boropoweryoga.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -22356,6 +22697,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -22393,9 +22737,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://alinepilatesnyc.com/",
+    "website_domain": "alinepilatesnyc.com",
+    "instagram": "alinepilatesnyc",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -22431,6 +22775,12 @@
      "ref": "https://www.openstreetmap.org/node/2494251767",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://alinepilatesnyc.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -22448,6 +22798,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -23432,9 +23785,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://www.bloompilatesstudio.com/",
+    "website_domain": "bloompilatesstudio.com",
+    "instagram": "bloompilateshoboken",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -23470,6 +23823,12 @@
      "ref": "https://www.openstreetmap.org/node/6779685148",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.bloompilatesstudio.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -23487,6 +23846,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -23709,9 +24071,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.body-tonic.com/",
+    "website_domain": "body-tonic.com",
+    "instagram": "bodytonicpilates",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -23747,6 +24109,12 @@
      "ref": "https://www.openstreetmap.org/node/5555271899",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.body-tonic.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -23764,6 +24132,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -24155,9 +24526,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.brooklynyogaproject.com/",
+    "website_domain": "brooklynyogaproject.com",
+    "instagram": "brooklynyogaproject",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -24191,6 +24562,12 @@
      "ref": "https://www.openstreetmap.org/node/6436939086",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.brooklynyogaproject.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -24205,6 +24582,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -26444,9 +26824,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.craftpilates.com/",
+    "website_domain": "craftpilates.com",
+    "instagram": "craftpilates",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -26460,7 +26840,19 @@
    ],
    "levels": [],
    "software": {
-    "current": [],
+    "current": [
+     {
+      "platform_id": "arketa",
+      "role": "system_of_record",
+      "detected_via": "iframe",
+      "evidence": "https://app.arketa.co/iframe/craftpilates/form/WoGuhccIxkfHH4NAj0lg",
+      "observed_from": "2026-11-10",
+      "observed_to": null,
+      "confidence": 0.95,
+      "verified": false,
+      "source": 1
+     }
+    ],
     "previous": []
    },
    "offers": {
@@ -26482,6 +26874,18 @@
      "ref": "https://www.openstreetmap.org/node/7159234143",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://craftpilates.com/",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.craftpilates.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -26499,6 +26903,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     2
     ]
    },
    "first_seen_at": "2026-11-10T20:43:01.037Z",
@@ -26856,8 +27263,8 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://eastriverpilates.com/",
+    "website_domain": "eastriverpilates.com",
     "instagram": "eastriverpilates",
     "facebook": null,
     "youtube": null,
@@ -26894,6 +27301,12 @@
      "ref": "https://www.openstreetmap.org/node/11975933899",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://eastriverpilates.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -26914,6 +27327,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -26951,9 +27367,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://eastriverpilates.com/",
+    "website_domain": "eastriverpilates.com",
+    "instagram": "eastriverpilates",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -26989,6 +27405,12 @@
      "ref": "https://www.openstreetmap.org/node/6978303339",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://eastriverpilates.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -27006,17 +27428,20 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T20:43:01.037Z",
    "last_refreshed_at": "2026-11-10T20:43:01.037Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "2026-11-11: Brand has 5 Brooklyn branches; this node's branch not matched."
   },
   {
    "id": "osm-node-7262600766",
    "slug": "elevate-movement-and-wellness-new-york",
-   "name": "Elevate Movement & Wellness",
+   "name": "Elevate Pilates",
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
@@ -27043,9 +27468,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://elevatepilates.us/",
+    "website_domain": "elevatepilates.us",
+    "instagram": "elevatepilates",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -27081,6 +27506,12 @@
      "ref": "https://www.openstreetmap.org/node/7262600766",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://elevatepilates.us/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -27098,12 +27529,15 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T20:43:01.037Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "2026-11-11: Old domain redirects here."
   },
   {
    "id": "osm-node-5812402061",
@@ -27715,9 +28149,9 @@
    "alt_names": [],
    "brand": null,
    "business_type": "hot_yoga_studio",
-   "status": "open",
-   "is_active": true,
-   "status_note": null,
+   "status": "unknown",
+   "is_active": false,
+   "status_note": "Old website now points elsewhere; no current sign of the studio. Held back until checked.",
    "opened_year": null,
    "closed_year": null,
    "market": "new-york",
@@ -27776,6 +28210,12 @@
      "ref": "https://www.openstreetmap.org/node/2553306835",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "manual",
+     "ref": "https://coursehorse.com/nyc/schools/life-skills/flex-hot-yoga",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -27793,6 +28233,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -27948,9 +28391,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://www.fortpilates.com/",
+    "website_domain": "fortpilates.com",
+    "instagram": "fortpilates",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -27986,98 +28429,12 @@
      "ref": "https://www.openstreetmap.org/node/6329603988",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
-    }
-   ],
-   "field_sources": {
-    "name": [
-     0
-    ],
-    "status": [
-     0
-    ],
-    "address": [
-     0
-    ],
-    "geo": [
-     0
-    ],
-    "styles": [
-     0
-    ]
-   },
-   "first_seen_at": "2026-11-10T19:33:04.900Z",
-   "last_refreshed_at": "2026-11-10T20:43:01.037Z",
-   "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
-  },
-  {
-   "id": "osm-node-2823256895",
-   "slug": "fuze-house-new-york",
-   "name": "Fuze House",
-   "alt_names": [],
-   "brand": null,
-   "business_type": "pilates_studio",
-   "status": "open",
-   "is_active": true,
-   "status_note": null,
-   "opened_year": null,
-   "closed_year": null,
-   "market": "new-york",
-   "address": {
-    "street": "160 Duane Street",
-    "area": null,
-    "locality": "New York",
-    "region_code": "NY",
-    "region_name": "New York",
-    "postal_code": "10013",
-    "country_code": "US",
-    "country_name": "United States"
-   },
-   "geo": {
-    "lat": 40.7167048,
-    "lng": -74.008906,
-    "precision": "rooftop"
-   },
-   "time_zone": "America/New_York",
-   "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
-    "facebook": null,
-    "youtube": null,
-    "tiktok": null,
-    "booking": null
-   },
-   "phone": null,
-   "email": null,
-   "description": "Fuze House is a pilates studio in New York, NY.",
-   "styles": [
-    "pilates"
-   ],
-   "levels": [],
-   "software": {
-    "current": [],
-    "previous": []
-   },
-   "offers": {
-    "teacher_training": null,
-    "on_demand": null,
-    "retreats": null,
-    "drop_in": null
-   },
-   "cross_refs": {
-    "osm": "node/2823256895",
-    "wikidata": null,
-    "tandava_studio_id": null,
-    "teachertree_studio_id": null
-   },
-   "review_state": "published",
-   "sources": [
+    },
     {
-     "type": "openstreetmap",
-     "ref": "https://www.openstreetmap.org/node/2823256895",
-     "license": "ODbL-1.0",
-     "fetched_at": "2026-11-10T20:43:01.037Z"
+     "type": "website",
+     "ref": "http://www.fortpilates.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -28095,6 +28452,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -28105,7 +28465,7 @@
   {
    "id": "osm-node-14181609552",
    "slug": "fuze-house-pilates-and-sculpt-house-new-york",
-   "name": "Fuze House Pilates & Sculpt House",
+   "name": "Fuze House Chelsea",
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
@@ -28132,9 +28492,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.fuzehouse.com/ourstudios",
+    "website_domain": "fuzehouse.com",
+    "instagram": "fuzehouse",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -28171,6 +28531,12 @@
      "ref": "https://www.openstreetmap.org/node/14181609552",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.fuzehouse.com/ourstudios",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -28188,6 +28554,110 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
+    ]
+   },
+   "first_seen_at": "2026-11-10T19:33:04.900Z",
+   "last_refreshed_at": "2026-11-10T20:43:01.037Z",
+   "last_verified_at": null,
+   "internal_notes": "Styles inferred from the name and map tags."
+  },
+  {
+   "id": "osm-node-2823256895",
+   "slug": "fuze-house-new-york",
+   "name": "Fuze House Tribeca",
+   "alt_names": [],
+   "brand": null,
+   "business_type": "pilates_studio",
+   "status": "open",
+   "is_active": true,
+   "status_note": null,
+   "opened_year": null,
+   "closed_year": null,
+   "market": "new-york",
+   "address": {
+    "street": "160 Duane Street",
+    "area": null,
+    "locality": "New York",
+    "region_code": "NY",
+    "region_name": "New York",
+    "postal_code": "10013",
+    "country_code": "US",
+    "country_name": "United States"
+   },
+   "geo": {
+    "lat": 40.7167048,
+    "lng": -74.008906,
+    "precision": "rooftop"
+   },
+   "time_zone": "America/New_York",
+   "links": {
+    "website": "https://www.fuzehouse.com/ourstudios",
+    "website_domain": "fuzehouse.com",
+    "instagram": "fuzehouse",
+    "facebook": null,
+    "youtube": null,
+    "tiktok": null,
+    "booking": null
+   },
+   "phone": null,
+   "email": null,
+   "description": "Fuze House is a pilates studio in New York, NY.",
+   "styles": [
+    "pilates"
+   ],
+   "levels": [],
+   "software": {
+    "current": [],
+    "previous": []
+   },
+   "offers": {
+    "teacher_training": null,
+    "on_demand": null,
+    "retreats": null,
+    "drop_in": null
+   },
+   "cross_refs": {
+    "osm": "node/2823256895",
+    "wikidata": null,
+    "tandava_studio_id": null,
+    "teachertree_studio_id": null
+   },
+   "review_state": "published",
+   "sources": [
+    {
+     "type": "openstreetmap",
+     "ref": "https://www.openstreetmap.org/node/2823256895",
+     "license": "ODbL-1.0",
+     "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.fuzehouse.com/ourstudios",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
+    }
+   ],
+   "field_sources": {
+    "name": [
+     0
+    ],
+    "status": [
+     0
+    ],
+    "address": [
+     0
+    ],
+    "geo": [
+     0
+    ],
+    "styles": [
+     0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -28437,9 +28907,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://www.goodmovenyc.com/",
+    "website_domain": "goodmovenyc.com",
+    "instagram": "goodmoveny",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -28475,6 +28945,12 @@
      "ref": "https://www.openstreetmap.org/node/14024941422",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.goodmovenyc.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -28492,6 +28968,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -29063,9 +29542,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.heatwise-studio.com/studios",
+    "website_domain": "heatwise-studio.com",
+    "instagram": "heatwiseyoga",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -29099,6 +29578,12 @@
      "ref": "https://www.openstreetmap.org/node/11463577703",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.heatwise-studio.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -29113,6 +29598,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T20:43:01.037Z",
@@ -29736,9 +30224,9 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "open",
-   "is_active": true,
-   "status_note": null,
+   "status": "permanently_closed",
+   "is_active": false,
+   "status_note": "Hoboken studios closed in January 2021.",
    "opened_year": null,
    "closed_year": null,
    "market": "new-york",
@@ -29795,6 +30283,12 @@
      "ref": "https://www.openstreetmap.org/node/6789145004",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "press",
+     "ref": "https://www.hobokengirl.com/hudson-yoga-project-closing-hoboken/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -29809,6 +30303,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -29846,9 +30343,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.humanitypilates.com/",
+    "website_domain": "humanitypilates.com",
+    "instagram": "humanitypilatesstudio",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -29884,6 +30381,12 @@
      "ref": "https://www.openstreetmap.org/node/2844978377",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "press",
+     "ref": "https://qns.com/2026/06/humanity-pilates-grand-opening/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -29901,6 +30404,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -30030,9 +30536,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.imxpilates.com/new-york/new-york-city",
+    "website_domain": "imxpilates.com",
+    "instagram": "imxpilatesnyc",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -30068,6 +30574,12 @@
      "ref": "https://www.openstreetmap.org/node/6793153517",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.imxpilates.com/new-york/new-york-city",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -30085,6 +30597,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -30791,7 +31306,7 @@
   {
    "id": "osm-node-2704040555",
    "slug": "jetset-modern-pilates-new-york",
-   "name": "JetSet Modern Pilates",
+   "name": "JETSET Pilates Gramercy",
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
@@ -30818,9 +31333,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://jetsetpilates.com/gramercy",
+    "website_domain": "jetsetpilates.com",
+    "instagram": "jetsetpilatesgramercy",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -30856,6 +31371,12 @@
      "ref": "https://www.openstreetmap.org/node/2704040555",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://jetsetpilates.com/gramercy",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -30873,6 +31394,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -31163,9 +31687,9 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "open",
-   "is_active": true,
-   "status_note": null,
+   "status": "permanently_closed",
+   "is_active": false,
+   "status_note": "Tribeca location closed in January 2021; the Chelsea studio remains.",
    "opened_year": null,
    "closed_year": null,
    "market": "new-york",
@@ -31186,9 +31710,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://lyonsdenpoweryoga.com",
+    "website_domain": "lyonsdenpoweryoga.com",
+    "instagram": "lyonsdenpy",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -31224,6 +31748,12 @@
      "ref": "https://www.openstreetmap.org/node/5227518946",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "press",
+     "ref": "https://tribecacitizen.com/?p=167593",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -31241,6 +31771,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -31669,9 +32202,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.mindpilatesinc.com/",
+    "website_domain": "mindpilatesinc.com",
+    "instagram": "mindpilatesinc",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -31707,6 +32240,12 @@
      "ref": "https://www.openstreetmap.org/node/13667474168",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.mindpilatesinc.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -31724,6 +32263,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -32068,8 +32610,8 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "http://www.mylivingyoga.com/",
+    "website_domain": "mylivingyoga.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -32104,6 +32646,12 @@
      "ref": "https://www.openstreetmap.org/node/8920738993",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.mylivingyoga.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -32118,6 +32666,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -32277,9 +32828,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.newyorkpilates.com/bowery-pilates-studio/",
+    "website_domain": "newyorkpilates.com",
+    "instagram": "newyorkpilates",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -32315,6 +32866,12 @@
      "ref": "https://www.openstreetmap.org/node/9332381121",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.newyorkpilates.com/bowery-pilates-studio/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -32332,6 +32889,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -32369,9 +32929,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.newyorkpilates.com/bowery-pilates-studio/",
+    "website_domain": "newyorkpilates.com",
+    "instagram": "newyorkpilates",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -32407,6 +32967,12 @@
      "ref": "https://www.openstreetmap.org/node/9736021735",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.newyorkpilates.com/bowery-pilates-studio/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -32424,6 +32990,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T20:43:01.037Z",
@@ -32554,9 +33123,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://www.noiryogabk.com/",
+    "website_domain": "noiryogabk.com",
+    "instagram": "noiryogabk",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -32590,6 +33159,12 @@
      "ref": "https://www.openstreetmap.org/node/12144911921",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.noiryogabk.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -32604,6 +33179,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -32951,9 +33529,9 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "open",
-   "is_active": true,
-   "status_note": null,
+   "status": "permanently_closed",
+   "is_active": false,
+   "status_note": "Physical studio closed in early 2021.",
    "opened_year": null,
    "closed_year": null,
    "market": "new-york",
@@ -32976,7 +33554,7 @@
    "links": {
     "website": null,
     "website_domain": null,
-    "instagram": null,
+    "instagram": "pavanayoga",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -33010,6 +33588,12 @@
      "ref": "https://www.openstreetmap.org/node/6799740818",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "press",
+     "ref": "https://www.hobokengirl.com/pavana-yoga-closing-hoboken/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -33024,6 +33608,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -33061,9 +33648,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://pilates-101.com/",
+    "website_domain": "pilates-101.com",
+    "instagram": "_pilates_101_",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -33099,6 +33686,12 @@
      "ref": "https://www.openstreetmap.org/node/12386676804",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://pilates-101.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -33116,6 +33709,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -34116,8 +34712,8 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "http://www.pilatesstatenisland.com",
+    "website_domain": "pilatesstatenisland.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -34154,6 +34750,12 @@
      "ref": "https://www.openstreetmap.org/node/11040468174",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.pilatesstatenisland.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -34171,6 +34773,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -34319,9 +34924,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://www.precision-sculpt-pilates.com/",
+    "website_domain": "precision-sculpt-pilates.com",
+    "instagram": "precisionsculptpilates",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -34358,6 +34963,12 @@
      "ref": "https://www.openstreetmap.org/node/12385656276",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.precision-sculpt-pilates.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -34375,6 +34986,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -34727,9 +35341,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.realpilatesnyc.com",
+    "website_domain": "realpilatesnyc.com",
+    "instagram": "therealpilates",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -34743,7 +35357,30 @@
    ],
    "levels": [],
    "software": {
-    "current": [],
+    "current": [
+     {
+      "platform_id": "squarespace",
+      "role": "website",
+      "detected_via": "booking_link_domain",
+      "evidence": "http://static1.squarespace.com/static/5a359d710100272fc509783e/t/5c6f46621905f42892b101f8/1550796390108/Real_Pilates_Marque_Color_Positive_RGB-01.png",
+      "observed_from": "2026-11-10",
+      "observed_to": null,
+      "confidence": 0.5,
+      "verified": false,
+      "source": 1
+     },
+     {
+      "platform_id": "momence",
+      "role": "system_of_record",
+      "detected_via": "booking_link_domain",
+      "evidence": "https://momence.com/sign-in",
+      "observed_from": "2026-11-10",
+      "observed_to": null,
+      "confidence": 0.95,
+      "verified": false,
+      "source": 1
+     }
+    ],
     "previous": []
    },
    "offers": {
@@ -34765,6 +35402,18 @@
      "ref": "https://www.openstreetmap.org/node/14264972399",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.realpilatesnyc.com/",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.realpilatesnyc.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -34782,6 +35431,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     2
     ]
    },
    "first_seen_at": "2026-11-10T20:43:01.037Z",
@@ -37735,9 +38387,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://themoveluxury.com/",
+    "website_domain": "themoveluxury.com",
+    "instagram": "themoveluxury",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -37773,6 +38425,12 @@
      "ref": "https://www.openstreetmap.org/node/13825892237",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://themoveluxury.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -37790,6 +38448,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
@@ -40872,9 +41533,9 @@
    },
    "time_zone": "America/New_York",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://suryasideyoga.com/",
+    "website_domain": "suryasideyoga.com",
+    "instagram": "Suryaside",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -40908,6 +41569,12 @@
      "ref": "https://www.openstreetmap.org/node/14181628731",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:43:01.037Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://suryasideyoga.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:55:00Z"
     }
    ],
    "field_sources": {
@@ -40922,19 +41589,22 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:33:04.900Z",
    "last_refreshed_at": "2026-11-10T20:43:01.037Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "2026-11-11: Site gives 49-06 Skillman; a 2025 article gave 49-20, now Humanity Pilates."
   },
   {
    "id": "osm-node-14293217563",
    "slug": "3rd-eye-meditation-lounge-austin",
    "name": "3rd Eye Meditation Lounge",
    "alt_names": [],
-   "brand": null,
+   "brand": "Flow Yoga",
    "business_type": "yoga_studio",
    "status": "open",
    "is_active": true,
@@ -40959,9 +41629,9 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://3rdeyemeditationlounge.com",
+    "website_domain": "3rdeyemeditationlounge.com",
+    "instagram": "thirdeyemeditationlounge",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -40998,7 +41668,12 @@
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:38:37.221Z"
     },
-    "2026-11-10: map listing pointed at Flow Yoga's site (flowyogatx.com), a different studio in Westgate. Lantern lists Third Eye separately in Zilker."
+    {
+     "type": "website",
+     "ref": "https://3rdeyemeditationlounge.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
+    }
    ],
    "field_sources": {
     "name": [
@@ -41029,7 +41704,7 @@
    "first_seen_at": "2026-11-10T19:28:40.677Z",
    "last_refreshed_at": "2026-11-10T20:38:37.221Z",
    "last_verified_at": null,
-   "internal_notes": "Website removed: map tag belonged to another studio."
+   "internal_notes": "Website removed: map tag belonged to another studio. Website removed 2026-11-10 (map tag was flowyogatx.com); own site found 2026-11-11. 2026-11-11: Own site, 1701 Toomey Rd; says it is part of the Flow Yoga family."
   },
   {
    "id": "osm-node-14075908601",
@@ -41150,9 +41825,9 @@
    "geo": null,
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.sanctuaryeventspace.com/",
+    "website_domain": "sanctuaryeventspace.com",
+    "instagram": "amalasanctuary",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -41186,6 +41861,12 @@
      "ref": "https://lantern.llc/tx/austin/fitness/yoga",
      "license": null,
      "fetched_at": "2026-11-11T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.sanctuaryeventspace.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -41200,6 +41881,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-11T00:00:00Z",
@@ -41424,9 +42108,9 @@
    "geo": null,
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.austinyogalounge.com/",
+    "website_domain": "austinyogalounge.com",
+    "instagram": "austinyogalounge",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -41464,6 +42148,12 @@
      "ref": "https://lantern.llc/tx/austin/fitness/yoga",
      "license": null,
      "fetched_at": "2026-11-11T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.austinyogalounge.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -41481,6 +42171,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-11T00:00:00Z",
@@ -41518,9 +42211,9 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.bpilatesaustin.com",
+    "website_domain": "bpilatesaustin.com",
+    "instagram": "bpilatesaustin",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -41556,6 +42249,12 @@
      "ref": "https://www.openstreetmap.org/node/10566132284",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:38:37.221Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.bpilatesaustin.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -41573,6 +42272,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:28:40.677Z",
@@ -42220,8 +42922,8 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://www.clubpilates.com/regional/austin",
+    "website_domain": "clubpilates.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -42258,6 +42960,12 @@
      "ref": "https://www.openstreetmap.org/node/13334610085",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:38:37.221Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.clubpilates.com/regional/austin",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -42275,17 +42983,20 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:28:40.677Z",
    "last_refreshed_at": "2026-11-10T20:38:37.221Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "2026-11-11: Brand page for Austin; map position is the East Austin studio."
   },
   {
    "id": "osm-node-12347069728",
    "slug": "corepower-yoga-austin",
-   "name": "CorePower Yoga",
+   "name": "CorePower Yoga Mueller",
    "alt_names": [],
    "brand": "CorePower Yoga",
    "business_type": "yoga_studio",
@@ -42312,8 +43023,8 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://corepoweryoga.com/yoga-studios/tx/austin/mueller",
+    "website_domain": "corepoweryoga.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -42348,6 +43059,12 @@
      "ref": "https://www.openstreetmap.org/node/12347069728",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:38:37.221Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://corepoweryoga.com/yoga-studios/tx/austin/mueller",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -42362,17 +43079,20 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:28:40.677Z",
    "last_refreshed_at": "2026-11-10T20:38:37.221Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "2026-11-11: Map position (78723) matches Mueller, 1701 Simond Ave."
   },
   {
    "id": "osm-node-6455846385",
    "slug": "corepower-yoga-austin-2",
-   "name": "CorePower Yoga",
+   "name": "CorePower Yoga Triangle",
    "alt_names": [],
    "brand": "CorePower Yoga",
    "business_type": "yoga_studio",
@@ -42399,8 +43119,8 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://www.corepoweryoga.com/yoga-studios/texas/austin/triangle",
+    "website_domain": "corepoweryoga.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -42435,6 +43155,12 @@
      "ref": "https://www.openstreetmap.org/node/6455846385",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:38:37.221Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.corepoweryoga.com/yoga-studios/texas/austin/triangle",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -42449,12 +43175,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T20:38:37.221Z",
    "last_refreshed_at": "2026-11-10T20:38:37.221Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "2026-11-11: Map position matches 4616 Triangle Ave."
   },
   {
    "id": "seed-corepower-yoga-triangle-austin",
@@ -42513,7 +43242,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "published",
+   "review_state": "suppressed",
    "sources": [
     {
      "type": "manual",
@@ -42542,7 +43271,7 @@
    "first_seen_at": "2026-11-11T00:00:00Z",
    "last_refreshed_at": "2026-11-11T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
+   "internal_notes": "Duplicate of osm-node-6455846385 (Triangle)."
   },
   {
    "id": "osm-way-382713727",
@@ -42574,9 +43303,9 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://dharma-yoga.net",
+    "website_domain": "dharma-yoga.net",
+    "instagram": "dharmayogaatx",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -42610,6 +43339,12 @@
      "ref": "https://www.openstreetmap.org/way/382713727",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:38:37.221Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://dharma-yoga.net",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -42624,6 +43359,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:28:40.677Z",
@@ -42968,9 +43706,9 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://hausofbpilates.com/",
+    "website_domain": "hausofbpilates.com",
+    "instagram": "hausofbpilates",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -43004,6 +43742,12 @@
      "ref": "https://www.openstreetmap.org/node/14220760901",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:38:37.221Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://hausofbpilates.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -43018,12 +43762,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:28:40.677Z",
    "last_refreshed_at": "2026-11-10T20:38:37.221Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "2026-11-11: Site says the studio moved to 1614 W 5th St."
   },
   {
    "id": "osm-node-3857693597",
@@ -43149,9 +43896,9 @@
    "geo": null,
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://lizardyoga.com",
+    "website_domain": "lizardyoga.com",
+    "instagram": "lizardyoga",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -43187,6 +43934,12 @@
      "ref": "https://lantern.llc/tx/austin/fitness/yoga",
      "license": null,
      "fetched_at": "2026-11-11T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://lizardyoga.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -43204,6 +43957,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-11T00:00:00Z",
@@ -43241,9 +43997,9 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.monsoondance.com/",
+    "website_domain": "monsoondance.com",
+    "instagram": "monsoonaustin",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -43277,6 +44033,12 @@
      "ref": "https://www.openstreetmap.org/node/6480898297",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:38:37.221Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.monsoondance.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -43291,6 +44053,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:28:40.677Z",
@@ -43305,9 +44070,9 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "open",
+   "status": "temporarily_closed",
    "is_active": true,
-   "status_note": null,
+   "status_note": "The studio's site says Austin classes are paused while it relocates.",
    "opened_year": null,
    "closed_year": null,
    "market": "austin",
@@ -43328,8 +44093,8 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://myvinyasapractice.com",
+    "website_domain": "myvinyasapractice.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -43366,6 +44131,12 @@
      "ref": "https://www.openstreetmap.org/node/8881107227",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:38:37.221Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.myvinyasapractice.com/in-studio-yoga-classes/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -43383,6 +44154,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:28:40.677Z",
@@ -43416,9 +44190,9 @@
    "geo": null,
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://practiceopenform.com/",
+    "website_domain": "practiceopenform.com",
+    "instagram": "practiceopenform",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -43454,6 +44228,12 @@
      "ref": "https://lantern.llc/tx/austin/fitness/yoga",
      "license": null,
      "fetched_at": "2026-11-11T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://practiceopenform.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -43471,6 +44251,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-11T00:00:00Z",
@@ -43733,9 +44516,9 @@
    "geo": null,
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://presentpracticeyoga.com",
+    "website_domain": "presentpracticeyoga.com",
+    "instagram": "presentpracticeyoga",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -43771,6 +44554,12 @@
      "ref": "https://lantern.llc/tx/austin/fitness/yoga",
      "license": null,
      "fetched_at": "2026-11-11T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://presentpracticeyoga.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -43788,6 +44577,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-11T00:00:00Z",
@@ -43798,7 +44590,7 @@
   {
    "id": "osm-node-12707881037",
    "slug": "pure-pilates-austin-austin",
-   "name": "Pure Pilates Austin",
+   "name": "Pure Pilates Austin South Lamar",
    "alt_names": [],
    "brand": null,
    "business_type": "pilates_studio",
@@ -43825,9 +44617,9 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.purepilatesaustin.com/locations",
+    "website_domain": "purepilatesaustin.com",
+    "instagram": "purepilatesaustin",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -43863,6 +44655,12 @@
      "ref": "https://www.openstreetmap.org/node/12707881037",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:38:37.221Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.purepilatesaustin.com/locations",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -43880,12 +44678,15 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:28:40.677Z",
    "last_refreshed_at": "2026-11-10T20:38:37.221Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "2026-11-11: Map position matches 1414 S Lamar."
   },
   {
    "id": "seed-pure-yoga-texas-north-austin-austin",
@@ -43913,9 +44714,9 @@
    "geo": null,
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.pureyogatexas.com",
+    "website_domain": "pureyogatexas.com",
+    "instagram": "pureyogatexas",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -43949,6 +44750,12 @@
      "ref": "https://lantern.llc/tx/austin/fitness/yoga",
      "license": null,
      "fetched_at": "2026-11-11T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://pureyogatx.squarespace.com/north-austin",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -43963,12 +44770,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-11T00:00:00Z",
    "last_refreshed_at": "2026-11-11T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
+   "internal_notes": "2026-11-11: Location page, canonical domain pureyogatexas.com; 8620 Burnet Rd #132."
   },
   {
    "id": "seed-retreat-yoga-soulful-fitness-austin",
@@ -44098,7 +44908,7 @@
   {
    "id": "osm-node-3849776348",
    "slug": "solidcore-austin",
-   "name": "Solidcore",
+   "name": "Solidcore Downtown",
    "alt_names": [],
    "brand": "[solidcore]",
    "business_type": "pilates_studio",
@@ -44125,8 +44935,8 @@
    },
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://solidcore.co/studios/downtown",
+    "website_domain": "solidcore.co",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -44163,6 +44973,12 @@
      "ref": "https://www.openstreetmap.org/node/3849776348",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:38:37.221Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://solidcore.co/studios/downtown",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -44180,6 +44996,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:28:40.677Z",
@@ -44335,9 +45154,9 @@
    "geo": null,
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.sukhayogaaustin.com/",
+    "website_domain": "sukhayogaaustin.com",
+    "instagram": "sukhayogaaustin",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -44355,7 +45174,30 @@
    ],
    "levels": [],
    "software": {
-    "current": [],
+    "current": [
+     {
+      "platform_id": "squarespace",
+      "role": "website",
+      "detected_via": "booking_link_domain",
+      "evidence": "https://assets.squarespace.com/universal/default-favicon.ico",
+      "observed_from": "2026-11-10",
+      "observed_to": null,
+      "confidence": 0.5,
+      "verified": false,
+      "source": 1
+     },
+     {
+      "platform_id": "arketa",
+      "role": "system_of_record",
+      "detected_via": "booking_link_domain",
+      "evidence": "https://app.arketa.co/sukhayogaaustin/pricing/buy-page/membership-and-pricing",
+      "observed_from": "2026-11-10",
+      "observed_to": null,
+      "confidence": 0.95,
+      "verified": false,
+      "source": 1
+     }
+    ],
     "previous": []
    },
    "offers": {
@@ -44377,6 +45219,18 @@
      "ref": "https://lantern.llc/tx/austin/fitness/yoga",
      "license": null,
      "fetched_at": "2026-11-11T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://sukhayogaaustin.com/",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.sukhayogaaustin.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -44394,12 +45248,15 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     2
     ]
    },
    "first_seen_at": "2026-11-11T00:00:00Z",
    "last_refreshed_at": "2026-11-11T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
+   "internal_notes": "2026-11-11: 1305 W Oltorf."
   },
   {
    "id": "seed-sukha-yoga-south-lamar-austin",
@@ -44554,9 +45411,9 @@
    "geo": null,
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.sukhayogaaustin.com/",
+    "website_domain": "sukhayogaaustin.com",
+    "instagram": "sukhayogaaustin",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -44574,7 +45431,30 @@
    ],
    "levels": [],
    "software": {
-    "current": [],
+    "current": [
+     {
+      "platform_id": "squarespace",
+      "role": "website",
+      "detected_via": "booking_link_domain",
+      "evidence": "https://assets.squarespace.com/universal/default-favicon.ico",
+      "observed_from": "2026-11-10",
+      "observed_to": null,
+      "confidence": 0.5,
+      "verified": false,
+      "source": 1
+     },
+     {
+      "platform_id": "arketa",
+      "role": "system_of_record",
+      "detected_via": "booking_link_domain",
+      "evidence": "https://app.arketa.co/sukhayogaaustin/pricing/buy-page/membership-and-pricing",
+      "observed_from": "2026-11-10",
+      "observed_to": null,
+      "confidence": 0.95,
+      "verified": false,
+      "source": 1
+     }
+    ],
     "previous": []
    },
    "offers": {
@@ -44596,6 +45476,18 @@
      "ref": "https://lantern.llc/tx/austin/fitness/yoga",
      "license": null,
      "fetched_at": "2026-11-11T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://sukhayogaaustin.com/",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.sukhayogaaustin.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -44613,12 +45505,15 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     2
     ]
    },
    "first_seen_at": "2026-11-11T00:00:00Z",
    "last_refreshed_at": "2026-11-11T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga."
+   "internal_notes": "2026-11-11: 2415 Exposition."
   },
   {
    "id": "osm-node-599493144",
@@ -44627,9 +45522,9 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "open",
-   "is_active": true,
-   "status_note": null,
+   "status": "permanently_closed",
+   "is_active": false,
+   "status_note": "The studio's old website now forwards to a Dallas-area studio with no Austin location.",
    "opened_year": null,
    "closed_year": null,
    "market": "austin",
@@ -44686,6 +45581,12 @@
      "ref": "https://www.openstreetmap.org/node/599493144",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:38:37.221Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.alivestudios.fit/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -44700,6 +45601,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:28:40.677Z",
@@ -44767,7 +45671,7 @@
     "tandava_studio_id": null,
     "teachertree_studio_id": null
    },
-   "review_state": "draft",
+   "review_state": "suppressed",
    "sources": [
     {
      "type": "manual",
@@ -44796,7 +45700,7 @@
    "first_seen_at": "2026-11-10T00:00:00Z",
    "last_refreshed_at": "2026-11-10T00:00:00Z",
    "last_verified_at": null,
-   "internal_notes": "Seeded from https://lantern.llc/tx/austin/fitness/yoga. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting. Missing from map data on 2026-11-10; check before relisting."
+   "internal_notes": "Duplicate of osm-node-14293217563 (same studio, 1701 Toomey Rd)."
   },
   {
    "id": "seed-trufusion-south-austin-austin",
@@ -44901,9 +45805,9 @@
    "alt_names": [],
    "brand": null,
    "business_type": "yoga_studio",
-   "status": "open",
-   "is_active": true,
-   "status_note": null,
+   "status": "permanently_closed",
+   "is_active": false,
+   "status_note": "Now YTX Yoga, Strength, Pilates.",
    "opened_year": null,
    "closed_year": null,
    "market": "austin",
@@ -44960,6 +45864,12 @@
      "ref": "https://www.openstreetmap.org/node/3764021161",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:38:37.221Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://ytxaustin.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -44974,12 +45884,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:28:40.677Z",
    "last_refreshed_at": "2026-11-10T20:38:37.221Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "2026-11-11: Wanderlust Yoga Austin became YTX; YTX Downtown is at 200 W 6th St."
   },
   {
    "id": "osm-node-10815473953",
@@ -45149,9 +46062,9 @@
    "geo": null,
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://yogaeastaustin.com",
+    "website_domain": "yogaeastaustin.com",
+    "instagram": "yogaeastaustin",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -45185,6 +46098,12 @@
      "ref": "https://lantern.llc/tx/austin/fitness/yoga",
      "license": null,
      "fetched_at": "2026-11-11T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://yogaeastaustin.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -45199,6 +46118,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-11T00:00:00Z",
@@ -45365,8 +46287,8 @@
    "geo": null,
    "time_zone": "America/Chicago",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://yogapodaustin.com",
+    "website_domain": "yogapodaustin.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -45406,6 +46328,12 @@
      "ref": "https://lantern.llc/tx/austin/fitness/yoga",
      "license": null,
      "fetched_at": "2026-11-11T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://yogapodaustin.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:30:00Z"
     }
    ],
    "field_sources": {
@@ -45423,6 +46351,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-11T00:00:00Z",
@@ -46818,9 +47749,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://8limbsyoga.com",
+    "website_domain": "8limbsyoga.com",
+    "instagram": "8limbsyoga",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -46832,7 +47763,30 @@
    "styles": [],
    "levels": [],
    "software": {
-    "current": [],
+    "current": [
+     {
+      "platform_id": "squarespace",
+      "role": "website",
+      "detected_via": "booking_link_domain",
+      "evidence": "http://static1.squarespace.com/static/62bf4815968034493317243e/t/630e6410c35a947dff84bb2e/1661887504670/_DSF3416.jpg",
+      "observed_from": "2026-11-10",
+      "observed_to": null,
+      "confidence": 0.5,
+      "verified": false,
+      "source": 1
+     },
+     {
+      "platform_id": "mindbody",
+      "role": "system_of_record",
+      "detected_via": "script_fingerprint",
+      "evidence": "https://widgets.mindbodyonline.com/javascripts/healcode.js",
+      "observed_from": "2026-11-10",
+      "observed_to": null,
+      "confidence": 0.95,
+      "verified": false,
+      "source": 1
+     }
+    ],
     "previous": []
    },
    "offers": {
@@ -46854,6 +47808,18 @@
      "ref": "https://www.openstreetmap.org/node/3247340261",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:39:56.715Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://8limbsyoga.com/",
+     "license": null,
+     "fetched_at": "2026-11-10T00:00:00Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://8limbsyoga.com/about",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -46868,6 +47834,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     2
     ]
    },
    "first_seen_at": "2026-11-10T20:39:56.715Z",
@@ -47919,8 +48888,8 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://www.breathehotyoga.com",
+    "website_domain": "breathehotyoga.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -47957,6 +48926,12 @@
      "ref": "https://www.openstreetmap.org/node/6579698689",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:39:56.715Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.breathehotyoga.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -47974,6 +48949,9 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T20:39:56.715Z",
@@ -49785,9 +50763,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://inspireseattle.com/",
+    "website_domain": "inspireseattle.com",
+    "instagram": "inspirefitnessseattle",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -49823,6 +50801,12 @@
      "ref": "https://www.openstreetmap.org/node/2019051185",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:39:56.715Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://inspireseattle.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -49840,12 +50824,15 @@
     ],
     "styles": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:29:42.348Z",
    "last_refreshed_at": "2026-11-10T20:39:56.715Z",
    "last_verified_at": null,
-   "internal_notes": "Styles inferred from the name and map tags."
+   "internal_notes": "2026-11-11: Lagree studio."
   },
   {
    "id": "osm-node-2397401989",
@@ -50533,9 +51520,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.limberyoga.com/",
+    "website_domain": "limberyoga.com",
+    "instagram": "limberyoga",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -50569,6 +51556,12 @@
      "ref": "https://www.openstreetmap.org/node/2396672660",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:39:56.715Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.limberyoga.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -50583,12 +51576,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:29:42.348Z",
    "last_refreshed_at": "2026-11-10T20:39:56.715Z",
    "last_verified_at": null,
-   "internal_notes": null
+   "internal_notes": "2026-11-11: Site gives 7901 35th Ave SW; map shows 6019 California Ave SW (likely moved)."
   },
   {
    "id": "osm-node-3311160762",
@@ -51171,8 +52167,8 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
+    "website": "https://omculture.com",
+    "website_domain": "omculture.com",
     "instagram": null,
     "facebook": null,
     "youtube": null,
@@ -51207,6 +52203,12 @@
      "ref": "https://www.openstreetmap.org/way/326804797",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:39:56.715Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://omculture.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -51221,6 +52223,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:29:42.348Z",
@@ -51483,9 +52488,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://www.praxisballard.com/",
+    "website_domain": "praxisballard.com",
+    "instagram": "praxisballard",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -51519,6 +52524,12 @@
      "ref": "https://www.openstreetmap.org/node/9777969517",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:39:56.715Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.praxisballard.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -51533,6 +52544,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:29:42.348Z",
@@ -52243,9 +53257,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://www.shefayogaroosevelt.com/",
+    "website_domain": "shefayogaroosevelt.com",
+    "instagram": "shefayogaroosevelt",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -52279,6 +53293,12 @@
      "ref": "https://www.openstreetmap.org/node/2434504356",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:39:56.715Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.shefayogaroosevelt.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -52293,6 +53313,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:29:42.348Z",
@@ -53151,9 +54174,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://www.magnoliayogaandhealingarts.com",
+    "website_domain": "magnoliayogaandhealingarts.com",
+    "instagram": "magnoliayogaandhealingarts",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -53187,6 +54210,12 @@
      "ref": "https://www.openstreetmap.org/node/3062335733",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:39:56.715Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://www.magnoliayogaandhealingarts.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -53201,6 +54230,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:29:42.348Z",
@@ -54159,9 +55191,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "http://www.yogaonbeacon.com/",
+    "website_domain": "yogaonbeacon.com",
+    "instagram": "yogaonbeacon",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -54201,6 +55233,12 @@
      "ref": "https://www.openstreetmap.org/node/2373916340",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:39:56.715Z"
+    },
+    {
+     "type": "website",
+     "ref": "http://www.yogaonbeacon.com/",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -54215,12 +55253,15 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     2
     ]
    },
    "first_seen_at": "2026-11-10T19:29:42.348Z",
    "last_refreshed_at": "2026-11-10T20:39:56.715Z",
    "last_verified_at": null,
-   "internal_notes": "Merged map element node/2373916340."
+   "internal_notes": "2026-11-11: Site gives 3063 Beacon Ave S."
   },
   {
    "id": "osm-node-11882656388",
@@ -54252,9 +55293,9 @@
    },
    "time_zone": "America/Los_Angeles",
    "links": {
-    "website": null,
-    "website_domain": null,
-    "instagram": null,
+    "website": "https://yogarama.com",
+    "website_domain": "yogarama.com",
+    "instagram": "yogarama_studio",
     "facebook": null,
     "youtube": null,
     "tiktok": null,
@@ -54288,6 +55329,12 @@
      "ref": "https://www.openstreetmap.org/node/11882656388",
      "license": "ODbL-1.0",
      "fetched_at": "2026-11-10T20:39:56.715Z"
+    },
+    {
+     "type": "website",
+     "ref": "https://yogarama.com",
+     "license": null,
+     "fetched_at": "2026-11-11T05:45:00Z"
     }
    ],
    "field_sources": {
@@ -54302,6 +55349,9 @@
     ],
     "geo": [
      0
+    ],
+    "override": [
+     1
     ]
    },
    "first_seen_at": "2026-11-10T19:29:42.348Z",
