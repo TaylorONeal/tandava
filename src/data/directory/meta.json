@@ -3,66 +3,66 @@
   "total_public": 520,
   "active": 513,
   "archived": 7,
-  "with_software": 107,
+  "with_software": 139,
   "markets": [
     {
       "market": "austin",
-      "fetched_at": "2026-11-10T20:38:37.221Z",
-      "osm_base": "2026-11-10T20:38:05Z",
+      "fetched_at": "2026-11-11T05:35:39.069Z",
+      "osm_base": "2026-11-11T05:34:51Z",
       "elements": 33
     },
     {
       "market": "bangkok",
-      "fetched_at": "2026-11-10T20:47:36.862Z",
-      "osm_base": "2026-11-10T20:46:06Z",
+      "fetched_at": "2026-11-11T05:43:24.995Z",
+      "osm_base": "2026-11-11T05:42:01Z",
       "elements": 21
     },
     {
       "market": "chicago",
-      "fetched_at": "2026-11-10T20:41:47.574Z",
-      "osm_base": "2026-11-10T20:41:06Z",
+      "fetched_at": "2026-11-11T05:38:11.711Z",
+      "osm_base": "2026-11-11T05:36:52Z",
       "elements": 56
     },
     {
       "market": "frankfurt",
-      "fetched_at": "2026-11-10T20:45:55.456Z",
-      "osm_base": "2026-11-10T20:45:05Z",
+      "fetched_at": "2026-11-11T05:42:05.564Z",
+      "osm_base": "2026-11-11T05:40:59Z",
       "elements": 28
     },
     {
       "market": "koh-phangan",
-      "fetched_at": "2026-11-10T20:46:49.674Z",
-      "osm_base": "2026-11-10T20:46:06Z",
+      "fetched_at": "2026-11-11T05:42:53.012Z",
+      "osm_base": "2026-11-11T05:42:01Z",
       "elements": 21
     },
     {
       "market": "new-york",
-      "fetched_at": "2026-11-10T20:43:01.037Z",
-      "osm_base": "2026-11-10T20:42:06Z",
+      "fetched_at": "2026-11-11T05:39:17.876Z",
+      "osm_base": "2026-11-11T05:38:54Z",
       "elements": 216
     },
     {
       "market": "nosara",
-      "fetched_at": "2026-11-10T20:45:10.880Z",
-      "osm_base": "2026-11-10T20:44:04Z",
+      "fetched_at": "2026-11-11T05:41:17.942Z",
+      "osm_base": "2026-11-11T05:40:59Z",
       "elements": 0
     },
     {
       "market": "san-francisco",
-      "fetched_at": "2026-11-10T20:40:57.043Z",
-      "osm_base": "2026-11-10T20:40:06Z",
+      "fetched_at": "2026-11-11T05:37:22.917Z",
+      "osm_base": "2026-11-11T05:36:52Z",
       "elements": 49
     },
     {
       "market": "seattle",
-      "fetched_at": "2026-11-10T20:39:56.715Z",
-      "osm_base": "2026-11-10T20:39:06Z",
+      "fetched_at": "2026-11-11T05:36:30.624Z",
+      "osm_base": "2026-11-11T05:35:51Z",
       "elements": 88
     },
     {
       "market": "ubud",
-      "fetched_at": "2026-11-10T20:44:23.419Z",
-      "osm_base": "2026-11-10T20:43:04Z",
+      "fetched_at": "2026-11-11T05:40:38.125Z",
+      "osm_base": "2026-11-11T05:39:57Z",
       "elements": 15
     }
   ],
