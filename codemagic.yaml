@@ -191,3 +191,30 @@ workflows:
             --force true
       - name: Remove key file
         script: rm -f /tmp/asc_api_key.json
+
+  # Internal TestFlight access for the account holder: internal group, tester,
+  # export compliance. Never touches external testing, never submits for review.
+  studio-ios-internal-testers:
+    name: Tandava Studio TestFlight internal testers (no review)
+    instance_type: linux_x2
+    max_build_duration: 10
+    integrations:
+      app_store_connect: app-store-connect
+    environment:
+      vars:
+        ASC_APP_ID: "6831459731"
+        READD_TESTER: "0"
+        REPORT_ONLY: "1"
+        RESEND_INVITE: "0"
+        ATTACH_REVIEW_PDF: "1"
+    scripts:
+      - name: Internal group, tester and export compliance
+        script: |
+          python3 -m pip install --quiet --no-cache-dir pyjwt cryptography
+          if [ "$ATTACH_REVIEW_PDF" = "1" ]; then python3 scripts/asc/review_attachment.py; fi
+          if [ "$REPORT_ONLY" = "1" ]; then
+            python3 scripts/asc/tester_report.py
+            python3 scripts/asc/readiness_report.py
+          else
+            python3 scripts/asc/internal_testers.py
+          fi
