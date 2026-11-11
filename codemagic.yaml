@@ -234,3 +234,20 @@ workflows:
         script: |
           python3 -m pip install --quiet --no-cache-dir pyjwt cryptography
           python3 scripts/asc/testflight_report.py
+
+  asc-public-testflight:
+    name: ASC public TestFlight links + beta review (ClassStamp, Tandava Studio, TeacherTree, CueCraft)
+    instance_type: linux_x2
+    max_build_duration: 15
+    integrations:
+      app_store_connect: app-store-connect
+    environment:
+      vars:
+        PUBLIC_APP_IDS: "6831702551,6831459731,6819993265,6758321121"
+        FEEDBACK_EMAIL: "purafieldstudio@gmail.com"
+        CONTACT_EMAIL: "purafieldstudio@gmail.com"
+    scripts:
+      - name: Public links, export compliance No (approved Nov 11), beta review submit
+        script: |
+          python3 -m pip install --quiet --no-cache-dir pyjwt cryptography
+          python3 scripts/asc/public_testflight.py
