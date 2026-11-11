@@ -218,3 +218,15 @@ workflows:
           else
             python3 scripts/asc/internal_testers.py
           fi
+
+  asc-testflight-report:
+    name: ASC TestFlight report, all apps (read-only)
+    instance_type: linux_x2
+    max_build_duration: 10
+    integrations:
+      app_store_connect: app-store-connect
+    scripts:
+      - name: TestFlight report (GET only)
+        script: |
+          python3 -m pip install --quiet --no-cache-dir pyjwt cryptography
+          python3 scripts/asc/testflight_report.py
