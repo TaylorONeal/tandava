@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { compileSignatures, detectSoftware, matchUrl } from "./detect.mjs";
 import { inferStyles, isStudioCandidate, statusOf, normalizePhone, instagramHandle, describe, businessType } from "./normalize.mjs";
-import { recordFromElement, dedupe, carryHistory, toPublic, applySiteCheck } from "./build-studios.mjs";
+import { recordFromElement, dedupe, carryHistory, toPublic, applySiteCheck, sameStudio } from "./build-studios.mjs";
 import { robotsAllows, vendorCandidates, checkSite } from "./site-check.mjs";
 import { freshEnough } from "./osm-pull.mjs";
 
@@ -78,6 +78,15 @@ test("duplicates merge on website domain", () => {
   const out = dedupe([a, b], sigs);
   assert.equal(out.length, 1);
   assert.equal(out[0].links.instagram, "sunyoga");
+});
+
+test("chain locations that share a website stay separate", () => {
+  const a = recordFromElement({ ...el(1, { name: "Club Pilates", website: "https://www.clubpilates.com/austin" }), lat: 30.26, lon: -97.74 }, ctx);
+  const b = recordFromElement({ ...el(2, { name: "Club Pilates", website: "https://www.clubpilates.com/southlamar" }), lat: 30.23, lon: -97.79 }, ctx);
+  assert.equal(dedupe([a, b], sigs).length, 2);
+  const seed = { ...a, geo: null, name: "Sukha Yoga Oltorf" };
+  assert.equal(sameStudio(seed, { ...a, geo: null, name: "Sukha Yoga Tarrytown" }), false);
+  assert.equal(sameStudio({ ...a, geo: null, name: "Flow Yoga" }, { ...a, name: "Flow Yoga Westgate" }), true);
 });
 
 test("a switch moves the old platform to previous with an end date", () => {
