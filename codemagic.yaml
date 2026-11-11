@@ -206,10 +206,12 @@ workflows:
         READD_TESTER: "0"
         REPORT_ONLY: "1"
         RESEND_INVITE: "0"
+        ATTACH_REVIEW_PDF: "1"
     scripts:
       - name: Internal group, tester and export compliance
         script: |
           python3 -m pip install --quiet --no-cache-dir pyjwt cryptography
+          if [ "$ATTACH_REVIEW_PDF" = "1" ]; then python3 scripts/asc/review_attachment.py; fi
           if [ "$REPORT_ONLY" = "1" ]; then
             python3 scripts/asc/tester_report.py
             python3 scripts/asc/readiness_report.py
