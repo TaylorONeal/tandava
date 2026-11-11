@@ -49,7 +49,8 @@ jobs:
         run: |
           RT=$(xcrun simctl list runtimes -j | python3 -c "import json,sys;r=[x for x in json.load(sys.stdin)['runtimes'] if x['platform']=='iOS' and x['isAvailable']];r.sort(key=lambda x:[int(p) for p in x['version'].split('.')]);print(r[-1]['identifier'])")
           echo "runtime $RT"
-          UDID=$(RT=$RT xcrun simctl list devices -j | python3 -c "import json,sys,os;d=json.load(sys.stdin)['devices'].get(os.environ['RT'],[]);c=[x for x in d if x['isAvailable'] and x['name'].startswith('iPhone')];p=[x for x in c if 'Pro' in x['name'] and 'Max' not in x['name']] or c;print(p[-1]['udid'] if p else '')")
+          export RT
+          UDID=$(xcrun simctl list devices -j | python3 -c "import json,sys,os;d=json.load(sys.stdin)['devices'].get(os.environ['RT'],[]);c=[x for x in d if x['isAvailable'] and x['name'].startswith('iPhone')];p=[x for x in c if 'Pro' in x['name'] and 'Max' not in x['name']] or c;print(p[-1]['udid'] if p else '')")
           if [ -z "$UDID" ]; then
             DT=$(xcrun simctl list devicetypes -j | python3 -c "import json,sys;t=[x['identifier'] for x in json.load(sys.stdin)['devicetypes'] if x['name'].startswith('iPhone') and 'Pro' in x['name'] and 'Max' not in x['name']];print(t[-1])")
             UDID=$(xcrun simctl create smoke "$DT" "$RT")
@@ -151,6 +152,7 @@ jobs:
         run: |
           mkdir -p smoke-out && cd smoke-out
           git init -q && git checkout -q -b out
+          [ -f results.txt ] || echo "no results: job failed before the app was driven (run ${{ github.run_id }})" > results.txt
           git add -A
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
             commit -qm "iOS smoke outputs from run ${{ github.run_id }} (do not merge)"
@@ -226,6 +228,7 @@ jobs:
         run: |
           mkdir -p smoke-out && cd smoke-out
           git init -q && git checkout -q -b out
+          [ -f results.txt ] || echo "no results: job failed before the app was driven (run ${{ github.run_id }})" > results.txt
           git add -A
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
             commit -qm "Android smoke outputs from run ${{ github.run_id }} (do not merge)"
