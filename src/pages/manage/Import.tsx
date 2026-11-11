@@ -1,3 +1,6 @@
+import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useMyAdminStudio } from "@/hooks/useAttribution";
 import { useState, useCallback } from "react";
 import { ManageLayout } from "@/components/manage/ManageLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -63,8 +66,6 @@ const sourceOptions = Object.entries(CONNECTOR_PROVIDERS).map(([id, info]) => ({
 
 const importTypes = [
   { value: "clients", label: "Clients / Students", icon: Users, description: "Names, emails, phone numbers, emergency contacts" },
-  { value: "attendance", label: "Class History / Attendance", icon: Calendar, description: "Past class bookings and attendance records" },
-  { value: "transactions", label: "Transaction History", icon: CreditCard, description: "Purchase history, payments, and refunds" },
 ];
 
 // Target fields for a client/student import, with header aliases used for
@@ -83,11 +84,14 @@ const CLIENT_TARGETS: TargetField[] = [
 ];
 
 const targetFieldOptions = [
-  { value: "", label: "Skip this column" },
+  { value: "__skip__", label: "Skip this column" },
   ...CLIENT_TARGETS.map((t) => ({ value: t.value, label: t.label })),
 ];
 
 export default function ImportManage() {
+  const { isDemoMode } = useAuth();
+  const live = !isDemoMode;
+  const { data: studio } = useMyAdminStudio();
   const [step, setStep] = useState<ImportStep>("source");
   const [selectedSource, setSelectedSource] = useState<ImportSource | "">("");
   const [selectedImportType, setSelectedImportType] = useState("");
@@ -147,6 +151,10 @@ export default function ImportManage() {
   };
 
   const handleStartImport = async () => {
+    if (live && (!isBackendConfigured() || !studio)) {
+      toast({ title: "Import unavailable", description: "Load your studio before importing members.", variant: "destructive" });
+      return;
+    }
     setStep("processing");
     setProgress(0);
 
@@ -159,7 +167,7 @@ export default function ImportManage() {
 
     // When a backend is configured, persist the validated records server-side;
     // otherwise this is a local validation/dry-run (demo).
-    if (isBackendConfigured() && result.records.length > 0) {
+    if (live && result.records.length > 0) {
       try {
         const { data, error } = await api.invoke<{
           total: number;
@@ -167,11 +175,15 @@ export default function ImportManage() {
           skipped: number;
           errors: { row: number; message: string }[];
         }>("import-members", {
+          studioId: studio!.studio_id,
           source: selectedSource,
           fileName,
           records: result.records,
         });
         if (error) throw new Error(error.message);
+        if (!data || !Number.isInteger(data.success) || data.success < 0 || !Number.isInteger(data.skipped) || data.skipped < 0 || !Array.isArray(data.errors)) {
+          throw new Error("The server did not confirm the import. Please try again.");
+        }
         const serverErrors = data?.errors ?? [];
         finalErrors = [...result.errors, ...serverErrors];
         success = data?.success ?? 0;
@@ -182,27 +194,16 @@ export default function ImportManage() {
           description: err instanceof Error ? err.message : "Could not reach the import service.",
           variant: "destructive",
         });
+        setStep("preview");
+        return;
       }
     }
 
     setRowErrors(finalErrors);
 
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setImportResults({
-            total: parsed?.rows.length ?? result.total,
-            success,
-            errors: finalErrors.length,
-            skipped,
-          });
-          setStep("complete");
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 80);
+    setProgress(100);
+    setImportResults({ total: parsed?.rows.length ?? result.total, success, errors: finalErrors.length, skipped });
+    setStep("complete");
   };
 
   const handleReset = () => {
@@ -224,12 +225,12 @@ export default function ImportManage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Import Data</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Migrate your studio data from another platform or any CSV export
+            Import members from another platform or a CSV export
           </p>
         </div>
 
         {/* Progress Steps */}
-        <div className="flex items-center gap-2 text-xs">
+        <div className="flex flex-wrap items-center gap-2 text-xs">
           {[
             { key: "source", label: "Source" },
             { key: "upload", label: "Upload" },
@@ -410,14 +411,14 @@ export default function ImportManage() {
               <div className="flex items-center gap-2 px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl text-sm">
                 <Sparkles className="h-4 w-4 text-blue-500" />
                 <span className="text-blue-800">
-                  Auto-detected format: <strong>{getProviderDisplayName(selectedSource)}</strong> — columns have been pre-mapped
+                  Auto-detected format: <strong>{getProviderDisplayName(selectedSource)}</strong>. Columns are mapped for you.
                 </span>
               </div>
             )}
 
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <CardTitle>Map Columns</CardTitle>
                     <CardDescription>
@@ -434,7 +435,7 @@ export default function ImportManage() {
               <CardContent>
                 <div className="space-y-3">
                   {/* Header */}
-                  <div className="grid grid-cols-[1fr,auto,1fr,1fr] gap-3 px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <div className="hidden sm:grid sm:grid-cols-[1fr,auto,1fr,1fr] gap-3 px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     <span>CSV Column</span>
                     <span></span>
                     <span>Maps To</span>
@@ -444,7 +445,7 @@ export default function ImportManage() {
                   {columnMappings.map((mapping, index) => (
                     <div
                       key={index}
-                      className={`grid grid-cols-[1fr,auto,1fr,1fr] gap-3 items-center p-3 rounded-xl ${
+                      className={`grid grid-cols-1 sm:grid-cols-[1fr,auto,1fr,1fr] gap-3 items-center p-3 rounded-xl ${
                         mapping.targetField ? "bg-secondary/30" : "bg-secondary/10"
                       }`}
                     >
@@ -456,13 +457,13 @@ export default function ImportManage() {
                         )}
                       </div>
 
-                      <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                      <ArrowRight className="hidden sm:block h-3 w-3 text-muted-foreground" />
 
                       <Select
-                        value={mapping.targetField}
-                        onValueChange={(val) => handleMappingChange(index, val)}
+                        value={mapping.targetField || "__skip__"}
+                        onValueChange={(val) => handleMappingChange(index, val === "__skip__" ? "" : val)}
                       >
-                        <SelectTrigger className="h-8 text-sm">
+                        <SelectTrigger aria-label={`Map ${mapping.sourceColumn}`} className="h-11 text-sm">
                           <SelectValue placeholder="Skip" />
                         </SelectTrigger>
                         <SelectContent>
@@ -475,7 +476,7 @@ export default function ImportManage() {
                       </Select>
 
                       <div className="text-xs text-muted-foreground truncate">
-                        {mapping.sampleValues.filter(Boolean).slice(0, 2).join(", ")}
+                        <span className="sm:hidden">Sample: </span>{mapping.sampleValues.filter(Boolean).slice(0, 2).join(", ")}
                       </div>
                     </div>
                   ))}
@@ -562,7 +563,7 @@ export default function ImportManage() {
               <Button variant="outline" onClick={() => setStep("mapping")}>
                 Back
               </Button>
-              <Button onClick={handleStartImport}>
+              <Button onClick={handleStartImport} disabled={live && !studio}>
                 Start Import <ArrowRight className="h-4 w-4 ms-2" />
               </Button>
             </div>
@@ -593,8 +594,8 @@ export default function ImportManage() {
               <CardContent className="py-12 text-center space-y-4">
                 <CheckCircle2 className="h-16 w-16 text-accent-sage mx-auto" />
                 <div>
-                  <h3 className="text-xl font-semibold">Import Complete</h3>
-                  <p className="text-sm text-muted-foreground mt-1">Your data has been successfully imported</p>
+                  <h3 className="text-xl font-semibold">{live ? "Import results" : "Validation results"}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">{live ? `${importResults.success} member records imported.` : "Demo validation only. No member records were saved."}</p>
                 </div>
 
                 <div className="grid grid-cols-4 gap-4 max-w-md mx-auto pt-4">
@@ -604,7 +605,7 @@ export default function ImportManage() {
                   </div>
                   <div className="text-center">
                     <p className="text-2xl font-bold text-accent-sage">{importResults.success}</p>
-                    <p className="text-xs text-muted-foreground">Imported</p>
+                    <p className="text-xs text-muted-foreground">{live ? "Imported" : "Valid"}</p>
                   </div>
                   <div className="text-center">
                     <p className="text-2xl font-bold text-destructive">{importResults.errors}</p>
@@ -645,16 +646,16 @@ export default function ImportManage() {
                 Import More Data
               </Button>
               <Button asChild>
-                <a href="/manage/students">
-                  View Imported Students <ArrowRight className="h-4 w-4 ms-2" />
-                </a>
+                <Link to="/manage">
+                  Back to dashboard <ArrowRight className="h-4 w-4 ms-2" />
+                </Link>
               </Button>
             </div>
           </div>
         )}
 
-        {/* Past Imports */}
-        {step === "source" && (
+        {/* Sample history belongs only in the explicit demo. */}
+        {isDemoMode && step === "source" && (
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Import History</CardTitle>
@@ -670,7 +671,7 @@ export default function ImportManage() {
                     <FileSpreadsheet className="h-4 w-4 text-muted-foreground" />
                     <div>
                       <p className="text-sm font-medium">{job.type} from {job.source}</p>
-                      <p className="text-xs text-muted-foreground">{job.date} — {job.total.toLocaleString()} records</p>
+                      <p className="text-xs text-muted-foreground">{job.date} · {job.total.toLocaleString()} records</p>
                     </div>
                   </div>
                   <Badge

@@ -2,6 +2,7 @@
   "version": "5",
   "redirects": {
     "https://esm.sh/@supabase/supabase-js@2": "https://esm.sh/@supabase/supabase-js@2.117.2",
+    "https://esm.sh/@types/web-push@~3.6.4/index.d.ts": "https://esm.sh/@types/web-push@3.6.4/index.d.ts",
     "https://esm.sh/stripe@14?target=deno": "https://esm.sh/stripe@14.25.0?target=deno"
   },
   "remote": {
@@ -17,6 +18,7 @@
     "https://deno.land/std@0.168.0/async/tee.ts": "3a47cc4e9a940904fd4341f0224907e199121c80b831faa5ec2b054c6d2eff5e",
     "https://deno.land/std@0.168.0/http/server.ts": "e99c1bee8a3f6571ee4cdeb2966efad465b8f6fe62bec1bdb59c1f007cc4d155",
     "https://esm.sh/@supabase/supabase-js@2.117.2": "6da4477d96ad4392b5a8be8f423384a3812cdd651df483e433ba422a69ff879b",
-    "https://esm.sh/stripe@14.25.0?target=deno": "d51f866ea5a2e00948bbd0fbcd10e389f0a74811d5320874d08fde4ff54e6ccc"
+    "https://esm.sh/stripe@14.25.0?target=deno": "d51f866ea5a2e00948bbd0fbcd10e389f0a74811d5320874d08fde4ff54e6ccc",
+    "https://esm.sh/web-push@3.6.7": "e3c6dacc6581629be7433797d5fe1f756ad12d3f8732f97c9b71129affd90906"
   }
 }

@@ -20,7 +20,9 @@ import {
   Star,
   Check,
   X,
+  QrCode,
 } from "lucide-react";
+import { CheckInPassDialog } from "@/components/checkin/CheckInPassDialog";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
@@ -32,6 +34,7 @@ import { splitMyBookings, type MyBookingView } from "@/lib/myBookings";
 
 interface BookingItem {
   id: string;
+  classCancelled?: boolean;
   type: "CLASS" | "WORKSHOP" | "APPOINTMENT";
   title: string;
   teacher: {
@@ -51,7 +54,7 @@ const upcomingBookings: BookingItem[] = [
     id: "1",
     type: "CLASS",
     title: "Power Vinyasa Flow",
-    teacher: { name: "Maya Johnson" },
+    teacher: { name: "Brooke Sandoval" },
     startTime: "Today, 6:00 PM",
     duration: 60,
     location: "Main Studio",
@@ -63,7 +66,7 @@ const upcomingBookings: BookingItem[] = [
     id: "2",
     type: "CLASS",
     title: "Morning Flow",
-    teacher: { name: "Sarah Lee" },
+    teacher: { name: "Dana Whitaker" },
     startTime: "Tomorrow, 7:00 AM",
     duration: 60,
     location: "Main Studio",
@@ -75,7 +78,7 @@ const upcomingBookings: BookingItem[] = [
     id: "3",
     type: "WORKSHOP",
     title: "Inversions Workshop",
-    teacher: { name: "Maya Johnson" },
+    teacher: { name: "Brooke Sandoval" },
     startTime: "Saturday, Dec 7, 2:00 PM",
     duration: 180,
     location: "Main Studio",
@@ -87,7 +90,7 @@ const upcomingBookings: BookingItem[] = [
     id: "4",
     type: "CLASS",
     title: "Hot Power Yoga",
-    teacher: { name: "Alex Rivera" },
+    teacher: { name: "Marcus Bell" },
     startTime: "Tomorrow, 12:00 PM",
     duration: 75,
     location: "Hot Room",
@@ -101,7 +104,7 @@ const pastBookings: BookingItem[] = [
     id: "p1",
     type: "CLASS",
     title: "Yin Yoga & Meditation",
-    teacher: { name: "David Park" },
+    teacher: { name: "Mei Tanaka" },
     startTime: "Yesterday, 7:30 PM",
     duration: 75,
     location: "Zen Room",
@@ -112,7 +115,7 @@ const pastBookings: BookingItem[] = [
     id: "p2",
     type: "CLASS",
     title: "Morning Flow",
-    teacher: { name: "Sarah Lee" },
+    teacher: { name: "Dana Whitaker" },
     startTime: "Dec 1, 7:00 AM",
     duration: 60,
     location: "Main Studio",
@@ -123,7 +126,7 @@ const pastBookings: BookingItem[] = [
     id: "p3",
     type: "APPOINTMENT",
     title: "Private Yoga Session",
-    teacher: { name: "Maya Johnson" },
+    teacher: { name: "Brooke Sandoval" },
     startTime: "Nov 30, 4:00 PM",
     duration: 60,
     location: "Private Room",
@@ -150,11 +153,13 @@ function BookingCard({
   booking,
   onCancel,
   onRate,
+  onPass,
   isPast = false,
 }: {
   booking: BookingItem;
   onCancel: (id: string) => void;
   onRate?: (id: string) => void;
+  onPass?: (booking: BookingItem) => void;
   isPast?: boolean;
 }) {
   const status = statusConfig[booking.status];
@@ -218,6 +223,12 @@ function BookingCard({
 
         {/* Actions */}
         <div className="flex sm:flex-col gap-2">
+          {!isPast && onPass && booking.status === "BOOKED" && (
+            <Button size="sm" onClick={() => onPass(booking)}>
+              <QrCode className="h-4 w-4 me-1" />
+              Check-in pass
+            </Button>
+          )}
           {isPast && booking.status === "CHECKED_IN" && onRate ? (
             <Button variant="outline" size="sm" onClick={() => onRate(booking.id)}>
               <Star className="h-4 w-4 me-1" />
@@ -243,6 +254,7 @@ function BookingCard({
 function toItem(v: MyBookingView): BookingItem {
   return {
     id: v.id,
+    classCancelled: v.classCancelled,
     type: "CLASS",
     title: v.classCancelled ? `${v.title} (cancelled by the studio)` : v.title,
     teacher: v.teacherName ? { name: v.teacherName } : null,
@@ -261,6 +273,7 @@ const MySchedule = () => {
   const [canceledIds, setCanceledIds] = useState<Set<string>>(new Set());
   const [ratedIds, setRatedIds] = useState<Set<string>>(new Set());
   const [cancelling, setCancelling] = useState(false);
+  const [passBooking, setPassBooking] = useState<BookingItem | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -356,6 +369,7 @@ const MySchedule = () => {
                     booking={booking}
                     onCancel={handleCancelClick}
                     onRate={live ? undefined : handleRate}
+                    onPass={live && !booking.classCancelled ? setPassBooking : undefined}
                   />
                 ))}
               </div>
@@ -434,6 +448,12 @@ const MySchedule = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <CheckInPassDialog
+        bookingId={passBooking?.id ?? null}
+        title={passBooking?.title ?? ""}
+        when={passBooking?.startTime ?? ""}
+        onClose={() => setPassBooking(null)}
+      />
     </AppLayout>
   );
 };

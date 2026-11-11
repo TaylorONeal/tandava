@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   parseMoney, centsToInput, formatPrice, offeringFromForm, emptyOfferingForm, packFromForm, emptyPackForm,
+  offeringToForm, packToForm, membershipToForm,
   membershipFromForm, emptyMembershipForm, ruleEndTime, ruleFromForm, rulesByDay, uniqueSlug, formatTime, pickableLocations,
 } from "./catalog";
 
@@ -106,5 +107,21 @@ describe("uniqueSlug", () => {
   it("adds a number when taken", () => {
     expect(uniqueSlug("Hot Vinyasa!", [])).toBe("hot-vinyasa");
     expect(uniqueSlug("Hot Vinyasa", ["hot-vinyasa", "hot-vinyasa-2"])).toBe("hot-vinyasa-3");
+  });
+});
+
+
+describe("purchase delivery format", () => {
+  it("does not classify a new or legacy product without an explicit choice", () => {
+    expect(emptyOfferingForm().purchaseScope).toBe("unknown");
+    expect(emptyPackForm().purchaseScope).toBe("unknown");
+    expect(emptyMembershipForm().purchaseScope).toBe("unknown");
+    expect(offeringToForm({ id: "o", name: "Class", slug: "class", description: null, duration_minutes: 60, capacity: 10, drop_in_price_cents: 1000, is_active: true }).purchaseScope).toBe("unknown");
+  });
+  it("preserves explicit purchase format through edits", () => {
+    const pack = { id: "p", name: "Physical pack", class_count: 5, price_cents: 5000, validity_days: 90, is_active: true, purchase_scope: "in_person" as const };
+    expect(packFromForm(packToForm(pack)).patch?.purchase_scope).toBe("in_person");
+    const membership = { id: "m", name: "Online", billing_cycle: "monthly" as const, price_cents: 5000, classes_per_cycle: null, is_active: true, purchase_scope: "digital_or_mixed" as const };
+    expect(membershipFromForm(membershipToForm(membership)).patch?.purchase_scope).toBe("digital_or_mixed");
   });
 });

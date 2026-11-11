@@ -1,10 +1,15 @@
 \i helpers.sql
+-- Explicit, transaction-only RLS probes for legacy inbox/Zoom/nudge policies.
+-- No runtime grant is added for these unimplemented direct read/write paths.
+BEGIN;
+GRANT SELECT, UPDATE ON class_zoom_meetings, nudge_rules TO authenticated;
+GRANT SELECT ON messages TO authenticated;
 -- Security baseline (SEC-*): guards for migration 00022 and for future drift.
 
 DO $$
 DECLARE missing text; unpinned text;
 BEGIN
-  -- SEC-01: every public table has RLS enabled (Supabase grants anon full rights on new tables).
+  -- SEC-01: every public table has RLS enabled (table ACLs are tested separately in 005).
   SELECT string_agg(c.relname, ', ') INTO missing FROM pg_class c
   WHERE c.relnamespace = 'public'::regnamespace AND c.relkind = 'r' AND NOT c.relrowsecurity;
   PERFORM pg_temp.ok(missing IS NULL, 'SEC-01', 'RLS enabled on every public table' || COALESCE(': missing ' || missing, ''));
@@ -47,7 +52,7 @@ BEGIN
     VALUES (pg_temp.id('occ_a_open'), 'z-1', 'https://zoom.example/j/1', 'https://zoom.example/s/1', 'secret');
 
   PERFORM pg_temp.as_anon();
-  SELECT count(*) INTO n FROM class_zoom_meetings; EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.expect_denied('SELECT * FROM class_zoom_meetings', 'SEC-ACL'); n := 0; EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(n = 0, 'SEC-02', 'anon cannot read zoom meetings');
 
   PERFORM pg_temp.as_user(pg_temp.id('student_a1'));
@@ -76,7 +81,7 @@ DECLARE n bigint; raw_rows bigint; msg text;
 BEGIN
   -- SEC-05: anon cannot read raw studio rows even for a discoverable studio (no stripe ids, emails).
   PERFORM pg_temp.as_anon();
-  SELECT count(*) INTO raw_rows FROM studios; EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.expect_denied('SELECT * FROM studios', 'SEC-ACL'); raw_rows := 0; EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(raw_rows = 0, 'SEC-05', 'anon sees no raw studio rows');
   -- ...while the public RPCs keep working.
   PERFORM pg_temp.as_anon();
@@ -121,7 +126,7 @@ BEGIN
   PERFORM pg_temp.ok(msg IS NOT NULL, 'SEC-06', 'cannot submit as another user');
 
   PERFORM pg_temp.as_anon();
-  SELECT count(*) INTO n FROM messages; EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.expect_denied('SELECT * FROM messages', 'SEC-ACL'); n := 0; EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(n = 0, 'SEC-06', 'anon cannot read the inbox');
 
   PERFORM pg_temp.as_user(pg_temp.id('staff_a'));
@@ -136,12 +141,12 @@ END $$;
 DO $$
 DECLARE bare text; n bigint; msg text; rid uuid;
 BEGIN
-  -- SEC-07: RLS on with zero policies means the feature behind the table cannot work from
-  -- the app. New tables must ship with a policy (or be added to an explicit allowlist here).
+  -- SEC-07: API-readable RLS tables need policies; private tables may deny all.
   SELECT string_agg(c.relname, ', ') INTO bare FROM pg_class c
   WHERE c.relnamespace = 'public'::regnamespace AND c.relkind = 'r' AND c.relrowsecurity
+    AND (has_table_privilege('anon', c.oid, 'SELECT') OR has_table_privilege('authenticated', c.oid, 'SELECT'))
     AND NOT EXISTS (SELECT 1 FROM pg_policy p WHERE p.polrelid = c.oid);
-  PERFORM pg_temp.ok(bare IS NULL, 'SEC-07', 'every RLS table has at least one policy' || COALESCE(': ' || bare, ''));
+  PERFORM pg_temp.ok(bare IS NULL, 'SEC-07', 'every API-readable RLS table has at least one policy' || COALESCE(': ' || bare, ''));
 
   -- SEC-08 (class A, studio config): staff read, owner writes, others see nothing.
   INSERT INTO nudge_rules (studio_id, nudge_type, trigger_condition, title_template, body_template)
@@ -150,7 +155,7 @@ BEGIN
     RETURNING id INTO rid;
 
   PERFORM pg_temp.as_anon();
-  SELECT count(*) INTO n FROM nudge_rules; EXECUTE 'RESET ROLE';
+  PERFORM pg_temp.expect_denied('SELECT * FROM nudge_rules', 'SEC-ACL'); n := 0; EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(n = 0, 'SEC-08', 'anon cannot read studio config');
 
   PERFORM pg_temp.as_user(pg_temp.id('student_a1'));
@@ -177,3 +182,5 @@ BEGIN
   EXECUTE 'RESET ROLE';
   PERFORM pg_temp.ok(n = 1, 'SEC-08', 'owner can edit their studio config');
 END $$;
+
+ROLLBACK;

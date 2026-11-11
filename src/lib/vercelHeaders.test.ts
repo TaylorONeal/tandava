@@ -30,7 +30,7 @@ describe("vercel.json frame headers", () => {
     expect(h["Content-Security-Policy"]).not.toContain("frame-ancestors 'none'");
   });
   it("still denies framing everywhere else", () => {
-    for (const path of ["/", "/manage", "/s/oxatl", "/discover", "/auth/login", "/embedding-guide"]) {
+    for (const path of ["/", "/manage", "/s/oxatl", "/discover", "/auth/login", "/embedding-guide", "/captcha-bridge"]) {
       const h = headersFor(path);
       expect(h["X-Frame-Options"], path).toBe("DENY");
       expect(h["Content-Security-Policy"], path).toContain("frame-ancestors 'none'");
@@ -48,6 +48,17 @@ describe("vercel.json frame headers", () => {
       for (const origin of ["https://js.stripe.com", "https://hooks.stripe.com", "https://challenges.cloudflare.com"]) {
         expect(frameSrc, `${path} ${origin}`).toContain(origin);
       }
+    }
+  });
+  it("lets only the native apps frame the captcha bridge", () => {
+    for (const path of ["/captcha-bridge.html", "/captcha-bridge.js"]) {
+      const h = headersFor(path);
+      expect(h["X-Frame-Options"], path).toBeUndefined();
+      const csp = h["Content-Security-Policy"] ?? "";
+      expect(csp, path).toContain("frame-ancestors capacitor://localhost https://localhost");
+      expect(csp, path).not.toContain("frame-ancestors *");
+      expect(csp, path).toContain("frame-src https://challenges.cloudflare.com");
+      expect(h["Strict-Transport-Security"], path).toBeDefined();
     }
   });
 });

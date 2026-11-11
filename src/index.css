@@ -10,110 +10,153 @@
 /* Tandava - Mystical Night Design System */
 
 @layer base {
+  /*
+   * Tandava design tokens: the one source for color, type, radius and depth.
+   * Taken from the Tandava Studio store art ("studio front door"): paper
+   * background, ink text, lime highlighter, teal for a confirmed check-in,
+   * coral for a warning. Light by default. See docs/design/DESIGN_SYSTEM.md.
+   *
+   * Raw brand values (hex) live in tailwind.config.ts as ink, paper, lime,
+   * brand-teal, coral and plum. Everything below maps them onto the roles
+   * shadcn/ui and the app read.
+   */
   :root {
-    /* Base Colors - Night Theme */
-    --bg-primary: #0f0a14;
-    --bg-secondary: #1a1520;
-    --bg-card: rgba(35, 28, 45, 0.7);
+    /* Legacy app variables, kept so older screens follow the tokens */
+    --bg-primary: #fff8ee;
+    --bg-secondary: #fbf1e3;
+    --bg-card: #ffffff;
 
-    /* Gradient Accents */
-    --gradient-primary: linear-gradient(135deg, #4fd1c5 0%, #f687b3 100%);
-    --gradient-subtle: linear-gradient(135deg, rgba(79,209,197,0.3) 0%, rgba(246,135,179,0.3) 100%);
-    --gradient-glow: radial-gradient(ellipse at center, rgba(79,209,197,0.15) 0%, transparent 70%);
+    --gradient-primary: linear-gradient(135deg, #d7ff3f 0%, #3ee6d2 100%);
+    --gradient-subtle: linear-gradient(135deg, rgba(215, 255, 63, 0.35) 0%, rgba(62, 230, 210, 0.25) 100%);
+    --gradient-glow: none;
 
-    /* Accent Colors */
-    --accent-teal: #4fd1c5;
-    --accent-coral: #f687b3;
-    --accent-gold: #d4a574;
-    --accent-sage: #7d9e6a;
+    --accent-teal: #0f9e8e;
+    --accent-coral: #e0436a;
+    --accent-gold: #b7791f;
+    --accent-sage: #4d7c0f;
 
-    /* Text */
-    --text-primary: #f5f0e8;
-    --text-secondary: rgba(245, 240, 232, 0.7);
-    --text-muted: rgba(245, 240, 232, 0.4);
+    --text-primary: #0e0a12;
+    --text-secondary: rgba(14, 10, 18, 0.72);
+    --text-muted: rgba(14, 10, 18, 0.5);
 
-    /* States */
-    --success: #7d9e6a;
-    --locked: rgba(79, 209, 197, 0.2);
-    --completed: #4fd1c5;
+    --success: 160 84% 30%;
+    --locked: rgba(14, 10, 18, 0.08);
+    --completed: #0f9e8e;
 
-    /* Effects */
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-blur: blur(20px);
-    --glow-teal: 0 0 30px rgba(79, 209, 197, 0.3);
-    --glow-coral: 0 0 30px rgba(246, 135, 179, 0.3);
+    --glass-border: rgba(14, 10, 18, 0.1);
+    --glass-blur: blur(12px);
+    --glow-teal: none;
+    --glow-coral: none;
 
-    /* Typography */
-    --font-display: 'Cormorant Garamond', serif;
-    --font-body: 'DM Sans', sans-serif;
+    /* Type: one grotesque for display and body, a mono for labels */
+    --font-display: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-body: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
     --font-sanskrit: 'Cinzel', serif;
 
-    /* shadcn/ui compatible variables - mapped to night theme */
-    --background: 270 25% 6%;
-    --foreground: 35 33% 93%;
+    /* Surfaces */
+    --background: 35 100% 97%;      /* paper #FFF8EE */
+    --foreground: 280 29% 5%;       /* ink #0E0A12 */
 
-    --card: 270 22% 14%;
-    --card-foreground: 35 33% 93%;
+    --card: 0 0% 100%;
+    --card-foreground: 280 29% 5%;
 
-    --popover: 270 22% 14%;
-    --popover-foreground: 35 33% 93%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 280 29% 5%;
 
-    --primary: 174 60% 56%;
-    --primary-foreground: 270 25% 6%;
+    /* Actions: ink buttons, lime is a highlight, never a text color */
+    --primary: 280 29% 5%;
+    --primary-foreground: 35 100% 97%;
 
-    --secondary: 270 18% 16%;
-    --secondary-foreground: 35 33% 90%;
+    --secondary: 34 52% 92%;
+    --secondary-foreground: 280 29% 5%;
 
-    --muted: 270 15% 18%;
-    --muted-foreground: 35 20% 55%;
+    --muted: 34 45% 93%;
+    --muted-foreground: 280 7% 36%;
 
-    --accent: 330 84% 72%;
-    --accent-foreground: 270 25% 6%;
+    --accent: 73 100% 62%;          /* lime #D7FF3F */
+    --accent-foreground: 280 29% 5%;
 
-    /* Additional accent colors */
-    --accent-lilac: 330 84% 72%;
-    --accent-mint: 174 60% 56%;
-    --accent-peach: 33 50% 65%;
-    --accent-yellow: 33 50% 65%;
+    --accent-lilac: 73 100% 62%;
+    --accent-mint: 173 77% 57%;     /* teal #3EE6D2 */
+    --accent-peach: 347 100% 71%;   /* coral #FF6B8B */
+    --accent-yellow: 73 100% 62%;
 
-    --destructive: 0 70% 55%;
+    --destructive: 350 72% 46%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders */
-    --border: 270 15% 18%;
-    --border-strong: 270 12% 28%;
-    --input: 270 15% 18%;
-    --ring: 174 60% 56%;
+    --border: 32 24% 85%;
+    --border-strong: 280 10% 62%;
+    --input: 32 20% 80%;
+    --ring: 280 29% 5%;
 
-    --radius: 0.75rem;
+    --radius: 0.875rem;
 
-    /* Sidebar */
-    --sidebar-background: 270 25% 7%;
-    --sidebar-foreground: 35 33% 93%;
-    --sidebar-primary: 174 60% 56%;
-    --sidebar-primary-foreground: 270 25% 6%;
-    --sidebar-accent: 330 84% 72%;
-    --sidebar-accent-foreground: 270 25% 6%;
-    --sidebar-border: 270 15% 16%;
-    --sidebar-ring: 174 60% 56%;
+    --sidebar-background: 35 100% 98%;
+    --sidebar-foreground: 280 29% 5%;
+    --sidebar-primary: 280 29% 5%;
+    --sidebar-primary-foreground: 35 100% 97%;
+    --sidebar-accent: 34 52% 92%;
+    --sidebar-accent-foreground: 280 29% 5%;
+    --sidebar-border: 32 24% 87%;
+    --sidebar-ring: 280 29% 5%;
 
-    /* Semantic colors */
     --success-foreground: 0 0% 100%;
-    --warning: 33 50% 65%;
-    --warning-foreground: 270 25% 6%;
-    --info: 217 80% 55%;
+    --warning: 33 92% 42%;
+    --warning-foreground: 0 0% 100%;
+    --info: 212 72% 42%;
     --info-foreground: 0 0% 100%;
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.4);
-    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
-    --shadow-card-hover: 0 18px 40px rgba(0, 0, 0, 0.4);
+    /* Depth: shadows tinted with ink, never glows */
+    --shadow-sm: 0 1px 2px rgba(14, 10, 18, 0.06);
+    --shadow-md: 0 4px 14px -4px rgba(14, 10, 18, 0.12);
+    --shadow-lg: 0 18px 40px -18px rgba(14, 10, 18, 0.28);
+    --shadow-card: 0 1px 0 rgba(14, 10, 18, 0.04), 0 10px 30px -18px rgba(14, 10, 18, 0.25);
+    --shadow-card-hover: 0 1px 0 rgba(14, 10, 18, 0.05), 0 18px 40px -18px rgba(14, 10, 18, 0.32);
 
-    /* Gradients */
-    --gradient-warm: linear-gradient(135deg, #d4a574 0%, #f687b3 100%);
-    --gradient-cool: linear-gradient(135deg, #4fd1c5 0%, #f687b3 100%);
+    --gradient-warm: linear-gradient(135deg, #d7ff3f 0%, #ff6b8b 100%);
+    --gradient-cool: linear-gradient(135deg, #3ee6d2 0%, #d7ff3f 100%);
+  }
+
+  /* Night: same system on ink. Opt-in only (a studio theme or a .dark root). */
+  .dark {
+    --bg-primary: #0e0a12;
+    --bg-secondary: #17111d;
+    --bg-card: #1d1625;
+    --text-primary: #fff8ee;
+    --text-secondary: rgba(255, 248, 238, 0.72);
+    --text-muted: rgba(255, 248, 238, 0.5);
+    --glass-border: rgba(255, 248, 238, 0.12);
+    --accent-teal: #3ee6d2;
+    --accent-coral: #ff6b8b;
+
+    --background: 280 29% 5%;
+    --foreground: 35 100% 97%;
+    --card: 279 23% 11%;
+    --card-foreground: 35 100% 97%;
+    --popover: 279 23% 11%;
+    --popover-foreground: 35 100% 97%;
+    --primary: 73 100% 62%;
+    --primary-foreground: 280 29% 5%;
+    --secondary: 279 18% 16%;
+    --secondary-foreground: 35 100% 97%;
+    --muted: 279 18% 16%;
+    --muted-foreground: 35 20% 70%;
+    --accent: 73 100% 62%;
+    --accent-foreground: 280 29% 5%;
+    --border: 279 15% 20%;
+    --border-strong: 279 12% 32%;
+    --input: 279 15% 22%;
+    --ring: 73 100% 62%;
+    --sidebar-background: 280 29% 6%;
+    --sidebar-foreground: 35 100% 97%;
+    --sidebar-primary: 73 100% 62%;
+    --sidebar-primary-foreground: 280 29% 5%;
+    --sidebar-accent: 279 18% 16%;
+    --sidebar-accent-foreground: 35 100% 97%;
+    --sidebar-border: 279 15% 18%;
+    --sidebar-ring: 73 100% 62%;
+    --success: 160 70% 45%;
   }
 
   /* Day Theme (preserved from archive) */

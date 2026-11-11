@@ -92,7 +92,7 @@ export default function AdminDashboard() {
                   <div key={item.key} className="flex items-center gap-3">
                     <div
                       className={`h-2.5 w-2.5 rounded-full ${
-                        isConfigured ? "bg-green-500" : "bg-muted-foreground/30"
+                        isConfigured ? "bg-success" : "bg-muted-foreground/30"
                       }`}
                     />
                     <span className={isConfigured ? "text-foreground" : "text-muted-foreground"}>

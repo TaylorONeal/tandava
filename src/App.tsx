@@ -1,10 +1,16 @@
+import { StudioFeatureBoundary } from "@/components/manage/StudioFeatureBoundary";
+import { NativeCheckout } from "./components/native/NativeCheckout";
+import { CheckoutReturn, CheckoutStatus } from "./pages/CheckoutReturn";
+import { NativeStatus } from './components/native/NativeStatus';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { offersSignUp } from "@/lib/native/platform";
 import { HelmetProvider } from "react-helmet-async";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { StudioAppSmartBanner } from "@/components/marketing/StudioAppSmartBanner";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { DemoProvider } from "@/contexts/DemoContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LocaleProvider } from "@/contexts/LocaleContext";
@@ -35,16 +41,16 @@ class AppErrorBoundary extends Component<
   render() {
     if (this.state.error) {
       return (
-        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0f0a14", color: "#f5f0e8", fontFamily: "'DM Sans', sans-serif", padding: "2rem" }}>
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#FFF8EE", color: "#0E0A12", fontFamily: "'Bricolage Grotesque', system-ui, sans-serif", padding: "2rem" }}>
           <div style={{ maxWidth: "32rem", textAlign: "center" }}>
-            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "2rem", marginBottom: "1rem" }}>Something went wrong</h1>
+            <h1 style={{ fontWeight: 800, letterSpacing: "-0.04em", fontSize: "2rem", marginBottom: "1rem" }}>Something went wrong</h1>
             <p style={{ opacity: 0.7, marginBottom: "1.5rem" }}>Tandava encountered an error during startup.</p>
-            <pre style={{ textAlign: "left", background: "rgba(255,255,255,0.05)", padding: "1rem", borderRadius: "0.5rem", fontSize: "0.75rem", overflow: "auto", maxHeight: "12rem", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+            <pre style={{ textAlign: "left", background: "#FFFFFF", border: "1px solid rgba(14, 10, 18, 0.1)", padding: "1rem", borderRadius: "0.5rem", fontSize: "0.75rem", overflow: "auto", maxHeight: "12rem", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
               {this.state.error.message}
               {"\n\n"}
               {this.state.error.stack}
             </pre>
-            <button onClick={() => window.location.reload()} style={{ marginTop: "1.5rem", padding: "0.5rem 1.5rem", background: "#4fd1c5", color: "#0f0a14", border: "none", borderRadius: "0.375rem", cursor: "pointer", fontWeight: 600 }}>
+            <button onClick={() => window.location.reload()} style={{ marginTop: "1.5rem", padding: "0.5rem 1.5rem", background: "#0E0A12", color: "#FFF8EE", border: "none", borderRadius: "9999px", cursor: "pointer", fontWeight: 600 }}>
               Reload
             </button>
           </div>
@@ -61,6 +67,8 @@ class AppErrorBoundary extends Component<
  * seeing the noindex, and linked URLs can be indexed anyway.
  */
 function DemoDataPage({ children }: { children: ReactNode }) {
+  const { isDemoMode } = useAuth();
+  if (!isDemoMode) return <Navigate to="/discover" replace />;
   return (
     <>
       <SEOHead noindex />
@@ -135,6 +143,11 @@ const Instructors = lazyWithReload(() => import("./pages/Instructors"));
 const InstructorDetail = lazyWithReload(() => import("./pages/InstructorDetail"));
 const OnDemand = lazyWithReload(() => import("./pages/OnDemand"));
 const Login = lazyWithReload(() => import("./pages/auth/Login"));
+/** Tandava Studio is sign-in only; any sign-up link lands on sign-in with its query kept. */
+function SignInOnly() {
+  const { search } = useLocation();
+  return <Navigate to={`/auth/login${search}`} replace />;
+}
 const Register = lazyWithReload(() => import("./pages/auth/Register"));
 const ResetConfirm = lazyWithReload(() => import("./pages/auth/ResetConfirm"));
 const NotFound = lazyWithReload(() => import("./pages/NotFound"));
@@ -194,6 +207,7 @@ const NotificationPreferences = lazyWithReload(() => import("./pages/account/Not
 
 const TeachDashboard = lazyWithReload(() => import("./pages/teach/Dashboard"));
 const TeachSchedule = lazyWithReload(() => import("./pages/teach/Schedule"));
+const ScanCheckin = lazyWithReload(() => import("./pages/studio/ScanCheckin"));
 const TeachSubs = lazyWithReload(() => import("./pages/teach/Subs"));
 const TeachEarnings = lazyWithReload(() => import("./pages/teach/Earnings"));
 const TeachAvailability = lazyWithReload(() => import("./pages/teach/Availability"));
@@ -235,6 +249,9 @@ const App = () => (
               <Toaster />
               <Sonner />
               <BrowserRouter>
+                <NativeStatus />
+                <StudioAppSmartBanner />
+                <NativeCheckout />
                 <DemoRoleBar />
                 <Suspense fallback={<RouteLoadingFallback />}>
                 <Routes>
@@ -245,6 +262,8 @@ const App = () => (
                   <Route path="/demo" element={<Demo />} />
                   <Route path="/open-source" element={<OpenSource />} />
                   <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/checkout/return" element={<CheckoutReturn />} />
+                  <Route path="/checkout/status" element={<ProtectedRoute><CheckoutStatus /></ProtectedRoute>} />
                   <Route path="/privacy" element={<PrivacyPage />} />
                   <Route path="/refunds" element={<RefundsPage />} />
                   <Route path="/support" element={<SupportPage />} />
@@ -274,17 +293,17 @@ const App = () => (
                   <Route path="/blog/:slug" element={<BlogPost />} />
 
                   {/* ---- Student-facing routes ---- */}
-                  <Route path="/home" element={<Index />} />
+                  <Route path="/home" element={<DemoDataPage><Index /></DemoDataPage>} />
                   <Route path="/schedule" element={<DemoDataPage><Schedule /></DemoDataPage>} />
                   <Route path="/events" element={<DemoDataPage><Studios /></DemoDataPage>} />
-                  <Route path="/events/:id" element={<StudioDetail />} />
+                  <Route path="/events/:id" element={<DemoDataPage><StudioDetail /></DemoDataPage>} />
                   <Route path="/instructors" element={<DemoDataPage><Instructors /></DemoDataPage>} />
                   <Route path="/instructors/:id" element={<DemoDataPage><InstructorDetail /></DemoDataPage>} />
                   <Route path="/on-demand" element={<DemoDataPage><OnDemand /></DemoDataPage>} />
 
                   {/* ---- Auth routes ---- */}
                   <Route path="/auth/login" element={<Login />} />
-                  <Route path="/auth/register" element={<Register />} />
+                  <Route path="/auth/register" element={offersSignUp() ? <Register /> : <SignInOnly />} />
                   <Route path="/auth/reset" element={<ResetPassword />} />
                   <Route path="/auth/reset-confirm" element={<ResetConfirm />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
@@ -292,9 +311,9 @@ const App = () => (
 
                   {/* ---- Authenticated member routes ---- */}
                   <Route path="/my-schedule" element={<ProtectedRoute permission="member.view_profile"><MySchedule /></ProtectedRoute>} />
-                  <Route path="/community" element={<ProtectedRoute permission="member.view_profile"><Community /></ProtectedRoute>} />
+                  <Route path="/community" element={<ProtectedRoute permission="member.view_profile"><DemoDataPage><Community /></DemoDataPage></ProtectedRoute>} />
                   <Route path="/account" element={<ProtectedRoute permission="member.view_profile"><Account /></ProtectedRoute>} />
-                  <Route path="/account/notifications" element={<ProtectedRoute permission="member.view_profile"><NotificationPreferences /></ProtectedRoute>} />
+                  <Route path="/account/notifications" element={<ProtectedRoute permission="member.view_profile"><DemoDataPage><NotificationPreferences /></DemoDataPage></ProtectedRoute>} />
 
                   {/* ---- Platform admin routes (/admin) ---- */}
                   <Route path="/admin" element={<ProtectedRoute permission="platform.admin"><AdminDashboard /></ProtectedRoute>} />
@@ -308,46 +327,46 @@ const App = () => (
                        Guards: "studio.manage_schedule" = owner + admin (day-to-day mgmt);
                                "studio.manage_settings"  = owner only (settings, money, growth).
                        Demo mode bypasses all guards (see ProtectedRoute). */}
-                  <Route path="/manage" element={<ProtectedRoute permission="studio.manage_schedule"><ManageDashboard /></ProtectedRoute>} />
-                  <Route path="/manage/schedule" element={<ProtectedRoute permission="studio.manage_schedule"><ScheduleManage /></ProtectedRoute>} />
-                  <Route path="/manage/students" element={<ProtectedRoute permission="studio.manage_schedule"><StudentsManage /></ProtectedRoute>} />
-                  <Route path="/manage/teachers" element={<ProtectedRoute permission="studio.manage_schedule"><TeachersManage /></ProtectedRoute>} />
-                  <Route path="/manage/offerings" element={<ProtectedRoute permission="studio.manage_schedule"><OfferingsManage /></ProtectedRoute>} />
-                  <Route path="/manage/financials" element={<ProtectedRoute permission="studio.manage_settings"><FinancialsManage /></ProtectedRoute>} />
-                  <Route path="/manage/reports" element={<ProtectedRoute permission="studio.manage_schedule"><ReportsManage /></ProtectedRoute>} />
-                  <Route path="/manage/import" element={<ProtectedRoute permission="studio.manage_settings"><ImportManage /></ProtectedRoute>} />
-                  <Route path="/manage/settings" element={<ProtectedRoute permission="studio.manage_settings"><SettingsManage /></ProtectedRoute>} />
+                  <Route path="/manage" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><ManageDashboard /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/schedule" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><ScheduleManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/students" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><StudentsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/teachers" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><TeachersManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/offerings" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><OfferingsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/financials" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><FinancialsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/reports" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><ReportsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/import" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><ImportManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/settings" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><SettingsManage /></StudioFeatureBoundary></ProtectedRoute>} />
                   {/* No permission gate: this is where a new owner *creates* their
                        studio, before they hold any studio role. Authenticated-only;
                        the onboarding edge function authorizes each write. */}
-                  <Route path="/manage/onboarding" element={<ProtectedRoute><OnboardingManage /></ProtectedRoute>} />
-                  <Route path="/manage/members/:id" element={<ProtectedRoute permission="studio.manage_schedule"><MemberDetailManage /></ProtectedRoute>} />
-                  <Route path="/manage/promo-codes" element={<ProtectedRoute permission="studio.manage_settings"><PromoCodesManage /></ProtectedRoute>} />
-                  <Route path="/manage/events" element={<ProtectedRoute permission="studio.manage_schedule"><EventsManage /></ProtectedRoute>} />
-                  <Route path="/manage/landing-pages" element={<ProtectedRoute permission="studio.manage_settings"><LandingPagesManage /></ProtectedRoute>} />
-                  <Route path="/manage/analytics" element={<ProtectedRoute permission="studio.manage_schedule"><AnalyticsHubManage /></ProtectedRoute>} />
-                  <Route path="/manage/analytics/members" element={<ProtectedRoute permission="studio.manage_schedule"><MemberAnalyticsManage /></ProtectedRoute>} />
-                  <Route path="/manage/analytics/sales" element={<ProtectedRoute permission="studio.manage_settings"><SalesAnalyticsManage /></ProtectedRoute>} />
-                  <Route path="/manage/analytics/financials" element={<ProtectedRoute permission="studio.manage_settings"><FinancialAnalyticsManage /></ProtectedRoute>} />
-                  <Route path="/manage/analytics/site" element={<ProtectedRoute permission="studio.manage_schedule"><SiteAnalyticsManage /></ProtectedRoute>} />
-                  <Route path="/manage/analytics/sources" element={<ProtectedRoute permission="studio.manage_members"><AttributionSourcesManage /></ProtectedRoute>} />
-                  <Route path="/manage/automations" element={<ProtectedRoute permission="studio.manage_members"><AutomationsManage /></ProtectedRoute>} />
-                  <Route path="/manage/connectors" element={<ProtectedRoute permission="studio.manage_settings"><DataConnectorsManage /></ProtectedRoute>} />
-                  <Route path="/manage/products" element={<ProtectedRoute permission="studio.manage_schedule"><ProductsManage /></ProtectedRoute>} />
-                  <Route path="/manage/inventory" element={<ProtectedRoute permission="studio.manage_schedule"><InventoryManage /></ProtectedRoute>} />
-                  <Route path="/manage/purchase-orders" element={<ProtectedRoute permission="studio.manage_settings"><PurchaseOrdersManage /></ProtectedRoute>} />
-                  <Route path="/manage/notification-settings" element={<ProtectedRoute permission="studio.manage_settings"><NotificationSettingsManage /></ProtectedRoute>} />
-                  <Route path="/manage/sms-inbox" element={<ProtectedRoute permission="studio.view_inbox"><SmsInboxManage /></ProtectedRoute>} />
-                  <Route path="/manage/utm-builder" element={<ProtectedRoute permission="studio.manage_settings"><UtmBuilderManage /></ProtectedRoute>} />
-                  <Route path="/manage/campaigns" element={<ProtectedRoute permission="studio.manage_settings"><CampaignsManage /></ProtectedRoute>} />
-                  <Route path="/manage/tasks" element={<ProtectedRoute permission="studio.manage_schedule"><TasksManage /></ProtectedRoute>} />
-                  <Route path="/manage/on-demand" element={<ProtectedRoute permission="studio.manage_schedule"><OnDemandManage /></ProtectedRoute>} />
-                  <Route path="/manage/feature-settings" element={<ProtectedRoute permission="studio.manage_settings"><FeatureSettingsManage /></ProtectedRoute>} />
-                  <Route path="/manage/audit-logs" element={<ProtectedRoute permission="studio.manage_settings"><AuditLogsManage /></ProtectedRoute>} />
-                  <Route path="/manage/data-dictionary" element={<ProtectedRoute permission="studio.manage_schedule"><DataDictionaryManage /></ProtectedRoute>} />
-                  <Route path="/manage/definitions" element={<ProtectedRoute permission="studio.manage_schedule"><DefinitionsManage /></ProtectedRoute>} />
-                  <Route path="/manage/embed" element={<ProtectedRoute permission="studio.manage_settings"><EmbedSettingsManage /></ProtectedRoute>} />
-                  <Route path="/manage/share" element={<ProtectedRoute permission="studio.manage_settings"><ShareLinksManage /></ProtectedRoute>} />
+                  <Route path="/manage/onboarding" element={<ProtectedRoute><StudioFeatureBoundary><OnboardingManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/members/:id" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><MemberDetailManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/promo-codes" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><PromoCodesManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/events" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><EventsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/landing-pages" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><LandingPagesManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/analytics" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><AnalyticsHubManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/analytics/members" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><MemberAnalyticsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/analytics/sales" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><SalesAnalyticsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/analytics/financials" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><FinancialAnalyticsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/analytics/site" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><SiteAnalyticsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/analytics/sources" element={<ProtectedRoute permission="studio.manage_members"><StudioFeatureBoundary><AttributionSourcesManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/automations" element={<ProtectedRoute permission="studio.manage_members"><StudioFeatureBoundary><AutomationsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/connectors" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><DataConnectorsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/products" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><ProductsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/inventory" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><InventoryManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/purchase-orders" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><PurchaseOrdersManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/notification-settings" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><NotificationSettingsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/sms-inbox" element={<ProtectedRoute permission="studio.view_inbox"><StudioFeatureBoundary><SmsInboxManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/utm-builder" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><UtmBuilderManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/campaigns" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><CampaignsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/tasks" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><TasksManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/on-demand" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><OnDemandManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/feature-settings" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><FeatureSettingsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/audit-logs" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><AuditLogsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/data-dictionary" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><DataDictionaryManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/definitions" element={<ProtectedRoute permission="studio.manage_schedule"><StudioFeatureBoundary><DefinitionsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/embed" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><EmbedSettingsManage /></StudioFeatureBoundary></ProtectedRoute>} />
+                  <Route path="/manage/share" element={<ProtectedRoute permission="studio.manage_settings"><StudioFeatureBoundary><ShareLinksManage /></StudioFeatureBoundary></ProtectedRoute>} />
 
                   {/* ---- Instructor portal routes (/teach) ---- */}
                   <Route path="/teach" element={<ProtectedRoute permission="studio.teach"><TeachDashboard /></ProtectedRoute>} />
@@ -358,6 +377,7 @@ const App = () => (
                   <Route path="/teach/profile" element={<ProtectedRoute permission="studio.teach"><TeachProfile /></ProtectedRoute>} />
 
                   {/* ---- Staff (front desk) routes ---- */}
+                  <Route path="/scan" element={<ProtectedRoute><ScanCheckin /></ProtectedRoute>} />
                   <Route path="/staff/checkin" element={<ProtectedRoute permission="studio.checkin"><StaffCheckin /></ProtectedRoute>} />
                   <Route path="/staff/waitlist" element={<ProtectedRoute permission="studio.manage_waitlist"><StaffWaitlist /></ProtectedRoute>} />
 

@@ -1,0 +1,34 @@
+Check members in at the door in a second.
+
+Tandava Studio is the staff app for yoga, pilates and barre studios that run on Tandava. Point your camera at a member's check-in pass, feel the buzz, and they're in. No clipboard. No laptop on the front desk.
+
+SCAN THEM IN
+- Tap Scan passes and point your camera at the member's pass.
+- A green card and a quick buzz tell you they're checked in.
+- Already in? The app says so and nothing changes. Keep scanning.
+- Waitlisted, cancelled or too early? You see why right away.
+- A running count shows how many people you've checked in.
+- Front desk and owners can scan anyone booked at the studio. Teachers scan for the classes they teach.
+
+NO PASS? TAP THE ROSTER
+- Open the class and tap Check in next to a name.
+- A check-in only shows as done once Tandava has saved it.
+
+FOR TEACHERS
+- See the classes you teach for the next 14 days.
+- Open each roster to see who's coming.
+
+FOR OWNERS
+- See today's classes on one screen.
+- Add classes to your weekly schedule and change times.
+- Set drop-in, class pack and membership prices.
+- Share your booking page from the iPhone share sheet.
+
+MADE FOR THE DOOR
+- Big buttons you can use with one hand.
+- A clear banner when you're offline.
+
+HOW IT WORKS
+Tandava Studio is for staff at studios that use Tandava. Sign in with the email your studio invited. Studio owners set up their studio and invite staff from the Tandava dashboard on the web. Members show their check-in pass from My Schedule in Tandava.
+
+Questions? Email hello@purafieldstudio.com.

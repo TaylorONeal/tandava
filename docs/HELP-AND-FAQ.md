@@ -26,3 +26,11 @@ Add to `HELP` in `src/content/help.ts` with the right audience and status; add o
 
 ## Related
 PRD-020 to PRD-025 each carry a "Help and FAQ" section listing their entries. `docs/ai-agents/DESIGN_SYSTEM.md` has the settings rule for agents.
+
+## October 20 discovery states
+
+Discover now uses `discovery-availability` from the shared help catalog. The
+visible page carries the essential no-inventory, search reset and connection
+recovery guidance; the info icon adds context. The FAQ mirrors the explanation.
+This is review-branch behavior, not evidence of a deployed marketplace or native
+release. See [release acceptance](testing/RELEASE-RISK-PLAN.md) for results.

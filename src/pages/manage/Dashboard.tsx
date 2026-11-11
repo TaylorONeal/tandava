@@ -1,3 +1,5 @@
+import { useAuth } from "@/contexts/AuthContext";
+import LiveDashboard from "./LiveDashboard";
 import { ManageLayout } from "@/components/manage/ManageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,30 +35,32 @@ const todayClasses: {
   deliveryMode?: DeliveryMode;
   isLive?: boolean;
 }[] = [
-  { id: "1", name: "Morning Vinyasa", time: "7:00 AM", teacher: "Maya Patel", spotsLeft: 3, capacity: 25, checkedIn: 18, deliveryMode: "hybrid", isLive: true },
-  { id: "2", name: "Gentle Flow", time: "9:30 AM", teacher: "James Liu", spotsLeft: 8, capacity: 20, checkedIn: 0 },
-  { id: "3", name: "Power Yoga", time: "12:00 PM", teacher: "Sarah Chen", spotsLeft: 0, capacity: 30, checkedIn: 0 },
-  { id: "4", name: "Virtual Yin", time: "4:30 PM", teacher: "Ava Kim", spotsLeft: 12, capacity: 50, checkedIn: 0, deliveryMode: "virtual" },
-  { id: "5", name: "Evening Vinyasa", time: "6:00 PM", teacher: "Maya Patel", spotsLeft: 5, capacity: 25, checkedIn: 0, deliveryMode: "hybrid" },
-  { id: "6", name: "Candlelight Yin", time: "7:30 PM", teacher: "James Liu", spotsLeft: 6, capacity: 18, checkedIn: 0 },
+  { id: "1", name: "Morning Vinyasa", time: "7:00 AM", teacher: "Camila Reyes", spotsLeft: 3, capacity: 25, checkedIn: 18, deliveryMode: "hybrid", isLive: true },
+  { id: "2", name: "Gentle Flow", time: "9:30 AM", teacher: "Daniel Nguyen", spotsLeft: 8, capacity: 20, checkedIn: 0 },
+  { id: "3", name: "Power Yoga", time: "12:00 PM", teacher: "Tasha Greene", spotsLeft: 0, capacity: 30, checkedIn: 0 },
+  { id: "4", name: "Virtual Yin", time: "4:30 PM", teacher: "Mei Tanaka", spotsLeft: 12, capacity: 50, checkedIn: 0, deliveryMode: "virtual" },
+  { id: "5", name: "Evening Vinyasa", time: "6:00 PM", teacher: "Camila Reyes", spotsLeft: 5, capacity: 25, checkedIn: 0, deliveryMode: "hybrid" },
+  { id: "6", name: "Candlelight Yin", time: "7:30 PM", teacher: "Daniel Nguyen", spotsLeft: 6, capacity: 18, checkedIn: 0 },
 ];
 
 const alerts = [
-  { type: "sub_needed", message: "James Liu needs a sub for Wednesday 9:30 AM Gentle Flow", urgent: true },
-  { type: "low_spots", message: "Power Yoga (12 PM) is full — 3 on waitlist", urgent: false },
+  { type: "sub_needed", message: "Daniel Nguyen needs a sub for Wednesday 9:30 AM Gentle Flow", urgent: true },
+  { type: "low_spots", message: "Power Yoga (12 PM) is full, 3 on the waitlist", urgent: false },
   { type: "expiring_packs", message: "12 class packs expiring this week", urgent: false },
-  { type: "payment_failed", message: "2 membership renewals failed — follow up needed", urgent: true },
+  { type: "payment_failed", message: "2 membership renewals failed. Follow up today.", urgent: true },
 ];
 
 const recentActivity = [
-  { action: "New student registered", detail: "Emma Wilson", time: "15 min ago" },
-  { action: "Booking confirmed", detail: "Morning Vinyasa — Alex Rivera", time: "32 min ago" },
-  { action: "Late cancel", detail: "Power Yoga — Jordan Blake", time: "1 hr ago" },
-  { action: "Membership purchased", detail: "Unlimited Monthly — Mia Tanaka", time: "2 hrs ago" },
-  { action: "Class pack purchased", detail: "10-Class Pack — Noah Garcia", time: "3 hrs ago" },
+  { action: "New student registered", detail: "Wren Sorensen", time: "15 min ago" },
+  { action: "Booking confirmed", detail: "Mateo Esposito, Morning Vinyasa", time: "32 min ago" },
+  { action: "Late cancel", detail: "Kristen Ellison, Power Yoga", time: "1 hr ago" },
+  { action: "Membership purchased", detail: "Simone Pham, Unlimited Monthly", time: "2 hrs ago" },
+  { action: "Class pack purchased", detail: "Desmond Khalil, 10-Class Pack", time: "3 hrs ago" },
 ];
 
 export default function ManageDashboard() {
+  const { isDemoMode } = useAuth();
+  if (!isDemoMode) return <LiveDashboard />;
   return (
     <ManageLayout>
       <div className="space-y-6">
@@ -241,12 +245,12 @@ export default function ManageDashboard() {
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           <span>{cls.teacher}</span>
                           {cls.deliveryMode === 'virtual' && (
-                            <span className="flex items-center gap-0.5 text-blue-600">
+                            <span className="flex items-center gap-0.5 text-info">
                               <Video className="h-3 w-3" /> Virtual
                             </span>
                           )}
                           {cls.deliveryMode === 'hybrid' && (
-                            <span className="flex items-center gap-0.5 text-violet-600">
+                            <span className="flex items-center gap-0.5 text-foreground">
                               <Wifi className="h-3 w-3" /> Hybrid
                             </span>
                           )}
@@ -289,7 +293,7 @@ export default function ManageDashboard() {
                     <div className="min-w-0">
                       <p className="text-sm">
                         <span className="font-medium">{activity.action}</span>
-                        <span className="text-muted-foreground"> — {activity.detail}</span>
+                        <span className="text-muted-foreground">: {activity.detail}</span>
                       </p>
                       <p className="text-xs text-muted-foreground">{activity.time}</p>
                     </div>

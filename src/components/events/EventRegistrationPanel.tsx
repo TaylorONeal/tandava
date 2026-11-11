@@ -354,7 +354,7 @@ export function EventRegistrationPanel({
 
         {state === "waitlist" && (
           <p className="text-xs text-center text-muted-foreground">
-            This event is full — join the waitlist and we'll notify you if a spot opens.
+            This event is full. Join the waitlist and we'll tell you if a spot opens.
           </p>
         )}
       </CardContent>

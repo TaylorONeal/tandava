@@ -2,6 +2,49 @@
 
 Rules: one slice per commit (`W4-2a`), a test lands with the code, a DB change is a new migration, nothing starts before its `Needs` are done. Status: DONE, NEXT, LATER. See [PRD](PRD-launch-v1.md).
 
+## Current release checkpoint — November 5, 2026
+
+Taylor confirmed the endpoint: submit **both** the first-party hosted Member
+marketplace and Studio management apps for App Review after a secure, polished,
+low-friction release passes acceptance. Published open-source code remains part
+of the model. The [PRD](PRD-launch-v1.md) records this direction; it supersedes old
+single-app/non-native scope statements and expired submission dates below.
+
+Work is integrated on [draft PR #109](https://github.com/TaylorONeal/tandava/pull/109),
+branch `codex/app-store-excellence`, in the separate
+`tandava-app-store` worktree (October integration): main `c982696`, native PR #102 `4aea122`, and
+restricted Data API grants PR #106 `6c5375b`. Neither PR was merged remotely.
+Migration 45 on main remains historical; scoped grants are 46; native deletion
+migrations are renumbered 47–49 to remove duplicate versions. No hosted SQL was run.
+November 5 continues that same branch in an isolated writable checkout, reconciling
+main `0e45ab9` and preserving active staff/internal email authorization. Taylor approved
+in-person drop-ins, packs and memberships for both apps plus the 30-day deletion
+workflow; paid digital/mixed products are deferred. Source now adds migration 50,
+physical-only native checkout, frozen purchase scope/redemption, owner classification
+and browser return. Native payments remain off pending hosted/device acceptance.
+
+[PROGRESS](PROGRESS.md) owns results. [RELEASE-RISK-PLAN](../testing/RELEASE-RISK-PLAN.md)
+owns test procedures; [STORE-APPS](../app-store/STORE-APPS.md) owns store candidates.
+
+| Priority / task | Verified state | Next acceptance / unblock condition |
+|---|---|---|
+| P0 endpoint and tenant security | Restricted-grant and native migrations integrated; new local fixes cover redirects, inactive staff, generic sender authorization and imported member identity | CI passes at `714bc70`; independent review and merge/hosted rollout remain separate. Inspect production catalogs/consumers before tightening permissions. No live disclosure established by synthetic tests. |
+| P0 truthful booking and sign-out | Local fixes and 11 browser checks pass for waitlist/missing-response handling, Studio logout and setup | All 36 CI browser cases pass; review and physical candidate acceptance remain. Browser fixtures do not prove hosted operation |
+| P1 onboarding and native recovery | Preserve current design; repair unnamed phone setup steps, scrollable management navigation and unusable native email return origins | Same-task phone/desktop before/after inspection; verify real native email delivery, CAPTCHA and app/browser session boundaries |
+| P0 payment acceptance | Latest scheduled smoke 39438453726 failed before checkout with missing test credentials; no provider payment outcome observed | Local isolated-harness repair and regression checks pass; runtime grants remain restricted. Provision the disposable local Supabase fixture and matching sandbox inputs before the retained schedule can run. Then prove actual hosted checkout/webhook/refund delivery separately. |
+| P0 account deletion | Initiation/review/profile-stage code exists; UI OFF; full fulfillment incomplete | Policy direction approved November 5; validate category-specific legal durations, provider/backup facts and staffed backup; complete Auth, data, storage, processor and backup adapters plus recovery and disposable-account proof. Pending/profile scrubbing cannot count as deletion. |
+| P0 native purchase scope | New source persists immutable catalog/purchased format, restricts physical credit redemption and uses a dedicated physical checkout/browser return; default release switch OFF | Review migration 50 and deploy through the approved rollout; classify the pilot catalog; prove hosted payment delivery and both actual native return paths before enabling. Provision/verify the dedicated cancellation-enabled, upgrades-disabled native billing configuration and real webhook return. |
+| P0 hosted access | November 5 project URL redirects to Supabase sign-in; no connected Supabase/Stripe tools are exposed in this session | Sign in to the actual Purafield Studio project; inspect schema, processors, backup settings and rollout prerequisites read-only before preparing the executable handoff. No hosted facts are inferred from local tests. |
+| P0 reviewer environment | Role fixtures and page prerequisite are documented; real acceptance remains NOT RUN | Verified synthetic identities and authorized reachable studio page; actual Member, Teacher and Owner journeys, persistence and denial checks |
+| P0 Apple records and candidates | November 5 browser reaches a usable Apple sign-in form but has no authenticated session; October 21 zero-record API result is historical only; signed 1.0(3) remains older source 270a0a1 | Sign in to App Store Connect, inspect current records, then rebuild after accepted source fixes, validate/upload and perform physical acceptance. |
+| P1 complete advertised studio paths | Live Studio now gates sample-only routes and exposes supported schedule/pricing/share/settings actions; dashboard and import recovery pass synthetic browser checks; advanced CRM/reporting/retail remains deferred | Verify the remaining supported actions on the hosted candidate; keep store claims within implemented scope. Withheld paths are not full feature parity. |
+| P1 final assets and declarations | Existing listing drafts are conditional; no complete authenticated screenshot set | Capture real accepted candidate journeys for each app, finish accurate privacy/support/reviewer fields, then submit only with P0 gates closed |
+
+The historical tables below explain dependency IDs and prior implementation; old
+NEXT/DONE labels are not new release evidence. No real payment, customer message,
+customer-data mutation, production deployment or App Review submission occurred
+in this local integration pass.
+
 ## Launch path (2026-10-09, supersedes the loose NEXT lines at the bottom)
 
 Launch means: one real pilot studio takes a real booking and a real payment on tandavastudio.com, without being listed in Discover. Discover as a home page (W7-4) comes after 5 studios. Gates run in order; items inside a gate run in parallel. Claude works the code items while Taylor clears his batch.

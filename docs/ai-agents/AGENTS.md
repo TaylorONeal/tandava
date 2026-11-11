@@ -8,7 +8,7 @@ When starting work on Tandava, read these files first:
 1. **This file** - Understand how to work here
 2. `docs/ai-agents/KEY_FILES.md` - Find what you need
 3. `docs/ai-agents/LESSONS_LEARNED.md` - Avoid known pitfalls
-4. `docs/ai-agents/DESIGN_SYSTEM.md` - UI consistency
+4. `docs/design/DESIGN_SYSTEM.md` - UI consistency (tokens, type, motifs)
 
 ---
 

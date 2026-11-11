@@ -54,8 +54,7 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      # push/ is excluded: its esm.sh web-push types have no default export (pre-existing, works at runtime).
-      - run: deno check --config supabase/functions/deno.json supabase/functions/stripe-webhook/index.ts supabase/functions/stripe-checkout/index.ts supabase/functions/stripe-connect/index.ts
+      - run: npm run check:edge
 
   e2e:
     name: playwright e2e

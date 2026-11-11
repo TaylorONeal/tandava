@@ -172,11 +172,12 @@ Located in `supabase/migrations/`:
 | `docs/ai-agents/AGENTS.md` | AI assistant guide |
 | `docs/ai-agents/KEY_FILES.md` | This file |
 | `docs/ai-agents/LESSONS_LEARNED.md` | Common issues |
-| `docs/ai-agents/DESIGN_SYSTEM.md` | UI patterns |
+| `docs/design/DESIGN_SYSTEM.md` | Design tokens, type, motifs |
 | `docs/architecture/VERSION_MANAGEMENT.md` | Upgrade strategy |
 | `docs/architecture/RELIABILITY.md` | SLA, monitoring |
 | `docs/architecture/MAINTAINABILITY.md` | Code quality |
 | `docs/app-store/STORE-APPS.md` | iOS/Android submission |
+| `docs/OPERATOR_SETUP.md#existing-hosted-service-account-and-entry-points` | Verified Supabase owner account, exact Tandava project and direct links; check before requesting another login |
 
 ---
 

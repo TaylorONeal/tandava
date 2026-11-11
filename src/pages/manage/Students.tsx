@@ -47,14 +47,14 @@ interface Student {
 }
 
 const mockStudents: Student[] = [
-  { id: "1", firstName: "Emma", lastName: "Wilson", email: "emma@example.com", phone: "+1 415-555-0101", membershipType: "Unlimited Monthly", membershipStatus: "active", classPackRemaining: null, totalClasses: 156, lastVisit: "Today", lifetimeRevenue: 5840, tags: ["VIP", "Teacher Training"], joinedAt: "2023-03-15" },
-  { id: "2", firstName: "Alex", lastName: "Rivera", email: "alex@example.com", phone: "+1 415-555-0102", membershipType: null, membershipStatus: "none", classPackRemaining: 7, totalClasses: 42, lastVisit: "Yesterday", lifetimeRevenue: 1250, tags: [], joinedAt: "2024-01-20" },
-  { id: "3", firstName: "Mia", lastName: "Tanaka", email: "mia@example.com", phone: "+1 415-555-0103", membershipType: "Unlimited Monthly", membershipStatus: "active", classPackRemaining: null, totalClasses: 89, lastVisit: "2 days ago", lifetimeRevenue: 3420, tags: ["Referred by Emma"], joinedAt: "2023-08-10" },
-  { id: "4", firstName: "Jordan", lastName: "Blake", email: "jordan@example.com", phone: "+1 415-555-0104", membershipType: "8x Monthly", membershipStatus: "active", classPackRemaining: null, totalClasses: 64, lastVisit: "3 days ago", lifetimeRevenue: 2180, tags: [], joinedAt: "2023-11-05" },
-  { id: "5", firstName: "Noah", lastName: "Garcia", email: "noah@example.com", phone: "+1 415-555-0105", membershipType: null, membershipStatus: "none", classPackRemaining: 3, totalClasses: 18, lastVisit: "1 week ago", lifetimeRevenue: 650, tags: ["New Student"], joinedAt: "2024-10-01" },
-  { id: "6", firstName: "Sophia", lastName: "Lee", email: "sophia@example.com", phone: "+1 415-555-0106", membershipType: "Unlimited Monthly", membershipStatus: "expired", classPackRemaining: null, totalClasses: 203, lastVisit: "3 weeks ago", lifetimeRevenue: 8920, tags: ["At Risk"], joinedAt: "2022-06-12" },
-  { id: "7", firstName: "Liam", lastName: "Park", email: "liam@example.com", phone: "+1 415-555-0107", membershipType: null, membershipStatus: "none", classPackRemaining: null, totalClasses: 5, lastVisit: "2 months ago", lifetimeRevenue: 125, tags: ["Intro Offer"], joinedAt: "2024-09-15" },
-  { id: "8", firstName: "Isabella", lastName: "Chen", email: "isabella@example.com", phone: "+1 415-555-0108", membershipType: "4x Monthly", membershipStatus: "active", classPackRemaining: null, totalClasses: 31, lastVisit: "Today", lifetimeRevenue: 1560, tags: [], joinedAt: "2024-05-20" },
+  { id: "1", firstName: "Wren", lastName: "Sorensen", email: "wren.sorensen@example.com", phone: "+1 512-555-0101", membershipType: "Unlimited Monthly", membershipStatus: "active", classPackRemaining: null, totalClasses: 156, lastVisit: "Today", lifetimeRevenue: 5840, tags: ["VIP", "Teacher Training"], joinedAt: "2023-03-15" },
+  { id: "2", firstName: "Mateo", lastName: "Esposito", email: "mateo.esposito@example.com", phone: "+1 512-555-0102", membershipType: null, membershipStatus: "none", classPackRemaining: 7, totalClasses: 42, lastVisit: "Yesterday", lifetimeRevenue: 1250, tags: [], joinedAt: "2024-01-20" },
+  { id: "3", firstName: "Simone", lastName: "Pham", email: "simone.pham@example.com", phone: "+1 512-555-0103", membershipType: "Unlimited Monthly", membershipStatus: "active", classPackRemaining: null, totalClasses: 89, lastVisit: "2 days ago", lifetimeRevenue: 3420, tags: ["Referred by Anjali"], joinedAt: "2023-08-10" },
+  { id: "4", firstName: "Kristen", lastName: "Ellison", email: "kristen.ellison@example.com", phone: "+1 737-555-0104", membershipType: "8x Monthly", membershipStatus: "active", classPackRemaining: null, totalClasses: 64, lastVisit: "3 days ago", lifetimeRevenue: 2180, tags: [], joinedAt: "2023-11-05" },
+  { id: "5", firstName: "Desmond", lastName: "Khalil", email: "desmond.khalil@example.com", phone: "+1 512-555-0105", membershipType: null, membershipStatus: "none", classPackRemaining: 3, totalClasses: 18, lastVisit: "1 week ago", lifetimeRevenue: 650, tags: ["New Student"], joinedAt: "2024-10-01" },
+  { id: "6", firstName: "Freya", lastName: "Jensen", email: "freya.jensen@example.com", phone: "+1 512-555-0106", membershipType: "Unlimited Monthly", membershipStatus: "expired", classPackRemaining: null, totalClasses: 203, lastVisit: "3 weeks ago", lifetimeRevenue: 8920, tags: ["At Risk"], joinedAt: "2022-06-12" },
+  { id: "7", firstName: "Nate", lastName: "Cardenas", email: "nate.cardenas@example.com", phone: "+1 737-555-0107", membershipType: null, membershipStatus: "none", classPackRemaining: null, totalClasses: 5, lastVisit: "2 months ago", lifetimeRevenue: 125, tags: ["Intro Offer"], joinedAt: "2024-09-15" },
+  { id: "8", firstName: "Ingrid", lastName: "Ibarra", email: "ingrid.ibarra@example.com", phone: "+1 512-555-0108", membershipType: "4x Monthly", membershipStatus: "active", classPackRemaining: null, totalClasses: 31, lastVisit: "Today", lifetimeRevenue: 1560, tags: [], joinedAt: "2024-05-20" },
 ];
 
 export default function StudentsManage() {
@@ -81,7 +81,7 @@ export default function StudentsManage() {
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Students</h1>
             <p className="text-sm text-muted-foreground mt-1">
-              {mockStudents.length} total students — {mockStudents.filter((s) => s.membershipStatus === "active").length} active members
+              {mockStudents.length} total students, {mockStudents.filter((s) => s.membershipStatus === "active").length} active members
             </p>
           </div>
           <div className="flex gap-2">

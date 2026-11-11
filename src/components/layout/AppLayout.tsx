@@ -1,3 +1,4 @@
+import { useToast } from "@/hooks/use-toast";
 import { ReactNode, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -55,6 +56,22 @@ export function AppLayout({ children }: AppLayoutProps) {
   const { profile, permissions, signOut, isDemoMode } = useAuth();
   const { t } = useTranslation("common");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+  const { toast } = useToast();
+  const visibleNavigation = isDemoMode ? navigation : [
+    { nameKey: "home", href: "/discover", icon: Home },
+    { nameKey: "mySchedule", href: "/my-schedule", icon: CalendarCheck },
+  ];
+  const logout = async () => {
+    if (signingOut) return;
+    setSigningOut(true);
+    try {
+      await signOut();
+      navigate("/auth/login");
+    } catch (error) {
+      toast({ title: "Could not sign out", description: error instanceof Error ? error.message : "Please try again.", variant: "destructive" });
+    } finally { setSigningOut(false); }
+  };
 
   const user = profile
     ? {
@@ -91,20 +108,20 @@ export function AppLayout({ children }: AppLayoutProps) {
         <div className="container flex h-16 items-center justify-between">
           {/* Studio Brand */}
           <Link
-            to="/home"
+            to={isDemoMode ? "/home" : "/discover"}
             className="me-4 flex items-center gap-2.5 rounded-xl px-1 py-1 transition-colors hover:bg-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-accent-teal to-accent-sage shadow-md">
-              <span className="text-lg font-bold text-white">O</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary shadow-md">
+              <span className="text-lg font-bold text-primary-foreground">{isDemoMode ? "O" : "T"}</span>
             </div>
             <span className="text-xl font-display font-bold tracking-tight">
-              Oxatl Yoga
+              {isDemoMode ? "Oxatl Yoga" : "Tandava"}
             </span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">
-            {navigation.map((item) => (
+            {visibleNavigation.map((item) => (
               <Link
                 key={item.nameKey}
                 to={item.href}
@@ -126,8 +143,8 @@ export function AppLayout({ children }: AppLayoutProps) {
             {/* Language Switcher */}
             <LanguageSwitcher compact />
 
-            {/* Notifications */}
-            <Button
+            {/* Sample notifications belong only to the demo. */}
+            {isDemoMode && <Button
               variant="ghost"
               size="icon"
               aria-label="View notifications"
@@ -137,7 +154,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               <span className="absolute -top-0.5 -end-0.5 h-5 w-5 rounded-full bg-primary text-[10px] font-bold text-primary-foreground flex items-center justify-center shadow-sm">
                 3
               </span>
-            </Button>
+            </Button>}
 
             {/* User Menu */}
             <DropdownMenu>
@@ -227,10 +244,8 @@ export function AppLayout({ children }: AppLayoutProps) {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="rounded-xl cursor-pointer text-destructive"
-                  onClick={async () => {
-                    await signOut();
-                    navigate("/auth/login");
-                  }}
+                  disabled={signingOut}
+                  onClick={() => void logout()}
                 >
                   <LogOut className="h-4 w-4 me-2" />
                   {t("userMenu.signOut")}
@@ -264,7 +279,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         {mobileMenuOpen && (
           <div className="border-t border-border bg-card shadow-sm animate-fade-in lg:hidden">
             <nav className="container py-4 space-y-1">
-              {navigation.map((item) => (
+              {visibleNavigation.map((item) => (
                 <Link
                   key={item.nameKey}
                   to={item.href}

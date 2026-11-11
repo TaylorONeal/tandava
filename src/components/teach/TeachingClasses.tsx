@@ -9,6 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import type { TeachingClass } from "@/lib/backend/types";
+import { Link } from "react-router-dom";
+import { canScanPasses } from "@/lib/native/scanner";
 
 function classTime(value: string, timeZone: string) {
   return new Intl.DateTimeFormat(undefined, {
@@ -78,11 +80,12 @@ export function TeachingClasses({ title }: { title: string }) {
     <div className="space-y-6">
       <div><h1 className="text-2xl font-bold">{title}</h1>
         <p className="text-muted-foreground">Your assigned classes in the next 14 days. Times are shown in each studio's timezone.</p></div>
+      {canScanPasses() && <Button asChild size="lg" className="w-full"><Link to="/scan">Scan passes at the door</Link></Button>}
       {classes.isPending ? <p role="status">Loading your classes…</p>
         : classes.error ? <div role="alert"><p>Couldn't load your teaching schedule.</p><Button onClick={() => classes.refetch()}>Retry schedule</Button></div>
         : !classes.data?.length ? <p>No assigned classes in the next 14 days.</p>
         : classes.data.map(cls => <Card key={cls.occurrence_id}>
-          <CardHeader><CardTitle>{cls.offering_name}{cls.is_cancelled ? " — Cancelled" : ""}</CardTitle></CardHeader>
+          <CardHeader><CardTitle>{cls.offering_name}{cls.is_cancelled ? " (cancelled)" : ""}</CardTitle></CardHeader>
           <CardContent className="space-y-2">
             <p>{cls.studio_name} · {[cls.location_name, cls.room].filter(Boolean).join(" · ")}</p>
             <p>{classTime(cls.starts_at, cls.studio_timezone)}</p>

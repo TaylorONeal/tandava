@@ -5,6 +5,11 @@
  * database repeats the important ones (00042).
  */
 
+export const PURCHASE_SCOPES = ['unknown', 'in_person', 'digital_or_mixed'] as const;
+export type PurchaseScope = (typeof PURCHASE_SCOPES)[number];
+export const purchaseScopeLabel = (scope?: PurchaseScope): string =>
+  scope === 'in_person' ? 'In-person only' : scope === 'digital_or_mixed' ? 'Online or mixed' : 'Delivery format not set';
+
 export const WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"] as const;
 export type Weekday = (typeof WEEKDAYS)[number];
 export const BILLING_CYCLES = ["weekly", "monthly", "quarterly", "annual"] as const;
@@ -16,6 +21,7 @@ export const cycleNoun = (c: BillingCycle): string =>
 export const MIN_PAID_CENTS = 50;
 
 export interface CatalogOffering {
+  purchase_scope?: PurchaseScope;
   id: string;
   name: string;
   slug: string;
@@ -26,6 +32,7 @@ export interface CatalogOffering {
   is_active: boolean | null;
 }
 export interface CatalogPack {
+  purchase_scope?: PurchaseScope;
   id: string;
   name: string;
   class_count: number;
@@ -34,6 +41,7 @@ export interface CatalogPack {
   is_active: boolean | null;
 }
 export interface CatalogMembership {
+  purchase_scope?: PurchaseScope;
   id: string;
   name: string;
   billing_cycle: BillingCycle;
@@ -76,9 +84,9 @@ export interface StudioCatalog {
 }
 
 export const CATALOG_COLUMNS = {
-  offerings: "id, name, slug, description, duration_minutes, capacity, drop_in_price_cents, is_active",
-  class_pack_types: "id, name, class_count, price_cents, validity_days, is_active",
-  membership_types: "id, name, billing_cycle, price_cents, classes_per_cycle, is_active",
+  offerings: "id, name, slug, description, duration_minutes, capacity, drop_in_price_cents, is_active, purchase_scope",
+  class_pack_types: "id, name, class_count, price_cents, validity_days, is_active, purchase_scope",
+  membership_types: "id, name, billing_cycle, price_cents, classes_per_cycle, is_active, purchase_scope",
   schedule_rules: "id, offering_id, location_id, teacher_id, day_of_week, start_time, end_time, recurrence, is_active",
   locations: "id, name, is_primary, is_active",
 } as const;
@@ -117,6 +125,7 @@ export function formatPrice(cents: number | null, currency = "USD"): string {
 // ---------------------------------------------------------------------------
 
 export interface OfferingForm {
+  purchaseScope: PurchaseScope;
   name: string;
   description: string;
   duration: string;
@@ -126,10 +135,11 @@ export interface OfferingForm {
 }
 
 export const emptyOfferingForm = (): OfferingForm => ({
-  name: "", description: "", duration: "60", capacity: "20", dropIn: "", isActive: true,
+  purchaseScope: "unknown", name: "", description: "", duration: "60", capacity: "20", dropIn: "", isActive: true,
 });
 
 export const offeringToForm = (o: CatalogOffering): OfferingForm => ({
+  purchaseScope: o.purchase_scope ?? "unknown",
   name: o.name,
   description: o.description ?? "",
   duration: String(o.duration_minutes),
@@ -138,10 +148,11 @@ export const offeringToForm = (o: CatalogOffering): OfferingForm => ({
   isActive: o.is_active !== false,
 });
 
-export type OfferingPatch = Pick<CatalogOffering, "name" | "description" | "duration_minutes" | "capacity" | "drop_in_price_cents" | "is_active">;
+export type OfferingPatch = Pick<CatalogOffering, "purchase_scope" | "name" | "description" | "duration_minutes" | "capacity" | "drop_in_price_cents" | "is_active">;
 
 export function offeringFromForm(f: OfferingForm): { patch?: OfferingPatch; errors?: string[] } {
   const errors: string[] = [];
+  if (!PURCHASE_SCOPES.includes(f.purchaseScope)) errors.push("Choose a valid delivery format.");
   const name = f.name.trim();
   if (!name) errors.push("Give the class a name.");
   const duration = parseWhole(f.duration);
@@ -166,6 +177,7 @@ export function offeringFromForm(f: OfferingForm): { patch?: OfferingPatch; erro
       capacity: capacity as number,
       drop_in_price_cents: dropIn,
       is_active: f.isActive,
+      purchase_scope: f.purchaseScope,
     },
   };
 }
@@ -193,16 +205,17 @@ export function uniqueSlug(name: string, taken: Iterable<string>): string {
 // Packs and memberships
 // ---------------------------------------------------------------------------
 
-export interface PackForm { name: string; classes: string; price: string; validDays: string; isActive: boolean }
-export const emptyPackForm = (): PackForm => ({ name: "", classes: "10", price: "", validDays: "90", isActive: true });
+export interface PackForm { purchaseScope: PurchaseScope; name: string; classes: string; price: string; validDays: string; isActive: boolean }
+export const emptyPackForm = (): PackForm => ({ purchaseScope: "unknown", name: "", classes: "10", price: "", validDays: "90", isActive: true });
 export const packToForm = (p: CatalogPack): PackForm => ({
+  purchaseScope: p.purchase_scope ?? "unknown",
   name: p.name,
   classes: String(p.class_count),
   price: centsToInput(p.price_cents),
   validDays: String(p.validity_days),
   isActive: p.is_active !== false,
 });
-export type PackPatch = Pick<CatalogPack, "name" | "class_count" | "price_cents" | "validity_days" | "is_active">;
+export type PackPatch = Pick<CatalogPack, "purchase_scope" | "name" | "class_count" | "price_cents" | "validity_days" | "is_active">;
 
 function paidPrice(input: string, label: string, errors: string[]): number {
   const cents = parseMoney(input);
@@ -215,6 +228,7 @@ function paidPrice(input: string, label: string, errors: string[]): number {
 
 export function packFromForm(f: PackForm): { patch?: PackPatch; errors?: string[] } {
   const errors: string[] = [];
+  if (!PURCHASE_SCOPES.includes(f.purchaseScope)) errors.push("Choose a valid delivery format.");
   const classes = parseWhole(f.classes);
   if (classes === null || Number.isNaN(classes) || classes < 1 || classes > 500) errors.push("Classes must be 1 to 500.");
   const price = paidPrice(f.price, "Pack price", errors);
@@ -228,23 +242,26 @@ export function packFromForm(f: PackForm): { patch?: PackPatch; errors?: string[
       price_cents: price,
       validity_days: days as number,
       is_active: f.isActive,
+      purchase_scope: f.purchaseScope,
     },
   };
 }
 
-export interface MembershipForm { name: string; cycle: BillingCycle; price: string; classesPerCycle: string; isActive: boolean }
-export const emptyMembershipForm = (): MembershipForm => ({ name: "", cycle: "monthly", price: "", classesPerCycle: "", isActive: true });
+export interface MembershipForm { purchaseScope: PurchaseScope; name: string; cycle: BillingCycle; price: string; classesPerCycle: string; isActive: boolean }
+export const emptyMembershipForm = (): MembershipForm => ({ purchaseScope: "unknown", name: "", cycle: "monthly", price: "", classesPerCycle: "", isActive: true });
 export const membershipToForm = (m: CatalogMembership): MembershipForm => ({
+  purchaseScope: m.purchase_scope ?? "unknown",
   name: m.name,
   cycle: m.billing_cycle,
   price: centsToInput(m.price_cents),
   classesPerCycle: m.classes_per_cycle === null ? "" : String(m.classes_per_cycle),
   isActive: m.is_active !== false,
 });
-export type MembershipPatch = Pick<CatalogMembership, "name" | "billing_cycle" | "price_cents" | "classes_per_cycle" | "is_active">;
+export type MembershipPatch = Pick<CatalogMembership, "purchase_scope" | "name" | "billing_cycle" | "price_cents" | "classes_per_cycle" | "is_active">;
 
 export function membershipFromForm(f: MembershipForm): { patch?: MembershipPatch; errors?: string[] } {
   const errors: string[] = [];
+  if (!PURCHASE_SCOPES.includes(f.purchaseScope)) errors.push("Choose a valid delivery format.");
   const price = paidPrice(f.price, "Membership price", errors);
   const perCycle = parseWhole(f.classesPerCycle);
   if (Number.isNaN(perCycle) || (perCycle !== null && (perCycle < 1 || perCycle > 500))) {
@@ -259,6 +276,7 @@ export function membershipFromForm(f: MembershipForm): { patch?: MembershipPatch
       price_cents: price,
       classes_per_cycle: perCycle,
       is_active: f.isActive,
+      purchase_scope: f.purchaseScope,
     },
   };
 }

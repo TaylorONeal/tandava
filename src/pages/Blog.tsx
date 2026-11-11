@@ -22,7 +22,7 @@ const Blog = () => {
   const rest = posts.filter((p) => p.slug !== featured?.slug);
 
   const description =
-    "Practical guides, studio growth playbooks, and product updates from Tandava — open-source studio management for yoga, pilates, and movement studios.";
+    "Practical guides, studio growth playbooks, and product updates from Tandava, open-source studio management for yoga, pilates, and movement studios.";
 
   return (
     <BlogLayout>

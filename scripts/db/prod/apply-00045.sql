@@ -1,26 +1,7 @@
--- Production rollout bundle for migration 00045: explicit Data API grants.
--- Target: tandava-prod mkaixgjwakfufmmwembn. Requires existing schema through 00044.
--- Paste all of it into https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new and Run.
--- Safe on production: the table/sequence grants re-state what Supabase's old
--- auto-grant default already gave every existing table (no-op there), and the
--- ALTER DEFAULT PRIVILEGES lines only affect tables created in the future.
--- Idempotent: running it twice changes nothing. RLS policies are untouched.
-BEGIN;
-
-GRANT SELECT, INSERT, UPDATE, DELETE
-  ON ALL TABLES IN SCHEMA public
-  TO anon, authenticated, service_role;
-
-GRANT USAGE, SELECT, UPDATE
-  ON ALL SEQUENCES IN SCHEMA public
-  TO anon, authenticated, service_role;
-
-ALTER DEFAULT PRIVILEGES IN SCHEMA public
-  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES
-  TO anon, authenticated, service_role;
-
-ALTER DEFAULT PRIVILEGES IN SCHEMA public
-  GRANT USAGE, SELECT, UPDATE ON SEQUENCES
-  TO anon, authenticated, service_role;
-
-COMMIT;
+-- SUPERSEDED: do not reapply 00045 after the reviewed runtime ACL correction.
+-- Historical migration 00045 remains in the reset chain. This former manual
+-- bundle would reopen unrelated tables/defaults and is intentionally blocked.
+-- No production rollout is authorized by this repository change.
+DO $$ BEGIN
+  RAISE EXCEPTION '00045 manual rollout superseded; review 00046_runtime_api_privileges and obtain production approval';
+END $$;

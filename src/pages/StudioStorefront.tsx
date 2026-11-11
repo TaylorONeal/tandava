@@ -105,7 +105,7 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
   return (
     <Shell studioName={studio.name} accent={accent} registerHref={registerHref} loginHref={loginHref}>
       <SEOHead
-        title={`${studio.name} — Classes & Membership`}
+        title={`${studio.name} | Classes & Membership`}
         description={studio.description ?? `Book classes and memberships at ${studio.name}.`}
         canonical={`/s/${studio.slug}`}
       />
@@ -222,8 +222,10 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
                   <p className="mt-1 text-xs text-muted-foreground">
                     {m.classes_per_cycle == null ? "Unlimited classes" : `${m.classes_per_cycle} classes / cycle`}
                   </p>
+                  {m.purchase_scope === "in_person" && <p className="mt-2 text-xs text-muted-foreground">In-person classes only. Online classes and recordings are not included.</p>}
                   <PurchaseButton
                     kind="membership"
+                    purchaseScope={m.purchase_scope}
                     studioId={studio.id}
                     studioSlug={studio.slug}
                     itemId={m.id}
@@ -241,8 +243,10 @@ export default function StudioStorefront({ slug: slugProp }: { slug?: string } =
                   <p className="mt-1 text-xs text-muted-foreground">
                     {p.class_count} classes · valid {p.validity_days} days
                   </p>
+                  {p.purchase_scope === "in_person" && <p className="mt-2 text-xs text-muted-foreground">In-person classes only. Online classes and recordings are not included.</p>}
                   <PurchaseButton
                     kind="class_pack"
+                    purchaseScope={p.purchase_scope}
                     studioId={studio.id}
                     studioSlug={studio.slug}
                     itemId={p.id}

@@ -1,4 +1,6 @@
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { nativeApp } from "@/lib/native/platform";
+import { CAPTCHA_BRIDGE_ORIGIN, captchaBridgeUrl, parseBridgeMessage } from "@/lib/auth/captchaBridge";
 import {
   TURNSTILE_SITE_KEY,
   captchaEnabled,
@@ -50,6 +52,11 @@ function loadScript(): Promise<void> {
  * password reset.
  */
 export function Turnstile({ className }: { className?: string }) {
+  if (nativeApp !== null) return <NativeTurnstile className={className} />;
+  return <WebTurnstile className={className} />;
+}
+
+function WebTurnstile({ className }: { className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -88,6 +95,55 @@ export function Turnstile({ className }: { className?: string }) {
 
   if (!captchaEnabled()) return null;
   return <div ref={ref} className={className} />;
+}
+
+/**
+ * In the native apps Turnstile runs in a frame served from tandavastudio.com
+ * (see public/captcha-bridge.js), because the apps' own origins are not valid
+ * Turnstile hostnames. The frame stays collapsed unless Cloudflare needs a tap.
+ */
+function NativeTurnstile({ className }: { className?: string }) {
+  const frame = useRef<HTMLIFrameElement>(null);
+  const [visible, setVisible] = useState(false);
+  const [src] = useState(() =>
+    captchaBridgeUrl(TURNSTILE_SITE_KEY, document.documentElement.classList.contains("dark")),
+  );
+
+  useEffect(() => {
+    if (!captchaEnabled()) return;
+    const onMessage = (e: MessageEvent) => {
+      if (e.source !== frame.current?.contentWindow) return;
+      const msg = parseBridgeMessage(e.origin, e.data);
+      if (!msg) return;
+      if (msg.event === "token") setCaptchaToken(msg.token);
+      else if (msg.event === "expired") setCaptchaToken(null);
+      else if (msg.event === "error") {
+        setCaptchaToken(null);
+        setCaptchaFailed(true);
+      } else setVisible(msg.event === "show");
+    };
+    window.addEventListener("message", onMessage);
+    const offReset = onCaptchaReset(() => {
+      frame.current?.contentWindow?.postMessage({ type: "tandava-turnstile-reset" }, CAPTCHA_BRIDGE_ORIGIN);
+    });
+    return () => {
+      window.removeEventListener("message", onMessage);
+      offReset();
+      setCaptchaToken(null);
+      setCaptchaFailed(false);
+    };
+  }, []);
+
+  if (!captchaEnabled()) return null;
+  return (
+    <iframe
+      ref={frame}
+      src={src}
+      title="Security check"
+      className={className}
+      style={{ border: 0, width: "100%", height: visible ? 72 : 0, display: "block", background: "transparent" }}
+    />
+  );
 }
 
 /** True when the form may submit: captcha is off, a token is ready, or the widget failed. */

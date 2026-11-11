@@ -234,7 +234,7 @@ export default function NotificationSettings() {
                       Configure your email provider for sending notifications and marketing emails
                     </CardDescription>
                   </div>
-                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                  <Badge variant="outline" className="bg-success/10 text-success border-success/30">
                     <CheckCircle2 className="h-3 w-3 me-1" />
                     Connected
                   </Badge>
@@ -478,7 +478,7 @@ export default function NotificationSettings() {
                         <div className="flex items-center gap-2">
                           <h4 className="font-medium">{platform.name}</h4>
                           {platform.connected ? (
-                            <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/30">
+                            <Badge variant="outline" className="bg-success/10 text-success border-success/30">
                               <CheckCircle2 className="h-3 w-3 me-1" />
                               Connected
                             </Badge>

@@ -39,6 +39,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { PayoutsCard } from "@/components/manage/PayoutsCard";
+import { nativeApp } from "@/lib/native/platform";
 import { useToast } from "@/hooks/use-toast";
 import { OXATL_STUDIO } from "@/data/demo/oxatl-yoga";
 
@@ -65,7 +66,7 @@ export default function SettingsManage() {
   const [pageLive, setPageLive] = useState(false);
 
   // SEO Settings
-  const [metaDescription, setMetaDescription] = useState("Hot yoga, vinyasa, and meditation classes in San Francisco's SOMA neighborhood. New students get their first week free.");
+  const [metaDescription, setMetaDescription] = useState("Yoga, pilates and meditation on East 6th, South Congress and North Lamar. New students get 30 days unlimited for $49.");
   const [googleVerification, setGoogleVerification] = useState("");
   const [googleAnalyticsId, setGoogleAnalyticsId] = useState("");
   const [facebookPixelId, setFacebookPixelId] = useState("");
@@ -241,10 +242,13 @@ export default function SettingsManage() {
               <Palette className="h-3.5 w-3.5 me-1.5" />
               Branding
             </TabsTrigger>
+            {/* Payout setup is web only: the Studio app sells and sets up nothing about payments. */}
+            {!nativeApp && (
             <TabsTrigger value="billing" className="text-xs">
               <CreditCard className="h-3.5 w-3.5 me-1.5" />
               Billing
             </TabsTrigger>
+            )}
             {showSettingsTab("notifications", live) && (
             <TabsTrigger value="notifications" className="text-xs">
               <Bell className="h-3.5 w-3.5 me-1.5" />
@@ -395,7 +399,7 @@ export default function SettingsManage() {
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="text-sm font-semibold">SOMA Location</h3>
-                      <p className="text-xs text-muted-foreground mt-0.5">123 Folsom St, San Francisco, CA 94105</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">East 6th Street, Austin, TX</p>
                       <div className="flex gap-2 mt-2 text-xs text-muted-foreground">
                         <span>3 rooms</span>
                         <span>Main Studio, Hot Room, Meditation Room</span>
@@ -542,6 +546,7 @@ export default function SettingsManage() {
           </TabsContent>
 
           {/* Billing / Stripe */}
+          {!nativeApp && (
           <TabsContent value="billing" className="space-y-6">
             {live ? (
               <PayoutsCard />
@@ -569,6 +574,7 @@ export default function SettingsManage() {
               </>
             )}
           </TabsContent>
+          )}
 
           {/* Notifications */}
           {/* No backing store yet: shown in the demo only. */}

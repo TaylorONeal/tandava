@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils";
 // Mock studio data
 const mockStudio = {
   id: "lotus-flow",
-  name: "Lotus Flow Studio",
+  name: "Oxatl Yoga",
   logo: "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=200&q=80",
   primaryColor: "#4fd1c5",
   accentColor: "#f687b3",
@@ -38,7 +38,7 @@ const mockTodayClasses = [
   {
     id: "c1",
     name: "Morning Vinyasa Flow",
-    instructor: "Maya Johnson",
+    instructor: "Brooke Sandoval",
     time: "7:00 AM",
     endTime: "8:00 AM",
     room: "Studio A",
@@ -50,7 +50,7 @@ const mockTodayClasses = [
   {
     id: "c2",
     name: "Gentle Yoga",
-    instructor: "David Park",
+    instructor: "Mei Tanaka",
     time: "9:00 AM",
     endTime: "10:00 AM",
     room: "Studio B",
@@ -62,7 +62,7 @@ const mockTodayClasses = [
   {
     id: "c3",
     name: "Power Hour",
-    instructor: "Sarah Chen",
+    instructor: "Tasha Greene",
     time: "10:30 AM",
     endTime: "11:30 AM",
     room: "Studio A",
@@ -74,7 +74,7 @@ const mockTodayClasses = [
   {
     id: "c4",
     name: "Yin & Meditation",
-    instructor: "James Wilson",
+    instructor: "Rosa Delgado",
     time: "12:00 PM",
     endTime: "1:00 PM",
     room: "Studio B",
@@ -86,7 +86,7 @@ const mockTodayClasses = [
   {
     id: "c5",
     name: "Hot Yoga Sculpt",
-    instructor: "Maya Johnson",
+    instructor: "Brooke Sandoval",
     time: "5:30 PM",
     endTime: "6:30 PM",
     room: "Hot Room",
@@ -98,7 +98,7 @@ const mockTodayClasses = [
   {
     id: "c6",
     name: "Restorative Flow",
-    instructor: "David Park",
+    instructor: "Mei Tanaka",
     time: "7:00 PM",
     endTime: "8:15 PM",
     room: "Studio A",
@@ -113,10 +113,10 @@ const mockTodayClasses = [
 const mockMembers = [
   {
     id: "m1",
-    firstName: "Emma",
-    lastName: "Thompson",
+    firstName: "Anjali",
+    lastName: "Brennan",
     phone: "555-0101",
-    email: "emma@example.com",
+    email: "anjali.brennan@example.com",
     photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80",
     bookings: [
       { classId: "c2", className: "Gentle Yoga", time: "9:00 AM", checkedIn: false },
@@ -124,10 +124,10 @@ const mockMembers = [
   },
   {
     id: "m2",
-    firstName: "Michael",
-    lastName: "Chen",
+    firstName: "Caleb",
+    lastName: "Delacroix",
     phone: "555-0102",
-    email: "michael@example.com",
+    email: "caleb.delacroix@example.com",
     photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80",
     bookings: [
       { classId: "c3", className: "Power Hour", time: "10:30 AM", checkedIn: false },
@@ -135,10 +135,10 @@ const mockMembers = [
   },
   {
     id: "m3",
-    firstName: "Sarah",
-    lastName: "Williams",
+    firstName: "Lucia",
+    lastName: "Alvarez",
     phone: "555-0103",
-    email: "sarah@example.com",
+    email: "lucia.alvarez@example.com",
     photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80",
     bookings: [
       { classId: "c2", className: "Gentle Yoga", time: "9:00 AM", checkedIn: true },
@@ -146,10 +146,10 @@ const mockMembers = [
   },
   {
     id: "m4",
-    firstName: "James",
-    lastName: "Rodriguez",
+    firstName: "Hector",
+    lastName: "Mbeki",
     phone: "555-0104",
-    email: "james@example.com",
+    email: "hector.mbeki@example.com",
     photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80",
     bookings: [
       { classId: "c5", className: "Hot Yoga Sculpt", time: "5:30 PM", checkedIn: false },
@@ -157,10 +157,10 @@ const mockMembers = [
   },
   {
     id: "m5",
-    firstName: "Lisa",
-    lastName: "Nguyen",
+    firstName: "Linh",
+    lastName: "Fitzgerald",
     phone: "555-0105",
-    email: "lisa@example.com",
+    email: "linh.fitzgerald@example.com",
     photo: "",
     bookings: [],
   },
