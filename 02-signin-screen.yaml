@@ -1,0 +1,8 @@
+appId: com.tandava.studio
+---
+- assertVisible: "Welcome back"
+- assertVisible: "Sign In"
+- assertVisible: "Forgot password\\?"
+- assertVisible: "Staff: sign in with the email your studio invited\\."
+- assertNotVisible: "Sign Up"
+- takeScreenshot: ${P}-02-signin-screen

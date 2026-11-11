@@ -1,0 +1,5 @@
+Running on test
+ > Flow 01-launch
+Launch app "com.tandava.studio" with clear state... COMPLETED
+Assert that "Welcome back" is visible... COMPLETED
+Take screenshot ${P}-01-launch... COMPLETED

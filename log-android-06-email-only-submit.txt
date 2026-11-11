@@ -1,0 +1,6 @@
+Running on test
+ > Flow 06-email-only-submit
+Tap on "Welcome back"... COMPLETED
+Tap on "Sign In"... COMPLETED
+Take screenshot ${P}-06-email-only-submit... COMPLETED
+Assert that "Welcome back" is visible... COMPLETED

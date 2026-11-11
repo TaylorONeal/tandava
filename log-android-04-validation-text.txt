@@ -1,0 +1,5 @@
+Running on test
+ > Flow 04-validation-text
+Tap on "Sign In"... COMPLETED
+Assert that ".*ill out this field.*" is visible... COMPLETED
+Take screenshot ${P}-04-validation-text... COMPLETED
