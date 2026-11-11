@@ -20,6 +20,8 @@ on:
       - scripts/directory/markets.json
       - scripts/directory/osm-pull.mjs
       - scripts/directory/site-check.mjs
+      - data/directory/overrides.json
+      - data/directory/seeds.json
       - .github/workflows/directory-refresh.yml
 
 permissions:
