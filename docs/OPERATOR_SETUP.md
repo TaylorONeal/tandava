@@ -7,7 +7,7 @@ hosted service; the setup instructions below are for a new deployment.
 
 | Item | Verified value / entry point |
 | --- | --- |
-| Supabase owner login | `owner@example.com` |
+| Supabase owner login | the Purafield operator account |
 | Organization | Purafield Studio, ID `<org-id>` |
 | Project | `tandava-prod`, reference `<project-ref>`, production branch `main` |
 | Project home | https://supabase.com/dashboard/project/<project-ref> |
@@ -16,7 +16,7 @@ hosted service; the setup instructions below are for a new deployment.
 | SQL editor | https://supabase.com/dashboard/project/<project-ref>/sql |
 | Hosted app | https://tandavastudio.com |
 
-The personal Supabase login `you@example.com` is a different account.
+The maintainer's personal Supabase login is a different account.
 It can show an empty organization also named Purafield Studio (ID
 `rgsnotophnfukpcrvpaj`); that is not Tandava's backend. Match the project and
 organization IDs, not the display name. Do not create a replacement project.

@@ -3,7 +3,7 @@
 ## Overview
 **Priority:** P0 for the pilot. Every other growth feature (Express Booking, the Network, privates, campaigns, landing pages) is judged by numbers this produces. Without it, a studio owner cannot tell what works, and neither can we.
 **Status:** Phase 1 built (branch `feat/attribution-phase1`, migration 00035; built as 00025, renumbered after main's 00025 to 00034), not yet deployed or verified on a live database. See "Phase 1 as built" below and "What exists today" for the inventory before it.
-**Origin:** Taylor, Oct 8 2026: attribution analytics is very important; check it for all the pages and apps and create a comprehensive interlinked view.
+**Origin:** The maintainer, Oct 8 2026: attribution analytics is very important; check it for all the pages and apps and create a comprehensive interlinked view.
 **Relationship to `ATTRIBUTION_TRACKING.md`:** that file is the technical design for sessions, touchpoints, models and queries. This PRD is the product contract: what gets captured on every surface, how it links into one journey, what the owner sees, and what is true today. Where they disagree, this file wins and the other gets updated.
 
 ---
@@ -167,7 +167,7 @@ Steps 1 to 3 are a pilot gate. A studio on Tandava for a month with no attributi
 - Fingerprinting of any kind.
 
 ## Beyond Tandava (for the playbook)
-The same first-party pattern and the same UTM vocabulary should apply across Purafield's other surfaces (purafieldstudio.com, cuecraftyoga.com, rationalyoga.com, the CueCraft and WakeState store listings), so one campaign can be read end to end: `app-launch-playbook/UTM-CONVENTIONS.md` holds the shared naming and the store-link rules (Android referrer, Apple campaign links).
+The same first-party pattern and the same UTM vocabulary should apply across Purafield's other surfaces (purafieldstudio.com, cuecraftyoga.com, rationalyoga.com, the CueCraft and WakeState store listings), so one campaign can be read end to end: the shared UTM conventions holds the shared naming and the store-link rules (Android referrer, Apple campaign links).
 
 ## Related
 `ATTRIBUTION_TRACKING.md` (technical design; to be reconciled to this), PRD-011 Campaign hub and UTM builder, PRD-007 lifecycle automation, PRD-020 Express Booking, PRD-021 privates, PRD-022 home studio and Explore, PRD-023 Studio Network, `docs/app-store/STORE-APPS.md` (deep links and install attribution).

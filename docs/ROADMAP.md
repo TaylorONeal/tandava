@@ -25,7 +25,7 @@ Start with one paid hosted plan, with price and support limits validated in the 
 
 ## Public studio directory (spec, post-launch growth)
 
-[PRD-028](prd/PRD-028-studio-directory.md): a positive, factual public directory of yoga studios at `/studios`, built from studios' own public websites, showing status and current/previous booking software, linking out. Not a review site. It shares one directory engine spec with the TeacherTree teacher directory ([shared core](directory/SHARED-CORE.md)) so studios and teachers are built the same way and can be associated later. Phases SD0 to SD5 with owner gates in the [task board](directory/TASKS.md). Nothing is collected or published until Taylor passes the SD gates; this does not change the launch sequence above.
+[PRD-028](prd/PRD-028-studio-directory.md): a positive, factual public directory of yoga studios at `/studios`, built from studios' own public websites, showing status and current/previous booking software, linking out. Not a review site. It shares one directory engine spec with the TeacherTree teacher directory ([shared core](directory/SHARED-CORE.md)) so studios and teachers are built the same way and can be associated later. Phases SD0 to SD5 with owner gates in the [task board](directory/TASKS.md). Nothing is collected or published until the maintainer passes the SD gates; this does not change the launch sequence above.
 
 ## Historical feature backlog
 

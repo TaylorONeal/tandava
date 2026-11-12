@@ -5,7 +5,7 @@
 --
 -- Before running, create the five review sign-ins in the Supabase dashboard
 -- (tandava-prod > Authentication > Users > Add user > Create new user, Auto Confirm
--- on). Taylor types each password there; passwords never go in this repo or chat.
+-- on). The maintainer types each password there; passwords never go in this repo or chat.
 -- Use addresses Purafield controls, for example:
 --   owner    review-owner@purafieldstudio.com
 --   teacher  review-teacher@purafieldstudio.com

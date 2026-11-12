@@ -17,7 +17,7 @@ import jwt  # PyJWT
 
 API = "https://api.appstoreconnect.apple.com"
 APP_ID = os.environ.get("ASC_APP_ID", "6831459731")
-GROUP_NAME = os.environ.get("INTERNAL_GROUP_NAME", "Taylor")
+GROUP_NAME = os.environ.get("INTERNAL_GROUP_NAME", "Internal testers")
 
 
 def pem_key():
@@ -87,7 +87,7 @@ def main():
 
     # 2. Tester = account holder (or TESTER_EMAIL)
     email = os.environ.get("TESTER_EMAIL", "").strip()
-    first, last = "Taylor", "O'Neal"
+    first, last = os.environ.get("TESTER_FIRST_NAME", "Internal"), os.environ.get("TESTER_LAST_NAME", "Tester")
     if not email:
         _, users = call("GET", "/v1/users?limit=200")
         holders = [u for u in users.get("data", []) if "ACCOUNT_HOLDER" in u["attributes"].get("roles", [])]

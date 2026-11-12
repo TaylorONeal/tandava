@@ -1,6 +1,6 @@
 # Help, FAQ and smart defaults: one source, every surface
 
-Written Oct 8 2026. Taylor: "all of this needs to be in in-app help, FAQs on the page before sign-up and anywhere else", and "we should have suggested smart defaults and info icons to explain choices".
+Written Oct 8 2026. The maintainer: "all of this needs to be in in-app help, FAQs on the page before sign-up and anywhere else", and "we should have suggested smart defaults and info icons to explain choices".
 
 ## The rule
 1. **One source of help text:** `src/content/help.ts`. Each entry has an id, an audience (owner, member, teacher), a question, a plain answer, and `status: "planned"` when the thing is designed but not live. `docs/FAQ.md` is the long-form owner FAQ and must agree with it; when they differ, fix both in the same PR.

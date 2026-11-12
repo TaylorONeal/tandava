@@ -11,7 +11,7 @@ async function mockTeacher(page: Page, role = "teacher") {
     const json = (body: unknown, status = 200) => route.fulfill({ status, headers, contentType: "application/json", body: JSON.stringify(body) });
     if (req.method() === "OPTIONS") return route.fulfill({ status: 204, headers });
     if (url.includes("/rpc/get_my_effective_role")) return json(role);
-    if (url.includes("/rest/v1/profiles")) return json({ ...user, first_name: "Taylor", last_name: "Teacher" });
+    if (url.includes("/rest/v1/profiles")) return json({ ...user, first_name: "Alex", last_name: "Teacher" });
     if (url.includes("/rpc/get_my_teaching_classes") || url.includes("/rpc/get_teaching_roster")) state.reads++;
     if (url.includes("/rpc/get_my_teaching_classes")) return state.failSchedule ? json({ message: "Schedule unavailable" }, 500) : json([{
       occurrence_id: "11111111-1111-1111-1111-111111111111", offering_name: "Assigned Vinyasa", studio_name: "Real Studio", studio_timezone: "America/Chicago",

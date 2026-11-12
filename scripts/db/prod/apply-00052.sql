@@ -1,6 +1,6 @@
 -- Applies migration 00052 (scan check-in) to tandava-prod in one transaction.
 -- Production is at 00044 (00045 superseded; 00046 to 00051 not applied), and
--- 00052 depends only on objects through 00044. Taylor approved 00050 to 00052
+-- 00052 depends only on objects through 00044. The maintainer approved 00050 to 00052
 -- on Nov 6 2026; 00050 and 00051 wait because 00051 needs 00047 and both sit
 -- after the unreviewed 00046 runtime grants. Any error rolls everything back.
 BEGIN;

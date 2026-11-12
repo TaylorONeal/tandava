@@ -51,14 +51,14 @@ Questions? Email hello@purafieldstudio.com.
 - **App category:** Business. **Tags:** Business management, Productivity (pick the closest offered).
 - **Contact email:** hello@purafieldstudio.com
 - **Website:** https://tandavastudio.com/for-studios
-- **Phone:** the Purafield business phone only (never Taylor's personal number), or leave empty.
+- **Phone:** the Purafield business phone only (never the maintainer's personal number), or leave empty.
 
 ## App content (Policy and programs > App content)
 
 | Section | Answer |
 |---|---|
 | Privacy policy | https://tandavastudio.com/privacy |
-| App access | All or some functionality is restricted. Instructions: "Sign in with the owner account below. Tap Scan passes to check a member in, or open a class roster and tap Check in." Username: review-owner@purafieldstudio.com. Password: typed by Taylor only. |
+| App access | All or some functionality is restricted. Instructions: "Sign in with the owner account below. Tap Scan passes to check a member in, or open a class roster and tap Check in." Username: review-owner@purafieldstudio.com. Password: typed by the maintainer only. |
 | Ads | No, the app does not contain ads |
 | Content rating (IARC) | Category: All other app types (Utility/Productivity). Every content question: No. Shares location: No. Users interact or exchange content: No. Digital purchases: No. Expected: Everyone / PEGI 3 |
 | Target audience | 18 and over only. Not designed for children |
@@ -92,4 +92,4 @@ Questions? Email hello@purafieldstudio.com.
 
 1. Internal testing first: upload the signed AAB from Codemagic workflow `studio-android-aab`, release name `1.0 (1xx)`.
 2. Production needs a closed test with 12 testers for 14 days on a new personal-style account. Check whether Purafield Studio LLC (organization account) is exempt before planning that.
-3. Nothing is sent for review without Taylor's yes.
+3. Nothing is sent for review without the maintainer's yes.
