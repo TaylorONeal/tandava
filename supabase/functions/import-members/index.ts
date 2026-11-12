@@ -142,7 +142,11 @@ serve(async (req) => {
         .maybeSingle();
 
       if (existing) {
-        profileId = existing.id as string;
+        // An existing account belongs to that person, not to this studio. Linking it
+        // here would let any studio owner read their profile (staff can view member
+        // profiles). They join the studio themselves the first time they book there.
+        errors.push({ row: rowNum, message: "Already has a Tandava account. They join your studio the first time they book." });
+        continue;
       } else {
         const { data: created, error: createErr } = await db.auth.admin.createUser({
           email,
@@ -158,8 +162,7 @@ serve(async (req) => {
         createdProfile = true;
       }
 
-      // Existing profiles are member-owned across studios. Import authority
-      // permits a studio link, not overwriting that person's global identity.
+      // Only accounts this import just created get the imported details.
       if (createdProfile) {
         await db
           .from("profiles")

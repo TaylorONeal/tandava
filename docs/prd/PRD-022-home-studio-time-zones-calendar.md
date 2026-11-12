@@ -3,7 +3,7 @@
 ## Overview
 **Priority:** P1 for the member app (store launch), P0 for time zones and calendar (they affect web booking today)
 **Status:** Time zones and add-to-calendar implemented (this PR). Home studio: spec only.
-**Origin:** Taylor, Oct 8 2026. Mindbody handles several studios, time zones and visiting another city badly.
+**Origin:** The maintainer, Oct 8 2026. Mindbody handles several studios, time zones and visiting another city badly.
 
 ---
 

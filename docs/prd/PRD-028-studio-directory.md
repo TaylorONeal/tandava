@@ -1,13 +1,13 @@
 # PRD-028: Public Studio Directory (`/studios`)
 
 ## Overview
-**Phase:** Post-launch growth. Starts only when Taylor says go; sequencing per
+**Phase:** Post-launch growth. Starts only when the maintainer says go; sequencing per
 the 2026-10-23 launch order puts Tandava last of the three launch tracks, and
 this directory is a growth surface, not a launch dependency.
 **Priority:** P2 strategic. The data asset compounds; the pages are cheap.
 **Status:** Spec. Nothing exists in code, no data has been collected, and
 nothing is published. This PRD authorizes design only.
-**Origin:** Taylor, Oct 23 2026: a public directory of studios we know about,
+**Origin:** The maintainer, Oct 23 2026: a public directory of studios we know about,
 built from publicly available information on their own sites. Not a review
 site. Positive only. Each listing shows the studio's status and the booking
 software it uses now and used previously, and links out to the studio.
@@ -72,7 +72,7 @@ are actually open, with a straight link to their real site and booking,
 claim, correct, or remove the page, **so I can** trust the directory and
 maybe look at the product behind it.
 
-### Job 3: Taylor (operator): see the market clearly
+### Job 3: The maintainer (operator): see the market clearly
 **When** I plan Tandava outreach, pricing, or a migration offer, **I want**
 to know platform share and movement per market, **so I can** aim at studios
 in motion instead of spraying everyone.
@@ -106,7 +106,7 @@ Renders only the public tier (Shared Core, section 5):
 
 ### What the page never shows
 
-(2026-11-10: Taylor chose to show studio phone and street address. See the TASKS.md decisions log.)
+(2026-11-10: the maintainer chose to show studio phone and street address. See the TASKS.md decisions log.)
 
 Email, anything from the internal tier, any score or
 ranking, any other studio's data, any text copied from the studio's site, and
@@ -149,14 +149,14 @@ the two changes that matter: status and platform migrations.
 
 | Phase | What | Gate to exit |
 |---|---|---|
-| SD0 | This spec set: PRD, shared core, taxonomy, scraping plan, tasks | Taylor has read and approved the shape (this is the "remind me later" checkpoint) |
+| SD0 | This spec set: PRD, shared core, taxonomy, scraping plan, tasks | The maintainer has read and approved the shape (this is the "remind me later" checkpoint) |
 | SD1 | Private foundation: tables, admin review + correction queue, platform history, zero public routes | RLS tests pass; a hand-entered test studio flows draft to verified and back |
 | SD2 | Pilot collection, Austin, 100 to 200 studios, **stays private** | Platform precision at least 95% on a 50-studio hand-checked sample; status corroboration rule exercised |
 | SD3 | Public launch, Austin only: `/studios` + detail pages, claim + correction doors live, crawler info page live | All Shared Core section 8 gates pass for Austin; explicit owner go-ahead to publish |
 | SD4 | More markets (Seattle, then NYC/SF/LA), Bali/Koh Phangan only after jurisdiction review | Per-market go-ahead, same gates each time |
 | SD5 | Associations + sync: teachers on studio pages come from TeacherTree via its D4 sync; claimed studios merge their directory page with their storefront | TeacherTree D4 shipped |
 
-Phases do not auto-advance. Each gate is a decision for Taylor, and SD3 is
+Phases do not auto-advance. Each gate is a decision for the maintainer, and SD3 is
 the bright line: before it, everything is private drafts.
 
 ## Success measures (once public, per market)

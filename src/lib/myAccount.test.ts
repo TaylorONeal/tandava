@@ -10,10 +10,10 @@ describe("profile form", () => {
     expect(Object.values(f).every((v) => v === "")).toBe(true);
   });
   it("round-trips a real profile and trims, nulls blanks, drops a leading @", () => {
-    const f = profileToForm({ first_name: "Taylor", last_name: null, instagram_handle: null } as unknown as Profile);
-    expect(f.firstName).toBe("Taylor");
+    const f = profileToForm({ first_name: "Alex", last_name: null, instagram_handle: null } as unknown as Profile);
+    expect(f.firstName).toBe("Alex");
     const { patch } = formToPatch({ ...f, lastName: "  ", instagramHandle: "@purafield", phone: " 512 " }, NOW);
-    expect(patch).toMatchObject({ first_name: "Taylor", last_name: null, instagram_handle: "purafield", phone: "512" });
+    expect(patch).toMatchObject({ first_name: "Alex", last_name: null, instagram_handle: "purafield", phone: "512" });
   });
   it("rejects a future or malformed date of birth", () => {
     expect(formToPatch({ ...profileToForm(null), dateOfBirth: "2030-01-01" }, NOW).errors).toBeDefined();

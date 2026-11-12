@@ -1,0 +1,62 @@
+# Secret scan rules. gitleaks' built-in rules plus the services these apps use.
+# A finding fails the check. Never commit a secret: write where it lives instead
+# (for example "RevenueCat dashboard > API keys" or "Supabase secrets") and read it from an env var.
+# A real false positive can be marked on its line with a trailing comment: gitleaks:allow
+title = "Secret scan"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "revenuecat-secret-key"
+description = "RevenueCat secret API key"
+regex = '''\bsk_[A-Za-z0-9]{24,}\b'''
+keywords = ["sk_"]
+
+[[rules]]
+id = "supabase-secret-key"
+description = "Supabase secret API key"
+regex = '''\bsb_secret_[A-Za-z0-9_-]{20,}'''
+keywords = ["sb_secret_"]
+
+[[rules]]
+id = "supabase-service-role-jwt"
+description = "Supabase service role key (JWT with role service_role)"
+regex = '''\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]*(?:c2VydmljZV9yb2xl|zZXJ2aWNlX3JvbG|NlcnZpY2Vfcm9sZ)[A-Za-z0-9_-]*\.[A-Za-z0-9_-]{20,}'''
+keywords = ["eyj"]
+
+[[rules]]
+id = "supabase-jwt-secret"
+description = "Supabase JWT secret"
+regex = '''(?i)\b(?:SUPABASE_)?JWT_SECRET\s*[=:]\s*["'`]?[A-Za-z0-9/+=_-]{32,}'''
+keywords = ["jwt_secret"]
+
+[[rules]]
+id = "app-store-connect-key"
+description = "App Store Connect API key (.p8) pasted with escaped newlines"
+regex = '''-----BEGIN (?:EC )?PRIVATE KEY-----(?:\\n|\s)+[A-Za-z0-9+/]{40,}'''
+keywords = ["private key"]
+
+[[rules]]
+id = "stripe-webhook-secret"
+description = "Stripe webhook signing secret"
+regex = '''\bwhsec_[A-Za-z0-9]{20,}'''
+keywords = ["whsec_"]
+
+[[rules]]
+id = "vercel-token"
+description = "Vercel access token"
+regex = '''\bvercel_[A-Za-z0-9]{24,}|(?i)\bVERCEL_(?:API_)?TOKEN\s*[=:]\s*["'`]?[A-Za-z0-9]{24,}'''
+keywords = ["vercel"]
+
+[[rules]]
+id = "codemagic-token"
+description = "Codemagic API token"
+regex = '''(?i)\b(?:CM_API_TOKEN|CM_TOKEN|CODEMAGIC_[A-Z_]*TOKEN)\s*[=:]\s*["'`]?[A-Za-z0-9_-]{30,}|(?i)x-auth-token\s*:\s*[A-Za-z0-9_-]{30,}'''
+keywords = ["cm_api_token", "cm_token", "codemagic", "x-auth-token"]
+
+[allowlist]
+description = "Placeholders and this file"
+paths = ['''(^|/)\.gitleaks\.toml$''']
+# Whole placeholder words only (bounded by a non-letter), so a real key that happens to contain "fake" still fails.
+regexes = ['''(?i)(?:^|[^a-z0-9])(?:your|example|placeholder|fake|synthetic|dummy|redacted|changeme)(?:[^a-z0-9]|$)''']

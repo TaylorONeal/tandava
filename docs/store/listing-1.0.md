@@ -324,8 +324,8 @@ Done: App Store Connect record (app id 6831459731); support page (`/support`, PR
 - [ ] Merge PR 121: native sign-in works with captcha on; Billing tab hidden in the apps; social buttons follow the server.
 - [ ] Add `VITE_TURNSTILE_SITE_KEY` (the website's public key) and `VITE_ACCOUNT_DELETION_REQUESTS_ENABLED=true` to Codemagic group `tandava_native`, then a new TestFlight build.
 - [ ] Sign in on the iPhone mini (TestFlight) and the Pixel 4 as review-owner; scan one pass.
-- [ ] Reviewer password in App Review Information (Taylor only).
+- [ ] Reviewer password in App Review Information (the maintainer only).
 - [ ] Review seed on tandava-prod and the QR PDF, then the review notes with real names.
 - [ ] Privacy label: add the Turnstile row above. Leave `VITE_POSTHOG_KEY` unset in `tandava_native`.
-- [ ] Name/subtitle: variant A unless Taylor says B.
+- [ ] Name/subtitle: variant A unless the maintainer says B.
 - [ ] Export compliance: uses only standard HTTPS, so "None of the algorithms mentioned above" (`ITSAppUsesNonExemptEncryption` is already false in Info.plist).
