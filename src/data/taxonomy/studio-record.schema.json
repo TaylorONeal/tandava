@@ -1,0 +1,588 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:purafield:taxonomy:studio-record",
+  "title": "Studio record",
+  "description": "One yoga (or movement) studio as every Purafield app should understand it: the Tandava studio directory, TeacherTree studio links, CueCraft and ClassStamp class context, and the class map. Field names match the Shared Directory Core (tandava docs/directory/SHARED-CORE.md). Each property carries x-tier: public (may render on a directory page), internal (stored, never rendered), or derived (computed, not stored by hand). Version 2026-11-10.1.",
+  "type": "object",
+  "required": [
+    "id",
+    "slug",
+    "name",
+    "status",
+    "address",
+    "sources",
+    "last_refreshed_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable id. For OSM-sourced records: osm-<type>-<id> until a database uuid exists.",
+      "x-tier": "internal"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "From name + city. Stable once published; a changed slug keeps the old one in suppressions as a redirect.",
+      "x-tier": "public"
+    },
+    "name": {
+      "type": "string",
+      "description": "As the studio presents itself.",
+      "x-tier": "public"
+    },
+    "alt_names": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Former names, brand vs location names.",
+      "x-tier": "internal"
+    },
+    "brand": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Chain or franchise brand when a location belongs to one (e.g. a multi-location brand). A tag, not an entity.",
+      "x-tier": "public"
+    },
+    "business_type": {
+      "type": "string",
+      "enum": [
+        "yoga_studio",
+        "hot_yoga_studio",
+        "pilates_studio",
+        "multi_discipline_studio",
+        "gym_with_yoga",
+        "wellness_center",
+        "retreat_center",
+        "community_space",
+        "other"
+      ],
+      "x-tier": "public"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "temporarily_closed",
+        "permanently_closed",
+        "historic",
+        "unknown"
+      ],
+      "description": "Shared Core section 6. open and temporarily_closed are Active; permanently_closed and historic are Archived (listed, hidden from search by default). unknown never publishes.",
+      "x-tier": "public"
+    },
+    "is_active": {
+      "type": "boolean",
+      "description": "status is open or temporarily_closed.",
+      "x-tier": "derived"
+    },
+    "status_note": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Short factual note, our words (e.g. 'Closed in 2025; space now another studio').",
+      "x-tier": "public"
+    },
+    "opened_year": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "x-tier": "public"
+    },
+    "closed_year": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "x-tier": "public"
+    },
+    "market": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Directory market id the record was pulled for (e.g. austin).",
+      "x-tier": "internal"
+    },
+    "address": {
+      "type": "object",
+      "required": [
+        "country_code",
+        "locality"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "street": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "x-tier": "internal"
+        },
+        "area": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Neighbourhood or district.",
+          "x-tier": "public"
+        },
+        "locality": {
+          "type": "string",
+          "description": "City or town.",
+          "x-tier": "public"
+        },
+        "region_code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ISO 3166-2 subdivision suffix, e.g. TX.",
+          "x-tier": "public"
+        },
+        "region_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "State, province or region name, e.g. Texas.",
+          "x-tier": "public"
+        },
+        "postal_code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "x-tier": "internal"
+        },
+        "country_code": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "ISO 3166-1 alpha-2.",
+          "x-tier": "public"
+        },
+        "country_name": {
+          "type": "string",
+          "x-tier": "public"
+        }
+      }
+    },
+    "geo": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "lat",
+        "lng"
+      ],
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
+        },
+        "precision": {
+          "type": "string",
+          "enum": [
+            "rooftop",
+            "street",
+            "area",
+            "city"
+          ]
+        }
+      },
+      "description": "Public at area precision only (rounded to 3 decimals, about 100 m) unless street address is made public.",
+      "x-tier": "public"
+    },
+    "time_zone": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "IANA zone, e.g. America/Chicago.",
+      "x-tier": "internal"
+    },
+    "links": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "website": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri",
+          "x-tier": "public"
+        },
+        "website_domain": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Normalized registrable domain. Primary dedupe key.",
+          "x-tier": "internal"
+        },
+        "instagram": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Handle without @.",
+          "x-tier": "public"
+        },
+        "facebook": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "x-tier": "public"
+        },
+        "youtube": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "x-tier": "public"
+        },
+        "tiktok": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "x-tier": "public"
+        },
+        "booking": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri",
+          "description": "Their own booking or schedule page.",
+          "x-tier": "public"
+        }
+      }
+    },
+    "phone": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Business phone, E.164 where parseable.",
+      "x-tier": "internal",
+      "x-tier-note": "Shared Core lists phone as internal. Flip to public only on owner decision."
+    },
+    "email": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Public business email only. Never a personal address.",
+      "x-tier": "internal"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "One or two sentences in our own words. Never copied text.",
+      "x-tier": "public"
+    },
+    "styles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "Style id from styles.json."
+      },
+      "description": "Multi-select of style ids, any depth. Directory facets roll children up to their public parent.",
+      "x-tier": "public"
+    },
+    "levels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Level ids from styles.json (kind level).",
+      "x-tier": "public"
+    },
+    "software": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current",
+        "previous"
+      ],
+      "properties": {
+        "current": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/softwareObservation"
+          },
+          "description": "What they use now. At most one role system_of_record; marketplaces (ClassPass etc.) may sit alongside it."
+        },
+        "previous": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/softwareObservation"
+          },
+          "description": "Most recent first. Observed dates, never contract dates."
+        }
+      },
+      "x-tier": "public",
+      "x-tier-note": "Only human-verified observations render publicly. Public wording: 'Booking via Arketa. Previously: Mindbody.'"
+    },
+    "offers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "teacher_training": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "on_demand": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "retreats": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "drop_in": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "x-tier": "public"
+    },
+    "cross_refs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "osm": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "e.g. node/123456",
+          "x-tier": "internal"
+        },
+        "wikidata": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "x-tier": "internal"
+        },
+        "tandava_studio_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Set when the studio claims or runs on Tandava. First-party values then win.",
+          "x-tier": "internal"
+        },
+        "teachertree_studio_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "x-tier": "internal"
+        }
+      }
+    },
+    "review_state": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "verified",
+        "published",
+        "suppressed"
+      ],
+      "default": "draft",
+      "x-tier": "internal"
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/source"
+      },
+      "description": "Every source this record drew on. Each fact links back with field_sources.",
+      "x-tier": "internal"
+    },
+    "field_sources": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "description": "Field path -> indexes into sources, e.g. {\"links.website\": [0]}. A fact without a source is deleted, not published.",
+      "x-tier": "internal"
+    },
+    "first_seen_at": {
+      "type": "string",
+      "format": "date-time",
+      "x-tier": "internal"
+    },
+    "last_refreshed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time any source for this record was re-read. Shown publicly as 'Last refreshed'.",
+      "x-tier": "public"
+    },
+    "last_verified_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Last human check.",
+      "x-tier": "public"
+    },
+    "internal_notes": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Accuracy notes only. Never outreach or lead notes (Shared Core section 5).",
+      "x-tier": "internal"
+    }
+  },
+  "$defs": {
+    "softwareObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "platform_id"
+      ],
+      "properties": {
+        "platform_id": {
+          "type": "string",
+          "description": "id from studio-software.json."
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "system_of_record",
+            "scheduling",
+            "marketplace",
+            "payments",
+            "on_demand",
+            "website"
+          ],
+          "default": "system_of_record"
+        },
+        "detected_via": {
+          "type": "string",
+          "enum": [
+            "booking_link_domain",
+            "script_fingerprint",
+            "iframe",
+            "branded_subdomain",
+            "map_listing_tag",
+            "studio_stated",
+            "manual"
+          ]
+        },
+        "evidence": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Matched URL or fingerprint string."
+        },
+        "observed_from": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "observed_to": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "verified": {
+          "type": "boolean",
+          "default": false,
+          "description": "Human checked. Required before public display."
+        },
+        "source": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Index into sources."
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "fetched_at"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "openstreetmap",
+            "website",
+            "booking_page",
+            "instagram",
+            "studio_correction",
+            "manual"
+          ]
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "URL or OSM element id."
+        },
+        "license": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "e.g. ODbL-1.0 for OpenStreetMap."
+        },
+        "fetched_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

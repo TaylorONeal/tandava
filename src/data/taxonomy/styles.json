@@ -1,0 +1,1326 @@
+{
+  "$schema": "./styles.schema.json",
+  "name": "purafield-yoga-styles",
+  "version": "2026-11-10.1",
+  "description": "Canonical yoga class style taxonomy shared by Tandava, TeacherTree, CueCraft (yogaflow, CueCraft-iOS), ClassStamp and the studio directory. Top-level public styles are what users filter by; hidden child styles keep finer detail (for example the kinds of Power Vinyasa) for matching, search and analytics.",
+  "rules": [
+    "id is permanent. Never rename or reuse an id; deprecate with \"deprecated\": true.",
+    "label is the display name. When apps.teachertree is set, label must equal it exactly, because TeacherTree stores these strings on saved classes.",
+    "apps.<app> is the exact string or key that app uses today, or null when that app does not list the style.",
+    "A child (parent set) counts as its parent for filtering: a studio tagged power-vinyasa matches the Power Yoga filter.",
+    "visibility public = may appear as a filter or chip; hidden = stored and searchable, not shown as its own facet.",
+    "kind level and fallback are never directory style facets.",
+    "aliases are lowercase phrases used to match free text (studio names, class titles, speech). Brand method names are hidden tags only, never claims about a studio's affiliation unless the studio states it."
+  ],
+  "styles": [
+    {
+      "id": "vinyasa",
+      "label": "Vinyasa",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "vinyasa",
+        "vinyasa flow",
+        "flow class"
+      ],
+      "apps": {
+        "teachertree": "Vinyasa",
+        "tandava": "Vinyasa",
+        "cuecraft": "vinyasa"
+      }
+    },
+    {
+      "id": "flow-yoga",
+      "label": "Flow Yoga",
+      "kind": "style",
+      "parent": "vinyasa",
+      "visibility": "hidden",
+      "aliases": [
+        "flow yoga"
+      ],
+      "apps": {
+        "teachertree": "Flow Yoga",
+        "tandava": "Flow Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "mindful-flow",
+      "label": "Mindful Flow",
+      "kind": "style",
+      "parent": "vinyasa",
+      "visibility": "hidden",
+      "aliases": [],
+      "apps": {
+        "teachertree": "Mindful Flow",
+        "tandava": "Mindful Flow",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "core-flow",
+      "label": "Core Flow",
+      "kind": "style",
+      "parent": "vinyasa",
+      "visibility": "hidden",
+      "aliases": [],
+      "apps": {
+        "teachertree": "Core Flow",
+        "tandava": "Core Flow",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "strength-flow",
+      "label": "Strength & Flow",
+      "kind": "style",
+      "parent": "vinyasa",
+      "visibility": "hidden",
+      "aliases": [
+        "strength and flow",
+        "strength flow"
+      ],
+      "apps": {
+        "teachertree": "Strength & Flow",
+        "tandava": "Strength & Flow",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "vinyasa-yin",
+      "label": "Vinyasa & Yin",
+      "kind": "style",
+      "parent": "vinyasa",
+      "visibility": "hidden",
+      "aliases": [
+        "yin yang",
+        "yin/yang",
+        "vin yin"
+      ],
+      "apps": {
+        "teachertree": "Vinyasa & Yin",
+        "tandava": "Vinyasa & Yin",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "prana-flow",
+      "label": "Prana Flow",
+      "kind": "style",
+      "parent": "vinyasa",
+      "visibility": "hidden",
+      "aliases": [
+        "prana flow",
+        "prana vinyasa"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      },
+      "notes": "Shiva Rea's method; brand name, hidden tag"
+    },
+    {
+      "id": "power",
+      "label": "Power Yoga",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "power yoga",
+        "power"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": "power"
+      }
+    },
+    {
+      "id": "power-vinyasa",
+      "label": "Power Vinyasa",
+      "kind": "style",
+      "parent": "power",
+      "visibility": "hidden",
+      "aliases": [
+        "power vinyasa"
+      ],
+      "apps": {
+        "teachertree": "Power Vinyasa",
+        "tandava": "Power Vinyasa",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "power-flow",
+      "label": "Power Flow",
+      "kind": "style",
+      "parent": "power",
+      "visibility": "hidden",
+      "aliases": [
+        "power flow"
+      ],
+      "apps": {
+        "teachertree": "Power Flow",
+        "tandava": "Power Flow",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "baptiste-power-vinyasa",
+      "label": "Baptiste Power Vinyasa",
+      "kind": "style",
+      "parent": "power",
+      "visibility": "hidden",
+      "aliases": [
+        "baptiste",
+        "baptiste power vinyasa",
+        "baptiste methodology"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      },
+      "notes": "Baron Baptiste lineage; affiliate studios often say so"
+    },
+    {
+      "id": "rocket",
+      "label": "Rocket Yoga",
+      "kind": "style",
+      "parent": "power",
+      "visibility": "hidden",
+      "aliases": [
+        "rocket",
+        "rocket yoga"
+      ],
+      "apps": {
+        "teachertree": "Rocket Yoga",
+        "tandava": "Rocket Yoga",
+        "cuecraft": null
+      },
+      "notes": "Ashtanga-derived; filed under Power for directory search, also aliases Ashtanga"
+    },
+    {
+      "id": "power-c2",
+      "label": "Power Yoga (C2 style)",
+      "kind": "style",
+      "parent": "power",
+      "visibility": "hidden",
+      "aliases": [
+        "c2",
+        "power yoga 2",
+        "yoga 2"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      },
+      "notes": "CorePower-style heated power class naming; hidden tag only"
+    },
+    {
+      "id": "hot-power-fusion",
+      "label": "Hot Power Fusion",
+      "kind": "style",
+      "parent": "power",
+      "visibility": "hidden",
+      "aliases": [
+        "hot power fusion",
+        "hpf"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      },
+      "notes": "CorePower class name; hidden tag only"
+    },
+    {
+      "id": "kest-power",
+      "label": "Bryan Kest Power Yoga",
+      "kind": "style",
+      "parent": "power",
+      "visibility": "hidden",
+      "aliases": [
+        "bryan kest",
+        "kest power"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "hot",
+      "label": "Hot Yoga",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "hot yoga",
+        "hot",
+        "heated",
+        "infrared",
+        "warm yoga"
+      ],
+      "apps": {
+        "teachertree": "Hot Yoga",
+        "tandava": "Hot Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "heated-flow",
+      "label": "Heated Flow",
+      "kind": "style",
+      "parent": "hot",
+      "visibility": "hidden",
+      "aliases": [
+        "heated flow",
+        "hot flow",
+        "warm flow"
+      ],
+      "apps": {
+        "teachertree": "Heated Flow",
+        "tandava": "Heated Flow",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "hot-power",
+      "label": "Hot Power",
+      "kind": "style",
+      "parent": "hot",
+      "visibility": "hidden",
+      "aliases": [
+        "hot power",
+        "heated power"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": "Hot Power",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "bikram",
+      "label": "Bikram",
+      "kind": "style",
+      "parent": "hot",
+      "visibility": "hidden",
+      "aliases": [
+        "bikram",
+        "bikram yoga"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": "Bikram",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "hot-26-2",
+      "label": "Hot 26+2",
+      "kind": "style",
+      "parent": "hot",
+      "visibility": "hidden",
+      "aliases": [
+        "26+2",
+        "26 and 2",
+        "hot 26",
+        "original hot yoga"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      },
+      "notes": "Post-Bikram name for the 26 posture series"
+    },
+    {
+      "id": "infrared-hot",
+      "label": "Infrared Hot Yoga",
+      "kind": "style",
+      "parent": "hot",
+      "visibility": "hidden",
+      "aliases": [
+        "infrared"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "hot-hatha",
+      "label": "Hot Hatha",
+      "kind": "style",
+      "parent": "hot",
+      "visibility": "hidden",
+      "aliases": [
+        "hot hatha"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "hatha",
+      "label": "Hatha",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "hatha",
+        "hatha yoga"
+      ],
+      "apps": {
+        "teachertree": "Hatha",
+        "tandava": "Hatha",
+        "cuecraft": "hatha"
+      }
+    },
+    {
+      "id": "sivananda",
+      "label": "Sivananda",
+      "kind": "style",
+      "parent": "hatha",
+      "visibility": "hidden",
+      "aliases": [
+        "sivananda"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "integral",
+      "label": "Integral Yoga",
+      "kind": "style",
+      "parent": "hatha",
+      "visibility": "hidden",
+      "aliases": [
+        "integral yoga"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "kripalu",
+      "label": "Kripalu",
+      "kind": "style",
+      "parent": "hatha",
+      "visibility": "hidden",
+      "aliases": [
+        "kripalu"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "viniyoga",
+      "label": "Viniyoga",
+      "kind": "style",
+      "parent": "hatha",
+      "visibility": "hidden",
+      "aliases": [
+        "viniyoga"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "ashtanga",
+      "label": "Ashtanga",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "ashtanga",
+        "astanga"
+      ],
+      "apps": {
+        "teachertree": "Ashtanga",
+        "tandava": "Ashtanga",
+        "cuecraft": "ashtanga"
+      }
+    },
+    {
+      "id": "mysore",
+      "label": "Mysore",
+      "kind": "style",
+      "parent": "ashtanga",
+      "visibility": "hidden",
+      "aliases": [
+        "mysore",
+        "mysore style",
+        "mysore program"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "led-primary",
+      "label": "Led Primary Series",
+      "kind": "style",
+      "parent": "ashtanga",
+      "visibility": "hidden",
+      "aliases": [
+        "led primary",
+        "primary series"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "iyengar",
+      "label": "Iyengar & Alignment",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "iyengar"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": "iyengar"
+      }
+    },
+    {
+      "id": "iyengar-inspired",
+      "label": "Iyengar-Inspired Yoga",
+      "kind": "style",
+      "parent": "iyengar",
+      "visibility": "hidden",
+      "aliases": [
+        "iyengar inspired"
+      ],
+      "apps": {
+        "teachertree": "Iyengar-Inspired Yoga",
+        "tandava": "Iyengar-Inspired Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "alignment-based",
+      "label": "Alignment-Based Yoga",
+      "kind": "style",
+      "parent": "iyengar",
+      "visibility": "hidden",
+      "aliases": [
+        "alignment based",
+        "alignment"
+      ],
+      "apps": {
+        "teachertree": "Alignment-Based Yoga",
+        "tandava": "Alignment-Based Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "anusara",
+      "label": "Anusara",
+      "kind": "style",
+      "parent": "iyengar",
+      "visibility": "hidden",
+      "aliases": [
+        "anusara"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "forrest",
+      "label": "Forrest Yoga",
+      "kind": "style",
+      "parent": "iyengar",
+      "visibility": "hidden",
+      "aliases": [
+        "forrest yoga"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "kundalini",
+      "label": "Kundalini",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "kundalini"
+      ],
+      "apps": {
+        "teachertree": "Kundalini",
+        "tandava": "Kundalini",
+        "cuecraft": "kundalini"
+      }
+    },
+    {
+      "id": "jivamukti",
+      "label": "Jivamukti Yoga",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "jivamukti"
+      ],
+      "apps": {
+        "teachertree": "Jivamukti Yoga",
+        "tandava": "Jivamukti Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "slow-gentle",
+      "label": "Slow & Gentle",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "slow",
+        "gentle"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": "slow"
+      }
+    },
+    {
+      "id": "slow-flow",
+      "label": "Slow Flow",
+      "kind": "style",
+      "parent": "slow-gentle",
+      "visibility": "hidden",
+      "aliases": [
+        "slow flow"
+      ],
+      "apps": {
+        "teachertree": "Slow Flow",
+        "tandava": "Slow Flow",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "gentle-yoga",
+      "label": "Gentle Yoga",
+      "kind": "style",
+      "parent": "slow-gentle",
+      "visibility": "hidden",
+      "aliases": [
+        "gentle yoga"
+      ],
+      "apps": {
+        "teachertree": "Gentle Yoga",
+        "tandava": "Gentle Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "yin",
+      "label": "Yin",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "yin",
+        "yin yoga"
+      ],
+      "apps": {
+        "teachertree": "Yin",
+        "tandava": "Yin",
+        "cuecraft": "yin"
+      }
+    },
+    {
+      "id": "restorative",
+      "label": "Restorative",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "restorative"
+      ],
+      "apps": {
+        "teachertree": "Restorative",
+        "tandava": "Restorative",
+        "cuecraft": "restorative"
+      }
+    },
+    {
+      "id": "yoga-nidra",
+      "label": "Yoga Nidra",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "nidra",
+        "yoga nidra"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": "Yoga Nidra",
+        "cuecraft": null
+      },
+      "notes": "TeacherTree lists Yoga Nidra as a workshop type, not a class style"
+    },
+    {
+      "id": "meditation-breathwork",
+      "label": "Meditation & Breathwork",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "meditation",
+        "breathwork",
+        "pranayama",
+        "mindfulness"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "meditation",
+      "label": "Meditation",
+      "kind": "style",
+      "parent": "meditation-breathwork",
+      "visibility": "hidden",
+      "aliases": [
+        "meditation"
+      ],
+      "apps": {
+        "teachertree": "Meditation",
+        "tandava": "Meditation",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "breathwork",
+      "label": "Breathwork",
+      "kind": "style",
+      "parent": "meditation-breathwork",
+      "visibility": "hidden",
+      "aliases": [
+        "breathwork",
+        "pranayama"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": "Breathwork",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "breathwork-meditation",
+      "label": "Breathwork & Meditation",
+      "kind": "style",
+      "parent": "meditation-breathwork",
+      "visibility": "hidden",
+      "aliases": [],
+      "apps": {
+        "teachertree": "Breathwork & Meditation",
+        "tandava": "Breathwork & Meditation",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "sculpt",
+      "label": "Yoga Sculpt",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "sculpt",
+        "yoga sculpt",
+        "weights"
+      ],
+      "apps": {
+        "teachertree": "Yoga Sculpt",
+        "tandava": "Yoga Sculpt",
+        "cuecraft": "sculpt"
+      }
+    },
+    {
+      "id": "functional-mobility",
+      "label": "Functional & Mobility",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "functional",
+        "mobility"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": "functional"
+      }
+    },
+    {
+      "id": "yoga-for-mobility",
+      "label": "Yoga for Mobility",
+      "kind": "style",
+      "parent": "functional-mobility",
+      "visibility": "hidden",
+      "aliases": [
+        "mobility"
+      ],
+      "apps": {
+        "teachertree": "Yoga for Mobility",
+        "tandava": "Yoga for Mobility",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "stretch-release",
+      "label": "Stretch & Release",
+      "kind": "style",
+      "parent": "functional-mobility",
+      "visibility": "hidden",
+      "aliases": [
+        "stretch",
+        "stretching",
+        "myofascial"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": "Stretch & Release",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "somatic",
+      "label": "Somatic Movement",
+      "kind": "style",
+      "parent": "functional-mobility",
+      "visibility": "hidden",
+      "aliases": [
+        "somatic",
+        "somatics",
+        "embodied flow"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "yoga-barre",
+      "label": "Yoga Barre",
+      "kind": "style",
+      "parent": "barre",
+      "visibility": "hidden",
+      "aliases": [
+        "yoga barre"
+      ],
+      "apps": {
+        "teachertree": "Yoga Barre",
+        "tandava": "Yoga Barre",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "barre",
+      "label": "Barre",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "barre"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": "Barre",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "pilates",
+      "label": "Pilates",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "pilates"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": "Pilates",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "mat-pilates",
+      "label": "Mat Pilates",
+      "kind": "style",
+      "parent": "pilates",
+      "visibility": "hidden",
+      "aliases": [
+        "mat pilates"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": "Mat Pilates",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "reformer-pilates",
+      "label": "Reformer Pilates",
+      "kind": "style",
+      "parent": "pilates",
+      "visibility": "hidden",
+      "aliases": [
+        "reformer",
+        "lagree",
+        "megaformer"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": "Reformer Pilates",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "hiit",
+      "label": "HIIT & Strength",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "hiit",
+        "bootcamp",
+        "strength training"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": "HIIT",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "prenatal-postnatal",
+      "label": "Prenatal & Postnatal",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "prenatal",
+        "postnatal",
+        "pregnancy",
+        "mom and baby"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "prenatal",
+      "label": "Prenatal Yoga",
+      "kind": "style",
+      "parent": "prenatal-postnatal",
+      "visibility": "hidden",
+      "aliases": [
+        "prenatal",
+        "pregnancy"
+      ],
+      "apps": {
+        "teachertree": "Prenatal Yoga",
+        "tandava": "Prenatal Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "postnatal",
+      "label": "Postnatal Yoga",
+      "kind": "style",
+      "parent": "prenatal-postnatal",
+      "visibility": "hidden",
+      "aliases": [
+        "postnatal",
+        "postpartum",
+        "mom and baby"
+      ],
+      "apps": {
+        "teachertree": "Postnatal Yoga",
+        "tandava": "Postnatal Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "chair-adaptive",
+      "label": "Chair & Adaptive",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "chair yoga",
+        "adaptive",
+        "accessible",
+        "seniors"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "chair-yoga",
+      "label": "Chair Yoga",
+      "kind": "style",
+      "parent": "chair-adaptive",
+      "visibility": "hidden",
+      "aliases": [
+        "chair yoga"
+      ],
+      "apps": {
+        "teachertree": "Chair Yoga",
+        "tandava": "Chair Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "chair-gentle",
+      "label": "Chair & Gentle Flow",
+      "kind": "style",
+      "parent": "chair-adaptive",
+      "visibility": "hidden",
+      "aliases": [],
+      "apps": {
+        "teachertree": "Chair & Gentle Flow",
+        "tandava": "Chair & Gentle Flow",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "seniors",
+      "label": "Seniors Yoga",
+      "kind": "style",
+      "parent": "chair-adaptive",
+      "visibility": "hidden",
+      "aliases": [
+        "seniors",
+        "silver",
+        "50+"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "trauma-informed",
+      "label": "Trauma-Informed Yoga",
+      "kind": "style",
+      "parent": "chair-adaptive",
+      "visibility": "hidden",
+      "aliases": [
+        "trauma informed",
+        "trauma sensitive"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "kids-family",
+      "label": "Kids & Family",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "kids yoga",
+        "children",
+        "family yoga",
+        "teen yoga"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "aerial",
+      "label": "Aerial Yoga",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "aerial",
+        "antigravity",
+        "anti-gravity",
+        "suspension"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "acro",
+      "label": "AcroYoga",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "acro",
+        "acroyoga",
+        "partner yoga"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "sup",
+      "label": "SUP Yoga",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "sup yoga",
+        "paddleboard yoga",
+        "paddle board"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "sound-bath",
+      "label": "Sound Bath",
+      "kind": "style",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [
+        "sound bath",
+        "sound healing",
+        "gong",
+        "singing bowls"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": "Sound Bath",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "experiences",
+      "label": "Specialty Experiences",
+      "kind": "experience",
+      "parent": null,
+      "visibility": "public",
+      "aliases": [],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "ecstatic-dance",
+      "label": "Ecstatic Dance",
+      "kind": "style",
+      "parent": "experiences",
+      "visibility": "public",
+      "aliases": [
+        "ecstatic dance"
+      ],
+      "apps": {
+        "teachertree": "Ecstatic Dance",
+        "tandava": "Ecstatic Dance",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "blacklight",
+      "label": "Blacklight Yoga",
+      "kind": "style",
+      "parent": "experiences",
+      "visibility": "hidden",
+      "aliases": [
+        "blacklight",
+        "glow yoga",
+        "black light"
+      ],
+      "apps": {
+        "teachertree": "Blacklight Yoga",
+        "tandava": "Blacklight Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "candlelit",
+      "label": "Candlelit Yoga",
+      "kind": "style",
+      "parent": "experiences",
+      "visibility": "hidden",
+      "aliases": [
+        "candlelit",
+        "candlelight"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": "Candlelit Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "holiday-themed",
+      "label": "Holiday Themed",
+      "kind": "style",
+      "parent": "experiences",
+      "visibility": "hidden",
+      "aliases": [],
+      "apps": {
+        "teachertree": "Holiday Themed",
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "goat-yoga",
+      "label": "Goat Yoga",
+      "kind": "style",
+      "parent": "experiences",
+      "visibility": "hidden",
+      "aliases": [
+        "goat yoga"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "beer-yoga",
+      "label": "Yoga + Drinks",
+      "kind": "style",
+      "parent": "experiences",
+      "visibility": "hidden",
+      "aliases": [
+        "beer yoga",
+        "wine yoga",
+        "brewery yoga"
+      ],
+      "apps": {
+        "teachertree": null,
+        "tandava": null,
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "all-levels",
+      "label": "All Levels Yoga",
+      "kind": "level",
+      "parent": null,
+      "visibility": "hidden",
+      "aliases": [],
+      "apps": {
+        "teachertree": "All Levels Yoga",
+        "tandava": "All Levels Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "beginner",
+      "label": "Beginner Yoga",
+      "kind": "level",
+      "parent": null,
+      "visibility": "hidden",
+      "aliases": [],
+      "apps": {
+        "teachertree": "Beginner Yoga",
+        "tandava": "Beginner Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "intermediate",
+      "label": "Intermediate Yoga",
+      "kind": "level",
+      "parent": null,
+      "visibility": "hidden",
+      "aliases": [],
+      "apps": {
+        "teachertree": "Intermediate Yoga",
+        "tandava": "Intermediate Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "advanced",
+      "label": "Advanced Yoga",
+      "kind": "level",
+      "parent": null,
+      "visibility": "hidden",
+      "aliases": [],
+      "apps": {
+        "teachertree": "Advanced Yoga",
+        "tandava": "Advanced Yoga",
+        "cuecraft": null
+      }
+    },
+    {
+      "id": "other",
+      "label": "Other",
+      "kind": "fallback",
+      "parent": null,
+      "visibility": "hidden",
+      "aliases": [],
+      "apps": {
+        "teachertree": "Other",
+        "tandava": "Other",
+        "cuecraft": null
+      }
+    }
+  ]
+}

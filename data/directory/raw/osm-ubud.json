@@ -1,0 +1,313 @@
+{
+ "market": "ubud",
+ "fetched_at": "2026-11-11T05:40:38.125Z",
+ "endpoint": "https://overpass-api.de/api/interpreter",
+ "osm_base": "2026-11-11T05:39:57Z",
+ "license": "ODbL-1.0",
+ "attribution": "(c) OpenStreetMap contributors",
+ "query": "[out:json][timeout:300];\n(\n  nwr[\"sport\"~\"yoga|pilates\",i](-8.56,115.22,-8.46,115.3);\n  nwr[\"disused:sport\"~\"yoga|pilates\",i](-8.56,115.22,-8.46,115.3);\n  nwr[\"leisure\"~\"fitness_centre|sports_centre|sports_hall|studio|dance\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](-8.56,115.22,-8.46,115.3);\n  nwr[\"club\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](-8.56,115.22,-8.46,115.3);\n  nwr[\"healthcare\"][\"name\"~\"yoga\",i](-8.56,115.22,-8.46,115.3);\n  nwr[\"amenity\"~\"community_centre|social_centre|events_venue\"][\"name\"~\"yoga\",i](-8.56,115.22,-8.46,115.3);\n  nwr[\"shop\"~\"yoga\"](-8.56,115.22,-8.46,115.3);\n  nwr[\"disused:leisure\"~\"fitness_centre|sports_centre|studio\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](-8.56,115.22,-8.46,115.3);\n  nwr[\"was:name\"~\"yoga\",i](-8.56,115.22,-8.46,115.3);\n);\nout center tags meta;",
+ "elements": [
+  {
+   "type": "node",
+   "id": 11919325634,
+   "lat": -8.5155222,
+   "lon": 115.2656906,
+   "timestamp": "2024-05-20T08:11:43Z",
+   "version": 1,
+   "changeset": 151565694,
+   "user": "makisz",
+   "uid": 15834639,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Bali Swasthya Yoga Centre",
+    "training": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 3761412787,
+   "lat": -8.5035193,
+   "lon": 115.2620892,
+   "timestamp": "2024-02-27T04:06:16Z",
+   "version": 2,
+   "changeset": 147956257,
+   "user": "Airiver",
+   "uid": 13901111,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "White Lotus Meditation Center",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4421377789,
+   "lat": -8.5020612,
+   "lon": 115.2569598,
+   "timestamp": "2026-06-22T08:01:09Z",
+   "version": 3,
+   "changeset": 184419619,
+   "user": "FajrAl",
+   "uid": 2649988,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Ubud Yoga House",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4550022990,
+   "lat": -8.5028147,
+   "lon": 115.2520465,
+   "timestamp": "2026-03-17T05:49:16Z",
+   "version": 6,
+   "changeset": 179983068,
+   "user": "FajrAl",
+   "uid": 2649988,
+   "tags": {
+    "addr:street": "Jalan Raya Penestanan Kelod",
+    "leisure": "fitness_centre",
+    "name": "Intuitive Flow",
+    "sport": "yoga",
+    "website": "https://www.intuitiveflow.com/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4757530430,
+   "lat": -8.5195828,
+   "lon": 115.2658076,
+   "timestamp": "2025-01-30T04:02:06Z",
+   "version": 5,
+   "changeset": 161921946,
+   "user": "b-jazz-bot",
+   "uid": 9451067,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Yoga Barn",
+    "sport": "yoga",
+    "website": "https://www.theyogabarn.com/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4845678425,
+   "lat": -8.5018657,
+   "lon": 115.2584144,
+   "timestamp": "2019-03-23T05:44:55Z",
+   "version": 4,
+   "changeset": 68435164,
+   "user": "b-jazz-bot",
+   "uid": 9451067,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Ubud Yoga House",
+    "sport": "yoga",
+    "website": "https://ubudyogahouse.com/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4941876221,
+   "lat": -8.5055004,
+   "lon": 115.2629555,
+   "timestamp": "2026-03-17T05:49:16Z",
+   "version": 3,
+   "changeset": 179983068,
+   "user": "FajrAl",
+   "uid": 2649988,
+   "tags": {
+    "addr:housenumber": "6A",
+    "addr:postcode": "80571",
+    "addr:street": "Jalan Suweta",
+    "leisure": "fitness_centre",
+    "name": "Yoga Saraswati",
+    "opening_hours": "Mo-Su 09:00-10:30, 17:30-19:00",
+    "phone": "+628113961961",
+    "website": "http://yogasaraswatiubud.com"
+   }
+  },
+  {
+   "type": "node",
+   "id": 5575324276,
+   "lat": -8.5017486,
+   "lon": 115.2708159,
+   "timestamp": "2021-02-05T10:25:42Z",
+   "version": 3,
+   "changeset": 98760494,
+   "user": "bernardo60",
+   "uid": 332223,
+   "tags": {
+    "description": "Luxury villa- 5 bedrooms accommodating 11 persons. Yoga space with aerial yoga provisions.",
+    "name": "Villa Tanah Shanti - Yoga Resort",
+    "smoking": "no",
+    "sport": "yoga",
+    "tourism": "guest_house"
+   }
+  },
+  {
+   "type": "node",
+   "id": 6092930102,
+   "lat": -8.4836767,
+   "lon": 115.273473,
+   "timestamp": "2018-11-26T14:42:32Z",
+   "version": 1,
+   "changeset": 64900409,
+   "user": "joakimsk",
+   "uid": 2347844,
+   "tags": {
+    "addr:city": "Ubud",
+    "addr:postcode": "80571",
+    "addr:street": "Jl. Subak Uma Petulu Lebah",
+    "amenity": "dojo",
+    "name": "Bali Life Studio",
+    "sport": "martial_arts;yoga",
+    "website": "https://balilifestudioubud.blogspot.com/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 6268830886,
+   "lat": -8.5059064,
+   "lon": 115.2503023,
+   "timestamp": "2026-03-17T06:37:14Z",
+   "version": 3,
+   "changeset": 179985029,
+   "user": "FajrAl",
+   "uid": 2649988,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Meditasi Raja Yoga",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 6315317385,
+   "lat": -8.5005342,
+   "lon": 115.2481558,
+   "timestamp": "2026-03-17T06:37:14Z",
+   "version": 3,
+   "changeset": 179985029,
+   "user": "FajrAl",
+   "uid": 2649988,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Under The Banyan Tree",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 6577804709,
+   "lat": -8.505612,
+   "lon": 115.2504374,
+   "timestamp": "2022-05-16T09:47:33Z",
+   "version": 2,
+   "changeset": 121043588,
+   "user": "b-jazz-bot",
+   "uid": 9451067,
+   "tags": {
+    "leisure": "fitness_centre",
+    "sport": "yoga",
+    "website": "https://www.brahmakumaris.org/"
+   }
+  },
+  {
+   "type": "way",
+   "id": 1354585832,
+   "timestamp": "2025-01-27T07:55:54Z",
+   "version": 1,
+   "changeset": 161806958,
+   "user": "dpolovinkin",
+   "uid": 6710042,
+   "center": {
+    "lat": -8.505796,
+    "lon": 115.2514084
+   },
+   "nodes": [
+    12535713378,
+    12535713325,
+    12535713326,
+    12535713327,
+    12535713328,
+    12535713329,
+    12535713378
+   ],
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Alchemy Yoga and Meditation Center Ubud",
+    "sport": "yoga",
+    "website": "https://www.alchemyyogacenter.com/"
+   }
+  },
+  {
+   "type": "way",
+   "id": 404713866,
+   "timestamp": "2025-12-29T04:25:08Z",
+   "version": 3,
+   "changeset": 176557448,
+   "user": "askew-twice-faster",
+   "uid": 23642983,
+   "center": {
+    "lat": -8.509266,
+    "lon": 115.2670951
+   },
+   "nodes": [
+    4069847649,
+    4069847648,
+    4069847646,
+    4069847647,
+    4069847649
+   ],
+   "tags": {
+    "addr:housenumber": "3",
+    "addr:street": "Jalan Jembawan",
+    "building": "yes",
+    "leisure": "fitness_centre",
+    "name": "Radiantly Alive Yoga",
+    "opening_hours": "Mo-Su 07:00-19:00",
+    "sport": "yoga",
+    "website": "https://www.radiantlyalive.com/"
+   }
+  },
+  {
+   "type": "way",
+   "id": 704829267,
+   "timestamp": "2026-06-15T16:38:16Z",
+   "version": 3,
+   "changeset": 184146283,
+   "user": "FajrAl",
+   "uid": 2649988,
+   "center": {
+    "lat": -8.5286625,
+    "lon": 115.2544784
+   },
+   "nodes": [
+    4347348489,
+    6619140962,
+    6619140963,
+    6619140964,
+    6619140965,
+    6619140966,
+    6619140967,
+    6619140968,
+    4347348489
+   ],
+   "tags": {
+    "addr:housenumber": "108",
+    "addr:postcode": "80571",
+    "addr:street": "Jalan Raya Singakerta",
+    "building": "yes",
+    "email": "hello@ubudyogacentre.com",
+    "internet_access": "wlan",
+    "leisure": "fitness_centre",
+    "name": "Ubud yoga centre",
+    "opening_hours": "06:00-21:00",
+    "phone": "+62 36-18987207",
+    "website": "https://ubudyogacentre.com/"
+   }
+  }
+ ]
+}

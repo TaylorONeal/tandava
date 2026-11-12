@@ -1,0 +1,426 @@
+{
+  "note": "Studios we list even when map data misses them. Each entry names where it came from. Names, areas and websites only; descriptions are generated in our own words. Map data merges into a seed when the website matches.",
+  "studios": [
+    {
+      "market": "ubud",
+      "name": "Yoga Barn",
+      "area": "Pengosekan",
+      "street": "Jl. Raya Pengosekan",
+      "website": "https://theyogabarn.com",
+      "styles_text": "Vinyasa, Hatha, Aerial, AcroYoga, Kirtan, Yoga Nidra, Kundalini",
+      "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide"
+    },
+    {
+      "market": "ubud",
+      "name": "The IN Movement",
+      "area": "Nyuh Kuning",
+      "street": null,
+      "website": "https://theinmovement.com",
+      "styles_text": "Power, Yin, Meditation, Yoga Nidra",
+      "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide"
+    },
+    {
+      "market": "ubud",
+      "name": "Lumeria Yoga",
+      "area": "Pengosekan",
+      "street": "Jl. Raya Pengosekan",
+      "website": "https://lumeriayoga.com",
+      "styles_text": "Inside Flow, Sound Healing, Vinyasa, Breathwork, Yoga Nidra",
+      "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide"
+    },
+    {
+      "market": "ubud",
+      "name": "Heart Space Bali",
+      "area": "Pengosekan",
+      "street": "Jl. Pengosekan at Jl. Nyuh Kuning",
+      "website": "https://heartspacebali.com",
+      "styles_text": "Yin, Restorative, Sound Healing",
+      "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide"
+    },
+    {
+      "market": "ubud",
+      "name": "Intuitive Flow",
+      "area": "Penestanan",
+      "street": "Jl. Raya Penestanan Kelod",
+      "website": "https://intuitiveflow.com",
+      "styles_text": "Yin, Yoga Nidra",
+      "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide"
+    },
+    {
+      "market": "ubud",
+      "name": "Alchemy Yoga and Meditation Center",
+      "area": "Penestanan",
+      "street": "Jl. Penestanan No. 75",
+      "website": "https://alchemyyogacenter.com",
+      "styles_text": "Power, Yin, Ecstatic Dance, Meditation",
+      "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide"
+    },
+    {
+      "market": "ubud",
+      "name": "Radiantly Alive",
+      "area": "Central Ubud",
+      "street": "Jl. Jembawan 8",
+      "website": "https://www.radiantlyalive.com",
+      "styles_text": "Vinyasa, Kundalini, Yin, AcroYoga, Aerial, Ecstatic Dance",
+      "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide"
+    },
+    {
+      "market": "ubud",
+      "name": "Ubud Yoga Centre",
+      "area": "Central Ubud",
+      "street": "Jl. Hanoman 19",
+      "website": "https://ubud-yoga-centre.com",
+      "styles_text": "Hatha, Alignment",
+      "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide"
+    },
+    {
+      "market": "ubud",
+      "name": "Pyramids of Chi",
+      "area": "North Ubud",
+      "street": null,
+      "website": "https://ubud.pyramidsofchi.com",
+      "styles_text": "Sound Healing, Breathwork, Kundalini",
+      "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide"
+    },
+    {
+      "market": "ubud",
+      "name": "Fivelements Retreat",
+      "area": "Mambal",
+      "street": null,
+      "website": "https://fivelementsbali.com",
+      "styles_text": "Yoga, Meditation",
+      "business_type": "retreat_center",
+      "source": "https://www.cuecraftyoga.com/blog/ubud-yoga-guide"
+    },
+    {
+      "market": "nosara",
+      "name": "The Harmony Healing Centre",
+      "area": "Guiones",
+      "street": null,
+      "website": "https://www.harmonynosara.com",
+      "styles_text": "Yoga, Meditation, Breathwork",
+      "business_type": "yoga_studio",
+      "source": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide"
+    },
+    {
+      "market": "nosara",
+      "name": "NALU Nosara",
+      "area": null,
+      "street": null,
+      "website": "https://www.nalunosara.com",
+      "styles_text": "Ashtanga, Restorative, Yin",
+      "business_type": "yoga_studio",
+      "source": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide"
+    },
+    {
+      "market": "nosara",
+      "name": "Patitos Nosara",
+      "area": null,
+      "street": null,
+      "website": null,
+      "styles_text": "Yoga",
+      "business_type": "yoga_studio",
+      "source": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide",
+      "instagram": "https://www.instagram.com/patitos_nosara/"
+    },
+    {
+      "market": "nosara",
+      "name": "Iluminar Yoga Hotel",
+      "area": "Guiones",
+      "street": null,
+      "website": "https://iluminarnosara.com",
+      "styles_text": "Yoga, Meditation",
+      "business_type": "retreat_center",
+      "source": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide"
+    },
+    {
+      "market": "nosara",
+      "name": "Bodhi Tree Yoga Resort",
+      "area": null,
+      "street": null,
+      "website": "https://bodhitreeyogaresort.com",
+      "styles_text": "Yoga",
+      "business_type": "retreat_center",
+      "source": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide"
+    },
+    {
+      "market": "nosara",
+      "name": "Vivo Nosara",
+      "area": null,
+      "street": null,
+      "website": "https://vivonosara.com",
+      "styles_text": "Yoga",
+      "business_type": "retreat_center",
+      "source": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide"
+    },
+    {
+      "market": "nosara",
+      "name": "Jungle's Edge",
+      "area": null,
+      "street": null,
+      "website": "https://jungles-edge.com",
+      "styles_text": "Yoga",
+      "business_type": "multi_discipline_studio",
+      "source": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide"
+    },
+    {
+      "market": "nosara",
+      "name": "La Negra Surf Hotel",
+      "area": null,
+      "street": null,
+      "website": "https://www.lanegranosara.com",
+      "styles_text": "Yoga",
+      "business_type": "retreat_center",
+      "source": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide"
+    },
+    {
+      "market": "nosara",
+      "name": "Living Hotel",
+      "area": null,
+      "street": null,
+      "website": "https://livinghotelnosara.com",
+      "styles_text": "Yoga",
+      "business_type": "retreat_center",
+      "source": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide"
+    },
+    {
+      "market": "nosara",
+      "name": "Lagarta Lodge",
+      "area": null,
+      "street": null,
+      "website": "https://www.lagartalodge.com",
+      "styles_text": "Aerial, Vinyasa, Restorative",
+      "business_type": "retreat_center",
+      "source": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide"
+    },
+    {
+      "market": "nosara",
+      "name": "Costa Rica Yoga Spa",
+      "area": null,
+      "street": null,
+      "website": "https://www.costaricayogaspa.com",
+      "styles_text": "Yoga",
+      "business_type": "retreat_center",
+      "source": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide"
+    },
+    {
+      "market": "nosara",
+      "name": "Blue Spirit",
+      "area": null,
+      "street": null,
+      "website": "https://www.bluespiritcostarica.com",
+      "styles_text": "Yoga, Meditation",
+      "business_type": "retreat_center",
+      "source": "https://wanderlustrealty.squarespace.com/blog/nosara-yoga-guide"
+    },
+    {
+      "market": "austin",
+      "name": "Practice Yoga Austin",
+      "area": "East Austin",
+      "street": "1103 E 6th St",
+      "website": "https://practiceyogaaustin.com",
+      "styles_text": "Donation based, alignment, meditation",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Austin Yoga Lounge",
+      "area": "Downtown",
+      "street": null,
+      "website": null,
+      "styles_text": "Prenatal, postpartum, slow flow",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Flow Yoga Westgate",
+      "area": "Westgate",
+      "street": null,
+      "website": "https://flowyogatx.com",
+      "styles_text": "Vinyasa, hatha, hot, kundalini, yin, sound healing",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Retreat Yoga + Soulful Fitness",
+      "area": "Northwest Austin",
+      "street": null,
+      "website": "https://retreatyogaaustin.com",
+      "styles_text": "Infrared yoga, prenatal, sound healing",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Lizard Yoga and Holistic Spa",
+      "area": "South Austin",
+      "street": null,
+      "website": null,
+      "styles_text": "Yoga, breathwork, sauna",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga",
+      "business_type": "wellness_center"
+    },
+    {
+      "market": "austin",
+      "name": "Present Practice Yoga Downtown",
+      "area": "Downtown",
+      "street": null,
+      "website": null,
+      "styles_text": "Yoga, pilates",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Amala Sanctuary Studio",
+      "area": "Downtown",
+      "street": null,
+      "website": null,
+      "styles_text": "Yoga, dance",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "YTX Yoga, Strength, Pilates",
+      "area": "Downtown",
+      "street": "200 W 6th St",
+      "website": "https://ytxaustin.com",
+      "styles_text": "Yoga, pilates, HIIT, recovery",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Yoga Pod Austin",
+      "area": "North Austin",
+      "street": null,
+      "website": null,
+      "styles_text": "Hot yoga, vinyasa, barre, pilates",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "PURE Yoga Texas North Austin",
+      "area": "Burnet Road",
+      "street": null,
+      "website": null,
+      "styles_text": "Yoga",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Sukha Yoga Oltorf",
+      "area": null,
+      "street": null,
+      "website": null,
+      "styles_text": "Heated vinyasa, slow flow, yin, restorative",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Sukha Yoga Tarrytown",
+      "area": "Tarrytown",
+      "street": null,
+      "website": null,
+      "styles_text": "Heated vinyasa, slow flow, yin, restorative",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Sukha Yoga South Lamar",
+      "area": "South Lamar",
+      "street": "2324 S Lamar Blvd",
+      "website": "https://sukhayogaaustin.com",
+      "styles_text": "Vinyasa, slow flow, hot, kundalini, yin, Katonah",
+      "source": "https://bookretreats.com/t/yoga-studios/austin"
+    },
+    {
+      "market": "austin",
+      "name": "Open Form Yoga & Well-Being Studio",
+      "area": "East 12th Street",
+      "street": null,
+      "website": null,
+      "styles_text": "Yoga, mindfulness",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Yoga East Austin",
+      "area": "East Austin",
+      "street": null,
+      "website": null,
+      "styles_text": "Yoga",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "CorePower Yoga Triangle",
+      "area": "Triangle",
+      "street": null,
+      "website": null,
+      "styles_text": "Heated and non-heated yoga, hot yoga",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Breath and Body Yoga",
+      "area": "Exposition Blvd",
+      "street": "2415 Exposition Blvd",
+      "website": "https://breathandbodyyoga.com",
+      "styles_text": "Power vinyasa, slow flow, yin, meditation",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "TruFusion South Austin",
+      "area": "South Lamar",
+      "street": "4211 S Lamar Blvd",
+      "website": "https://trufusion.com",
+      "styles_text": "Hot barre, hot pilates, hot yoga",
+      "source": "https://bookretreats.com/t/yoga-studios/austin",
+      "business_type": "multi_discipline_studio"
+    },
+    {
+      "market": "austin",
+      "name": "Yoga Vida",
+      "area": "Bee Cave Road",
+      "street": "3620 Bee Cave Rd",
+      "website": "https://yogavidaaustin.com",
+      "styles_text": "Vinyasa flow",
+      "source": "https://bookretreats.com/t/yoga-studios/austin"
+    },
+    {
+      "market": "austin",
+      "name": "Studio Satya",
+      "area": "North Central Austin",
+      "street": null,
+      "website": "https://studiosatya.com",
+      "styles_text": "Vinyasa, slow flow, yoga nidra, prenatal",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Wild Heart Yoga",
+      "area": "Bee Cave Road",
+      "street": "5604 Bee Cave Rd",
+      "website": "https://wildheartyogaaustin.com",
+      "styles_text": "Power, sculpt, sound baths",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Black Swan Yoga",
+      "area": "Orchard",
+      "street": "1213 W 5th St",
+      "website": "https://www.blackswanyoga.com",
+      "styles_text": "Vinyasa, power, yin, hot, ashtanga",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    },
+    {
+      "market": "austin",
+      "name": "Body Collective",
+      "area": "North Austin",
+      "street": null,
+      "website": null,
+      "styles_text": "Flow, hatha, vinyasa, kundalini, yin, heated",
+      "source": "https://lantern.llc/tx/austin/fitness/yoga"
+    }
+  ]
+}

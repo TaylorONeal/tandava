@@ -106,7 +106,9 @@ Renders only the public tier (Shared Core, section 5):
 
 ### What the page never shows
 
-Street address, phone, email, anything from the internal tier, any score or
+(2026-11-10: the maintainer chose to show studio phone and street address. See the TASKS.md decisions log.)
+
+Email, anything from the internal tier, any score or
 ranking, any other studio's data, any text copied from the studio's site, and
 any photo we scraped. If a studio claims, they can add their own media
 through the normal storefront flow, on their record, not the sourced one.
