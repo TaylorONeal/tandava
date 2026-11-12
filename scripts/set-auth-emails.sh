@@ -4,7 +4,7 @@
 # Prompts (hidden) for a Supabase access token. Safe to rerun.
 # Usage: scripts/set-auth-emails.sh [project-ref]
 set -euo pipefail
-REF="${1:-mkaixgjwakfufmmwembn}"
+REF="${1:-${SUPABASE_PROJECT_REF:?pass the project ref or set SUPABASE_PROJECT_REF}}"
 cd "$(dirname "$0")/.."
 [ -n "${SUPABASE_ACCESS_TOKEN:-}" ] || { read -r -s -p "Supabase access token: " SUPABASE_ACCESS_TOKEN; echo >&2; }
 export SUPABASE_ACCESS_TOKEN REF
@@ -22,8 +22,9 @@ body = {}
 for k, subj in subjects.items():
     body[f"mailer_subjects_{k}"] = subj
     body[f"mailer_templates_{k}_content"] = open(f"supabase/templates/{k}.html").read()
-want = ["https://tandavastudio.com/**", "https://*.tandavastudio.com/**",
-        "https://tandava-git-*-tayloroneal-1467s-projects.vercel.app/**", "http://localhost:8080/**"]
+want = ["https://tandavastudio.com/**", "https://*.tandavastudio.com/**", "http://localhost:8080/**"]
+if os.environ.get("PREVIEW_REDIRECT"):  # e.g. your Vercel preview pattern
+    want.append(os.environ["PREVIEW_REDIRECT"])
 have = [u for u in (cur.get("uri_allow_list") or "").split(",") if u]
 body["uri_allow_list"] = ",".join(dict.fromkeys(have + want))
 call("PATCH", body)

@@ -1,8 +1,8 @@
 # Shared Directory Core: one directory engine, two entity types
 
-Status: spec, not built. Written 2026-10-23. Owner: Taylor.
+Status: spec, not built. Written 2026-10-23. Owner: the maintainer.
 Canonical copy: this file in `TaylorONeal/tandava`. An identical copy lives in
-`TaylorONeal/teachertree` at the same path. Any edit lands in both repos in the
+the TeacherTree project at the same path. Any edit lands in both repos in the
 same work session, or the copies have diverged and that is a bug.
 
 Consumers:
@@ -10,7 +10,7 @@ Consumers:
 | Product | Entity | Product PRD | Public surface (planned, gated) |
 |---|---|---|---|
 | Tandava | Studio | [PRD-028](https://github.com/TaylorONeal/tandava/blob/main/docs/prd/PRD-028-studio-directory.md) | `tandavastudio.com/studios`, `/studios/:slug` |
-| TeacherTree | Teacher | [directory-v2](https://github.com/TaylorONeal/teachertree/blob/main/docs/prd/directory-v2.md) in teachertree, plus its v3 addendum | `teachertree.com/teachers`, detail merges into `/t/:handle` on claim |
+| TeacherTree | Teacher | directory-v2 in TeacherTree, plus its v3 addendum | `teachertree.com/teachers`, detail merges into `/t/:handle` on claim |
 
 ---
 

@@ -1,8 +1,8 @@
 # Task board: Studio Directory (PRD-028)
 
-Status: not started. Written 2026-10-23. Owner: Taylor.
+Status: not started. Written 2026-10-23. Owner: the maintainer.
 Order is dependency order. A task is done when its acceptance line is true,
-not when code exists. **GATE** tasks need Taylor's explicit go-ahead and stop
+not when code exists. **GATE** tasks need the maintainer's explicit go-ahead and stop
 the board until they get it.
 
 Related: [PRD-028](../prd/PRD-028-studio-directory.md),
@@ -13,7 +13,7 @@ Related: [PRD-028](../prd/PRD-028-studio-directory.md),
 
 ## SD0: Spec and decisions
 
-- [ ] **SD0-1 (GATE)** Taylor reviews this spec set and confirms: yoga-only
+- [ ] **SD0-1 (GATE)** The maintainer reviews this spec set and confirms: yoga-only
       v1, `/studios` route, public tier as defined, Austin as pilot market.
       Acceptance: decisions recorded in this file's Decisions log.
 - [ ] **SD0-2** Confirm the Arketa spelling and seed taxonomy with a spot
@@ -77,7 +77,7 @@ Related: [PRD-028](../prd/PRD-028-studio-directory.md),
       against the live sites. Acceptance: platform precision at least 95%,
       status precision 100% on the sample, or SD3 does not open and the
       misses are written up here.
-- [ ] **SD2-8 (GATE)** Taylor reviews 10 sample pages rendered from private
+- [ ] **SD2-8 (GATE)** The maintainer reviews 10 sample pages rendered from private
       data and the accuracy write-up, and decides SD3.
 
 ## SD3: Public launch, Austin
@@ -93,7 +93,7 @@ Related: [PRD-028](../prd/PRD-028-studio-directory.md),
       re-crawl runs against listed sites.
 - [ ] **SD3-4** SEO basics: sitemap includes published pages only, JSON-LD
       matches visible content, canonical slugs stable.
-- [ ] **SD3-5 (GATE)** Taylor's explicit go-ahead to publish Austin.
+- [ ] **SD3-5 (GATE)** The maintainer's explicit go-ahead to publish Austin.
       Acceptance: go-ahead recorded in Decisions log; only then are pages
       switched indexable.
 - [ ] **SD3-6** Launch check: corrections inbox staffed (who reads it, SLA
@@ -136,5 +136,5 @@ Related: [PRD-028](../prd/PRD-028-studio-directory.md),
 
 | Date | Decision | By |
 |---|---|---|
-| 2026-10-23 | Directory concept approved as spec only. Nothing collected, nothing published. Route working name `/studios`, index also reachable as `/directory` | Taylor (concept), Muse (docs) |
-| 2026-10-23 | Shared core with TeacherTree teacher directory: one spec, two implementations, no shared database at v1 | Taylor (direction), Muse (design) |
+| 2026-10-23 | Directory concept approved as spec only. Nothing collected, nothing published. Route working name `/studios`, index also reachable as `/directory` | The maintainer (concept), Muse (docs) |
+| 2026-10-23 | Shared core with TeacherTree teacher directory: one spec, two implementations, no shared database at v1 | The maintainer (direction), Muse (design) |

@@ -1,5 +1,5 @@
 -- Apply 00039 and 00040 (get_my_bookings, get_my_entitlements; LP-4) to tandava-prod. Independent of 00038.
--- Paste all of it into https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new and Run.
+-- Paste all of it into https://supabase.com/dashboard/project/<project-ref>/sql/new and Run.
 BEGIN;
 -- 00039: get_my_bookings() for the student's My Schedule page (LP-4).
 --

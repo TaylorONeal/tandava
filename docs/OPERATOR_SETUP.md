@@ -7,16 +7,16 @@ hosted service; the setup instructions below are for a new deployment.
 
 | Item | Verified value / entry point |
 | --- | --- |
-| Supabase owner login | `purafieldstudio@gmail.com` |
-| Organization | Purafield Studio, ID `nopyuyyzzvffhxlamsch` |
-| Project | `tandava-prod`, reference `mkaixgjwakfufmmwembn`, production branch `main` |
-| Project home | https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn |
-| App users and reviewer identities | https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/auth/users |
-| Database inspection | https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/editor |
-| SQL editor | https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql |
+| Supabase owner login | the Purafield operator account |
+| Organization | Purafield Studio, ID `<org-id>` |
+| Project | `tandava-prod`, reference `<project-ref>`, production branch `main` |
+| Project home | https://supabase.com/dashboard/project/<project-ref> |
+| App users and reviewer identities | https://supabase.com/dashboard/project/<project-ref>/auth/users |
+| Database inspection | https://supabase.com/dashboard/project/<project-ref>/editor |
+| SQL editor | https://supabase.com/dashboard/project/<project-ref>/sql |
 | Hosted app | https://tandavastudio.com |
 
-The personal Supabase login `taylor.oneal@gmail.com` is a different account.
+The maintainer's personal Supabase login is a different account.
 It can show an empty organization also named Purafield Studio (ID
 `rgsnotophnfukpcrvpaj`); that is not Tandava's backend. Match the project and
 organization IDs, not the display name. Do not create a replacement project.
@@ -192,7 +192,7 @@ built from main's migrations 00001 to 00034 and has no migration tracking table,
 `supabase db push` is not used. Order matters:
 
 1. Apply the database change first, in one transaction. Open the SQL editor
-   (https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new), paste the
+   (https://supabase.com/dashboard/project/<project-ref>/sql/new), paste the
    whole of [`scripts/db/prod/apply-00035.sql`](../scripts/db/prod/apply-00035.sql)
    and run it once. It checks that 00024, 00031 and 00033 are in place and that
    `analytics_sessions` has no duplicate visits, then applies 00035; any error rolls

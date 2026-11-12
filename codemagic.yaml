@@ -1,8 +1,8 @@
 # Tandava Studio iOS build to TestFlight (prepared 2026-11-06).
 #
-# Codemagic setup (Taylor's Personal Account, done Nov 6):
+# Codemagic setup (maintainer's account, done Nov 6):
 #   - Repository TaylorONeal/tandava is added as an app.
-#   - App Store Connect integration "app-store-connect" (Key ID B8X648KLKD).
+#   - App Store Connect integration "app-store-connect".
 #   - Code signing is automatic: Codemagic fetches or creates the App Store
 #     distribution certificate and profile for com.tandava.studio through that key.
 # Still needed before the first run:

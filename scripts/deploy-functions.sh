@@ -2,7 +2,7 @@
 # Deploy Supabase edge functions to tandava-prod. Prompts for the access token (hidden), never stores it.
 # Usage: scripts/deploy-functions.sh [project-ref]
 set -euo pipefail
-REF="${1:-mkaixgjwakfufmmwembn}"
+REF="${1:-${SUPABASE_PROJECT_REF:?pass the project ref or set SUPABASE_PROJECT_REF}}"
 if [ -z "${SUPABASE_ACCESS_TOKEN:-}" ]; then
   read -r -s -p "Paste Supabase access token (hidden), then Enter: " SUPABASE_ACCESS_TOKEN; echo
   export SUPABASE_ACCESS_TOKEN

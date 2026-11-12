@@ -82,7 +82,7 @@ The site's CSP already allows this (`script-src 'self' https:`, `connect-src htt
 
 - App Store: `https://apps.apple.com/app/id<APP_ID>?pt=<PROVIDER_TOKEN>&ct=<campaign>&mt=8`. `pt` comes from `VITE_APP_STORE_PROVIDER_TOKEN`; with no token the link is plain (`mt=8` only), since Apple ignores `ct` without `pt`. Results show in App Store Connect > App Analytics > Acquisition > Campaigns.
 - Google Play: `https://play.google.com/store/apps/details?id=<PKG>&referrer=utm_source%3D...%26utm_medium%3D...%26utm_campaign%3D...`, package from `VITE_PLAY_STUDIO_PACKAGE` (empty until the Studio app has a Play listing).
-- Campaign values follow the shared vocabulary (PRD-024, app-launch-playbook UTM-CONVENTIONS.md): lowercase with underscores, `ct` at most 40 characters, `utm_medium=organic_social` for unpaid posts. `StudioAppBadge` passes the visitor's original `utm_campaign` when there is one, else `tandava_site_<placement>` (default placement `app_badge`), so the store sees the first source. The JSON-LD and prerendered fallback keep the plain canonical link.
+- Campaign values follow the shared vocabulary (PRD-024, shared UTM conventions): lowercase with underscores, `ct` at most 40 characters, `utm_medium=organic_social` for unpaid posts. `StudioAppBadge` passes the visitor's original `utm_campaign` when there is one, else `tandava_site_<placement>` (default placement `app_badge`), so the store sees the first source. The JSON-LD and prerendered fallback keep the plain canonical link.
 
 ## Privacy
 

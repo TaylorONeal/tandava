@@ -4,7 +4,7 @@ Rules: one slice per commit (`W4-2a`), a test lands with the code, a DB change i
 
 ## Current release checkpoint — November 5, 2026
 
-Taylor confirmed the endpoint: submit **both** the first-party hosted Member
+The maintainer confirmed the endpoint: submit **both** the first-party hosted Member
 marketplace and Studio management apps for App Review after a secure, polished,
 low-friction release passes acceptance. Published open-source code remains part
 of the model. The [PRD](PRD-launch-v1.md) records this direction; it supersedes old
@@ -17,7 +17,7 @@ restricted Data API grants PR #106 `6c5375b`. Neither PR was merged remotely.
 Migration 45 on main remains historical; scoped grants are 46; native deletion
 migrations are renumbered 47–49 to remove duplicate versions. No hosted SQL was run.
 November 5 continues that same branch in an isolated writable checkout, reconciling
-main `0e45ab9` and preserving active staff/internal email authorization. Taylor approved
+main `0e45ab9` and preserving active staff/internal email authorization. The maintainer approved
 in-person drop-ins, packs and memberships for both apps plus the 30-day deletion
 workflow; paid digital/mixed products are deferred. Source now adds migration 50,
 physical-only native checkout, frozen purchase scope/redemption, owner classification
@@ -47,13 +47,13 @@ in this local integration pass.
 
 ## Launch path (2026-10-09, supersedes the loose NEXT lines at the bottom)
 
-Launch means: one real pilot studio takes a real booking and a real payment on tandavastudio.com, without being listed in Discover. Discover as a home page (W7-4) comes after 5 studios. Gates run in order; items inside a gate run in parallel. Claude works the code items while Taylor clears his batch.
+Launch means: one real pilot studio takes a real booking and a real payment on tandavastudio.com, without being listed in Discover. Discover as a home page (W7-4) comes after 5 studios. Gates run in order; items inside a gate run in parallel. Claude works the code items while the maintainer clears his batch.
 
 | Gate | ID | Task | Owner | Needs | Status |
 |---|---|---|---|---|---|
-| 1 Money proof (sandbox) | LP-1 | Smoke test: buy drop-in, pack and membership on the test studio; refund one; resend one delivered event and confirm exactly one transaction. Record in PROGRESS | Claude drives, Taylor types the 4242 test card | Discover on for the test studio (temporary) | NEXT |
-| | LP-1a | Automated Stripe smoke (`scripts/smoke/stripe-smoke.mjs`, workflow `Stripe smoke`): class pack checkout, signed paid event, redelivery, refund; daily and on demand, test mode only. Covers all of our code; the one manual step left in LP-1 is typing 4242 once on Stripe's hosted page | Claude; Taylor adds 3 GitHub secrets | | DONE in #98. Waiting on Taylor: the 3 SMOKE_ secrets, then a first run |
-| | LP-1b | W7-1 in full: drive and resend every event stripe-webhook handles (checkout, refund, renewal, `account.updated`, subscription updated and deleted, payment failed); each yields exactly one ledger effect. No Stripe CLI here: trigger from the dashboard and test clocks, resend from the event page | Claude, Taylor for card entry | LP-1 | NEXT |
+| 1 Money proof (sandbox) | LP-1 | Smoke test: buy drop-in, pack and membership on the test studio; refund one; resend one delivered event and confirm exactly one transaction. Record in PROGRESS | Claude drives, the maintainer types the 4242 test card | Discover on for the test studio (temporary) | NEXT |
+| | LP-1a | Automated Stripe smoke (`scripts/smoke/stripe-smoke.mjs`, workflow `Stripe smoke`): class pack checkout, signed paid event, redelivery, refund; daily and on demand, test mode only. Covers all of our code; the one manual step left in LP-1 is typing 4242 once on Stripe's hosted page | Claude; the maintainer adds 3 GitHub secrets | | DONE in #98. Waiting on the maintainer: the 3 SMOKE_ secrets, then a first run |
+| | LP-1b | W7-1 in full: drive and resend every event stripe-webhook handles (checkout, refund, renewal, `account.updated`, subscription updated and deleted, payment failed); each yields exactly one ledger effect. No Stripe CLI here: trigger from the dashboard and test clocks, resend from the event page | Claude, the maintainer for card entry | LP-1 | NEXT |
 | | LP-1c | Refund flagged payments automatically: when fulfillment notes "refund needed" (double charge, class full or cancelled), stripe-webhook issues the Stripe refund (idempotent by event id, reverse transfer). Today it only records the note | Claude | LP-1 | NEXT |
 | | LP-1d | Studio cancels a booked class: cancel its bookings, return pack and membership credits through the ledger, refund paid drop-ins, tell the students. Today `is_cancelled` changes nothing for existing bookings | Claude | LP-1c | DONE in PR: one tap on /manage/schedule (Next two weeks). Preview shows each person and what they get back; cancel_class (00043) cancels the class and its bookings, the ledger returns pack and membership classes, drop-in refunds are queued in refund_requests and sent to Stripe by the cancel-class function (idempotent, reverses Connect transfers), everyone with an email is told with the studio's note. Follow-up is durable: notices are queued in class_cancel_notices with the cancel, class_cancel_followup reports what is still owed, and an interrupted cancel shows "Finish follow-up" (resume mode). Paid-after-cancel drop-ins are queued too; a refund Stripe later fails is reopened (refund.updated, refund.failed, charge.refund.updated); students told "arranging" get a refund-sent email; overdue cancellations that still owe stay listed under Still to finish. Owners can mark notices handled after contacting people (an interrupted send is never resent automatically); a full refund made in the Stripe dashboard settles the queue (charge.refunded). CC-01..19, e2e. Prod also: redeploy stripe-webhook and add refund.updated, refund.failed and charge.refund.updated to the endpoint events. Prod: `apply-00043.sql`, deploy cancel-class |
 | 2 A studio can sell on its own | LP-2 | Public page and guest booking work for a studio that is not in Discover. New owner-controlled "page live" state (`studios` has no active or published field today): storefront RPCs and express-book serve a studio by slug only when its page is live; `discoverable` only adds it to `discover_classes` and requires a live page. Negative DB tests for a studio whose page is off. Migration, edge redeploy | Claude | none | DONE in #90 (00038, LIVE-01..08). Prod: apply `scripts/db/prod/apply-00038.sql`, redeploy `onboarding`, `analytics-session`, `run-automations` (after the SQL) |
@@ -61,14 +61,14 @@ Launch means: one real pilot studio takes a real booking and a real payment on t
 | | LP-4 | Real data in MySchedule and Account (W4-5), `noindex` on /my-schedule | Claude | none | DONE in #92: My Schedule (00039) and Account (00040) on real data, MYB/ENT/PROF tests. Prod: `apply-00039-00040.sql`. Notification preferences and saved cards: LATER (no table) |
 | | LP-5 | Owner can edit classes, prices and schedule after onboarding (W5-1). Check on the test studio first, fix what fails | Claude | none | DONE in PR: Classes and pricing (/manage/offerings) and Weekly schedule (/manage/schedule) on real data, 00042 owner/admin write policies, CAT-01..24, e2e. Prod: `apply-00042.sql`. One-off class changes (cancel one date, sub) still LATER |
 | | LP-6 | Hide Settings tabs that only toast (fake sitemap URL included) instead of building them. Move the Discover and page-live switches from the Branding tab to General | Claude | none | DONE: switches on General (#90); live studios no longer see Locations, Notifications, SEO or logo upload (no backing store); Billing shows real payout status and opens Stripe (PR) |
-| | LP-14 | Funnel sink (W6-1) so pilot drop-off is visible from the first studio | Claude | none | Code DONE in PR: PostHog capture over fetch when `VITE_POSTHOG_KEY` is set. Taylor: create a PostHog project, then the key goes in Vercel |
-| 3 Trust and abuse | LP-7 | `EXPRESS_IP_SALT` secret; Turnstile hostnames (tandavastudio.com, www) then the secret in Supabase Auth | Taylor | none | NEXT |
-| | LP-8 | Advisor warnings: pin `search_path` on legacy functions (48 warnings). New migration, prod via SQL handoff | Claude, Taylor runs SQL | none | DONE in PR (00041, HARD-01..03). Prod: `apply-00041.sql`. Remaining advisor items are by design (documented in the migration) plus "Leaked password protection" (Taylor, Auth settings) |
-| | LP-9 | Terms, privacy and studio refund policy pages reachable from checkout and signup | Claude drafts, Taylor approves | none | DONE in PR: /terms, /privacy, /refunds from src/content/legal; linked from sign-up (replaces the dead /terms and /waiver links), express booking, storefront pricing, member drop-in, and every footer. Taylor to approve the wording; a lawyer review is recommended before real money |
-| 4 Live money | LP-10 | D1 pricing: flat $99/mo or % fee. Sets the application fee before live | Taylor decides | none | NEXT |
-| | LP-11 | Stripe live: activate the platform account, Connect live settings (Accounts v1 opt-in now, v2 later), two live webhook destinations, live keys and secrets in Supabase | Taylor clicks, Claude fills forms | LP-1b, LP-10 | LATER |
-| | LP-12 | Live smoke: one real small purchase and refund | Taylor | LP-11 | LATER |
-| 5 Pilot | LP-13 | First pilot studio onboarded and timed (target under 30 minutes); support address hello@purafieldstudio.com | Taylor recruits, Claude watches logs | Gates 2 to 4 (LP-14 included) | LATER |
+| | LP-14 | Funnel sink (W6-1) so pilot drop-off is visible from the first studio | Claude | none | Code DONE in PR: PostHog capture over fetch when `VITE_POSTHOG_KEY` is set. The maintainer: create a PostHog project, then the key goes in Vercel |
+| 3 Trust and abuse | LP-7 | `EXPRESS_IP_SALT` secret; Turnstile hostnames (tandavastudio.com, www) then the secret in Supabase Auth | The maintainer | none | NEXT |
+| | LP-8 | Advisor warnings: pin `search_path` on legacy functions (48 warnings). New migration, prod via SQL handoff | Claude, the maintainer runs SQL | none | DONE in PR (00041, HARD-01..03). Prod: `apply-00041.sql`. Remaining advisor items are by design (documented in the migration) plus "Leaked password protection" (the maintainer, Auth settings) |
+| | LP-9 | Terms, privacy and studio refund policy pages reachable from checkout and signup | Claude drafts, the maintainer approves | none | DONE in PR: /terms, /privacy, /refunds from src/content/legal; linked from sign-up (replaces the dead /terms and /waiver links), express booking, storefront pricing, member drop-in, and every footer. The maintainer to approve the wording; a lawyer review is recommended before real money |
+| 4 Live money | LP-10 | D1 pricing: flat $99/mo or % fee. Sets the application fee before live | The maintainer decides | none | NEXT |
+| | LP-11 | Stripe live: activate the platform account, Connect live settings (Accounts v1 opt-in now, v2 later), two live webhook destinations, live keys and secrets in Supabase | The maintainer clicks, Claude fills forms | LP-1b, LP-10 | LATER |
+| | LP-12 | Live smoke: one real small purchase and refund | The maintainer | LP-11 | LATER |
+| 5 Pilot | LP-13 | First pilot studio onboarded and timed (target under 30 minutes); support address hello@purafieldstudio.com | The maintainer recruits, Claude watches logs | Gates 2 to 4 (LP-14 included) | LATER |
 
 Parked until after LP-1b: #72 attribution (it edits stripe-webhook; do not change the money path mid-test). Stale: #62, #63.
 
@@ -88,12 +88,12 @@ commands in [LAUNCH_RUNBOOK.md](LAUNCH_RUNBOOK.md).
 
 | ID | Task | Needs | Owner | Status |
 |---|---|---|---|---|
-| INF-1 | Operating identity decided (Purafield Studio, purafieldstudio@gmail.com) | none | Taylor | DONE 2026-10-07 |
-| INF-2 | Supabase Free account under purafieldstudio@gmail.com (separate person = own free projects); connector re-authorized to it | INF-1 | Taylor | DONE (project `tandava-prod` ref `mkaixgjwakfufmmwembn`, us-east-2; connector re-link not needed, SQL editor path used) |
-| INF-3 | Vercel team to Pro; connector with env access | INF-1 | Taylor | NEXT |
-| INF-4 | Stripe platform account (test mode), Resend domain, Turnstile keys | INF-1 | Taylor | NEXT |
+| INF-1 | Operating identity decided (Purafield Studio, the operator account) | none | The maintainer | DONE 2026-10-07 |
+| INF-2 | Supabase Free account under the operator account (separate person = own free projects); connector re-authorized to it | INF-1 | The maintainer | DONE (project `tandava-prod` ref `<project-ref>`, us-east-2; connector re-link not needed, SQL editor path used) |
+| INF-3 | Vercel team to Pro; connector with env access | INF-1 | The maintainer | NEXT |
+| INF-4 | Stripe platform account (test mode), Resend domain, Turnstile keys | INF-1 | The maintainer | NEXT |
 | INF-5 | Create `tandava-prod`, apply 00001..00027, deploy edge functions, advisors clean | INF-2 | Claude | blocked |
-| INF-6 | Secrets set (Supabase, Vercel, Auth SMTP and captcha, Stripe webhook) | INF-3, INF-4, INF-5 | Taylor | blocked |
+| INF-6 | Secrets set (Supabase, Vercel, Auth SMTP and captcha, Stripe webhook) | INF-3, INF-4, INF-5 | The maintainer | blocked |
 | INF-7 | Seed first tenant; E2E and Stripe test-mode pass against prod DB | INF-6 | Claude | blocked |
 | INF-8 | Merge PR #64; production on real backend | INF-7 | both | blocked |
 
@@ -130,7 +130,7 @@ commands in [LAUNCH_RUNBOOK.md](LAUNCH_RUNBOOK.md).
 | W4-1 | `book_class_auto` | W3 | AUTO-01..06 | DONE (00026) |
 | W4-2 | Return-to-intent auth, storefront Book and Buy buttons | W4-1 | authReturn unit tests | DONE |
 | W4-3 | `hold_spot` then checkout so a paid drop-in cannot hit a full class | W4-1 | HOLD-01..11 | DONE (00027, checkout calls it) |
-| W4-6 | Turnstile on sign-up (Supabase Auth captcha). Needs `frame-src https://challenges.cloudflare.com` in vercel.json CSP and a site key env var | D7 | E2E | Widget DONE (#75, #76, live). Enforcement waits on the Turnstile secret in Supabase Auth > Attack Protection (Taylor) |
+| W4-6 | Turnstile on sign-up (Supabase Auth captcha). Needs `frame-src https://challenges.cloudflare.com` in vercel.json CSP and a site key env var | D7 | E2E | Widget DONE (#75, #76, live). Enforcement waits on the Turnstile secret in Supabase Auth > Attack Protection (the maintainer) |
 | W4-4 | Playwright E2E-01 guest to booked | W4-2, D6 | E2E-01 | UI half DONE (`npm run test:e2e`, mocked Supabase, in CI). Full stack half needs local Supabase |
 | W4-5 | Wire real data into Schedule, MySchedule, Account (replace mocks) | W4-1 | E2E | LATER |
 
@@ -179,7 +179,7 @@ W1 -> W3 -> W4-1 -> W4-3 -> W4-4 -> W5-2 -> W7-3 -> W7-4. W2 gates W4-3 and W5-2
 - DONE (00036): schedule rules generate bookable classes 8 weeks ahead (trigger, `generate_class_occurrences`, daily cron). GEN-01..09.
 - NEXT: Stripe Connect on Accounts v2 (`POST /v2/core/accounts`). Sandbox runs on the Accounts v1 opt-in; live mode must either get the same opt-in or move to v2 before the first real studio.
 - NEXT: after sign-in a real owner lands on `/schedule` (sample data). Send owners to `/manage`, students to their real bookings; the manage header must show the studio name, not "Tandava Yoga", and no sample notifications.
-- NEXT: Turnstile fails in Taylor's Chrome ("Verification failed"). Check widget hostnames (tandavastudio.com, www) before enforcing captcha in Supabase Auth.
+- NEXT: Turnstile fails in the maintainer's Chrome ("Verification failed"). Check widget hostnames (tandavastudio.com, www) before enforcing captcha in Supabase Auth.
 - LATER: `monthly` schedule rules are not generated (no UI creates them).
 
 ## Teacher portal first working slice (2026-10-18)

@@ -4,7 +4,7 @@
 **Phase:** 10 (Marketplace, matching `docs/ROADMAP.md`; after the pilot studio is live and PRD-020/022/024 are verified)
 **Priority:** P1 strategic, P3 by date. Nothing here is buildable before there are several studios in one city.
 **Status:** Spec. Nothing exists in code. Today a pass belongs to one studio (`class_packs.studio_id`, `memberships.studio_id`) and there is no concept of a credit that works across studios.
-**Origin:** Taylor, Oct 8 2026: "Cross like ClassPass is a great idea but we need to be better than ClassPass, the studio must be able to enable or disable it, and we must show the studio its value and ROI."
+**Origin:** The maintainer, Oct 8 2026: "Cross like ClassPass is a great idea but we need to be better than ClassPass, the studio must be able to enable or disable it, and we must show the studio its value and ROI."
 **Working name:** Studio Network. The member-facing name is a decision for later (not "Tandava Pass" until it is checked for trademark overlap).
 
 ---
@@ -101,7 +101,7 @@ The page's top shows the numbers behind the defaults before the switch: "Last 8 
 - Payouts: Stripe Connect transfer per network booking at the floor price minus the Tandava fee, on the same schedule as other payouts, itemised.
 
 ### Economics
-- The studio's base plan stays flat ($99/month per `docs/roadmap/PRICING_MODELS.md`). The network is the one place a percentage fee makes sense, because every network booking is revenue the studio would otherwise not have had. Proposal: Tandava keeps 20% of the credit price; the studio keeps 80% of a seat that was earning 0%. Decision for Taylor, with the pilot's data.
+- The studio's base plan stays flat ($99/month per `docs/roadmap/PRICING_MODELS.md`). The network is the one place a percentage fee makes sense, because every network booking is revenue the studio would otherwise not have had. Proposal: Tandava keeps 20% of the credit price; the studio keeps 80% of a seat that was earning 0%. Decision for the maintainer, with the pilot's data.
 - Credit pricing is cash-denominated (a credit is $1, or local equivalent) so the floor price is legible. No bundles in v1; volume discounts only after there is evidence they move behaviour.
 - Credits expire after 12 months, refundable before first use. Legal review before launch (gift-card and prepaid rules vary by state and country).
 
@@ -171,7 +171,7 @@ In the ROI page: each tile's info icon states its formula and its counterfactual
 | Network visitors converting to a studio purchase within 90 days | 15% |
 | Owner complaints about cannibalisation | Zero that the lookback rule does not already answer |
 
-## Open questions for Taylor
+## Open questions for the maintainer
 1. Fee: 20% proposed. Alternative: flat per-seat fee (simpler to explain, worse for cheap classes).
 2. Cap default: 3 visits per studio per month, or per city?
 3. Name. "Studio Network" is the working name; the member-facing name needs a trademark check.

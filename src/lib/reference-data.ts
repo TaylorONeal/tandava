@@ -11,7 +11,7 @@
 // Spelling is shared with TeacherTree (teachertree/src/lib/classStyles.ts),
 // which stores these strings on saved classes. A style both apps list must
 // use TeacherTree's spelling; Tandava-only extras (Pilates, Sound Bath, ...)
-// are fine. See app-launch-playbook/YOGA-APPS-INDEX.md before changing one.
+// are fine. Check the shared yoga apps index before changing one.
 
 export const CLASS_STYLES = [
   // Core flow & foundation

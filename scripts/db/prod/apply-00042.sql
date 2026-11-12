@@ -1,5 +1,5 @@
 -- Apply 00042 (owner edits classes, prices and schedule, LP-5) to tandava-prod. Needs 00036..00041.
--- Paste all of it into https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new and Run.
+-- Paste all of it into https://supabase.com/dashboard/project/<project-ref>/sql/new and Run.
 -- Then redeploy stripe-checkout and onboarding.
 BEGIN;
 -- 00042: owners and admins edit classes, prices and the weekly schedule (LP-5).

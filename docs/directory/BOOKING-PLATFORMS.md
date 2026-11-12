@@ -1,6 +1,6 @@
 # Booking platform taxonomy and detection signatures
 
-Status: spec, not built. Written 2026-10-23. Owner: Taylor.
+Status: spec, not built. Written 2026-10-23. Owner: the maintainer.
 Part of [PRD-028](../prd/PRD-028-studio-directory.md). The seed list in
 section 1 is shared verbatim with TeacherTree (see
 [SHARED-CORE.md](SHARED-CORE.md) section 4.5).
