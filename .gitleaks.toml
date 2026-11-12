@@ -58,4 +58,5 @@ keywords = ["cm_api_token", "cm_token", "codemagic", "x-auth-token"]
 [allowlist]
 description = "Placeholders and this file"
 paths = ['''(^|/)\.gitleaks\.toml$''']
-regexes = ['''(?i)your[-_]|example|placeholder|fake|synthetic|dummy|redacted|changeme|xxxx''']
+# Whole placeholder words only (bounded by a non-letter), so a real key that happens to contain "fake" still fails.
+regexes = ['''(?i)(?:^|[^a-z0-9])(?:your|example|placeholder|fake|synthetic|dummy|redacted|changeme)(?:[^a-z0-9]|$)''']
