@@ -42,3 +42,7 @@ native/**/App/public/
 native/**/build/
 native/**/DerivedData/
 native/**/xcuserdata/
+
+# Python bytecode
+__pycache__/
+*.pyc
