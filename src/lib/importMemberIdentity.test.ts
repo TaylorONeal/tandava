@@ -43,7 +43,7 @@ async function importMember() {
   }));
 }
 
-describe("import preserves member-owned global profile data", () => {
+describe("import never claims or rewrites an existing account", () => {
   beforeEach(() => {
     vi.resetModules(); vi.clearAllMocks();
     mocks.writes = [];
@@ -56,14 +56,12 @@ describe("import preserves member-owned global profile data", () => {
   });
   afterEach(() => { vi.unstubAllGlobals(); });
 
-  it("links an existing member to the importing studio without overwriting personal data", async () => {
+  it("does not link an existing account to the importing studio or touch its data", async () => {
     const response = await importMember();
     expect(response.status).toBe(200);
-    expect(await response.json()).toMatchObject({ success: 1, errors: [] });
+    expect(await response.json()).toMatchObject({ success: 0, errors: [{ row: 1 }] });
     expect(mocks.writes.filter((write) => write.table === "profiles")).toEqual([]);
-    expect(mocks.writes).toContainEqual({ table: "studio_members", operation: "upsert", values: {
-      studio_id: "importing-studio", profile_id: "existing-member", notes: null, tags: [], source: "import",
-    } });
+    expect(mocks.writes.filter((write) => write.table === "studio_members")).toEqual([]);
     expect(mocks.createUser).not.toHaveBeenCalled();
   });
 
