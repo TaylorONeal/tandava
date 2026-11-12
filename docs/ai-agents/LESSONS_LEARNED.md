@@ -584,19 +584,13 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 2. **Two branches, same migration numbers.** Rename OUR unapplied or already-hand-applied files to follow main's, in the same relative order. Prod has no tracking table, so renaming is free. Grep docs and scripts for the old names.
 3. **Rehearse in prod order.** Build a throwaway local DB (`pg_ctlcluster 16 main start`, then a scratch database with `supabase/tests/support/supabase_stub.sql`), apply what prod already has, then the pending files, with `ON_ERROR_STOP`. Then run `npm run test:db` on the fresh order too.
 4. **Check prod data against new constraints.** A unique index or NOT NULL on a live table fails on dirty rows. Count duplicates before proposing it.
-5. **The auto-mode guard blocks `apply_migration` and DDL via `execute_sql` on prod, even after the user says approve in chat.** Do not retry or shrink the payload to get past it. Bundle the pending files into one `BEGIN; ... COMMIT;` file, send it with SendUserFile, and open the dashboard SQL editor for the user:
-   `https://supabase.com/dashboard/project/<ref>/sql/new` (Browser pane `navigate`). Always open the exact page; never make the user hunt for it.
-   Faster (2026-10-10, 00042): open that page in the Browser pane and fill the editor yourself with
-   `javascript_tool`: `fetch` the raw GitHub URL of the `apply-*.sql` file and
-   `monaco.editor.getEditors()[0].getModel().setValue(sql)`, then check the length matches the repo file.
-   Clicking **Run** yourself is blocked by the guard ([Auto-Mode Bypass]) even when the user asked you to
-   do it in the browser; stop there and ask the user for the one click. Close the tab after verifying.
+5. **Prod writes go through one file.** Agents may not be allowed to run DDL on prod, even with approval in chat. Don't retry or shrink the payload to get past a block. Bundle the pending files into one `BEGIN; ... COMMIT;` file and hand it to the maintainer with the exact link to the project's SQL editor (`https://supabase.com/dashboard/project/<ref>/sql/new`).
 6. **Verify after, read-only.** Check functions, tables, columns, `pv_policies`, "RLS tables without a policy = 0", and that service-role-only functions are not executable by `anon`.
 
 | Mistake | Fix |
 |---|---|
 | `schema_migrations` missing, assumed prod was empty | Query the real schema |
-| Status doc said "waits: 00050 to 00052" while prod was really at 00044 | Taylor's yes was given for the wrong set; caught only by the pre-check | Before asking for a prod yes, check which migrations prod actually has and list every pending one in the ask |
+| Status doc said "waits: 00050 to 00052" while prod was really at 00044 | Approval was given for the wrong set; caught only by the pre-check | Before asking for a prod approval, check which migrations prod actually has and list every pending one in the ask |
 | Test stub lacked a column main's migration reads (`auth.users.encrypted_password`) | Keep the stub in step with the columns migrations touch |
 | New RLS table with no policy fails SEC-07 | Add an explicit policy, even deny-all (`USING (false)`) |
 | Two auth return helpers after a merge (`authReturn`, `auth/next`) | Keep both, point the pages at one, do not delete the other side's callers |
@@ -606,18 +600,16 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 | Mistake | Cost | Fix |
 |---|---|---|
 | Merging code that adds or changes an edge function and assuming it is live | Express Booking page shipped while `express-book` did not exist on prod | Edge functions deploy separately from the web app. After any merge touching `supabase/functions/<name>`, redeploy that function and confirm with `get_edge_function` that the deployed source matches main; a name comparison alone misses changed functions |
-| Sending Taylor to the Supabase CLI on his Mac | 30 minutes of 403s: CLI logged into a personal account, commands run from `~`, multi-line pastes eaten by the login prompt | Deploy from the session with the Supabase MCP `deploy_edge_function`; if the CLI is unavoidable, run it from the repo root, one command per paste, and always pass `--project-ref mkaixgjwakfufmmwembn` (or `supabase link` first); seeing tandava-prod in `projects list` does not select it |
-| Navigating the browser pane away from a form the user is about to submit | Lost a filled secret form | Open a new tab for any other check while a hand-off is pending |
-| Secrets and auth captcha | Saving secrets, deploying and merging are blocked for the agent even with chat approval; captcha on without the widget locks everyone out | Fill the form, hand off the one click; ship the Turnstile widget before enabling captcha |
+| Running the Supabase CLI against the wrong project | 403s when the CLI was logged into an account without access, or run outside the repo | Deploy with a tool that targets the project directly; if you use the CLI, run it from the repo root, one command at a time, and always pass `--project-ref <ref>` (or `supabase link` first) |
+| Navigating a browser tab away from a form the user is about to submit | Lost a filled secret form | Open a new tab for any other check while a hand-off is pending |
+| Secrets and auth captcha | Agents may not be allowed to save secrets, deploy or merge; captcha on without the widget locks everyone out | Fill the form, hand off the one click; ship the Turnstile widget before enabling captcha |
 
-## Merging and agent permissions (October 2026)
+## Merging (October 2026)
 
 | Mistake | Cost | Fix |
 |---|---|---|
-| Assuming a blocked merge was a login problem | Taylor asked for GitHub MCP, CLI login or browser login; none would help | Agent GitHub REST is already authenticated. The block is the Claude Code auto-mode guard, which stops merges to main even after chat approval. Say so in one line and hand over the PR links in order |
-| Trying to grant the agent merge rights from inside the session | Writing `.claude/settings.json` is blocked as [Self-Modification]; so is fetching a main that contains it | Only Taylor adds permission rules (GitHub web editor, commit to main; done in #83). They load when a session starts, so the next session gets them. Never route around the guard via auto_merge or the PR page |
-| Saying a commit was not on main after checking only the newest commits | Told Taylor his #83 had not landed when it had merged before #79 | Check a file's history (`git log origin/main -- <path>`), not the top of the log |
-| Asking Taylor to merge PRs that touch the same file in one batch | A later PR could conflict after an earlier merge | Give the order, say which pair shares a file, and re-check mergeability after each |
+| Saying a commit was not on main after checking only the newest commits | A merged change was reported missing | Check a file's history (`git log origin/main -- <path>`), not the top of the log |
+| Merging PRs that touch the same file in one batch | A later PR could conflict after an earlier merge | Merge in order, note which pair shares a file, and re-check mergeability after each |
 
 ## Frontend launch bugs (October 2026)
 
@@ -635,13 +627,11 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 |---|---|---|
 | Onboarding saved a weekly rule and nothing expanded it into classes | A new studio had a schedule with nothing to book; every booking and payment test was blocked | Seed one real studio end to end through the UI before calling a flow done. Rules now expand by trigger plus a daily job (00036, GEN tests) |
 | Stripe API defaults move under you | `accounts.create` (v1) is refused for new Connect platforms in 2026 | Read the function log (`query_logs`, source `function_logs`) before guessing; record the Stripe setting you rely on in PROGRESS |
-| Telling the user an account without checking | "Reset the app password" left Taylor guessing which account | Name the exact email and what it signs into; check `auth.users` read-only first |
-| Driving Stripe in the built-in browser pane | Stripe login needs Taylor's passkey, which does not work in the pane; the pane session also dropped the login | Use Claude in Chrome (his real Chrome, already signed in to Stripe). Stripe's segmented date input needs one key press per digit |
-| "Paste the SQL" without a link | Taylor did not know where the SQL was | Hand the raw file link (`https://raw.githubusercontent.com/TaylorONeal/tandava/main/scripts/db/prod/apply-000NN.sql`) plus the SQL editor link |
+| Telling the user an account without checking | "Reset the app password" left the user guessing which account | Name the exact email and what it signs into; check `auth.users` read-only first |
+| "Paste the SQL" without a link | The user did not know where the SQL was | Hand the raw file link (`https://raw.githubusercontent.com/TaylorONeal/tandava/main/scripts/db/prod/apply-000NN.sql`) plus the SQL editor link |
 | Treating "hidden from Discover" as "private" | The storefront RPCs and express-book gate on `discoverable`, so a hidden studio has no public page and cannot sell. Found when the test studio's page said "Studio not available" | LP-2: separate "page is live" from "listed in Discover" |
-| Changing prod rows with `execute_sql` | The auto-mode guard blocks prod UPDATEs too ([Modify Shared Resources]), even for the test studio | Hand Taylor the product UI switch (e.g. /manage/settings), not SQL |
-| Asking Taylor to run a test the agent could drive | He wants agents to test, not him | Drive every step yourself (Stripe Workbench shell for triggers, read-only SQL to verify). Hand over only what a rule blocks, named once with why: typing a card number on Stripe Checkout |
-| Claude in Chrome tabs freezing | Screenshots and clicks time out ("script injection timed out") when the tab is not in front or the Mac sleeps | Work in one tab, re-navigate to wake it, and check results server-side (SQL, function logs) instead of screenshots |
+| Changing prod rows with `execute_sql` | Hand-edited prod rows skip the app's own checks | Use the product UI switch (e.g. /manage/settings), not SQL |
+| Asking the user to run a test the agent could drive | It moves work back to the user | Drive every step yourself (Stripe Workbench shell for triggers, read-only SQL to verify). Hand over only what a rule blocks, named once with why: typing a card number on Stripe Checkout |
 | Pinning `search_path = public` on a function that calls an extension | Hosted Supabase installs pgcrypto in `extensions`; `generate_check_in_code` would have failed with "gen_random_bytes does not exist" (Codex on #95) | Pin `public, extensions`. The test DB stub now installs pgcrypto in `extensions` like Supabase, so HARD-04 catches it |
 | Stacked PRs that all append to PROGRESS and BACKLOG | Every merge conflicted the next PR's docs | Resolve with the table-row and append-both rule (docs only), rerun the four checks, then merge the next |
 
@@ -692,8 +682,6 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
   for account creation like offering it. The sign-in line only addresses invited staff.
 - Vitest here has no `@/` alias at runtime. A `src/lib` module under test imports
   its siblings relatively; type-only `@/` imports are fine.
-- Cloud sessions can't install a browser and GitHub GraphQL is blocked there. Render
-  store frames on the Mac, and read PR checks with `gh api .../check-runs` (REST).
 
 ## Quick Reference: Prevention Patterns
 
