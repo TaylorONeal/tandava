@@ -4,7 +4,7 @@
 **Phase:** 7, after PRD-021 v1 (1:1 privates in the studio)
 **Priority:** P1. This is where a small studio's highest-margin revenue already is, and none of it is in the software.
 **Status:** Spec. Nothing exists. `events` (workshops, migration 00003) and `instructor_availability` (00006) are the two things to build on.
-**Origin:** Taylor, Oct 8 2026: do privates have on-site vs off-site (home or other)? Hosting an event, corporate or party, off-site or with a room in the studio?
+**Origin:** The maintainer, Oct 8 2026: do privates have on-site vs off-site (home or other)? Hosting an event, corporate or party, off-site or with a room in the studio?
 
 ---
 

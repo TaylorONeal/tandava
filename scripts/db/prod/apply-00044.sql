@@ -1,5 +1,5 @@
 -- Review-only rollout bundle: teacher assigned schedule, roster and check-in.
--- Target: tandava-prod mkaixgjwakfufmmwembn. Requires existing schema through 00043.
+-- Target: tandava-prod <project-ref>. Requires existing schema through 00043.
 -- DO NOT APPLY until full database tests pass and deployment is explicitly authorized.
 -- Apply before the teacher frontend is released. No new Edge Function is needed for 00044.
 BEGIN;

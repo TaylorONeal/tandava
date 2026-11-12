@@ -1,7 +1,7 @@
 -- SQL-editor copy of studio-review-seed.sql with the five review addresses filled in.
 -- Generated; edit studio-review-seed.sql and regenerate instead of editing this.
--- Applies to tandava-prod (org Purafield Studio, id mkaixgjwakfufmmwembn) only after
--- the five review users exist. Taylor said yes to running it on Nov 6 2026.
+-- Applies to tandava-prod (org Purafield Studio, id <project-ref>) only after
+-- the five review users exist. The maintainer said yes to running it on Nov 6 2026.
 BEGIN;
 
 CREATE TEMP TABLE review_people (role TEXT PRIMARY KEY, email TEXT NOT NULL, first_name TEXT, last_name TEXT) ON COMMIT DROP;

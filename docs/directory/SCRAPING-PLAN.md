@@ -1,7 +1,7 @@
 # Scraping and data collection plan: studio directory
 
 Status: plan only. **No scraping has been run and none is authorized by this
-document.** Written 2026-10-23. Owner: Taylor.
+document.** Written 2026-10-23. Owner: the maintainer.
 Part of [PRD-028](../prd/PRD-028-studio-directory.md). Shared rules live in
 [SHARED-CORE.md](SHARED-CORE.md); this plan is the Tandava studio
 implementation of them. TeacherTree runs the same stages for teachers under
@@ -47,7 +47,7 @@ flowchart TD
 ### Stage 1: Seed a market
 
 A market is a city + radius with a named seed editor (a human, initially
-Taylor or an operator he approves). Rollout order mirrors TeacherTree D3 so
+The maintainer or an operator he approves). Rollout order mirrors TeacherTree D3 so
 the two datasets grow in the same places: **Austin first**, then Seattle,
 then NYC / SF / LA. Bali and Koh Phangan come after their jurisdiction review
 (SHARED-CORE gate 2), even though the data is easy to get.

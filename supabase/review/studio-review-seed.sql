@@ -1,11 +1,11 @@
 -- Tandava Studio 1.0: synthetic App Review studio.
 --
 -- RUN ONLY WITH TAYLOR'S YES, after migrations 00050 to 00052 are applied to
--- tandava-prod (org Purafield Studio, project id mkaixgjwakfufmmwembn).
+-- tandava-prod (org Purafield Studio, project id <project-ref>).
 --
 -- Before running, create the five review sign-ins in the Supabase dashboard
 -- (tandava-prod > Authentication > Users > Add user > Create new user, Auto Confirm
--- on). Taylor types each password there; passwords never go in this repo or chat.
+-- on). The maintainer types each password there; passwords never go in this repo or chat.
 -- Use addresses Purafield controls, for example:
 --   owner    review-owner@purafieldstudio.com
 --   teacher  review-teacher@purafieldstudio.com

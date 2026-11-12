@@ -1,5 +1,5 @@
 -- Apply 00038 (booking page live, LP-2) to tandava-prod. 00037 must already be applied.
--- Paste all of it into https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new and Run.
+-- Paste all of it into https://supabase.com/dashboard/project/<project-ref>/sql/new and Run.
 BEGIN;
 -- 00038: a studio's booking page can be live without a Discover listing (LP-2).
 --

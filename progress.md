@@ -4,7 +4,7 @@ Original prompt: Create a blog post with a game based on the financial model pos
 - Reviewed Yogaflow SocialNumbers F626, ResultReveal and Thinkermetrics ResultReveal. Applying previews, responsive choices, warm explanatory feedback and short rounds.
 - Architecture: standalone editorial Vite multi-page build outside src/public; product build and routes have zero imports. No deployment or navigation change to product.
 
-- User supplied https://tandavastudio.com/blog. Fetched origin: main checkout was behind published blog work. Created isolated `codex/blog-studio-sprout` worktree at `/Users/tayloroneal/repos/tandava-blog-game` from origin/main, preserving original checkout edits.
+- User supplied https://tandavastudio.com/blog. Fetched origin: main checkout was behind published blog work. Created isolated `codex/blog-studio-sprout` worktree from origin/main, preserving original checkout edits.
 - Replaced temporary blog scaffold with a post in the existing markdown pipeline. Explicit marketing-build opt-in excludes article and game from normal builds.
 - Read the actual profitability post; added room/lease choices and links to source articles. Clear distinction between game cash and calculator EBITDA.
 - Engine: 8 tests pass; existing app: 112 tests pass. Editorial strict TypeScript passes.

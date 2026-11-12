@@ -20,7 +20,7 @@ The next implementation should be a non-destructive review stage, followed by se
 
 Local tests to accompany implementation: anonymous/member operator denial, missing policy/operator reference denial, stale inventory rejection, new-table discovery, ownership changes after initiation, duplicate execution idempotency, injected partial failures, unchanged financial rows, and refusal to complete with unverified sinks. No fixture may contact external services.
 
-2026-10-19: Taylor explicitly approved writing/testing the access rules in a disposable local database with synthetic data. The previously denied action was retried once under that new approval. Migration `00048_deletion_review.sql` implements stages 1–2 only: `preview_account_deletion(uuid)` returns counts and unresolved categories; `record_account_deletion_review(uuid,jsonb,text,text)` checks the reviewed snapshot and records a receipt. Both are service-role-only, pinned-search-path functions. Anonymous/member reads of the audit table return zero rows; direct service-role insert/update/delete is denied. Database administrators remain able to inspect the audit table. Operator/policy references are audit labels, not proof of policy authority or authenticated human identity.
+2026-10-19: the maintainer explicitly approved writing/testing the access rules in a disposable local database with synthetic data. The previously denied action was retried once under that new approval. Migration `00048_deletion_review.sql` implements stages 1–2 only: `preview_account_deletion(uuid)` returns counts and unresolved categories; `record_account_deletion_review(uuid,jsonb,text,text)` checks the reviewed snapshot and records a receipt. Both are service-role-only, pinned-search-path functions. Anonymous/member reads of the audit table return zero rows; direct service-role insert/update/delete is denied. Database administrators remain able to inspect the audit table. Operator/policy references are audit labels, not proof of policy authority or authenticated human identity.
 
 The preview includes single-column profile-ID foreign keys and explicitly counts unsupported composite/alternate-key references. Recording is refused when unsupported references exist. It does not enumerate indirect dependencies or discover PII hidden in arbitrary JSON/free-text fields; these remain explicit unresolved categories. Same-count content changes and concurrent writes are not detected by this discovery snapshot. No receipt authorizes erasure, records a completed deletion, or changes request status. Production deployment and real account deletion remain unauthorized.
 
@@ -155,7 +155,7 @@ execution row locks prevent another worker rotating the token during the stage.
 
 ## Hosted deletion policy and workflow — direction approved November 5, 2026
 
-**Taylor approved the recommended 30-day policy and operator-assisted workflow on November 5. Not deployed or enabled.**
+**The maintainer approved the recommended 30-day policy and operator-assisted workflow on November 5. Not deployed or enabled.**
 The product/operating direction is approved; category-specific legal retention and
 verified provider/backup facts remain implementation prerequisites, not presumed approvals.
 This is the policy proposal for the first-party Tandava Member and Studio service;
@@ -208,7 +208,7 @@ supported in-app resolution, not an indefinite refusal or a support-only maze.
    its timestamp and 30-day deadline, show active commitments and explain the next
    steps. Keep confirmation copy neutral and make progress available without
    requiring the user to open a support ticket.
-2. **Review daily.** Purafield Studio operations owns fulfillment, with Taylor
+2. **Review daily.** Purafield Studio operations owns fulfillment, with the maintainer
    as the initial accountable owner in the approved proposal. A named, trained
    backup with restricted access is still required before launch. Review new requests daily, including weekends;
    flag provider failures and unresolved ownership/retention decisions promptly.

@@ -1,5 +1,5 @@
 -- Apply 00041 (function hardening, LP-8) to tandava-prod. Independent of 00038..00040.
--- Paste all of it into https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new and Run.
+-- Paste all of it into https://supabase.com/dashboard/project/<project-ref>/sql/new and Run.
 BEGIN;
 -- 00041: clear the Supabase security advisor warnings that are real (LP-8).
 --

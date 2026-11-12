@@ -1,5 +1,5 @@
 -- Apply 00036 (schedule rules become bookable classes) to tandava-prod.
--- Paste all of it into https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new and Run.
+-- Paste all of it into https://supabase.com/dashboard/project/<project-ref>/sql/new and Run.
 -- One transaction: any error rolls back everything.
 BEGIN;
 -- 00036: Schedule rules become bookable classes.

@@ -1,6 +1,6 @@
 # PRD: Launch v1 (hosted Tandava + Discover marketplace)
 
-Status: living document. Owner: Taylor. Backlog with IDs: [BACKLOG.md](BACKLOG.md). Progress: [PROGRESS.md](PROGRESS.md). Diagrams: [07-launch-architecture](../developer/07-launch-architecture.md).
+Status: living document. Owner: the maintainer. Backlog with IDs: [BACKLOG.md](BACKLOG.md). Progress: [PROGRESS.md](PROGRESS.md). Diagrams: [07-launch-architecture](../developer/07-launch-architecture.md).
 
 ## 1. Product direction confirmed October 21, 2026
 
@@ -9,7 +9,7 @@ WordPress's open-source and managed-service model. The hosted product includes a
 member marketplace app and a separate studio management app, backed by the same
 service. Publishing the code does not replace operating and supporting those apps.
 
-Taylor's requested endpoint is **both iOS apps submitted for App Review after
+The maintainer's requested endpoint is **both iOS apps submitted for App Review after
 release acceptance**. Competitiveness with Mindbody and Arketa is a product goal,
 not an established comparison or permission to advertise unfinished capabilities.
 The member's primary job is finding, booking and returning to a class. The studio's
@@ -18,13 +18,13 @@ people, attendance and money. Open-source installation is a separate developer p
 
 ### November 5 approved release scope
 
-Taylor accepted the recommended first release: in-person drop-ins, class packs and
+The maintainer accepted the recommended first release: in-person drop-ins, class packs and
 memberships in both native apps. Paid online group classes, recordings and mixed
 digital subscriptions are deferred. Unknown products must fail closed for native
 purchase; physical-only entitlements cannot be spent on online/unknown classes.
 Catalog format and the format sold at checkout must be durable server-side facts.
 
-Taylor also accepted the proposed 30-day account-deletion policy and operator-assisted
+The maintainer also accepted the proposed 30-day account-deletion policy and operator-assisted
 workflow. The policy decision is settled; legal retention durations, actual processor/
 backup evidence, a staffed backup and complete tested fulfillment remain prerequisites.
 See [the owning deletion procedure](../operations/ACCOUNT-DELETION.md). Approval does
@@ -52,7 +52,7 @@ candidate-specific acceptance and STORE-APPS owns store artifacts.
 
 ## 3. Users
 
-Student (guest then member), Studio owner/admin, Front desk, Teacher. Platform operator (Taylor) is a fifth role for pilot ops only.
+Student (guest then member), Studio owner/admin, Front desk, Teacher. Platform operator (the maintainer) is a fifth role for pilot ops only.
 
 ## 4. Pressure test: what the original plan got wrong or left open
 
@@ -102,7 +102,7 @@ Waves are ordered by dependency, not by visibility. A later wave may not start o
 | Hold lapses before payment and class fills | Charge without a seat (rare) | 35 min hold vs 31 min Stripe session; refund flag remains | W4-3 done |
 | `FOR ALL` staff policies without role filter, 42 write policies skipping is_active | Deactivated staff keep write access | Tightening migration | W5-4 |
 | ~128 bare `auth.uid()` in old policies, ~25 missing FK indexes | Slow at scale | Perf migration | W5-5 |
-| Edited applied migrations 00005/00008/00009 | Prod drift | Taylor confirms, D5 | W0 |
+| Edited applied migrations 00005/00008/00009 | Prod drift | The maintainer confirms, D5 | W0 |
 
 ## 8. Decisions
 

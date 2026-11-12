@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Prompts (hidden) for each secret, then sets them on the Supabase project in one call.
 set -euo pipefail
-REF="${1:-mkaixgjwakfufmmwembn}"
+REF="${1:-${SUPABASE_PROJECT_REF:?pass the project ref or set SUPABASE_PROJECT_REF}}"
 ask() { local v; read -r -s -p "$1: " v; echo >&2; printf '%s' "$v"; }
 [ -n "${SUPABASE_ACCESS_TOKEN:-}" ] || export SUPABASE_ACCESS_TOKEN="$(ask 'Supabase access token')"
 SK="$(ask 'Stripe secret key (sk_test_...)')"
