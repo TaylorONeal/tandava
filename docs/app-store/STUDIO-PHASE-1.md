@@ -16,16 +16,16 @@ everyday utility (guideline 4.2) and an honest reviewer path.
 
 | Date | Decision | By |
 |---|---|---|
-| Nov 5, 2026 | Ship Tandava Studio phase 1 to the App Store as soon as possible, before the member app | Taylor |
-| Nov 5, 2026 | Scan to check in is the core native feature for guideline 4.2 | Agent pick, in Taylor's brief |
+| Nov 5, 2026 | Ship Tandava Studio phase 1 to the App Store as soon as possible, before the member app | The maintainer |
+| Nov 5, 2026 | Scan to check in is the core native feature for guideline 4.2 | Agent pick, in the maintainer's brief |
 | Nov 5, 2026 | iPhone only for 1.0; iPad in an update | Agent pick |
-| Nov 6, 2026 | 1.0 is sign-in only; owners set up on the web, staff are invited | Taylor |
-| Done Nov 6 | Migration 00052 (scan check-in) applied to tandava-prod (org Purafield Studio, id `mkaixgjwakfufmmwembn`) with `scripts/db/prod/apply-00052.sql`, verified with `verify-00052.sql` | Taylor's yes to 00050-00052. Prod was at 00044, so 00050 and 00051 are held: 00051 needs 00047, and 00046 to 00051 need review first |
-| Open | Seed the synthetic review studio on production | Waits for Taylor's yes |
-| Open | Submit for review | Waits for Taylor's yes |
+| Nov 6, 2026 | 1.0 is sign-in only; owners set up on the web, staff are invited | The maintainer |
+| Done Nov 6 | Migration 00052 (scan check-in) applied to tandava-prod (org Purafield Studio, id `<project-ref>`) with `scripts/db/prod/apply-00052.sql`, verified with `verify-00052.sql` | The maintainer's yes to 00050-00052. Prod was at 00044, so 00050 and 00051 are held: 00051 needs 00047, and 00046 to 00051 need review first |
+| Open | Seed the synthetic review studio on production | Waits for the maintainer's yes |
+| Open | Submit for review | Waits for the maintainer's yes |
 
 GTM plan: Claude Doc "Tandava Studio 1.0 go-to-market plan". Store set and preview
-plan: app-launch-playbook draft PR #12.
+plan: kept in the maintainer's launch notes.
 
 ## Phase 1 scope
 
@@ -74,14 +74,14 @@ uploaded candidate does.
 
 | # | Gap | Owner | Notes |
 |---|---|---|---|
-| 1 | App Store Connect app record for `com.tandava.studio` (name Tandava Studio, SKU `tandava-studio-ios`) | Taylor, in the store-accounts thread | Bundle ID registered Oct 8 (`Q29237U4L4`). Taylor confirmed Nov 6 the Apple Account is not locked |
+| 1 | App Store Connect app record for `com.tandava.studio` (name Tandava Studio, SKU `tandava-studio-ios`) | The maintainer, in the store-accounts thread | Bundle ID registered Oct 8 (`Q29237U4L4`). The maintainer confirmed Nov 6 the Apple Account is not locked |
 | 2 | New signed candidate from #109 plus this PR | Mac (Xcode) | 1.0 (3) is stale. Xcode must resolve the new SPM packages (barcode scanner, haptics) and update `Package.resolved` |
-| 3 | Migration 00052 on `tandava-prod` (org Purafield Studio, id `mkaixgjwakfufmmwembn`) | Done Nov 6 | Applied alone. 00046 to 00051 are not on prod and wait for review; Studio 1.0 needs none of them |
-| 4 | Review studio and accounts | Taylor's yes, then seed | Synthetic studio with `page_live`, a verified owner, an assigned teacher and a member. Add an all-day synthetic class with a standing member booking during review week so a reviewer can scan any time (check-in only opens 60 minutes before class) |
-| 5 | Studio sign-up in the app | Decided Nov 6 (Taylor): sign-in only | `allowsSignUp('studio')` is false: no sign-up link on sign-in, `/auth/register` redirects to sign-in, and the email sign-up call refuses. Owners set up on the web, staff are invited. Deletion fulfillment is not a Studio blocker |
+| 3 | Migration 00052 on `tandava-prod` (org Purafield Studio, id `<project-ref>`) | Done Nov 6 | Applied alone. 00046 to 00051 are not on prod and wait for review; Studio 1.0 needs none of them |
+| 4 | Review studio and accounts | The maintainer's yes, then seed | Synthetic studio with `page_live`, a verified owner, an assigned teacher and a member. Add an all-day synthetic class with a standing member booking during review week so a reviewer can scan any time (check-in only opens 60 minutes before class) |
+| 5 | Studio sign-up in the app | Decided Nov 6 (the maintainer): sign-in only | `allowsSignUp('studio')` is false: no sign-up link on sign-in, `/auth/register` redirects to sign-in, and the email sign-up call refuses. Owners set up on the web, staff are invited. Deletion fulfillment is not a Studio blocker |
 | 6 | Privacy label | Prep | Contact info (name, email) linked to the user for app function; no tracking; camera frames are processed on device and not collected. Reconcile with Sentry and analytics in the candidate. Verified Nov 6: the scanner library (OSBarcodeLib, AVFoundation and Vision) has no network or photo-saving code, and the app sends only the decoded text |
-| 7 | Listing: subtitle, keywords, description, support URL, privacy URL, category Business, age rating | Partly done | Nov 6: /support and the privacy camera section went live on main through PR 114 (Taylor's yes). App Store Connect record created (Apple ID 6831459731, SKU tandava-studio-ios) with promo text, description, keywords, subtitle, categories Business and Health & Fitness, support, marketing and privacy URLs saved. Then, on Taylor's yes: price free, United States only, age rating 4+, content rights (no third-party content), not a regulated medical device, App Privacy published, App Review contact and notes saved. Left: demo accounts (review seed), screenshots, build (`codemagic.yaml` workflow `studio-ios-testflight`, TestFlight only) |
-| 8 | Screenshots: iPhone 6.9-inch set (1320 x 2868) | Mac capture, then `store-sets` engine | Set file: `app-launch-playbook/store-sets/set_tandavastudio.py` |
+| 7 | Listing: subtitle, keywords, description, support URL, privacy URL, category Business, age rating | Partly done | Nov 6: /support and the privacy camera section went live on main through PR 114 (the maintainer's yes). App Store Connect record created (Apple ID 6831459731, SKU tandava-studio-ios) with promo text, description, keywords, subtitle, categories Business and Health & Fitness, support, marketing and privacy URLs saved. Then, on the maintainer's yes: price free, United States only, age rating 4+, content rights (no third-party content), not a regulated medical device, App Privacy published, App Review contact and notes saved. Left: demo accounts (review seed), screenshots, build (`codemagic.yaml` workflow `studio-ios-testflight`, TestFlight only) |
+| 8 | Screenshots: iPhone 6.9-inch set (1320 x 2868) | Device capture, then the store screenshot engine | Kept outside this repo |
 | 9 | App preview video (optional, recommended) | Mac recording | Shot list in the playbook store-sets folder |
 | 10 | Physical iPhone acceptance of the Teacher and Owner journeys plus a real scan | Mac + iPhone | See [REVIEWER-WALKTHROUGH.md](REVIEWER-WALKTHROUGH.md) |
 | 11 | Export compliance | Done here | `ITSAppUsesNonExemptEncryption = false` (HTTPS only) in both apps |

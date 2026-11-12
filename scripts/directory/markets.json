@@ -1,5 +1,5 @@
 {
-  "note": "Directory markets. bbox is [south, west, north, east] in WGS84. Add a market here, run the refresh workflow, review the diff. Taylor, 2026-11-10: start with these ten (adds Ubud, Nosara, New York, Frankfurt, Koh Phangan, Bangkok). Outside the US, region_code and region_name are used as given.",
+  "note": "Directory markets. bbox is [south, west, north, east] in WGS84. Add a market here, run the refresh workflow, review the diff. Maintainer, 2026-11-10: start with these ten (adds Ubud, Nosara, New York, Frankfurt, Koh Phangan, Bangkok). Outside the US, region_code and region_name are used as given.",
   "markets": [
     {
       "id": "austin",

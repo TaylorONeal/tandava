@@ -152,7 +152,7 @@ Real, and worth a look once a year. Not business-saving, and anybody telling you
 otherwise has something to sell. Compare that to the $3,405 a month the room
 size was worth and you have the correct ordering of priorities.
 
-Tandava is one of the self-hosted options in that list: open source, MIT
+Tandava is one of the self-hosted options in that list: open source, AGPL-3.0
 licensed, and you pay for hosting rather than a license. That is the entire
 pitch, and we would rather you fix your lease first.
 
@@ -212,8 +212,8 @@ counts, not about the studios.
 Every formula and every constant in the calculator lives in one readable file,
 [`src/lib/studioEcon.ts`](https://github.com/TaylorONeal/tandava/blob/main/src/lib/studioEcon.ts).
 Each number in it is either sourced or explicitly labelled an assumption, the
-modelling caveats are in the header, and the file is MIT licensed like the rest
-of Tandava.
+modelling caveats are in the header, and the file is AGPL-3.0 licensed like the
+rest of Tandava.
 
 That is not a claim that the model is right. A transparent model built on
 estimated inputs still produces estimated outputs. It is a claim that you can go

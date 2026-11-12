@@ -3,7 +3,7 @@
 Source of the wording on `/studios`, `/studios/:slug` and `/studios/about`
 (`src/pages/directory/`). Change the wording here first, then in the page.
 
-Status: drafted 2026-11-10 from Taylor's direction ("make it very clear that
+Status: drafted 2026-11-10 from the maintainer's direction ("make it very clear that
 this is a directory site ... not guaranteed to be accurate ... date last
 refreshed for that record, as well as the email address to contact to update
 it"). Not legal advice. Worth a lawyer's read before the directory is indexed
@@ -22,7 +22,7 @@ it"). Not legal advice. Worth a lawyer's read before the directory is indexed
 - Studio and software names are used descriptively (nominative use), with a
   no-affiliation, no-endorsement line.
 - Phone and street address stay internal (`src/data/directory/display.json`)
-  until Taylor decides otherwise. Staff names are never listed.
+  until the maintainer decides otherwise. Staff names are never listed.
 - Every listing has an update and a removal door, answered by email.
 - The site checker identifies itself, follows robots.txt, reads only public
   pages and runs only after `/studios/about` is live (SCRAPING-PLAN.md).

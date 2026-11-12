@@ -1,5 +1,5 @@
 -- Apply 00037 (schedule rule follow-ups) to tandava-prod. 00036 must already be applied.
--- Paste all of it into https://supabase.com/dashboard/project/mkaixgjwakfufmmwembn/sql/new and Run.
+-- Paste all of it into https://supabase.com/dashboard/project/<project-ref>/sql/new and Run.
 BEGIN;
 -- 00037: schedule rule follow-ups from the #85 review (00036 is already on prod).
 --

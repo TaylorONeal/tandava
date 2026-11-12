@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/TaylorONeal/app-launch-playbook/taxonomy/studio-record.schema.json",
+  "$id": "urn:purafield:taxonomy:studio-record",
   "title": "Studio record",
   "description": "One yoga (or movement) studio as every Purafield app should understand it: the Tandava studio directory, TeacherTree studio links, CueCraft and ClassStamp class context, and the class map. Field names match the Shared Directory Core (tandava docs/directory/SHARED-CORE.md). Each property carries x-tier: public (may render on a directory page), internal (stored, never rendered), or derived (computed, not stored by hand). Version 2026-11-10.1.",
   "type": "object",

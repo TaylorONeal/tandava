@@ -1,8 +1,8 @@
 # Task board: Studio Directory (PRD-028)
 
-Status: not started. Written 2026-10-23. Owner: Taylor.
+Status: not started. Written 2026-10-23. Owner: the maintainer.
 Order is dependency order. A task is done when its acceptance line is true,
-not when code exists. **GATE** tasks need Taylor's explicit go-ahead and stop
+not when code exists. **GATE** tasks need the maintainer's explicit go-ahead and stop
 the board until they get it.
 
 Related: [PRD-028](../prd/PRD-028-studio-directory.md),
@@ -13,7 +13,7 @@ Related: [PRD-028](../prd/PRD-028-studio-directory.md),
 
 ## SD0: Spec and decisions
 
-- [ ] **SD0-1 (GATE)** Taylor reviews this spec set and confirms: yoga-only
+- [ ] **SD0-1 (GATE)** The maintainer reviews this spec set and confirms: yoga-only
       v1, `/studios` route, public tier as defined, Austin as pilot market.
       Acceptance: decisions recorded in this file's Decisions log.
 - [ ] **SD0-2** Confirm the Arketa spelling and seed taxonomy with a spot
@@ -77,7 +77,7 @@ Related: [PRD-028](../prd/PRD-028-studio-directory.md),
       against the live sites. Acceptance: platform precision at least 95%,
       status precision 100% on the sample, or SD3 does not open and the
       misses are written up here.
-- [ ] **SD2-8 (GATE)** Taylor reviews 10 sample pages rendered from private
+- [ ] **SD2-8 (GATE)** The maintainer reviews 10 sample pages rendered from private
       data and the accuracy write-up, and decides SD3.
 
 ## SD3: Public launch, Austin
@@ -93,7 +93,7 @@ Related: [PRD-028](../prd/PRD-028-studio-directory.md),
       re-crawl runs against listed sites.
 - [ ] **SD3-4** SEO basics: sitemap includes published pages only, JSON-LD
       matches visible content, canonical slugs stable.
-- [ ] **SD3-5 (GATE)** Taylor's explicit go-ahead to publish Austin.
+- [ ] **SD3-5 (GATE)** The maintainer's explicit go-ahead to publish Austin.
       Acceptance: go-ahead recorded in Decisions log; only then are pages
       switched indexable.
 - [ ] **SD3-6** Launch check: corrections inbox staffed (who reads it, SLA
@@ -136,15 +136,15 @@ Related: [PRD-028](../prd/PRD-028-studio-directory.md),
 
 | Date | Decision | By |
 |---|---|---|
-| 2026-10-23 | Directory concept approved as spec only. Nothing collected, nothing published. Route working name `/studios`, index also reachable as `/directory` | Taylor (concept), Muse (docs) |
-| 2026-10-23 | Shared core with TeacherTree teacher directory: one spec, two implementations, no shared database at v1 | Taylor (direction), Muse (design) |
-| 2026-11-10 | Build v1 now as a static directory on `/studios`: listings generated from OpenStreetMap (ODbL) plus named seeds, bundled into the site, no database change. Archived studios stay listed, hidden from search unless asked for | Taylor (direction), Claude (build) |
-| 2026-11-10 | Attributes: status (active vs archived), Instagram, website, phone, description, styles (multi-select from the shared taxonomy, hidden sub-styles like Power Vinyasa roll up), current and previous studio software from a full list (118 entries incl. gym, salon, scheduling). Filters: country, state, city, style, software | Taylor |
-| 2026-11-10 | Phone and street address are shown (studio business details, never anyone's home). Supersedes PRD-028 "What the page never shows" for those two fields | Taylor |
-| 2026-11-10 | Update and removal requests go to hello@purafieldstudio.com. Each listing shows last refreshed date and an accuracy disclaimer (LEGAL-COPY.md) | Taylor |
-| 2026-11-10 | First markets: Austin, Seattle, San Francisco, Chicago, New York, Ubud (incl. every studio in the CueCraft Ubud guide), Nosara, Frankfurt, Koh Phangan, Bangkok. Supersedes the US-first gate in SHARED-CORE section 9 for studio listings; teacher data still waits for its privacy review | Taylor |
+| 2026-10-23 | Directory concept approved as spec only. Nothing collected, nothing published. Route working name `/studios`, index also reachable as `/directory` | The maintainer (concept), Muse (docs) |
+| 2026-10-23 | Shared core with TeacherTree teacher directory: one spec, two implementations, no shared database at v1 | The maintainer (direction), Muse (design) |
+| 2026-11-10 | Build v1 now as a static directory on `/studios`: listings generated from OpenStreetMap (ODbL) plus named seeds, bundled into the site, no database change. Archived studios stay listed, hidden from search unless asked for | The maintainer (direction), Claude (build) |
+| 2026-11-10 | Attributes: status (active vs archived), Instagram, website, phone, description, styles (multi-select from the shared taxonomy, hidden sub-styles like Power Vinyasa roll up), current and previous studio software from a full list (118 entries incl. gym, salon, scheduling). Filters: country, state, city, style, software | The maintainer |
+| 2026-11-10 | Phone and street address are shown (studio business details, never anyone's home). Supersedes PRD-028 "What the page never shows" for those two fields | The maintainer |
+| 2026-11-10 | Update and removal requests go to hello@purafieldstudio.com. Each listing shows last refreshed date and an accuracy disclaimer (LEGAL-COPY.md) | The maintainer |
+| 2026-11-10 | First markets: Austin, Seattle, San Francisco, Chicago, New York, Ubud (incl. every studio in the CueCraft Ubud guide), Nosara, Frankfurt, Koh Phangan, Bangkok. Supersedes the US-first gate in SHARED-CORE section 9 for studio listings; teacher data still waits for its privacy review | The maintainer |
 | 2026-11-10 | Software is shown when a public booking link matches a vendor domain (confidence 0.9) even before a person verifies it; site builders are never shown as booking software. Studio-site checks stay off until `/studios/about` is live | Claude (default) |
-| 2026-11-10 | Site checker switched on before `/studios/about` ships (coordinator default; current software is Taylor's key attribute). One homepage fetch per studio, robots.txt honored, 25-day cache, the about URL in the user agent resolves once PR 127 merges | Coordinator (default) |
+| 2026-11-10 | Site checker switched on before `/studios/about` ships (coordinator default; current software is the maintainer's key attribute). One homepage fetch per studio, robots.txt honored, 25-day cache, the about URL in the user agent resolves once PR 127 merges | Coordinator (default) |
 | 2026-11-10 | Gyms, YMCAs, rec centers and martial arts clubs that only list yoga as a sport are kept internally as `gym_with_yoga` and left off the public list. Thin markets get seeds from public guides (Nosara: Wanderlust Realty guide; Austin: Lantern and BookRetreats), each entry citing its source | Claude (default) |
 | 2026-11-11 | Records that share a website, Instagram or name merge only when within 750 m (or, without positions, when one name contains the other). Chains like Club Pilates and CorePower were collapsing many locations into one; 79 locations came back. Second locations get the street in their slug | Claude (default) |
 | 2026-11-11 | Studio websites and Instagram come only from pages read on the studio's own site (or a press piece naming it). A studio is marked closed only on a press piece or its own site saying so, never on an aggregator alone; a dead site with no current sign sets status unknown, which hides it. Edits to overrides or seeds now trigger the refresh, so the site checker reads new domains for software | Claude (default) |

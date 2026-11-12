@@ -5,8 +5,8 @@ Prepared only. No hosted SQL, deployment, credentials, Stripe events, or workflo
 ## Source and current evidence
 
 - Remote `main` remains `7353a2a16be3d5f19f19231d587677011264897a`; no open PRs when rechecked. Isolated local branch adds member regression `82c613e` and teacher implementation `209778a`.
-- GitHub Vercel commit status reports success for main at deployment `HrDS9DXSLc6xvqZfgxUhi7s1jaW8`: https://vercel.com/tayloroneal-1467s-projects/tandava/HrDS9DXSLc6xvqZfgxUhi7s1jaW8 . Public `/teach` returns HTTP200 SPA HTML; this alone does not verify authenticated operation.
-- Existing Supabase CLI authentication returns403 for `functions list --project-ref mkaixgjwakfufmmwembn`. No source download was attempted after denial. Migration00043 and deployed function versions remain unverified, not assumed absent.
+- GitHub Vercel commit status reports success for main at deployment `HrDS9DXSLc6xvqZfgxUhi7s1jaW8`: the Vercel deployment . Public `/teach` returns HTTP200 SPA HTML; this alone does not verify authenticated operation.
+- Existing Supabase CLI authentication returns403 for `functions list --project-ref <project-ref>`. No source download was attempted after denial. Migration00043 and deployed function versions remain unverified, not assumed absent.
 - Migration00044 exists only locally; its three teacher RPCs are not on upstream main. New teacher frontend has not been deployed.
 - Local checks: TypeScript and focused ESLint pass;526 application+32 script tests pass;23 browser tests pass with2 workers (including390×844 teacher attendance). Full SQL suite now passes in a fresh isolated PostgreSQL16 cluster:251 PASS lines including all15 teacher cases; PR100 CI also passes all four jobs. Temporary server/data were cleaned up.
 

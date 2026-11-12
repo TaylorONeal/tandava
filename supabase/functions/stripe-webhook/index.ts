@@ -124,6 +124,13 @@ serve(async (req) => {
 });
 
 async function handle(event: Stripe.Event) {
+  // Checkouts, refunds and subscriptions all live on the platform account
+  // (destination charges), so their events never carry `account`. An event from a
+  // connected account is signed with the Connect secret but its payload is written
+  // by that studio's own Stripe keys: only its account status is trusted.
+  if (event.account && event.type !== "account.updated") {
+    return { status: "ignored", reason: "connected-account event" };
+  }
   switch (event.type) {
     case "checkout.session.completed":
     case "checkout.session.async_payment_succeeded": {
@@ -235,6 +242,7 @@ async function handle(event: Stripe.Event) {
 
     case "account.updated": {
       const account = event.data.object as Stripe.Account;
+      if (event.account && account.id !== event.account) return { status: "ignored", reason: "account mismatch" };
       return rpc("set_studio_charges_enabled", {
         p_account_id: account.id,
         p_charges_enabled: account.charges_enabled,

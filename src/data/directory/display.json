@@ -1,5 +1,5 @@
 {
-  "note": "Taylor, 2026-11-10: show phone and street address on listings; update requests go to hello@purafieldstudio.com.",
+  "note": "Maintainer, 2026-11-10: show phone and street address on listings; update requests go to hello@purafieldstudio.com.",
   "show_phone": true,
   "show_street_address": true,
   "update_email": "hello@purafieldstudio.com"

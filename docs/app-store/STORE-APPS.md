@@ -2,7 +2,7 @@
 
 ## November 5 source update
 
-Taylor approved in-person drop-ins, packs and memberships for the first release of
+The maintainer approved in-person drop-ins, packs and memberships for the first release of
 both apps; paid online/mixed products are deferred. Migration 50 and a dedicated
 native checkout enforce that scope. Custom schemes `tandava-member://checkout-return`
 and `tandava-studio://checkout-return` are checkout-only return signals with no
@@ -60,7 +60,7 @@ Prepared App Store record fields for the existing team: iOS; English (US); names
 **Tandava** and **Tandava Studio**; existing bundle IDs above; proposed unique SKUs
 `tandava-member-ios` and `tandava-studio-ios`. Verify name/SKU availability in
 [App Store Connect → Apps](https://appstoreconnect.apple.com/apps) before creation.
-No record was created in this run. Taylor's October 21 request authorizes working
+No record was created in this run. The maintainer's October 21 request authorizes working
 toward submission after quality acceptance; the old approval descriptions below
 remain historical and do not mean unfinished candidates should be submitted.
 
@@ -77,7 +77,7 @@ Build3 source is `270a0a1` (later documentation does not change its provenance).
 
 Private receipt: `evidence/tandava/native/appstore-export-build3-20261020.json` in the task workspace; candidates `artifacts/tandava/member-3-appstore.ipa` and `studio-3-appstore.ipa`. Preserve build2 as historical evidence; do not upload both versions accidentally.
 
-Historical planning baseline (October 8): bundle IDs were registered, before the native projects were implemented. Cross-app launch tracking lives in the private `app-launch-playbook` repo ([store brief](https://github.com/TaylorONeal/app-launch-playbook/blob/main/prds/P3-TANDAVA-STORES.md), [decisions](https://github.com/TaylorONeal/app-launch-playbook/blob/main/DECISIONS.md)); release acceptance uses its [final launch checklist](https://github.com/TaylorONeal/app-launch-playbook/blob/main/03-OPERATING-TEMPLATES.md#8-final-launch-checklist).
+Historical planning baseline (October 8): bundle IDs were registered, before the native projects were implemented. Cross-app launch tracking lives outside this repo; release acceptance uses its final launch checklist.
 
 **2026-10-19 checkpoint:** Hosted cancellation and assigned-teacher controls are released (PR100; see [progress](../plans/PROGRESS.md)). Sandbox payment acceptance and signed-in role walkthroughs remain open. No native project, device-tested release, store-ready screenshot set or store submission was verified. Keep member and Studio screenshot/walkthrough packets separate; use [the existing screenshot brief](screenshots/README.md), checking current platform requirements when producing assets.
 
@@ -85,7 +85,7 @@ This file replaces the per-studio white-label guide (archived as `ARCHIVED-white
 
 ## Submission target and verified starting point — 2026-10-19
 
-Taylor's current target is **submit both apps by October 20, 2026 (Asia/Makassar / Bali)**, contingent on passing QA and accurate store material. This supersedes passive deferral of store execution; it does not turn hosted web checks into native acceptance.
+The maintainer's current target is **submit both apps by October 20, 2026 (Asia/Makassar / Bali)**, contingent on passing QA and accurate store material. This supersedes passive deferral of store execution; it does not turn hosted web checks into native acceptance.
 
 Targeted read-only Apple API inspection on October19 returned no App Store Connect app records for either `com.tandava.app` or `com.tandava.studio`. The registered bundle resources **WJF8DWPMZW** and **Q29237U4L4** exist; these are bundle IDs, not App Store app IDs or build IDs. No uploaded candidate or submission version is available through those bundles. Actual local repositories `tandava`, `tandava-independent-20260916`, and `tandava-blog-game` have no ios/android directories or Capacitor configuration. This agrees with the current released main, not just an old plan statement.
 
@@ -208,7 +208,7 @@ Source `12c9e538ea7654e06c31fa5479d42902ba70521a`, built 2026-10-19,
 Xcode 27.1 / `iphonesimulator27.1`, Debug, `CODE_SIGNING_ALLOWED=NO`.
 Both configured targets report **BUILD SUCCEEDED**. Existing public publishable
 Supabase and Turnstile settings were reused from the authorized deployment for
-project `mkaixgjwakfufmmwembn` in ignored `.env.native.local`; no keys are recorded
+project `<project-ref>` in ignored `.env.native.local`; no keys are recorded
 here. These are simulator `.app` artifacts, not signed device/store archives.
 
 | Artifact | Executable SHA-256 | Complete app-tree SHA-256 |
@@ -261,9 +261,9 @@ The configuration is ignored and contains no service credential. Typecheck,
 changed-file lint and ten focused native/auth-cache/telemetry tests passed.
 The native copy no longer tells installed app users that no app is needed.
 
-Owner access was restored and verified on October20: `purafieldstudio@gmail.com`,
-Purafield Studio organization `nopyuyyzzvffhxlamsch`, project `tandava-prod` /
-`mkaixgjwakfufmmwembn`. The Auth Users page now loads. Use the canonical account
+Owner access was restored and verified on October20: the operator account,
+Purafield Studio organization `<org-id>`, project `tandava-prod` /
+`<project-ref>`. The Auth Users page now loads. Use the canonical account
 and direct links in [Operator Setup](../OPERATOR_SETUP.md#existing-hosted-service-account-and-entry-points)
 before asking for another login. Reviewer identities and seed acceptance remain
 separate from dashboard access. No accounts or permissions were created.
@@ -326,7 +326,7 @@ Production adapters, policy/operator decisions and hosted acceptance remain open
 
 ### October 20 approved distribution-profile export
 
-After Taylor's explicit approval, both App Store distribution profiles were created
+After the maintainer's explicit approval, both App Store distribution profiles were created
 for the existing bundle IDs and existing Apple Distribution certificate; no new
 certificate or key. Both1.0(2) App Store IPAs exported successfully and passed local
 strict signature verification (`get-task-allow=false`). No build upload or review

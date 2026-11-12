@@ -1,7 +1,7 @@
 -- Applies migrations 00047 to 00051 (account deletion requests, review,
 -- execution, owner initiation, in-person purchase scope) to tandava-prod in
 -- one transaction. Production is at 00044 plus 00052; 00045 is superseded and
--- 00046 (runtime grants) stays held for review. Taylor approved 00047 to 00051
+-- 00046 (runtime grants) stays held for review. The maintainer approved 00047 to 00051
 -- on Nov 7 2026. Paste into the Supabase SQL editor and run once. Any error
 -- rolls everything back and leaves production unchanged.
 BEGIN;
