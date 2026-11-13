@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Share } from '@capacitor/share';
 import { App } from '@capacitor/app';
 import { Network } from '@capacitor/network';
-import { isNativeApp, nativeLink } from '@/lib/native/platform';
+import { isNativeApp, nativeBackAction, nativeLink } from '@/lib/native/platform';
 
 // Auth changes remount this component; the OS launch intent belongs to the runtime.
 let launchUrlRead: ReturnType<typeof App.getLaunchUrl> | null = null;
@@ -15,6 +15,8 @@ export function NativeStatus() {
   const navigate = useNavigate();
   const navigateRef = useRef(navigate);
   navigateRef.current = navigate;
+  const pathRef = useRef(location.pathname);
+  pathRef.current = location.pathname;
   const [offline, setOffline] = useState(false);
   useEffect(() => {
     if (!isNativeApp()) return;
@@ -33,6 +35,12 @@ export function NativeStatus() {
         launchLinkHandled = true;
         navigateRef.current(path);
       }
+    }));
+    // Android only (iOS never emits backButton). Registering replaces Capacitor's default.
+    void keep(App.addListener('backButton', ({ canGoBack }) => {
+      if (disposed) return;
+      if (nativeBackAction(pathRef.current, canGoBack) === 'back') navigateRef.current(-1);
+      else void App.minimizeApp().catch(() => undefined);
     }));
     launchUrlRead ??= App.getLaunchUrl().catch(() => undefined);
     void launchUrlRead.then(result => {
