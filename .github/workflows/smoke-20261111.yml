@@ -1,0 +1,239 @@
+# Smoke test for Tandava Studio 1.0 (sign-in only) on an iOS simulator and an Android
+# emulator. Lives only on smoke/* branches (do not merge). Uses no repository secrets and
+# talks to no backend: the bundle points at an unreachable placeholder Supabase URL, and
+# nothing is ever submitted (empty and email-only submits are stopped by the form).
+name: smoke-20261111
+on:
+  push:
+    branches: ['smoke/**']
+  workflow_dispatch:
+permissions:
+  contents: write
+env:
+  TANDAVA_APP: studio
+  VITE_NATIVE_APP: studio
+  VITE_SUPABASE_URL: https://smoke-offline.invalid
+  VITE_SUPABASE_ANON_KEY: smoke-offline-anon-key
+  VITE_DEMO_MODE: 'false'
+  VITE_BLOG_GAMES: 'false'
+  MAESTRO_CLI_NO_ANALYTICS: '1'
+  MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: 'true'
+
+jobs:
+  ios:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Web bundle and cap sync ios
+        run: |
+          npx vite build --mode native --outDir dist-native/studio --logLevel warn
+          npx cap sync ios
+      - name: Newest Xcode
+        run: |
+          X=$(ls -d /Applications/Xcode_*.app | grep -vi beta | sort -V | tail -1)
+          sudo xcode-select -s "$X"
+          xcodebuild -version
+      - name: Build for iphonesimulator (unsigned)
+        run: |
+          xcodebuild -project native/studio/ios/App/App.xcodeproj -scheme App -configuration Release \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build/dd \
+            CODE_SIGNING_ALLOWED=NO build -quiet
+          ls build/dd/Build/Products/Release-iphonesimulator/
+      - name: Boot simulator and install
+        run: |
+          RT=$(xcrun simctl list runtimes -j | python3 -c "import json,sys;r=[x for x in json.load(sys.stdin)['runtimes'] if x['platform']=='iOS' and x['isAvailable']];r.sort(key=lambda x:[int(p) for p in x['version'].split('.')]);print(r[-1]['identifier'])")
+          echo "runtime $RT"
+          export RT
+          UDID=$(xcrun simctl list devices -j | python3 -c "import json,sys,os;d=json.load(sys.stdin)['devices'].get(os.environ['RT'],[]);c=[x for x in d if x['isAvailable'] and x['name'].startswith('iPhone')];p=[x for x in c if 'Pro' in x['name'] and 'Max' not in x['name']] or c;print(p[-1]['udid'] if p else '')")
+          if [ -z "$UDID" ]; then
+            DT=$(xcrun simctl list devicetypes -j | python3 -c "import json,sys;t=[x['identifier'] for x in json.load(sys.stdin)['devicetypes'] if x['name'].startswith('iPhone') and 'Pro' in x['name'] and 'Max' not in x['name']];print(t[-1])")
+            UDID=$(xcrun simctl create smoke "$DT" "$RT")
+          fi
+          xcrun simctl list devices | grep "$UDID"
+          echo "UDID=$UDID" >> "$GITHUB_ENV"
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl install "$UDID" build/dd/Build/Products/Release-iphonesimulator/App.app
+      - name: Install Maestro
+        run: |
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+      - name: Write flows and runner
+        run: &flows |
+          mkdir -p smoke-out
+          cd smoke-out
+          cat > 01-launch.yaml <<'Y'
+          appId: com.tandava.studio
+          ---
+          - launchApp:
+              clearState: true
+          - extendedWaitUntil:
+              visible: "Welcome back"
+              timeout: 90000
+          - takeScreenshot: ${P}-01-launch
+          Y
+          cat > 02-signin-screen.yaml <<'Y'
+          appId: com.tandava.studio
+          ---
+          - assertVisible: "Welcome back"
+          - assertVisible: "Sign In"
+          - assertVisible: "Forgot password\\?"
+          - assertVisible: "Staff: sign in with the email your studio invited\\."
+          - assertNotVisible: "Sign Up"
+          - takeScreenshot: ${P}-02-signin-screen
+          Y
+          cat > 03-empty-submit.yaml <<'Y'
+          appId: com.tandava.studio
+          ---
+          - tapOn: "Sign In"
+          - takeScreenshot: ${P}-03-empty-submit
+          - assertVisible: "Welcome back"
+          Y
+          cat > 04-validation-text.yaml <<'Y'
+          appId: com.tandava.studio
+          ---
+          - tapOn: "Sign In"
+          - extendedWaitUntil:
+              visible: ".*ill out this field.*"
+              timeout: 4000
+          - takeScreenshot: ${P}-04-validation-text
+          Y
+          cat > 05-type-email.yaml <<'Y'
+          appId: com.tandava.studio
+          ---
+          - tapOn: "you@example.com"
+          - inputText: "smoke@example.invalid"
+          - takeScreenshot: ${P}-05-type-email
+          - assertVisible: ".*smoke@example.invalid.*"
+          Y
+          cat > 06-email-only-submit.yaml <<'Y'
+          appId: com.tandava.studio
+          ---
+          - tapOn: "Welcome back"
+          - tapOn: "Sign In"
+          - takeScreenshot: ${P}-06-email-only-submit
+          - assertVisible: "Welcome back"
+          Y
+          cat > run.sh <<'S'
+          #!/usr/bin/env bash
+          # usage: run.sh <ios|android> <screencap command writing PNG to $1>
+          P=$1; CAP=$2; R=results.txt; : > "$R"
+          echo "platform $P  commit $GITHUB_SHA  run $GITHUB_RUN_ID" >> "$R"
+          for f in 01-launch 02-signin-screen 03-empty-submit 04-validation-text 05-type-email 06-email-only-submit; do
+            if maestro test -e P="$P" "$f.yaml" > "log-$P-$f.txt" 2>&1; then
+              echo "PASS $f" >> "$R"
+            else
+              why=$(grep -E 'FAILED|Assertion|not found|not visible|Element|Exception|Error' "log-$P-$f.txt" | tail -1 | cut -c1-200)
+              echo "FAIL $f: ${why:-see log-$P-$f.txt}" >> "$R"
+              $CAP "$P-$f-fail.png" || true
+            fi
+          done
+          cat "$R"
+          S
+          chmod +x run.sh
+      - name: Drive the app
+        working-directory: smoke-out
+        run: |
+          cat > cap.sh <<'S'
+          #!/usr/bin/env bash
+          xcrun simctl io booted screenshot "$1"
+          S
+          chmod +x cap.sh
+          ./run.sh ios ./cap.sh
+          xcrun simctl spawn booted log show --last 10m --style compact --predicate 'process == "App"' > app-log.txt 2>/dev/null || true
+      - name: Push outputs to smoke/20261111-out-ios
+        if: always()
+        run: |
+          mkdir -p smoke-out && cd smoke-out
+          git init -q && git checkout -q -b out
+          [ -f results.txt ] || echo "no results: job failed before the app was driven (run ${{ github.run_id }})" > results.txt
+          git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -qm "iOS smoke outputs from run ${{ github.run_id }} (do not merge)"
+          for d in 0 2 4 8 16; do
+            sleep $d
+            git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:refs/heads/smoke/20261111-out-ios && exit 0
+          done
+          exit 1
+
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - name: Web bundle and cap sync android
+        run: |
+          npx vite build --mode native --outDir dist-native/studio --logLevel warn
+          npx cap sync android
+      - name: Debug APK
+        working-directory: native/studio/android
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug
+          ls -la app/build/outputs/apk/debug/
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Install Maestro
+        run: |
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+      - name: Write flows and runner
+        run: *flows
+      - name: Emulator script
+        run: |
+          cat > smoke-out/cap.sh <<'S'
+          #!/usr/bin/env bash
+          adb exec-out screencap -p > "$1"
+          S
+          cat > smoke-out/android.sh <<'S'
+          #!/usr/bin/env bash
+          cd "$(dirname "$0")"
+          adb install -r ../native/studio/android/app/build/outputs/apk/debug/app-debug.apk
+          adb shell settings put global window_animation_scale 0 || true
+          adb shell dumpsys webviewupdate | grep -iE 'current webview package' > webview.txt || true
+          ./run.sh android ./cap.sh
+          adb logcat -d -t 2000 > logcat.txt || true
+          S
+          chmod +x smoke-out/cap.sh smoke-out/android.sh
+      - name: Drive the app on an emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          target: google_apis
+          profile: pixel_7
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
+          script: bash smoke-out/android.sh
+      - name: Push outputs to smoke/20261111-out-android
+        if: always()
+        run: |
+          mkdir -p smoke-out && cd smoke-out
+          git init -q && git checkout -q -b out
+          [ -f results.txt ] || echo "no results: job failed before the app was driven (run ${{ github.run_id }})" > results.txt
+          git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -qm "Android smoke outputs from run ${{ github.run_id }} (do not merge)"
+          for d in 0 2 4 8 16; do
+            sleep $d
+            git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:refs/heads/smoke/20261111-out-android && exit 0
+          done
+          exit 1
