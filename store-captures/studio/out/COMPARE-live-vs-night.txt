@@ -1,0 +1,3 @@
+Recommendation: B (night set). It drops the live set's unverified "cancel when needed" claim on frame 5 and gives Studio its own dark look that will not be confused with TeacherTree, while showing the same real app screens as A.
+
+Note: the in-phone screens in A and B look like the same captures, so switching sets changes styling and copy, not the 4.2 proof; a real iPhone scan recording (App Preview shot list in docs/app-store/LISTING-STUDIO-1.0.md) is still the stronger proof.

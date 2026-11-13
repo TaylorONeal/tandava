@@ -1,1 +1,1 @@
-pilates,barre,front,desk,roster,attendance,teacher,instructor,schedule,staff,member,fitness,booking
+front,desk,roster,attendance,qrcode,owner,staff,yoga,pilates,barre,signin,tracker,reception,manager
