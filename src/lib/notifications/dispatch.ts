@@ -9,9 +9,6 @@
 import { api } from "@/lib/backend";
 
 export interface EmailDispatch {
-  /** Staff callers must identify their studio and an existing member. */
-  studioId?: string;
-  recipientProfileId?: string;
   to: string;
   template?: string;
   data?: Record<string, unknown>;
@@ -34,7 +31,7 @@ export interface PushDispatch {
   url?: string;
 }
 
-/** Send a transactional email via the `email` Edge Function. */
+/** Send a transactional email via the `email` Edge Function (server callers only). */
 export function sendEmail(input: EmailDispatch) {
   return api.invoke("email", input as unknown as Record<string, unknown>);
 }

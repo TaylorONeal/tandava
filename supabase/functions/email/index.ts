@@ -7,22 +7,18 @@
  *
  * Authorization (TANDAVA-EMAIL-01): this function sends from the studio's
  * verified domain, so it is not callable by just anyone with an account.
- * A request must be one of:
- *   - Internal: header `x-email-secret` matching EMAIL_FUNCTION_SECRET
+ * A request must come from a server-side caller:
+ *   - header `x-email-secret` matching EMAIL_FUNCTION_SECRET
  *     (constant-time compare, same pattern as run-automations'
  *     `x-cron-secret`), or an `Authorization: Bearer` service-role key
  *     (how server-side functions call in: express-book invokes this
  *     function via its service-role client, db.functions.invoke).
  *     For database webhooks and other server-side callers. Internal
  *     callers may use either request form below.
- *   - Staff: a valid user JWT (sent automatically by supabase-js
- *     `functions.invoke`) whose user is studio staff in `studio_staff`
- *     (owner / admin / front_desk, the check import-members uses).
- *     Staff callers must name their studio and recipientProfileId; the address
- *     must match that studio member. Only non-auth transactional templates
- *     are allowed, with server-owned app links and no replyTo override.
- *     Staff callers may use the template form only; the raw form would
- *     let any staff account send arbitrary content from the domain.
+ *   Signed-in users, studio staff included, cannot call it: a staff route
+ *   let caller-written text go out from the studio domain to any address
+ *   the studio had imported, and nothing in the app used it. A staff send
+ *   feature should build its message from database rows on the server.
  * Other edge functions mostly bypass this HTTP entry point:
  * cancel-class and run-automations import sendEmail from provider.ts
  * directly, and express-book uses provider.ts for its booking email;
@@ -33,7 +29,7 @@
  *
  * Request body:
  *   { "to": "user@example.com", "template": "bookingConfirmation", "data": { ... } }
- * or a raw message (internal callers only):
+ * or a raw message:
  *   { "to": "...", "subject": "...", "html": "...", "text": "..." }
  *
  * Deploy: supabase functions deploy email
@@ -46,7 +42,6 @@
  */
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { sendEmail } from "./provider.ts";
 import {
   welcomeEmail,
@@ -62,9 +57,7 @@ import {
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 const emailFunctionSecret = Deno.env.get("EMAIL_FUNCTION_SECRET") ?? "";
-const STAFF_ROLES = ["owner", "admin", "front_desk"];
 
 // Constant-time compare, copied from run-automations (sameSecret there).
 // Empty on either side never matches, so an unset secret fails closed.
@@ -139,61 +132,13 @@ serve(async (req) => {
     // already fully trusted (it bypasses RLS), so it counts as internal.
     sameSecret(bearer, serviceKey);
   if (!isInternal) {
-    // Identify the caller from their JWT (stripe-checkout / import-members).
-    const authHeader = req.headers.get("Authorization") ?? "";
-    const userClient = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
-    const {
-      data: { user },
-      error: userError,
-    } = await userClient.auth.getUser();
-    if (userError || !user) {
-      return json({ error: "Not authenticated" }, 401);
-    }
-
-    if (typeof payload.studioId !== "string" || !payload.studioId) {
-      return json({ error: "Choose an authorized studio and member" }, 403);
-    }
-    // A role at one studio never authorizes messages for another studio.
-    const staffDatabase = createClient(supabaseUrl, serviceKey);
-    const { data: staffRows, error: staffError } = await staffDatabase
-      .from("studio_staff")
-      .select("studio_id, role")
-      .eq("profile_id", user.id)
-      .eq("studio_id", payload.studioId)
-      .eq("is_active", true)
-      .in("role", STAFF_ROLES)
-      .limit(1);
-    if (staffError) return json({ error: "Could not verify studio access" }, 500);
-    if (!staffRows || staffRows.length === 0) {
-      return json({ error: "Not authorized to send email" }, 403);
-    }
+    return json({ error: "Not authorized to send email" }, 401);
   }
 
   const to = String(payload.to ?? "");
   if (!to) return json({ error: "Missing 'to' address" }, 400);
 
-  let templateData = (payload.data as Record<string, unknown>) ?? {};
-  if (!isInternal) {
-    const allowedTemplates = ["welcome", "bookingConfirmation", "bookingCancellation", "classReminder", "waitlistPromoted"];
-    if (typeof payload.studioId !== "string" || !allowedTemplates.includes(String(payload.template)) || payload.replyTo
-        || typeof payload.recipientProfileId !== "string" || !payload.recipientProfileId) {
-      return json({ error: "This message requires an internal caller or verified studio member" }, 403);
-    }
-    const recipientDatabase = createClient(supabaseUrl, serviceKey);
-    const { data: member, error: memberError } = await recipientDatabase
-      .from("studio_members").select("profiles!inner(email)")
-      .eq("studio_id", payload.studioId).eq("profile_id", payload.recipientProfileId).maybeSingle();
-    if (memberError) return json({ error: "Could not verify the recipient" }, 500);
-    const recipient = Array.isArray(member?.profiles) ? member.profiles[0] : member?.profiles;
-    if (typeof recipient?.email !== "string" || recipient.email.toLowerCase() !== to.trim().toLowerCase()) {
-      return json({ error: "Recipient is not a member of this studio" }, 403);
-    }
-    const appUrl = Deno.env.get("APP_URL");
-    if (!appUrl) return json({ error: "Email links are not configured" }, 503);
-    templateData = { ...templateData, appUrl };
-  }
+  const templateData = (payload.data as Record<string, unknown>) ?? {};
 
   let subject: string;
   let html: string;
@@ -212,11 +157,6 @@ serve(async (req) => {
     html = rendered.html;
     text = rendered.text;
   } else {
-    // Raw messages are arbitrary content from the verified domain:
-    // internal callers only, never a staff JWT.
-    if (!isInternal) {
-      return json({ error: "Raw email requires an internal caller" }, 403);
-    }
     subject = String(payload.subject ?? "");
     html = String(payload.html ?? "");
     text = payload.text ? String(payload.text) : undefined;

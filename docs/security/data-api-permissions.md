@@ -217,18 +217,13 @@ it can run, and does not establish hosted provider delivery. See the maintained
 [Stripe setup procedure](../developer/stripe-setup.md).
 
 
-## November 5 staff email boundary
+## Staff email boundary (updated November 14)
 
-The current integration preserves upstream service-bearer/internal-secret email
-callers. Staff JWT callers must now provide `studioId` and `recipientProfileId`,
-hold an active owner/admin/front-desk role in that studio, and address the exact
-email of a linked studio member. Only welcome, booking confirmation/cancellation,
-class reminder and waitlist promotion templates are available to staff. Auth-link,
-inquiry and raw templates remain internal; staff cannot override reply-to or the
-server-owned `APP_URL`. Template text and HTML attributes are escaped; action
-URLs reject unsafe schemes and embedded credentials. SMS/push remain service-only.
-
-There are no in-repository consumers of the frontend dispatch helper. Express
-continuation keeps its existing service caller and verified destination. Check
-external staff integrations against this stricter contract before deployment;
-no compatibility is inferred for unlisted consumers. No real messages were sent.
+The `email` function accepts server-side callers only: the internal secret or
+the service-role bearer. The November 5 staff route is closed. Staff accounts
+are self-registered, so that route let caller-written template text go out from
+the studio domain to any member address the studio had imported. Nothing in the
+repository called it. A future staff send feature should build its message from
+database rows on the server instead of taking text from the caller. Template
+text and HTML attributes stay escaped, and action URLs still reject unsafe
+schemes and embedded credentials. SMS and push remain service-only.
