@@ -91,16 +91,16 @@ describe('upstream email caller compatibility', () => {
   });
   it('does not let an active staff JWT send an unscoped authentication link', async () => {
     const response = await invoke('email', { to: 'member@example.test', template: 'express_continue', data: { url: 'https://tandavastudio.com/auth/login' } }, 'Bearer staff-session');
-    expect(response.status).toBe(403); expect(mocks.email).not.toHaveBeenCalled();
+    expect(response.status).toBe(401); expect(mocks.email).not.toHaveBeenCalled();
   });
   it('rejects an authenticated user without an active staff role', async () => {
     const query = { select: () => query, eq: () => query, in: () => query, limit: async () => ({ data: [], error: null }) };
     mocks.createClient.mockReturnValue({ auth: { getUser: async () => ({ data: { user: { id: 'inactive-staff' } }, error: null }) }, from: () => query });
     const response = await invoke('email', { to: 'member@example.test', template: 'express_continue', data: { url: 'https://tandavastudio.com/auth/login' } }, 'Bearer inactive-session');
-    expect(response.status).toBe(403); expect(mocks.email).not.toHaveBeenCalled();
+    expect(response.status).toBe(401); expect(mocks.email).not.toHaveBeenCalled();
   });
   it('keeps arbitrary raw messages restricted to internal callers', async () => {
     const response = await invoke('email', senders[0].body, 'Bearer staff-session');
-    expect(response.status).toBe(403); expect(mocks.email).not.toHaveBeenCalled();
+    expect(response.status).toBe(401); expect(mocks.email).not.toHaveBeenCalled();
   });
 });
