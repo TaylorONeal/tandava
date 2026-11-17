@@ -32,6 +32,14 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "tandava-flame.vercel.app" }],
+      "destination": "https://tandavastudio.com/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/page/studio-sprout", "destination": "/page/studio-sprout/index.html" },
     { "source": "/page/studio-sprout/", "destination": "/page/studio-sprout/index.html" },
