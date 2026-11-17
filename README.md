@@ -9,7 +9,7 @@ Two ways to use Tandava:
 - **Hosted:** sign up at **[tandavastudio.com](https://tandavastudio.com)**, complete the setup wizard, and go live. No servers, no DNS, no deployment. Free to run: we make money only by taking a small percentage of the payments you process, so we only earn when your studio does.
 - **Self-host:** clone this repo and deploy it on your own infrastructure. Own every byte, pay only your hosting costs, change anything. AGPL-3.0.
 
-> **[Live Demo](https://tandava-flame.vercel.app):** explore the full platform with sample data. No signup required.
+> **[Live Demo](https://tandavastudio.com):** explore the full platform with sample data. No signup required.
 
 *Tandava* is the cosmic dance in Hindu tradition, representing the rhythm of creation, preservation, and transformation. We chose this name because running a studio should feel like a practice: purposeful, flowing, and yours to shape.
 
@@ -94,7 +94,7 @@ graph TB
 
 ## Live Demo
 
-Explore the full platform at **[tandava-flame.vercel.app](https://tandava-flame.vercel.app)**.
+Explore the full platform at **[tandavastudio.com](https://tandavastudio.com)**.
 
 The demo loads a complete fictional studio (Oxatl Yoga, Austin TX) with 3 locations, 18 teachers, and 500 members. Switch between roles using the bar at the top:
 
@@ -406,7 +406,7 @@ For studios running Tandava for their own use, you own your data and control you
 
 ## Links
 
-- **[Live Demo](https://tandava-flame.vercel.app)**
+- **[Live Demo](https://tandavastudio.com)**
 - [Documentation](docs/INDEX.md)
 - [Deployment Guide](DEPLOYMENT.md)
 - [Architecture (decisions)](ARCHITECTURE.md)
