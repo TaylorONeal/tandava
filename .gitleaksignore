@@ -1,0 +1,4 @@
+# Known false positive: scripts/asc/internal_testers.py line 34 builds the PEM wrapper
+# ("-----BEGIN PRIVATE KEY-----" + body + "-----END...") around a key read from a file or env var.
+# No key is in the repo. The finding comes from the merge of main into this branch (scanned with -m).
+2e419c46e412b5e5926d28e33e26a365db886878:scripts/asc/internal_testers.py:private-key:34
