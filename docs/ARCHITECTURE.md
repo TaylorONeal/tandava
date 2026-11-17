@@ -153,7 +153,7 @@ For the full domain model with mermaid diagrams, see `docs/developer/01-domain-m
 
 ## Demo mode
 
-`VITE_DEMO_MODE=true` loads mock data from `src/data/demo/` (the fictional Oxatl Yoga studio: 3 locations, 18 teachers, 500 members) and bypasses all backend calls. Some public routes (`/schedule`, `/events`, `/instructors`, `/on-demand`) still use inline sample content or demo entitlement state. Disabling demo mode is not proof that every reachable route uses live data. The live demo at tandava-flame.vercel.app runs in this mode. See `docs/architecture/DEMO_SEPARATION.md`.
+`VITE_DEMO_MODE=true` loads mock data from `src/data/demo/` (the fictional Oxatl Yoga studio: 3 locations, 18 teachers, 500 members) and bypasses all backend calls. Some public routes (`/schedule`, `/events`, `/instructors`, `/on-demand`) still use inline sample content or demo entitlement state. Disabling demo mode is not proof that every reachable route uses live data. The live demo at tandavastudio.com runs in this mode. See `docs/architecture/DEMO_SEPARATION.md`.
 
 ## Planned native apps
 
