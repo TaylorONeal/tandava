@@ -34,9 +34,9 @@
   ],
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "tandava-flame.vercel.app" }],
-      "destination": "https://tandavastudio.com/:path*",
+      "destination": "https://tandavastudio.com/$1",
       "permanent": true
     }
   ],
