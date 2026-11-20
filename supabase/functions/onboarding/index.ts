@@ -418,7 +418,7 @@ serve(async (req) => {
         const { data: account } = await db.auth.admin.getUserById(target.profile_id as string);
         const email = account?.user?.email;
         if (!email) return json({ error: "No email on file for that person" }, 409);
-        if (account.user.last_sign_in_at) {
+        if (account?.user?.last_sign_in_at) {
           return json({ error: "They have already signed in. They can use Forgot password on the sign-in screen." }, 409);
         }
         const { error: resendErr } = await db.auth.admin.inviteUserByEmail(email, {

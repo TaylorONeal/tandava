@@ -226,7 +226,7 @@ await step('invited staff signs in with email and password', async () => {
 
 await step('owner sees them as Active and can turn them off', async () => {
   await page.reload();
-  const row = page.locator('div.rounded-lg, div.rounded-xl, [class*="card"]').filter({ hasText: TEAM_STAFF }).last();
+  const row = page.locator('[data-testid="team-member"]').filter({ hasText: TEAM_STAFF });
   await row.getByText('Active', { exact: true }).waitFor({ timeout: 15000 });
   await row.getByRole('button', { name: 'Turn off' }).click();
   await row.getByText('Off', { exact: true }).waitFor({ timeout: 15000 });

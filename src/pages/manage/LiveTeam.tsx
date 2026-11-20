@@ -108,7 +108,7 @@ export default function LiveTeam() {
               const status = statusOf(member);
               const isOwner = member.role === "owner";
               return (
-                <Card key={member.id}>
+                <Card key={member.id} data-testid="team-member">
                   <CardContent className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="min-w-0">
                       <p className="font-medium truncate">{member.name || member.email}</p>
