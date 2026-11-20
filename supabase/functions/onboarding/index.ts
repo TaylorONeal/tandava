@@ -214,12 +214,24 @@ const WIZARD_ROLE_MAP: Record<string, string> = {
 };
 const PAY_TYPES = ["per_class", "revenue_share", "hourly", "salary"];
 
+// Where the invite email sends a new staff member: a page that asks them to choose a
+// password, which they need to sign in to the Tandava Studio app. Only our own sites and
+// local development may be the target; anything else falls back to the public site.
+const PUBLIC_SITE = "https://tandavastudio.com";
+function inviteRedirect(origin: string | null): string {
+  const ok = origin !== null
+    && (origin === PUBLIC_SITE || /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin));
+  return `${ok ? origin : PUBLIC_SITE}/auth/reset-confirm?invite=1`;
+}
+
 async function provisionStaff(
   db: SupabaseClient,
   studioId: string,
   members: StaffInput[],
-): Promise<{ invited: number; errors: { email: string; message: string }[] }> {
+  redirectTo: string = inviteRedirect(null),
+): Promise<{ invited: number; emailed: number; errors: { email: string; message: string }[] }> {
   let invited = 0;
+  let emailed = 0;
   const errors: { email: string; message: string }[] = [];
 
   for (const member of members) {
@@ -255,9 +267,11 @@ async function provisionStaff(
         const meta = { first_name: firstName, last_name: lastName };
         const { data: invite, error: inviteErr } = await db.auth.admin.inviteUserByEmail(email, {
           data: meta,
+          redirectTo,
         });
         if (invite?.user) {
           profileId = invite.user.id;
+          emailed++;
         } else {
           const { data: created, error: createErr } = await db.auth.admin.createUser({
             email,
@@ -273,6 +287,14 @@ async function provisionStaff(
         }
       }
 
+      // Never let an invite rewrite the owner's own row (an owner typing their own email).
+      const { data: current } = await db.from("studio_staff")
+        .select("role").eq("studio_id", studioId).eq("profile_id", profileId).maybeSingle();
+      if (current?.role === "owner") {
+        errors.push({ email, message: "That email is the studio owner's. Use a different email." });
+        continue;
+      }
+
       const payType = PAY_TYPES.includes(String(member.payType ?? "")) ? member.payType : null;
       const { error: linkErr } = await db.from("studio_staff").upsert(
         {
@@ -282,6 +304,7 @@ async function provisionStaff(
           pay_type: payType,
           pay_rate_cents: member.payRate ? dollarsToCents(member.payRate) : null,
           can_sub: member.role === "sub" || undefined,
+          is_active: true,
         },
         { onConflict: "studio_id,profile_id" },
       );
@@ -295,7 +318,34 @@ async function provisionStaff(
     }
   }
 
-  return { invited, errors };
+  return { invited, emailed, errors };
+}
+
+// Team list for the owner's Team page. "pending" means the person has never signed in,
+// so they still need to open their invite (or use Forgot password) to choose a password.
+async function listStaff(db: SupabaseClient, studioId: string) {
+  const { data: rows, error } = await db
+    .from("studio_staff")
+    .select("id, profile_id, role, is_active, can_sub, created_at")
+    .eq("studio_id", studioId)
+    .order("created_at", { ascending: true });
+  if (error) throw new Error(error.message);
+  const out = [];
+  for (const row of rows ?? []) {
+    const { data: profile } = await db.from("profiles")
+      .select("first_name, last_name, email").eq("id", row.profile_id).maybeSingle();
+    const { data: account } = await db.auth.admin.getUserById(row.profile_id as string);
+    out.push({
+      id: row.id,
+      role: row.role,
+      isActive: row.is_active !== false,
+      canSub: row.can_sub === true,
+      name: [profile?.first_name, profile?.last_name].filter(Boolean).join(" "),
+      email: profile?.email ?? account?.user?.email ?? "",
+      pending: !account?.user?.last_sign_in_at,
+    });
+  }
+  return out;
 }
 
 // ---------------------------------------------------------------------------
@@ -341,6 +391,48 @@ serve(async (req) => {
   try {
     if (step === "status") {
       return json(await buildStatus(db, studioId));
+    }
+
+    // Team management after setup. Owner-only: studioId comes from the active owner row above.
+    if (step === "staff_list" || step === "staff_add" || step === "staff_set_active" || step === "staff_resend") {
+      if (!studioId) return json({ error: "Only the studio owner can manage the team" }, 403);
+      if (step === "staff_list") return json({ ok: true, staff: await listStaff(db, studioId) });
+
+      // Same invite as the setup wizard, without moving the wizard's resume cursor.
+      if (step === "staff_add") {
+        const members = Array.isArray(f.staff) ? (f.staff as StaffInput[]) : [];
+        if (members.length === 0) return json({ error: "Add a name and an email" }, 400);
+        const result = await provisionStaff(db, studioId, members, inviteRedirect(req.headers.get("Origin")));
+        if (result.invited === 0) {
+          return json({ error: result.errors[0]?.message ?? "Could not invite staff", staffErrors: result.errors }, 500);
+        }
+        return json({ ok: true, invited: result.invited, emailed: result.emailed, staffErrors: result.errors });
+      }
+
+      const staffId = String(f.staffId ?? "");
+      const { data: target } = await db.from("studio_staff")
+        .select("id, role, profile_id").eq("id", staffId).eq("studio_id", studioId).maybeSingle();
+      if (!target) return json({ error: "That person is not on this studio's team" }, 404);
+
+      if (step === "staff_resend") {
+        const { data: account } = await db.auth.admin.getUserById(target.profile_id as string);
+        const email = account?.user?.email;
+        if (!email) return json({ error: "No email on file for that person" }, 409);
+        if (account.user.last_sign_in_at) {
+          return json({ error: "They have already signed in. They can use Forgot password on the sign-in screen." }, 409);
+        }
+        const { error: resendErr } = await db.auth.admin.inviteUserByEmail(email, {
+          redirectTo: inviteRedirect(req.headers.get("Origin")),
+        });
+        if (resendErr) return json({ error: resendErr.message }, 500);
+        return json({ ok: true });
+      }
+
+      if (target.role === "owner") return json({ error: "The owner cannot be turned off here" }, 409);
+      const { error: activeErr } = await db.from("studio_staff")
+        .update({ is_active: f.active === true }).eq("id", staffId).eq("studio_id", studioId);
+      if (activeErr) return json({ error: activeErr.message }, 500);
+      return json({ ok: true });
     }
 
     const enumStep = toEnumStep(step);
@@ -636,12 +728,12 @@ serve(async (req) => {
         if (members.length === 0) {
           return json({ error: "Add at least one staff member (or skip this step)" }, 400);
         }
-        const result = await provisionStaff(db, studioId, members);
+        const result = await provisionStaff(db, studioId, members, inviteRedirect(req.headers.get("Origin")));
         if (result.invited === 0) {
           return json({ error: result.errors[0]?.message ?? "Could not invite staff", staffErrors: result.errors }, 500);
         }
         await recordProgress(db, studioId, "staff", true);
-        return json({ ok: true, studioId, invited: result.invited, staffErrors: result.errors });
+        return json({ ok: true, studioId, invited: result.invited, emailed: result.emailed, staffErrors: result.errors });
       }
 
       case "waivers": {

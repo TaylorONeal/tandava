@@ -90,6 +90,37 @@ describe("staff access to privileged edge functions", () => {
     });
   }
 
+  // Team management (list, add, turn off, resend) is owner-only and writes nothing otherwise.
+  for (const step of ["staff_list", "staff_add", "staff_set_active", "staff_resend"]) {
+    const body = { step, data: { staffId: "row-1", active: false, staff: [{ name: "A B", email: "a@b.example", role: "admin" }] } };
+    it(`onboarding ${step} denies a teacher`, async () => {
+      mocks.staff[0].role = "teacher";
+      const response = await invoke("onboarding", body);
+      expect(response.status).toBe(403);
+      expect(mocks.writes).toEqual([]);
+    });
+    it(`onboarding ${step} denies an inactive owner`, async () => {
+      mocks.staff[0].is_active = false;
+      const response = await invoke("onboarding", body);
+      expect(response.status).toBe(403);
+      expect(mocks.writes).toEqual([]);
+    });
+  }
+
+  it("onboarding staff_set_active cannot turn off the owner", async () => {
+    mocks.staff[0].id = "row-1";
+    const response = await invoke("onboarding", { step: "staff_set_active", data: { staffId: "row-1", active: false } });
+    expect(response.status).toBe(409);
+    expect(mocks.writes).toEqual([]);
+  });
+
+  it("onboarding staff_set_active cannot reach another studio's staff", async () => {
+    mocks.staff.push({ id: "row-9", studio_id: "studio-other", profile_id: "someone", role: "teacher", is_active: true });
+    const response = await invoke("onboarding", { step: "staff_set_active", data: { staffId: "row-9", active: false } });
+    expect(response.status).toBe(404);
+    expect(mocks.writes).toEqual([]);
+  });
+
   it("member import cannot target another studio", async () => {
     const response = await invoke("import-members", { ...endpoints[2].body, studioId: "studio-other" });
     expect(response.status).toBe(403);
