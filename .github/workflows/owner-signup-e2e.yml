@@ -84,6 +84,7 @@ jobs:
           psql "$SB_DB_URL" -tA -c "select count(*) from studios s where s.name='Juniper Test Studio' and s.page_live
             and exists (select 1 from offerings o where o.studio_id=s.id)
             and exists (select 1 from schedule_rules r where r.studio_id=s.id)" | grep -qx 1
+          set -x
           # Offboarding, checked in the database: the teacher from setup is given a weekly slot and an
           # upcoming class, then the owner turns them off. Access flag, class handover and the
           # audit trail must all agree.

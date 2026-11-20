@@ -183,8 +183,9 @@ async function inviteLink(address) {
 await step('team page lists the setup invite', async () => {
   await page.goto(`${BASE}/manage/teachers`);
   await page.getByRole('heading', { name: 'Team', exact: true }).waitFor({ timeout: 15000 });
-  await page.getByText(WIZARD_STAFF).waitFor({ timeout: 15000 });
-  await page.getByText('Invite sent').first().waitFor();
+  const setupInvite = page.locator('[data-testid="team-member"]').filter({ hasText: WIZARD_STAFF });
+  await setupInvite.waitFor({ timeout: 15000 });
+  await setupInvite.getByText('Invite sent', { exact: true }).waitFor();
 });
 
 await step('add team member from the Team page', async () => {
