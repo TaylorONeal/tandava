@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import LiveTeam from "./LiveTeam";
 import { ManageLayout } from "@/components/manage/ManageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -109,6 +111,13 @@ const mockTeachers: Teacher[] = [
 ];
 
 export default function TeachersManage() {
+  const { isDemoMode } = useAuth();
+  // Sample data is for the demo only; a real studio gets its real team.
+  if (!isDemoMode) return <LiveTeam />;
+  return <DemoTeachers />;
+}
+
+function DemoTeachers() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);

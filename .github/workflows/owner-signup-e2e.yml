@@ -11,6 +11,8 @@ on:
       - 'src/components/auth/**'
       - 'src/lib/auth/**'
       - 'src/contexts/AuthContext.tsx'
+      - 'src/pages/manage/Teachers.tsx'
+      - 'src/pages/manage/LiveTeam.tsx'
       - 'supabase/functions/onboarding/**'
       - 'supabase/migrations/**'
       - 'e2e-owner/**'
@@ -37,6 +39,9 @@ jobs:
         run: |
           supabase init < /dev/null || true
           test -f supabase/config.toml
+          # Invite emails must be allowed to send staff to the locally served web app.
+          sed -i -E 's|^site_url = .*|site_url = "http://localhost:4303"|; s|^additional_redirect_urls = .*|additional_redirect_urls = ["http://localhost:4303/**"]|' supabase/config.toml
+          grep -E '^(site_url|additional_redirect_urls)' supabase/config.toml
           supabase start -x realtime,studio,imgproxy,logflare,vector,supavisor,postgres-meta
           supabase status -o env | grep -E '^(API_URL|ANON_KEY|SERVICE_ROLE_KEY|DB_URL)=' | sed -E 's/^([A-Z_]+)="?([^"]*)"?$/SB_\1=\2/' >> "$GITHUB_ENV"
       - name: Serve edge functions locally
@@ -58,9 +63,9 @@ jobs:
         run: docker pull -q mcr.microsoft.com/playwright:v1.64.0-noble
       - name: Owner sign-up and onboarding
         run: |
-          PW=$(openssl rand -hex 16); echo "::add-mask::$PW"
+          PW=$(openssl rand -hex 16); echo "::add-mask::$PW"; echo "OWNER_PW=$PW" >> "$GITHUB_ENV"
           docker run --rm --network host --ipc host --user "$(id -u):$(id -g)" -e HOME=/tmp \
-            -e OWNER_EMAIL="owner-${{ github.run_id }}@juniper.example" -e OWNER_PASSWORD="$PW" \
+            -e OWNER_EMAIL="owner-${{ github.run_id }}@juniper.example" -e OWNER_PASSWORD="$PW" -e RUN_ID="${{ github.run_id }}" -e API_URL="$SB_API_URL" -e ANON_KEY="$SB_ANON_KEY" \
             -v "$PWD:/w" -w /w mcr.microsoft.com/playwright:v1.64.0-noble node e2e-owner/owner-signup.mjs owner-out
       - name: Check the rows onboarding wrote
         if: always()
@@ -79,6 +84,28 @@ jobs:
           psql "$SB_DB_URL" -tA -c "select count(*) from studios s where s.name='Juniper Test Studio' and s.page_live
             and exists (select 1 from offerings o where o.studio_id=s.id)
             and exists (select 1 from schedule_rules r where r.studio_id=s.id)" | grep -qx 1
+          set -x
+          # Offboarding, checked in the database: the teacher from setup is given a weekly slot and an
+          # upcoming class, then the owner turns them off. Access flag, class handover and the
+          # audit trail must all agree.
+          TEACHER=$(psql "$SB_DB_URL" -tA -c "select st.profile_id from studio_staff st join studios s on s.id=st.studio_id where s.name='Juniper Test Studio' and st.role='teacher'")
+          STAFF_ROW=$(psql "$SB_DB_URL" -tA -c "select st.id from studio_staff st where st.profile_id='$TEACHER'")
+          psql "$SB_DB_URL" -v ON_ERROR_STOP=1 -q -c "
+            update schedule_rules set teacher_id='$TEACHER' where studio_id=(select id from studios where name='Juniper Test Studio');
+            insert into class_occurrences (studio_id, offering_id, location_id, teacher_id, starts_at, ends_at, capacity)
+              select r.studio_id, r.offering_id, r.location_id, '$TEACHER', now() + interval '2 days', now() + interval '2 days 1 hour', 20
+              from schedule_rules r where r.teacher_id='$TEACHER' limit 1;"
+          TOKEN=$(curl -fsS "$SB_API_URL/auth/v1/token?grant_type=password" -H "apikey: $SB_ANON_KEY" -H 'Content-Type: application/json' \
+            -d "{\"email\":\"owner-${{ github.run_id }}@juniper.example\",\"password\":\"$OWNER_PW\"}" | node -pe 'JSON.parse(require("fs").readFileSync(0)).access_token')
+          curl -fsS "$SB_API_URL/functions/v1/onboarding" -H "apikey: $SB_ANON_KEY" -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+            -d "{\"step\":\"staff_set_active\",\"data\":{\"staffId\":\"$STAFF_ROW\",\"active\":false}}" | tee -a owner-out/db-check.txt | tee /dev/stderr | grep -Eq '"unassignedClasses":[1-9]'
+          psql "$SB_DB_URL" -tA -c "select
+              (select count(*) from studio_staff where profile_id='$TEACHER' and is_active) || '|' ||
+              (select count(*) from class_occurrences where teacher_id='$TEACHER' and starts_at > now()) || '|' ||
+              (select count(*) from schedule_rules where teacher_id='$TEACHER') || '|' ||
+              (select count(*) from audit_logs where category='staff' and action='staff.access_removed' and actor_email like 'owner-%' and previous_state->>'is_active'='true') || '|' ||
+              (select count(*) from audit_logs where category='staff' and action='staff.role_changed') || '|' ||
+              (select count(*) from audit_logs where category='staff' and action='staff.added')" | tee -a owner-out/db-check.txt | grep -qx '0|0|0|2|1|2'
       - name: Logs on failure
         if: failure()
         run: tail -n 120 /tmp/functions.log /tmp/web.log || true

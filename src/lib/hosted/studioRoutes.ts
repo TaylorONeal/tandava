@@ -6,6 +6,7 @@ const liveStudioRoutes: Record<string, Permission | null> = {
   '/manage': 'studio.manage_schedule',
   '/manage/schedule': 'studio.manage_schedule',
   '/manage/offerings': 'studio.manage_schedule',
+  '/manage/teachers': 'studio.manage_settings',
   '/manage/onboarding': null,
   '/manage/settings': 'studio.manage_settings',
   '/manage/import': 'studio.manage_settings',

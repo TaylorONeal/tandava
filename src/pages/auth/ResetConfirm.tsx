@@ -7,6 +7,8 @@
  *     The guest already has a passwordless identity; the emailed link proves they
  *     control the mailbox, which is the only safe way to attach a password to an
  *     identity that a public form created.
+ *   - A staff invite (`?invite=1`). The studio owner added this person; the invite
+ *     email lands here so they choose the password the Tandava Studio app asks for.
  *
  * The auth client exchanges the link's token for a session on load
  * (detectSessionInUrl), so this page waits for a signed-in user, then sets the
@@ -22,7 +24,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AlertCircle, Loader2, Lock } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, Lock } from "lucide-react";
+
+import { STUDIO_APP, STUDIO_APP_LIVE } from "@/config/studioApp";
+
+// Store pages for the Tandava Studio app. The iPhone link shows only once that listing is live.
+const STUDIO_ANDROID_URL = "https://play.google.com/store/apps/details?id=com.tandava.studio";
+const STUDIO_IOS_URL = STUDIO_APP_LIVE ? STUDIO_APP.appStoreUrl : "";
 
 const MIN_PASSWORD = 8;
 
@@ -31,14 +39,16 @@ export default function ResetConfirm() {
   const [searchParams] = useSearchParams();
   const { user, isLoading, isDemoMode, updatePassword } = useAuth();
   const claim = searchParams.get("claim") === "1";
+  const invite = searchParams.get("invite") === "1";
   const next = safeNextPath(searchParams.get("next"), claim ? "/my-schedule" : "/");
+  const [inviteDone, setInviteDone] = useState(false);
 
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const title = claim ? "Save your account" : "Choose a new password";
+  const title = invite ? "Welcome to your studio's team" : claim ? "Save your account" : "Choose a new password";
 
   if (isLoading) {
     return (
@@ -59,7 +69,9 @@ export default function ResetConfirm() {
           <div className="space-y-2">
             <p className="font-medium">This link has expired or was already used.</p>
             <p className="text-muted-foreground">
-              Links work once and expire after a short time. Request a new one from the sign-in page.
+              {invite
+                ? "Invite links work once. Go to sign in, tap Forgot password and enter the email your studio invited. You will get a fresh link."
+                : "Links work once and expire after a short time. Request a new one from the sign-in page."}
             </p>
             <Button asChild variant="outline" size="sm">
               <Link to="/auth/login">Go to sign in</Link>
@@ -88,13 +100,50 @@ export default function ResetConfirm() {
       setError(updateError.message);
       return;
     }
+    if (invite) {
+      setInviteDone(true);
+      return;
+    }
     navigate(next, { replace: true });
   };
+
+  if (inviteDone) {
+    return (
+      <Shell title="You're set">
+        <div className="space-y-4 text-sm">
+          <p className="flex items-start gap-2">
+            <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+            <span>Password saved for <span className="font-medium">{user?.email}</span>.</span>
+          </p>
+          <ol className="list-decimal ps-5 space-y-1.5 text-muted-foreground">
+            <li>Get the Tandava Studio app on your phone.</li>
+            <li>Sign in with this email and the password you just chose.</li>
+            <li>Your classes and check-in are on the first screen.</li>
+          </ol>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild size="sm">
+              <a href={STUDIO_ANDROID_URL} target="_blank" rel="noreferrer">Get it on Google Play</a>
+            </Button>
+            {STUDIO_IOS_URL && (
+              <Button asChild size="sm">
+                <a href={STUDIO_IOS_URL} target="_blank" rel="noreferrer">Get it on the App Store</a>
+              </Button>
+            )}
+            <Button asChild variant="outline" size="sm">
+              <Link to={next}>Continue on the web</Link>
+            </Button>
+          </div>
+        </div>
+      </Shell>
+    );
+  }
 
   return (
     <Shell title={title}>
       <p className="text-sm text-muted-foreground mb-5">
-        {claim
+        {invite
+          ? "Your studio added you on Tandava. Choose a password now. You will use it with this email to sign in to the Tandava Studio app."
+          : claim
           ? "Set a password and your bookings, receipts and studio stay with this email. Next time you can book in one tap and use a class pack or membership."
           : "Pick a password you haven't used here before."}
       </p>
