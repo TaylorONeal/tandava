@@ -98,7 +98,7 @@ jobs:
           TOKEN=$(curl -fsS "$SB_API_URL/auth/v1/token?grant_type=password" -H "apikey: $SB_ANON_KEY" -H 'Content-Type: application/json' \
             -d "{\"email\":\"owner-${{ github.run_id }}@juniper.example\",\"password\":\"$OWNER_PW\"}" | node -pe 'JSON.parse(require("fs").readFileSync(0)).access_token')
           curl -fsS "$SB_API_URL/functions/v1/onboarding" -H "apikey: $SB_ANON_KEY" -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
-            -d "{\"step\":\"staff_set_active\",\"data\":{\"staffId\":\"$STAFF_ROW\",\"active\":false}}" | tee -a owner-out/db-check.txt | grep -q '"unassignedClasses":1'
+            -d "{\"step\":\"staff_set_active\",\"data\":{\"staffId\":\"$STAFF_ROW\",\"active\":false}}" | tee -a owner-out/db-check.txt | tee /dev/stderr | grep -Eq '"unassignedClasses":[1-9]'
           psql "$SB_DB_URL" -tA -c "select
               (select count(*) from studio_staff where profile_id='$TEACHER' and is_active) || '|' ||
               (select count(*) from class_occurrences where teacher_id='$TEACHER' and starts_at > now()) || '|' ||
