@@ -194,7 +194,7 @@ await step('add team member from the Team page', async () => {
   await pick('Role', 'Front desk');
   await page.getByRole('button', { name: 'Send invite' }).click();
   await page.getByText('Devon Park added', { exact: true }).first().waitFor({ timeout: 20000 });
-  await page.getByText(TEAM_STAFF).waitFor({ timeout: 15000 });
+  await page.locator('[data-testid="team-member"]').filter({ hasText: TEAM_STAFF }).waitFor({ timeout: 15000 });
   await shot('06-team');
 });
 
