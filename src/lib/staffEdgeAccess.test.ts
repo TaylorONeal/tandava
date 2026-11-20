@@ -91,8 +91,8 @@ describe("staff access to privileged edge functions", () => {
   }
 
   // Team management (list, add, turn off, resend) is owner-only and writes nothing otherwise.
-  for (const step of ["staff_list", "staff_add", "staff_set_active", "staff_resend"]) {
-    const body = { step, data: { staffId: "row-1", active: false, staff: [{ name: "A B", email: "a@b.example", role: "admin" }] } };
+  for (const step of ["staff_list", "staff_history", "staff_add", "staff_set_active", "staff_set_role", "staff_resend"]) {
+    const body = { step, data: { staffId: "row-1", active: false, role: "admin", staff: [{ name: "A B", email: "a@b.example", role: "admin" }] } };
     it(`onboarding ${step} denies a teacher`, async () => {
       mocks.staff[0].role = "teacher";
       const response = await invoke("onboarding", body);
@@ -110,6 +110,13 @@ describe("staff access to privileged edge functions", () => {
   it("onboarding staff_set_active cannot turn off the owner", async () => {
     mocks.staff[0].id = "row-1";
     const response = await invoke("onboarding", { step: "staff_set_active", data: { staffId: "row-1", active: false } });
+    expect(response.status).toBe(409);
+    expect(mocks.writes).toEqual([]);
+  });
+
+  it("onboarding staff_set_role cannot change the owner", async () => {
+    mocks.staff[0].id = "row-1";
+    const response = await invoke("onboarding", { step: "staff_set_role", data: { staffId: "row-1", role: "teacher" } });
     expect(response.status).toBe(409);
     expect(mocks.writes).toEqual([]);
   });

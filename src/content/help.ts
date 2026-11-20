@@ -61,6 +61,14 @@ export const HELP: HelpEntry[] = [
     learnMore: "/manage/teachers",
   },
   {
+    id: "team-offboarding",
+    audience: ["owner"],
+    question: "Someone left the studio, or changed jobs. What do I do?",
+    answer:
+      "Open Manage, then Team. To remove someone, tap Turn off next to their name. They lose access right away on the web and in the app, their upcoming classes change to No teacher set so you can pick a new teacher in Schedule, and their past classes and check-ins stay in your records. To change what someone can do, pick a new role in the dropdown next to their name. Every add, role change and removal is listed under Team history with who did it and when.",
+    learnMore: "/manage/teachers",
+  },
+  {
     id: "need-to-host",
     audience: ["owner"],
     question: "Do I need to install or host anything?",

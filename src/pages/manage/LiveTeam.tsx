@@ -16,37 +16,12 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/backend";
-import { Loader2, Mail, UserPlus } from "lucide-react";
+import { Link } from "react-router-dom";
+import { CalendarClock, History, Loader2, Mail, UserPlus } from "lucide-react";
 
-export interface TeamMember {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  isActive: boolean;
-  canSub: boolean;
-  pending: boolean;
-}
+import { TEAM_ROLES, TEAM_STEPS, assignmentNote, offboardingSummary, statusOf, type TeamEvent, type TeamMember } from "@/lib/team";
 
-export const TEAM_ROLES: [string, string, string][] = [
-  ["teacher", "Teacher", "Sees their own classes and checks in their students."],
-  ["front_desk", "Front desk", "Checks people in at the door and looks up members."],
-  ["admin", "Admin", "Manages schedule, members and settings with you."],
-  ["sub", "Substitute", "A teacher who can cover classes."],
-];
 const ROLE_LABEL: Record<string, string> = { owner: "Owner", teacher: "Teacher", front_desk: "Front desk", admin: "Admin" };
-
-/** Shown on the page and reused by the help center, so the steps never drift apart. */
-export const TEAM_STEPS = [
-  "Tap Add team member. Enter their name, email and role.",
-  "They get an email from Tandava. They tap Accept invite and choose a password.",
-  "They open the Tandava Studio app and sign in with that email and password.",
-] as const;
-
-export function statusOf(member: Pick<TeamMember, "isActive" | "pending">): "Off" | "Invite sent" | "Active" {
-  if (!member.isActive) return "Off";
-  return member.pending ? "Invite sent" : "Active";
-}
 
 export default function LiveTeam() {
   const { toast } = useToast();
@@ -54,16 +29,21 @@ export default function LiveTeam() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [history, setHistory] = useState<TeamEvent[]>([]);
+  const [turningOff, setTurningOff] = useState<TeamMember | null>(null);
+  const [roleChange, setRoleChange] = useState<{ member: TeamMember; role: string } | null>(null);
 
   const load = useCallback(async () => {
     const { data, error } = await api.invoke<{ staff: TeamMember[] }>("onboarding", { step: "staff_list" });
     if (error) { setLoadError(error.message); setTeam([]); return; }
     setLoadError(null);
     setTeam(data?.staff ?? []);
+    const log = await api.invoke<{ history: TeamEvent[] }>("onboarding", { step: "staff_history" });
+    setHistory(log.data?.history ?? []);
   }, []);
   useEffect(() => { void load(); }, [load]);
 
-  const act = async (member: TeamMember, step: "staff_set_active" | "staff_resend", data: Record<string, unknown>, done: string) => {
+  const act = async (member: TeamMember, step: "staff_set_active" | "staff_set_role" | "staff_resend", data: Record<string, unknown>, done: string) => {
     setBusyId(member.id);
     const { error } = await api.invoke("onboarding", { step, data: { staffId: member.id, ...data } });
     setBusyId(null);
@@ -113,9 +93,25 @@ export default function LiveTeam() {
                     <div className="min-w-0">
                       <p className="font-medium truncate">{member.name || member.email}</p>
                       <p className="text-sm text-muted-foreground truncate">{member.email}</p>
+                      {assignmentNote(member) && (
+                        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
+                          <CalendarClock className="h-3.5 w-3.5" aria-hidden="true" />
+                          {assignmentNote(member)}
+                          {member.upcomingClasses === 0 && <Link to="/manage/schedule" className="text-primary hover:underline">Assign in Schedule</Link>}
+                        </p>
+                      )}
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant="secondary">{ROLE_LABEL[member.role] ?? member.role}{member.canSub && member.role === "teacher" ? " · can sub" : ""}</Badge>
+                      {isOwner || !member.isActive ? (
+                        <Badge variant="secondary">{ROLE_LABEL[member.role] ?? member.role}</Badge>
+                      ) : (
+                        <Select value={member.role} onValueChange={(role) => role !== member.role && setRoleChange({ member, role })}>
+                          <SelectTrigger className="h-8 w-[8.5rem]" aria-label={`Role for ${member.name || member.email}`}><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {TEAM_ROLES.filter(([value]) => value !== "sub").map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      )}
                       <Badge variant={status === "Active" ? "default" : "outline"}>{status}</Badge>
                       {!isOwner && status === "Invite sent" && (
                         <Button variant="outline" size="sm" disabled={busyId === member.id}
@@ -125,7 +121,9 @@ export default function LiveTeam() {
                       )}
                       {!isOwner && (
                         <Button variant="ghost" size="sm" disabled={busyId === member.id}
-                          onClick={() => act(member, "staff_set_active", { active: !member.isActive }, member.isActive ? `${member.name || member.email} can no longer sign in to your studio` : `${member.name || member.email} is back on the team`)}>
+                          onClick={() => member.isActive
+                            ? setTurningOff(member)
+                            : act(member, "staff_set_active", { active: true }, `${member.name || member.email} is back on the team`)}>
                           {member.isActive ? "Turn off" : "Turn on"}
                         </Button>
                       )}
@@ -140,6 +138,62 @@ export default function LiveTeam() {
           </div>
         )}
       </div>
+      {history.length > 0 && (
+        <Card className="mt-6">
+          <CardContent className="pt-6">
+            <p className="text-sm font-medium mb-3 flex items-center gap-2"><History className="h-4 w-4" aria-hidden="true" />Team history</p>
+            <ul className="space-y-2" data-testid="team-history">
+              {history.map((event) => (
+                <li key={event.id} className="text-sm">
+                  <span>{event.description}</span>
+                  <span className="block text-xs text-muted-foreground">{new Date(event.at).toLocaleString()} · by {event.by || "the owner"}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-muted-foreground mt-3">Every add, role change and removal is recorded here and cannot be edited.</p>
+          </CardContent>
+        </Card>
+      )}
+
+      <Dialog open={turningOff !== null} onOpenChange={(next) => !next && setTurningOff(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Turn off {turningOff?.name || turningOff?.email}?</DialogTitle>
+            <DialogDescription>Use this when someone leaves. You can turn them back on later.</DialogDescription>
+          </DialogHeader>
+          <ul className="list-disc ps-5 space-y-1.5 text-sm text-muted-foreground">
+            {turningOff && offboardingSummary(turningOff).map((line) => <li key={line}>{line}</li>)}
+          </ul>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setTurningOff(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => {
+              const member = turningOff!;
+              setTurningOff(null);
+              void act(member, "staff_set_active", { active: false }, `${member.name || member.email} no longer has access to your studio`);
+            }}>Turn off access</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={roleChange !== null} onOpenChange={(next) => !next && setRoleChange(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Change role to {TEAM_ROLES.find(([value]) => value === roleChange?.role)?.[1]}?</DialogTitle>
+            <DialogDescription>
+              {roleChange?.member.name || roleChange?.member.email} will be able to: {TEAM_ROLES.find(([value]) => value === roleChange?.role)?.[2]} The new access applies right away and is recorded in your team history.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRoleChange(null)}>Cancel</Button>
+            <Button onClick={() => {
+              const change = roleChange!;
+              setRoleChange(null);
+              void act(change.member, "staff_set_role", { role: change.role }, `${change.member.name || change.member.email} is now ${TEAM_ROLES.find(([value]) => value === change.role)?.[1]}`);
+            }}>Change role</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <AddDialog open={open} onOpenChange={setOpen} onAdded={load} />
     </ManageLayout>
   );

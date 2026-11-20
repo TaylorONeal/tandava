@@ -224,12 +224,47 @@ await step('invited staff signs in with email and password', async () => {
   await staff.waitForURL((u) => !u.pathname.startsWith('/auth/login'), { timeout: 20000 });
 });
 
-await step('owner sees them as Active and can turn them off', async () => {
+const member = (email) => page.locator('[data-testid="team-member"]').filter({ hasText: email });
+
+await step('teacher with no classes shows as not yet assigned', async () => {
   await page.reload();
-  const row = page.locator('[data-testid="team-member"]').filter({ hasText: TEAM_STAFF });
-  await row.getByText('Active', { exact: true }).waitFor({ timeout: 15000 });
-  await row.getByRole('button', { name: 'Turn off' }).click();
-  await row.getByText('Off', { exact: true }).waitFor({ timeout: 15000 });
+  await member(WIZARD_STAFF).getByText('No classes assigned yet', { exact: false }).waitFor({ timeout: 15000 });
+});
+
+await step('owner changes a role and it is recorded', async () => {
+  await member(TEAM_STAFF).getByText('Active', { exact: true }).waitFor({ timeout: 15000 });
+  await member(TEAM_STAFF).getByRole('combobox').click();
+  await page.getByRole('option', { name: 'Admin', exact: true }).click();
+  await page.getByRole('button', { name: 'Change role' }).click();
+  await page.locator('[data-testid="team-history"]').getByText(`from front_desk to admin`, { exact: false }).waitFor({ timeout: 15000 });
+});
+
+await step('owner turns them off after seeing what it does', async () => {
+  await member(TEAM_STAFF).getByRole('button', { name: 'Turn off' }).click();
+  await page.getByText('loses access to your studio right away', { exact: false }).waitFor();
+  await page.getByRole('button', { name: 'Turn off access' }).click();
+  await member(TEAM_STAFF).getByText('Off', { exact: true }).waitFor({ timeout: 15000 });
+  await page.locator('[data-testid="team-history"]').getByText(`Turned off ${TEAM_STAFF}`, { exact: false }).waitFor({ timeout: 15000 });
+});
+
+await step('removed staff is locked out of the studio at once', async () => {
+  // Still signed in from before: the session survives, the access does not.
+  await staff.goto(`${BASE}/manage/teachers`);
+  await staff.waitForTimeout(2500);
+  if (await staff.getByRole('button', { name: 'Add team member' }).isVisible().catch(() => false)) {
+    throw new Error('removed staff can still open the Team page');
+  }
+  const token = await staff.evaluate(() => {
+    const key = Object.keys(localStorage).find((k) => k.startsWith('sb-') && k.endsWith('-auth-token'));
+    return key ? JSON.parse(localStorage.getItem(key)).access_token : null;
+  });
+  if (!token) throw new Error('no staff session to test with');
+  const api = process.env.API_URL, anon = process.env.ANON_KEY;
+  const rows = await fetch(`${api}/rest/v1/studio_staff?select=id`, { headers: { apikey: anon, Authorization: `Bearer ${token}` } }).then((r) => r.json());
+  const mine = await fetch(`${api}/rest/v1/rpc/my_staff_studio_ids`, { method: 'POST', headers: { apikey: anon, Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: '{}' }).then((r) => r.json());
+  if (Array.isArray(mine) && mine.length) throw new Error(`removed staff still has studio access: ${JSON.stringify(mine)}`);
+  const list = await fetch(`${api}/functions/v1/onboarding`, { method: 'POST', headers: { apikey: anon, Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ step: 'staff_list' }) });
+  if (list.status !== 403) throw new Error(`removed staff got ${list.status} from the team list (rows visible: ${Array.isArray(rows) ? rows.length : 'n/a'})`);
 });
 
 await browser.close();

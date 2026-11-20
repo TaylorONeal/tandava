@@ -321,6 +321,85 @@ async function provisionStaff(
   return { invited, emailed, errors };
 }
 
+// Every team change is written to audit_logs (category "staff") before it is applied, so
+// there is no change without a record: who did it, to whom, the state before and after.
+interface StaffAudit {
+  studioId: string;
+  actor: { id: string; email?: string | null };
+  action: string;
+  description: string;
+  targetId: string;
+  targetEmail?: string | null;
+  previous?: Record<string, unknown>;
+  next?: Record<string, unknown>;
+  severity?: "info" | "notice" | "warning";
+  req: Request;
+}
+async function auditStaff(db: SupabaseClient, a: StaffAudit): Promise<string | null> {
+  const { error } = await db.from("audit_logs").insert({
+    studio_id: a.studioId,
+    category: "staff",
+    action: a.action,
+    description: a.description,
+    actor_id: a.actor.id,
+    actor_type: "user",
+    actor_email: a.actor.email ?? null,
+    actor_role: "owner",
+    target_type: "studio_staff",
+    target_id: a.targetId,
+    target_description: a.targetEmail ?? null,
+    previous_state: a.previous ?? null,
+    new_state: a.next ?? null,
+    severity: a.severity ?? "notice",
+    user_agent: a.req.headers.get("User-Agent"),
+  });
+  return error ? error.message : null;
+}
+
+// Upcoming, not-cancelled classes and recurring rules a person is still assigned to teach.
+async function teachingLoad(db: SupabaseClient, studioId: string, profileId: string) {
+  const now = new Date().toISOString();
+  const { count: classes } = await db.from("class_occurrences")
+    .select("id", { count: "exact", head: true })
+    .eq("studio_id", studioId).eq("teacher_id", profileId).eq("is_cancelled", false).gt("starts_at", now);
+  const { count: rules } = await db.from("schedule_rules")
+    .select("id", { count: "exact", head: true })
+    .eq("studio_id", studioId).eq("teacher_id", profileId);
+  return { classes: classes ?? 0, rules: rules ?? 0 };
+}
+
+async function auditAdds(
+  db: SupabaseClient, studioId: string, actor: { id: string; email?: string | null },
+  members: StaffInput[], errors: { email: string }[], req: Request,
+) {
+  for (const member of members) {
+    const email = String(member.email ?? "").trim().toLowerCase();
+    if (!email || errors.some((e) => e.email === email)) continue;
+    const { data: prof } = await db.from("profiles").select("id").eq("email", email).maybeSingle();
+    const { data: added } = prof
+      ? await db.from("studio_staff").select("id, role").eq("studio_id", studioId).eq("profile_id", prof.id).maybeSingle()
+      : { data: null };
+    if (!added) continue;
+    await auditStaff(db, {
+      studioId, actor, action: "staff.added", targetId: added.id as string, targetEmail: email, req,
+      description: `Added ${email} to the team as ${added.role}`,
+      next: { role: added.role, is_active: true },
+    });
+  }
+}
+
+async function staffHistory(db: SupabaseClient, studioId: string) {
+  const { data, error } = await db.from("audit_logs")
+    .select("id, action, description, actor_email, target_description, timestamp")
+    .eq("studio_id", studioId).eq("category", "staff")
+    .order("timestamp", { ascending: false }).limit(50);
+  if (error) throw new Error(error.message);
+  return (data ?? []).map((row) => ({
+    id: row.id, action: row.action, description: row.description,
+    by: row.actor_email ?? "", who: row.target_description ?? "", at: row.timestamp,
+  }));
+}
+
 // Team list for the owner's Team page. "pending" means the person has never signed in,
 // so they still need to open their invite (or use Forgot password) to choose a password.
 async function listStaff(db: SupabaseClient, studioId: string) {
@@ -343,6 +422,7 @@ async function listStaff(db: SupabaseClient, studioId: string) {
       name: [profile?.first_name, profile?.last_name].filter(Boolean).join(" "),
       email: profile?.email ?? account?.user?.email ?? "",
       pending: !account?.user?.last_sign_in_at,
+      upcomingClasses: (await teachingLoad(db, studioId, row.profile_id as string)).classes,
     });
   }
   return out;
@@ -394,9 +474,12 @@ serve(async (req) => {
     }
 
     // Team management after setup. Owner-only: studioId comes from the active owner row above.
-    if (step === "staff_list" || step === "staff_add" || step === "staff_set_active" || step === "staff_resend") {
+    const TEAM_STEPS = ["staff_list", "staff_history", "staff_add", "staff_set_active", "staff_set_role", "staff_resend"];
+    if (TEAM_STEPS.includes(step)) {
       if (!studioId) return json({ error: "Only the studio owner can manage the team" }, 403);
+      const actor = { id: user.id, email: user.email };
       if (step === "staff_list") return json({ ok: true, staff: await listStaff(db, studioId) });
+      if (step === "staff_history") return json({ ok: true, history: await staffHistory(db, studioId) });
 
       // Same invite as the setup wizard, without moving the wizard's resume cursor.
       if (step === "staff_add") {
@@ -406,33 +489,101 @@ serve(async (req) => {
         if (result.invited === 0) {
           return json({ error: result.errors[0]?.message ?? "Could not invite staff", staffErrors: result.errors }, 500);
         }
+        await auditAdds(db, studioId, actor, members, result.errors, req);
         return json({ ok: true, invited: result.invited, emailed: result.emailed, staffErrors: result.errors });
       }
 
       const staffId = String(f.staffId ?? "");
       const { data: target } = await db.from("studio_staff")
-        .select("id, role, profile_id").eq("id", staffId).eq("studio_id", studioId).maybeSingle();
+        .select("id, role, profile_id, is_active").eq("id", staffId).eq("studio_id", studioId).maybeSingle();
       if (!target) return json({ error: "That person is not on this studio's team" }, 404);
+      if (target.role === "owner") return json({ error: "The owner cannot be changed here" }, 409);
+      if (target.profile_id === user.id) return json({ error: "You cannot change your own access" }, 409);
+      const { data: account } = await db.auth.admin.getUserById(target.profile_id as string);
+      const targetEmail = account?.user?.email ?? null;
 
       if (step === "staff_resend") {
-        const { data: account } = await db.auth.admin.getUserById(target.profile_id as string);
-        const email = account?.user?.email;
-        if (!email) return json({ error: "No email on file for that person" }, 409);
+        if (!targetEmail) return json({ error: "No email on file for that person" }, 409);
+        if (target.is_active === false) return json({ error: "Turn them back on before sending an invite" }, 409);
         if (account?.user?.last_sign_in_at) {
           return json({ error: "They have already signed in. They can use Forgot password on the sign-in screen." }, 409);
         }
-        const { error: resendErr } = await db.auth.admin.inviteUserByEmail(email, {
+        const { error: resendErr } = await db.auth.admin.inviteUserByEmail(targetEmail, {
           redirectTo: inviteRedirect(req.headers.get("Origin")),
         });
         if (resendErr) return json({ error: resendErr.message }, 500);
+        await auditStaff(db, {
+          studioId, actor, action: "staff.invite_resent", targetId: staffId, targetEmail, req,
+          description: `Sent the invite again to ${targetEmail}`, severity: "info",
+        });
         return json({ ok: true });
       }
 
-      if (target.role === "owner") return json({ error: "The owner cannot be turned off here" }, 409);
+      if (step === "staff_set_role") {
+        const role = WIZARD_ROLE_MAP[String(f.role ?? "")];
+        if (!role) return json({ error: "Pick teacher, front desk or admin" }, 400);
+        if (role === target.role) return json({ ok: true, unchanged: true });
+        const logErr = await auditStaff(db, {
+          studioId, actor, action: "staff.role_changed", targetId: staffId, targetEmail, req,
+          description: `Changed ${targetEmail ?? "a team member"} from ${target.role} to ${role}`,
+          previous: { role: target.role }, next: { role }, severity: "warning",
+        });
+        if (logErr) return json({ error: "Nothing changed: the change could not be recorded. Try again." }, 500);
+        const { error: roleErr } = await db.from("studio_staff")
+          .update({ role }).eq("id", staffId).eq("studio_id", studioId);
+        if (roleErr) {
+          await auditStaff(db, {
+            studioId, actor, action: "staff.role_change_failed", targetId: staffId, targetEmail, req,
+            description: `Role change for ${targetEmail ?? "a team member"} did not apply: ${roleErr.message}`, severity: "warning",
+          });
+          return json({ error: roleErr.message }, 500);
+        }
+        return json({ ok: true });
+      }
+
+      // staff_set_active. Turning someone off is the offboarding step: access ends on their
+      // next request (every policy checks is_active live), and the classes they were due to
+      // teach are handed back as "no teacher set" so nothing runs under a removed person.
+      const active = f.active === true;
+      if (active === (target.is_active !== false)) return json({ ok: true, unchanged: true });
+      const load = active ? { classes: 0, rules: 0 } : await teachingLoad(db, studioId, target.profile_id as string);
+      const logErr = await auditStaff(db, {
+        studioId, actor, req, targetId: staffId, targetEmail,
+        action: active ? "staff.access_restored" : "staff.access_removed",
+        description: active
+          ? `Turned ${targetEmail ?? "a team member"} back on as ${target.role}`
+          : `Turned off ${targetEmail ?? "a team member"} (${target.role}). ${load.classes} upcoming classes and ${load.rules} weekly slots handed back with no teacher set`,
+        previous: { is_active: !active, role: target.role },
+        next: { is_active: active, unassigned_classes: load.classes, unassigned_rules: load.rules },
+        severity: "warning",
+      });
+      if (logErr) return json({ error: "Nothing changed: the change could not be recorded. Try again." }, 500);
       const { error: activeErr } = await db.from("studio_staff")
-        .update({ is_active: f.active === true }).eq("id", staffId).eq("studio_id", studioId);
-      if (activeErr) return json({ error: activeErr.message }, 500);
-      return json({ ok: true });
+        .update({ is_active: active }).eq("id", staffId).eq("studio_id", studioId);
+      if (activeErr) {
+        await auditStaff(db, {
+          studioId, actor, req, targetId: staffId, targetEmail, action: "staff.access_change_failed",
+          description: `Access change for ${targetEmail ?? "a team member"} did not apply: ${activeErr.message}`, severity: "warning",
+        });
+        return json({ error: activeErr.message }, 500);
+      }
+      let handoverError: string | null = null;
+      if (!active) {
+        const now = new Date().toISOString();
+        const { error: occErr } = await db.from("class_occurrences").update({ teacher_id: null })
+          .eq("studio_id", studioId).eq("teacher_id", target.profile_id).eq("is_cancelled", false).gt("starts_at", now);
+        const { error: ruleErr } = await db.from("schedule_rules").update({ teacher_id: null })
+          .eq("studio_id", studioId).eq("teacher_id", target.profile_id);
+        handoverError = occErr?.message ?? ruleErr?.message ?? null;
+        if (handoverError) {
+          await auditStaff(db, {
+            studioId, actor, req, targetId: staffId, targetEmail, action: "staff.class_handover_failed",
+            description: `Access was removed for ${targetEmail ?? "a team member"} but their classes could not be unassigned: ${handoverError}`,
+            severity: "warning",
+          });
+        }
+      }
+      return json({ ok: true, unassignedClasses: load.classes, unassignedRules: load.rules, handoverError });
     }
 
     const enumStep = toEnumStep(step);
@@ -732,6 +883,7 @@ serve(async (req) => {
         if (result.invited === 0) {
           return json({ error: result.errors[0]?.message ?? "Could not invite staff", staffErrors: result.errors }, 500);
         }
+        await auditAdds(db, studioId, { id: user.id, email: user.email }, members, result.errors, req);
         await recordProgress(db, studioId, "staff", true);
         return json({ ok: true, studioId, invited: result.invited, emailed: result.emailed, staffErrors: result.errors });
       }
