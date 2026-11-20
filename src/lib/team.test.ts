@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assignmentNote, offboardingSummary, statusOf } from "@/lib/team";
+import { assignmentNote, offboardingSummary, statusOf } from "./team";
 
 describe("team page wording", () => {
   it("names the three statuses an owner sees", () => {
