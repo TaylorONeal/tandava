@@ -1,6 +1,8 @@
 // Studio owner sign-up, end to end, against a throwaway LOCAL Supabase (never production).
 // Registers a new owner on the web build, walks every onboarding step, launches the studio,
-// signs out and signs back in. Prints one line per step and exits non-zero on any failure.
+// signs out and signs back in. Then adds staff the two ways an owner can (setup step and the
+// Team page), opens the invite email from the local mail catcher, chooses a password as the
+// invited person and signs in as them. Prints one line per step and exits non-zero on any failure.
 // usage: OWNER_EMAIL=... OWNER_PASSWORD=... node e2e-owner/owner-signup.mjs [outDir]
 import { chromium } from '@playwright/test';
 import fs from 'node:fs';
@@ -9,6 +11,11 @@ const BASE = process.env.WEB_URL || 'http://localhost:4303';
 const EMAIL = process.env.OWNER_EMAIL;
 const PW = process.env.OWNER_PASSWORD;
 const outDir = process.argv[2] || 'owner-out';
+const MAIL = process.env.MAIL_URL || 'http://127.0.0.1:54324';
+const RUN = process.env.RUN_ID || String(Date.now());
+const WIZARD_STAFF = `teacher-${RUN}@juniper.example`;
+const TEAM_STAFF = `desk-${RUN}@juniper.example`;
+const STAFF_PW = process.env.STAFF_PASSWORD || PW;
 if (!EMAIL || !PW) throw new Error('OWNER_EMAIL and OWNER_PASSWORD (local throwaway) are required');
 fs.mkdirSync(outDir, { recursive: true });
 
@@ -112,7 +119,12 @@ await step('pricing', async () => {
   await save('Pricing');
 });
 
-await step('staff (skip)', async () => { await skip(); });
+await step('staff (setup step)', async () => {
+  await heading('Add Your Team');
+  await page.getByLabel('Full Name').fill('Camila Reyes');
+  await page.getByLabel('Email').fill(WIZARD_STAFF);
+  await save('Staff');
+});
 await step('waivers', async () => {
   await heading('Waiver Name');
   const name = page.getByLabel('Waiver Name');
@@ -147,6 +159,77 @@ await step('sign out and back in', async () => {
   await page.waitForTimeout(1500);
   if (page.url().includes('/auth/')) throw new Error(`owner could not reach /manage, landed on ${page.url()}`);
   await shot('05-signed-back-in');
+});
+
+// The invite email for an address, from the local mail catcher (Mailpit, or older Inbucket).
+async function inviteLink(address) {
+  for (let i = 0; i < 20; i++) {
+    let html = '';
+    const list = await fetch(`${MAIL}/api/v1/messages`).then((r) => r.ok ? r.json() : null).catch(() => null);
+    const hit = list?.messages?.find((m) => (m.To || []).some((t) => t.Address === address));
+    if (hit) html = (await fetch(`${MAIL}/api/v1/message/${hit.ID}`).then((r) => r.json())).HTML || '';
+    if (!html) {
+      const box = address.split('@')[0];
+      const old = await fetch(`${MAIL}/api/v1/mailbox/${box}`).then((r) => r.ok ? r.json() : null).catch(() => null);
+      if (old?.length) html = (await fetch(`${MAIL}/api/v1/mailbox/${box}/${old[old.length - 1].id}`).then((r) => r.json())).body?.html || '';
+    }
+    const m = html.match(/href="(https?:[^"]*\/auth\/v1\/verify[^"]*)"/);
+    if (m) return m[1].replace(/&amp;/g, '&');
+    await new Promise((r) => setTimeout(r, 1500));
+  }
+  throw new Error(`no invite email for ${address}`);
+}
+
+await step('team page lists the setup invite', async () => {
+  await page.goto(`${BASE}/manage/teachers`);
+  await page.getByRole('heading', { name: 'Team', exact: true }).waitFor({ timeout: 15000 });
+  await page.getByText(WIZARD_STAFF).waitFor({ timeout: 15000 });
+  await page.getByText('Invite sent').first().waitFor();
+});
+
+await step('add team member from the Team page', async () => {
+  await page.getByRole('button', { name: 'Add team member' }).click();
+  await page.getByLabel('Full name').fill('Devon Park');
+  await page.getByLabel('Email').fill(TEAM_STAFF);
+  await pick('Role', 'Front desk');
+  await page.getByRole('button', { name: 'Send invite' }).click();
+  await page.getByText('Devon Park added', { exact: true }).first().waitFor({ timeout: 20000 });
+  await page.getByText(TEAM_STAFF).waitFor({ timeout: 15000 });
+  await shot('06-team');
+});
+
+// A second person, with their own browser: nothing carries over from the owner.
+const staffCtx = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'en-US' });
+const staff = await staffCtx.newPage();
+
+await step('invited staff chooses a password from the email', async () => {
+  await staff.goto(await inviteLink(TEAM_STAFF));
+  await staff.waitForURL(/\/auth\/reset-confirm\?invite=1/, { timeout: 20000 });
+  await staff.getByText("Welcome to your studio's team").waitFor({ timeout: 15000 });
+  await staff.getByLabel('Password', { exact: true }).fill(STAFF_PW);
+  await staff.getByLabel('Confirm password').fill(STAFF_PW);
+  await staff.getByRole('button', { name: 'Save password' }).click();
+  await staff.getByText("You're set").waitFor({ timeout: 15000 });
+  await staff.getByRole('link', { name: 'Get it on Google Play' }).waitFor();
+  await staff.screenshot({ path: `${outDir}/07-staff-set.png` }).catch(() => {});
+});
+
+await step('invited staff signs in with email and password', async () => {
+  await staffCtx.clearCookies();
+  await staff.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });
+  await staff.goto(`${BASE}/auth/login`);
+  await staff.getByLabel('Email').fill(TEAM_STAFF);
+  await staff.getByLabel('Password', { exact: true }).fill(STAFF_PW);
+  await staff.getByRole('button', { name: /^Sign in$/i }).click();
+  await staff.waitForURL((u) => !u.pathname.startsWith('/auth/login'), { timeout: 20000 });
+});
+
+await step('owner sees them as Active and can turn them off', async () => {
+  await page.reload();
+  const row = page.locator('div.rounded-lg, div.rounded-xl, [class*="card"]').filter({ hasText: TEAM_STAFF }).last();
+  await row.getByText('Active', { exact: true }).waitFor({ timeout: 15000 });
+  await row.getByRole('button', { name: 'Turn off' }).click();
+  await row.getByText('Off', { exact: true }).waitFor({ timeout: 15000 });
 });
 
 await browser.close();

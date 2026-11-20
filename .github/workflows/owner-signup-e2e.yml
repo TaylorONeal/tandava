@@ -11,6 +11,8 @@ on:
       - 'src/components/auth/**'
       - 'src/lib/auth/**'
       - 'src/contexts/AuthContext.tsx'
+      - 'src/pages/manage/Teachers.tsx'
+      - 'src/pages/manage/LiveTeam.tsx'
       - 'supabase/functions/onboarding/**'
       - 'supabase/migrations/**'
       - 'e2e-owner/**'
@@ -37,6 +39,9 @@ jobs:
         run: |
           supabase init < /dev/null || true
           test -f supabase/config.toml
+          # Invite emails must be allowed to send staff to the locally served web app.
+          sed -i -E 's|^site_url = .*|site_url = "http://localhost:4303"|; s|^additional_redirect_urls = .*|additional_redirect_urls = ["http://localhost:4303/**"]|' supabase/config.toml
+          grep -E '^(site_url|additional_redirect_urls)' supabase/config.toml
           supabase start -x realtime,studio,imgproxy,logflare,vector,supavisor,postgres-meta
           supabase status -o env | grep -E '^(API_URL|ANON_KEY|SERVICE_ROLE_KEY|DB_URL)=' | sed -E 's/^([A-Z_]+)="?([^"]*)"?$/SB_\1=\2/' >> "$GITHUB_ENV"
       - name: Serve edge functions locally
@@ -60,7 +65,7 @@ jobs:
         run: |
           PW=$(openssl rand -hex 16); echo "::add-mask::$PW"
           docker run --rm --network host --ipc host --user "$(id -u):$(id -g)" -e HOME=/tmp \
-            -e OWNER_EMAIL="owner-${{ github.run_id }}@juniper.example" -e OWNER_PASSWORD="$PW" \
+            -e OWNER_EMAIL="owner-${{ github.run_id }}@juniper.example" -e OWNER_PASSWORD="$PW" -e RUN_ID="${{ github.run_id }}" \
             -v "$PWD:/w" -w /w mcr.microsoft.com/playwright:v1.64.0-noble node e2e-owner/owner-signup.mjs owner-out
       - name: Check the rows onboarding wrote
         if: always()
@@ -79,6 +84,10 @@ jobs:
           psql "$SB_DB_URL" -tA -c "select count(*) from studios s where s.name='Juniper Test Studio' and s.page_live
             and exists (select 1 from offerings o where o.studio_id=s.id)
             and exists (select 1 from schedule_rules r where r.studio_id=s.id)" | grep -qx 1
+          # Two invited staff: the teacher from setup (still active) and the front desk person turned off.
+          psql "$SB_DB_URL" -tA -c "select string_agg(st.role || ':' || st.is_active, ',' order by st.role)
+            from studio_staff st join studios s on s.id = st.studio_id
+            where s.name='Juniper Test Studio' and st.role <> 'owner'" | tee -a owner-out/db-check.txt | grep -qx 'front_desk:false,teacher:true'
       - name: Logs on failure
         if: failure()
         run: tail -n 120 /tmp/functions.log /tmp/web.log || true
