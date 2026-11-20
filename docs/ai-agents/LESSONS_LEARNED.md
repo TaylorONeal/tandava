@@ -683,6 +683,13 @@ How a merge that touches migrations should go. Followed on PR #64; it worked.
 - Vitest here has no `@/` alias at runtime. A `src/lib` module under test imports
   its siblings relatively; type-only `@/` imports are fine.
 
+## Android release build: R8 and edge-to-edge (November 20, 2026)
+
+- Google Play requires DEX optimization, shrinking and obfuscation coverage of 25% or more (enforced from February 2027). A release built with `minifyEnabled false` shows "Memory usage: Bad behavior" on the release dashboard. Keep R8 on in `native/studio/android/app/build.gradle`.
+- Turning R8 on is not a one-line change. The barcode scanner library references Gson annotations it does not ship, so `minifyReleaseWithR8` fails until `proguard-rules.pro` carries the `-dontwarn` and keep rules. Build `bundleRelease` before trusting any change to those rules.
+- Capacitor finds plugins by reflection. After a rules change, check `app/build/outputs/mapping/release/mapping.txt` shows every `*Plugin` class mapped to its own name, then run a scan check-in on a real device from the internal testing track.
+- `EdgeToEdge.enable(this)` in `MainActivity` answers Play's "edge-to-edge may not display for all users" notice. Play's "deprecated APIs" notice comes from library code and clears only when those libraries update.
+
 ## Quick Reference: Prevention Patterns
 
 | Issue Type | Prevention Pattern |

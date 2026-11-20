@@ -52,8 +52,11 @@ android {
             if (System.getenv("CM_KEYSTORE_PATH")) {
                 signingConfig signingConfigs.release
             }
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // R8 on for release: Google Play requires DEX optimization, shrinking and
+            // obfuscation coverage of 25% or more (enforced from Feb 2027).
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
