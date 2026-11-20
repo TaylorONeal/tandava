@@ -12,6 +12,14 @@ export const SUPPORT_ITEMS: SupportItem[] = [
     a: "Use the email your studio invited you with. Forgot your password? Tap Forgot password on the sign-in screen and open the link in your email. Studio owners set up their studio on the web at tandavastudio.com.",
   },
   {
+    q: "I'm new. How do I get in the first time?",
+    a: "Your studio owner adds you by email. Open the email from Tandava, tap Accept invite and choose a password. Then open Tandava Studio and sign in with that email and password. No email? Check spam, then ask the owner to resend it.",
+  },
+  {
+    q: "I own the studio. How do I add my staff?",
+    a: "On the web at tandavastudio.com, open Manage, then Team, and tap Add team member. Enter their name, email and role. They get an invite email, choose a password and sign in to the app.",
+  },
+  {
     q: "The scanner won't open",
     a: "Tandava Studio needs camera access to scan passes. Turn it on in Settings > Tandava Studio > Camera on your iPhone. You can always check people in from the class roster instead.",
   },

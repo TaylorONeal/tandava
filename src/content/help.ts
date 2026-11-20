@@ -33,8 +33,40 @@ export const HELP: HelpEntry[] = [
     audience: ["owner"],
     question: "Where do I sign up: the website or the app?",
     answer:
-      "The website. You create your studio at tandavastudio.com, then invite your teachers and front desk by email during setup. The Tandava Studio iPhone app has no sign-up: staff sign in with the email their studio invited and use it to check people in at the door.",
+      "The website. You create your studio at tandavastudio.com, then invite your teachers and front desk by email, during setup or any time under Manage, Team. The Tandava Studio app has no sign-up: staff sign in with the email their studio invited and use it to check people in at the door.",
     learnMore: "/studio-app",
+  },
+  {
+    id: "add-team",
+    audience: ["owner"],
+    question: "How do I add my teachers and front desk?",
+    answer:
+      "On the web, open Manage, then Team, and tap Add team member. Enter their name, email and role. They get an email from Tandava, tap Accept invite and choose a password. Then they open the Tandava Studio app and sign in with that email and password. You can also do this during setup in the Add Your Team step. Only people you add can sign in to your studio: the app has no sign-up screen.",
+    learnMore: "/manage/teachers",
+  },
+  {
+    id: "team-roles",
+    audience: ["owner"],
+    question: "Which role should I give each person?",
+    answer:
+      "Teacher: sees their own classes and checks in their own students. Front desk: checks people in at the door and looks up members. Admin: manages schedule, members and settings with you. Substitute: a teacher who can cover classes. You stay the owner.",
+    learnMore: "/manage/teachers",
+  },
+  {
+    id: "team-invite-missing",
+    audience: ["owner", "teacher"],
+    question: "My teacher didn't get the invite, or can't sign in",
+    answer:
+      "First check the spam folder for an email from Tandava. The owner can send it again: Manage, Team, Resend invite next to their name. Invite links work once. If the link was already used, the staff member taps Forgot password on the sign-in screen, enters the invited email and chooses a new password from that email. If someone has left the studio, the owner taps Turn off next to their name and they can no longer sign in to the studio.",
+    learnMore: "/manage/teachers",
+  },
+  {
+    id: "team-offboarding",
+    audience: ["owner"],
+    question: "Someone left the studio, or changed jobs. What do I do?",
+    answer:
+      "Open Manage, then Team. To remove someone, tap Turn off next to their name. They lose access right away on the web and in the app, their upcoming classes change to No teacher set so you can pick a new teacher in Schedule, and their past classes and check-ins stay in your records. To change what someone can do, pick a new role in the dropdown next to their name. Every add, role change and removal is listed under Team history with who did it and when.",
+    learnMore: "/manage/teachers",
   },
   {
     id: "need-to-host",

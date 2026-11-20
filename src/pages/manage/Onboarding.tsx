@@ -492,7 +492,7 @@ export default function Onboarding() {
         </StepCard>
       );
       case 6: return (
-        <StepCard title="Add Your Team" desc="Invite teachers and staff. Each person gets an email invitation to join your studio.">
+        <StepCard title="Add Your Team" desc="Invite teachers and front desk. Each person gets an email, chooses a password, then signs in to the Tandava Studio app with that email. You can skip this and add people any time under Team.">
           <div className="space-y-4">
             {staffList.map((member, i) => (
               <div key={i} className="rounded-xl border border-border p-4 space-y-4">

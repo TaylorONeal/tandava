@@ -83,7 +83,7 @@ export function TeachingClasses({ title }: { title: string }) {
       {canScanPasses() && <Button asChild size="lg" className="w-full"><Link to="/scan">Scan passes at the door</Link></Button>}
       {classes.isPending ? <p role="status">Loading your classes…</p>
         : classes.error ? <div role="alert"><p>Couldn't load your teaching schedule.</p><Button onClick={() => classes.refetch()}>Retry schedule</Button></div>
-        : !classes.data?.length ? <p>No assigned classes in the next 14 days.</p>
+        : !classes.data?.length ? <p>No classes assigned to you in the next 14 days. Your studio owner assigns teachers on the web: Manage, then Schedule.</p>
         : classes.data.map(cls => <Card key={cls.occurrence_id}>
           <CardHeader><CardTitle>{cls.offering_name}{cls.is_cancelled ? " (cancelled)" : ""}</CardTitle></CardHeader>
           <CardContent className="space-y-2">

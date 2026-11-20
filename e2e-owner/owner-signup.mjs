@@ -1,6 +1,8 @@
 // Studio owner sign-up, end to end, against a throwaway LOCAL Supabase (never production).
 // Registers a new owner on the web build, walks every onboarding step, launches the studio,
-// signs out and signs back in. Prints one line per step and exits non-zero on any failure.
+// signs out and signs back in. Then adds staff the two ways an owner can (setup step and the
+// Team page), opens the invite email from the local mail catcher, chooses a password as the
+// invited person and signs in as them. Prints one line per step and exits non-zero on any failure.
 // usage: OWNER_EMAIL=... OWNER_PASSWORD=... node e2e-owner/owner-signup.mjs [outDir]
 import { chromium } from '@playwright/test';
 import fs from 'node:fs';
@@ -9,6 +11,11 @@ const BASE = process.env.WEB_URL || 'http://localhost:4303';
 const EMAIL = process.env.OWNER_EMAIL;
 const PW = process.env.OWNER_PASSWORD;
 const outDir = process.argv[2] || 'owner-out';
+const MAIL = process.env.MAIL_URL || 'http://127.0.0.1:54324';
+const RUN = process.env.RUN_ID || String(Date.now());
+const WIZARD_STAFF = `teacher-${RUN}@juniper.example`;
+const TEAM_STAFF = `desk-${RUN}@juniper.example`;
+const STAFF_PW = process.env.STAFF_PASSWORD || PW;
 if (!EMAIL || !PW) throw new Error('OWNER_EMAIL and OWNER_PASSWORD (local throwaway) are required');
 fs.mkdirSync(outDir, { recursive: true });
 
@@ -112,7 +119,12 @@ await step('pricing', async () => {
   await save('Pricing');
 });
 
-await step('staff (skip)', async () => { await skip(); });
+await step('staff (setup step)', async () => {
+  await heading('Add Your Team');
+  await page.getByLabel('Full Name').fill('Camila Reyes');
+  await page.getByLabel('Email').fill(WIZARD_STAFF);
+  await save('Staff');
+});
 await step('waivers', async () => {
   await heading('Waiver Name');
   const name = page.getByLabel('Waiver Name');
@@ -147,6 +159,113 @@ await step('sign out and back in', async () => {
   await page.waitForTimeout(1500);
   if (page.url().includes('/auth/')) throw new Error(`owner could not reach /manage, landed on ${page.url()}`);
   await shot('05-signed-back-in');
+});
+
+// The invite email for an address, from the local mail catcher (Mailpit, or older Inbucket).
+async function inviteLink(address) {
+  for (let i = 0; i < 20; i++) {
+    let html = '';
+    const list = await fetch(`${MAIL}/api/v1/messages`).then((r) => r.ok ? r.json() : null).catch(() => null);
+    const hit = list?.messages?.find((m) => (m.To || []).some((t) => t.Address === address));
+    if (hit) html = (await fetch(`${MAIL}/api/v1/message/${hit.ID}`).then((r) => r.json())).HTML || '';
+    if (!html) {
+      const box = address.split('@')[0];
+      const old = await fetch(`${MAIL}/api/v1/mailbox/${box}`).then((r) => r.ok ? r.json() : null).catch(() => null);
+      if (old?.length) html = (await fetch(`${MAIL}/api/v1/mailbox/${box}/${old[old.length - 1].id}`).then((r) => r.json())).body?.html || '';
+    }
+    const m = html.match(/href="(https?:[^"]*\/auth\/v1\/verify[^"]*)"/);
+    if (m) return m[1].replace(/&amp;/g, '&');
+    await new Promise((r) => setTimeout(r, 1500));
+  }
+  throw new Error(`no invite email for ${address}`);
+}
+
+await step('team page lists the setup invite', async () => {
+  await page.goto(`${BASE}/manage/teachers`);
+  await page.getByRole('heading', { name: 'Team', exact: true }).waitFor({ timeout: 15000 });
+  const setupInvite = page.locator('[data-testid="team-member"]').filter({ hasText: WIZARD_STAFF });
+  await setupInvite.waitFor({ timeout: 15000 });
+  await setupInvite.getByText('Invite sent', { exact: true }).waitFor();
+});
+
+await step('add team member from the Team page', async () => {
+  await page.getByRole('button', { name: 'Add team member' }).click();
+  await page.getByLabel('Full name').fill('Devon Park');
+  await page.getByLabel('Email').fill(TEAM_STAFF);
+  await pick('Role', 'Front desk');
+  await page.getByRole('button', { name: 'Send invite' }).click();
+  await page.getByText('Devon Park added', { exact: true }).first().waitFor({ timeout: 20000 });
+  await page.locator('[data-testid="team-member"]').filter({ hasText: TEAM_STAFF }).waitFor({ timeout: 15000 });
+  await shot('06-team');
+});
+
+// A second person, with their own browser: nothing carries over from the owner.
+const staffCtx = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'en-US' });
+const staff = await staffCtx.newPage();
+
+await step('invited staff chooses a password from the email', async () => {
+  await staff.goto(await inviteLink(TEAM_STAFF));
+  await staff.waitForURL(/\/auth\/reset-confirm\?invite=1/, { timeout: 20000 });
+  await staff.getByText("Welcome to your studio's team").waitFor({ timeout: 15000 });
+  await staff.getByLabel('Password', { exact: true }).fill(STAFF_PW);
+  await staff.getByLabel('Confirm password').fill(STAFF_PW);
+  await staff.getByRole('button', { name: 'Save password' }).click();
+  await staff.getByText("You're set").waitFor({ timeout: 15000 });
+  await staff.getByRole('link', { name: 'Get it on Google Play' }).waitFor();
+  await staff.screenshot({ path: `${outDir}/07-staff-set.png` }).catch(() => {});
+});
+
+await step('invited staff signs in with email and password', async () => {
+  await staffCtx.clearCookies();
+  await staff.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });
+  await staff.goto(`${BASE}/auth/login`);
+  await staff.getByLabel('Email').fill(TEAM_STAFF);
+  await staff.getByLabel('Password', { exact: true }).fill(STAFF_PW);
+  await staff.getByRole('button', { name: /^Sign in$/i }).click();
+  await staff.waitForURL((u) => !u.pathname.startsWith('/auth/login'), { timeout: 20000 });
+});
+
+const member = (email) => page.locator('[data-testid="team-member"]').filter({ hasText: email });
+
+await step('teacher with no classes shows as not yet assigned', async () => {
+  await page.reload();
+  await member(WIZARD_STAFF).getByText('No classes assigned yet', { exact: false }).waitFor({ timeout: 15000 });
+});
+
+await step('owner changes a role and it is recorded', async () => {
+  await member(TEAM_STAFF).getByText('Active', { exact: true }).waitFor({ timeout: 15000 });
+  await member(TEAM_STAFF).getByRole('combobox').click();
+  await page.getByRole('option', { name: 'Admin', exact: true }).click();
+  await page.getByRole('button', { name: 'Change role' }).click();
+  await page.locator('[data-testid="team-history"]').getByText(`from front_desk to admin`, { exact: false }).waitFor({ timeout: 15000 });
+});
+
+await step('owner turns them off after seeing what it does', async () => {
+  await member(TEAM_STAFF).getByRole('button', { name: 'Turn off' }).click();
+  await page.getByText('loses access to your studio right away', { exact: false }).waitFor();
+  await page.getByRole('button', { name: 'Turn off access' }).click();
+  await member(TEAM_STAFF).getByText('Off', { exact: true }).waitFor({ timeout: 15000 });
+  await page.locator('[data-testid="team-history"]').getByText(`Turned off ${TEAM_STAFF}`, { exact: false }).waitFor({ timeout: 15000 });
+});
+
+await step('removed staff is locked out of the studio at once', async () => {
+  // Still signed in from before: the session survives, the access does not.
+  await staff.goto(`${BASE}/manage/teachers`);
+  await staff.waitForTimeout(2500);
+  if (await staff.getByRole('button', { name: 'Add team member' }).isVisible().catch(() => false)) {
+    throw new Error('removed staff can still open the Team page');
+  }
+  const token = await staff.evaluate(() => {
+    const key = Object.keys(localStorage).find((k) => k.startsWith('sb-') && k.endsWith('-auth-token'));
+    return key ? JSON.parse(localStorage.getItem(key)).access_token : null;
+  });
+  if (!token) throw new Error('no staff session to test with');
+  const api = process.env.API_URL, anon = process.env.ANON_KEY;
+  const rows = await fetch(`${api}/rest/v1/studio_staff?select=id`, { headers: { apikey: anon, Authorization: `Bearer ${token}` } }).then((r) => r.json());
+  const mine = await fetch(`${api}/rest/v1/rpc/my_staff_studio_ids`, { method: 'POST', headers: { apikey: anon, Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: '{}' }).then((r) => r.json());
+  if (Array.isArray(mine) && mine.length) throw new Error(`removed staff still has studio access: ${JSON.stringify(mine)}`);
+  const list = await fetch(`${api}/functions/v1/onboarding`, { method: 'POST', headers: { apikey: anon, Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ step: 'staff_list' }) });
+  if (list.status !== 403) throw new Error(`removed staff got ${list.status} from the team list (rows visible: ${Array.isArray(rows) ? rows.length : 'n/a'})`);
 });
 
 await browser.close();

@@ -19,7 +19,9 @@ import { openCustomerPortal } from "@/lib/stripe";
 import { profileToForm, formToPatch, toEntitlementView, type MyProfileForm } from "@/lib/myAccount";
 import type { MyEntitlementRow } from "@/types/database";
 import { AccountDeletion } from "./AccountDeletion";
-import { Loader2, Package } from "lucide-react";
+import { Loader2, Package, Users } from "lucide-react";
+import { nativeApp } from "@/lib/native/platform";
+import { hasPermission } from "@/types/roles";
 
 const FIELDS: { key: keyof MyProfileForm; label: string; type?: string; placeholder?: string }[] = [
   { key: "firstName", label: "First name" },
@@ -33,7 +35,12 @@ const FIELDS: { key: keyof MyProfileForm; label: string; type?: string; placehol
 ];
 
 export default function LiveAccount() {
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile, permissions, refreshProfile } = useAuth();
+  // In the Studio app, a signed-in person with no team role has nothing to do yet:
+  // not added, added under a different email, or turned off by the owner.
+  const noTeamYet = nativeApp === "studio" && user !== null
+    && !hasPermission(permissions, "studio.checkin") && !hasPermission(permissions, "studio.teach")
+    && !hasPermission(permissions, "studio.manage_schedule");
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [form, setForm] = useState<MyProfileForm>(() => profileToForm(profile));
@@ -88,6 +95,19 @@ export default function LiveAccount() {
           <h1 className="text-3xl font-bold tracking-tight">Account</h1>
           <p className="text-muted-foreground mt-1">Your profile, memberships and class packs</p>
         </div>
+
+        {noTeamYet && (
+          <Card data-testid="no-team-yet">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg"><Users className="h-5 w-5" aria-hidden="true" />You're not on a studio team yet</CardTitle>
+              <CardDescription>Signed in as {user?.email}. This app is for a studio's teachers, front desk and owner.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2 text-sm text-muted-foreground">
+              <p><span className="font-medium text-foreground">Teachers and front desk:</span> ask your studio owner to add this exact email. If they added a different one, sign out and use that email. If you used to have access, the owner has turned it off.</p>
+              <p><span className="font-medium text-foreground">Studio owners:</span> set up your studio and add your team on the web at tandavastudio.com. Open Manage, then Team, then Add team member.</p>
+            </CardContent>
+          </Card>
+        )}
 
         <Card>
           <CardHeader>

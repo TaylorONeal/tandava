@@ -236,7 +236,9 @@ const Login = () => {
             </p>
           ) : (
             <p className="text-center text-sm text-muted-foreground">
-              Staff: sign in with the email your studio invited.
+              Staff: sign in with the email your studio invited. First time? Open the invite email and choose a password.
+              <br />
+              Owners: add your team on the web at tandavastudio.com, under Manage, then Team.
             </p>
           )}
         </div>
