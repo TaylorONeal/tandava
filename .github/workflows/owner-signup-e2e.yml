@@ -85,7 +85,7 @@ jobs:
             and exists (select 1 from offerings o where o.studio_id=s.id)
             and exists (select 1 from schedule_rules r where r.studio_id=s.id)" | grep -qx 1
           # Two invited staff: the teacher from setup (still active) and the front desk person turned off.
-          psql "$SB_DB_URL" -tA -c "select string_agg(st.role || ':' || st.is_active, ',' order by st.role)
+          psql "$SB_DB_URL" -tA -c "select string_agg(st.role::text || ':' || st.is_active::text, ',' order by st.role::text)
             from studio_staff st join studios s on s.id = st.studio_id
             where s.name='Juniper Test Studio' and st.role <> 'owner'" | tee -a owner-out/db-check.txt | grep -qx 'front_desk:false,teacher:true'
       - name: Logs on failure
