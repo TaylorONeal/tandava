@@ -23,7 +23,7 @@ const navigation = [
   { name: "Dashboard", href: "/manage", icon: LayoutDashboard },
   { name: "Schedule", href: "/manage/schedule", icon: Calendar },
   { name: "Members", href: "/manage/students", icon: Users },
-  { name: "Instructors", href: "/manage/teachers", icon: UserCheck },
+  { name: "Team", href: "/manage/teachers", icon: UserCheck },
   { name: "Events", href: "/manage/events", icon: CalendarDays },
   { name: "Offerings", href: "/manage/offerings", icon: Sparkles },
   { name: "Financials", href: "/manage/financials", icon: CreditCard },
