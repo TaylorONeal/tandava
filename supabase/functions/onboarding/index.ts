@@ -262,6 +262,19 @@ async function provisionStaff(
         .maybeSingle();
 
       if (existing) {
+        // An existing account belongs to that person. Linking it here would let any
+        // studio owner attach them to a team without their OK and read their name and
+        // sign-in status from the Team list. Only someone already on this studio's team
+        // can be updated here; anyone else is reported back.
+        const { data: onTeam } = await db.from("studio_staff")
+          .select("id").eq("studio_id", studioId).eq("profile_id", existing.id).maybeSingle();
+        if (!onTeam) {
+          errors.push({
+            email,
+            message: "That email already has a Tandava account, so it can't be added from here yet.",
+          });
+          continue;
+        }
         profileId = existing.id as string;
       } else {
         const meta = { first_name: firstName, last_name: lastName };
