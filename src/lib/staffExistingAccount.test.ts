@@ -37,7 +37,9 @@ function from(table: string) {
 }
 
 async function addStaff(email: string) {
-  await import("../../supabase/functions/onboarding/index.ts");
+  // A computed path keeps the Deno edge function out of the app typecheck.
+  const modulePath = "../../supabase/functions/onboarding/index.ts";
+  await import(/* @vite-ignore */ modulePath);
   return mocks.handle!(new Request("https://edge.example/onboarding", {
     method: "POST",
     body: JSON.stringify({ step: "staff_add", data: { staff: [{ name: "Some One", email, role: "teacher" }] } }),

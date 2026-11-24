@@ -34,7 +34,9 @@ jobs:
       - run: npm ci
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          # Pinned: CLI 3.3+ writes supabase/config.jsonc on init, and the next
+          # step edits supabase/config.toml. 3.2.0 is the last version this job passed on.
+          version: 3.2.0
       - name: Start local Supabase (applies supabase/migrations)
         run: |
           supabase init < /dev/null || true
