@@ -1,0 +1,140 @@
+{
+  "note": "Directory markets. bbox is [south, west, north, east] in WGS84. Add a market here, run the refresh workflow, review the diff. Maintainer, 2026-11-10: start with these ten (adds Ubud, Nosara, New York, Frankfurt, Koh Phangan, Bangkok). Outside the US, region_code and region_name are used as given.",
+  "markets": [
+    {
+      "id": "austin",
+      "label": "Austin",
+      "country_code": "US",
+      "region_code": "TX",
+      "time_zone": "America/Chicago",
+      "bbox": [
+        30.098,
+        -97.95,
+        30.52,
+        -97.56
+      ]
+    },
+    {
+      "id": "seattle",
+      "label": "Seattle",
+      "country_code": "US",
+      "region_code": "WA",
+      "time_zone": "America/Los_Angeles",
+      "bbox": [
+        47.48,
+        -122.44,
+        47.74,
+        -122.22
+      ]
+    },
+    {
+      "id": "san-francisco",
+      "label": "San Francisco",
+      "country_code": "US",
+      "region_code": "CA",
+      "time_zone": "America/Los_Angeles",
+      "bbox": [
+        37.7,
+        -122.52,
+        37.83,
+        -122.35
+      ]
+    },
+    {
+      "id": "chicago",
+      "label": "Chicago",
+      "country_code": "US",
+      "region_code": "IL",
+      "time_zone": "America/Chicago",
+      "bbox": [
+        41.64,
+        -87.94,
+        42.03,
+        -87.52
+      ]
+    },
+    {
+      "id": "new-york",
+      "label": "New York",
+      "country_code": "US",
+      "region_code": "NY",
+      "time_zone": "America/New_York",
+      "bbox": [
+        40.49,
+        -74.26,
+        40.92,
+        -73.7
+      ]
+    },
+    {
+      "id": "ubud",
+      "label": "Ubud",
+      "country_code": "ID",
+      "region_code": "BA",
+      "region_name": "Bali",
+      "time_zone": "Asia/Makassar",
+      "bbox": [
+        -8.56,
+        115.22,
+        -8.46,
+        115.3
+      ]
+    },
+    {
+      "id": "nosara",
+      "label": "Nosara",
+      "country_code": "CR",
+      "region_code": "G",
+      "region_name": "Guanacaste",
+      "time_zone": "America/Costa_Rica",
+      "bbox": [
+        9.92,
+        -85.71,
+        10.03,
+        -85.61
+      ]
+    },
+    {
+      "id": "frankfurt",
+      "label": "Frankfurt",
+      "country_code": "DE",
+      "region_code": "HE",
+      "region_name": "Hesse",
+      "time_zone": "Europe/Berlin",
+      "bbox": [
+        50.01,
+        8.47,
+        50.23,
+        8.8
+      ]
+    },
+    {
+      "id": "koh-phangan",
+      "label": "Koh Phangan",
+      "country_code": "TH",
+      "region_code": "84",
+      "region_name": "Surat Thani",
+      "time_zone": "Asia/Bangkok",
+      "bbox": [
+        9.66,
+        99.94,
+        9.82,
+        100.1
+      ]
+    },
+    {
+      "id": "bangkok",
+      "label": "Bangkok",
+      "country_code": "TH",
+      "region_code": "10",
+      "region_name": "Bangkok",
+      "time_zone": "Asia/Bangkok",
+      "bbox": [
+        13.49,
+        100.33,
+        13.96,
+        100.94
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1231 @@
+{
+  "note": "Hand corrections, keyed by record id or slug. They win over map data. Record where each came from in source.",
+  "studios": {
+    "osm-node-14293217563": {
+      "links": {
+        "website": "https://3rdeyemeditationlounge.com",
+        "instagram": "thirdeyemeditationlounge"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://3rdeyemeditationlounge.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      },
+      "internal_notes": "Website removed: map tag belonged to another studio. Website removed 2026-11-10 (map tag was flowyogatx.com); own site found 2026-11-11. 2026-11-11: Own site, 1701 Toomey Rd; says it is part of the Flow Yoga family.",
+      "brand": "Flow Yoga"
+    },
+    "seed-third-eye-yoga-and-meditation-lounge-austin": {
+      "review_state": "suppressed",
+      "internal_notes": "Duplicate of osm-node-14293217563 (same studio, 1701 Toomey Rd)."
+    },
+    "seed-amala-sanctuary-studio-austin": {
+      "links": {
+        "website": "https://www.sanctuaryeventspace.com/",
+        "instagram": "amalasanctuary"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.sanctuaryeventspace.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      }
+    },
+    "seed-austin-yoga-lounge-austin": {
+      "links": {
+        "website": "https://www.austinyogalounge.com/",
+        "instagram": "austinyogalounge"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.austinyogalounge.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      }
+    },
+    "osm-node-10566132284": {
+      "links": {
+        "website": "https://www.bpilatesaustin.com",
+        "instagram": "bpilatesaustin"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.bpilatesaustin.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      }
+    },
+    "osm-node-13334610085": {
+      "links": {
+        "website": "https://www.clubpilates.com/regional/austin"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.clubpilates.com/regional/austin",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      },
+      "internal_notes": "2026-11-11: Brand page for Austin; map position is the East Austin studio."
+    },
+    "osm-node-12347069728": {
+      "name": "CorePower Yoga Mueller",
+      "links": {
+        "website": "https://corepoweryoga.com/yoga-studios/tx/austin/mueller"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://corepoweryoga.com/yoga-studios/tx/austin/mueller",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      },
+      "internal_notes": "2026-11-11: Map position (78723) matches Mueller, 1701 Simond Ave."
+    },
+    "osm-node-6455846385": {
+      "name": "CorePower Yoga Triangle",
+      "links": {
+        "website": "https://www.corepoweryoga.com/yoga-studios/texas/austin/triangle"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.corepoweryoga.com/yoga-studios/texas/austin/triangle",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      },
+      "internal_notes": "2026-11-11: Map position matches 4616 Triangle Ave."
+    },
+    "seed-corepower-yoga-triangle-austin": {
+      "review_state": "suppressed",
+      "internal_notes": "Duplicate of osm-node-6455846385 (Triangle)."
+    },
+    "osm-way-382713727": {
+      "links": {
+        "website": "http://dharma-yoga.net",
+        "instagram": "dharmayogaatx"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://dharma-yoga.net",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      }
+    },
+    "osm-node-14220760901": {
+      "links": {
+        "website": "https://hausofbpilates.com/",
+        "instagram": "hausofbpilates"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://hausofbpilates.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      },
+      "internal_notes": "2026-11-11: Site says the studio moved to 1614 W 5th St."
+    },
+    "seed-lizard-yoga-and-holistic-spa-austin": {
+      "links": {
+        "website": "https://lizardyoga.com",
+        "instagram": "lizardyoga"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://lizardyoga.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      }
+    },
+    "osm-node-6480898297": {
+      "links": {
+        "website": "https://www.monsoondance.com/",
+        "instagram": "monsoonaustin"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.monsoondance.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      }
+    },
+    "osm-node-8881107227": {
+      "status": "temporarily_closed",
+      "status_note": "The studio's site says Austin classes are paused while it relocates.",
+      "links": {
+        "website": "https://myvinyasapractice.com"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.myvinyasapractice.com/in-studio-yoga-classes/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      }
+    },
+    "seed-open-form-yoga-and-well-being-studio-austin": {
+      "links": {
+        "website": "https://practiceopenform.com/",
+        "instagram": "practiceopenform"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://practiceopenform.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      }
+    },
+    "seed-present-practice-yoga-downtown-austin": {
+      "links": {
+        "website": "https://presentpracticeyoga.com",
+        "instagram": "presentpracticeyoga"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://presentpracticeyoga.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      }
+    },
+    "osm-node-12707881037": {
+      "name": "Pure Pilates Austin South Lamar",
+      "links": {
+        "website": "https://www.purepilatesaustin.com/locations",
+        "instagram": "purepilatesaustin"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.purepilatesaustin.com/locations",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      },
+      "internal_notes": "2026-11-11: Map position matches 1414 S Lamar."
+    },
+    "seed-pure-yoga-texas-north-austin-austin": {
+      "links": {
+        "website": "https://www.pureyogatexas.com",
+        "instagram": "pureyogatexas"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://pureyogatx.squarespace.com/north-austin",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      },
+      "internal_notes": "2026-11-11: Location page, canonical domain pureyogatexas.com; 8620 Burnet Rd #132."
+    },
+    "osm-node-3849776348": {
+      "name": "Solidcore Downtown",
+      "links": {
+        "website": "https://solidcore.co/studios/downtown"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://solidcore.co/studios/downtown",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      }
+    },
+    "seed-sukha-yoga-oltorf-austin": {
+      "links": {
+        "website": "https://www.sukhayogaaustin.com/",
+        "instagram": "sukhayogaaustin"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.sukhayogaaustin.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      },
+      "internal_notes": "2026-11-11: 1305 W Oltorf."
+    },
+    "seed-sukha-yoga-tarrytown-austin": {
+      "links": {
+        "website": "https://www.sukhayogaaustin.com/",
+        "instagram": "sukhayogaaustin"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.sukhayogaaustin.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      },
+      "internal_notes": "2026-11-11: 2415 Exposition."
+    },
+    "osm-node-599493144": {
+      "status": "permanently_closed",
+      "status_note": "The studio's old website now forwards to a Dallas-area studio with no Austin location.",
+      "source": {
+        "type": "website",
+        "ref": "https://www.alivestudios.fit/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      }
+    },
+    "osm-node-3764021161": {
+      "status": "permanently_closed",
+      "status_note": "Now YTX Yoga, Strength, Pilates.",
+      "source": {
+        "type": "website",
+        "ref": "https://ytxaustin.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      },
+      "internal_notes": "2026-11-11: Wanderlust Yoga Austin became YTX; YTX Downtown is at 200 W 6th St."
+    },
+    "seed-yoga-east-austin-austin": {
+      "links": {
+        "website": "https://yogaeastaustin.com",
+        "instagram": "yogaeastaustin"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://yogaeastaustin.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      }
+    },
+    "seed-yoga-pod-austin-austin": {
+      "links": {
+        "website": "https://yogapodaustin.com"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://yogapodaustin.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:30:00Z"
+      }
+    },
+    "osm-node-4612718503": {
+      "links": {
+        "website": "https://www.pilatestwentyfour.de/",
+        "instagram": "pilatestwentyfour"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.pilatestwentyfour.de/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:40:00Z"
+      }
+    },
+    "osm-node-13516498600": {
+      "links": {
+        "website": "https://www.shiva-yoga.de",
+        "instagram": "shivayogayogastudio"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.shiva-yoga.de",
+        "license": null,
+        "fetched_at": "2026-11-11T05:40:00Z"
+      }
+    },
+    "osm-node-6063806975": {
+      "links": {
+        "instagram": "lonapilatesclub"
+      },
+      "source": {
+        "type": "manual",
+        "ref": "https://wellhub.com/de-de/search/partners/lona-pilates-club-bornheim-ostend/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:40:00Z"
+      },
+      "internal_notes": "2026-11-11: Wellhub listing at Hanauer Landstr. 14."
+    },
+    "osm-node-3836982938": {
+      "links": {
+        "website": "https://www.absoluteboutiquefitness.com/absolute-thailand"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.absoluteboutiquefitness.com/absolute-thailand",
+        "license": null,
+        "fetched_at": "2026-11-11T05:40:00Z"
+      },
+      "internal_notes": "2026-11-11: Brand site lists Amarin Plaza 11F."
+    },
+    "osm-node-11155194495": {
+      "links": {
+        "website": "https://www.absoluteboutiquefitness.com/absolute-thailand"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.absoluteboutiquefitness.com/absolute-thailand",
+        "license": null,
+        "fetched_at": "2026-11-11T05:40:00Z"
+      },
+      "internal_notes": "2026-11-11: Brand site lists RSU Tower 5F."
+    },
+    "osm-node-11155187887": {
+      "links": {
+        "website": "https://www.absoluteboutiquefitness.com/absolute-thailand"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.absoluteboutiquefitness.com/absolute-thailand",
+        "license": null,
+        "fetched_at": "2026-11-11T05:40:00Z"
+      },
+      "internal_notes": "2026-11-11: Brand site lists The Circle Ratchapruk 2F."
+    },
+    "osm-node-10684441834": {
+      "links": {
+        "instagram": "atha.lifestyle"
+      },
+      "source": {
+        "type": "manual",
+        "ref": "https://thestandard.co/atha-lifestyle/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:40:00Z"
+      },
+      "internal_notes": "2026-11-11: Only source is a 2022 article."
+    },
+    "osm-way-1341004620": {
+      "review_state": "suppressed",
+      "internal_notes": "Not a studio: 84th Anniversary Stadium (Bang Bon), a football stadium."
+    },
+    "osm-way-210267894": {
+      "review_state": "suppressed",
+      "internal_notes": "Not a studio: Buddhist vipassana meditation center."
+    },
+    "osm-node-5575324276": {
+      "review_state": "suppressed",
+      "internal_notes": "Not a studio: rental villa with a yoga room, marketed for retreats (retreatsandvenues.com listing)."
+    },
+    "osm-node-4713691103": {
+      "status": "temporarily_closed",
+      "status_note": "Agama Yoga's site says classes are online while it relocates.",
+      "links": {
+        "website": "https://agamayoga.com",
+        "instagram": "agamayoga"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://agamayoga.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:40:00Z"
+      }
+    },
+    "osm-way-480883557": {
+      "links": {
+        "website": "https://www.sammakaruna.org/yoga-koh-phangan/",
+        "instagram": "sammakaruna"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.sammakaruna.org/yoga-koh-phangan/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:40:00Z"
+      }
+    },
+    "osm-node-3837567083": {
+      "links": {
+        "website": "http://www.yogaretreat-kohphangan.com/",
+        "instagram": "theyogaretreatphangan"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.yogaretreat-kohphangan.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:40:00Z"
+      },
+      "internal_notes": "2026-11-11: Site says the property is being sold; teacher training listed for Feb to Mar 2027."
+    },
+    "osm-node-3247340261": {
+      "links": {
+        "website": "https://8limbsyoga.com",
+        "instagram": "8limbsyoga"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://8limbsyoga.com/about",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-6579698689": {
+      "links": {
+        "website": "https://www.breathehotyoga.com"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.breathehotyoga.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-2019051185": {
+      "links": {
+        "website": "https://inspireseattle.com/",
+        "instagram": "inspirefitnessseattle"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://inspireseattle.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      },
+      "internal_notes": "2026-11-11: Lagree studio."
+    },
+    "osm-node-2396672660": {
+      "links": {
+        "website": "https://www.limberyoga.com/",
+        "instagram": "limberyoga"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.limberyoga.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      },
+      "internal_notes": "2026-11-11: Site gives 7901 35th Ave SW; map shows 6019 California Ave SW (likely moved)."
+    },
+    "osm-way-326804797": {
+      "links": {
+        "website": "https://omculture.com"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://omculture.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-9777969517": {
+      "links": {
+        "website": "http://www.praxisballard.com/",
+        "instagram": "praxisballard"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.praxisballard.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-2434504356": {
+      "links": {
+        "website": "http://www.shefayogaroosevelt.com/",
+        "instagram": "shefayogaroosevelt"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.shefayogaroosevelt.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-3062335733": {
+      "links": {
+        "website": "https://www.magnoliayogaandhealingarts.com",
+        "instagram": "magnoliayogaandhealingarts"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.magnoliayogaandhealingarts.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-2373916315": {
+      "links": {
+        "website": "http://www.yogaonbeacon.com/",
+        "instagram": "yogaonbeacon"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.yogaonbeacon.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      },
+      "internal_notes": "2026-11-11: Site gives 3063 Beacon Ave S."
+    },
+    "osm-node-11882656388": {
+      "links": {
+        "website": "https://yogarama.com",
+        "instagram": "yogarama_studio"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://yogarama.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-10047742013": {
+      "links": {
+        "website": "http://www.astayoga.com/",
+        "instagram": "astayogasf"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.astayoga.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-13507740638": {
+      "name": "Bilik Yoga",
+      "links": {
+        "website": "https://bilikyoga.com"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://bilikyoga.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      },
+      "internal_notes": "2026-11-11: Map name Blik Yoga Shala; studio's own name is Bilik Yoga."
+    },
+    "osm-node-11701513373": {
+      "links": {
+        "website": "https://coremvmt.ipstudio.co/"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://coremvmt.ipstudio.co/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-12559170747": {
+      "links": {
+        "website": "http://www.ehspilates.com/"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.ehspilates.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-12044095332": {
+      "name": "Hot8 Yoga Financial District",
+      "links": {
+        "website": "https://www.hot8yoga.com/",
+        "instagram": "hot8yoga"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.hot8yoga.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      },
+      "internal_notes": "2026-11-11: Map name was Hot Yoga at 248 Sutter."
+    },
+    "osm-node-5810883731": {
+      "links": {
+        "website": "http://mightypilates.com"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://mightypilates.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-3674255661": {
+      "links": {
+        "website": "https://www.moonandstars.studio/"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.moonandstars.studio/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-11777394274": {
+      "links": {
+        "website": "https://mukundastudio.com"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://mukundastudio.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      },
+      "internal_notes": "2026-11-11: Site gives 1228 Folsom."
+    },
+    "osm-node-4069447292": {
+      "status": "unknown",
+      "status_note": "Website gone and no recent sign of the studio; held back until checked.",
+      "source": {
+        "type": "manual",
+        "ref": "https://reviews.birdeye.com/parkside-pilates-145424612795675",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-3540256794": {
+      "links": {
+        "website": "https://www.pilatesstorystudio.com",
+        "instagram": "pilatesstorystudio"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.pilatesstorystudio.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      },
+      "internal_notes": "2026-11-11: Moved Apr 2026 to 161 West Portal Ave."
+    },
+    "osm-node-3969590469": {
+      "links": {
+        "website": "https://tantarasf.com",
+        "instagram": "tantarasf"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://tantarasf.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-6471124706": {
+      "links": {
+        "website": "https://www.thelotusmethod.com/",
+        "instagram": "thelotusmethod"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.thelotusmethod.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-6471124709": {
+      "links": {
+        "website": "https://yogaflowsf.com",
+        "instagram": "yogaflowsf"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://yogaflowsf.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      }
+    },
+    "osm-node-4395534973": {
+      "links": {
+        "website": "http://yogamayu.com",
+        "instagram": "yogamayu"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://yogamayu.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:45:00Z"
+      },
+      "internal_notes": "2026-11-11: Site lists only 1501b 20th St; map shows 2051 Harrison (likely moved)."
+    },
+    "osm-node-7215123782": {
+      "links": {
+        "website": "https://www.urbansoulsyoga.com/",
+        "instagram": "urbansoulshoboken"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.urbansoulsyoga.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      },
+      "internal_notes": "2026-11-11: Site gives 100 Hudson St; map says 104."
+    },
+    "osm-node-3452885684": {
+      "links": {
+        "website": "http://www.yogaagora.com/",
+        "instagram": "yoga_agora"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.yogaagora.com/schedule",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-11014267019": {
+      "links": {
+        "website": "https://www.uplusyogaonline.com/"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.uplusyogaonline.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-13128789801": {
+      "links": {
+        "website": "http://www.5boropoweryoga.com/",
+        "instagram": "5boropoweryoga"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.5boropoweryoga.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-2494251767": {
+      "links": {
+        "website": "http://alinepilatesnyc.com/",
+        "instagram": "alinepilatesnyc"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://alinepilatesnyc.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-6779685148": {
+      "links": {
+        "website": "http://www.bloompilatesstudio.com/",
+        "instagram": "bloompilateshoboken"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.bloompilatesstudio.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-5555271899": {
+      "links": {
+        "website": "https://www.body-tonic.com/",
+        "instagram": "bodytonicpilates"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.body-tonic.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-6436939086": {
+      "links": {
+        "website": "https://www.brooklynyogaproject.com/",
+        "instagram": "brooklynyogaproject"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.brooklynyogaproject.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-7159234143": {
+      "links": {
+        "website": "https://www.craftpilates.com/",
+        "instagram": "craftpilates"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.craftpilates.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-11975933899": {
+      "links": {
+        "website": "https://eastriverpilates.com/",
+        "instagram": "eastriverpilates"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://eastriverpilates.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-6978303339": {
+      "links": {
+        "website": "https://eastriverpilates.com/",
+        "instagram": "eastriverpilates"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://eastriverpilates.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      },
+      "internal_notes": "2026-11-11: Brand has 5 Brooklyn branches; this node's branch not matched."
+    },
+    "osm-node-7262600766": {
+      "name": "Elevate Pilates",
+      "links": {
+        "website": "https://elevatepilates.us/",
+        "instagram": "elevatepilates"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://elevatepilates.us/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      },
+      "internal_notes": "2026-11-11: Old domain redirects here."
+    },
+    "osm-node-2553306835": {
+      "status": "unknown",
+      "status_note": "Old website now points elsewhere; no current sign of the studio. Held back until checked.",
+      "links": {
+        "website": null
+      },
+      "source": {
+        "type": "manual",
+        "ref": "https://coursehorse.com/nyc/schools/life-skills/flex-hot-yoga",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-6329603988": {
+      "links": {
+        "website": "http://www.fortpilates.com/",
+        "instagram": "fortpilates"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.fortpilates.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-2823256895": {
+      "name": "Fuze House Tribeca",
+      "links": {
+        "website": "https://www.fuzehouse.com/ourstudios",
+        "instagram": "fuzehouse"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.fuzehouse.com/ourstudios",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-14181609552": {
+      "name": "Fuze House Chelsea",
+      "links": {
+        "website": "https://www.fuzehouse.com/ourstudios",
+        "instagram": "fuzehouse"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.fuzehouse.com/ourstudios",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-14024941422": {
+      "links": {
+        "website": "http://www.goodmovenyc.com/",
+        "instagram": "goodmoveny"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.goodmovenyc.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-11463577703": {
+      "links": {
+        "website": "https://www.heatwise-studio.com/studios",
+        "instagram": "heatwiseyoga"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.heatwise-studio.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-6789145004": {
+      "status": "permanently_closed",
+      "status_note": "Hoboken studios closed in January 2021.",
+      "source": {
+        "type": "press",
+        "ref": "https://www.hobokengirl.com/hudson-yoga-project-closing-hoboken/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-2844978377": {
+      "links": {
+        "website": "https://www.humanitypilates.com/",
+        "instagram": "humanitypilatesstudio"
+      },
+      "source": {
+        "type": "press",
+        "ref": "https://qns.com/2026/06/humanity-pilates-grand-opening/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-6793153517": {
+      "links": {
+        "website": "https://www.imxpilates.com/new-york/new-york-city",
+        "instagram": "imxpilatesnyc"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.imxpilates.com/new-york/new-york-city",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-2704040555": {
+      "name": "JETSET Pilates Gramercy",
+      "links": {
+        "website": "https://jetsetpilates.com/gramercy",
+        "instagram": "jetsetpilatesgramercy"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://jetsetpilates.com/gramercy",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-5227518946": {
+      "status": "permanently_closed",
+      "status_note": "Tribeca location closed in January 2021; the Chelsea studio remains.",
+      "links": {
+        "website": "https://lyonsdenpoweryoga.com",
+        "instagram": "lyonsdenpy"
+      },
+      "source": {
+        "type": "press",
+        "ref": "https://tribecacitizen.com/?p=167593",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-13667474168": {
+      "links": {
+        "website": "https://www.mindpilatesinc.com/",
+        "instagram": "mindpilatesinc"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.mindpilatesinc.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-8920738993": {
+      "links": {
+        "website": "http://www.mylivingyoga.com/"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.mylivingyoga.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-9332381121": {
+      "links": {
+        "website": "https://www.newyorkpilates.com/bowery-pilates-studio/",
+        "instagram": "newyorkpilates"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.newyorkpilates.com/bowery-pilates-studio/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-9736021735": {
+      "links": {
+        "website": "https://www.newyorkpilates.com/bowery-pilates-studio/",
+        "instagram": "newyorkpilates"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.newyorkpilates.com/bowery-pilates-studio/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-12144911921": {
+      "links": {
+        "website": "http://www.noiryogabk.com/",
+        "instagram": "noiryogabk"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.noiryogabk.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-6799740818": {
+      "status": "permanently_closed",
+      "status_note": "Physical studio closed in early 2021.",
+      "links": {
+        "instagram": "pavanayoga"
+      },
+      "source": {
+        "type": "press",
+        "ref": "https://www.hobokengirl.com/pavana-yoga-closing-hoboken/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-12386676804": {
+      "links": {
+        "website": "http://pilates-101.com/",
+        "instagram": "_pilates_101_"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://pilates-101.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-11040468174": {
+      "links": {
+        "website": "http://www.pilatesstatenisland.com"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.pilatesstatenisland.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-12385656276": {
+      "links": {
+        "website": "http://www.precision-sculpt-pilates.com/",
+        "instagram": "precisionsculptpilates"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.precision-sculpt-pilates.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-14264972399": {
+      "links": {
+        "website": "https://www.realpilatesnyc.com",
+        "instagram": "therealpilates"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.realpilatesnyc.com",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-13825892237": {
+      "links": {
+        "website": "https://themoveluxury.com/",
+        "instagram": "themoveluxury"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://themoveluxury.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      }
+    },
+    "osm-node-14181628731": {
+      "links": {
+        "website": "https://suryasideyoga.com/",
+        "instagram": "Suryaside"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://suryasideyoga.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T05:55:00Z"
+      },
+      "internal_notes": "2026-11-11: Site gives 49-06 Skillman; a 2025 article gave 49-20, now Humanity Pilates."
+    },
+    "osm-node-12170602298": {
+      "name": "Bare Feet Wellness",
+      "links": {
+        "website": "https://www.barefeetwellness.com/"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://www.barefeetwellness.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T06:00:00Z"
+      },
+      "internal_notes": "2026-11-11: Rebranded from Bare Feet Yoga; site gives 37 N Carpenter St, map says 1006 W Monroe."
+    },
+    "osm-node-12479624262": {
+      "name": "Bodybar Pilates Fulton Market",
+      "links": {
+        "website": "https://bodybarpilates.com/studios/fulton-market/",
+        "instagram": "bodybarfultonmarket"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://bodybarpilates.com/studios/fulton-market/",
+        "license": null,
+        "fetched_at": "2026-11-11T06:00:00Z"
+      }
+    },
+    "osm-node-12297034102": {
+      "links": {
+        "website": "http://www.highbridgepilates.com/",
+        "instagram": "highbridgepilates"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.highbridgepilates.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T06:00:00Z"
+      }
+    },
+    "osm-node-9731074564": {
+      "name": "Studio 8 Pilates",
+      "links": {
+        "website": "http://www.studio8chicago.com/"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.studio8chicago.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T06:00:00Z"
+      }
+    },
+    "osm-node-4124179103": {
+      "links": {
+        "website": "https://tulayoga.net"
+      },
+      "source": {
+        "type": "website",
+        "ref": "https://tulayoga.net",
+        "license": null,
+        "fetched_at": "2026-11-11T06:00:00Z"
+      }
+    },
+    "osm-node-9525629410": {
+      "links": {
+        "website": "http://www.yogabydegrees.net/"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://www.yogabydegrees.net/",
+        "license": null,
+        "fetched_at": "2026-11-11T06:00:00Z"
+      },
+      "internal_notes": "2026-11-11: Known studios are in Wheaton and Downers Grove; map node has no address."
+    },
+    "osm-node-12216952892": {
+      "links": {
+        "website": "http://yogaview.com/"
+      },
+      "source": {
+        "type": "website",
+        "ref": "http://yogaview.com/",
+        "license": null,
+        "fetched_at": "2026-11-11T06:00:00Z"
+      },
+      "internal_notes": "2026-11-11: Bucktown space listed for rent on a venue site; check whether this location still runs."
+    }
+  }
+}

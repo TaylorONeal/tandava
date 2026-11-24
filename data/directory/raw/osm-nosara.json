@@ -1,0 +1,10 @@
+{
+ "market": "nosara",
+ "fetched_at": "2026-11-11T05:41:17.942Z",
+ "endpoint": "https://overpass-api.de/api/interpreter",
+ "osm_base": "2026-11-11T05:40:59Z",
+ "license": "ODbL-1.0",
+ "attribution": "(c) OpenStreetMap contributors",
+ "query": "[out:json][timeout:300];\n(\n  nwr[\"sport\"~\"yoga|pilates\",i](9.92,-85.71,10.03,-85.61);\n  nwr[\"disused:sport\"~\"yoga|pilates\",i](9.92,-85.71,10.03,-85.61);\n  nwr[\"leisure\"~\"fitness_centre|sports_centre|sports_hall|studio|dance\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](9.92,-85.71,10.03,-85.61);\n  nwr[\"club\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](9.92,-85.71,10.03,-85.61);\n  nwr[\"healthcare\"][\"name\"~\"yoga\",i](9.92,-85.71,10.03,-85.61);\n  nwr[\"amenity\"~\"community_centre|social_centre|events_venue\"][\"name\"~\"yoga\",i](9.92,-85.71,10.03,-85.61);\n  nwr[\"shop\"~\"yoga\"](9.92,-85.71,10.03,-85.61);\n  nwr[\"disused:leisure\"~\"fitness_centre|sports_centre|studio\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](9.92,-85.71,10.03,-85.61);\n  nwr[\"was:name\"~\"yoga\",i](9.92,-85.71,10.03,-85.61);\n);\nout center tags meta;",
+ "elements": []
+}
