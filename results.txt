@@ -1,0 +1,7 @@
+platform ios  commit 512d506e2591449939fa374d45f0b94b6a9fa6a1  run 45295950309
+FAIL 01-launch: xcuitest.installer.LocalXCTestInstaller$IOSDriverTimeoutException: iOS driver not ready in time, consider increasing timeout by configuring MAESTRO_DRIVER_STARTUP_TIMEOUT env variable
+FAIL 02-signin-screen: see log-ios-02-signin-screen.txt
+FAIL 03-empty-submit: - Element may be temporarily unavailable due to loading state.
+FAIL 04-validation-text: - Element may be temporarily unavailable due to loading state.
+FAIL 05-type-email: - Element may be temporarily unavailable due to loading state.
+FAIL 06-email-only-submit: - Element may be temporarily unavailable due to loading state.

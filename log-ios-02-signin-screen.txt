@@ -1,0 +1,6 @@
+Running on iPhone 17 Pro - iOS 26.5 - 6478AFFB-AE17-412A-A1E5-51BCFFD300B6
+ > Flow 02-signin-screen
+Assert that "Welcome back" is visible...
+==== Debug output (logs & screenshots) ====
+
+/Users/runner/.maestro/tests/2026-11-24_003150

@@ -1,0 +1,16 @@
+Running on iPhone 17 Pro - iOS 26.5 - 6478AFFB-AE17-412A-A1E5-51BCFFD300B6
+ > Flow 03-empty-submit
+Tap on "Sign In"... FAILED
+
+Element not found: Text matching regex: Sign In
+
+Element with Text matching regex: Sign In not found. Check the UI hierarchy in debug artifacts to verify if the element exists.
+
+Possible causes:
+- Element selector may be incorrect - check if there are similar elements with slightly different names/properties.
+- Element may be temporarily unavailable due to loading state.
+- This could be a real regression that needs to be addressed.
+
+==== Debug output (logs & screenshots) ====
+
+/Users/runner/.maestro/tests/2026-11-24_003312
