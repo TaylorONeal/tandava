@@ -1,0 +1,5 @@
+Running on test
+ > Flow 03-empty-submit
+Tap on "Sign In"... COMPLETED
+Take screenshot ${P}-03-empty-submit... COMPLETED
+Assert that "Welcome back" is visible... COMPLETED

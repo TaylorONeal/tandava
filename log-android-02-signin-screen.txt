@@ -1,0 +1,8 @@
+Running on test
+ > Flow 02-signin-screen
+Assert that "Welcome back" is visible... COMPLETED
+Assert that "Sign In" is visible... COMPLETED
+Assert that "Forgot password\?" is visible... COMPLETED
+Assert that "Staff: sign in with the email your studio invited\." is visible... COMPLETED
+Assert that "Sign Up" is not visible... COMPLETED
+Take screenshot ${P}-02-signin-screen... COMPLETED

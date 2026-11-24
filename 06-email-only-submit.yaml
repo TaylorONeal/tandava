@@ -1,0 +1,6 @@
+appId: com.tandava.studio
+---
+- tapOn: "Welcome back"
+- tapOn: "Sign In"
+- takeScreenshot: ${P}-06-email-only-submit
+- assertVisible: "Welcome back"

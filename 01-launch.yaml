@@ -1,0 +1,8 @@
+appId: com.tandava.studio
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 90000
+- takeScreenshot: ${P}-01-launch

@@ -1,0 +1,7 @@
+appId: com.tandava.studio
+---
+- tapOn: "Sign In"
+- extendedWaitUntil:
+    visible: ".*ill out this field.*"
+    timeout: 4000
+- takeScreenshot: ${P}-04-validation-text
