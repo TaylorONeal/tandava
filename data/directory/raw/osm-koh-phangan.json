@@ -1,0 +1,462 @@
+{
+ "market": "koh-phangan",
+ "fetched_at": "2026-11-11T05:42:53.012Z",
+ "endpoint": "https://overpass-api.de/api/interpreter",
+ "osm_base": "2026-11-11T05:42:01Z",
+ "license": "ODbL-1.0",
+ "attribution": "(c) OpenStreetMap contributors",
+ "query": "[out:json][timeout:300];\n(\n  nwr[\"sport\"~\"yoga|pilates\",i](9.66,99.94,9.82,100.1);\n  nwr[\"disused:sport\"~\"yoga|pilates\",i](9.66,99.94,9.82,100.1);\n  nwr[\"leisure\"~\"fitness_centre|sports_centre|sports_hall|studio|dance\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](9.66,99.94,9.82,100.1);\n  nwr[\"club\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](9.66,99.94,9.82,100.1);\n  nwr[\"healthcare\"][\"name\"~\"yoga\",i](9.66,99.94,9.82,100.1);\n  nwr[\"amenity\"~\"community_centre|social_centre|events_venue\"][\"name\"~\"yoga\",i](9.66,99.94,9.82,100.1);\n  nwr[\"shop\"~\"yoga\"](9.66,99.94,9.82,100.1);\n  nwr[\"disused:leisure\"~\"fitness_centre|sports_centre|studio\"][\"name\"~\"yoga|pilates|ashtanga|vinyasa|bikram|kundalini|iyengar\",i](9.66,99.94,9.82,100.1);\n  nwr[\"was:name\"~\"yoga\",i](9.66,99.94,9.82,100.1);\n);\nout center tags meta;",
+ "elements": [
+  {
+   "type": "node",
+   "id": 12596221626,
+   "lat": 9.7047608,
+   "lon": 100.0148642,
+   "timestamp": "2025-02-17T17:25:47Z",
+   "version": 1,
+   "changeset": 162624596,
+   "user": "Matti Schneider",
+   "uid": 520233,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Soulscape",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 13195313140,
+   "lat": 9.714033,
+   "lon": 100.0056814,
+   "timestamp": "2025-10-05T08:36:25Z",
+   "version": 1,
+   "changeset": 172858150,
+   "user": "Mannu Yoga",
+   "uid": 23363213,
+   "tags": {
+    "addr:housenumber": "101/28",
+    "addr:postcode": "84280",
+    "addr:province": "surat thani",
+    "addr:street": "moo 1",
+    "addr:subdistrict": "koh phangan",
+    "leisure": "fitness_centre",
+    "name": "Jangalika, House of Ashtanga Yoga",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 13722309978,
+   "lat": 9.7853088,
+   "lon": 100.0576786,
+   "timestamp": "2026-04-11T03:29:31Z",
+   "version": 1,
+   "changeset": 181173668,
+   "user": "ENERGYMG",
+   "uid": 13891809,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Santhiya Yoga",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 3837567083,
+   "lat": 9.7859928,
+   "lon": 99.9832548,
+   "timestamp": "2017-04-11T21:34:29Z",
+   "version": 5,
+   "changeset": 47671373,
+   "user": "gezginrocker",
+   "uid": 1686268,
+   "tags": {
+    "amenity": "school",
+    "name": "The Yoga Retreat",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4366967190,
+   "lat": 9.7606563,
+   "lon": 99.9628066,
+   "timestamp": "2017-04-09T20:53:42Z",
+   "version": 3,
+   "changeset": 47603930,
+   "user": "gezginrocker",
+   "uid": 1686268,
+   "tags": {
+    "addr:postcode": "84280",
+    "amenity": "school",
+    "name": "Gaia Yogashalla",
+    "opening_hours": "Su-Fr 06:30-20:30; Sa closed",
+    "sport": "yoga",
+    "website": "www.gaiayogashalla.com"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4713691103,
+   "lat": 9.7597956,
+   "lon": 99.9623948,
+   "timestamp": "2017-03-18T00:23:00Z",
+   "version": 2,
+   "changeset": 46944961,
+   "user": "gezginrocker",
+   "uid": 1686268,
+   "tags": {
+    "amenity": "school",
+    "name": "Agama Yoga Green Hall",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4744257563,
+   "lat": 9.7803023,
+   "lon": 99.9750495,
+   "timestamp": "2017-03-20T03:14:30Z",
+   "version": 1,
+   "changeset": 46999841,
+   "user": "gezginrocker",
+   "uid": 1686268,
+   "tags": {
+    "amenity": "school",
+    "name": "Pyramid Yoga Center",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4753814998,
+   "lat": 9.6946322,
+   "lon": 100.0752353,
+   "timestamp": "2017-03-25T00:57:46Z",
+   "version": 1,
+   "changeset": 47138170,
+   "user": "gezginrocker",
+   "uid": 1686268,
+   "tags": {
+    "name": "Blooming Lotus Yoga",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4755186455,
+   "lat": 9.7700054,
+   "lon": 100.0508276,
+   "timestamp": "2017-03-25T19:09:03Z",
+   "version": 1,
+   "changeset": 47160445,
+   "user": "gezginrocker",
+   "uid": 1686268,
+   "tags": {
+    "name": "The Yoga Studio",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "node",
+   "id": 5353576021,
+   "lat": 9.7608113,
+   "lon": 99.9621948,
+   "timestamp": "2018-01-22T00:36:34Z",
+   "version": 1,
+   "changeset": 55641447,
+   "user": "Eva Mitterlehner",
+   "uid": 4990767,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Yoga Bovy Beach"
+   }
+  },
+  {
+   "type": "node",
+   "id": 5534082133,
+   "lat": 9.7608981,
+   "lon": 99.9631885,
+   "timestamp": "2018-04-06T16:04:56Z",
+   "version": 1,
+   "changeset": 57870304,
+   "user": "Jess Dervin-Ackerman",
+   "uid": 7816602,
+   "tags": {
+    "leisure": "fitness_centre",
+    "name": "Anahata Yoga Shala"
+   }
+  },
+  {
+   "type": "node",
+   "id": 6681286886,
+   "lat": 9.7507151,
+   "lon": 99.9662355,
+   "timestamp": "2025-10-16T15:40:46Z",
+   "version": 4,
+   "changeset": 173372745,
+   "user": "One Yoga",
+   "uid": 23404378,
+   "tags": {
+    "addr:district": "Ko Phangan",
+    "addr:housenumber": "14/11",
+    "addr:postcode": "84280",
+    "addr:province": "Surat Thani",
+    "addr:street": "Moo 8",
+    "addr:subdistrict": "Ko Phangan",
+    "check_date": "2025-10-16",
+    "contact:facebook": "https://www.facebook.com/@oneyogathailand",
+    "description": "Yoga & meditation school in Koh Phangan and online.\nHolistic weekly retreats and Teacher Training Courses.\nSincere practice, focused on self-growth.",
+    "email": "info@oneyogathailand.com",
+    "image": "https://oneyogathailand.com/wp-content/uploads/2023/02/happy-students-at-yoga-teacher-training-graduation-ceremony.jpg",
+    "internet_access": "wlan",
+    "leisure": "fitness_centre",
+    "name": "One Yoga Thailand",
+    "opening_hours": "24/7",
+    "phone": "+66641407641",
+    "sport": "yoga",
+    "website": "https://oneyogathailand.com/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 7516238185,
+   "lat": 9.7562973,
+   "lon": 99.9778144,
+   "timestamp": "2020-05-14T04:59:03Z",
+   "version": 2,
+   "changeset": 85174889,
+   "user": "Johan Phangan",
+   "uid": 11119367,
+   "tags": {
+    "addr:city": "Koh Phangan Surat Thani",
+    "addr:housenumber": "54",
+    "addr:postcode": "84280",
+    "addr:street": "Moo 6",
+    "leisure": "fitness_centre",
+    "name": "Genesis Centre",
+    "name:en": "Genesis Yoga",
+    "phone": "093 696 8467",
+    "sport": "yoga",
+    "website": "https://genesiscentre.info/en"
+   }
+  },
+  {
+   "type": "node",
+   "id": 8223922117,
+   "lat": 9.762734,
+   "lon": 99.9639481,
+   "timestamp": "2020-12-13T10:53:07Z",
+   "version": 1,
+   "changeset": 95750373,
+   "user": "Gipsy Yoga The Village Peace Garden",
+   "uid": 10799467,
+   "tags": {
+    "addr:street": "Srithanu",
+    "amenity": "community_centre",
+    "email": "flowerosan@gmx.com",
+    "internet_access": "wlan",
+    "name": "Gipsy Yoga",
+    "opening_hours": "Mo-Su 12:00-14:00",
+    "website": "http://gipsyoga.com"
+   }
+  },
+  {
+   "type": "node",
+   "id": 8943047000,
+   "lat": 9.7361569,
+   "lon": 99.979976,
+   "timestamp": "2025-10-26T04:14:48Z",
+   "version": 2,
+   "changeset": 173779127,
+   "user": "JunglerKP",
+   "uid": 23431612,
+   "tags": {
+    "addr:city": "Phangan",
+    "addr:housenumber": "42/5",
+    "addr:street": "Hin Kong Road",
+    "club": "sport",
+    "email": "info@maa-phangan.com",
+    "name": "MAA - Martial Arts Academy",
+    "opening_hours": "Mo-Fr 07:00-18:00; Sa 07:00-15:00",
+    "phone": "+66 93 112 1023",
+    "sport": "muay-thai;kickbox;yoga;boxing",
+    "website": "https://maa-phangan.com"
+   }
+  },
+  {
+   "type": "node",
+   "id": 9311900819,
+   "lat": 9.7501555,
+   "lon": 99.9799391,
+   "timestamp": "2026-01-08T10:59:34Z",
+   "version": 4,
+   "changeset": 176979388,
+   "user": "INDRIYA",
+   "uid": 23682290,
+   "tags": {
+    "addr:district": "Koh Phangan",
+    "addr:housenumber": "66/9",
+    "addr:place": "Thailand",
+    "addr:postcode": "84280",
+    "addr:province": "Surat Thani",
+    "addr:street": "Moo 5",
+    "addr:subdistrict": "Koh Phangan",
+    "amenity": "community_centre",
+    "email": "booking@indriyaretreat.com",
+    "internet_access": "wlan",
+    "leisure": "fitness_centre",
+    "name": "Indriya Retreat",
+    "name:en": "INDRIYA RETREAT",
+    "name:th": "INDRIYA RETREAT",
+    "phone": "+66 94-321-7528",
+    "sport": "yoga",
+    "website": "https://www.indriyaretreat.com/"
+   }
+  },
+  {
+   "type": "way",
+   "id": 1445960380,
+   "timestamp": "2025-10-29T10:29:09Z",
+   "version": 1,
+   "changeset": 173921904,
+   "user": "JunglerKP",
+   "uid": 23431612,
+   "center": {
+    "lat": 9.7681525,
+    "lon": 100.0575668
+   },
+   "nodes": [
+    13266787469,
+    13266787470,
+    13266787473,
+    13266787471,
+    13266787472,
+    13266787469
+   ],
+   "tags": {
+    "building": "yes",
+    "leisure": "fitness_centre",
+    "name": "Yoga Thong Nai Pan Yai",
+    "sport": "yoga",
+    "website": "https://www.instagram.com/yoga_thongnaipan/"
+   }
+  },
+  {
+   "type": "way",
+   "id": 1472922251,
+   "timestamp": "2026-01-31T11:26:13Z",
+   "version": 1,
+   "changeset": 177922017,
+   "user": "Matti Schneider",
+   "uid": 520233,
+   "center": {
+    "lat": 9.7509041,
+    "lon": 99.975406
+   },
+   "nodes": [
+    13514158511,
+    13514158508,
+    13514129098,
+    13514158503,
+    13514158511
+   ],
+   "tags": {
+    "building": "yes",
+    "leisure": "fitness_centre",
+    "name": "Paradise Fitness",
+    "sport": "yoga"
+   }
+  },
+  {
+   "type": "way",
+   "id": 381949598,
+   "timestamp": "2019-03-26T23:53:50Z",
+   "version": 6,
+   "changeset": 68567624,
+   "user": "b-jazz-bot",
+   "uid": 9451067,
+   "center": {
+    "lat": 9.7579224,
+    "lon": 99.9691191
+   },
+   "nodes": [
+    4685814550,
+    4745863337,
+    4685814546,
+    4685814548,
+    4685814551,
+    3851521937,
+    3851940175,
+    3851521936,
+    4685814550
+   ],
+   "tags": {
+    "amenity": "school",
+    "name": "Agama Yoga Srithanu Campus",
+    "sport": "yoga",
+    "website": "https://www.agamayoga.com/"
+   }
+  },
+  {
+   "type": "way",
+   "id": 480883557,
+   "timestamp": "2017-05-06T19:21:38Z",
+   "version": 6,
+   "changeset": 48459818,
+   "user": "gezginrocker",
+   "uid": 1686268,
+   "center": {
+    "lat": 9.7663323,
+    "lon": 99.9623008
+   },
+   "nodes": [
+    4738345130,
+    4738345124,
+    4738345123,
+    4738345122,
+    2515644721,
+    4685615129,
+    3846452453,
+    4738345127,
+    4738345131,
+    4738345130
+   ],
+   "tags": {
+    "amenity": "school",
+    "barrier": "wall",
+    "leisure": "garden",
+    "name": "Samma Karuna",
+    "name:en": "Samma Karuna",
+    "sport": "yoga",
+    "tourism": "hotel"
+   }
+  },
+  {
+   "type": "way",
+   "id": 529898584,
+   "timestamp": "2023-02-11T08:29:30Z",
+   "version": 3,
+   "changeset": 132393769,
+   "user": "Eudaimonia",
+   "uid": 1804584,
+   "center": {
+    "lat": 9.7476547,
+    "lon": 99.9821265
+   },
+   "nodes": [
+    5146833012,
+    5146833011,
+    5146833010,
+    5146833009,
+    5146833012
+   ],
+   "tags": {
+    "building": "yes",
+    "leisure": "fitness_centre",
+    "name": "Iyengar Yoga",
+    "sport": "yoga"
+   }
+  }
+ ]
+}
