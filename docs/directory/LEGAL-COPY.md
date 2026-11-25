@@ -61,3 +61,9 @@ listing, Our site checker. Full text lives in `DirectoryAbout.tsx`.
 
 Removal requests: remove within a few business days, add the studio to
 `data/directory/suppressions.json` so the next refresh does not bring it back.
+
+## Collapsed bar (`/studios`, after the short notice scrolls away)
+
+> **Public directory.** Not guaranteed accurate. [Details]
+
+"Details" opens the full short notice above the bar.

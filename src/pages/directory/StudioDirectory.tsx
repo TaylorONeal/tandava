@@ -89,7 +89,7 @@ export default function StudioDirectory() {
             </p>
           </section>
 
-          <DirectoryNotice email={display.update_email} />
+          <DirectoryNotice email={display.update_email} collapseOnScroll />
 
           <div className="mb-6 mt-8 space-y-3" role="search">
             <div className="relative max-w-md">
