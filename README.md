@@ -9,7 +9,9 @@ Two ways to use Tandava:
 - **Hosted:** sign up at **[tandavastudio.com](https://tandavastudio.com)**, complete the setup wizard, and go live. No servers, no DNS, no deployment. Beta pricing is $29 a month per location with no cut of your payments (Stripe's card fees only); contact hello@purafieldstudio.com to start. See [docs/plans/PRICING-BETA.md](docs/plans/PRICING-BETA.md).
 - **Self-host:** clone this repo and deploy it on your own infrastructure. Own every byte, pay only your hosting costs, change anything. AGPL-3.0.
 
-> **[Live Demo](https://tandavastudio.com):** explore the full platform with sample data. No signup required.
+> **[Live Demo](https://tandavastudio.com/demo):** explore the full platform with sample data. No signup required.
+>
+> **Hosted vs open source:** same code, different operator, like wordpress.org and wordpress.com. The one-page explanation is [docs/HOSTED_AND_OPEN_SOURCE.md](docs/HOSTED_AND_OPEN_SOURCE.md).
 
 *Tandava* is the cosmic dance in Hindu tradition, representing the rhythm of creation, preservation, and transformation. We chose this name because running a studio should feel like a practice: purposeful, flowing, and yours to shape.
 
@@ -25,9 +27,9 @@ It handles the operational reality of running a movement studio: scheduling clas
 
 It is designed for studios with 1-3 locations where the owner is often also the lead teacher, the person handling check-ins, and the one reconciling the books at month-end.
 
-**Open core, not open bait.** Every feature is in this repository. Nothing is held back for a paid tier. The hosted version runs this exact code; you pay for the convenience of not operating it, not for locked features. The software is licensed AGPL-3.0, which keeps it open for everyone and lets the project sustain itself by offering hosting.
+**Open core, not open bait.** Every line of code is in this repository. Nothing is held back for a paid tier. The hosted version runs this exact code; you pay for the convenience of not operating it, not for locked features. The software is licensed AGPL-3.0, which keeps it open for everyone and lets the project sustain itself by offering hosting.
 
-**What you get:**
+**What you get** (on the hosted product today, only the [live screens](docs/HOSTED_AND_OPEN_SOURCE.md#what-is-live-versus-demo) run on real data; the rest are demo screens on sample data, ready for contributors to wire up):
 - Full scheduling with recurring classes, subs, and cancellations
 - Membership and class pack management with purchase and consumption tracking
 - Student profiles with visit history and waiver tracking
@@ -35,7 +37,7 @@ It is designed for studios with 1-3 locations where the owner is often also the 
 - Check-in system with kiosk mode and QR codes
 - Analytics dashboards for attendance, revenue, and retention
 - Event and workshop management with historical trends
-- Data import from MindBody, Momence, Walla, and others
+- Data import from MindBody, Momence, Walla, and others (member records by CSV today)
 
 **What you don't get:**
 - Vendor lock-in
@@ -51,7 +53,7 @@ It is designed for studios with 1-3 locations where the owner is often also the 
 
 ### Honest status
 
-The frontend and workflows are complete; the backend (Supabase schema, auth, RLS, edge functions) is architecturally ready and being hardened under real use. If you self-host today, budget time to verify RLS, payments, and email against your own project before real members rely on it. The hosted version exists precisely so you don't have to.
+Live on real data today: scheduling, classes and pricing, booking and payments through Stripe Connect, staff and teachers, member CSV import, share and embed, check-in (roster and QR scan in the Tandava Studio app). The rest of the screens are demo only; see [what is live versus demo](docs/HOSTED_AND_OPEN_SOURCE.md#what-is-live-versus-demo). If you self-host today, budget time to verify RLS, payments, and email against your own project before real members rely on it. The hosted version exists precisely so you don't have to.
 
 **Tandava is multi-tenant by design.** One deployment serves many studios, isolated by row-level security, which is exactly what makes the hosted version possible. Self-hosters typically run it for a single studio (or a few locations under one owner), but the platform capabilities are real, not scaffolding.
 

@@ -62,6 +62,7 @@ tandava/
 | [docs/architecture/DOMAIN_MODEL.md](docs/architecture/DOMAIN_MODEL.md) | Conceptual foundations |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guidelines |
 | [DATA_INTEROPERABILITY.md](DATA_INTEROPERABILITY.md) | Legal posture and data ownership |
+| [docs/HOSTED_AND_OPEN_SOURCE.md](docs/HOSTED_AND_OPEN_SOURCE.md) | Hosted vs open source, beta price, live vs demo screens (canonical) |
 
 ---
 

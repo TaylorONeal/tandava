@@ -30,6 +30,7 @@ Welcome to the Tandava documentation. This guide covers everything you need to s
 
 - [Implementation Handoff](IMPLEMENTATION_HANDOFF.md) — Bug fixes, tested hosted foundations, remaining blockers and three product decisions
 
+- [Hosted and open source](HOSTED_AND_OPEN_SOURCE.md) — canonical: what the hosted service adds, beta price, and which screens are live versus demo
 - [Hosted Product Review](HOSTED_PRODUCT_REVIEW.md) — September 2026 completeness audit, competitor comparison, demo fixes, hosted onboarding/pricing proposal, costs and phased app strategy
 - [Studio Sprout](developer/studio-sprout.md) — Blog-only studio-economics game, domain-scoped Vercel publication, build boundary, currency-preserving prerender, and verification
 
