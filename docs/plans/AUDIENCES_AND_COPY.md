@@ -13,7 +13,7 @@ Decided 2026-10-07. Replaces the old rule that `/` was one page serving everyone
 Rules:
 - A page serves one audience. Cross-links are one line, not a second pitch.
 - `/open-source` never sells the hosted product. `/for-studios` never explains the stack.
-- Hosted pages state no price until decision D1 is made. Pilot wording: "Pricing is agreed with you before you take a single payment."
+- Hosted pages state the beta price from `BETA_PRICE` in `src/content/marketing/pages.ts` (D1, Nov 27, 2026), always as beta pricing with the contact line. Details: [PRICING-BETA.md](PRICING-BETA.md).
 - Stripe: hosted owners "set up payouts" (Stripe is named once, as the payments partner). "Bring your own Stripe account/keys" is self-host language and lives only on `/open-source` and in DEPLOYMENT.md. The manage app serves both, so it uses the neutral "payments / payouts" wording.
 - Footers and shared chrome never lead with "open source"; that is the self-hoster door's job.
 - No claim ships unless the code does it today. "Demo", "mock data" and "in active development" language lives only on `/demo` and in docs.

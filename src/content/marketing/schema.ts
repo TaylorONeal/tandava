@@ -41,7 +41,7 @@ export function websiteLd(siteUrl: string) {
   };
 }
 
-/** The hosted web product. No price is published until decision D1. */
+/** The hosted web product. No Offer in structured data while pricing is beta and by contact (BETA_PRICE in pages.ts). */
 export function webAppLd(siteUrl: string) {
   return {
     "@context": "https://schema.org",

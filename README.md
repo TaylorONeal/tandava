@@ -6,7 +6,7 @@ Scheduling. Memberships. Payments. Check-in. Analytics. Built for yoga, pilates,
 
 Two ways to use Tandava:
 
-- **Hosted:** sign up at **[tandavastudio.com](https://tandavastudio.com)**, complete the setup wizard, and go live. No servers, no DNS, no deployment. Free to run: we make money only by taking a small percentage of the payments you process, so we only earn when your studio does.
+- **Hosted:** sign up at **[tandavastudio.com](https://tandavastudio.com)**, complete the setup wizard, and go live. No servers, no DNS, no deployment. Beta pricing is $29 a month per location with no cut of your payments (Stripe's card fees only); contact hello@purafieldstudio.com to start. See [docs/plans/PRICING-BETA.md](docs/plans/PRICING-BETA.md).
 - **Self-host:** clone this repo and deploy it on your own infrastructure. Own every byte, pay only your hosting costs, change anything. AGPL-3.0.
 
 > **[Live Demo](https://tandavastudio.com):** explore the full platform with sample data. No signup required.
@@ -360,7 +360,7 @@ Tandava takes the opposite approach:
 
 **No lock-in by design.** We're building toward a standardized data interchange format so moving to or from Tandava is straightforward.
 
-**Aligned incentives.** The hosted service earns a small percentage of the payments a studio processes. Nothing else. There's no per-member fee, no seat pricing, no locked features. We grow only when studios grow, and any studio that outgrows the arrangement can take the open-source code and self-host. That option existing is what keeps the hosted version honest.
+**Aligned incentives.** During beta the hosted service charges a flat $29 a month per location and takes no cut of a studio's payments. There's no per-member fee, no seat pricing, no locked features. We grow only when studios grow, and any studio that outgrows the arrangement can take the open-source code and self-host. That option existing is what keeps the hosted version honest.
 
 ---
 

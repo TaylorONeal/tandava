@@ -8,11 +8,24 @@
  * Rules (docs/plans/AUDIENCES_AND_COPY.md):
  *   - Every claim is true of the hosted product today. The app is "coming
  *     soon" until STUDIO_APP_LIVE flips, and the copy reads that flag.
- *   - No price until decision D1. Pilot wording stays.
+ *   - Price: BETA_PRICE below (decision D1, Nov 27, 2026). Always say it is
+ *     beta pricing and that studios contact us to start.
  *   - Open source is a trust line below the fold here; /open-source owns it.
  *   - Plain words. No hype, no dashes as punctuation.
  */
 import { STUDIO_APP, STUDIO_APP_LIVE, studioAppAvailability } from "../../config/studioApp";
+import { SUPPORT_EMAIL } from "./schema";
+
+/**
+ * Hosted beta price (decision D1, Nov 27, 2026): about half the average entry
+ * price of Mindbody, Arketa and Momence. Sources and math:
+ * docs/plans/PRICING-BETA.md. Change the number there and here together.
+ */
+export const BETA_PRICE = {
+  monthlyUsd: 29,
+  line: "Beta pricing: $29 a month per location, with no cut of your payments. Stripe's card fees are the only other cost.",
+  contact: `This price holds while we onboard our first studios. Write to ${SUPPORT_EMAIL} to start.`,
+} as const;
 
 export interface MarketingSection {
   heading: string;
@@ -101,7 +114,7 @@ export function homeContent(live: boolean = STUDIO_APP_LIVE) {
     eyebrow: "For yoga, pilates and movement studios",
     h1: "Set up your studio on the web. Check people in from your phone.",
     intro: `Tandava runs your class schedule, class packs, memberships and online booking. You set it up here, in your browser. Your front desk and teachers check members in at the door with ${STUDIO_APP.name}, our iPhone app, ${appStatusPhrase(live)}.`,
-    finePrint: "No card needed to set up. Pricing is agreed with you before you take a single payment.",
+    finePrint: `No card needed to set up. ${BETA_PRICE.line} ${BETA_PRICE.contact}`,
     steps: [
       {
         title: "Create your studio on the web",
@@ -126,7 +139,7 @@ export function homeContent(live: boolean = STUDIO_APP_LIVE) {
     },
     pilot: {
       heading: "We are starting with a few studios",
-      body: "Tandava is new. We are onboarding our first studios in Austin and working with each owner directly, so when something is rough you talk to the person who can fix it. Pricing is agreed with you before you take a single payment.",
+      body: `Tandava is new. We are onboarding our first studios in Austin and working with each owner directly, so when something is rough you talk to the person who can fix it. ${BETA_PRICE.line} ${BETA_PRICE.contact}`,
     },
     openSource: {
       heading: "Open source, if you ever want it",
@@ -239,7 +252,8 @@ export function landingPages(live: boolean = STUDIO_APP_LIVE): MarketingPage[] {
         {
           heading: "What it costs",
           paragraphs: [
-            "We are onboarding our first studios now, and pricing for the hosted version is agreed with each studio before you take a single payment. The code is open source under AGPL-3.0, so a studio with a developer can also run its own copy and pay only for hosting.",
+            `${BETA_PRICE.line} ${BETA_PRICE.contact}`,
+            "The code is open source under AGPL-3.0, so a studio with a developer can also run its own copy and pay only for hosting.",
           ],
         },
       ],
@@ -322,7 +336,7 @@ export function landingPages(live: boolean = STUDIO_APP_LIVE): MarketingPage[] {
         },
         {
           q: "How do I get paid?",
-          a: "Students pay by card through Stripe. You add your bank details once and payouts go to your account. While we onboard our first studios, payments are switched on with you after pricing is agreed.",
+          a: "Students pay by card through Stripe. You add your bank details once and payouts go to your account. While we onboard our first studios, we switch payments on with you once you start on beta pricing.",
         },
         {
           q: "Which time zone do students see?",

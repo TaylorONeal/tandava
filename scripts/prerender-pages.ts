@@ -18,6 +18,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, copyFileSync } from
 import { resolve, join } from "path";
 import { isStudioAppLive, STUDIO_APP, studioAppAvailability } from "../src/config/studioApp";
 import {
+  BETA_PRICE,
   appStatusPhrase,
   HOME_FAQ_IDS,
   homeContent,
@@ -193,7 +194,8 @@ Key facts:
 - ${STUDIO_APP.name} (iPhone, free${live ? "" : `, ${appStatusPhrase(live)}). What it will do at launch`}${live ? ")" : ""}: ${STUDIO_APP_FEATURES.join(" ")}${live ? ` App Store: ${STUDIO_APP.appStoreUrl}` : ""}
 - On the web: ${WEB_FEATURES.map((f) => f.toLowerCase()).join("; ")}.
 - Students book on the studio's booking page in a phone browser. No student app is needed.
-- Status: onboarding first studios (Austin, Texas). ${c.pilot.body.split(". ").slice(-1)[0]}
+- Status: onboarding first studios (Austin, Texas).
+- Price: ${BETA_PRICE.line} ${BETA_PRICE.contact}
 - Hosted vs self-hosted: most studios use the hosted version. Developers can self-host from ${REPO_URL} (AGPL-3.0); they run their own backups, upgrades and support.
 - Made by Purafield Studio LLC, Austin, Texas. Contact: ${SUPPORT_EMAIL}
 
