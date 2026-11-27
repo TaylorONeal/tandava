@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { isStudioAppLive, studioAppAvailability } from "../../config/studioApp";
-import { homeContent, landingPageFor, LANDING_ROUTES } from "./pages";
+import { BETA_PRICE, homeContent, landingPageFor, LANDING_ROUTES } from "./pages";
 import { homeLd, studioAppLd } from "./schema";
 
 const SITE = "https://tandavastudio.com";
@@ -35,13 +35,21 @@ describe("marketing copy", () => {
     expect(landingPageFor("/nope", false)).toBeUndefined();
   });
 
-  it("uses no em dashes, no prices and never names the method", () => {
+  it("uses no em dashes, only the beta price, and never names the method", () => {
     for (const v of variants) {
-      const t = allText(v);
+      const t = allText(v).split(BETA_PRICE.line).join("");
       expect(t).not.toContain("—");
       expect(t).not.toMatch(/\$\d/);
       expect(t).not.toMatch(/embodied flow/i);
     }
+  });
+
+  it("always says the price is beta pricing and how to start", () => {
+    expect(BETA_PRICE.line).toMatch(/^Beta pricing: \$\d+ a month per location/);
+    expect(BETA_PRICE.contact).toContain("hello@purafieldstudio.com");
+    const t = allText(homeContent(true));
+    expect(t).toContain(BETA_PRICE.line);
+    expect(t).toContain(BETA_PRICE.contact);
   });
 
   it("does not promise the app is downloadable before launch", () => {

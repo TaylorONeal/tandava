@@ -13,7 +13,7 @@ import { CtaLink, Eyebrow, PhoneShot, ScanFrame } from "@/components/marketing/b
 import { RuledList, Section, TickList } from "@/components/marketing/primitives";
 import { STUDIO_SIGNUP_HREF } from "@/lib/audience";
 import { STUDIO_APP_LIVE } from "@/config/studioApp";
-import { landingPageFor } from "@/content/marketing/pages";
+import { BETA_PRICE, landingPageFor } from "@/content/marketing/pages";
 import { landingLd } from "@/content/marketing/schema";
 import NotFound from "@/pages/NotFound";
 
@@ -101,7 +101,7 @@ export default function LandingPage({ route }: { route: string }) {
           <div className="min-w-0">
             <h2 id="ready-title" className="font-brand text-3xl font-extrabold tracking-[-0.03em] sm:text-[2.6rem]">Ready when you are</h2>
             <p className="mt-3 max-w-[60ch] text-ink/80">
-              Studios sign up on the web. Setup takes no card, and pricing is agreed with you before you take a single payment.
+              Studios sign up on the web. Setup takes no card. {BETA_PRICE.line} {BETA_PRICE.contact}
             </p>
           </div>
           <CtaLink to={STUDIO_SIGNUP_HREF}>Set up your studio</CtaLink>

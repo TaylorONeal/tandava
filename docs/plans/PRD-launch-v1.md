@@ -111,7 +111,7 @@ Answered 2026-10-04: D5 keep edits after a prod schema diff (blocked: no Tandava
 
 | ID | Decision | Default I would take |
 |---|---|---|
-| D1 | $99/mo flat vs 2% take | Flat; matches HOSTED_PRODUCT_REVIEW |
+| D1 | $99/mo flat vs 2% take | Decided Nov 27, 2026: flat $29/mo per location during beta, no take. See PRICING-BETA.md |
 | D2 | Shared products versus per-studio binaries | Confirmed October 21: one shared Member app and one shared Studio management app; published source remains available |
 | D3 | First metro | Austin |
 | D4 | Flip home to discover at 5 discoverable studios | Keep threshold |

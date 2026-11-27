@@ -19,6 +19,7 @@ import { MarketingShell } from "@/components/layout/MarketingShell";
 import { Band, CtaLink, Eyebrow } from "@/components/marketing/brand";
 import { PassStub, Section, TickList } from "@/components/marketing/primitives";
 import { OXATL_STUDIO, OXATL_LOCATIONS, OXATL_TEACHERS, OXATL_CLASS_TYPES } from "@/data/demo";
+import { BETA_PRICE } from "@/content/marketing/pages";
 
 // ----------------------------------------------------------------------------
 // Seats: one per role
@@ -130,7 +131,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "What does it cost?",
-    a: "We're onboarding our first studios now and agree pricing with each owner before you take a single payment. Card fees are Stripe's, paid from your own Stripe account.",
+    a: `${BETA_PRICE.line} ${BETA_PRICE.contact}`,
   },
   {
     q: "How is it different from MindBody or Momence?",

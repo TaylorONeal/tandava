@@ -8,7 +8,7 @@
  * source exists for those who want it (one block, below the fold).
  *
  * Copy lives in src/content/marketing/pages.ts so the prerendered HTML and
- * llms.txt say the same thing. No pricing numbers until decision D1.
+ * llms.txt say the same thing. The beta price is BETA_PRICE in that file.
  * Look: docs/design/DESIGN_SYSTEM.md (front desk: paper, ink, one highlighter;
  * the pass and the class board are the motifs).
  */

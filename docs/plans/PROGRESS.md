@@ -572,3 +572,32 @@ built through 00044. Verified: function present, security definer, authenticated
 can execute, anon cannot. The review seed also runs cleanly on a 00044 schema.
 Still not on prod: 00046 to 00051. Nothing records applied migrations on prod, so
 check the schema, not a tracking table.
+
+## 2026-11-07 to 2026-11-24: merged since the last entry (catch-up, written Nov 27)
+
+Store state: Tandava Studio iOS 1.0 (build 8) Waiting for Review since Nov 18; Android
+1.0 live on Google Play since Nov 19. Review studio reseeded Nov 18 (check-in class open
+until Dec 9). Member app paused (Nov 11 decision: members stay on the web).
+
+- Release prep: #109 (secure purchases, deletion requests), #121 (captcha sign-in, payout
+  setup hidden), #122 (listing and Play package), #124 (Smart App Banner, behind the switch),
+  #126 (Codemagic TestFlight upload and ASC jobs), #128 (Android `.dev` ID for sideloads),
+  #142 (R8 and edge-to-edge; ships in the next AAB).
+- Site: #117 and #119 (redesign, landing pages), #120 (analytics gate, GA4, Vercel
+  Analytics), #140 and #141 (vercel.app hosts redirect), #144 and #146 (studio directory).
+- Security: #132 (personal details out of the public repo), #133 and #145 (import and
+  staff invites can't claim existing accounts), #135 and #136 (secret scan), #137 (email
+  function staff route), #138 (Dependabot updates).
+- Team: #143 (owners add staff any time). Agents: #131 (tool-neutral instructions).
+
+## 2026-11-27: beta pricing and hosted vs open source
+
+- LP-10 decided by the maintainer: hosted beta price $29 a month per location, no
+  platform cut, about half the Mindbody, Arketa and Momence average
+  ([PRICING-BETA.md](PRICING-BETA.md)). Copy from one `BETA_PRICE` constant.
+- Canonical [HOSTED_AND_OPEN_SOURCE.md](../HOSTED_AND_OPEN_SOURCE.md): what hosted adds,
+  live versus demo screens (`liveStudioRoutes`). README and `/open-source` aligned.
+- Closed stale drafts #123 and #130. The live App Store Connect text from #123 is in #147.
+- Local: typecheck, 758 tests, hosted build pass. `test:db` not run (no SQL change).
+- Open: Android AAB with #142 (Codemagic, the maintainer's click); LP-1 money proof
+  (the maintainer types the test card); 00046 to 00051 on prod still undecided.

@@ -18,7 +18,7 @@ const REPO = "https://github.com/TaylorONeal/tandava";
 const STACK = [
   { title: "Stack", body: "React 18, TypeScript and Vite on the front end. Supabase (Postgres, Auth, Storage) behind it. Stripe Connect for payments." },
   { title: "Tenancy", body: "One database, many studios. Row-level security keeps each studio's data separate, and the SQL test suite checks it." },
-  { title: "Same code as hosted", body: "The hosted product is built from this repository, so what you read is what runs." },
+  { title: "Same code as hosted", body: "The hosted product is built from this repository, so what you read is what runs. Some screens still run on sample data only; the docs list which are live." },
 ];
 
 const SELF_HOST_NEEDS = [
@@ -84,6 +84,15 @@ export default function OpenSource() {
         <TickList items={SELF_HOST_NEEDS} />
       </Section>
 
+      <Section id="hosted" eyebrow="Hosted or self-hosted" title="Same code, different operator" className="mt-16">
+        <p className="max-w-[62ch] leading-relaxed text-ink/75">
+          Like WordPress, Tandava is software you can run yourself and a service that runs it for you. The hosted
+          version on tandavastudio.com is built from this repository with no private features. It adds operations:
+          the production database, Stripe Connect, email, the Tandava Studio store apps and a person to write to.
+          Self-hosting is free under AGPL-3.0 and you run all of that yourself.
+        </p>
+      </Section>
+
       <Section id="license" eyebrow="AGPL-3.0" title="License and contributing" className="mt-16">
         <p className="max-w-[62ch] leading-relaxed text-ink/75">
           You can use and modify Tandava freely. If you run a modified version as a service for others, you share your
@@ -92,6 +101,7 @@ export default function OpenSource() {
         <div className="mt-6 flex flex-wrap gap-3">
           <CtaAnchor href={`${REPO}/blob/main/CONTRIBUTING.md`} variant="secondary">Contributing guide</CtaAnchor>
           <CtaAnchor href={`${REPO}/blob/main/docs/INDEX.md`} variant="secondary">Documentation</CtaAnchor>
+          <CtaAnchor href={`${REPO}/blob/main/docs/HOSTED_AND_OPEN_SOURCE.md`} variant="secondary">Hosted vs open source</CtaAnchor>
         </div>
       </Section>
     </MarketingShell>
